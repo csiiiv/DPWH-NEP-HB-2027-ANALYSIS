@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FY2027 DPWH — DPWH Transparency NEP → Official NEP → House</title>
+<style>
+:root{--ink:#1c2b3a;--muted:#5a6b7d;--line:#d7e0ea;--blue:#1f5f9a;--green:#0f6a47;--amber:#8a5a14;--red:#9b2c2c;--bg:#eef3f7;--card:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Segoe UI",system-ui,sans-serif}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+.topnav{display:flex;gap:14px;flex-wrap:wrap;padding:10px 20px;background:var(--card);border-bottom:1px solid var(--line);font-size:13px;position:sticky;top:0;z-index:40}
+.wrap{max-width:1240px;margin:0 auto;padding:16px 20px 40px}
+.banner{background:#fff6e5;border:1px solid #ebd2a0;border-radius:8px;padding:10px 12px;margin:0 0 14px;font-size:13px}
+h1{font-size:26px;letter-spacing:-.03em;margin:0 0 4px;line-height:1.15}
+.lede{color:var(--muted);margin:0 0 10px;font-size:13px}
+.jumplinks{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px;font-size:13px}
+.jumplinks a{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--card)}
+.pipeline{display:grid;grid-template-columns:1fr 20px 1fr 20px 1fr;gap:6px;align-items:stretch;margin:0 0 12px}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.stage .kicker{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.stage .amt{font-size:20px;font-weight:700;margin:6px 0 2px;overflow-wrap:anywhere}
+.stage .meta{font-size:12px;color:var(--muted)}
+.arrow{display:grid;place-items:center;color:var(--muted);font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-size:18px;margin:2px 0}
+.stat span{display:block;font-size:11px;color:var(--muted)}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:0 0 14px;scroll-margin-top:52px}
+section h2{font-size:17px;margin:0 0 2px}
+section .hint{color:var(--muted);font-size:12px;margin:0 0 10px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin:0 0 10px;padding:8px;border:1px solid var(--line);border-radius:8px;background:#f7fafc;position:sticky;top:42px;z-index:30}
+.toolbar label{display:grid;gap:2px;font-size:11px;color:var(--muted);min-width:140px;flex:1}
+.toolbar .pager{margin:0;margin-left:auto;align-items:center}
+input,select,button{font:inherit;border:1px solid #b7c6d6;border-radius:6px;background:#fff;color:var(--ink);padding:7px 9px}
+button{cursor:pointer}button:hover{background:#edf4ff}button:disabled{opacity:.45;cursor:default}
+:focus-visible{outline:3px solid #3a7eb8;outline-offset:2px}
+.table-scroll{overflow:auto;border:1px solid var(--line);border-radius:8px;margin:0 0 10px;max-height:min(70vh,720px);overscroll-behavior:contain}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;min-width:760px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;background:var(--card)}
+th{background:#eef4f9;font-size:12px;color:#33485c;position:sticky;top:0;z-index:2;box-shadow:inset 0 -1px 0 var(--line)}
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.amt-main{font-weight:650}
+.delta{display:block;margin-top:2px;font-size:11px;font-weight:600}
+.delta.up{color:var(--green)}.delta.down{color:var(--red)}.delta.flat{color:var(--muted)}
+.sub{display:block;margin-top:2px;font-size:11px;color:var(--muted);font-weight:500}
+.title{max-width:320px;overflow-wrap:anywhere}
+.badge{display:inline-block;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:650;background:#e8f0f8;color:var(--blue)}
+.badge.up{background:#e5f5ee;color:var(--green)}.badge.down{background:#fdeceb;color:var(--red)}
+.badge.warn{background:#fff1d6;color:var(--amber)}
+.pager{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12px;color:var(--muted)}
+.details{margin-top:4px;font-size:12px}
+.details summary{cursor:pointer;color:var(--blue)}
+.flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:6px}
+.flow div{background:#f5f8fb;border-radius:6px;padding:7px;overflow-wrap:anywhere}
+.empty{text-align:center;padding:20px;color:var(--muted)}
+.downloads{display:flex;flex-wrap:wrap;gap:12px;padding:4px 0 8px}
+button.table-sort{border:0;background:transparent;color:inherit;font:inherit;font-weight:700;text-align:inherit;padding:2px 0;cursor:pointer;white-space:normal;width:100%}
+button.table-sort:hover,button.table-sort[aria-expanded="true"]{color:var(--blue)}
+th.num button.table-sort{text-align:right}
+.sort-menu{position:fixed;z-index:80;min-width:200px;background:#fff;border:1px solid #c5d2df;border-radius:10px;box-shadow:0 10px 30px #10203326;padding:6px;display:none}
+.sort-menu.open{display:block}
+.sort-menu .label{font-size:11px;color:var(--muted);padding:6px 8px 4px;font-weight:650}
+.sort-menu button{display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:7px;padding:8px 10px;font-size:13px}
+.sort-menu button:hover,.sort-menu button:focus-visible{background:#edf4ff}
+.sort-menu button[aria-checked="true"]{background:#e7f1fb;font-weight:700}
+.sort-menu .note{font-size:11px;color:var(--muted);padding:4px 8px 6px}
+.gap-block{margin-top:18px}
+@media(max-width:900px){
+  .pipeline{grid-template-columns:1fr}.arrow{transform:rotate(90deg);height:16px}
+  .stats{grid-template-columns:1fr 1fr}
+  .toolbar{top:0}
+}
+@media(max-width:600px){
+  .wrap,.topnav{padding-left:12px;padding-right:12px}
+  .stats,.flow{grid-template-columns:1fr}
+  h1{font-size:22px}
+  .toolbar label{min-width:100%}
+}
+</style>
+</head>
+<body>
+<nav class="topnav" aria-label="Dashboards">
+  <a href="../../site/index.html">Overview</a>
+  <a href="dpwh_nep_api_verification.html">DPWH Transparency NEP</a>
+  <a href="nep_source_verification.html">Official NEP</a>
+  <a href="hb_native_verification.html">House native</a>
+  <a href="source_comparison_2027.html">House ↔ NEP</a>
+<a href="../../README.md">Repository README</a><a href="../README.md">Workbench README</a></nav>
+<div class="wrap">
+  <div class="banner"><strong>Candidate view.</strong> Not certified insertions, removals, or final House amendments.</div>
+  <h1>DPWH Transparency NEP → Official NEP → House</h1>
+  <p class="lede" id="built">Three FY2027 sources · Philippine pesos</p>
+  <div class="jumplinks">
+    <a href="#paps">PAP totals</a>
+    <a href="#projects">Project records</a>
+    <a href="#gaps">Missing from listing</a>
+  </div>
+
+  <div class="pipeline" id="pipeline"></div>
+  <div class="stats" id="stats"></div>
+
+  <section id="paps">
+    <h2>PAP totals by stage</h2>
+    <p class="hint">Click an amount header to choose total, delta, or % change. Text/title headers toggle sort.</p>
+    <div class="toolbar">
+      <label>Search<input id="papSearch" type="search" placeholder="PAP or program"></label>
+      <label>Program<select id="papProgram"><option value="">All</option></select></label>
+      <span class="hint" id="papCount" aria-live="polite" style="margin:0;align-self:center"></span>
+    </div>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="PAP stage comparison">
+      <table id="papTable" data-nosort="true">
+        <thead>
+          <tr>
+            <th scope="col"><button type="button" class="table-sort" data-col="0" data-label="PAP">PAP ↕</button></th>
+            <th scope="col" class="num"><button type="button" class="table-sort" data-col="1" data-label="DPWH Transparency NEP" data-amount="true" data-has-prior="false">DPWH Transparency NEP ↕</button></th>
+            <th scope="col" class="num"><button type="button" class="table-sort" data-col="2" data-label="Official NEP" data-amount="true" data-has-prior="true">Official NEP ↕</button></th>
+            <th scope="col" class="num"><button type="button" class="table-sort" data-col="3" data-label="House" data-amount="true" data-has-prior="true">House ↕</button></th>
+          </tr>
+        </thead>
+        <tbody id="papRows"></tbody>
+      </table>
+    </div>
+
+    <div class="gap-block" id="gaps">
+      <h2>Missing from DPWH Transparency NEP</h2>
+      <p class="hint">Printed Official NEP rows absent from the listing. Coverage gaps, not House edits.</p>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="DPWH Transparency NEP gaps" style="max-height:360px">
+        <table id="gapTable" data-nosort="true">
+          <thead>
+            <tr>
+              <th scope="col"><button type="button" class="table-sort" data-col="0" data-label="Title">Title ↕</button></th>
+              <th scope="col"><button type="button" class="table-sort" data-col="1" data-label="PAP">PAP ↕</button></th>
+              <th scope="col"><button type="button" class="table-sort" data-col="2" data-label="Region">Region ↕</button></th>
+              <th scope="col" class="num"><button type="button" class="table-sort" data-col="3" data-label="Official NEP">Official NEP ↕</button></th>
+              <th scope="col"><button type="button" class="table-sort" data-col="4" data-label="Page">Page ↕</button></th>
+            </tr>
+          </thead>
+          <tbody id="gapRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <h2>Project / allocation records</h2>
+    <p class="hint" id="matchSummary"></p>
+    <div class="toolbar">
+      <label>Search<input id="q" type="search" placeholder="Title, PAP, region, ID"></label>
+      <label>Outcome<select id="trace">
+        <option value="">All</option>
+        <option value="amount_same">Same amount</option>
+        <option value="candidate_increase">Candidate increase</option>
+        <option value="candidate_decrease">Candidate decrease</option>
+        <option value="transparency_gap">DPWH Transparency NEP gap</option>
+        <option value="outside_api">Outside DPWH Transparency NEP / FAP</option>
+        <option value="house_only_candidate">House only</option>
+        <option value="nep_only_candidate">Official NEP only</option>
+        <option value="fuzzy_candidate">Fuzzy</option>
+        <option value="ambiguous">Ambiguous</option>
+      </select></label>
+      <label>Scope<select id="zone"><option value="">Local + FAP</option><option value="local">Local</option><option value="fap">FAP</option></select></label>
+      <div class="pager">
+        <button id="prev" type="button">Prev</button>
+        <span id="count" aria-live="polite"></span>
+        <button id="next" type="button">Next</button>
+      </div>
+    </div>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Stage records">
+      <table id="projectTable" data-nosort="true">
+        <thead>
+          <tr>
+            <th scope="col"><button type="button" class="table-sort" data-col="0" data-label="Title">Title ↕</button></th>
+            <th scope="col"><button type="button" class="table-sort" data-col="1" data-label="Outcome">Outcome ↕</button></th>
+            <th scope="col" class="num"><button type="button" class="table-sort" data-col="2" data-label="DPWH Transparency NEP" data-amount="true" data-has-prior="false">DPWH Transparency NEP ↕</button></th>
+            <th scope="col" class="num"><button type="button" class="table-sort" data-col="3" data-label="Official NEP" data-amount="true" data-has-prior="true">Official NEP ↕</button></th>
+            <th scope="col" class="num"><button type="button" class="table-sort" data-col="4" data-label="House" data-amount="true" data-has-prior="true">House ↕</button></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Downloads</h2>
+    <div class="downloads">
+      <a href="../data/stage_trace_2027.json" download>Stage-trace JSON</a>
+      <a href="../data/source_comparison_2027.json" download>House ↔ NEP comparison</a>
+      <a href="../data/nep_2027_api_reconciliation.json" download>API reconciliation</a>
+    </div>
+    <details><summary>Build provenance</summary><pre id="manifest" style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;color:var(--muted)"></pre></details>
+  </section>
+</div>
+
+<div id="sortMenu" class="sort-menu" role="menu" aria-label="Sort amount column" hidden>
+  <div class="label">Sort this column by</div>
+  <button type="button" role="menuitemradio" data-mode="total">Total value</button>
+  <button type="button" role="menuitemradio" data-mode="delta">Delta (₱ vs previous)</button>
+  <button type="button" role="menuitemradio" data-mode="pct">% change vs previous</button>
+  <div class="note" id="sortMenuNote"></div>
+</div>
+
+<script id="traceData" type="application/json">__PAYLOAD__</script>
+<script src="budget_display.js"></script>
+<script>
+'use strict';
+const D = JSON.parse(document.getElementById('traceData').textContent);
+const S = D.summary;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const php = BudgetDisplay.amount;
+const hbLink = p => p
+  ? `<a href="../../HB_BUDGET/3%20-%20HB%2010858%20VOL%20IC.pdf#page=${Number(p)}" target="_blank" rel="noopener">p.${Number(p)}</a>`
+  : '—';
+
+const TRACE_LABELS = {
+  amount_same: 'Same amount',
+  candidate_increase: 'Candidate increase',
+  candidate_decrease: 'Candidate decrease',
+  transparency_gap_then_amount_same: 'Transparency gap · same',
+  transparency_gap_then_candidate_increase: 'Transparency gap · increase',
+  transparency_gap_then_candidate_decrease: 'Transparency gap · decrease',
+  outside_api_then_amount_same: 'FAP · same',
+  outside_api_then_candidate_increase: 'FAP · increase',
+  outside_api_then_candidate_decrease: 'FAP · decrease',
+  transparency_gap_nep_only: 'Transparency gap · NEP only',
+  outside_api_nep_only: 'FAP · NEP only',
+  house_only_candidate: 'House only',
+  nep_only_candidate: 'Official NEP only',
+  fuzzy_candidate: 'Fuzzy',
+  ambiguous: 'Ambiguous'
+};
+const AMOUNT_MODE_LABEL = {total: 'total', delta: 'Δ', pct: '%'};
+
+function pctChange(prior, current) {
+  if (prior == null || current == null) return null;
+  const base = Number(prior), next = Number(current);
+  if (!Number.isFinite(base) || !Number.isFinite(next) || base === 0) return null;
+  return ((next - base) / Math.abs(base)) * 100;
+}
+function formatPct(pct) {
+  if (pct == null || !Number.isFinite(pct)) return 'n/a';
+  if (Math.abs(pct) < 0.05) return '0%';
+  return (pct > 0 ? '+' : '') + pct.toFixed(1) + '%';
+}
+function deltaLine(deltaValue, prior, label) {
+  if (deltaValue == null || !Number.isFinite(Number(deltaValue))) return '';
+  const n = Number(deltaValue);
+  const cls = n > 0 ? 'up' : n < 0 ? 'down' : 'flat';
+  const pesos = n === 0 ? 'no change' : (n > 0 ? '+' : '') + php(n);
+  const pct = prior == null ? null : pctChange(prior, Number(prior) + n);
+  const pctText = n === 0 ? '0%' : formatPct(pct);
+  return `<span class="delta ${cls}">Δ ${esc(pesos)} <span class="sub">(${esc(pctText)})</span><span class="sub">${esc(label)}</span></span>`;
+}
+function moneyCell(value, prior = null, label = '') {
+  const hasDelta = prior != null && value != null && Number.isFinite(Number(prior)) && Number.isFinite(Number(value));
+  const deltaHtml = hasDelta ? deltaLine(Number(value) - Number(prior), Number(prior), label) : '';
+  if (value == null || !Number.isFinite(Number(value))) return `<td class="num"><span class="sub">—</span></td>`;
+  return `<td class="num"><span class="amt-main">${esc(php(value))}</span>${deltaHtml}</td>`;
+}
+function badgeClass(trace) {
+  if (trace.includes('increase')) return 'up';
+  if (trace.includes('decrease')) return 'down';
+  if (trace.includes('gap') || trace.includes('only') || trace === 'fuzzy_candidate' || trace === 'ambiguous') return 'warn';
+  return '';
+}
+function matchesTraceFilter(trace, selected) {
+  if (!selected) return true;
+  if (selected === 'transparency_gap') return trace.includes('transparency_gap');
+  if (selected === 'outside_api') return trace.includes('outside_api');
+  if (selected === 'amount_same') return trace.endsWith('amount_same');
+  if (selected === 'candidate_increase') return trace.endsWith('candidate_increase');
+  if (selected === 'candidate_decrease') return trace.endsWith('candidate_decrease');
+  if (selected === 'nep_only_candidate') return trace === 'nep_only_candidate' || trace.endsWith('nep_only');
+  return trace === selected;
+}
+
+$('built').textContent = `Built ${new Date(D.manifest.built_at).toLocaleString('en-GB', {
+  timeZone: 'Asia/Manila', day: 'numeric', month: 'short', year: 'numeric',
+  hour: '2-digit', minute: '2-digit', hour12: false
+})} Asia/Manila · candidate matching only`;
+
+const st = S.stages, t2o = S.transparency_to_official, o2h = S.official_to_house;
+$('pipeline').innerHTML = `
+  <div class="stage"><div class="kicker">1 · DPWH Transparency NEP</div><div class="amt">${esc(php(st.transparency_nep.php))}</div><div class="meta">${st.transparency_nep.projects.toLocaleString()} listed projects</div></div>
+  <div class="arrow" aria-hidden="true">→</div>
+  <div class="stage"><div class="kicker">2 · Official NEP</div><div class="amt">${esc(php(st.official_nep.operations_php))}</div><div class="meta">operations · full ${esc(php(st.official_nep.new_appropriations_php))}</div></div>
+  <div class="arrow" aria-hidden="true">→</div>
+  <div class="stage"><div class="kicker">3 · House</div><div class="amt">${esc(php(st.house.extracted_php))}</div><div class="meta">${st.house.allocations.toLocaleString()} rows · printed ${esc(php(st.house.printed_new_appropriations_php))}</div></div>`;
+
+$('stats').innerHTML = [
+  [`${t2o.nep_not_in_transparency_rows}`, 'Listing gaps', php(t2o.nep_not_in_transparency_php)],
+  [o2h.exact_amount_same.toLocaleString(), 'Exact pairs, same', ''],
+  [o2h.exact_candidate_increase_n.toLocaleString(), 'Candidate increases', '+' + php(o2h.exact_candidate_increase_php)],
+  [o2h.exact_candidate_decrease_n.toLocaleString(), 'Candidate decreases', php(o2h.exact_candidate_decrease_php)]
+].map(([n, l, s]) => `<div class="stat"><span>${esc(l)}</span><b>${esc(n)}</b><span>${esc(s)}</span></div>`).join('');
+
+D.paps.forEach(p => {
+  if (![...$('papProgram').options].some(o => o.value === p.program)) {
+    $('papProgram').add(new Option(p.program, p.program));
+  }
+});
+
+const papTable = $('papTable');
+const gapTable = $('gapTable');
+const projectTable = $('projectTable');
+const sortMenu = $('sortMenu');
+const sortState = {
+  pap: {column: null, direction: 1, amountMode: 'total'},
+  gap: {column: null, direction: 1, amountMode: 'total'},
+  project: {column: null, direction: 1, amountMode: 'total'}
+};
+let menuCtx = null;
+
+function amountMetric(current, prior, mode) {
+  if (current == null || !Number.isFinite(Number(current))) return null;
+  const cur = Number(current);
+  if (mode === 'total' || prior == null || !Number.isFinite(Number(prior))) return cur;
+  const base = Number(prior);
+  if (mode === 'delta') return cur - base;
+  return pctChange(base, cur);
+}
+function closeSortMenu() {
+  sortMenu.classList.remove('open');
+  sortMenu.hidden = true;
+  if (menuCtx?.button) menuCtx.button.setAttribute('aria-expanded', 'false');
+  menuCtx = null;
+}
+function openSortMenu(button, key, onSort) {
+  const column = Number(button.dataset.col);
+  const hasPrior = button.dataset.hasPrior === 'true';
+  menuCtx = {button, key, column, onSort, hasPrior};
+  button.setAttribute('aria-expanded', 'true');
+  [...sortMenu.querySelectorAll('[data-mode]')].forEach(opt => {
+    const mode = opt.dataset.mode;
+    const disabled = !hasPrior && mode !== 'total';
+    opt.disabled = disabled;
+    opt.setAttribute('aria-checked', String(sortState[key].column === column && sortState[key].amountMode === mode));
+    opt.style.opacity = disabled ? '.45' : '';
+  });
+  $('sortMenuNote').textContent = hasPrior
+    ? 'Same choice again toggles ascending / descending.'
+    : 'No previous stage here — only total value applies.';
+  const rect = button.getBoundingClientRect();
+  sortMenu.hidden = false;
+  sortMenu.classList.add('open');
+  const menuWidth = sortMenu.offsetWidth;
+  const left = Math.min(window.innerWidth - menuWidth - 8, Math.max(8, rect.right - menuWidth));
+  const top = Math.min(window.innerHeight - sortMenu.offsetHeight - 8, rect.bottom + 6);
+  sortMenu.style.left = `${left}px`;
+  sortMenu.style.top = `${top}px`;
+}
+function applyAmountSort(mode) {
+  if (!menuCtx) return;
+  const {key, column, onSort, hasPrior, button} = menuCtx;
+  if (!hasPrior && mode !== 'total') return;
+  const state = sortState[key];
+  if (state.column === column && state.amountMode === mode) state.direction *= -1;
+  else {
+    state.column = column;
+    state.amountMode = mode;
+    state.direction = 1;
+  }
+  updateSortHeaders(button.closest('table'), state);
+  closeSortMenu();
+  onSort();
+}
+function bindSort(table, key, onSort) {
+  table.tHead.querySelectorAll('button.table-sort').forEach(button => {
+    button.setAttribute('aria-haspopup', button.dataset.amount === 'true' ? 'menu' : 'false');
+    button.setAttribute('aria-expanded', 'false');
+    button.addEventListener('click', e => {
+      e.stopPropagation();
+      if (button.dataset.amount === 'true') {
+        if (menuCtx?.button === button && sortMenu.classList.contains('open')) {
+          closeSortMenu();
+          return;
+        }
+        openSortMenu(button, key, onSort);
+        return;
+      }
+      closeSortMenu();
+      const column = Number(button.dataset.col);
+      const state = sortState[key];
+      state.direction = state.column === column ? -state.direction : 1;
+      state.column = column;
+      updateSortHeaders(table, state);
+      onSort();
+    });
+  });
+  updateSortHeaders(table, sortState[key]);
+}
+function updateSortHeaders(table, state) {
+  table.tHead.querySelectorAll('button.table-sort').forEach(button => {
+    const column = Number(button.dataset.col);
+    const active = state.column === column;
+    const arrow = active ? (state.direction === 1 ? ' ▲' : ' ▼') : ' ↕';
+    const modeTag = active && button.dataset.amount === 'true'
+      ? ` · ${AMOUNT_MODE_LABEL[state.amountMode]}` : '';
+    button.textContent = button.dataset.label + modeTag + arrow;
+    button.setAttribute('aria-sort', !active ? 'none' : state.direction === 1 ? 'ascending' : 'descending');
+  });
+}
+function sortRows(rows, state, keyFn) {
+  if (state.column == null) return rows;
+  return rows.sort((a, b) => BudgetDisplay.compare(keyFn(a, state.column), keyFn(b, state.column), state.direction));
+}
+
+sortMenu.addEventListener('click', e => {
+  const opt = e.target.closest('[data-mode]');
+  if (!opt || opt.disabled) return;
+  applyAmountSort(opt.dataset.mode);
+});
+document.addEventListener('click', e => {
+  if (!sortMenu.contains(e.target) && !e.target.closest('button.table-sort[data-amount="true"]')) closeSortMenu();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSortMenu(); });
+window.addEventListener('scroll', closeSortMenu, true);
+window.addEventListener('resize', closeSortMenu);
+
+let papFiltered = D.paps.slice();
+function houseAmount(p) { return p.house_control_php ?? p.house_extract_php; }
+function papKey(p, column) {
+  const mode = sortState.pap.amountMode;
+  if (column === 0) return p.label;
+  if (column === 1) return amountMetric(p.api_php, null, mode);
+  if (column === 2) return amountMetric(p.nep_php, p.api_php, mode);
+  return amountMetric(houseAmount(p), p.nep_php, mode);
+}
+function renderPaps() {
+  const q = $('papSearch').value.toLowerCase().trim();
+  const prog = $('papProgram').value;
+  papFiltered = D.paps.filter(p =>
+    (!q || `${p.label} ${p.program}`.toLowerCase().includes(q)) &&
+    (!prog || p.program === prog)
+  );
+  sortRows(papFiltered, sortState.pap, papKey);
+  const modeNote = sortState.pap.column > 0 ? ` · ${AMOUNT_MODE_LABEL[sortState.pap.amountMode]}` : '';
+  $('papCount').textContent = `${papFiltered.length.toLocaleString()} / ${D.paps.length.toLocaleString()}${modeNote}`;
+  $('papRows').innerHTML = papFiltered.map(p => {
+    const house = houseAmount(p);
+    const houseNote = p.house_control_php != null && p.house_extract_php != null && p.house_control_php !== p.house_extract_php
+      ? `<span class="sub">extract ${esc(php(p.house_extract_php))}</span>` : '';
+    return `<tr>
+      <th scope="row" class="title">${esc(p.label)}<span class="sub">${esc(p.program)}</span></th>
+      ${moneyCell(p.api_php)}
+      ${moneyCell(p.nep_php, p.api_php, 'vs DPWH Transparency NEP')}
+      <td class="num"><span class="amt-main">${house == null ? '—' : esc(php(house))}</span>${
+        p.nep_php != null && house != null ? deltaLine(house - p.nep_php, p.nep_php, 'vs Official NEP') : ''
+      }${houseNote}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="4" class="empty">No PAPs match.</td></tr>';
+}
+['papSearch', 'papProgram'].forEach(id => $(id).addEventListener(id === 'papSearch' ? 'input' : 'change', () => {
+  sortState.pap.column = null;
+  sortState.pap.direction = 1;
+  updateSortHeaders(papTable, sortState.pap);
+  renderPaps();
+}));
+
+let gapRows = D.transparency_gaps.slice();
+function gapKey(g, column) {
+  return [g.title, g.pap3, g.region, g.amount_php, g.pdf_page][column];
+}
+function renderGaps() {
+  sortRows(gapRows, sortState.gap, gapKey);
+  $('gapRows').innerHTML = gapRows.map(g => `<tr>
+    <th scope="row" class="title">${esc(g.title)}</th>
+    <td>${esc(g.pap3)}</td>
+    <td>${esc(g.region)}</td>
+    <td class="num"><span class="amt-main">${esc(php(g.amount_php))}</span></td>
+    <td>p.${g.pdf_page}</td>
+  </tr>`).join('');
+}
+
+$('matchSummary').textContent = Object.entries(S.trace_counts)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 5)
+  .map(([k, n]) => `${n.toLocaleString()} ${TRACE_LABELS[k] || k}`)
+  .join(' · ');
+
+const records = D.projects.map((r, i) => ({
+  ...r,
+  index: i,
+  search: JSON.stringify([r.title, r.pap, r.program, r.region, r.api, r.nep, r.house]).toLowerCase()
+}));
+let page = 0, filtered = records.slice();
+const pageSize = 100;
+const money = side => side ? side.amount_php : null;
+
+function projectKey(r, column) {
+  const mode = sortState.project.amountMode;
+  const title = r.title || r.house?.title || r.nep?.title || '';
+  if (column === 0) return title;
+  if (column === 1) return TRACE_LABELS[r.trace] || r.trace;
+  if (column === 2) return amountMetric(money(r.api), null, mode);
+  if (column === 3) return amountMetric(money(r.nep), money(r.api), mode);
+  return amountMetric(money(r.house), money(r.nep), mode);
+}
+function render() {
+  sortRows(filtered, sortState.project, projectKey);
+  const start = page * pageSize;
+  const rows = filtered.slice(start, start + pageSize);
+  $('prev').disabled = page === 0;
+  $('next').disabled = start + pageSize >= filtered.length;
+  const modeNote = sortState.project.column >= 2 ? ` · ${AMOUNT_MODE_LABEL[sortState.project.amountMode]}` : '';
+  $('count').textContent = filtered.length
+    ? `${start + 1}–${start + rows.length} / ${filtered.length.toLocaleString()}${modeNote}`
+    : `0 / ${records.length.toLocaleString()}`;
+  $('rows').innerHTML = rows.map(r => {
+    const title = r.title || r.house?.title || r.nep?.title || '—';
+    return `<tr>
+      <th scope="row" class="title">${esc(title)}
+        <span class="sub">${esc(r.pap)} · ${esc(r.region)} · ${esc(r.zone)}</span>
+        <details class="details"><summary>IDs / pages</summary>
+          <div class="flow">
+            <div><strong>DPWH Transparency NEP</strong><br>${r.api ? esc(r.api.id) : esc(r.api_presence)}</div>
+            <div><strong>Official NEP</strong><br>${r.nep ? `${esc(r.nep.id)} · p.${esc(r.nep.pdf_page)}` : '—'}</div>
+            <div><strong>House</strong><br>${r.house ? `${esc(r.house.id)} · ${hbLink(r.house.pdf_page)}` : '—'}</div>
+          </div>
+        </details>
+      </th>
+      <td><span class="badge ${badgeClass(r.trace)}">${esc(TRACE_LABELS[r.trace] || r.trace)}</span></td>
+      ${moneyCell(money(r.api))}
+      ${moneyCell(money(r.nep), money(r.api), 'vs DPWH Transparency NEP')}
+      ${moneyCell(money(r.house), money(r.nep), 'vs Official NEP')}
+    </tr>`;
+  }).join('') || '<tr><td colspan="5" class="empty">No records match.</td></tr>';
+}
+function filter() {
+  const q = $('q').value.toLowerCase().trim();
+  filtered = records.filter(r =>
+    (!q || r.search.includes(q)) &&
+    matchesTraceFilter(r.trace, $('trace').value) &&
+    (!$('zone').value || r.zone === $('zone').value)
+  );
+  page = 0;
+  render();
+}
+['q', 'trace', 'zone'].forEach(id => $(id).addEventListener(id === 'q' ? 'input' : 'change', () => {
+  sortState.project.column = null;
+  sortState.project.direction = 1;
+  updateSortHeaders(projectTable, sortState.project);
+  filter();
+}));
+$('prev').addEventListener('click', () => { page--; render(); });
+$('next').addEventListener('click', () => { page++; render(); });
+$('manifest').textContent = JSON.stringify(D.manifest, null, 2);
+
+bindSort(papTable, 'pap', renderPaps);
+bindSort(gapTable, 'gap', () => {
+  gapRows = D.transparency_gaps.slice();
+  renderGaps();
+});
+bindSort(projectTable, 'project', () => { page = 0; render(); });
+renderPaps();
+renderGaps();
+filter();
+</script>
+</body></html>

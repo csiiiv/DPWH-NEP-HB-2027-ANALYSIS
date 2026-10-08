@@ -15,11 +15,15 @@ The complete **new-appropriations** tree totals **₱642,612,015,000**. All 2,55
 
 ## Source and construction
 
-Run `python analysis/builders/build_nep_tree.py` to rebuild. Inputs are the retained PAP tree, operating-unit tree (Personnel Services), and `NEP-2027-VOLUME-2B_OCR.pdf`. The tree records input SHA-256 hashes, page references, full OCR titles, original parents, and a repair ledger. No API or House rows determine this tree.
+Run `python analysis/builders/build_nep_tree.py` to rebuild. Inputs are the retained PAP tree, operating-unit tree (Personnel Services), page-specific `002.20-table-structure/pages/page-*.json` geometry, and `NEP-2027-VOLUME-2B_OCR.pdf`. See [rebuild requirements](../README.md). The tree records input SHA-256 hashes, page references, full OCR titles, original parents, and a repair ledger. No API or House rows determine this tree.
 
 The expense-class root is PS ₱14,922,297,000 + MOOE ₱24,685,746,000 + CO ₱603,003,972,000. The program view links disjoint branches across expense classes and is independently checked against printed section/program controls. Two PREXC groupings have no printed PS total and are explicitly derived. Project GOP/loan details partition project totals; the two overall financing reference rows are non-additive.
 
 There are 54 documented repairs, primarily hierarchy corrections. One merged Bentigan/Bertese row omitted a separately printed ₱5,000,000 Bertese project on PDF page 494; native text and the rendered page confirm the split. Four titles on page 286 and five merged funding labels were also restored. No balancing amount was invented.
+
+## Per-item expenditure context
+
+Every node retains its amount basis. The 307 printed operating-unit rows retain PS/MOOE/CO/Total captures; missing columns remain null. Three-amount continuation layouts mean PS, MOOE, and Total. The PS branch adds only PS; the full printed row total is context. PAP rows establish their own class allocation, not an all-class item total. See [every-item reassessment](../data/nep_2027_amount_column_reassessment.json).
 
 ## Recursive validation and OCR limits
 
@@ -29,10 +33,12 @@ Arithmetic balance does **not** prove every OCR amount is correct: equal and opp
 
 All 3191 non-direct agreements remain in `nep_2027_native_amount_review.json`. They are review candidates, **not confirmed amount errors**. Sample image checks on pages 205, 228, and 347 show correct amounts on adjacent rows despite shifted native coordinates. No native-audit discrepancy silently changes a budget amount.
 
-This is an arithmetically validated comparison baseline with explicit source-review limits. Complete the image review queue before claiming every amount is independently verified.
+This is an arithmetically validated source hierarchy with explicit evidence limits. The 3,191 row candidates plus two summary controls form 3,193 actionable source checks; two derived groups are informational. The earlier 237-candidate audit is superseded. Complete source-image review before certified comparisons.
 
 ## Artifacts
 
+- [Source verification and navigable review workspace](nep_source_verification.html).
+- [Current source-review workflow](../docs/source_hierarchy_verification.md).
 - [Interactive drilldown](nep_2027_tree.html): expense or program view, search, page references, printed/child totals.
 - [Canonical tree](../data/nep_2027_tree.json): hierarchy, validation status, provenance, native-audit status.
 - [Rollup checks and repairs](../data/nep_2027_tree_validation.json).

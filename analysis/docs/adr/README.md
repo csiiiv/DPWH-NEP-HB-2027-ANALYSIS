@@ -13,6 +13,9 @@ alternatives were rejected.
 | [0005](0005-analysis-workbench-layout.md) | Split analysis/ into builders, viewers, data, docs, tests, archive | Accepted |
 | [0006](0006-github-pages-packaging.md) | Package viewers + data flattened under `_site/analysis/` | Accepted |
 | [0007](0007-verify-source-hierarchies-before-comparison.md) | Verify independent source hierarchies before comparisons | Accepted |
+| [0008](0008-per-item-amount-columns-and-evidence.md) | Preserve per-item columns and page-specific source evidence | Accepted |
+| [0009](0009-navigable-source-review-workspace.md) | Navigate source paths within a shared review workspace | Accepted |
+| [0010](0010-archive-superseded-analysis-work.md) | Archive superseded and exploratory analysis by role | Accepted |
 
 ## How to add an ADR
 

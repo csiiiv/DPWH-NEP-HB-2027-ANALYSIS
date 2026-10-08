@@ -22,7 +22,7 @@ branch comes from the printed proposal or from an incomplete API.
 
 1. Build the tree from the BetterGov API and fill gaps from OCR
 2. Prefer the ajamontesa compilation workbook as the hierarchy source
-3. Source-only builder: retained PAP + operating-unit OCR trees + PDF
+3. Source-only builder: retained PAP + operating-unit OCR trees + PDF; page-specific table geometry added on 9 October
 
 ## Decision Outcome
 
@@ -38,11 +38,12 @@ API reconciliation remain a **separate coverage baseline**
 
 * Good: ₱642.612015B new-appropriations baseline with 2,552 balanced rollups
 * Good: API gap analysis cannot redefine the executive proposal
-* Bad: 237 native-text/coordinate review candidates remain open
+* Bad: 3,193 actionable source checks remain after the 9 October per-item reassessment; the original 237-candidate audit is superseded
 * Bad: rebuild requires the external `paddle_pdf_ocr_v2` source directory
 
 ## More Information
 
 * [../../viewers/nep_2027_tree.md](../../viewers/nep_2027_tree.md)
 * [../nep_2027_api_reconciliation.md](../nep_2027_api_reconciliation.md)
+* [0008: Per-item expenditure columns and source-row evidence](0008-per-item-amount-columns-and-evidence.md)
 * ADR-0004

@@ -1,6 +1,6 @@
 # Native-layer HB extraction — full processing results
 
-Follow-up to `hb_native_textlayer_assessment.md`. Question: can we fully process the HB PDFs from the native text layer? **DPWH (the target department): yes, completely — 647/647 structural balance checks pass.**
+Follow-up to `hb_native_textlayer_assessment.md`. Question: can we fully process the HB PDFs from the native text layer? **DPWH Native I-B controls: 647/647 raw structural balance checks pass.** This completes the retained I-B control outline, at office granularity for local allocations. Named local projects still require Native I-C extraction.
 
 **8 October 2026 follow-up:** the raw outline is now rebuilt into an additive
 [Native I-B rollup JSON](../data/hb_dpwh_native_rollup.json).
@@ -9,6 +9,7 @@ all four expenditure columns, with **zero unexplained amount rows**. The
 1,746 retained leaves sum to **₱654,102,015,000**, including GAS and S2O.
 See [progressive rollup checks and gap repairs](hb_native_ib_rollup_checks.md)
 and the [machine audit](../data/hb_native_ib_rollup_audit.json).
+The [verification viewer](../viewers/hb_native_verification.html) exposes source pages, progressive sums, and navigable paths. See [current source verification](source_hierarchy_verification.md) for the remaining scope before comparisons.
 
 ## Validator design (`scripts/hb_native_extract3.py`)
 

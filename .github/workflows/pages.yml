@@ -40,6 +40,10 @@ jobs:
         run: python3 -m unittest discover -s analysis/tests -p test_source_verification.py -v
       - name: Check source filters and NEP API project drilldown
         run: node --test analysis/tests/test_source_verification_viewer.cjs
+      - name: Check stage trace and README navigation
+        run: |
+          python3 -m unittest discover -s analysis/tests -p test_stage_trace.py -v
+          python3 -m unittest discover -s analysis/tests -p test_static_pages.py -v
       - name: Prepare static viewers
         run: python3 scripts/build_pages.py
       - name: Configure Pages

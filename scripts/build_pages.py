@@ -16,8 +16,7 @@ VIEWERS = ANALYSIS / 'viewers'
 REPO = 'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/'
 VIEWER_NAMES = [
     'hb_native_verification.html', 'nep_source_verification.html', 'dpwh_nep_api_verification.html',
-    'nep_2027_tree.html', 'source_comparison_2027.html', 'crosscheck_2027.html',
-    'taxonomy_comparison.html', 'hb_2027_tree.html', 'hb_2027_source_tree.html',
+    'nep_2027_tree.html', 'source_comparison_2027.html', 'stage_trace_2027.html',
 ]
 DOWNLOADS = [
     'source_verification_overview.json', 'source_verification_manifest.json',
@@ -28,23 +27,27 @@ DOWNLOADS = [
     'nep_2027_native_amount_review.json', 'nep_2027_native_amount_audit.json',
     'nep_2027_budget_units.json', 'nep_2027_api_reconciliation.json',
     'hb_dpwh_leaves_corrected_v5.json', 'hb_known_defect_repairs.json',
-    'source_comparison_2027.json', 'current_pap_controls.json', 'comparison_manifest.json',
-    'hb_2027_tree.json', 'hb_2027_tree_validation.json',
-    'hb_2027_source_tree.json', 'hb_2027_source_tree_validation.json',
+    'source_comparison_2027.json', 'stage_trace_2027.json', 'current_pap_controls.json',
+    'comparison_manifest.json',
 ]
-SCRIPTS = ['nep_tree_viewer.js', 'hb_tree_viewer.js', 'hb_source_tree_viewer.js', 'budget_display.js', 'source_verification.js', 'source_verification.css']
-# Markdown reports linked from viewers (GitHub-rendered).
-MD_LINKS = {
-    'nep_2027_tree.md': 'viewers/nep_2027_tree.md',
-    'hb_2027_tree.md': 'viewers/hb_2027_tree.md',
-    'hb_2027_source_tree.md': 'viewers/hb_2027_source_tree.md',
-    'crosscheck_2027.md': 'viewers/crosscheck_2027.md',
-    'FY2027_work_summary.md': 'FY2027_work_summary.md',
-    'hb_known_defect_repairs.md': 'docs/hb_known_defect_repairs.md',
-}
+SCRIPTS = ['nep_tree_viewer.js', 'budget_display.js', 'source_verification.js', 'source_verification.css']
+def hosted_report_links(text, source):
+    """Open repository Markdown as rendered GitHub documents at hosted URLs."""
+    def report_link(match):
+        url = urlsplit(match[1])
+        if url.scheme or url.netloc:
+            return match[0]
+        target = (source.parent / unquote(url.path)).resolve()
+        rel = target.relative_to(ROOT).as_posix()
+        if not target.is_file():
+            raise ValueError(f'Missing Markdown reference: {source}: {url.path}')
+        fragment = '#' + url.fragment if url.fragment else ''
+        return 'href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/' + rel + fragment + '"'
+    return re.sub(r'href="([^"?]+\.md(?:#[^"?]*)?)"', report_link, text)
 
 
 def hosted_viewer(name, text):
+    text = hosted_report_links(text, VIEWERS / name)
     if name in ('hb_native_verification.html', 'nep_source_verification.html', 'dpwh_nep_api_verification.html'):
         text = text.replace('<head>', '<head><script>window.SITE_CONFIG={hosted:true,housePdf:"../HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf",reportBase:"' + REPO + 'docs/"};</script>', 1)
     if name == 'nep_2027_tree.html':
@@ -54,23 +57,10 @@ def hosted_viewer(name, text):
     # Local regroup uses ../data and ../docs; packaged site flattens JSON beside viewers.
     text = text.replace('href="../data/', 'href="')
     text = text.replace('href="../docs/', 'href="')
-    text = text.replace('href="../FY2027_work_summary.md"', f'href="{REPO}FY2027_work_summary.md"')
     # Viewers use ../../HB_BUDGET locally; packaged site has HB_BUDGET beside analysis/.
     text = text.replace('href="../../HB_BUDGET/', 'href="../HB_BUDGET/')
     text = text.replace("href='../../HB_BUDGET/", "href='../HB_BUDGET/")
 
-    def md_href(match):
-        target = match.group(1)
-        rel = MD_LINKS.get(target, f'docs/{target}')
-        return f'href="{REPO}{rel}"'
-
-    text = re.sub(r'href="([A-Za-z0-9_]+\.md)"', md_href, text)
-    if name in ('crosscheck_2027.html', 'taxonomy_comparison.html') and 'data-historical="true"' not in text:
-        banner = ('<nav style="padding:12px 20px;background:#fff1d9;color:#203147;font:14px/1.5 system-ui">'
-                  '<a href="../index.html">All dashboards</a> · Historical artifact: older incomplete House/API extracts; '
-                  'budget upper-bound and insertion/removal labels below are superseded. '
-                  '<a href="source_comparison_2027.html">Open the current House v5 / NEP source comparison</a></nav>')
-        text = re.sub(r'(<body[^>]*>)', lambda m: m[1] + banner, text, count=1)
     return text
 
 
@@ -90,6 +80,10 @@ def validate_site():
             raise ValueError(f'Unrendered template: {file}')
         parser = LinkParser()
         parser.feed(text)
+        readmes = {'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/README.md',
+                   'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/README.md'}
+        if not readmes.issubset(set(parser.links)):
+            raise ValueError(f'Missing repository/workbench README links: {file}')
         for link in parser.links:
             url = urlsplit(link)
             if url.scheme or url.netloc or not url.path:
@@ -109,7 +103,7 @@ def main():
             path.unlink()
     target = OUTPUT / 'analysis'
     target.mkdir()
-    index = (ROOT / 'site/index.html').read_text()
+    index = hosted_report_links((ROOT / 'site/index.html').read_text(), ROOT / 'site/index.html')
     # Site template still uses ../analysis/<viewer>.html — rewrite to packaged layout.
     index = index.replace('href="../analysis/', 'href="analysis/').replace('src="../analysis/', 'src="analysis/')
     # After regroup, live viewers sit under analysis/viewers/; package flattens them under analysis/.

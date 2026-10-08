@@ -30,3 +30,10 @@ python3 analysis/builders/build_source_verification.py
 The [API hierarchy](../analysis/data/dpwh_transparency_nep_tree.json) follows `pap1 → pap2 → pap3 → region → office → project code`. Its [audit](../analysis/data/dpwh_transparency_nep_tree_validation.json) retains 2,662 direct/recursive rollup checks, original listing page summaries, and detail-file checks. All 23 listing pages agree with the combined snapshot; all 11,372 detail responses match the listing identity, hierarchy fields, and amount. The retained details index 5,155 documents. The progress counter is a tracking snapshot, not the completeness audit.
 
 Use the [verification viewer](../analysis/viewers/dpwh_nep_api_verification.html) to inspect this source independently. Matching the retained API summary certifies the snapshot arithmetic; complete coverage of the printed NEP budget still needs separate review.
+
+After changing the API tree, run `python3 analysis/builders/build_current_pages.py`,
+`python3 scripts/validate_current_pages.py`, and `python3 scripts/build_pages.py`
+to refresh dependent embedded pages and manifests. Rebuilding from only the
+committed combined listing cannot reproduce the local listing/detail audit;
+retain those raw files to repeat its coverage checks. The listing has no
+PS/MOOE/CO split. See [current source-verification workflow](../analysis/docs/source_hierarchy_verification.md).

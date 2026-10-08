@@ -7,12 +7,12 @@ const sandbox = {window: {}, document: {readyState: 'loading', addEventListener(
 vm.runInNewContext(fs.readFileSync(path.join(__dirname, '..', 'viewers', 'budget_display.js'), 'utf8'), sandbox);
 const display = sandbox.window.BudgetDisplay;
 
-test('budget amounts use three decimals and B/M/T scales, with T meaning thousands', () => {
+test('budget amounts use three decimals and B/M/K scales, with K meaning thousands', () => {
   assert.equal(display.amount(642612015000), '₱642.612B');
   assert.equal(display.amount(123456789), '₱123.457M');
-  assert.equal(display.amount(9876), '₱9.876T');
-  assert.equal(display.amount(1), '₱0.001T');
-  assert.equal(display.amount(0), '₱0.000T');
+  assert.equal(display.amount(9876), '₱9.876K');
+  assert.equal(display.amount(1), '₱0.001K');
+  assert.equal(display.amount(0), '₱0.000K');
   assert.equal(display.amount(null), '—');
 });
 

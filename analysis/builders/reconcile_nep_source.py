@@ -9,7 +9,7 @@ not proof of a project's identity. Source-title presence is not a 1:1 HB match.
 import sys
 from pathlib import Path as _Path
 sys.path[:0] = [str(_Path(__file__).resolve().parents[1]), str(_Path(__file__).resolve().parents[1] / 'builders')]
-from paths import ANALYSIS, REPO, DATA, VIEWERS, DOCS, ARCHIVE, EVIDENCE
+from paths import ANALYSIS, REPO, DATA, VIEWERS, DOCS, ARCHIVE, EVIDENCE, ARCHIVE_DATA
 
 import argparse
 import copy
@@ -58,7 +58,11 @@ def read(path):
 
 
 def write(name, data):
-    (ROOT / 'analysis' / name).write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+    (DATA / name).write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+
+
+def write_historical(name, obj):
+    (ARCHIVE_DATA / name).write_text(json.dumps(obj, ensure_ascii=False, indent=2) + '\n')
 
 
 def extract(base, api):
@@ -250,7 +254,7 @@ def main():
     for r in rows:
         by_title[(r['region'], key(r['title']))].append(r)
         global_title[key(r['title'])].append(r)
-    old = read(DATA / 'crosscheck_2027_lineitems.json')  # kept outside archive: active input
+    old = read(ARCHIVE_DATA / 'crosscheck_2027_lineitems.json')  # archived matcher input for historical source-presence reassessment
     reassessed = []
     headings = {key(c['pap3']) for c in pap_checks}
     headings.update(key(r['title']) for r in rows if r['allocation_kind'] != 'project')
@@ -301,7 +305,7 @@ def main():
                           source_office=local[i]['office'], api_office=api[p['api_index']]['office'],
                           amount_php=local[i]['amount_php'], **p) for i,p in pairs.items()],
           unpaired_source=missing, unpaired_api=unmatched_api))
-    write('nep_2027_hb_only_reassessment.json', {'method': 'Exact normalized title within region; source presence only, not a 1:1 HB comparison.',
+    write_historical('nep_2027_hb_only_reassessment.json', {'method': 'Exact normalized title within region; source presence only, not a 1:1 HB comparison.',
                                              'summary': summary['hb_only_reassessment'], 'items': reassessed})
     report = ['# FY2027 NEP–API reconciliation and House-only reassessment', '',
               'Date: October 8, 2026. Scope: DPWH FY2027 only. PDF pages are one-based file pages.', '',

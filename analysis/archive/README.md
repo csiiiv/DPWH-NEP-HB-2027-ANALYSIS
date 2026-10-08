@@ -1,56 +1,73 @@
-# analysis/archive — superseded extracts and matcher outputs
+# analysis/archive — historical and exploratory work
 
-Historical artifacts retained for the repair lineage and audit trail.
-**Nothing here is a current dataset.**
+Archived on **9 October 2026**. This tree preserves superseded scripts, viewers,
+reports, outputs, exploratory external candidates, and historical evidence.
+Start current work from [analysis/README.md](../README.md) and
+[source verification](../docs/source_hierarchy_verification.md).
 
-| Current | Location |
+[manifest.json](manifest.json) lists **104 relocated files**, original paths,
+pre-move SHA-256 hashes, and reasons. Of the 104 moves, 102 are versioned and
+two `.pkl` caches remain ignored local files (`local_only: true` in the manifest);
+a fresh clone does not include those caches. Files were moved rather than deleted.
+JSON, image, and cache bytes were preserved. Source/report links and Python
+imports were adapted for the new layout; historical JSON provenance keeps its
+original paths, which can be resolved through the manifest.
+
+## What is here
+
+| Folder | Contents and status |
 |---|---|
-| Folder map + baselines | [../README.md](../README.md) |
-| Narrative | [../FY2027_work_summary.md](../FY2027_work_summary.md) |
-| House control baseline | [`../data/hb_dpwh_native_tree.json`](../data/hb_dpwh_native_tree.json) |
-| House project-title candidate | [`../data/hb_dpwh_leaves_corrected_v5.json`](../data/hb_dpwh_leaves_corrected_v5.json) |
+| [builders/](builders) | OCR parsers, v1–v4 repairs/audits, old API matchers, taxonomy, inventory and Ghostscript experiments; also generators for archived House views |
+| [data/](data) | v0–v4b allocation lineage, old matcher results, OCR hierarchy and House view outputs, exploratory reassessments, and local page-map caches |
+| [docs/](docs) | [Historical work log](docs/FY2027_work_summary.md), text-layer audits, [parser report](docs/hierarchy_report.md), [dataset inventory](docs/hb_json_usability_audit.md), and external candidate assessments |
+| [viewers/](viewers) | [OCR-era House rollup](viewers/hb_2027_tree.html), [reconstructed House tree](viewers/hb_2027_source_tree.html), [earlier crosscheck](viewers/crosscheck_2027.html), and [title taxonomy](viewers/taxonomy_comparison.html), with scripts/templates |
+| [tests/](tests) | Regression tests for the two archived House trees and their viewers |
+| [evidence/](evidence) | Old sampled PDF-row crops; current NEP review crops remain in [current data](../data/source_review_evidence) |
+| [joebert_data/](joebert_data/README.md) | Third-party Ghostscript project candidates; not certified House leaves |
 
----
+The earlier insertion/removal labels and unmatched pools retain their historical
+meaning. They do not establish policy changes. Archived House trees use v5
+project candidates with four unresolved PAP extraction gaps; current additive
+controls are [Native I-B](../data/hb_dpwh_native_rollup.json).
 
-## House leaf-dataset lineage (all superseded by v5)
+## Dependencies retained deliberately
 
-| File | Generation | What it was |
-|---|---|---|
-| `hb_dpwh_items.json` | v0 raw | First flat parse of VOL I-C OCR markdown; mixed headers/rollups (₱593.4B, 15,066 rows) |
-| `hb_dpwh_leaves_validated.json` | v0 strict | Strict-hierarchy flat leaves with validation flags (15,487 rows, pre-repair amounts ₱538.8B) |
-| `hb_dpwh_leaves_corrected.json` | v1 | After PDF-text-layer spot-check repairs (₱528.25B) |
-| `hb_dpwh_leaves_corrected_v2.json` | v2 | Span-level, heading-aware re-audit (₱522.30B) |
-| `hb_dpwh_leaves_corrected_v3.json` | v3 | UNRESOLVED second pass — amount-repair/provenance baseline (₱520.65B) |
-| `hb_dpwh_leaves_corrected_v4.json` | v4 | v3 + headingless-tag repair (attribution only) |
-| `hb_dpwh_leaves_corrected_v4b.json` | v4b | v4 + stale-PAP re-attribution (12,820 leaves relabeled) — best pre-native candidate |
+Archiving does not mean every file is unused by every rebuild:
 
-Current candidate: `../data/hb_dpwh_leaves_corrected_v5.json` (native-controls repair).
-Control baseline: `../data/hb_dpwh_native_tree.json` (native VOL I-B text layer).
-Both volumes print balancing controls; the v3→v5 repair chain itself is superseded by the native extraction method for **controls**.
+- The active `repair_hb_known_defects.py` explicitly imports archived
+  `audit_textlayer_v2` and `crosscheck_lineitems` helpers. It reads archived v4b
+  leaves and v3 text-layer audit to reproduce the retained v5 candidate.
+- The active `reconcile_nep_source.py` reads archived line-item results only for
+  its historical House-only reassessment and writes that exploratory output here.
+  Its current NEP source projects and API reconciliation remain under `../data/`.
+- The archived inventory builder can regenerate the retained
+  `../data/hb_json_usability_audit.json`, which supplies the current candidate
+  comparison and v5 repairs. This is a historical control input, not current
+  verification of all rows.
+- Archived House builders read current v5/control inputs alongside the archived
+  OCR hierarchy. `retained_data_path()` resolves that mixed input set; output
+  tree, report, and viewer locations stay in the archive.
 
----
+`reference_official_compilation.json`, v5, source projects/reconciliation, and
+current candidate/stage-trace artifacts remain outside the archive because they
+are still inputs or outputs of retained workflows. The recently added stage
+trace remains active; its matches are provisional.
 
-## Strict-hierarchy parser outputs (diagnostic)
+## Run historical checks
 
-- `hb_block_tree.json`, `hb_tree_validation.json` — per-block audit of the OCR-era stack parser; pre-repair amounts, damaged controls.
-- `hb_dpwh_pap_hierarchy.json` is **not** archived: it remains an active input at `../data/hb_dpwh_pap_hierarchy.json` (printed office/region subtotal attachment in `../builders/build_hb_source_tree.py`).
-- `page_family_map.json` — PDF page → governing bold PAP heading (OCR-era).
+From the repository root:
 
----
+```sh
+python -m unittest discover -s analysis/archive/tests -p 'test_*.py' -v
+node --test analysis/archive/tests/test_hb_tree_viewer.cjs \
+              analysis/archive/tests/test_hb_source_tree_viewer.cjs
 
-## Text-layer audits (v1–v3)
+# Optional: regenerate these archived views from their retained dependencies.
+python analysis/archive/builders/build_hb_tree.py
+python analysis/archive/builders/build_hb_source_tree.py
+```
 
-`textlayer_audit{,_v2,_v3}.{json,md}` — progressive leaf-by-leaf audits of the OCR markdown against the PDF native text layer; source of the ₱18.16B phantom-inflation repair set. `textlayer_audit_v3.json` remains a re-run input of `../builders/repair_hb_known_defects.py`.
-
----
-
-## Early crosscheck era (API matcher, v0–v4b scope)
-
-- `crosscheck_results.json`, `crosscheck_summary.json`, `report.md`, `report_highlights.json` — first HB-vs-API greedy matcher + report. Insertion/removal labels from this era are superseded.
-- `crosscheck_2027_rainwater.json` — single-PAP method validation.
-- `crosscheck_2027_v4b_validation.json` — v4b leaf sums vs printed vs API.
-- `taxonomy_comparison_data.json` — title-classification data (v3 scope).
-- `verify_report.md`, `pdf_verification.json` — first 330-row PDF spot-check.
-- `amount_diff_batch.json`, `evidence_sample.json`, `family_blocks.json` — one-off diagnostic batches.
-
-Still live under `../data/` (not archived): `crosscheck_2027.json`, `crosscheck_2027_lineitems.json`, `crosscheck_2027_pap_drilldown.json` — still read by builders when regenerating reconciliations. Historical dashboards that consume them live under `../viewers/`.
+Some archived generators need PyMuPDF, RapidFuzz, source PDFs/OCR markdown, or
+ignored local page-mapping caches. They are historical tools, not part of Pages
+CI. The current site packages six retained viewers and links to this repository
+archive; old viewer URLs are no longer published as current pages.

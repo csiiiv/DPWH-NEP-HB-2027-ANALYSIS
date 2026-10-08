@@ -1,5 +1,7 @@
 # Native VOL I-B tree vs v5 / VOL I-C — three-way reconciliation
 
+**Current context — 9 October 2026:** this report retains its original extraction/crosscheck scope. The additive House control baseline is [Native I-B](../data/hb_dpwh_native_rollup.json); named local projects still require Native I-C. See [independent source verification](source_hierarchy_verification.md) before using these candidates in comparisons.
+
 **Date:** 8 October 2026 · **Inputs:** `../data/hb_dpwh_native_tree.json`
 (native text-layer parse of VOL I-B pp 13–110, `scripts/hb_native_extract3.py`),
 House v5 (`hb_dpwh_leaves_corrected_v5.json`), printed I-C controls

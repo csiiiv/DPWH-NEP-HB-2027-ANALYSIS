@@ -12,8 +12,13 @@ DATA = ANALYSIS / 'data'
 DOCS = ANALYSIS / 'docs'
 TESTS = ANALYSIS / 'tests'
 ARCHIVE = ANALYSIS / 'archive'
-EVIDENCE = ANALYSIS / 'evidence'
-JOEBERT = ANALYSIS / 'joebert_data'
+ARCHIVE_DATA = ARCHIVE / 'data'
+ARCHIVE_DOCS = ARCHIVE / 'docs'
+ARCHIVE_VIEWERS = ARCHIVE / 'viewers'
+ARCHIVE_BUILDERS = ARCHIVE / 'builders'
+ARCHIVE_TESTS = ARCHIVE / 'tests'
+EVIDENCE = ARCHIVE / 'evidence'
+JOEBERT = ARCHIVE / 'joebert_data'
 
 # Builders import each other by bare module name; tests do the same.
 for _p in (str(ANALYSIS), str(BUILDERS)):
@@ -35,3 +40,10 @@ def docs_path(*parts: str) -> Path:
 
 def archive_path(*parts: str) -> Path:
     return ARCHIVE.joinpath(*parts)
+
+# Archived helper imports are explicit in active repair code; retired builders
+# are not added to the active import path.
+def retained_data_path(name: str) -> Path:
+    """Resolve retained current inputs or a historical archive dependency."""
+    current = DATA / name
+    return current if current.exists() else ARCHIVE_DATA / name

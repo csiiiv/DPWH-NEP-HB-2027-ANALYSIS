@@ -1,5 +1,7 @@
 # House known-defect repairs — v5
 
+**Current context — 9 October 2026:** this report retains its original extraction/crosscheck scope. The additive House control baseline is [Native I-B](../data/hb_dpwh_native_rollup.json); named local projects still require Native I-C. See [independent source verification](source_hierarchy_verification.md) before using these candidates in comparisons.
+
 Original v4b and historical artifacts are preserved. v5 is a repaired candidate, not a complete certified budget.
 
 ## Results

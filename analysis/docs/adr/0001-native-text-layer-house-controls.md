@@ -30,7 +30,10 @@ be established?
 Chosen option: **3 — native text layer**, implemented for Volume I-B in
 `scripts/hb_native_extract3.py` → `analysis/data/hb_dpwh_native_tree.json`.
 
-After banner/summary dedup, 647/647 internal checks pass and zones reproduce
+The retained raw outline passes 647/647 structural checks. The subsequent
+additive `analysis/data/hb_dpwh_native_rollup.json` passes 660/660 immediate-child
+and recursive checks across PS/MOOE/CO/Total; see [rollup audit](../hb_native_ib_rollup_checks.md).
+After banner/summary dedup, the additive checks pass and zones reproduce
 GAS/S2O + local PAPs + FAP = ₱654.102015B exactly. Three-way reconciliation
 shows I-B and I-C agree on 35/35 shared PAP controls; the entire v5 gap is
 OCR-era extraction damage on four Convergence sections.
@@ -45,6 +48,6 @@ OCR-era extraction damage on four Convergence sections.
 ## More Information
 
 * [../hb_native_v5_reconciliation.md](../hb_native_v5_reconciliation.md)
-* [../hb_native_textlayer_assessment.md](../hb_native_textlayer_assessment.md)
+* [../hb_native_textlayer_assessment.md](../../archive/docs/hb_native_textlayer_assessment.md)
 * [../hb_native_full_processing.md](../hb_native_full_processing.md)
 * ADR-0002 (control vs project-title separation)

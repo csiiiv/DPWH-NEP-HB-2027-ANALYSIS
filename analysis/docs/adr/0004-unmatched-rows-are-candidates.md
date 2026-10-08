@@ -45,5 +45,5 @@ or candidate-only.
 ## More Information
 
 * [../../viewers/source_comparison_2027.html](../../viewers/source_comparison_2027.html)
-* [../joebert_native_crosscheck.md](../joebert_native_crosscheck.md)
-* [../../viewers/crosscheck_2027.md](../../viewers/crosscheck_2027.md) (historical)
+* [../joebert_native_crosscheck.md](../../archive/docs/joebert_native_crosscheck.md)
+* [../../viewers/crosscheck_2027.md](../../archive/viewers/crosscheck_2027.md) (historical)

@@ -39,3 +39,10 @@ BetterGov-hosted API endpoint in provenance.
   remain explicit prerequisites for certified comparisons.
 
 See [source verification methods](../source_hierarchy_verification.md).
+
+## Implementation update — 9 October 2026
+
+[ADR-0008](0008-per-item-amount-columns-and-evidence.md) documents per-item
+expense columns and the revised evidence audit. [ADR-0009](0009-navigable-source-review-workspace.md)
+documents navigable source paths and the responsive review workspace.
+All three retained sources still have `comparison_ready: false`.

@@ -1,4 +1,4 @@
-/* Shared budget formatting and accessible table sorting. T means thousands. */
+/* Shared budget formatting and accessible table sorting. K means thousands. */
 (function () {
   'use strict';
   const states = new WeakMap();
@@ -6,7 +6,7 @@
   function amount(value, currency = true) {
     if (value == null || !Number.isFinite(Number(value))) return '—';
     const n = Number(value), a = Math.abs(n);
-    const [scale, suffix] = a >= 1e9 ? [1e9, 'B'] : a >= 1e6 ? [1e6, 'M'] : [1e3, 'T'];
+    const [scale, suffix] = a >= 1e9 ? [1e9, 'B'] : a >= 1e6 ? [1e6, 'M'] : [1e3, 'K'];
     return (n < 0 ? '−' : '') + (currency ? '₱' : '') + (a / scale).toFixed(3) + suffix;
   }
   function deltaClass(value) {
@@ -32,8 +32,8 @@
     }
     const text = cell.innerText.trim();
     // Fallback for historical text cells. Current money cells store exact pesos.
-    const match = text.replace(/,/g, '').replace(/−/g, '-').match(/^[+≈]?\s*([+-]?)\s*₱?\s*(\d+(?:\.\d+)?)([BMT])?(?:\s|$)/);
-    if (match) return (match[1] === '-' ? -1 : 1) * Number(match[2]) * ({B: 1e9, M: 1e6, T: 1e3}[match[3]] || 1);
+    const match = text.replace(/,/g, '').replace(/−/g, '-').match(/^[+≈]?\s*([+-]?)\s*₱?\s*(\d+(?:\.\d+)?)([BMKT])?(?:\s|$)/);
+    if (match) return (match[1] === '-' ? -1 : 1) * Number(match[2]) * ({B: 1e9, M: 1e6, K: 1e3, T: 1e3}[match[3]] || 1);
     return /^(—|Not mapped|Not paired|See suggestions)$/.test(text) ? null : text;
   }
   function groups(table) {
@@ -70,6 +70,7 @@
   }
   function enhanceTables(root = document) {
     for (const table of root.querySelectorAll('table')) {
+      if (table.dataset.nosort === 'true' || table.closest('[data-nosort="true"]')) continue;
       if (!table.tBodies.length) continue;
       if (!table.tHead && ['gt', 'sec'].includes(table.id)) {
         const head = table.createTHead(), row = head.insertRow();

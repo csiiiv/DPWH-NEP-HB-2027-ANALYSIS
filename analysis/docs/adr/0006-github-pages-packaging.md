@@ -47,3 +47,19 @@ embedded data and accounting before publish.
 * `scripts/validate_current_pages.py`
 * `.github/workflows/pages.yml`
 * ADR-0005
+
+## Implementation update — 9 October 2026
+
+The package contains the verification and reference viewers, shared verification JavaScript/CSS, JSON
+artifacts, House PDFs, the combined API snapshot, and 3,193 actionable NEP crops.
+The external NEP PDF is not packaged. Report links open rendered GitHub Markdown.
+Source and presentation manifests reject stale artifacts before packaging.
+CI checks committed artifacts without external OCR inputs, raw API downloads,
+or PDF extraction. Main pushes on configured paths and manual dispatch publish;
+pull requests validate without deploying. See [packaging and review UX](../pages_update_assessment.md).
+
+## Archive packaging update — 9 October 2026
+
+The retained package now serves six viewers. Superseded House/crosscheck/taxonomy
+pages and their downloads are repository archive material rather than current
+hosted pages; see [ADR-0010](0010-archive-superseded-analysis-work.md).

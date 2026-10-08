@@ -72,3 +72,11 @@ python3 -m unittest discover -s scripts/tests -v
 ```
 
 The first command rebuilds both artifacts. `--check` reruns source extraction and arithmetic and checks that the committed artifacts exactly match the deterministic output without writing them.
+
+## Inspect the hierarchy — 9 October 2026
+
+The [Native I-B verification viewer](../viewers/hb_native_verification.html)
+shows direct, recursive, and progressive sums with PS/MOOE/CO/Total evidence.
+Click a parent path to navigate to that entity or a PDF reference to inspect the
+retained page. This certifies the retained additive controls at their stated
+grain; Native I-C named-project extraction remains open. See [source verification](source_hierarchy_verification.md).

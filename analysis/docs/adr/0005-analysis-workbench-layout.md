@@ -30,8 +30,8 @@ Chosen option: **3 — role folders**.
 `analysis/paths.py` exposes `ANALYSIS`, `BUILDERS`, `VIEWERS`, `DATA`, `DOCS`,
 `TESTS`, `ARCHIVE` and prepends `analysis/` + `builders/` to `sys.path` so
 builders keep bare-module imports. Superseded leaves and early matcher
-outputs live under `archive/` with their own README. External Ghostscript
-dumps stay in `joebert_data/` (not builder outputs). Decision records live
+outputs live under `archive/` with their own README. Exploratory Ghostscript
+dumps now live in `archive/joebert_data/` (9 October archive update). Decision records live
 under `docs/adr/`.
 
 ### Consequences
@@ -47,3 +47,9 @@ under `docs/adr/`.
 * [../../archive/README.md](../../archive/README.md)
 * `analysis/paths.py`
 * ADR-0006
+
+## Archive update — 9 October 2026
+
+Superseded builders, viewers, tests, reports, outputs and evidence use role
+folders beneath `archive/`. Current source verification, candidate comparison,
+and stage trace retain their dependencies. See [ADR-0010](0010-archive-superseded-analysis-work.md).

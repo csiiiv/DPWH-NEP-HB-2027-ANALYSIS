@@ -1,0 +1,734 @@
+{
+  "archived_on": "2026-10-09",
+  "policy": "Retain current source verification, stage trace and their dependencies; archive superseded/exploratory material without deleting it. Original paths/hashes describe pre-move files; text links and imports may be adapted. Historical JSON provenance remains as originally generated.",
+  "files": [
+    {
+      "original_path": "analysis/FY2027_work_summary.md",
+      "archived_path": "analysis/archive/docs/FY2027_work_summary.md",
+      "original_sha256": "3d51f994243014861e6d206c0b35c6b82eed1aded7c88ac77cda13254857cc99",
+      "reason": "Detailed historical work log; current workflow is documented in source_hierarchy_verification.md.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/amount_diff_batch.json",
+      "archived_path": "analysis/archive/data/amount_diff_batch.json",
+      "original_sha256": "50ddd97e969a4f59544085c11879ce9360e7d8e9e1f750a60af310e96c040d67",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/crosscheck_2027_rainwater.json",
+      "archived_path": "analysis/archive/data/crosscheck_2027_rainwater.json",
+      "original_sha256": "e283e224c5463b8eb67f87f60d34cf83bd23aad5474947559ef6636f96f6d9aa",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/crosscheck_2027_v4b_validation.json",
+      "archived_path": "analysis/archive/data/crosscheck_2027_v4b_validation.json",
+      "original_sha256": "527927393f23c2db85cea70824af94fed9b4e2fdf3deb1c0fdf770cda6635048",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/crosscheck_results.json",
+      "archived_path": "analysis/archive/data/crosscheck_results.json",
+      "original_sha256": "82c056da504cd8937e363ea48ee2c56faf4551af449dae54e3fad350cecd034e",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/crosscheck_summary.json",
+      "archived_path": "analysis/archive/data/crosscheck_summary.json",
+      "original_sha256": "b08813d78cb765379dd049f1136c99330183d2389f6a0a08bd3c5a61c7ad907b",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/evidence_sample.json",
+      "archived_path": "analysis/archive/data/evidence_sample.json",
+      "original_sha256": "758d49da36d1b6b2d7126cc48d418b4682758806bd38a895a30c3756e592debd",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/family_blocks.json",
+      "archived_path": "analysis/archive/data/family_blocks.json",
+      "original_sha256": "3e9737d6848069354dce53e483aff670cb5037a7d3fc8b351959fd0814fd2889",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/hb_block_tree.json",
+      "archived_path": "analysis/archive/data/hb_block_tree.json",
+      "original_sha256": "29a422c193570326c831a300f007fb910743f4712cb60448047a9ec532ed86ba",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/hb_dpwh_items.json",
+      "archived_path": "analysis/archive/data/hb_dpwh_items.json",
+      "original_sha256": "fd303fb6cf4c833146ced7afeb943bcb80d733024a5529908fa4285d21eb2e10",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/hb_dpwh_leaves_corrected.json",
+      "archived_path": "analysis/archive/data/hb_dpwh_leaves_corrected.json",
+      "original_sha256": "372536b54fbf2ae315ded1fe928b25c1ebc77fb103df3b8bc39540827a32f63f",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/hb_dpwh_leaves_corrected_v2.json",
+      "archived_path": "analysis/archive/data/hb_dpwh_leaves_corrected_v2.json",
+      "original_sha256": "535ff076134276ea54e7ad12d692e27c822267646f2ccb5d906cbcaab9a1a3be",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/hb_dpwh_leaves_corrected_v3.json",
+      "archived_path": "analysis/archive/data/hb_dpwh_leaves_corrected_v3.json",
+      "original_sha256": "8ed02c038bd576109c8c1e759af0a5d08ec9f84c9ab8d7511c1575016dab4a1a",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/hb_dpwh_leaves_corrected_v4.json",
+      "archived_path": "analysis/archive/data/hb_dpwh_leaves_corrected_v4.json",
+      "original_sha256": "1ea28aff5e2ca4c67d3678c165828cbc8e0ee0bd2a8d223ad245b4616f9a2e11",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/hb_dpwh_leaves_corrected_v4b.json",
+      "archived_path": "analysis/archive/data/hb_dpwh_leaves_corrected_v4b.json",
+      "original_sha256": "c3f4360cfab4e27aa4a707b6e57ae844e759ee694c2347545a87d85f34e4c3a0",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/hb_dpwh_leaves_validated.json",
+      "archived_path": "analysis/archive/data/hb_dpwh_leaves_validated.json",
+      "original_sha256": "1371267ce5e33ffae25aff52653c4d524e4089d925e38a41b368f87ef1907fa8",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/hb_tree_validation.json",
+      "archived_path": "analysis/archive/data/hb_tree_validation.json",
+      "original_sha256": "042a83e101bd49baf7912c341769b4ddd70362aa6039f3a6aef9d67f70199e55",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/page_family_map.json",
+      "archived_path": "analysis/archive/data/page_family_map.json",
+      "original_sha256": "2283e55952e490cc42a883d0e9d829679dc25d005c0242414e47cecf97b210c9",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/pdf_verification.json",
+      "archived_path": "analysis/archive/data/pdf_verification.json",
+      "original_sha256": "31556d39dd58510b1cfc5bb8233be20943f7b854c13c8b6a51275695a00d8b72",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/report.md",
+      "archived_path": "analysis/archive/docs/report.md",
+      "original_sha256": "afc1c620cf73835ce020322ca74b88c7d3495d186d6541840949352747b3a705",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/report_highlights.json",
+      "archived_path": "analysis/archive/data/report_highlights.json",
+      "original_sha256": "c2f7f9ba31bb16e0f39d62a86eaa3c96b155a6dd322ef38da2dea91603fdaefe",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/taxonomy_comparison_data.json",
+      "archived_path": "analysis/archive/data/taxonomy_comparison_data.json",
+      "original_sha256": "847f5bb05e20895d872c041b7befa68816145b72d6528e6ab42bd602b5f7659b",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/textlayer_audit.json",
+      "archived_path": "analysis/archive/data/textlayer_audit.json",
+      "original_sha256": "e95e56b7caedb752200a383dfd360b2acf518658345047f8fa19eb89e2115349",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/textlayer_audit.md",
+      "archived_path": "analysis/archive/docs/textlayer_audit.md",
+      "original_sha256": "ab7460074438deacf091ab7914aa3c277a539d58e4746ad6ac75ede9da09dbbd",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/textlayer_audit_v2.json",
+      "archived_path": "analysis/archive/data/textlayer_audit_v2.json",
+      "original_sha256": "13cc2da3040e810f73cfc7ffb2cc880e043b060c875fa7f6fc2e09cc083332fb",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/textlayer_audit_v2.md",
+      "archived_path": "analysis/archive/docs/textlayer_audit_v2.md",
+      "original_sha256": "62c0fd1518a3c44ce017ca858d84b9720d7fd391a325ed260f805be701dd8e71",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/textlayer_audit_v3.json",
+      "archived_path": "analysis/archive/data/textlayer_audit_v3.json",
+      "original_sha256": "d6c1ecf8a45df49b22ee58571d957448f75eee5cab88e276a717cfb8bfab7c3a",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/textlayer_audit_v3.md",
+      "archived_path": "analysis/archive/docs/textlayer_audit_v3.md",
+      "original_sha256": "d65bd11a5726db4abe413197b2beb01db3e76e8b9713ccdcaa540a499c4a89e1",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/archive/verify_report.md",
+      "archived_path": "analysis/archive/docs/verify_report.md",
+      "original_sha256": "8d2fd6ddc7f74f30b980a1f38bbc291227d2f646f657fe7595c4a184b2b3c8b2",
+      "reason": "Previously archived report or output, consolidated by file role.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/audit_hb_json_datasets.py",
+      "archived_path": "analysis/archive/builders/audit_hb_json_datasets.py",
+      "original_sha256": "0596b2b62680aac5fa81b4b494185834179bc7a59d99084642d665be7d79bc84",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/audit_textlayer.py",
+      "archived_path": "analysis/archive/builders/audit_textlayer.py",
+      "original_sha256": "c2589a20800658cb8d402dd22c1f477c088cd94ae98efc1e85a068e2dfbd602c",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/audit_textlayer_v2.py",
+      "archived_path": "analysis/archive/builders/audit_textlayer_v2.py",
+      "original_sha256": "eec9e3e8b62f959d3ffeaf14dc581f5146f232f3a06ab342f565d16d08f8263f",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/audit_textlayer_v3.py",
+      "archived_path": "analysis/archive/builders/audit_textlayer_v3.py",
+      "original_sha256": "be42e29cd7395b3a8797fd95c8e6e3cf2d42b11f519b1b37d3cab1f21f23acb4",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/build_hb_source_tree.py",
+      "archived_path": "analysis/archive/builders/build_hb_source_tree.py",
+      "original_sha256": "bc029cdf8116e909298229f7f12f350a09ae66c36e94761459800f6b7d23edc1",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/build_hb_tree.py",
+      "archived_path": "analysis/archive/builders/build_hb_tree.py",
+      "original_sha256": "3a204a146fd50ea009e57feec3b7e9f03b551ae8673db280bd1def83ff3efffa",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/build_report.py",
+      "archived_path": "analysis/archive/builders/build_report.py",
+      "original_sha256": "a93eb242e027d27b6d12c6be1018e7b2ec1d70036350aad9f8562e8d423f4431",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/build_taxonomy_comparison.py",
+      "archived_path": "analysis/archive/builders/build_taxonomy_comparison.py",
+      "original_sha256": "eed4b2b5ca01a68d15ac9eeba0f2b33278a81f2d2449343555ac5c77e4a31bb2",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/crosscheck_2027.py",
+      "archived_path": "analysis/archive/builders/crosscheck_2027.py",
+      "original_sha256": "1dcd1830af480311ff65ecf70c99b2d7128b836323b40739ccc58444d2882912",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/crosscheck_hb_nep.py",
+      "archived_path": "analysis/archive/builders/crosscheck_hb_nep.py",
+      "original_sha256": "5ecef633e8e1046ef82365e19cc33944d12893095917e820bdc740e8c5ae0475",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/crosscheck_joebert_hb.py",
+      "archived_path": "analysis/archive/builders/crosscheck_joebert_hb.py",
+      "original_sha256": "d9c8f3418ad0dd45ba59e64ffebc3ac7e4092b154ee4161fa3a761b405dc1dc8",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/crosscheck_lineitems.py",
+      "archived_path": "analysis/archive/builders/crosscheck_lineitems.py",
+      "original_sha256": "907e1b398004c9ae6bd0684696711fad07f5b0000863a6c28cc371e98505707e",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/crosscheck_pap_drilldown.py",
+      "archived_path": "analysis/archive/builders/crosscheck_pap_drilldown.py",
+      "original_sha256": "9ba580ae4c6c07fb1b752783610a580191a92b952bbd9ad4fca9bb946b5cd44a",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/crosscheck_rainwater.py",
+      "archived_path": "analysis/archive/builders/crosscheck_rainwater.py",
+      "original_sha256": "b85bbc4ce4a1ee3cee158cf0b6212c7bbfc450de7f08bc528de778e059dff9b9",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/hb_program_classifier.py",
+      "archived_path": "analysis/archive/builders/hb_program_classifier.py",
+      "original_sha256": "62d06646001abed591012160a51a23cd7e7e52ee18be360ffb9744c22c3db9b8",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/parse_hb_dpwh.py",
+      "archived_path": "analysis/archive/builders/parse_hb_dpwh.py",
+      "original_sha256": "f39efd14c0971bfe0f546f6969ef38fbb17e7aa399129c64e3b16b12ab19e19d",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/parse_hb_tree.py",
+      "archived_path": "analysis/archive/builders/parse_hb_tree.py",
+      "original_sha256": "70c058338b9993b2dfaca2c38d5f3df94ffac7145bc190088d67fe7369e76a4a",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/repair_headingless.py",
+      "archived_path": "analysis/archive/builders/repair_headingless.py",
+      "original_sha256": "c5b7d79bd7eacbbd65b4acc5b7e6c07be76868e7186a5f44cf6c0a20ddf70777",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/repair_stale_pap.py",
+      "archived_path": "analysis/archive/builders/repair_stale_pap.py",
+      "original_sha256": "cfb7407a59c5dccf30aa24754b105b42f2d876368eda59a598847fe11156964e",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/validate_v4b_paps.py",
+      "archived_path": "analysis/archive/builders/validate_v4b_paps.py",
+      "original_sha256": "fdd35e594dd31c4155baacc49fa8c20f175458486d62ad0081424773b6d6ef7b",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/builders/verify_against_pdf.py",
+      "archived_path": "analysis/archive/builders/verify_against_pdf.py",
+      "original_sha256": "d5dcae637a7b556baf9af6cd2799cdd4db89fa35fe9e27f83f59176f805b5678",
+      "reason": "Superseded OCR extraction, audit, matching, or exploratory builder; retained repair helpers remain importable.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/data/crosscheck_2027.json",
+      "archived_path": "analysis/archive/data/crosscheck_2027.json",
+      "original_sha256": "01c5c2b86b3ffdfbc63f0390d7055d7aed201ac83761940ed148641822b3120f",
+      "reason": "Historical matcher, OCR hierarchy, exploratory crosscheck, or local page-map cache. Some are explicit rebuild dependencies.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/data/crosscheck_2027_lineitems.json",
+      "archived_path": "analysis/archive/data/crosscheck_2027_lineitems.json",
+      "original_sha256": "2d35c83ba09acbbf5f355536cc3e6e8e824d27b8ac42aa7f373945ada0161596",
+      "reason": "Historical matcher, OCR hierarchy, exploratory crosscheck, or local page-map cache. Some are explicit rebuild dependencies.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/data/crosscheck_2027_pap_drilldown.json",
+      "archived_path": "analysis/archive/data/crosscheck_2027_pap_drilldown.json",
+      "original_sha256": "e613e0929db7028253c5bbfda229f60fd5cfdf71eab1b7b67aab1af0911a42e9",
+      "reason": "Historical matcher, OCR hierarchy, exploratory crosscheck, or local page-map cache. Some are explicit rebuild dependencies.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/data/hb_2027_source_tree.json",
+      "archived_path": "analysis/archive/data/hb_2027_source_tree.json",
+      "original_sha256": "b1911ca4ac4aa73a624ec10172e91422289af05addf72567d5eb31e04645f74f",
+      "reason": "Historical matcher, OCR hierarchy, exploratory crosscheck, or local page-map cache. Some are explicit rebuild dependencies.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/data/hb_2027_source_tree_validation.json",
+      "archived_path": "analysis/archive/data/hb_2027_source_tree_validation.json",
+      "original_sha256": "3d1a2d08a51223f33b41c2499532bb2c8bdfaa6172859785bb8af3a691542e9b",
+      "reason": "Historical matcher, OCR hierarchy, exploratory crosscheck, or local page-map cache. Some are explicit rebuild dependencies.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/data/hb_2027_tree.json",
+      "archived_path": "analysis/archive/data/hb_2027_tree.json",
+      "original_sha256": "eeef7e191a32136371a22ca8b80eb28a8784d5da95565c860644f55fcc70449c",
+      "reason": "Historical matcher, OCR hierarchy, exploratory crosscheck, or local page-map cache. Some are explicit rebuild dependencies.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/data/hb_2027_tree_validation.json",
+      "archived_path": "analysis/archive/data/hb_2027_tree_validation.json",
+      "original_sha256": "72cd2a0cc1137cba46086c144051b51550855792d397304a00515e6fa0a9898a",
+      "reason": "Historical matcher, OCR hierarchy, exploratory crosscheck, or local page-map cache. Some are explicit rebuild dependencies.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/data/hb_dpwh_pap_hierarchy.json",
+      "archived_path": "analysis/archive/data/hb_dpwh_pap_hierarchy.json",
+      "original_sha256": "5f0f2f145d8ad1b0fcb4a47e9262b61a3fcc1cace37d603214bab1c41366e6df",
+      "reason": "Historical matcher, OCR hierarchy, exploratory crosscheck, or local page-map cache. Some are explicit rebuild dependencies.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/data/joebert_hb_crosscheck.json",
+      "archived_path": "analysis/archive/data/joebert_hb_crosscheck.json",
+      "original_sha256": "6ff9676cad6c978d79c043bb580d991722b6e0fffaabd9fee13dc60f1e77e89a",
+      "reason": "Historical matcher, OCR hierarchy, exploratory crosscheck, or local page-map cache. Some are explicit rebuild dependencies.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/data/nep_2027_hb_only_reassessment.json",
+      "archived_path": "analysis/archive/data/nep_2027_hb_only_reassessment.json",
+      "original_sha256": "1332849c5b12c6ef6375550632a3c0b2a8fc6a04029538038bb5af20a614758f",
+      "reason": "Historical matcher, OCR hierarchy, exploratory crosscheck, or local page-map cache. Some are explicit rebuild dependencies.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/data/row_page_interp.pkl",
+      "archived_path": "analysis/archive/data/row_page_interp.pkl",
+      "original_sha256": "4e669b325f0a993f7dfe768c78bf2c80edb23790f5440f1e43234f91a9cdde67",
+      "reason": "Historical matcher, OCR hierarchy, exploratory crosscheck, or local page-map cache. Some are explicit rebuild dependencies.",
+      "local_only": true
+    },
+    {
+      "original_path": "analysis/data/row_page_map.pkl",
+      "archived_path": "analysis/archive/data/row_page_map.pkl",
+      "original_sha256": "49fdd17ac545ef58cc4b035aa5fc30dd72f3be58496c7425d3db8cb0a250d133",
+      "reason": "Historical matcher, OCR hierarchy, exploratory crosscheck, or local page-map cache. Some are explicit rebuild dependencies.",
+      "local_only": true
+    },
+    {
+      "original_path": "analysis/docs/hb_json_usability_audit.md",
+      "archived_path": "analysis/archive/docs/hb_json_usability_audit.md",
+      "original_sha256": "e36afa1de656240e66eff123385c691c9242a0ad97a8b9408853573b48b81d57",
+      "reason": "Historical inventory, parser assessment, or external candidate exploration.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/docs/hb_native_textlayer_assessment.md",
+      "archived_path": "analysis/archive/docs/hb_native_textlayer_assessment.md",
+      "original_sha256": "995e0c425de0eb3ce304872765b51dfdb0af876a47b69f0aa0989d9d0268a2be",
+      "reason": "Historical inventory, parser assessment, or external candidate exploration.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/docs/hierarchy_report.md",
+      "archived_path": "analysis/archive/docs/hierarchy_report.md",
+      "original_sha256": "6d36d4987e5a9e1d09fec8e1d06d4b371b2ba38b6548a20838f67f0a7b26f906",
+      "reason": "Historical inventory, parser assessment, or external candidate exploration.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/docs/joebert_native_crosscheck.md",
+      "archived_path": "analysis/archive/docs/joebert_native_crosscheck.md",
+      "original_sha256": "8bb288bd21bb0910d5a237ccc4ec4a06dfa75cd09ff7894d477f7f367a500e00",
+      "reason": "Historical inventory, parser assessment, or external candidate exploration.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/diff_md10222_p0440.png",
+      "archived_path": "analysis/archive/evidence/diff_md10222_p0440.png",
+      "original_sha256": "a11d8396d8855f22af35b90dd071cf6ebe29074f44494f0136ef4bd0a4236b27",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/diff_md14678_p0635.png",
+      "archived_path": "analysis/archive/evidence/diff_md14678_p0635.png",
+      "original_sha256": "af25d0212a64739b73a7f5839879a081d89c2055e77c03e0a55416d814e9aec2",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/diff_md14756_p0642.png",
+      "archived_path": "analysis/archive/evidence/diff_md14756_p0642.png",
+      "original_sha256": "e5bd487f47d1225fca536bc1b6b91660364a3da8ffcffb1bbfa6833ed10d7234",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/diff_md17976_p0795.png",
+      "archived_path": "analysis/archive/evidence/diff_md17976_p0795.png",
+      "original_sha256": "cf85b4b118015c0099950ddeb5f49e0d362cda27ad4c7dc4b6ec313a5f3771c1",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/diff_md18110_p0801.png",
+      "archived_path": "analysis/archive/evidence/diff_md18110_p0801.png",
+      "original_sha256": "3d36923c5e7f8e3ab39926442118c022b64a70f0603636173b212cea905484ce",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/diff_md19895_p0886.png",
+      "archived_path": "analysis/archive/evidence/diff_md19895_p0886.png",
+      "original_sha256": "f1a91aee73216d8035604fc5638353453b7fc3df6e856dd9a114deeff94dce9c",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/diff_md5710_p0252.png",
+      "archived_path": "analysis/archive/evidence/diff_md5710_p0252.png",
+      "original_sha256": "1aa0cd00676d9a520b12bbe7c9a45e688a14e5add27e031197ca56e5f2ee1103",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/diff_md6689_p0285.png",
+      "archived_path": "analysis/archive/evidence/diff_md6689_p0285.png",
+      "original_sha256": "a4b12682dbd6364004bc4fc17d0740bed9992234b39679468c98bb8ed6e8efef",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/diff_md8431_p0363.png",
+      "archived_path": "analysis/archive/evidence/diff_md8431_p0363.png",
+      "original_sha256": "c9d65a130909e3a70976a76110331f73780a0e3c74dfb724fe92f67c1ea23e8c",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/sample_md10354_p0446.png",
+      "archived_path": "analysis/archive/evidence/sample_md10354_p0446.png",
+      "original_sha256": "d3f645784e7a5d677d489540c8a85c84653a618882bed9874ae55fbb48ae600b",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/sample_md13993_p0604.png",
+      "archived_path": "analysis/archive/evidence/sample_md13993_p0604.png",
+      "original_sha256": "be8786b2ef722187cdde494a987d24ae9f32ea7d27b2919e10591ac5d7b6d835",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/sample_md14695_p0635.png",
+      "archived_path": "analysis/archive/evidence/sample_md14695_p0635.png",
+      "original_sha256": "af25d0212a64739b73a7f5839879a081d89c2055e77c03e0a55416d814e9aec2",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/sample_md20706_p0925.png",
+      "archived_path": "analysis/archive/evidence/sample_md20706_p0925.png",
+      "original_sha256": "ca5c8cdf42b56669c0573f33ca20b4dad8cdebc40e1349acb4b9a3ac5871acbc",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/sample_md21019_p0940.png",
+      "archived_path": "analysis/archive/evidence/sample_md21019_p0940.png",
+      "original_sha256": "d914775458b4556263054392aad9d4f3ddc6b5d55cb7330fdb0f78147391c2d4",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/sample_md4132_p0186.png",
+      "archived_path": "analysis/archive/evidence/sample_md4132_p0186.png",
+      "original_sha256": "d89c0acd4584f4ac6268af67d4e09192168ef0fd48d8ae0fc0469dd608f75e39",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/sample_md4779_p0208.png",
+      "archived_path": "analysis/archive/evidence/sample_md4779_p0208.png",
+      "original_sha256": "c03cb2e70470064a36ae90882436bd5a65f3a95878dc1701fadb605fd122521e",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/sample_md5308_p0235.png",
+      "archived_path": "analysis/archive/evidence/sample_md5308_p0235.png",
+      "original_sha256": "9945b7342c3ee1516bc2a394764b6315c165ca1045d3168b42509937c4485b9a",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/evidence/sample_md5710_p0250.png",
+      "archived_path": "analysis/archive/evidence/sample_md5710_p0250.png",
+      "original_sha256": "433df8e917c0e5a6324135875c43845ad4e0c4f79dcef3d1e7b847cc4a461063",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/joebert_data/README.md",
+      "archived_path": "analysis/archive/joebert_data/README.md",
+      "original_sha256": "db00f5fc492b4b519db9cdfd07722da6fb96d2da593095c7c8b6b7a734d768c1",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/joebert_data/hb10858_agency_projects.json",
+      "archived_path": "analysis/archive/joebert_data/hb10858_agency_projects.json",
+      "original_sha256": "2d6100ce80bf93c273bc967407ebca77c537cb4e341f7a8ac5d98a3640a2df2c",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/joebert_data/hb10858_hfep_projects.json",
+      "archived_path": "analysis/archive/joebert_data/hb10858_hfep_projects.json",
+      "original_sha256": "fca1f94bf9dea6a752ca18dac4dd80112e9061ca6bfcb27cc9ba7ea440d16f1f",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/joebert_data/hb10858_nia_projects.json",
+      "archived_path": "analysis/archive/joebert_data/hb10858_nia_projects.json",
+      "original_sha256": "9387f10b50bea81b7489b283ecfa576a2a2eb8ef1fcd59e9520d29c0343ea244",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/joebert_data/hb10858_projects.json",
+      "archived_path": "analysis/archive/joebert_data/hb10858_projects.json",
+      "original_sha256": "e5edcefa090c97360ab877580e1bfd05500372eaaafff5349d205c26f8bf4d6e",
+      "reason": "Historical PDF spot-check imagery or exploratory external Ghostscript candidates.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/tests/test_hb_source_tree.py",
+      "archived_path": "analysis/archive/tests/test_hb_source_tree.py",
+      "original_sha256": "3ea64dc49150b462138a4a822736ba86fb28f65bcd34622f12f1a96177ee2394",
+      "reason": "Regression suite for archived OCR-era House builders/viewers.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/tests/test_hb_source_tree_viewer.cjs",
+      "archived_path": "analysis/archive/tests/test_hb_source_tree_viewer.cjs",
+      "original_sha256": "2cd01e29827dab94397beaefe192e08e49288a44c8896b8d907bcd8d814a3681",
+      "reason": "Regression suite for archived OCR-era House builders/viewers.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/tests/test_hb_tree.py",
+      "archived_path": "analysis/archive/tests/test_hb_tree.py",
+      "original_sha256": "db92de97db56e1da4ad351830f6d0d73591bf0ef353387c8ebab2fef48a7a1cc",
+      "reason": "Regression suite for archived OCR-era House builders/viewers.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/tests/test_hb_tree_viewer.cjs",
+      "archived_path": "analysis/archive/tests/test_hb_tree_viewer.cjs",
+      "original_sha256": "13bd00be5e27df06a8ed65431e990e14c2128324bbd795032fbfd29ec6b16dd3",
+      "reason": "Regression suite for archived OCR-era House builders/viewers.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/viewers/crosscheck_2027.html",
+      "archived_path": "analysis/archive/viewers/crosscheck_2027.html",
+      "original_sha256": "eb78b04b1dae12ed93c2097f9ee9ccd2e26bedb8af15f8b9e6a14b16f6505876",
+      "reason": "Older OCR-era House or crosscheck viewer; replaced by independent source verification.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/viewers/crosscheck_2027.md",
+      "archived_path": "analysis/archive/viewers/crosscheck_2027.md",
+      "original_sha256": "ff4538e864dd14ea0d6c9ba90c896dd6ebda94b38a2967cfaad78c6d67587cbb",
+      "reason": "Older OCR-era House or crosscheck viewer; replaced by independent source verification.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/viewers/hb_2027_source_tree.html",
+      "archived_path": "analysis/archive/viewers/hb_2027_source_tree.html",
+      "original_sha256": "c38f2844127e758652e3d5d4462852f2873e36b4430790c91c12c4eb69a2a6aa",
+      "reason": "Older OCR-era House or crosscheck viewer; replaced by independent source verification.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/viewers/hb_2027_source_tree.md",
+      "archived_path": "analysis/archive/viewers/hb_2027_source_tree.md",
+      "original_sha256": "215ec5633d79cabf5837d6aa48cc6caa20f055f82a01bf7296a057a8f7de0b1c",
+      "reason": "Older OCR-era House or crosscheck viewer; replaced by independent source verification.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/viewers/hb_2027_tree.html",
+      "archived_path": "analysis/archive/viewers/hb_2027_tree.html",
+      "original_sha256": "824c5c281320889d4363c0e51b70b4a9895870e6aba8c8d6258a05a87ebeb649",
+      "reason": "Older OCR-era House or crosscheck viewer; replaced by independent source verification.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/viewers/hb_2027_tree.md",
+      "archived_path": "analysis/archive/viewers/hb_2027_tree.md",
+      "original_sha256": "df8b94bd4597073e36c4388ab5908ed2dc96e55d5c00e6cf9f7c166a01c98e6d",
+      "reason": "Older OCR-era House or crosscheck viewer; replaced by independent source verification.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/viewers/hb_source_tree_viewer.js",
+      "archived_path": "analysis/archive/viewers/hb_source_tree_viewer.js",
+      "original_sha256": "a7b5555da8420ccb12653db4db6f79c8e1e4633f666c9e51a65384dab2b677cd",
+      "reason": "Older OCR-era House or crosscheck viewer; replaced by independent source verification.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/viewers/hb_source_tree_viewer.template.html",
+      "archived_path": "analysis/archive/viewers/hb_source_tree_viewer.template.html",
+      "original_sha256": "c5fa0276312891f48738290d72bcef0e3e38c2a4c805dd05f536f1361082766d",
+      "reason": "Older OCR-era House or crosscheck viewer; replaced by independent source verification.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/viewers/hb_tree_viewer.js",
+      "archived_path": "analysis/archive/viewers/hb_tree_viewer.js",
+      "original_sha256": "7e38acf6f7a80b4252b8af84c2e9c33428eb2ba23357e5ee95d5579eac06afbc",
+      "reason": "Older OCR-era House or crosscheck viewer; replaced by independent source verification.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/viewers/hb_tree_viewer.template.html",
+      "archived_path": "analysis/archive/viewers/hb_tree_viewer.template.html",
+      "original_sha256": "3816b6408bc3607994bd402ed4a320c76007d7068934621755b4f51a1fe6c613",
+      "reason": "Older OCR-era House or crosscheck viewer; replaced by independent source verification.",
+      "local_only": false
+    },
+    {
+      "original_path": "analysis/viewers/taxonomy_comparison.html",
+      "archived_path": "analysis/archive/viewers/taxonomy_comparison.html",
+      "original_sha256": "b261854560e59fd2bd994c4dfd0921674419755fb418ddce0e16908c36d1342a",
+      "reason": "Older OCR-era House or crosscheck viewer; replaced by independent source verification.",
+      "local_only": false
+    }
+  ]
+}

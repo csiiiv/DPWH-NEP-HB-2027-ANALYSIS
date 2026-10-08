@@ -2,7 +2,7 @@
 
 Date: 9 October 2026. Start with the [static overview](../../site/index.html). The three sources are **House Native I-B**, **NEP PDF source**, and **DPWH Transparency NEP FY2027 API data**. The earlier multi-year contract viewer was the wrong source and has been removed from this phase.
 
-Each viewer separates hierarchy arithmetic, source evidence, coverage, and scope. Tree rows show retained PDF page references where available. House references open the PDF at that page; NEP review references open the retained source image, and other NEP rows show the page number. API groupings and projects have no invented PDF page references. Selecting a branch shows its parent path, immediate additive child sum, recursive leaf sum, and progressive child balances. Each path segment is navigable: selecting one opens that entity, clears search/review filters, expands its ancestor chain, and focuses the matching tree row. Navigation outside the selected expense class returns to the full source hierarchy. Review-queue context paths navigate the same way. Searches cover all hierarchy nodes, including every API project code and title. Earlier comparison pages remain references; comparisons are deferred.
+Each viewer separates hierarchy arithmetic, source evidence, coverage, and scope. Tree rows show retained PDF page references where available. House references open the PDF at that page; NEP review references open the retained source image, and other NEP rows show the page number. API groupings and projects have no invented PDF page references. Selecting a branch shows its parent path, immediate additive child sum, recursive leaf sum, and progressive child balances. Each path segment is navigable: selecting one opens that entity, clears search/review filters, expands its ancestor chain, and focuses the matching tree row. Navigation outside the selected expense class returns to the full source hierarchy. Review-queue context paths navigate the same way. Searches cover all hierarchy nodes, including every API project code and title. The candidate comparison and stage trace remain provisional references; certified comparisons are deferred. Superseded OCR-era House viewers, historical crosschecks, exploratory generators and outputs now live in [the archive](../archive/README.md).
 
 | Source | Retained total (PHP) | Arithmetic | Outstanding verification |
 |---|---:|---|---|
@@ -57,7 +57,7 @@ The [evidence index](../data/source_review_evidence.json) ties each crop to the 
 
 ## DPWH Transparency NEP snapshot
 
-The source folder is now [dpwh-transparency-nep-data/](../../dpwh-transparency-nep-data/), renamed from `nep-data/`. Its scripts record the BetterGov-hosted endpoint `https://api.dpwh.bettergov.ph/nep/projects`; this is the retained DPWH Transparency NEP project dataset intended here. The separate scraper checkout's `/projects` contract archive is outside scope.
+The source folder is now [dpwh-transparency-nep-data/](../../dpwh-transparency-nep-data), renamed from `nep-data/`. Its scripts record the BetterGov-hosted endpoint `https://api.dpwh.bettergov.ph/nep/projects`; this is the retained DPWH Transparency NEP project dataset intended here. The separate scraper checkout's `/projects` contract archive is outside scope.
 
 The combined listing contains **11,372 FY2027 project codes and IDs**, with no duplicate identities or missing hierarchy fields. Amounts are converted from **thousands of PHP to integer PHP**, yielding **₱445,378,063,000**. The hierarchy follows `pap1 → pap2 → pap3 → region → office → project code`; grouped totals are derived, not independently printed controls.
 
@@ -69,14 +69,45 @@ Native House artifacts now live in `analysis/data/`: `hb_dpwh_native_tree.json`,
 
 ## Rebuild and verify
 
+For a checkout with the committed trees, audits, and source crops, rebuild and
+validate the static pages without external inputs:
+
 ```sh
-python3 analysis/builders/build_dpwh_nep_api_tree.py
-python3 analysis/builders/build_source_verification.py
+python3 analysis/builders/build_current_pages.py
+python3 analysis/builders/build_stage_trace.py
+python3 scripts/validate_current_pages.py
 python3 -m unittest discover -s analysis/tests -p test_source_verification.py -v
 node --test analysis/tests/test_source_verification_viewer.cjs
 python3 scripts/build_pages.py
 python3 -m http.server 8000 --directory _site
 ```
+
+`build_source_verification.py` can refresh just the three verification viewers.
+`build_current_pages.py` also refreshes the earlier candidate page's embedded
+canonical data and manifest, which packaging checks for freshness.
+
+When changing extraction or source artifacts, rebuild the relevant source first:
+
+```sh
+# NEP: retained local PDF, PAP/operating-unit trees, and table-structure pages.
+python3 analysis/builders/build_nep_tree.py --source-dir /path/to/paddle_pdf_ocr_v2
+python3 -m unittest discover -s analysis/tests -p test_nep_tree.py -v
+# Reads the retained PDF path from canonical provenance; requires PyMuPDF + Pillow.
+python3 analysis/builders/build_source_review_evidence.py
+
+# API: combined snapshot, plus local raw pages/details for the full coverage audit.
+python3 analysis/builders/build_dpwh_nep_api_tree.py
+
+# HB: run these only when updating the retained native control extraction.
+python3 scripts/hb_native_extract3.py \
+  'HB_BUDGET/2 - HB 10858 VOL IB.pdf' 13 110 analysis/data/hb_dpwh_native_tree.json
+python3 scripts/hb_native_rollup.py
+```
+
+These source commands are independent choices; run only those relevant to your
+change. Then refresh dependent pages and run the artifact validation/package
+commands above. [Local input requirements](../../README.md) specify the NEP
+filenames and explain which inputs are excluded from Git.
 
 The API tree importer uses the committed combined snapshot, and checks original listing/detail files when available locally. The verification-page builder performs no project matching, source-PDF extraction, or network calls. The legacy `build_current_pages.py` also refreshes the verification overview after rebuilding its earlier candidate page.
 

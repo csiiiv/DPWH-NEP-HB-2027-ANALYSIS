@@ -30,7 +30,8 @@ Chosen option: **3 — dual baseline**.
 
 | Role | Artifact |
 |---|---|
-| Control baseline | `analysis/data/hb_dpwh_native_tree.json` |
+| Additive control baseline | `analysis/data/hb_dpwh_native_rollup.json` (660 direct/recursive checks across four columns) |
+| Raw outline for existing consumers | `analysis/data/hb_dpwh_native_tree.json` (647 structural checks) |
 | Project-title candidate | `analysis/data/hb_dpwh_leaves_corrected_v5.json` (until native I-C) |
 | Rollup / document views | `hb_2027_tree.json`, `hb_2027_source_tree.json` under printed controls |
 
@@ -49,6 +50,6 @@ limits, not bill deficits.
 ## More Information
 
 * [../hb_known_defect_repairs.md](../hb_known_defect_repairs.md)
-* [../../viewers/hb_2027_tree.md](../../viewers/hb_2027_tree.md)
-* [../../viewers/hb_2027_source_tree.md](../../viewers/hb_2027_source_tree.md)
+* [../../viewers/hb_2027_tree.md](../../archive/viewers/hb_2027_tree.md)
+* [../../viewers/hb_2027_source_tree.md](../../archive/viewers/hb_2027_source_tree.md)
 * ADR-0001

@@ -7,7 +7,7 @@ Do not fill remaining deficits with invented residual projects.
 import sys
 from pathlib import Path as _Path
 sys.path[:0] = [str(_Path(__file__).resolve().parents[1]), str(_Path(__file__).resolve().parents[1] / 'builders')]
-from paths import ANALYSIS, REPO, DATA, VIEWERS, DOCS, ARCHIVE, EVIDENCE
+from paths import ANALYSIS, REPO, DATA, VIEWERS, DOCS, ARCHIVE, EVIDENCE, ARCHIVE_DATA
 
 import collections
 import copy
@@ -17,8 +17,8 @@ import re
 from pathlib import Path
 
 import pymupdf
-import audit_textlayer_v2 as native
-from crosscheck_lineitems import reg
+from archive.builders import audit_textlayer_v2 as native
+from archive.builders.crosscheck_lineitems import reg
 
 BASE = ANALYSIS
 ROOT = REPO
@@ -30,7 +30,7 @@ def read(name):
 
 
 def read_archive(name):
-    return json.loads((ARCHIVE/name).read_text())
+    return json.loads((ARCHIVE_DATA/name).read_text())
 
 
 def main():
@@ -275,7 +275,7 @@ def main():
         'replaced_sections':len(replacement_ranges),'native_added_rows':len(added),
         'removed_old_rows':len(removed),'balanced_pap_controls':sum(p['difference_php']==0 for p in controls),
         'local_programs_php':dict(program_totals),'blocked_source_sections':blocked_sections}
-    provenance={'base':'analysis/archive/hb_dpwh_leaves_corrected_v4b.json','source_pdf':str(PDF.relative_to(ROOT)),
+    provenance={'base':'analysis/archive/data/hb_dpwh_leaves_corrected_v4b.json','source_pdf':str(PDF.relative_to(ROOT)),
         'source_pdf_sha256':hashlib.sha256(PDF.read_bytes()).hexdigest(),
         'method':'Targeted source-native section replacements, each gated by exact printed-control agreement',
         'limitations':['Remaining inherited project amounts and PAP boundaries are not fully re-extracted.',
