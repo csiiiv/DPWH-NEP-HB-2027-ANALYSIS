@@ -46,6 +46,8 @@ jobs:
           python3 -m unittest discover -s analysis/tests -p test_static_pages.py -v
       - name: Prepare static viewers
         run: python3 scripts/build_pages.py
+      - name: Check rendered homepage navigation under project base
+        run: node --test analysis/tests/test_static_navigation.cjs
       - name: Configure Pages
         if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5

@@ -78,6 +78,8 @@ def validate_site():
         text = file.read_text()
         if any(marker in text for marker in ('__TREE_DATA__', '__EVIDENCE_DATA__', '__PAYLOAD__', '__INDEX_DATA__')):
             raise ValueError(f'Unrendered template: {file}')
+        if re.search(r'%24%7B|%2524%257B', text, re.I):
+            raise ValueError(f'Encoded JavaScript URL placeholder: {file}')
         parser = LinkParser()
         parser.feed(text)
         readmes = {'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/README.md',

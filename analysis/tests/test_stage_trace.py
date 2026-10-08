@@ -1,10 +1,12 @@
 """Stage-trace join regressions for Transparency → Official NEP → House."""
 
+import copy
 import hashlib
 import json
 import re
 import sys
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path[:0] = [
@@ -13,6 +15,8 @@ sys.path[:0] = [
 ]
 from paths import DATA, VIEWERS  # noqa: E402
 from build_stage_trace import classify, build_rows  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+import validate_current_pages as page_validation
 
 
 class StageTraceTests(unittest.TestCase):
@@ -86,6 +90,49 @@ class StageTraceTests(unittest.TestCase):
             'api_presence': 'no_nep_anchor',
             'house_minus_nep_php': 0,
         }), 'house_only_candidate')
+
+    def test_packaging_validator_accepts_current_trace(self):
+        self.assertEqual(page_validation.validate_stage_trace()['summary']['records'],
+                         len(self.comparison['projects']))
+
+    def validate_modified_trace(self, mutate, packaging=False):
+        payload = copy.deepcopy(self.payload)
+        mutate(payload)
+        read = page_validation.read
+        with patch.object(page_validation, 'read', side_effect=lambda name:
+                          payload if name == 'stage_trace_2027.json' else read(name)):
+            return page_validation.validate_current_pages() if packaging else page_validation.validate_stage_trace()
+
+    def test_packaging_rejects_stale_trace_inputs(self):
+        def mutate(payload):
+            payload['manifest']['inputs']['source_comparison_2027.json'] = '0' * 64
+        with self.assertRaisesRegex(ValueError, 'Stale stage-trace input'):
+            self.validate_modified_trace(mutate)
+
+    def test_packaging_rejects_changed_trace_generator(self):
+        def mutate(payload):
+            payload['manifest']['generator']['sha256'] = '0' * 64
+        with self.assertRaisesRegex(ValueError, 'Stage-trace generator changed'):
+            self.validate_modified_trace(mutate)
+
+    def test_packaging_recomputes_source_joins(self):
+        def mutate(payload):
+            row = next(r for r in payload['projects'] if r['api'])
+            row['api']['amount_php'] += 1000
+        with self.assertRaisesRegex(ValueError, 'projects differ from retained source joins'):
+            self.validate_modified_trace(mutate)
+
+    def test_packaging_rejects_source_headline_drift(self):
+        def mutate(payload):
+            payload['summary']['stages']['house']['extracted_php'] += 1000
+        with self.assertRaisesRegex(ValueError, 'source headline differs: house'):
+            self.validate_modified_trace(mutate)
+
+    def test_packaging_entry_point_rejects_stale_trace(self):
+        def mutate(payload):
+            payload['manifest']['inputs']['source_comparison_2027.json'] = '0' * 64
+        with self.assertRaisesRegex(ValueError, 'Stale stage-trace input'):
+            self.validate_modified_trace(mutate, packaging=True)
 
     def test_build_rows_preserves_api_pair_amount(self):
         rows = build_rows(self.comparison, self.reconciliation)

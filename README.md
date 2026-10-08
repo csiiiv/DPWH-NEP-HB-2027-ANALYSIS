@@ -277,3 +277,5 @@ The overview and all six retained static viewers link to both the repository
 README and the analysis workbench README. Hosted links open rendered Markdown
 on GitHub; local links follow the checkout layout. Packaging checks that both
 README links are present on every published page.
+
+See [the current codebase reassessment](analysis/docs/codebase_reassessment.md) for implemented capabilities, dependency flow, concrete gaps, and verification priorities.

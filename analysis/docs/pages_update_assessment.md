@@ -69,3 +69,24 @@ retained viewers passed browser checks at 390px and 1440px. Both README links
 were visible on every page, with no page errors, failed local assets, or
 horizontal overflow. Markdown links, data freshness/accounting, README-reference
 regressions, current/archived Python tests, and Node viewer checks were also checked.
+
+## Homepage navigation correction — 9 October 2026
+
+The archive rewrite encoded the JavaScript placeholder `${s.page}` as
+`%24%7Bs.page%7D`. The published homepage consequently generated nonexistent
+URLs for all three source cards and the NEP review entry. The post-archive
+browser checks above loaded viewers directly and missed this regression.
+
+The placeholder is restored, and the stage comparison with total/delta/percent
+sorting, House/NEP candidate comparison, and detailed NEP tree now have visible
+homepage cards outside the archive disclosure. The source-verification gate
+still applies to the candidate comparisons.
+
+Packaging rejects encoded JavaScript URL placeholders. A Node regression test
+executes the packaged homepage script, resolves its generated source/review
+links under a GitHub Pages project prefix, checks target files, reproduces the
+encoded-placeholder failure, and checks visible comparison navigation. Pages CI
+runs this test after packaging. Browser validation follows all seven rendered
+source, review, and comparison links at 390px and 1440px under the project prefix,
+checks rendered local downloads, and exercises delta/percent sort controls in
+both PAP and project tables.
