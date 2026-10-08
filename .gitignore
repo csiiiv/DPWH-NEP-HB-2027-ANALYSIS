@@ -39,3 +39,6 @@ Thumbs.db
 *.tmp
 *.swp
 *~
+
+# Generated GitHub Pages deployment artifact
+/_site/

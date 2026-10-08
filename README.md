@@ -9,6 +9,26 @@ Start with [the work summary](analysis/FY2027_work_summary.md),
 [House JSON usability audit](analysis/hb_json_usability_audit.md).
 Open [the NEP drilldown](analysis/nep_2027_tree.html) locally in a browser.
 
+## Shared dashboards
+
+[Open the dashboard index](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/)
+for the NEP tree, historical three-way crosscheck, and taxonomy viewer.
+`.github/workflows/pages.yml` builds and publishes the committed viewers on
+relevant pushes to `main` or manual dispatch. Pull requests validate the static
+build without deployment. This does not rerun source-PDF extraction.
+
+To preview the same deployment locally:
+
+```sh
+python scripts/build_pages.py
+python -m http.server 8000 --directory _site
+```
+
+Open `http://localhost:8000`. Hosted viewers preserve PDF page references but
+do not link to unavailable local PDFs. Report links open rendered Markdown on
+GitHub; viewer-specific caveats distinguish the current NEP baseline from
+historical comparisons.
+
 The NEP new-appropriations tree totals ₱642,612,015,000 and balances all 2,552
 additive branch checks. Arithmetic balance does not independently certify each
 OCR amount; unresolved PDF-text review candidates are retained with the audit.
