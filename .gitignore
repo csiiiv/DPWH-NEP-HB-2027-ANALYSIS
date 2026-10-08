@@ -1,0 +1,41 @@
+# Python and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+.coverage
+htmlcov/
+
+# Credentials and machine-local settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Source PDFs/OCR dumps and separately cloned upstream repositories
+/HB_BUDGET/
+/reference/
+/dpwh-transparency-data-api-scraper/
+
+# Raw API downloads; retain the combined FY2027 snapshot
+/nep-data/json/fy2027-details/
+/nep-data/json/fy2027/
+/nep-data/json/*.zip
+/nep-data/lists/
+
+# Regenerable local page-mapping caches
+*.pkl
+*.pickle
+*.log
+*.tmp
+*.swp
+*~
