@@ -1,3 +1,5 @@
+> **House repair update:** use [hb_known_defect_repairs.md](hb_known_defect_repairs.md) and [hb_dpwh_leaves_corrected_v5.json](hb_dpwh_leaves_corrected_v5.json) for the repaired candidate. v5 has 16,148 positive allocations totaling ₱581.345349B; 38/42 PAP controls and all FAP funding splits balance. The remaining ₱5.596312B net operations gap is confined to four Convergence PAPs. Earlier v4b completeness, program-delta, zero-region, and grand-upper-bound claims below are historical. The printed House grand total is ₱654.102015B. Earlier API matcher/dashboard artifacts have not been regenerated.
+
 # FY2027 DPWH Budget Crosscheck — Work Summary & Next Steps
 
 **Date:** Oct 8, 2026 · **Scope:** FY 2027 only (no prior-year crosschecks)

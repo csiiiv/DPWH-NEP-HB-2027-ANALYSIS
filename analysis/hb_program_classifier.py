@@ -21,6 +21,15 @@ def hb_program(leaf):
     ptext = proj.lower()
     n = (pap or ptext).lower()
 
+    # Printed House / audited NEP taxonomy: these road activities are Network,
+    # even though their names can sound like preservation work.
+    if n.startswith(("paving of unpaved", "off-carriageway")):
+        return "Network Development Program"
+    if n.startswith("widening of permanent bridges"):
+        return "Bridge Program"
+    if "public-private partnership strategic support fund" in n:
+        return "Local Program"
+
     # 1. canonical PAP / heading labels
     if n.startswith(("asset preservation program",
                      "preventive maintenance", "off-carriageway",
@@ -98,6 +107,11 @@ def hb_program(leaf):
 
 def fap_program(leaf):
     """Program mapping for foreign-assisted (FAP zone) leaves."""
+    if leaf.get("validation") == "native:section_control_balanced" and leaf.get("program") in {
+        "Asset Preservation Program", "Network Development Program", "Bridge Program",
+        "Flood Management Program", "Convergence and Special Support Program", "Local Program",
+    }:
+        return leaf["program"]
     pap = (leaf.get("pap") or "").replace("\n", " ").strip().lower()
     if "laguna lakeshore" in pap:
         return "Network Development Program"

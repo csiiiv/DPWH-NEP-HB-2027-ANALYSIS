@@ -1,3 +1,5 @@
+> **House repair update:** use [hb_known_defect_repairs.md](hb_known_defect_repairs.md) and [hb_dpwh_leaves_corrected_v5.json](hb_dpwh_leaves_corrected_v5.json) for the repaired candidate. v5 has 16,148 positive allocations totaling ₱581.345349B; 38/42 PAP controls and all FAP funding splits balance. The remaining ₱5.596312B net operations gap is confined to four Convergence PAPs. Earlier v4b completeness, program-delta, zero-region, and grand-upper-bound claims below are historical. The printed House grand total is ₱654.102015B. Earlier API matcher/dashboard artifacts have not been regenerated.
+
 # FY 2027 Three-Way Crosscheck — DPWH
 
 > **Historical report:** several House tables and matcher counts below predate v4b. The current [NEP/API reconciliation](nep_2027_api_reconciliation.md) accounts for the gap as ₱69.687941B GAS/S2O + ₱117.749011B FAP + ₱9.797B in 23 non-FAP allocations. “House-only” means API-unmatched, not a verified insertion. Disaster-Related Infrastructure already has a ₱1B NEP allocation; Quirino K0264–K0281 is an unchanged NEP/API/House match. Use [FY2027_work_summary.md](FY2027_work_summary.md) for current status.

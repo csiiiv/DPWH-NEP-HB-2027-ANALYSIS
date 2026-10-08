@@ -33,8 +33,10 @@ def main():
             r.update(pdf_page=page.number+1, source_id=f'pdf:p{page.number+1}:r{index}')
             rows.append(r)
     doc.close()
-    edits=[]; removed=[]; added=[]; replacement_ranges=[]
+    edits=[]; removed=[]; added=[]; replacement_ranges=[]; blocked_sections=[]
     serial = -1
+    control_lookup={p['pap']:p for p in read('hb_json_usability_audit.json')['pap_control_checks']}
+    pap_programs={native.nospace(p['pap3']):p['program'] for p in read('nep_2027_source_projects.json')['projects']}
 
     def leaf(r, pap, program, region, office='', zone='pap', kind='project'):
         nonlocal serial
@@ -47,7 +49,14 @@ def main():
         return result
 
     def block(title, end=None):
-        start=next(i for i,r in enumerate(rows) if native.nospace(r['label'])==native.nospace(title) and r['bold'])
+        start=next((i for i,r in enumerate(rows) if native.nospace(r['label'])==native.nospace(title) and r['bold']),None)
+        if start is None:
+            # Some wrapped headings have their label after the amount in text order.
+            # Independent y-clustered PDF heading checks already identify their page/value.
+            control=control_lookup[title]
+            pages={h['page'] for h in control['pdf_heading_hits']}
+            start=next(i for i,r in enumerate(rows) if r['pdf_page'] in pages
+                and r['amounts'][0]==control['drilldown_house_local_php'] and r['bold'])
         if end:
             stop=next(i for i in range(start+1,len(rows)) if native.nospace(rows[i]['label'])==native.nospace(end) and rows[i]['bold'])
         else:
@@ -67,6 +76,7 @@ def main():
         output=[]; region=''; office=''
         for r in body:
             label=r['label']
+            if not label:continue
             if region_row(label):region=label;office='';continue
             # Construction titles ending in "Office" are actual project rows.
             if office_row(label) and not re.match(r'Construction|Rehabilitation|Improvement',label):
@@ -92,9 +102,46 @@ def main():
         maintenance.extend(projects(title,app))
     assert sum(r['amount_php'] for r in maintenance)==36094823000
     replace(2450,3333,maintenance,'Re-extract all three maintenance PAPs; native controls and family sum agree exactly.')
+    damaged=[]
+    for title in ['Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads',
+        'Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads',
+        'Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads']:
+        damaged.extend(projects(title,app))
+    assert sum(r['amount_php'] for r in damaged)==28084988000
+    replace(3335,3875,damaged,'Restore damaged-paved-road subtype boundaries from native headings; all three PAPs and their family balance.')
+    slope_and_drainage=[]
+    for prefix in ['Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide',
+                   'Construction/ Upgrading/ Rehabilitation of Drainage along National Roads']:
+        for subtype in ['Primary Roads','Secondary Roads','Tertiary Roads']:
+            slope_and_drainage.extend(projects(prefix+' - '+subtype,app))
+    assert sum(r['amount_php'] for r in slope_and_drainage)==10915924000+4624555000
+    replace(3875,4457,slope_and_drainage,'Restore wrapped slope/landslide and drainage PAP headings using native page/amount anchors; all six PAPs balance.')
+    replace(4923,5270,projects('Construction of By-Pass and Diversion Roads','Network Development Program'),
+        'Recover bypass-road projects from native rows; the complete section balances the printed control.')
+    replace(5270,5476,projects('Construction of Missing Links/ New Roads','Network Development Program'),
+        'Recover missing-link/new-road projects from native rows; the section balances the printed control.')
+    widening=[]
+    for title in ['Road Widening - Primary Roads','Road Widening - Secondary Roads','Road Widening - Tertiary Roads']:
+        widening.extend(projects(title,'Network Development Program'))
+    replace(4461,4923,widening,'Re-extract road-widening subtypes and remove misclassified region subtotals; each PAP balances.')
+    bridges=[]
+    for title in ['Replacement of Permanent Weak Bridges','Retrofitting/ Strengthening of Permanent Bridges',
+        'Rehabilitation/ Major Repair of Permanent Bridges','Widening of Permanent Bridges','Construction of New Bridges']:
+        bridges.extend(projects(title,'Bridge Program'))
+    assert sum(r['amount_php'] for r in bridges)==37590473000
+    replace(5830,7007,bridges,'Rebuild all five printed local Bridge PAPs; they sum exactly to the program control without adding parent buckets.')
+    try:
+        off=[]
+        for subtype in ['Primary Roads','Secondary Roads','Tertiary Roads']:
+            off.extend(projects('Off-Carriageway Improvement - '+subtype,'Network Development Program'))
+        replace(5484,5789,off,'Rebuild all Off-Carriageway subtypes using printed source controls.')
+    except AssertionError as error:
+        blocked_sections.append({'section':'Off-Carriageway Improvement','reason':str(error)})
+    replace(7008,8452,projects('Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems','Flood Management Program'),
+        'Recover flood-mitigation structures and drainage rows; exclude Nationwide/office containers and balance the native control.')
     paving=[]
     for title in ['Paving of Unpaved Roads - Primary Roads','Paving of Unpaved Roads - Secondary Roads','Paving of Unpaved Roads - Tertiary Roads']:
-        paving.extend(projects(title,app))
+        paving.extend(projects(title,'Network Development Program'))
     assert sum(r['amount_php'] for r in paving)==596021000
     replace(5789,5830,paving,'Keep underlying paving projects once; exclude family/PAP subtotals.')
     # Office-only rainwater allocations must be emitted even though offices normally contain projects.
@@ -121,6 +168,9 @@ def main():
         assert len(allocations)==17 and sum(r['amount_php'] for r in allocations)==head['amounts'][0]
         facilities.extend(allocations)
     replace(9592,9654,facilities,'Replace regional-facility rollups with all 51 printed regional allocations.')
+    ports=projects('BIP - Local Ports and Boat Landing',conv)
+    for r in ports:r['pap']='BIP - Local Ports and Boat Landings'
+    replace(20659,20703,ports,'Rebuild Local Ports allocations from their complete printed section; exclude the PAP subtotal.')
     # Rebuild the local-project section, including construction rows named after offices.
     local=projects('National Building Program','Local Program','FOREIGN-ASSISTED PROJECTS')
     for r in local:r['pap']='Buildings And Other Structures'
@@ -165,6 +215,17 @@ def main():
         if original['row'] in [4681,20659]:
             removed.append({'leaf':original,'reason':'confirmed region/PAP subtotal, not an additive project'});continue
         r=copy.deepcopy(original)
+        canonical_program=pap_programs.get(native.nospace(r.get('pap')))
+        if canonical_program:r['program']=canonical_program
+        if r['row']==20658:
+            # PDF p924 places this final MPB before the Local Ports heading.
+            evidence=next(n for n in rows if n['pdf_page']==924
+                and native.nospace(n['label'])==native.nospace(r['project']) and n['amounts'][0]==r['amount_php'])
+            r['pap']='BIP - Multi-Purpose Buildings/ Facilities to support Social Services'
+            r['program']=conv
+            r['source_id']=evidence['source_id']
+            edits.append({'action':'correct_boundary_attribution','row':r['row'],'pdf_page':924,
+                'reason':'Final Barcelona MPB project precedes the Local Ports heading, so it belongs to MPBs.'})
         r['region']=reg(r.get('region'))
         rec=audit.get(r['row'],{})
         if rec.get('page'):r['pdf_page']=rec['page']
@@ -175,12 +236,20 @@ def main():
             edits.append({'action':'retain_project','row':r['row'],'reason':'This verified-rollup flag labels an actual construction project, not necessarily a subtotal.'})
         result.append(r)
     result.extend(added)
+    for i,(start,stop) in enumerate(replacement_ranges):
+        assert all(stop<=other_start or start>=other_stop for other_start,other_stop in replacement_ranges[i+1:]), 'Overlapping replacements'
     assert len({r['row'] for r in result})==len(result)
     assert all(r['amount_php']>0 for r in result)
     totals=collections.Counter();counts=collections.Counter();pap_totals=collections.Counter()
     for r in result:totals[r['zone']]+=r['amount_php'];counts[r['zone']]+=1;pap_totals[(r['zone'],r['pap'])]+=r['amount_php']
     assert counts['fap']==29 and totals['fap']==44749011000
     assert sum(r['amount_php'] for r in result if r['program']=='Local Program' and r['zone']=='pap')==13875943000
+    program_totals=collections.Counter()
+    for r in result:
+        if r['zone']=='pap':program_totals[r['program']]+=r['amount_php']
+    for program,control in {app:79720290000,'Network Development Program':92435879000,
+        'Bridge Program':37590473000,'Flood Management Program':87187778000,'Local Program':13875943000}.items():
+        assert program_totals[program]==control,(program,program_totals[program],control)
     controls=[]
     for p in read('hb_json_usability_audit.json')['pap_control_checks']:
         controls.append({'pap':p['pap'],'printed_php':p['drilldown_house_local_php'],
@@ -194,7 +263,8 @@ def main():
         'zones_rows':dict(counts),'missing_regions':sum(not r['region'] for r in result),
         'operations_printed_php':586941661000,'operations_net_shortfall_php':586941661000-total,
         'replaced_sections':len(replacement_ranges),'native_added_rows':len(added),
-        'removed_old_rows':len(removed),'balanced_pap_controls':sum(p['difference_php']==0 for p in controls)}
+        'removed_old_rows':len(removed),'balanced_pap_controls':sum(p['difference_php']==0 for p in controls),
+        'local_programs_php':dict(program_totals),'blocked_source_sections':blocked_sections}
     provenance={'base':'hb_dpwh_leaves_corrected_v4b.json','source_pdf':str(PDF.relative_to(ROOT)),
         'source_pdf_sha256':hashlib.sha256(PDF.read_bytes()).hexdigest(),
         'method':'Targeted source-native section replacements, each gated by exact printed-control agreement',
