@@ -435,7 +435,8 @@ def main():
         (output/name).write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
     template = (output/'nep_tree_viewer.template.html').read_text()
     embedded = json.dumps(tree,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c')
-    (output/'nep_2027_tree.html').write_text(template.replace('__TREE_DATA__',embedded))
+    evidence = json.dumps({'review':[r for r in audit['records'] if r['status']!='within_bbox_agreement'], 'repairs':repairs},ensure_ascii=False,separators=(',',':')).replace('<','\\u003c')
+    (output/'nep_2027_tree.html').write_text(template.replace('__TREE_DATA__',embedded).replace('__EVIDENCE_DATA__',evidence))
     (output/'nep_2027_tree.md').write_text(report(summary,audit))
     print(json.dumps(summary,indent=2))
 

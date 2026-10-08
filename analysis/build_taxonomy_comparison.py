@@ -518,7 +518,7 @@ tr.detail td{background:var(--panel);border-bottom:2px solid var(--line);padding
 .empty{padding:40px;text-align:center;color:var(--dim)}
 </style>
 </head>
-<body>
+<body><nav data-historical="true" style="padding:12px 20px;margin-bottom:18px;background:#fff1d9;color:#203147;font:14px/1.5 system-ui"><a href="../site/index.html">All dashboards</a> · Historical House v3 / API artifact. Budget upper-bound and insertion/removal labels below are superseded. <a href="source_comparison_2027.html">Open the current source comparison</a></nav>
 <div class="wrap">
   <h1>HB 10858 vs DPWH NEP FY 2027 — PAP Taxonomy Comparison</h1>
   <div class="sub" id="subline"></div>
@@ -528,7 +528,7 @@ tr.detail td{background:var(--panel);border-bottom:2px solid var(--line);padding
     <div class="gbar"><i id="ghb" style="background:#f8514999"></i><i id="gnep" style="background:#58a6ff99"></i></div>
     <div class="d" id="glegend"></div>
   </div>
-  <div class="legend">
+  <p>Amounts: 3 decimals · B billion, M million, T thousands. Click a column header to sort. <span class="delta-positive">+ Increased</span> · <span class="delta-negative">− Decreased</span>.</p><div class="legend">
     <span><b class="st aligned" style="border:none;padding:0">aligned</b> totals match ≤0.5%</span>
     <span><b class="st delta" style="border:none;padding:0">amount Δ</b> same category, different ₱</span>
     <span><b class="st hb_only" style="border:none;padding:0">HB only</b> House-inserted category/family</span>
@@ -557,16 +557,11 @@ tr.detail td{background:var(--panel);border-bottom:2px solid var(--line);padding
   </table>
   <div class="footer" id="foot"></div>
 </div>
+<script src="budget_display.js"></script>
 <script>
 const DATA = __DATA__;
 const B = 1e9, M = 1e6;
-const fmt = x => {
-  if (x == null) return "—";
-  const a = Math.abs(x);
-  if (a >= B) return (x/B).toFixed(2)+"B";
-  if (a >= M) return (x/M).toFixed(1)+"M";
-  return x.toLocaleString();
-};
+const fmt = BudgetDisplay.amount;
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const S = DATA.summary;
 document.getElementById("subline").textContent =
@@ -582,7 +577,7 @@ const cards = [
 ];
 document.getElementById("cards").innerHTML = cards.map(([k,v,d],i)=>`
   <div class="card"><div class="k">${k}</div>
-  <div class="v" style="color:${i===2?(S.delta_grand>=0?'var(--red)':'var(--green)'):'var(--txt)'}">${v==null?S.n_categories:fmt(v)}</div>
+  <div class="v" style="color:${i===2?(S.delta_grand>=0?'#126c48':'#a42a36'):'var(--txt)'}">${v==null?S.n_categories:fmt(v)}</div>
   <div class="d">${d}</div></div>`).join("");
 
 const gmax = Math.max(S.hb_grand, S.nep_grand);
@@ -622,7 +617,7 @@ function regionsHtml(sideObj, color){
 
 function rowHtml(r, i){
   const st = {aligned:["aligned","ALIGNED"],delta:["delta","AMOUNT Δ"],hb_only:["hb_only","HB ONLY"],nep_only:["nep_only","NEP ONLY"]}[r.status];
-  const dCls = r.status==="aligned" ? "delta-zero" : (r.delta>0 ? "delta-pos" : "delta-neg");
+  const dCls = BudgetDisplay.deltaClass(r.delta);
   const h = r.hb, n = r.nep;
   const pct = (h&&n&&Math.max(h.total,n.total)>0) ? (100*r.delta/Math.max(h.total,n.total)) : null;
   const det = `
@@ -646,9 +641,9 @@ function rowHtml(r, i){
         <span class="tag" style="color:${r.kind==='categorical'?'var(--dim)':'var(--purple)'}">${r.kind==='categorical'?'std':(r.kind==='program_bundled'?'bundled':'house')}</span>
       </div></td>
     <td><span class="st ${st[0]}">${st[1]}</span></td>
-    <td class="num">${h?fmt(h.total):"—"}</td>
-    <td class="num">${n?fmt(n.total):"—"}</td>
-    <td class="num ${dCls}">${r.status==="aligned"?"≈":(r.delta>0?"+":"")+fmt(r.delta)}</td>
+    <td class="num" data-sort-value="${h?.total??''}">${h?fmt(h.total):"—"}</td>
+    <td class="num" data-sort-value="${n?.total??''}">${n?fmt(n.total):"—"}</td>
+    ${BudgetDisplay.cell(r.delta,true)}
   </tr>${det}`;
 }
 
@@ -677,7 +672,7 @@ tb.addEventListener("click", e=>{
   document.getElementById("det"+tr.dataset.i)?.classList.toggle("open");
 });
 document.getElementById("q").addEventListener("input", e=>{query=e.target.value; render();});
-document.getElementById("sort").addEventListener("change", e=>{sortKey=e.target.value; render();});
+document.getElementById("sort").addEventListener("change", e=>{BudgetDisplay.clear(tb.closest("table"));sortKey=e.target.value; render();});
 document.querySelectorAll(".chip").forEach(ch=>ch.addEventListener("click", ()=>{
   document.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));
   ch.classList.add("on");

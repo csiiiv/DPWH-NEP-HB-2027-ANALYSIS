@@ -6,13 +6,15 @@ on:
     paths:
       - 'analysis/**'
       - 'site/**'
-      - 'scripts/build_pages.py'
+      - 'scripts/**'
+      - 'HB_BUDGET/*.pdf'
       - '.github/workflows/pages.yml'
   pull_request:
     paths:
       - 'analysis/**'
       - 'site/**'
-      - 'scripts/build_pages.py'
+      - 'scripts/**'
+      - 'HB_BUDGET/*.pdf'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -28,6 +30,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - name: Check current accounting, data freshness and matching
+        run: python3 -m unittest discover -s analysis -p test_current_pages.py -v
+      - name: Check budget display units, signs and numeric sorting
+        run: node --test analysis/test_budget_display.cjs
       - name: Prepare static viewers
         run: python3 scripts/build_pages.py
       - name: Configure Pages

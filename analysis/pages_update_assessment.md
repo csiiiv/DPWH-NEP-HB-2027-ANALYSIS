@@ -1,6 +1,21 @@
 # Page assessment after the NEP and House dataset updates
 
-Assessment date: 8 October 2026. This reviews the five reports open in the IDE, local dashboards, embedded datasets, generators, and the packaged site. A local Chromium smoke check covers desktop and mobile behavior; the live deployed site was not checked. Only this assessment was updated; no viewer or dataset was changed.
+Assessment date: 8 October 2026. This reviews the five reports open in the IDE, local dashboards, embedded datasets, generators, and the packaged site. A local Chromium smoke check covers desktop and mobile behavior; the live deployed site was not checked. The initial assessment changed no viewers or datasets; the implementation update below records the subsequent page work.
+
+## Implementation update — 8 October 2026
+
+The new [current source comparison](source_comparison_2027.html) is the primary comparison page. The earlier crosscheck and title taxonomy remain historical artifacts. The findings below describe the pre-update assessment; this section records what has since been implemented.
+
+- Printed NEP/House controls, extraction coverage, and API coverage now have separate tables. The printed totals reproduce +₱11.49B overall and −₱2.527587B GAS/S2O; the invalid leaves-plus-MOOE upper bound is absent from the current data/page.
+- All 42 House PAP controls map to canonical NEP source IDs. Three additional NEP PAPs show “House control not mapped”; absence is not presented as a removal. Exact peso agreement and 0.5% tolerance agreement are separate statuses. Regional drilldowns explicitly compare extracted allocations rather than printed House regional controls.
+- The index and current page show House v5, 38/42 balanced PAP controls, all four coverage discrepancies, FAP funding status, source stage, and build provenance. House summary/details PDFs are packaged for working citations; NEP references retain local-PDF instructions.
+- A new v5/source matcher runs against project totals whose source IDs and amounts agree with the canonical tree. Unique normalized-title candidates preserve region/PAP/local-FAP scope; duplicates remain ambiguous and fuzzy suggestions are not consumed as pairs. No current match is labeled a verified insertion/removal. The 19,001 result records are fully searchable, with 100 rows per page and a full download. There are 8,567 exact-title candidates, of which 259 have paired amount differences; 1,648 House rows have fuzzy suggestions, six have ambiguous exact keys, 5,927 are unmatched without suggestions, and 2,853 NEP rows have no unique exact pair. None is manually certified in this run.
+- The NEP viewer shows separate arithmetic/evidence badges and evidence filters for all 237 review candidates, including two non-additive reference rows, and four unchecked nodes. Details include bounding boxes, review reasons/candidate amounts, and applicable repairs. Keyboard tree navigation preserves focus. Search can progressively reveal more than 300 matches.
+- Amounts now display three decimal places with B (billion), M (million), and T (thousands); downloadable data keeps exact pesos. Every current and historical table has sortable headers. Current project sorts apply to the full filtered dataset before pagination; nested detail rows stay attached to their PAP. Positive deltas are green, negatives red, and zero neutral, with signed values retained.
+- The new page uses keyboard-accessible PAP expansions and filters, paginated results, and contained horizontal table scrolling. The index, current page and NEP viewer have no document-level overflow at a 390-pixel viewport in local Chromium smoke checks. Legacy viewers retain their older layouts.
+- Packaging rejects stale input hashes, mismatched embedded/source data, invalid accounting, incomplete matching coverage and missing static downloads. The Pages workflow runs the current matching/accounting regressions before packaging. Current report recommendations were updated to v5, while historical metrics remain labeled by version.
+
+Evidence work remains: reconstruct the four House sections, finish the NEP image-review queue, review current project candidate identities, and certify House amendment completeness. The current static comparison has approximately 15 MB of embedded data and a shared local display/sorting script; it renders only the current result page, but does not stream/lazily load the dataset. No live deployment or assistive-technology audit was performed.
 
 ## Findings
 

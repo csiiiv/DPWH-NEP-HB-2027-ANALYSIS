@@ -510,14 +510,14 @@ input[type=search]:focus{outline:1px solid var(--blue)}
 .tag.dn{background:#0f2416;color:var(--green)}
 .tag.eq{background:#1c2330;color:var(--dim)}
 code{font-family:var(--mono);font-size:12px}
-</style></head><body><div class="wrap">
+</style></head><body><nav data-historical="true" style="padding:12px 20px;margin-bottom:18px;background:#fff1d9;color:#203147;font:14px/1.5 system-ui"><a href="../site/index.html">All dashboards</a> · Historical House v4b / API artifact. Budget upper-bound and insertion/removal labels below are superseded. <a href="source_comparison_2027.html">Open the current source comparison</a></nav><div class="wrap">
 <h1>FY2027 Three-Way Crosscheck — DPWH</h1>
 <div class="sub">House Bill 10858 (PDF) · Official NEP (github compilation) · NEP line-item API (bettergov)</div>
 <div class="warn">⚠ <b>NEP API is incomplete:</b> line items sum to ₱445.4B while the official FY2027 NEP is ₱642.6B.
 The gap reconciles as ₱69.687941B GAS/S2O + ₱117.749011B foreign-assisted projects + ₱9.797B in 23 non-FAP allocations.
 House-only/API-only findings below are API comparison outcomes, not verified insertions/removals. See the <a href="nep_2027_api_reconciliation.md">NEP source reconciliation</a> and <a href="FY2027_work_summary.md">current work summary</a>; the displayed findings have not been rematched against the expanded source.</div>
-<div class="cardrow" id="cards"></div>
-<h3 style="margin-bottom:8px">Program-level totals (₱B)</h3>
+<p style="margin:12px 0">Amounts: 3 decimals · B billion, M million, T thousands. Click column headers to sort the displayed rows. <span class="delta-positive">+ Increased</span> · <span class="delta-negative">− Decreased</span>.</p><div class="cardrow" id="cards"></div>
+<h3 style="margin-bottom:8px">Program-level totals (B/M/T)</h3>
 <table id="pt"><thead><tr>
 <th>Program</th><th class="num">NEP official</th><th class="num">NEP API</th>
 <th class="num">HB leaves</th><th class="num">HB projects</th>
@@ -537,10 +537,11 @@ House-only/API-only findings below are API comparison outcomes, not verified ins
 <table id="sec"><tbody></tbody></table>
 <div style="color:var(--dim);font-size:12px;margin-top:18px" id="foot"></div>
 </div>
+<script src="budget_display.js"></script>
 <script>
 const D = __DATA__;
 const B = 1e9;
-const f = x => (x/1e9).toFixed(x!=null&&Math.abs(x)<1e10?2:1)+"B";
+const f = BudgetDisplay.amount;
 const esc = s => String(s).replace(/</g,"&lt;");
 const G = D.grand_totals;
 document.getElementById("cards").innerHTML = [
@@ -554,18 +555,16 @@ const tb = document.querySelector("#pt tbody");
 tb.innerHTML = D.programs.map(r=>{
  const ap = r.api_gap_php, ho = r.hb_minus_official_php;
  return `<tr><td>${esc(r.program)}</td>
- <td class="num">${f(r.nep_official_php)}</td><td class="num">${f(r.nep_api_php)}</td>
- <td class="num">${f(r.hb_leaves_php)}</td><td class="num dim">${r.hb_leaves_projects.toLocaleString()}</td>
- <td class="num ${ap>0?'pos':'neg'}">${ap>0?"+":""}${f(Math.abs(ap))} missing</td>
- <td class="num ${ho>0?'pos':'neg'}">${ho>0?"+":""}${f(ho)}</td></tr>`;
+ <td class="num" data-sort-value="${r.nep_official_php}">${f(r.nep_official_php)}</td><td class="num" data-sort-value="${r.nep_api_php}">${f(r.nep_api_php)}</td>
+ <td class="num" data-sort-value="${r.hb_leaves_php}">${f(r.hb_leaves_php)}</td><td class="num dim" data-sort-value="${r.hb_leaves_projects}">${r.hb_leaves_projects.toLocaleString()}</td>
+ <td data-sort-value="${ap}" class="num ${BudgetDisplay.deltaClass(ap)}">${ap>0?"+":""}${f(Math.abs(ap))} missing</td>
+ ${BudgetDisplay.cell(ho,true)}</tr>`;
 }).join("");
 
 // ---- PAP drill-down: program -> PAP blocks -> regions --------------------
 const DD = D.drilldown;
-const fs = x => Math.abs(x)>=1e9
- ? "₱"+(x/1e9).toLocaleString("en-PH",{maximumFractionDigits:2})+"B"
- : "₱"+(x/1e6).toLocaleString("en-PH",{maximumFractionDigits:0})+"M";
-const dd = x => x>0?"+"+fs(x):x<0?"−"+fs(-x):"0";
+const fs = BudgetDisplay.amount;
+const dd = BudgetDisplay.delta;
 const tw = `<span class="tw">▸</span>`;
 const progSpan = p => p && p!=="?" ? esc(p) : `<span class="dim">unmapped</span>`;
 const PDFURL = "../HB_BUDGET/3%20-%20HB%2010858%20VOL%20IC.pdf";
@@ -576,13 +575,13 @@ papsEl.innerHTML = `<table><thead><tr><th>PAP (printed HB block)</th><th>Program
  const flags = p.exact?`<span class="badge ok">✓ exact</span>`:""
   + (p.hb_fap?` <span class="badge" title="FAP-zone money printed under this label; excluded from the delta (no API coverage)">+ ${fs(p.hb_fap)} FAP</span>`:"");
  const regions = p.regions.filter(x=>x.hb||x.api).map(x=>
-  `<tr><td>${esc(x.region)}</td><td class="num">${fs(x.hb)}</td><td class="num">${fs(x.api)}</td><td class="num ${x.delta>0?'pos':x.delta<0?'neg':'dim'}">${dd(x.delta)}</td></tr>`).join("");
+  `<tr><td>${esc(x.region)}</td><td class="num" data-sort-value="${x.hb}">${fs(x.hb)}</td><td class="num" data-sort-value="${x.api}">${fs(x.api)}</td>${BudgetDisplay.cell(x.delta,true)}</tr>`).join("");
  return `<tr class="pap" data-i="${i}"><td>${tw}${esc(p.label)}${flags}</td>
  <td class="num dim">${progSpan(p.program)}</td>
- <td class="num">${fs(p.hb_local)}</td><td class="num">${fs(p.api_total)}</td>
- <td class="num ${dl}">${dd(p.delta)}</td><td class="num dim">${p.pages.map(pg=>`<a href="${PDFURL}#page=${pg}" target="_blank" rel="noopener">p.${pg}</a>`).join(" · ")}</td></tr>
+ <td class="num" data-sort-value="${p.hb_local}">${fs(p.hb_local)}</td><td class="num" data-sort-value="${p.api_total}">${fs(p.api_total)}</td>
+ ${BudgetDisplay.cell(p.delta,true)}<td class="num dim">${p.pages.map(pg=>`<a href="${PDFURL}#page=${pg}" target="_blank" rel="noopener">p.${pg}</a>`).join(" · ")}</td></tr>
  <tr class="sub" id="sub-${i}" style="display:none"><td colspan="6"><table>
-  <thead><tr><th>Region</th><th class="num">HB ₱M</th><th class="num">API ₱M</th><th class="num">Δ ₱M</th></tr></thead>
+  <thead><tr><th>Region</th><th class="num">HB ₱</th><th class="num">API ₱</th><th class="num">Δ ₱</th></tr></thead>
   <tbody>${regions||`<tr><td colspan="4" class="dim">no region buckets</td></tr>`}</tbody>
  </table></td></tr>`;
 }).join("")
@@ -602,7 +601,7 @@ papsEl.addEventListener("click", e=>{
 // ---- project findings explorer -------------------------------------------
 const F = DD.findings, FC = DD.findings_counts, FT = DD.findings_totals_thousands;
 const CAP = DD.findings_capped_at;
-const P = x => "₱"+(x/1e6).toLocaleString("en-PH",{maximumFractionDigits:1})+"M";
+const P = BudgetDisplay.amount;
 const CLS = {
  amount_edited:{lab:"amount edited", hint:"matched pair, House re-priced"},
  hb_only:{lab:"HB only", hint:"unmatched to API — review expanded NEP source and House OCR"},
@@ -639,9 +638,9 @@ function renderF(){
    :`<span class="tag ${d>0?'up':d<0?'dn':'eq'}">${d>0?"▲":d<0?"▼":"="}</span>`;
   return `<tr><td style="max-width:420px">${esc(r.name||"")}${r.code?` <code class="dim">${esc(r.code)}</code>`:""}</td>
   <td>${tag}</td>
-  <td class="num">${r.hb!=null?P(r.hb):`<span class="dim">—</span>`}</td>
-  <td class="num">${r.api!=null?P(r.api):`<span class="dim">—</span>`}</td>
-  <td class="num ${cls==='up'||cls==='ins'?'pos':cls==='dn'||cls==='rem'?'neg':'dim'}">${r.delta!=null?dd(r.delta):cls==='ins'?"(no match)":cls==='rem'?"(deleted)":"—"}</td>
+  <td class="num" data-sort-value="${r.hb??''}">${r.hb!=null?P(r.hb):`<span class="dim">—</span>`}</td>
+  <td class="num" data-sort-value="${r.api??''}">${r.api!=null?P(r.api):`<span class="dim">—</span>`}</td>
+  <td class="num ${BudgetDisplay.deltaClass(r.delta)}" data-sort-value="${r.delta??''}">${r.delta!=null?dd(r.delta):cls==='ins'?"(no match)":cls==='rem'?"(deleted)":"—"}</td>
   <td class="dim">${esc(r.region||"")}</td><td class="dim" style="font-size:11.5px">${progSpan(r.program)}</td></tr>`;
  }).join("") || `<tr><td colspan="7" class="dim">no rows match</td></tr>`;
  document.getElementById("fcount").textContent =
@@ -674,10 +673,10 @@ document.querySelector("#gt tbody").innerHTML = [
  ["HB printed MOOE = GAS + S2O (control check)", S.hb_printed_mooe_php,
   `=${f(S.hb_printed_gas_php)} + ${f(S.hb_printed_s2o_php)} — ${G.hb_mooe_identity_ok?"exact match":"MISMATCH"}`],
  ["HB printed S2O+GAS vs NEP S2O+GAS delta", S.hb_printed_php - S.nep_official_php],
-].map(([k,v,d])=>`<tr><td>${k}${d?` <span class="dim">${d}</span>`:""}</td><td class="num">${f(v)}</td></tr>`).join("");
+].map(([k,v,d])=>`<tr><td>${k}${d?` <span class="dim">${d}</span>`:""}</td><td class="num ${k.toLowerCase().includes('delta')?BudgetDisplay.deltaClass(v):''}" data-sort-value="${v}">${f(v)}</td></tr>`).join("");
 
 document.querySelector("#sec tbody").innerHTML = Object.entries(D.printed_sections)
- .map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num">${f(v)}</td></tr>`).join("");
+ .map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num ${k.toLowerCase().includes('delta')?BudgetDisplay.deltaClass(v):''}" data-sort-value="${v}">${f(v)}</td></tr>`).join("");
 
 document.getElementById("foot").innerHTML =
  `<b>Sources</b> — HB: <code>${esc(D.meta.hb_source)}</code> · NEP official: <a href="https://github.com/ajamontesa/ph-budget-analysis">ajamontesa/ph-budget-analysis</a> · NEP API: <code>${esc(D.meta.nep_api_source)}</code><br>`

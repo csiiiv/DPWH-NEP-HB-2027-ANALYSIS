@@ -121,7 +121,9 @@ commits, snapshots, and provenance identify the material actually used.
 ## Shared dashboards
 
 [Open the dashboard index](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/)
-for the NEP tree, historical three-way crosscheck, and taxonomy viewer.
+for the NEP tree and the current [source comparison](analysis/source_comparison_2027.html),
+including printed controls, House v5 coverage, PAP mappings, and project candidates.
+Earlier three-way and title-taxonomy viewers remain labeled historical.
 `.github/workflows/pages.yml` builds and publishes the committed viewers on
 relevant pushes to `main` or manual dispatch. Pull requests validate the static
 build without deployment. This does not rerun source-PDF extraction.
@@ -133,16 +135,36 @@ python scripts/build_pages.py
 python -m http.server 8000 --directory _site
 ```
 
-Open `http://localhost:8000`. Hosted viewers preserve PDF page references but
-do not link to unavailable local PDFs. Report links open rendered Markdown on
-GitHub; viewer-specific caveats distinguish the current NEP baseline from
+Open `http://localhost:8000`. Hosted viewers preserve NEP PDF page references
+and provide working House PDF links. Report links open rendered Markdown on GitHub; viewer-specific caveats distinguish the current NEP baseline from
 historical comparisons.
 
-The NEP tree viewer uses the updated canonical tree. The three-way crosscheck
-still uses House v4b; the taxonomy viewer uses House v3 and the incomplete API
-baseline. Neither comparison has been rebuilt for v5. See the
-[page-update assessment](analysis/pages_update_assessment.md) for required
-accounting, evidence-status, and matching improvements.
+The current static source comparison uses House v5 and the canonical NEP tree.
+It maps the 42 audited House PAP controls to NEP source IDs, retains three NEP
+PAPs without a mapped House control, and separates printed budget differences
+from extracted regional totals and project candidates. The matcher treats
+unique normalized titles within region/PAP/zone as candidate pairs; duplicate
+keys and fuzzy suggestions remain unresolved. No pair is manually certified.
+Search covers all embedded records with pagination rather than a capped subset.
+Displayed amounts use three decimals with B (billion), M (million), and T
+(thousands); downloads retain exact pesos. Click any table header to sort.
+Project sorting covers the full filtered result before pagination. Positive
+deltas are green, negative deltas red, and zero neutral.
+
+To regenerate pages from the retained JSON inputs (no PDF extraction needed):
+
+```sh
+python analysis/build_current_pages.py
+python -m unittest discover -s analysis -p test_current_pages.py -v
+python scripts/build_pages.py
+```
+
+The builder records input hashes and the matching method in
+[the comparison manifest](analysis/comparison_manifest.json). Packaging rejects
+stale inputs, mismatched embedded data, and invalid accounting. House summary
+and detail PDFs are packaged for working page citations; the NEP PDF remains
+local. The earlier viewers still use House v4b/v3 and the saved API; their
+accounting and insertion/removal labels are superseded by the current page.
 
 The NEP new-appropriations tree totals ₱642,612,015,000 and balances all 2,552
 additive branch checks. Arithmetic balance does not independently certify each

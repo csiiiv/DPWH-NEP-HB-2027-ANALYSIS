@@ -6,7 +6,7 @@ All saved House datasets and related crosscheck/validation JSONs were inventorie
 
 ## Recommendation
 
-Use native PDF summary controls for grand/program totals, `crosscheck_2027_pap_drilldown.json` for PAP controls after the page checks below, and `hb_dpwh_leaves_corrected_v4b.json` as the best existing candidate project table. No existing project table is complete or safe to sum as a certified budget.
+Use native PDF summary controls for grand/program totals, `crosscheck_2027_pap_drilldown.json` for PAP controls after the page checks below, and [House v5](hb_dpwh_leaves_corrected_v5.json) as the current repaired candidate project table. See the [current source comparison](source_comparison_2027.html) for printed controls, four unresolved PAPs, and candidate project matches. No existing project table is complete or safe to sum as a certified budget.
 
 `hb_dpwh_leaves_corrected_v3.json` and `textlayer_audit_v3.json` are the amount-repair/provenance baseline. v4/v4b retain the same amounts; their improvements are attribution. The hierarchy and block tree retain pre-repair amounts and damaged heading controls.
 
@@ -21,6 +21,7 @@ Use native PDF summary controls for grand/program totals, `crosscheck_2027_pap_d
 | hb_dpwh_leaves_corrected_v3.json | 15,487 | 520.651663 | 2,248 | 14,130 | 29 |
 | hb_dpwh_leaves_corrected_v4.json | 15,487 | 520.651663 | 2,248 | 14,130 | 29 |
 | hb_dpwh_leaves_corrected_v4b.json | 15,487 | 520.651663 | 32 | 14,130 | 29 |
+| hb_dpwh_leaves_corrected_v5.json | 16,148 | 581.345349 | 0 | Not rerun | Not rerun |
 
 Exact native presence does not establish completeness, uniqueness, correct attribution, or valid additive status. Office allocation rows can legitimately be budget units even when classified as headings.
 
@@ -92,7 +93,9 @@ House local operations sum to ₱542.192650B versus NEP non-FAP operations ₱45
 | Paving of Unpaved Roads - Secondary Roads | 0.021992 | 0.021992 | 0.043984 | True |
 | Paving of Unpaved Roads - Primary Roads | 0.005000 | 0.005000 | 0.000000 | True |
 
-## Known defects and downstream use
+## Historical v4b defects and downstream use
+
+The v5 repair report supersedes the repaired paving, Rainwater, PM-Primary, subtype, bridge, facility, local-program, and FAP defects below. Four Convergence PAPs remain unresolved. Native-title hit metrics have not been rerun for v5.
 
 - All 42 saved PAP local controls agree with native PDF heading amounts on their referenced pages and map to audited NEP PAP controls. This checks printed controls, not completeness of project rows or all regional subtotals.
 - Secondary-road paving: PDF page 255 prints ₱21.992M; v4b retains that subtotal plus all three projects, totaling ₱43.984M. Confirmed double count.

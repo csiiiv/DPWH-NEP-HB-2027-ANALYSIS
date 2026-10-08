@@ -4,7 +4,7 @@
 
 **Date:** Oct 8, 2026 · **Scope:** FY 2027 only (no prior-year crosschecks)
 **Sources:** HB 10858 summary (Volume I-B) and details (Volume I-C, 942 pp) · retained FY2027 NEP Volume II-B PDF and OCR trees (`paddle_pdf_ocr_v2`) · NEP official compilation (`ajamontesa/ph-budget-analysis`) · saved NEP API (BetterGov, 11,372 rows)
-**Current House project candidate:** `hb_dpwh_leaves_corrected_v4b.json` — 15,487 rows, ₱520.651663B. Incomplete, with attribution/additive-status defects and 32 rows missing regions; not a certified budget total. Use printed House controls for aggregate comparisons. See [House JSON usability audit](hb_json_usability_audit.md).
+**Current House project candidate:** [House v5](hb_dpwh_leaves_corrected_v5.json) — 16,148 positive allocations, ₱581.345349B; 38/42 local PAP controls balance, zero missing regions, and a ₱5.596312B net operations gap across four unresolved Convergence PAPs. Use printed House controls for aggregate comparisons. [Current static comparison](source_comparison_2027.html) separates printed controls, extraction coverage, PAP mappings, and source-match candidates. Earlier v4b results below are historical.
 
 **NEP source update (Oct 8):** `nep_2027_source_projects.json` now provides 11,420 source-page-referenced operations allocations, totaling ₱572.924074B. All 45 non-FAP PAP controls reconcile exactly. See `nep_2027_api_reconciliation.md`; older insertion/drop claims below require source-based review.
 
@@ -103,10 +103,10 @@ Local operations increase **₱87.017587B** (House ₱542.192650B versus NEP ₱
 ### 2.3 Validation strength and remaining extraction limits
 
 - **NEP:** every additive branch and the atomic ledger balance exactly. This isolates lower-branch failures but cannot exclude equal-and-opposite OCR errors among siblings; the independent 237-row image-review queue remains open.
-- **House:** printed grand/program controls provide the aggregate baseline. Existing project tables cannot yet reproduce it reliably; v4b contains 32 `pdf3:verified_rollup` rows totaling ₱4.565125B whose additive status needs review.
+- **House:** printed grand/program controls provide the aggregate baseline. v5 has 38/42 balanced local PAP controls and a ₱5.596312B net operations gap across four Convergence PAPs. The historical v4b rollup flags below should not be carried forward as current v5 coverage metrics.
 - House PAP controls are usable after the documented page checks. Old v4b coverage ratios, reported family gaps, and leaf-based overages are diagnostic only because controls, labels, and additive scope can be wrong. See `hb_json_usability_audit.md` for the audited examples.
 
-### 2.4 Line-item deltas (post-v4b, post-region backfill)
+### 2.4 Historical API matcher (v4b, post-region backfill)
 - **9,115 matched** pairs; **95.6% amount-equal** (8,715 pass-through), 400 re-costed.
 - **6,073 API-unmatched House items (₱178.2B)**; **2,257 API items unmatched to House leaves (₱147.3B)**. These are matcher outcomes, not verified insertions/removals.
 - Region backfill raised historical matcher matches 8,843 → 9,115. This does not establish full-table region completeness or insertion status; 32 v4b rows still lack regions.
@@ -115,20 +115,24 @@ Local operations increase **₱87.017587B** (House ₱542.192650B versus NEP ₱
 
 ---
 
+### 2.5 Current source matcher (House v5)
+
+The [current static comparison](source_comparison_2027.html) rematches all 16,148 House allocations against 11,420 NEP source allocations, using canonical PAP IDs and source-node amounts. It finds 8,567 unique normalized-title candidates (259 paired amount differences), 1,648 House rows with fuzzy suggestions, six ambiguous exact-key rows, 5,927 House rows without a suggestion, and 2,853 NEP rows without a unique exact pairing. Suggestions can overlap and do not consume NEP rows. Zero pairs have been manually certified in this run. Unmatched rows do not establish additions/removals; funding partitions stay within project totals.
+
 ## 3. What we settled on (conventions & decisions)
 
 | Decision | Choice | Why |
 |---|---|---|
-| Totals basis | NEP validated source tree ₱642.612015B; House printed controls ₱654.102015B | House v4b leaves are incomplete and cannot supply a grand total |
+| Totals basis | NEP validated source tree ₱642.612015B; House printed controls ₱654.102015B | House v5 covers incomplete operations allocations and cannot supply a grand total |
 | OCR validation | Recursive zero-tolerance rollups plus independent PDF evidence | A balanced root or sibling total can hide offsetting errors |
 | Source independence | NEP hierarchy and amounts from PDF/PAP/PS sources only | API omissions must not define the comparison baseline |
 | House-delta signal | **HB − official NEP** (not HB − API) | API incompleteness overstates insertions |
-| Program attribution | Ordered classifier + pap3 match: canonical PAP labels → flood keywords → BIP/local-road families → APP work verbs → bridges → roads | Mirrors the NEP's own filing (barangay roads → Convergence) |
-| Headingless / stale-pap rows | **Repaired in v4b** (not excluded) — ancestry + PDF bold-heading map | ₱319B pool reclaimed; unattributed insertions eliminated |
+| Program attribution | Current comparison: audited PAP labels map to canonical NEP source IDs; FAP uses source program headings | Title classifiers remain historical fallback evidence |
+| Headingless / stale-pap rows | **Repaired in v4b** (not excluded) — ancestry + PDF bold-heading map | Historical attribution repairs; improved labels do not establish insertions |
 | FAP zone | Kept separate from local PAP comparisons | API carries no FAP items |
 | Family intro blocks | Treated as rollups (verified vs children), not API comparisons | Prevents double counting |
 | Region identity | NFKC-normalized, 18 canonical regions; office→region backfill for empty leaves | OCR variants (`Ⅳ-A`, `egion`, mangled DEO names) |
-| Line-item matching | Exact title in region scope (office fallback) → Jaccard ≥0.62; greedy 1:1; amount/office tie-breaks | High precision (~95.6% of matches amount-equal) |
+| Line-item matching | Current v5/source run: unique normalized title + region + PAP/zone; duplicate keys ambiguous; fuzzy title suggestions ≥0.85 remain candidates | Amount agreement and title similarity are separate from reviewed identity |
 | Method validation | Single-PAP case study (Rainwater) before scaling; v4b three-way family check after repair | You verified 4 samples manually; method reproduced the findings |
 
 ---
@@ -138,8 +142,8 @@ Local operations increase **₱87.017587B** (House ₱542.192650B versus NEP ₱
 **Priority sequence**
 1. **NEP source-image review** — resolve the 237 candidates in `nep_2027_native_amount_review.json`; distinguish PDF text corruption and coordinate drift from genuine amount errors. Record evidence and rerun the recursive checks after any repair.
 2. **House tree reconstruction** — build a source-grounded hierarchy against printed ₱654.102015B new appropriations and ₱586.941661B operations. Repair additive status, dropped rows, stale controls, and PAP/page attribution; require recursive balance as for NEP.
-3. **House boundary and attribution review** — verify the 1,558 previously flagged boundary leaves, 32 missing regions, rollup-tagged rows, paving double count, Rainwater coverage, and PM-Primary control. Existing matcher labels are candidates.
-4. **Complete House–NEP rematch** — compare validated source branches with one-to-one matching. Review the 97 region-conflict exact titles, nine possible headings, and 173 API OCR-title candidates; do not interpret unmatched rows as established changes.
+3. **House boundary and attribution review** — reconstruct the four unresolved v5 sections: BIP access roads/bridges, multi-purpose buildings, Water Supply System, and coastal roads. Missing regions, paving, Rainwater, and PM-Primary defects listed in earlier v4b work have been repaired in v5; inherited row attribution still needs evidence review.
+4. **Source-match review** — the v5/source candidate rematch is complete in the current page. Review ambiguous keys, fuzzy suggestions, unmatched sections, and paired amount differences against both PDFs before certifying project changes. The historical region-conflict and API OCR-title pools remain separate evidence work.
 5. **Targeted change verification** — verify the historical 400 re-costing candidates and largest unmatched rows against both PDFs. Check Quirino K0251–K0264 and Andaya coverage; K0264–K0281 already matches unchanged.
 6. **FAP and support comparisons** — compare source GOP/loan partitions and GAS/S2O office allocations across versions. Use House printed FAP ₱44.749011B rather than the older ₱47.95B candidate-leaf sum.
 
@@ -153,6 +157,8 @@ Local operations increase **₱87.017587B** (House ₱542.192650B versus NEP ₱
 ---
 
 ## 5. Artifact index
+
+Current page: [source comparison](source_comparison_2027.html), [full candidate results](source_comparison_2027.json), [PAP controls](current_pap_controls.json), and [input manifest](comparison_manifest.json). Regenerate with `python analysis/build_current_pages.py`.
 
 | File | Purpose |
 |---|---|
@@ -173,6 +179,6 @@ Local operations increase **₱87.017587B** (House ₱542.192650B versus NEP ₱
 | `hb_dpwh_leaves_corrected_v3.json` | Pre-repair leaves (superseded by v4b) |
 | `repair_headingless.py` | v3 → v4: headingless-tag repair (ancestry/own-text) |
 | `repair_stale_pap.py` | v4 → v4b: stale-pap repair (PDF page → bold family heading) |
-| `hb_dpwh_leaves_corrected_v4b.json` | Best existing House project candidate — 15,487 rows, ₱520.651663B; incomplete, 32 missing regions, additive/attribution defects |
+| `hb_dpwh_leaves_corrected_v4b.json` | Historical House candidate, superseded by v5 — 15,487 rows, ₱520.651663B; incomplete, 32 missing regions |
 | `hb_dpwh_pap_hierarchy.json` | Original House hierarchy; pre-repair amounts and damaged controls, diagnostic only |
 | `page_family_map.json` | PDF page → governing bold PAP family heading |

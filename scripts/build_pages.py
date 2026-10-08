@@ -6,35 +6,35 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
+from validate_current_pages import validate_current_pages
+
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / '_site'
 REPO = 'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/'
-VIEWERS = ['nep_2027_tree.html', 'crosscheck_2027.html', 'taxonomy_comparison.html']
+VIEWERS = ['nep_2027_tree.html', 'source_comparison_2027.html', 'crosscheck_2027.html', 'taxonomy_comparison.html']
 DOWNLOADS = ['nep_2027_tree.json', 'nep_2027_tree_validation.json',
-             'nep_2027_native_amount_review.json', 'nep_2027_api_reconciliation.json']
+             'nep_2027_native_amount_review.json', 'nep_2027_native_amount_audit.json',
+             'nep_2027_budget_units.json', 'nep_2027_api_reconciliation.json',
+             'hb_dpwh_leaves_corrected_v5.json', 'hb_known_defect_repairs.json',
+             'source_comparison_2027.json', 'current_pap_controls.json', 'comparison_manifest.json']
+
 
 
 def hosted_viewer(name, text):
-    # Keep original offline artifacts intact. Local PDF paths cannot work online.
+    # Explicit runtime configuration keeps retained local NEP paths out of hosted links.
     if name == 'nep_2027_tree.html':
-        old = 'const link=n.source.pdf_page?`<p><a href="${esc(data.provenance.inputs.pdf)}#page=${n.source.pdf_page}" target="_blank" rel="noopener">Open source PDF, page ${n.source.pdf_page}</a></p>`:\'\';'
-        new = 'const link=n.source.pdf_page?`<p>Source PDF page ${n.source.pdf_page} (local PDF; not hosted).</p>`:\'\';'
-        if old not in text:
-            raise ValueError('NEP source-link markup changed; review the hosted adaptation.')
-        text = text.replace(old, new).replace(
-            'PDF links use the recorded local source path. If your browser cannot access it, open that PDF in your IDE at the shown page.',
-            'Source PDFs are not hosted. Open your local source PDF at the shown page.')
-    if name == 'crosscheck_2027.html':
-        old = '<a href="${PDFURL}#page=${pg}" target="_blank" rel="noopener">p.${pg}</a>'
-        if old not in text:
-            raise ValueError('Crosscheck source-link markup changed; review the hosted adaptation.')
-        text = text.replace(old, '<span title="Local source PDF; not hosted">p.${pg}</span>')
+        text = text.replace('<head>', '<head><script>window.SITE_CONFIG={sourcePdf:null};</script>', 1)
+    text = text.replace('href="../site/index.html"', 'href="../index.html"')
     # GitHub renders reports; Pages otherwise serves Markdown as raw downloads.
     text = re.sub(r'href="([A-Za-z0-9_]+\.md)"', lambda m: f'href="{REPO}{m[1]}"', text)
-    note = ('NEP rollups balance; PDF-text review candidates remain open.' if name == 'nep_2027_tree.html'
-            else 'Historical viewer: incomplete House/API extraction. Consult the current audits before interpreting budget changes.')
-    banner = f'<nav style="padding:12px 20px;background:#fff1d9;color:#203147;font:14px/1.5 system-ui"><a href="../index.html">All dashboards</a> · {note} <a href="{REPO}FY2027_work_summary.md">Current summary</a></nav>'
-    return re.sub(r'(<body[^>]*>)', lambda m: m[1]+banner, text, count=1)
+    if name in ('crosscheck_2027.html', 'taxonomy_comparison.html') and 'data-historical="true"' not in text:
+        banner = ('<nav style="padding:12px 20px;background:#fff1d9;color:#203147;font:14px/1.5 system-ui">'
+                  '<a href="../index.html">All dashboards</a> · Historical artifact: older incomplete House/API extracts; '
+                  'budget upper-bound and insertion/removal labels below are superseded. '
+                  '<a href="source_comparison_2027.html">Open the current House v5 / NEP source comparison</a></nav>')
+        text = re.sub(r'(<body[^>]*>)', lambda m: m[1]+banner, text, count=1)
+    return text
+
 
 
 class LinkParser(HTMLParser):
@@ -49,7 +49,7 @@ class LinkParser(HTMLParser):
 def validate_site():
     for file in OUTPUT.rglob('*.html'):
         text = file.read_text()
-        if '__TREE_DATA__' in text:
+        if any(marker in text for marker in ('__TREE_DATA__', '__EVIDENCE_DATA__', '__PAYLOAD__', '__INDEX_DATA__')):
             raise ValueError(f'Unrendered template: {file}')
         parser = LinkParser()
         parser.feed(text)
@@ -63,6 +63,7 @@ def validate_site():
 
 
 def main():
+    validate_current_pages()
     OUTPUT.mkdir(exist_ok=True)
     # Delete only the dedicated generated deployment directory's contents.
     for path in OUTPUT.iterdir():
@@ -72,11 +73,17 @@ def main():
             path.unlink()
     target = OUTPUT/'analysis'
     target.mkdir()
-    shutil.copyfile(ROOT/'site/index.html', OUTPUT/'index.html')
+    (OUTPUT/'index.html').write_text((ROOT/'site/index.html').read_text().replace('href="../analysis/', 'href="analysis/').replace('src="../analysis/', 'src="analysis/'))
     for name in VIEWERS:
         (target/name).write_text(hosted_viewer(name,(ROOT/'analysis'/name).read_text()))
     for name in DOWNLOADS:
         shutil.copyfile(ROOT/'analysis'/name,target/name)
+    for name in ['nep_tree_viewer.js', 'budget_display.js']:
+        shutil.copyfile(ROOT/'analysis'/name, target/name)
+    pdfs = OUTPUT/'HB_BUDGET'
+    pdfs.mkdir()
+    for name in ['2 - HB 10858 VOL IB.pdf', '3 - HB 10858 VOL IC.pdf']:
+        shutil.copyfile(ROOT/'HB_BUDGET'/name, pdfs/name)
     (OUTPUT/'.nojekyll').touch()
     validate_site()
     print(f'Prepared and checked {len(VIEWERS)} dashboards in {OUTPUT}')

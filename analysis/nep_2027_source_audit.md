@@ -2,7 +2,7 @@
 
 Date: October 8, 2026. Scope: FY2027 DPWH only. PDF page numbers below are one-based file pages.
 
-**Complete-tree follow-up:** [nep_2027_tree.md](nep_2027_tree.md) and [interactive tree](nep_2027_tree.html) cover all new appropriations, including Personnel Services. Every additive branch balances exactly (2,552 checks); 237 independent native-text discrepancies remain in an explicit image-review queue. Recursive balance isolates hierarchy/amount problems but cannot rule out equal-and-opposite OCR errors among siblings.
+**Complete-tree follow-up:** [nep_2027_tree.md](nep_2027_tree.md) and [interactive tree](nep_2027_tree.html) cover all new appropriations, including Personnel Services. Every additive branch balances exactly (2,552 checks); 237 review candidates (23 nearby alignment candidates and 214 text/image-review cases) remain in an explicit image-review queue; four nodes are unchecked. These are not confirmed amount errors. Recursive balance isolates hierarchy/amount problems but cannot rule out equal-and-opposite OCR errors among siblings.
 
 **Follow-up completed:** see [nep_2027_api_reconciliation.md](nep_2027_api_reconciliation.md). The ₱9.797B residual is now accounted for by 23 printed allocations. A normalized operations reference balances all 45 non-FAP PAP controls and totals ₱572.924074B including FAP; the extraction limits below describe the original raw tree.
 
