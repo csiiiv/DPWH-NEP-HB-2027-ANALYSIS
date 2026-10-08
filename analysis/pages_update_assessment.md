@@ -1,6 +1,6 @@
 # Page assessment after the NEP and House dataset updates
 
-Assessment date: 8 October 2026. This reviews local artifacts and generators, not the live deployed site. No viewer or dataset was changed as part of this assessment.
+Assessment date: 8 October 2026. This reviews the five reports open in the IDE, local dashboards, embedded datasets, generators, and the packaged site. A local Chromium smoke check covers desktop and mobile behavior; the live deployed site was not checked. Only this assessment was updated; no viewer or dataset was changed.
 
 ## Findings
 
@@ -15,6 +15,31 @@ The NEP source viewer contains the updated canonical tree. The comparison viewer
 | `analysis/nep_tree_viewer.template.html` | Source template for the NEP viewer, not an additional dashboard. | Implement viewer improvements here, regenerate HTML, and update the packaging adaptation together. | High |
 
 The generated `_site` contains the index and three viewers. All three packaged viewers match the current hosted adaptations of their committed source HTML. Static local links pass the existing packaging validator. Packaging therefore reproduces the historical comparison limitations; it does not regenerate or validate their underlying analysis.
+
+## Consistency across the five open reports
+
+The current NEP totals and the House v5 repair notices agree. The main problem is that updates were appended above older recommendations and conclusions. Readers following an individual section or search result can still encounter obsolete claims without the notice. Historical labels do not make incorrect accounting identities valid.
+
+| Report / evidence | Consistency issue | Improvement | Priority |
+|---|---|---|---|
+| [Work summary](FY2027_work_summary.md), “Current House project candidate” and artifact index | Both still identify v4b as the current/best candidate, contradicting the v5 notice at the top. The next-step list still includes defects repaired in v5, including missing regions, paving, Rainwater, and PM-Primary. | Rewrite current status around v5, 16,148 allocations, ₱581.345349B, zero missing regions, 38/42 balanced PAPs, and the four outstanding sections. Keep v3/v4b work in explicitly dated history. | High |
+| [House usability audit](hb_json_usability_audit.md), “Recommendation” and dataset table | Recommends v4b and omits v5 from the inventory, despite its own v5 update notice. Native-title hit counts apply to older extracts. | Recommend v5 with its unresolved coverage limits; add a v5 row. Mark native-title/heading metrics as not rerun for v5 instead of carrying forward older counts. Label all v4b defect tables by version. | High |
+| [Crosscheck report](crosscheck_2027.md), sections 1–3 | Says operations plus MOOE is the House grand total and calls incomplete leaves plus MOOE an upper bound. Its historical program deltas compare incomplete extraction with complete source controls. | Remove or explicitly mark the accounting claims as invalid; lead with the printed ₱654.102015B House versus ₱642.612015B NEP comparison. Keep extracted coverage in a separate table. | Critical |
+| [Crosscheck report](crosscheck_2027.md), sections 4–6 | Labels API-unmatched rows “House insertions” and “NEP items dropped,” and infers project pass-through from aggregate Rainwater agreement. | Use “House unmatched to API” / “API unmatched to House extract.” Aggregate agreement supports equal controls; project-level changes require reviewed source pairs. Archive version-specific matcher results with their actual inputs and method. | High |
+| [NEP source audit](nep_2027_source_audit.md), opening follow-up | Calls all 237 cases independent native-text “discrepancies”; the canonical report distinguishes 23 nearby alignment candidates from 214 text/image-review cases. It also contains a stale instruction to revise earlier work-summary wording. | Use “237 review candidates” consistently; give the 23/214 split and four unchecked nodes, and identify completed corrections versus remaining review. | Medium |
+| [NEP tree report](nep_2027_tree.md) | Current totals, evidence counts, scope, and limits agree with the canonical JSON. It is the clearest baseline report. | Keep it as the method reference. Standardize the other reports' status terminology and link them back here. Explain that 2,552 checks include 2 derived groupings, rather than implying every grouping has a standalone printed control. | Medium |
+
+Use the same short status block on the index, viewers, work summary, and audits: fiscal year, budget stage/source document, dataset version, scope, units, printed control, extracted coverage, arithmetic status, evidence-review status, and assessment date. Separate **current findings**, **unresolved evidence**, and **historical analysis** in each report. Use one date format and distinguish source document dates from build/assessment dates.
+
+Allocation rows, source projects, tree nodes, and atomic funding units are different measures. Label each count explicitly; do not use them interchangeably as “projects.” The NEP's 45 non-FAP PAP controls and House's 42 local PAP controls also need an explicit mapping rather than positional comparison.
+
+## Confirmed accounting and interpretation defects
+
+- `crosscheck_2027.json` embeds `hb_grand_upper_php = ₱545,337,409,000`. This is v4b's ₱520,651,663,000 plus MOOE ₱24,685,746,000, not the printed House grand total and not a demonstrated upper bound. The difference from the printed total is ₱108,764,606,000.
+- `s2o_gas.hb_printed_php = ₱49,371,492,000` adds total MOOE to its GAS and S2O MOOE components, double counting MOOE while omitting other expense classes. The viewer consequently shows a GAS/S2O delta of −₱20,316,449,000. The printed cross-class comparison is ₱67,160,354,000 − ₱69,687,941,000 = **−₱2,527,587,000**. Fix source scope as well as the addition; simply removing one addend still leaves a MOOE-only comparison.
+- Crosscheck metadata says ₱18.7B stays unclassified, but its embedded accounting has zero unclassified rows and pesos. The generator's module description names v3 while its `LEAVES` constant names v4b. Display input-derived metadata instead of stale descriptions.
+- Crosscheck rows still display `(deleted)` for API-unmatched records, and tooltip text describes matched amount differences as “House re-priced.” Taxonomy still defines “HB only” as “House-inserted category/family” and repeats the old approximately ₱127B missing-project explanation. These local labels contradict the current caveats and hosted historical banner. Replace them at the point of use, including generator strings.
+- Taxonomy's displayed ₱476.814011B House classified total excludes ₱43.011411B unresolved and ₱0.826241B generic rows from the v3 extraction. Present that excluded coverage beside the total rather than relying on a footer. Its ≤0.5% “aligned” status is a tolerance classification, not exact peso agreement or source verification.
 
 ## Data that the pages should communicate
 
@@ -51,6 +76,8 @@ Display native evidence badges alongside balance badges, with filters for the 23
 
 The approximately 9 MB HTML embeds the full tree. Search scans the tree and returns at most 300 matches; selection/toggling rebuilds the visible DOM. Consider loading the JSON separately, indexing search, and rendering only visible rows. Make result limits explicit. Improve narrow-screen layout and add tree semantics, expansion state, column labels, and keyboard navigation. Evidence and balance status should remain understandable without relying on color.
 
+The tree already reports its search cap explicitly: the local “road” search returned **3,808 matches · showing first 300**. Preserve that behavior; improve it with pagination or a full-results download. Performance recommendations above come from implementation inspection, not measured load-time or interaction benchmarks.
+
 Local source PDF paths do not work on the hosted site. Continue showing page numbers, and offer a configurable accessible source link or clearly identified local PDF instructions. A page number alone is not an independently accessible citation.
 
 ## Packaging and maintenance
@@ -69,8 +96,26 @@ The relevant reference entry points are `index.html`, `dpwh.html`, `hgab-2027-as
 
 ## Verification and implementation order
 
-Completed: page/generator inventory, embedded NEP payload equality, packaged/source adaptation equality, static packaged-link validation, and all five `test_nep_tree.py` tests. No rendered-browser, external-tool, or live-deployment verification was performed.
+Completed in this reassessment:
+
+- All three embedded viewer payloads equal their corresponding JSON artifacts. All three packaged viewers equal their source HTML after the hosting adaptation. Static packaged links pass validation.
+- The NEP atomic ledger sums to ₱642,612,015,000. Its checks contain 2,550 `pass` and 2 `derived` statuses, with no mismatch. All five existing `test_nep_tree.py` tests pass, including the offsetting-error evidence test.
+- House v5 has 16,148 positive allocations summing to ₱581,345,349,000, zero missing regions, 16,119 local PAP rows and 29 FAP rows. The repair artifact has 42 PAP checks, 38 exact balances, and a combined difference of −₱5,596,312,000.
+- Local packaged pages load in headless Chromium without JavaScript errors at 1440 × 1000. The NEP search, row selection, program switch, and collapse controls work; crosscheck PAP expansion and project filtering work; taxonomy filtering and sorting work.
+- At 390 × 844, the index and NEP page have no document-level horizontal overflow. In the exercised filtered states, crosscheck overflows by **520 px** and taxonomy by **170 px**. Wrap wide tables in labeled horizontal-scroll containers, adjust controls for mobile, and keep navigation/headlines within the viewport.
+- Crosscheck expandable PAP rows have no `tabindex` and rely on click handlers; taxonomy also uses clickable table rows and span filters. Provide native buttons, visible focus, and `aria-expanded`. The NEP uses buttons but lacks tree semantics and loses DOM focus when rebuilding rows. This was a code-level accessibility review, not a full assistive-technology audit.
+
+No live deployment, external links/tools, exhaustive browser coverage, or performance benchmarks were verified. Local PDF review was limited to the existing NEP regression test; this assessment did not resolve the evidence queues.
 
 Recommended sequence: fix comparison accounting and source mapping; rebuild reviewed project matching; expose House coverage and NEP evidence status; then improve navigation, performance, accessibility, downloads, and CI freshness checks. The four House sections and NEP image-review queue remain evidence work regardless of interface improvements.
+
+Acceptance checks for the next implementation:
+
+1. Current report recommendations and page badges identify House v5; v3/v4b results carry visible historical/version labels, and repaired defects are removed from current next steps.
+2. Printed controls reproduce ₱654.102015B House and ₱642.612015B NEP, +₱11.49B overall and −₱2.527587B GAS/S2O. Extraction totals cannot populate printed-budget fields.
+3. All four unresolved House PAPs and the NEP 237-candidate/four-unchecked evidence status are visible beside relevant totals. A balanced arithmetic badge does not imply image verification.
+4. Unmatched, candidate match, amount difference, tolerance agreement, and exact agreement are distinct labels. Current change claims link to reviewed source pairs and a manifest of the actual matcher inputs/method.
+5. Search and filters state which rows they cover. Crosscheck currently embeds at most 800 findings per class and displays at most 400 rows, so searching it cannot establish absence from the full dataset. Provide full-data search or a clearly labeled searchable subset and download.
+6. At 390 px, wide tables scroll within their containers; core controls and expansions work by keyboard; required downloads and generated links resolve; freshness/accounting checks run before packaging.
 
 Supporting artifacts: [NEP tree](nep_2027_tree.md), [House repairs](hb_known_defect_repairs.md), [House usability audit](hb_json_usability_audit.md), and [work summary](FY2027_work_summary.md).

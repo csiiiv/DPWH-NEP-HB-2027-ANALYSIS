@@ -22,8 +22,6 @@ Thumbs.db
 .vscode/
 
 # Source PDFs/OCR dumps and separately cloned upstream repositories
-/HB_BUDGET/
-/reference/
 /dpwh-transparency-data-api-scraper/
 
 # Raw API downloads; retain the combined FY2027 snapshot
