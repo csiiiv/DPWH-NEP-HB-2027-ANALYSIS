@@ -30,7 +30,7 @@ import unicodedata
 from collections import defaultdict
 
 LEAVES = "analysis/archive/hb_dpwh_leaves_corrected_v4b.json"
-NEP = "../nep-data/json/fy2027-combined.json"
+NEP = "../dpwh-transparency-nep-data/json/fy2027-combined.json"
 OUT = "analysis/data/crosscheck_2027_lineitems.json"
 
 ROMAN = {"Ⅲ": "III", "Ⅳ": "IV", "Ⅴ": "V", "Ⅵ": "VI", "Ⅶ": "VII",

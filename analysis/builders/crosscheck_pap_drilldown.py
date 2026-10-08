@@ -34,7 +34,7 @@ import pymupdf as fitz
 
 import os
 PDF = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "HB_BUDGET", "3 - HB 10858 VOL IC.pdf")
-NEP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "nep-data", "json", "fy2027-combined.json")
+NEP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dpwh-transparency-nep-data", "json", "fy2027-combined.json")
 OUT = "analysis/data/crosscheck_2027_pap_drilldown.json"
 FAP_PAGE = 935
 

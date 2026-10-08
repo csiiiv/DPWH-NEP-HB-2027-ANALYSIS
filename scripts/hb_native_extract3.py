@@ -85,7 +85,26 @@ def split_amounts(toks):
     return label, vals
 
 
-def extract_rows(doc, p_start, p_end):
+def amount_columns(toks):
+    """Preserve the four DPWH peso columns, including equal-valued cells.
+
+    Coordinates are normalized for mirrored margins before calling this.
+    Missing cells represent blank (zero) expenditure columns.
+    """
+    columns = dict.fromkeys(('ps', 'mooe', 'co', 'total'), 0)
+    seen = set()
+    for x, token in toks:
+        if x <= 280 or not AMT.fullmatch(token):
+            continue
+        key = 'ps' if x < 350 else 'mooe' if x < 425 else 'co' if x < 500 else 'total'
+        if key in seen:
+            raise ValueError(f'Multiple amounts in {key} column: {toks}')
+        seen.add(key)
+        columns[key] = int(token.replace(',', ''))
+    return columns
+
+
+def extract_rows(doc, p_start, p_end, *, with_columns=False):
     rows = []
     for pno in range(p_start, p_end):
         odd = (pno + 1) % 2 == 1
@@ -98,12 +117,16 @@ def extract_rows(doc, p_start, p_end):
             label, vals = split_amounts(toks)
             if not label:
                 continue
-            rows.append({
+            row = {
+                "source_row": len(rows),
                 "page": pno + 1,
                 "x": round(label[0][0], 1),
                 "text": " ".join(t for _, t in label),
                 "vals": vals,
-            })
+            }
+            if with_columns:
+                row["columns_php"] = amount_columns(toks)
+            rows.append(row)
     return rows
 
 
@@ -162,6 +185,8 @@ def build_outline(rows, bands):
                     r["text"], re.I):
             stack.clear()
             out.append({"page": r["page"], "level": 0,
+                        "source_row": r.get("source_row"),
+                        **({"columns_php": r["columns_php"]} if "columns_php" in r else {}),
                         "text": dedupe_halves(r["text"]),
                         "amount": r["vals"][-1] if r["vals"] else 0,
                         "vals": r["vals"], "children": []})
@@ -190,6 +215,8 @@ def build_outline(rows, bands):
             text = " ".join(f["text"] for f in frags) + " " + text
         buf = []
         node = {"page": r["page"], "level": lvl, "text": dedupe_halves(text),
+                "source_row": r.get("source_row"),
+                **({"columns_php": r["columns_php"]} if "columns_php" in r else {}),
                 "amount": r["vals"][-1], "vals": r["vals"], "children": []}
         sibs = stack[-1]["children"] if stack else out
         if sibs and sibs[-1]["text"] == node["text"] \

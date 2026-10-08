@@ -6,7 +6,7 @@ Reads:
   archive/hb_dpwh_items.json  (parsed HB VOL IC project rows, historical)
   archive/crosscheck_results.json (match buckets, historical)
   archive/crosscheck_summary.json (headline numbers, historical)
-  ../nep-data/json/fy2027-combined.json
+  ../dpwh-transparency-nep-data/json/fy2027-combined.json
 
 Writes:
   report.md
@@ -56,7 +56,7 @@ def main():
     A("# HB 10858 (House FY 2027 Budget) vs DPWH NEP FY 2027 — Crosscheck Report\n")
     A("**Data sources**")
     A("- `HB_BUDGET/3 - HB 10858 VOL IC.pdf_by_PaddleOCR-VL-1.6.md` — *Details of DPWH's Programs/Projects* (project-level appropriations, printed in pesos)")
-    A("- `nep-data/json/fy2027-combined.json` — DPWH NEP FY 2027 proposal API dump (11,372 projects, amounts in thousands of pesos)")
+    A("- `dpwh-transparency-nep-data/json/fy2027-combined.json` — DPWH NEP FY 2027 proposal API dump (11,372 projects, amounts in thousands of pesos)")
     A("- Matching: 3-pass name matching (raw exact → normalized exact → fuzzy ≥92, with 85–92 flagged for review)\n")
 
     A("## 1. Headline numbers\n")

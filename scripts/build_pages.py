@@ -15,10 +15,15 @@ DATA = ANALYSIS / 'data'
 VIEWERS = ANALYSIS / 'viewers'
 REPO = 'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/'
 VIEWER_NAMES = [
+    'hb_native_verification.html', 'nep_source_verification.html', 'dpwh_nep_api_verification.html',
     'nep_2027_tree.html', 'source_comparison_2027.html', 'crosscheck_2027.html',
     'taxonomy_comparison.html', 'hb_2027_tree.html', 'hb_2027_source_tree.html',
 ]
 DOWNLOADS = [
+    'source_verification_overview.json', 'source_verification_manifest.json',
+    'source_review_evidence.json', 'nep_2027_amount_column_reassessment.json',
+    'hb_native_ib_rollup_audit.json', 'nep_2027_source_audit.json',
+    'dpwh_transparency_nep_tree.json', 'dpwh_transparency_nep_tree_validation.json',
     'nep_2027_tree.json', 'nep_2027_tree_validation.json',
     'nep_2027_native_amount_review.json', 'nep_2027_native_amount_audit.json',
     'nep_2027_budget_units.json', 'nep_2027_api_reconciliation.json',
@@ -27,7 +32,7 @@ DOWNLOADS = [
     'hb_2027_tree.json', 'hb_2027_tree_validation.json',
     'hb_2027_source_tree.json', 'hb_2027_source_tree_validation.json',
 ]
-SCRIPTS = ['nep_tree_viewer.js', 'hb_tree_viewer.js', 'hb_source_tree_viewer.js', 'budget_display.js']
+SCRIPTS = ['nep_tree_viewer.js', 'hb_tree_viewer.js', 'hb_source_tree_viewer.js', 'budget_display.js', 'source_verification.js', 'source_verification.css']
 # Markdown reports linked from viewers (GitHub-rendered).
 MD_LINKS = {
     'nep_2027_tree.md': 'viewers/nep_2027_tree.md',
@@ -40,9 +45,12 @@ MD_LINKS = {
 
 
 def hosted_viewer(name, text):
+    if name in ('hb_native_verification.html', 'nep_source_verification.html', 'dpwh_nep_api_verification.html'):
+        text = text.replace('<head>', '<head><script>window.SITE_CONFIG={hosted:true,housePdf:"../HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf",reportBase:"' + REPO + 'docs/"};</script>', 1)
     if name == 'nep_2027_tree.html':
         text = text.replace('<head>', '<head><script>window.SITE_CONFIG={sourcePdf:null};</script>', 1)
     text = text.replace('href="../site/index.html"', 'href="../index.html"')
+    text = text.replace('href="../../site/index.html"', 'href="../index.html"')
     # Local regroup uses ../data and ../docs; packaged site flattens JSON beside viewers.
     text = text.replace('href="../data/', 'href="')
     text = text.replace('href="../docs/', 'href="')
@@ -110,11 +118,16 @@ def main():
         index = index.replace(f'src="analysis/viewers/{name}"', f'src="analysis/{name}"')
     for name in DOWNLOADS:
         index = index.replace(f'href="analysis/data/{name}"', f'href="analysis/{name}"')
+    # The new homepage creates source-card links from its embedded payload.
+    index = index.replace('analysis/viewers/${s.page}', 'analysis/${s.page}')
     (OUTPUT / 'index.html').write_text(index)
     for name in VIEWER_NAMES:
         (target / name).write_text(hosted_viewer(name, (VIEWERS / name).read_text()))
     for name in DOWNLOADS:
         shutil.copyfile(DATA / name, target / name)
+    shutil.copyfile(ROOT / 'analysis/data/hb_dpwh_native_rollup.json', target / 'hb_dpwh_native_rollup.json')
+    shutil.copyfile(ROOT / 'dpwh-transparency-nep-data/json/fy2027-combined.json', target / 'fy2027-combined.json')
+    shutil.copytree(DATA / 'source_review_evidence', target / 'source_review_evidence')
     for name in SCRIPTS:
         shutil.copyfile(VIEWERS / name, target / name)
     pdfs = OUTPUT / 'HB_BUDGET'

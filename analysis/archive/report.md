@@ -2,7 +2,7 @@
 
 **Data sources**
 - `HB_BUDGET/3 - HB 10858 VOL IC.pdf_by_PaddleOCR-VL-1.6.md` — *Details of DPWH's Programs/Projects* (project-level appropriations, printed in pesos)
-- `nep-data/json/fy2027-combined.json` — DPWH NEP FY 2027 proposal API dump (11,372 projects, amounts in thousands of pesos)
+- `dpwh-transparency-nep-data/json/fy2027-combined.json` — DPWH NEP FY 2027 proposal API dump (11,372 projects, amounts in thousands of pesos)
 - Matching: 3-pass name matching (raw exact → normalized exact → fuzzy ≥92, with 85–92 flagged for review)
 
 ## 1. Headline numbers

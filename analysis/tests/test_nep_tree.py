@@ -67,5 +67,42 @@ class NepTreeTests(unittest.TestCase):
             self.assertEqual(audit['summary']['status_counts'],{'native_text_review':2})
 
 
+class AmountColumnTests(unittest.TestCase):
+    def source_node(self, bbox):
+        return {'id':'row', 'label':'Test operating unit', 'printed_amount_php':100,
+                'amount_basis':'ps', 'source':{'table':'by_ou','pdf_page':1,'bbox':bbox,
+                'amount_role':'Amount 1','amount_column_polygon':[[250,0],[330,0],[330,200],[250,200]]}}
+
+    def test_audit_uses_page_column_instead_of_fixed_ps_window(self):
+        with pymupdf.open() as pdf:
+            p=pdf.new_page(width=720,height=200)
+            p.insert_text((270,50),'100')
+            p.insert_text((420,50),'200')  # Other expense column.
+            n=self.source_node([0,30,720,55])
+            audit=audit_native_amounts({'row':n},pdf)
+            self.assertEqual(audit['summary']['status_counts'],{'within_bbox_agreement':1})
+            n['printed_amount_php']=200
+            audit=audit_native_amounts({'row':n},pdf)
+            self.assertEqual(audit['summary']['status_counts'],{'native_text_review':1})
+
+    def test_matching_number_in_multi_row_area_does_not_certify_identity(self):
+        with pymupdf.open() as pdf:
+            p=pdf.new_page(width=720,height=200)
+            p.insert_text((270,50),'100');p.insert_text((270,80),'300')
+            n=self.source_node([0,30,720,90])
+            audit=audit_native_amounts({'row':n},pdf)
+            self.assertEqual(audit['summary']['status_counts'],{'native_row_ambiguity':1})
+
+    def test_operating_unit_row_total_remains_distinct_from_ps(self):
+        from nep_amount_columns import column_roles
+        self.assertEqual(column_roles([{'role':r} for r in ['Labels','Amount 1','Amount 2','Amount 3']]),
+                         {'Amount 1':'ps','Amount 2':'mooe','Amount 3':'total'})
+        tree=json.loads((DATA/'nep_2027_tree.json').read_text())
+        row=next(n for n in tree['nodes'] if n['id']=='ps:p13:r4')
+        self.assertEqual(row['amount_php'],78157000)
+        self.assertEqual(row['amount_basis'],'ps')
+        self.assertEqual(row['source_row_columns_php'],{'ps':78157000,'mooe':24732000,'co':None,'total':102889000})
+
+
 if __name__=='__main__':
     unittest.main()

@@ -24,17 +24,23 @@ builder output of this workbench.
 
 | Baseline | Role |
 |---|---|
-| `../../nep-data/hb_dpwh_native_tree.json` | **House control baseline** (native I-B, 647/647 checks) |
+| `../data/hb_dpwh_native_tree.json` | **House control baseline** (native I-B, 647/647 checks) |
 | `../data/hb_dpwh_leaves_corrected_v5.json` | Best project-title candidate until native I-C re-extract |
 | `hb10858_projects.json` (this folder) | Independent Ghostscript candidate list for cross-check only |
 
-**Crosscheck vs native tree:** [../docs/joebert_native_crosscheck.md](../docs/joebert_native_crosscheck.md).
+**Crosscheck (native + v5):** [../docs/joebert_native_crosscheck.md](../docs/joebert_native_crosscheck.md) ·
+machine summary [`../data/joebert_hb_crosscheck.json`](../data/joebert_hb_crosscheck.json) ·
+rebuild `python analysis/builders/crosscheck_joebert_hb.py`.
 
-Summary: ~97% of native DEO names appear in Joebert (coverage OK); amounts do
-**not** roll up (different grain + Joebert defects). Joebert ingested the FAP
-grand (₱44.749B) and Flood Mitigation Facilities PAP (₱16.223B ×2) as projects,
-has ~₱73B page-break duplicate mass, and matches **0/29** FAP project names.
-DA/HFEP/NIA dumps have zero overlap with the DPWH native tree (correct).
+Summary (latest run):
+
+| Check | Result |
+|---|---|
+| Native office-name coverage | ~97% of DEO labels / office×PAP cells |
+| Native amount rollups | **0** offices agree to the peso |
+| v5 exact title+amount overlap | **3,480 / 16,148** rows (21.6%) · **₱64.7B / ₱581.3B** (11.1%) |
+| Joebert defects | FAP grand + Flood PAP control leaks (₱77.2B), ~₱73B page-break dups, **0/29** FAP names |
+| DA / HFEP / NIA vs native DPWH | **0** name hits (correct) |
 
 See [../docs/hb_native_v5_reconciliation.md](../docs/hb_native_v5_reconciliation.md) and
 [../README.md](../README.md).

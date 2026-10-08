@@ -35,7 +35,7 @@ OCR_JSON = "../HB_BUDGET/3 - HB 10858 VOL IC.pdf_by_PaddleOCR-VL-1.6.json"
 PDF = "../HB_BUDGET/3 - HB 10858 VOL IC.pdf"
 IN = "analysis/archive/hb_dpwh_leaves_corrected_v4.json"
 OUT = "analysis/archive/hb_dpwh_leaves_corrected_v4b.json"
-NEP = "../nep-data/json/fy2027-combined.json"
+NEP = "../dpwh-transparency-nep-data/json/fy2027-combined.json"
 HIER = "hb_dpwh_pap_hierarchy.json"
 ROW_OFFSET = 35  # leaf row -> md row approx offset (validated 0..41)
 

@@ -34,7 +34,7 @@ from rapidfuzz import fuzz, process
 
 BASE = str(ANALYSIS)
 HB_FILE = os.path.join(BASE, "archive", "hb_dpwh_items.json")
-NEP_FILE = os.path.join(BASE, "..", "nep-data", "json", "fy2027-combined.json")
+NEP_FILE = os.path.join(BASE, "..", "dpwh-transparency-nep-data", "json", "fy2027-combined.json")
 OUT_MATCH = os.path.join(BASE, "archive", "crosscheck_results.json")
 OUT_SUMMARY = os.path.join(BASE, "archive", "crosscheck_summary.json")
 

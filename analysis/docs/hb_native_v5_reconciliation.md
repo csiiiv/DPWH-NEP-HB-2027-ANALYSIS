@@ -1,6 +1,6 @@
 # Native VOL I-B tree vs v5 / VOL I-C — three-way reconciliation
 
-**Date:** 8 October 2026 · **Inputs:** `../../nep-data/hb_dpwh_native_tree.json`
+**Date:** 8 October 2026 · **Inputs:** `../data/hb_dpwh_native_tree.json`
 (native text-layer parse of VOL I-B pp 13–110, `scripts/hb_native_extract3.py`),
 House v5 (`hb_dpwh_leaves_corrected_v5.json`), printed I-C controls
 (`hb_known_defect_repairs.json`).
@@ -87,16 +87,22 @@ remaining defect; the bill itself balances everywhere.
 |---|---|
 | Was the ₱5.596B v5 operations gap real? | **No.** Both volumes print controls that balance; the gap is v5 OCR-era extraction damage confined to four sections. |
 | Is Convergence ever printed? | **Yes** — I-C p373 (and I-B p80 zone arithmetic). The "derived residual" framing was an OCR artifact. |
-| Best House control baseline | `../../nep-data/hb_dpwh_native_tree.json` after banner dedup: 647/647 internal checks pass, zones reproduce GAS+S2O / local / FAP exactly. |
+| Best House control baseline | `../data/hb_dpwh_native_tree.json` after banner dedup: 647/647 internal checks pass, zones reproduce GAS+S2O / local / FAP exactly. |
 | v5 still needed? | Yes — for project titles (I-B is office-granularity). But its four bad sections should be rebuilt from I-C's native layer, not trusted as-is. |
 | Next extraction step | An I-C geometry profile (bands ≈ 79 / 89.6 / 100–103 / 112 / 123 / 140.7 / 154.2) to regenerate project-level leaves natively, superseding the v3→v5 repair chain. |
 
 ## 5. Reproduce
 
 ```sh
-python3 scripts/hb_native_extract3.py 'HB_BUDGET/2 - HB 10858 VOL IB.pdf' 13 111 nep-data/hb_dpwh_native_tree.json
+python3 scripts/hb_native_extract3.py 'HB_BUDGET/2 - HB 10858 VOL IB.pdf' 13 110 analysis/data/hb_dpwh_native_tree.json
 ```
 
 Zone/banner accounting and the three-way tables above are recomputed by the
 snippet documented in git history of this file (banner-dedup rule: drop
 childless top-level nodes whose (text, amount) matches a parent).
+
+The end page is inclusive: page 111 belongs to the separate object-expenditure
+table and changes the inferred bands if included. For the additive hierarchy,
+progressive balances, and recursive four-column checks, use
+`python3 scripts/hb_native_rollup.py`; see
+[Native I-B rollup checks](hb_native_ib_rollup_checks.md).

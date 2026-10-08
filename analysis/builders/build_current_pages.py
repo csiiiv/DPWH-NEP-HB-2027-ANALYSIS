@@ -222,7 +222,7 @@ def build():
                 'units': 'Integer Philippine pesos', 'matching_method': METHOD,
                 'generator': {'path': 'analysis/builders/build_current_pages.py', 'sha256': digest(Path(__file__))},
                 'inputs': {n: digest(OUT / n) for n in INPUTS},
-                'api_snapshot': {'path': 'nep-data/json/fy2027-combined.json', 'sha256': digest(ROOT / 'nep-data/json/fy2027-combined.json')},
+                'api_snapshot': {'path': 'dpwh-transparency-nep-data/json/fy2027-combined.json', 'sha256': digest(ROOT / 'dpwh-transparency-nep-data/json/fy2027-combined.json')},
                 'source_documents': {key: {'path': str(path.relative_to(ROOT)), 'sha256': digest(path)} for key, path in [('house_summary', ROOT / 'HB_BUDGET/2 - HB 10858 VOL IB.pdf'), ('house_details', ROOT / 'HB_BUDGET/3 - HB 10858 VOL IC.pdf')]},
                 'source_pdf_sha256': {'house': hb['provenance']['source_pdf_sha256'], 'nep': tree['provenance']['sha256']['pdf']}}
     payload = {'manifest': manifest, 'summary': summary, 'programs': programs, 'paps': paps,
@@ -240,8 +240,9 @@ def build():
         return json.dumps(d, ensure_ascii=False, separators=(',', ':')).replace('<', '\\u003c')
     (VIEWERS / 'nep_2027_tree.html').write_text((VIEWERS / 'nep_tree_viewer.template.html').read_text()
         .replace('__TREE_DATA__', embed(tree)).replace('__EVIDENCE_DATA__', embed(evidence)))
-    index_data = {k: payload[k] for k in ('manifest', 'summary', 'unresolved_paps')}
-    (ROOT / 'site' / 'index.html').write_text((ROOT / 'site' / 'index.template.html').read_text().replace('__INDEX_DATA__', embed(index_data)))
+    # The homepage now verifies three independent sources before comparisons.
+    from build_source_verification import build as build_verification
+    build_verification()
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 

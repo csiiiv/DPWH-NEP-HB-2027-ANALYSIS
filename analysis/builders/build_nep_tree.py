@@ -20,6 +20,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 import pymupdf
+from nep_amount_columns import annotate_amount_columns, inside_column
 
 ROOT = REPO
 OUT = DATA
@@ -278,13 +279,17 @@ def audit_native_amounts(nodes, pdf):
         page, bbox, expected = s.get('pdf_page'), s.get('bbox'), n['printed_amount_php']
         if bbox is None or page is None or expected is None:
             continue
-        key = (page, s['table'])
+        polygon = s.get('amount_column_polygon')
+        if not polygon:
+            raise ValueError(f'Missing page-specific amount column: {n["id"]}')
+        key = (page, tuple(tuple(p) for p in polygon))
         if key not in cache:
             money_words = []
             for w in pdf[page-1].get_text('words'):
                 x = (w[0]+w[2])/2
-                if ((x>580 if s['table']=='pap' else 400<x<475)
-                        and re.fullmatch(r'[0-9SOIlso][0-9SOIlso,.;]*',w[4])):
+                y = (w[1]+w[3])/2
+                if (inside_column(polygon, x, y)
+                        and re.fullmatch(r'[0-9SOIlso,.;]+',w[4])):
                     money_words.append(w)
             rows = []
             for w in sorted(money_words,key=lambda w:((w[1]+w[3])/2,w[0])):
@@ -297,16 +302,20 @@ def audit_native_amounts(nodes, pdf):
                            'text':' '.join(w[4] for w in sorted(ws,key=lambda w:w[0]))} for y,ws in rows]
         direct = [r for r in cache[key] if bbox[1]-3<=r['y']<=bbox[3]+3]
         nearby = [r for r in cache[key] if bbox[1]-30<=r['y']<=bbox[3]+30]
-        status = ('within_bbox_agreement' if any(r['amount_php']==expected for r in direct)
+        matches = any(r['amount_php']==expected for r in direct)
+        status = ('native_row_ambiguity' if matches and len(direct)>1
+                  else 'within_bbox_agreement' if matches
                   else 'nearby_alignment_candidate' if any(r['amount_php']==expected for r in nearby)
                   else 'native_text_review')
         n['native_amount_status'] = status
         records.append({'id':n['id'],'label':n['label'],'pdf_page':page,'source_bbox':bbox,
                         'printed_amount_php':expected,'status':status,
+                        'amount_basis':n.get('amount_basis'), 'amount_role':s.get('amount_role'),
+                        'amount_column_polygon':polygon,
                         'within_bbox_candidates':direct,
                         'nearby_candidates':nearby if status!='within_bbox_agreement' else []})
     counts = dict(Counter(r['status'] for r in records))
-    return {'policy':'Text-layer comparison is evidence, not image verification. Common S/O/I/l substitutions are normalized. Nearby matching amounts only suggest coordinate drift; all other discrepancies require source-image review. No amount is changed by this audit.',
+    return {'policy':'Each printed row is checked in its page-specific amount column. Multiple amount lines in one extraction area require row-identity review. Text-layer comparison is evidence, not image verification. Common S/O/I/l substitutions are normalized. Nearby matching amounts only suggest coordinate drift; all other discrepancies require source-image review. No amount is changed by this audit.',
             'summary':{'checked':len(records),'not_checked':len(nodes)-len(records),'status_counts':counts,
                        'review_candidates':sum(r['status']!='within_bbox_agreement' for r in records)},
             'records':records}
@@ -335,7 +344,7 @@ There are {summary['repairs']} documented repairs, primarily hierarchy correctio
 
 Each printed control is compared with its immediate additive children, bottom-up, at zero-peso tolerance. A mismatching branch is localized below that control; an ancestor can balance even when two lower errors offset. `validate(nodes, strict=False)` returns every branch check for diagnosis; the production build refuses any mismatch. Structural checks reject cycles, orphan nodes, repeated paths, and inconsistent parent links. The atomic-unit ledger provides an independent counting check.
 
-Arithmetic balance does **not** prove every OCR amount is correct: equal and opposite errors among siblings can cancel. The independent native-text audit checked {audit['summary']['checked']:,} source rows: {counts.get('within_bbox_agreement',0):,} have the expected amount within their recorded bounding box, {counts.get('nearby_alignment_candidate',0):,} have a nearby match suggesting coordinate drift, and {counts.get('native_text_review',0):,} need further text/image review. The remaining {audit['summary']['not_checked']} nodes lack a comparable printed row/bounding box. Native text is another OCR layer; agreement is supporting evidence, not definitive image verification. Bounding boxes can span multiple amounts, so even within-box agreements are not a guarantee of row identity.
+Arithmetic balance does **not** prove every OCR amount is correct: equal and opposite errors among siblings can cancel. The reassessed native-text audit uses each page's column polygon and rejects ambiguous multi-line row areas. It checked {audit['summary']['checked']:,} source rows: {counts.get('within_bbox_agreement',0):,} have the expected amount within their recorded bounding box, {counts.get('nearby_alignment_candidate',0):,} have a nearby match suggesting coordinate drift, {counts.get('native_row_ambiguity',0):,} contain multiple amount lines and need row-identity review, and {counts.get('native_text_review',0):,} need further text/image review. The remaining {audit['summary']['not_checked']} nodes lack a comparable printed row/bounding box. Native text is another OCR layer; agreement is supporting evidence, not definitive image verification. Bounding boxes can span multiple amounts, so even within-box agreements are not a guarantee of row identity.
 
 All {audit['summary']['review_candidates']} non-direct agreements remain in `nep_2027_native_amount_review.json`. They are review candidates, **not confirmed amount errors**. Sample image checks on pages 205, 228, and 347 show correct amounts on adjacent rows despite shifted native coordinates. No native-audit discrepancy silently changes a budget amount.
 
@@ -390,9 +399,11 @@ def main():
     nodes, repairs = repair_pap(read(pap_path)['nodes'],pdf)
     nodes['root'].update(label='DPWH FY2027 NEP — New Appropriations',kind='agency',
                          printed_amount_php=GRAND,source={'table':'summary','pdf_page':8,'amount_role':'Total'})
-    add_ps(nodes,read(ou_path)['nodes'])
+    ou_raw = read(ou_path)['nodes']
+    add_ps(nodes,ou_raw)
     rebuild(nodes)
     nodes['root']['children'] = ['ps','p115:r0','p144:r0']
+    columns_audit = annotate_amount_columns(nodes, ou_raw, run/'002.20-table-structure/pages')
     checks = validate(nodes)
     units = indices(nodes)
     funding = defaultdict(int)
@@ -426,6 +437,8 @@ def main():
                'fap_funding_php':dict(funding),'program_totals_php':{p['label']:p['amount_php'] for p in programs}}
     audit = audit_native_amounts(nodes,pdf)
     summary['native_amount_audit'] = audit['summary']
+    columns_audit['native_amount_audit'] = audit['summary']
+    columns_audit['records'] = [{k:r[k] for k in ('id','label','pdf_page','printed_amount_php','status','amount_basis','amount_role')} for r in audit['records']]
     provenance = {'fiscal_year':2027,'scope':'DPWH new appropriations; automatic appropriations excluded',
                   'unit':'PHP pesos, integers','inputs':{'pdf':str(pdf_path),'pap_tree':str(pap_path),'by_ou_tree':str(ou_path)},
                   'sha256':{'pdf':digest(pdf_path),'pap_tree':digest(pap_path),'by_ou_tree':digest(ou_path)},
@@ -433,7 +446,9 @@ def main():
                   'validation_policy':'Zero tolerance. Printed amounts stay distinct from derived grouping totals. Each additive branch and the atomic ledger must balance; no balancing plugs.',
                   'source_pdf_pages':{'summary':8,'personnel_services':[13,28],'pap':[115,690]}}
     tree = {'schema_version':1,'provenance':provenance,'summary':summary,'root':'root','program_index':programs,'nodes':list(nodes.values())}
-    for name,data in [('nep_2027_tree.json',tree),
+    columns_audit['tree_sha256'] = hashlib.sha256((json.dumps(tree,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest()
+    columns_audit['provenance'] = provenance
+    for name,data in [('nep_2027_amount_column_reassessment.json',columns_audit), ('nep_2027_tree.json',tree),
                       ('nep_2027_tree_validation.json',{'summary':summary,'checks':checks,'repairs':repairs,'summary_page_text':pdf[7].get_text()}),
                       ('nep_2027_budget_units.json',{'provenance':provenance,'summary':summary,'units':units}),
                       ('nep_2027_native_amount_audit.json',audit),

@@ -7,7 +7,7 @@ Historical artifacts retained for the repair lineage and audit trail.
 |---|---|
 | Folder map + baselines | [../README.md](../README.md) |
 | Narrative | [../FY2027_work_summary.md](../FY2027_work_summary.md) |
-| House control baseline | [`../../nep-data/hb_dpwh_native_tree.json`](../../nep-data/hb_dpwh_native_tree.json) |
+| House control baseline | [`../data/hb_dpwh_native_tree.json`](../data/hb_dpwh_native_tree.json) |
 | House project-title candidate | [`../data/hb_dpwh_leaves_corrected_v5.json`](../data/hb_dpwh_leaves_corrected_v5.json) |
 
 ---
@@ -25,7 +25,7 @@ Historical artifacts retained for the repair lineage and audit trail.
 | `hb_dpwh_leaves_corrected_v4b.json` | v4b | v4 + stale-PAP re-attribution (12,820 leaves relabeled) — best pre-native candidate |
 
 Current candidate: `../data/hb_dpwh_leaves_corrected_v5.json` (native-controls repair).
-Control baseline: `../../nep-data/hb_dpwh_native_tree.json` (native VOL I-B text layer).
+Control baseline: `../data/hb_dpwh_native_tree.json` (native VOL I-B text layer).
 Both volumes print balancing controls; the v3→v5 repair chain itself is superseded by the native extraction method for **controls**.
 
 ---

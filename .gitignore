@@ -25,10 +25,10 @@ Thumbs.db
 /dpwh-transparency-data-api-scraper/
 
 # Raw API downloads; retain the combined FY2027 snapshot
-/nep-data/json/fy2027-details/
-/nep-data/json/fy2027/
-/nep-data/json/*.zip
-/nep-data/lists/
+/dpwh-transparency-nep-data/json/fy2027-details/
+/dpwh-transparency-nep-data/json/fy2027/
+/dpwh-transparency-nep-data/json/*.zip
+/dpwh-transparency-nep-data/lists/
 
 # Regenerable local page-mapping caches
 *.pkl

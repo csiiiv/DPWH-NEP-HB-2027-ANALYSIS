@@ -1,82 +1,74 @@
-# Crosscheck: native I-B DPWH tree × Joebert candidate dumps
+# Crosscheck: latest House DPWH × Joebert candidate dumps
 
 **Date:** 8 October 2026  
+**Machine summary:** [`../data/joebert_hb_crosscheck.json`](../data/joebert_hb_crosscheck.json)  
+**Rebuild:** `python analysis/builders/crosscheck_joebert_hb.py`
+
 **Inputs:**
-- House control baseline: [`../../nep-data/hb_dpwh_native_tree.json`](../../nep-data/hb_dpwh_native_tree.json) (native VOL I-B, 647/647 checks)
-- Joebert dumps: [`joebert_data/`](../joebert_data/) (Ghostscript candidates; review-status only)
+- House **control** baseline: [`../data/hb_dpwh_native_tree.json`](../data/hb_dpwh_native_tree.json) (native VOL I-B)
+- House **project-title** candidate: [`../data/hb_dpwh_leaves_corrected_v5.json`](../data/hb_dpwh_leaves_corrected_v5.json)
+- Joebert DPWH dump: [`../joebert_data/hb10858_projects.json`](../joebert_data/hb10858_projects.json)
+- Other Joebert dumps: DA FMR / HFEP / NIA under [`../joebert_data/`](../joebert_data/)
 
 ## Scope mismatch (read this first)
 
 | Source | Volume | Grain | What a “leaf” is |
 |---|---|---|---|
-| Native tree | VOL **I-B** pp 13–110 | Office / FAP project | DEO row under a PAP, or named FAP project with GOP/loan children |
-| `hb10858_projects.json` | VOL **I-C** | Project candidate | Heuristic project-title row |
+| Native tree | VOL **I-B** pp 13–110 | Office / FAP project | DEO row under a PAP, or named FAP project |
+| House v5 | VOL **I-C** (OCR-repaired) | Project allocation | Project title + region/office + amount |
+| `hb10858_projects.json` | VOL **I-C** | Project candidate | Ghostscript heuristic project-title row |
 
-They are **not the same grain**. Exact office- or region-total agreement is not expected. Useful checks are: (1) office-name coverage, (2) whether Joebert swallowed printed controls, (3) FAP project presence, (4) whether the other Joebert files touch DPWH at all.
+Native × Joebert is a **geography / control-leak** check, not an amount rollup.
+v5 × Joebert is the fair **title+amount** overlap check (same grain, both incomplete).
 
 ---
 
 ## 1. Headline totals
 
-| Measure | Amount |
+| Measure | Amount / count |
 |---|---:|
-| Native ops (local PAP parents + FAP, banner-deduped) | **₱586,941,661,000** |
-| Native local office leaves only | ₱542,192,650,000 across 1,431 DEO rows |
-| Native FAP (29 projects) | ₱44,749,011,000 |
-| Joebert DPWH candidates (gross) | **₱360,773,154,440** · 12,714 rows |
-| v5 (reference, OCR-era I-C) | ₱581,345,349,000 · 16,148 rows |
+| Native ops (printed) | **₱586,941,661,000** |
+| Native local office leaves | 1,431 cells · ₱541.220B (40 PAP parents) |
+| Native FAP | 29 projects · ₱44,749,011,000 |
+| House v5 positive allocations | 16,148 · **₱581,345,349,000** |
+| Joebert DPWH gross | 12,714 · **₱360,773,154,440** |
+| Joebert after dropping ≥₱1B control leaks + title/amount dups | 9,998 · **₱226.499B** |
 
-Joebert’s gross sum is far below both the native operations control and v5. Metadata already warns of omissions and misreads.
+Joebert is far below both native ops and v5. Metadata already warns of omissions and misreads.
 
 ---
 
-## 2. What reconciles
+## 2. Native I-B × Joebert (controls / geography)
 
 ### Office-name coverage (strong)
 
-Against the 204 distinct DEO/office labels in the native local tree:
-
 | Check | Result |
 |---|---|
-| Native offices appearing in Joebert `office` field | **192 / 204** |
-| Native office-under-PAP cells whose office name appears in Joebert | **1,387 / 1,432 (96.9%)** |
-| Peso mass of those covered cells | **₱537.1B / ₱542.2B** |
+| Native distinct DEO/office labels | 204 |
+| Exact name also present in Joebert `office` | **192 / 204** |
+| Office×PAP cells whose office name appears in Joebert | **1,386 / 1,431 (96.9%)** |
+| Peso mass of those cells | **₱536.1B / ₱541.2B** |
+| Common offices whose Joebert office-sum equals native | **0 / 192** |
 
-Missing offices are mostly naming variants (e.g. native `Cavite District Engineering Office` / `Cavite Third…` / `Mountain Province First…` vs Joebert’s different Cavite/Mountain Province labels) — not proof those DEOs lack projects in I-C.
-
-**Amount rollups by office/region do not agree** (0/192 common offices match to the peso). That is expected: native cells are PAP×office subtotals; Joebert is an incomplete project sample with bad region tags (MIMAROPA and Region IV-A roll up to 0; Region XIII is inflated — see below).
-
-### Other Joebert files vs native DPWH tree
-
-| File | Agency | Rows | Exact name hits vs native nodes |
-|---|---|---:|---:|
-| `hb10858_agency_projects.json` | Department of Agriculture (FMR) | 795 | **0** |
-| `hb10858_hfep_projects.json` | Department of Health (HFEP) | 513 | **0** |
-| `hb10858_nia_projects.json` | NIA | 32 | **0** |
-
-Correct: the native tree is DPWH-only. HFEP metadata reports candidate sum = printed grand (₱10,021,659,000); NIA reports gap 0 against its printed project subtotal. Those are self-checks within their schedules, not DPWH crosschecks.
-
----
-
-## 3. What does not reconcile (Joebert defects)
-
-### Printed controls ingested as “projects”
-
-| Native control | Amount | Joebert |
-|---|---:|---|
-| Foreign-Assisted Projects (grand) | ₱44,749,011,000 | **1 row** I-C p938 — title is a building rehab under Butuan City DEO |
-| Construction/Rehabilitation of Flood Mitigation Facilities (PAP) | ₱16,222,881,000 | **2 rows** I-C p364–365 — same PAP heading, office stamped Surigao del Sur 2nd DEO |
-
-Those three rows alone add **₱77.0B** of phantom project mass and are why Region XIII / Surigao del Sur 2nd look absurd in a Joebert region/office rollup (Region XIII sum ₱77.6B vs native ₱4.95B).
+Coverage is geographic only. Amount rollups do not agree — expected (different grain + Joebert defects).
 
 ### FAP project names
 
 | Check | Result |
 |---|---|
-| Native FAP projects | 29 · ₱44,749,011,000 |
+| Native FAP projects | 29 · ₱44.749B |
 | Exact / prefix name match in Joebert | **0 / 29** |
 
-Joebert did not extract the FAP named-project list. It did capture the FAP **grand total** once, attached to the wrong title (above).
+### Printed controls ingested as “projects”
+
+Three Joebert rows match known ≥₱1B printed controls (**₱77.195B**):
+
+| Control | Amount | Joebert |
+|---|---:|---|
+| Foreign-Assisted Projects (grand) | ₱44,749,011,000 | 1 row (wrong title / office stamp) |
+| Flood Mitigation Facilities (PAP) | ₱16,222,881,000 | **2 rows** I-C p364–365 (Surigao del Sur 2nd DEO) |
+
+Those ghosts are why Joebert **Region XIII** rolls up to ₱77.6B (native-scale nonsense).
 
 ### Page-break duplicates
 
@@ -85,18 +77,39 @@ Joebert did not extract the FAP named-project list. It did capture the FAP **gra
 | Duplicate `(normalized name, amount)` keys | 2,692 |
 | Extra rows beyond first occurrence | 2,714 |
 | Extra peso mass | **≈ ₱73.3B** |
-| Of which consecutive-page pairs (p, p+1) | 2,679 pairs · ≈ ₱72.8B |
-
-Metadata claims `duplicateRowsSkipped: 6990`, but a large same-title/same-amount residue remains — classic I-C page-break re-prints.
+| Consecutive-page pairs (p, p+1) | 2,679 · ≈ ₱72.8B |
 
 ### Other sanity flags
 
-- **16** rows with non-thousand `amountPesos` (e.g. ₱28,204,500) — possible Total/CO column confusion.
-- **1,467** rows with blank `office` (11.5%).
-- **11,372** rows with empty `pap3` — almost no PAP attribution.
-- Region labels incomplete: no usable MIMAROPA / Region IV-A rollup in Joebert.
+- **16** rows with non-thousand `amountPesos`
+- **1,467** blank `office` (11.5%)
+- **11,372** empty `pap3`
+- DA / HFEP / NIA Joebert dumps: **0** exact name hits vs native DPWH nodes (correct — different agencies)
 
-Rough “cleaned” Joebert mass (gross − PAP/FAP control leaks − duplicate extras) ≈ **₱254B**, still far below native ops ₱586.9B — i.e. the dump is both noisy **and** incomplete as a DPWH project universe.
+---
+
+## 3. House v5 × Joebert (project titles)
+
+Same grain (I-C project candidates). Matching is normalized title + exact peso amount.
+
+| Check | Result |
+|---|---:|
+| Shared exact `(title, amount)` keys | **3,479** |
+| Unique 1∶1 keys (one v5 · one Joebert) | 2,067 · ₱35.893B |
+| v5 rows with a Joebert title+amount hit | **3,480 / 16,148 (21.6%)** |
+| v5 peso covered by those hits | **₱64.726B (11.1%)** |
+| Joebert rows with a v5 title+amount hit | **4,896 / 12,714 (38.5%)** |
+| Joebert peso that hits v5 | **₱93.574B (25.9%)** |
+| Also match region+title+amount | 2,327 keys |
+| Also match office+title+amount | 3,121 keys |
+| After dropping control leaks + dups: Joebert rows still in v5 | 3,479 · ₱64.721B |
+
+Interpretation:
+
+- Roughly **one fifth of v5 rows** (by count) and **one ninth of v5 pesos** appear as exact title+amount pairs in Joebert.
+- Joebert’s higher row “precision” (38%) is inflated by duplicate copies of the same title+amount.
+- After dedup + control-leak drop, Joebert collapses to ~₱226B and still only ~₱65B overlaps v5 — the dump is both **noisy and incomplete** as a DPWH project universe.
+- Overlap is useful as an **independent recall sample**, not as a replacement for v5 or native controls.
 
 ---
 
@@ -104,31 +117,25 @@ Rough “cleaned” Joebert mass (gross − PAP/FAP control leaks − duplicate 
 
 | Question | Answer |
 |---|---|
-| Does Joebert confirm the native I-B tree? | **Partially on geography only** — ~97% of native office labels appear. It does **not** confirm amounts, PAP structure, or FAP. |
-| Can Joebert replace v5 or the native tree? | **No.** Wrong grain vs native; incomplete and control-contaminated vs a project extract. |
-| Biggest Joebert failure modes vs native controls | (1) PAP/FAP totals stored as projects, (2) page-break duplicates, (3) missing FAP names, (4) broken region tags. |
-| DA / HFEP / NIA dumps | Out of scope for the DPWH native tree; no name collisions. HFEP/NIA self-totals look internally consistent per their metadata. |
+| Does Joebert confirm the native I-B tree? | **Partially on geography only** (~97% office labels). Not amounts, PAP structure, or FAP. |
+| Does Joebert confirm House v5? | **Sparse title+amount overlap** (~22% of v5 rows / ~11% of v5 ₱). Independent signal, not a second baseline. |
+| Can Joebert replace v5 or the native tree? | **No.** |
+| Biggest Joebert failure modes | (1) PAP/FAP totals stored as projects, (2) page-break duplicates, (3) missing FAP names, (4) broken region tags. |
+| DA / HFEP / NIA dumps | Out of scope for DPWH; no name collisions with the native tree. |
 
 ---
 
-## 5. Practical use going forward
+## 5. Practical use
 
 1. Keep **`hb_dpwh_native_tree.json`** as the DPWH House **control** baseline.
-2. Treat `joebert_data/hb10858_projects.json` as a **noisy I-C candidate list**: drop rows whose amount equals a known native PAP/program/FAP control (≥ ₱1B), and collapse consecutive-page duplicates before any matching.
-3. Do not region- or office-sum Joebert against native without those filters — Surigao / Region XIII will dominate with control ghosts.
-4. For project-level work, prefer a future **native I-C geometry extract** (or current v5 with the four damaged sections rebuilt). Re-run Joebert against that extract for title recall, not for controls.
-5. DA FMR / HFEP / NIA Joebert files are separate agency tracks; crosscheck them to their own VOL I-B schedules, not to the DPWH native tree.
+2. Keep **v5** as the project-title candidate until native I-C re-extract.
+3. Treat Joebert as a **noisy I-C candidate list**: drop rows whose amount equals a known ≥₱1B control, collapse consecutive-page duplicates, then use for title recall only.
+4. Do not region- or office-sum Joebert against native without those filters — Region XIII will dominate with control ghosts.
+5. DA FMR / HFEP / NIA Joebert files are separate agency tracks.
 
 ## Reproduce
 
 ```sh
-python3 - <<'PY'
-# see analysis/docs/joebert_native_crosscheck.md §2–3 logic:
-# office-name coverage, BIG control amount hits, consecutive-page dups
-import json
-from pathlib import Path
-native = json.load(open('nep-data/hb_dpwh_native_tree.json'))
-j = json.load(open('analysis/joebert_data/hb10858_projects.json'))['data']['data']
-print(len(native['tree']), 'native top nodes;', len(j), 'joebert rows')
-PY
+python analysis/builders/crosscheck_joebert_hb.py
+# → analysis/data/joebert_hb_crosscheck.json
 ```

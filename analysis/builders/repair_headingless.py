@@ -129,7 +129,7 @@ def block_pap_ancestry():
 
 def main():
     # canonical PAP candidates: API pap3 names + ' - ' base families
-    nep = json.load(open("../nep-data/json/fy2027-combined.json",
+    nep = json.load(open("../dpwh-transparency-nep-data/json/fy2027-combined.json",
                          encoding="utf-8"))["data"]["data"]
     pap_cands = sorted({(i.get("pap3") or "").strip() for i in nep
                         if i.get("pap3")})

@@ -7,7 +7,7 @@ Pillars
 -------
 A. NEP official  — analysis/data/reference_official_compilation.json
                    (program-level NEP FY2027, PHP pesos, incl. S2O/GAS)
-B. NEP API       — nep-data/json/fy2027-combined.json
+B. NEP API       — dpwh-transparency-nep-data/json/fy2027-combined.json
                    (11,372 project line items, PHP thousands; S2O/GAS absent)
 C. HB 10858 PDF  — analysis/archive/hb_dpwh_leaves_corrected_v3.json (historical; corrected
                    line items) + hb_dpwh_pap_hierarchy.json (printed section
@@ -38,7 +38,7 @@ from hb_program_classifier import fap_program, hb_program  # noqa: F401
 import sys
 
 REF = "analysis/data/reference_official_compilation.json"
-NEP = "nep-data/json/fy2027-combined.json"
+NEP = "dpwh-transparency-nep-data/json/fy2027-combined.json"
 LEAVES = "analysis/archive/hb_dpwh_leaves_corrected_v4b.json"
 HIER = "analysis/data/hb_dpwh_pap_hierarchy.json"
 DD_PATH = "analysis/data/crosscheck_2027_pap_drilldown.json"

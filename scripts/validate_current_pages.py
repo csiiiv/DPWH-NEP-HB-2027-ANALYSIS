@@ -3,6 +3,7 @@
 import hashlib
 import json
 import re
+import sys
 from collections import Counter
 from pathlib import Path
 
@@ -60,9 +61,7 @@ def validate_current_pages():
     require((VIEWERS / 'nep_2027_tree.html').read_text() == (VIEWERS / 'nep_tree_viewer.template.html').read_text()
             .replace('__TREE_DATA__', encode(tree)).replace('__EVIDENCE_DATA__', encode(evidence)),
             'Stale NEP template rendering')
-    index_data = {k: data[k] for k in ('manifest', 'summary', 'unresolved_paps')}
-    require((ROOT / 'site/index.html').read_text() == (ROOT / 'site/index.template.html').read_text().replace('__INDEX_DATA__', encode(index_data)),
-            'Stale index status/coverage')
+    validate_source_verification()
     s = data['summary']
     for stage in ('house', 'nep'):
         require(s[stage + '_printed_php'] == s[stage + '_operations_printed_php'] + s[stage + '_gas_s2o_printed_php'],
@@ -110,6 +109,24 @@ def validate_current_pages():
     require(dict(Counter(r['status'] for r in data['projects'])) == s['match_counts'], 'Matcher headline counts stale')
     require('hb_grand_upper_php' not in s, 'Invalid upper-bound accounting returned')
     return data
+
+
+def validate_source_verification():
+    """Recompute independent rollups and enforce current static source pages."""
+    sys.path.insert(0, str(ANALYSIS / 'builders'))
+    from build_source_verification import payloads, PAGES, embed
+    sources, overview, manifest = payloads()
+    require(read('source_verification_manifest.json') == manifest, 'Stale source verification inputs or presentation; rebuild source verification pages')
+    require(read('source_verification_overview.json') == overview, 'Stale source verification overview')
+    require(not overview['comparison_ready'], 'Premature comparison-ready status')
+    template = (VIEWERS / 'source_verification.template.html').read_text()
+    for key, payload in sources.items():
+        require(not payload['audit']['failures'], f'{key} hierarchy arithmetic failed')
+        expected = template.replace('__TITLE__', payload['title']).replace('__SOURCE_DATA__', embed(payload))
+        require((VIEWERS / PAGES[key]).read_text() == expected, f'Stale verification page: {key}')
+    require((ROOT / 'site/index.html').read_text() == (ROOT / 'site/index.template.html').read_text().replace('__INDEX_DATA__', embed(overview)),
+            'Stale verification homepage')
+    return overview
 
 
 if __name__ == '__main__':

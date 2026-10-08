@@ -34,11 +34,12 @@
       "checked": 16760,
       "not_checked": 4,
       "status_counts": {
-        "within_bbox_agreement": 16523,
-        "native_text_review": 214,
-        "nearby_alignment_candidate": 23
+        "within_bbox_agreement": 13569,
+        "native_row_ambiguity": 3149,
+        "native_text_review": 28,
+        "nearby_alignment_candidate": 14
       },
-      "review_candidates": 237
+      "review_candidates": 3191
     }
   },
   "checks": [

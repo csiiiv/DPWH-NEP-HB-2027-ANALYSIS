@@ -9,7 +9,7 @@
 | Pillar | Source | Form |
 |---|---|---|
 | **NEP official** | `reference/ph-budget-analysis` → `Compiled_-_DPWH.xlsx` | 8 program-level NEP totals (₱642.61B) |
-| **NEP API** | BetterGov NEP API → `nep-data/json/fy2027-combined.json` | 11,372 project line items (₱445.38B) |
+| **NEP API** | BetterGov NEP API → `dpwh-transparency-nep-data/json/fy2027-combined.json` | 11,372 project line items (₱445.38B) |
 | **House Bill** | `HB_BUDGET/3 - HB 10858 VOL IC.pdf` (text-layer-verified parse) | 15,487 corrected leaves (₱520.65B) + printed control totals |
 
 Artifacts: `analysis/data/crosscheck_2027.json` (data) · `analysis/viewers/crosscheck_2027.html` (dashboard) ·

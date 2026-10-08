@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "fiscal_year": 2027,
+  "built_for": "House DPWH latest baselines × joebert_data",
+  "inputs": {
+    "native": "analysis/data/hb_dpwh_native_tree.json",
+    "v5": "analysis/data/hb_dpwh_leaves_corrected_v5.json",
+    "joebert_dpwh": "analysis/joebert_data/hb10858_projects.json",
+    "repairs": "analysis/data/hb_known_defect_repairs.json"
+  },
+  "headline": {
+    "native_ops_printed_php": 586941661000,
+    "native_local_office_leaves_n": 1431,
+    "native_local_office_leaves_php": 541219800000,
+    "native_local_pap_parents_n": 40,
+    "native_fap_projects_n": 29,
+    "native_fap_php": 44749011000,
+    "v5_positive_leaves_n": 16148,
+    "v5_php": 581345349000,
+    "joebert_rows_n": 12714,
+    "joebert_gross_php": 360773154440,
+    "joebert_cleaned_rows_n": 9998,
+    "joebert_cleaned_php": 226498863890
+  },
+  "native_office_coverage": {
+    "native_distinct_offices": 204,
+    "exact_office_name_in_joebert": 192,
+    "soft_office_name_in_joebert": 192,
+    "office_pap_cells": 1431,
+    "cells_with_soft_office_in_joebert": 1386,
+    "cells_coverage_pct": 96.86,
+    "cells_php_covered": 536105599000,
+    "cells_php_total": 541219800000,
+    "common_offices_peso_exact_agree": 0
+  },
+  "joebert_defects": {
+    "control_amount_hits_ge_1b": [
+      {
+        "joebert_id": "HB10858-3-0364-001237",
+        "amount_php": 16222881000,
+        "page": 364,
+        "projectName": "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and",
+        "office": "Surigao del Sur 2nd District Engineering Office",
+        "region": "Region XIII",
+        "matched_controls": [
+          [
+            "pap",
+            "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers",
+            79
+          ],
+          [
+            "repair_pap",
+            "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers",
+            null
+          ]
+        ]
+      },
+      {
+        "joebert_id": "HB10858-3-0365-001268",
+        "amount_php": 16222881000,
+        "page": 365,
+        "projectName": "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and",
+        "office": "Surigao del Sur 2nd District Engineering Office",
+        "region": "Region II",
+        "matched_controls": [
+          [
+            "pap",
+            "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers",
+            79
+          ],
+          [
+            "repair_pap",
+            "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers",
+            null
+          ]
+        ]
+      }
+    ],
+    "known_big_control_rows_n": 3,
+    "known_big_control_php": 77194773000,
+    "duplicate_title_amount_keys": 2692,
+    "duplicate_extra_rows": 2714,
+    "duplicate_extra_php": 73302398550,
+    "consecutive_page_dup_pairs": 2679,
+    "consecutive_page_dup_php_approx": 72757398550,
+    "non_thousand_amount_rows": 16,
+    "blank_office_rows": 1467,
+    "empty_pap3_rows": 11372,
+    "fap_projects_name_matched": 0,
+    "fap_projects_total": 29
+  },
+  "v5_title_overlap": {
+    "exact_title_amount_keys": 3479,
+    "unique_1to1_title_amount_keys": 2067,
+    "unique_1to1_php": 35892841590,
+    "v5_rows_with_title_amount_in_joebert": 3480,
+    "v5_php_with_title_amount_in_joebert": 64725803640,
+    "joebert_rows_with_title_amount_in_v5": 4896,
+    "joebert_php_with_title_amount_in_v5": 93573765690,
+    "exact_region_title_amount_keys": 2327,
+    "exact_office_title_amount_keys": 3121,
+    "shared_normalized_titles": 3481,
+    "shared_titles_with_any_common_amount": 3478,
+    "after_clean_v5_rows_matched": 3480,
+    "after_clean_v5_php_matched": 64725803640,
+    "after_clean_joebert_rows_matched": 3479,
+    "after_clean_joebert_php_matched": 64720803640,
+    "v5_recall_rows_pct": 21.55,
+    "v5_recall_php_pct": 11.13,
+    "joebert_precision_rows_pct": 38.51,
+    "joebert_precision_php_pct": 25.94
+  },
+  "other_agency_dumps_vs_native_dpwh": {
+    "hb10858_agency_projects": {
+      "rows": 795,
+      "exact_name_hits_vs_native": 0
+    },
+    "hb10858_hfep_projects": {
+      "rows": 513,
+      "exact_name_hits_vs_native": 0
+    },
+    "hb10858_nia_projects": {
+      "rows": 32,
+      "exact_name_hits_vs_native": 0
+    }
+  },
+  "joebert_region_rollup_php": {
+    "Region XIII": 77625546000,
+    "Region III": 69289572500,
+    "Region II": 36238021000,
+    "Region X": 26517351000,
+    "National Capital Region": 24158862000,
+    "Region I": 21957655000,
+    "Region V": 18361991890,
+    "Region VIII": 14912758000,
+    "Region VI": 11973715000,
+    "Region XI": 10956054000,
+    "Region XII": 10544613000,
+    "Region VII": 10520250000,
+    "Negros Island Region": 10392902050,
+    "Region IX": 10136500000,
+    "Cordillera Administrative Region": 7187363000
+  }
+}

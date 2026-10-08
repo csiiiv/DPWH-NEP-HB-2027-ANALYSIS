@@ -211,7 +211,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source-dir', type=Path, default=DEFAULT_SOURCE)
     args = parser.parse_args()
-    api = read(ROOT / 'nep-data/json/fy2027-combined.json')['data']['data']
+    api = read(ROOT / 'dpwh-transparency-nep-data/json/fy2027-combined.json')['data']['data']
     for a in api:
         a['amount_php'] = int(Decimal(str(a['amount'])) * 1000)
     rows, controls, repairs = extract(args.source_dir, api)

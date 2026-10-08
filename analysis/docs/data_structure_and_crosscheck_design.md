@@ -61,10 +61,10 @@ See `analysis/docs/hierarchy_report.md` for the OCR-damage classes handled.
 
 ---
 
-## 2. DPWH NEP FY 2027 (Executive proposal) — `nep-data/json/fy2027-combined.json`
+## 2. DPWH NEP FY 2027 (Executive proposal) — `dpwh-transparency-nep-data/json/fy2027-combined.json`
 
 **Source:** NEP API dump (`status/code/data` envelope; also per-project detail
-files `nep-data/json/fy2027-details/2027DPWH-Proposal-*.json` with attached
+files `dpwh-transparency-nep-data/json/fy2027-details/2027DPWH-Proposal-*.json` with attached
 BP202 / Certificate-of-Implementability documents).
 
 **Nature:** a *flat database table* — one row per project, amounts in

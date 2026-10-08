@@ -19,7 +19,7 @@ import re
 import pymupdf as fitz
 
 PDF = "HB_BUDGET/3 - HB 10858 VOL IC.pdf"
-NEP = "nep-data/json/fy2027-combined.json"
+NEP = "dpwh-transparency-nep-data/json/fy2027-combined.json"
 OUT = "analysis/archive/crosscheck_2027_rainwater.json"
 
 PAP_TOTAL = 1_027_200_000

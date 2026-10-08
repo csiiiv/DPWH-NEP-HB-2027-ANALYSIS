@@ -4,8 +4,14 @@ Scripts, source audits, extracted datasets, and offline dashboards for comparing
 FY2027 DPWH National Expenditure Program allocations, House budget controls,
 and the saved BetterGov API project snapshot.
 
+**Current phase:** [verify the independent source hierarchies first](analysis/docs/source_hierarchy_verification.md).
+The [static overview](site/index.html) now leads with Native House I-B, NEP source,
+and the retained DPWH Transparency NEP API tree. Arithmetic, evidence, coverage,
+and scope are shown separately; comparisons remain deferred.
+
 Start with [analysis/README.md](analysis/README.md) (folder map + settled baselines),
 then [the work summary](analysis/FY2027_work_summary.md),
+[ADRs](analysis/docs/adr/README.md),
 [native House reconciliation](analysis/docs/hb_native_v5_reconciliation.md),
 [NEP validation](analysis/viewers/nep_2027_tree.md), and
 [House rollup tree](analysis/viewers/hb_2027_tree.md).
@@ -16,7 +22,7 @@ Open [the NEP drilldown](analysis/viewers/nep_2027_tree.html) or
 
 ```
 ├── analysis/           Workbench (builders · viewers · data · docs · tests · archive)
-├── nep-data/           Native House control tree + saved BetterGov API snapshot
+├── dpwh-transparency-nep-data/           DPWH Transparency NEP snapshot + fetch scripts
 ├── HB_BUDGET/          House PDFs and OCR markdown inputs
 ├── scripts/            Packaging, validation, native House extractor
 ├── site/               Dashboard index (source; packaged into _site/)
@@ -31,7 +37,7 @@ Inside `analysis/`, current code and datasets are split by role — see
 ## Latest usable datasets
 
 Status as of **8 October 2026**. Monetary values in the generated datasets are
-integer Philippine pesos. The complete NEP baseline covers **new appropriations**;
+integer Philippine pesos after converting API values from thousands of pesos. The complete NEP baseline covers **new appropriations**;
 automatic appropriations are excluded.
 
 | Purpose | Recommended artifact | Coverage and limits |
@@ -40,12 +46,13 @@ automatic appropriations are excluded.
 | NEP totals without counting parents and children twice | [Atomic budget units](analysis/data/nep_2027_budget_units.json) | 14,190 units reproduce the root. GOP/loan units partition project totals; they are not separate projects. |
 | NEP provenance, repairs, and evidence | [Validation and repair ledger](analysis/data/nep_2027_tree_validation.json), [native amount audit](analysis/data/nep_2027_native_amount_audit.json), and [review queue](analysis/data/nep_2027_native_amount_review.json) | 54 repairs; 237 review candidates, not confirmed errors, plus four nodes without comparable printed evidence. Arithmetic balance alone does not certify OCR amounts. |
 | NEP source projects and API coverage | [Source projects](analysis/data/nep_2027_source_projects.json), [source audit](analysis/docs/nep_2027_source_audit.md), and [API reconciliation](analysis/docs/nep_2027_api_reconciliation.md) | Use alongside the canonical tree for project-level comparison and documented API omissions. |
-| House **control** baseline (native text layer) | [Native I-B tree](nep-data/hb_dpwh_native_tree.json), [extractor](scripts/hb_native_extract3.py), [reconciliation](analysis/docs/hb_native_v5_reconciliation.md) | 647/647 internal checks; zones reproduce ₱654.102015B after banner dedup. Office-granularity. Both volumes print balancing controls; the old ₱5.596B “operations gap” was OCR extraction damage. |
+| House **control** baseline (native text layer) | [Additive Native I-B tree](analysis/data/hb_dpwh_native_rollup.json), [verification viewer](analysis/viewers/hb_native_verification.html), [audit](analysis/docs/hb_native_ib_rollup_checks.md) | 660/660 internal nodes balance directly and recursively across all four expenditure columns; 1,746 leaves reproduce ₱654.102015B. Office-granularity; Native I-C is still needed for named local projects. |
+| DPWH Transparency NEP API hierarchy | [API tree](analysis/data/dpwh_transparency_nep_tree.json), [verification viewer](analysis/viewers/dpwh_nep_api_verification.html), [audit](analysis/data/dpwh_transparency_nep_tree_validation.json) | 11,372 FY2027 projects; ₱445,378,063,000. All 2,662 derived grouping checks pass; release/document coverage still needs confirmation. |
 | House project/allocation extract | [House v5](analysis/data/hb_dpwh_leaves_corrected_v5.json) and [repair report](analysis/docs/hb_known_defect_repairs.md) | Best current **project-title** candidate: 16,148 positive allocations, ₱581,345,349,000; 38/42 local PAP controls balance. Pending native I-C re-extract for the four damaged sections. |
 | House hierarchy rollup | [House rollup tree](analysis/data/hb_2027_tree.json), [validation report](analysis/viewers/hb_2027_tree.md), and [drilldown](analysis/viewers/hb_2027_tree.html) | 18,854 nodes under the printed ₱654,102,015,000 total: zones, programs, PAP controls, regions, offices, projects, FAP funding splits. Root/zone/program controls balance; the four unresolved PAPs and net operations gap stay explicit. |
 | House document-native drilldown | [Document-native tree](analysis/data/hb_2027_source_tree.json), [report](analysis/viewers/hb_2027_source_tree.md), and [drilldown](analysis/viewers/hb_2027_source_tree.html) | 18,850 nodes following the bill's printed hierarchy with OCR row references. 476 printed controls balance (44 PAPs, 399 office + 15 region subtotals attached by exact row-set match, programs, outcomes, sections); four unresolved PAPs only. |
 | House printed PAP controls | [PAP drilldown](analysis/data/crosscheck_2027_pap_drilldown.json) and [usability audit](analysis/docs/hb_json_usability_audit.md) | All 42 saved local PAP controls checked against native PDF headings; this does not certify every extracted project. The audit's historical tables refer to earlier versions; its opening update directs readers to v5. |
-| Saved BetterGov API snapshot | [FY2027 combined JSON](nep-data/json/fy2027-combined.json) | 11,372 project rows, ₱445,378,063,000. A separate, incomplete coverage baseline; not the full NEP budget. |
+| Saved BetterGov API snapshot | [FY2027 combined JSON](dpwh-transparency-nep-data/json/fy2027-combined.json) | 11,372 project rows, ₱445,378,063,000. A separate, incomplete coverage baseline; not the full NEP budget. |
 
 House Volume I-B prints **₱654,102,015,000** new appropriations, including
 **₱586,941,661,000** operations. The native I-B tree reproduces that total
@@ -111,9 +118,9 @@ include every plenary amendment. Do not treat these copies as an enacted GAA.
 ## Supplementary and reference sources
 
 - **BetterGov NEP API:** the [FY2027 project-list endpoint](https://api.dpwh.bettergov.ph/nep/projects?fiscalYear=2027&page=1&limit=100)
-  is used by the [pagination script](nep-data/fetch_nep_projects_paginated.py);
+  is used by the [pagination script](dpwh-transparency-nep-data/fetch_nep_projects_paginated.py);
   [project details](https://api.dpwh.bettergov.ph/nep/projects/2027DPWH-Proposal-00001)
-  are fetched by the [detail script](nep-data/fetch_nep_projects_details.py).
+  are fetched by the [detail script](dpwh-transparency-nep-data/fetch_nep_projects_details.py).
   Comparisons use the committed snapshot, not a live API query. Its omissions
   are documented in the NEP/API reconciliation above.
 - **Philippine budget analysis:** [repository](https://github.com/ajamontesa/ph-budget-analysis)
@@ -132,7 +139,7 @@ include every plenary amendment. Do not treat these copies as an enacted GAA.
 - **DPWH transparency API scraper:** [repository](https://github.com/csiiiv/dpwh-transparency-data-api-scraper),
   retained at [de96ab393a069792964b086a7d155e7801909c2a](https://github.com/csiiiv/dpwh-transparency-data-api-scraper/tree/de96ab393a069792964b086a7d155e7801909c2a).
   This is a supplementary extraction reference for the DPWH transparency API;
-  the BetterGov NEP snapshot is fetched by this repository's `nep-data` scripts.
+  the BetterGov NEP snapshot is fetched by this repository's `dpwh-transparency-nep-data` scripts.
 
 The Philippine budget analysis reference is a pinned Git submodule. Initialize it
 with `git submodule update --init reference/ph-budget-analysis` after cloning.
@@ -143,9 +150,9 @@ commits, snapshots, and provenance identify the material actually used.
 ## Shared dashboards
 
 [Open the dashboard index](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/)
-for the NEP tree and the current [source comparison](analysis/viewers/source_comparison_2027.html),
-including printed controls, House v5 coverage, PAP mappings, and project candidates.
-Earlier three-way and title-taxonomy viewers remain labeled historical.
+for three independent source-verification viewers. The
+[earlier candidate comparison](analysis/viewers/source_comparison_2027.html),
+OCR-era House viewers, and historical crosschecks are retained in a reference section.
 `.github/workflows/pages.yml` builds and publishes the committed viewers on
 relevant pushes to `main` or manual dispatch. Pull requests validate the static
 build without deployment. This does not rerun source-PDF extraction.
@@ -173,11 +180,12 @@ Displayed amounts use three decimals with B (billion), M (million), and T
 Project sorting covers the full filtered result before pagination. Positive
 deltas are green, negative deltas red, and zero neutral.
 
-To regenerate pages from the retained JSON inputs (no PDF extraction needed):
+To regenerate the verification pages from retained artifacts (no matching or PDF extraction):
 
 ```sh
-python analysis/builders/build_current_pages.py
-python -m unittest discover -s analysis/tests -p test_current_pages.py -v
+python analysis/builders/build_source_verification.py
+python -m unittest discover -s analysis/tests -p test_source_verification.py -v
+node --test analysis/tests/test_source_verification_viewer.cjs
 python scripts/build_pages.py
 ```
 
@@ -197,7 +205,7 @@ documented in the reports; unmatched rows alone do not establish budget changes.
 ## Local inputs and rebuilding
 
 This repository includes analysis artifacts, evidence images, the retained House
-PDFs/OCR outputs under `HB_BUDGET/`, and `nep-data/json/fy2027-combined.json`.
+PDFs/OCR outputs under `HB_BUDGET/`, and `dpwh-transparency-nep-data/json/fy2027-combined.json`.
 The reference repository is pinned as a submodule. The DPWH scraper checkout,
 raw API downloads, and page-mapping caches are excluded by `.gitignore`;
 the NEP PDF/OCR build inputs must be provided separately.

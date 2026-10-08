@@ -30,7 +30,7 @@ from collections import defaultdict, Counter
 
 IN = "hb_dpwh_leaves_corrected_v4b.json"
 V3 = "analysis/archive/hb_dpwh_leaves_corrected_v3.json"
-NEP = "../nep-data/json/fy2027-combined.json"
+NEP = "../dpwh-transparency-nep-data/json/fy2027-combined.json"
 HIER = "hb_dpwh_pap_hierarchy.json"
 OUT = "analysis/archive/crosscheck_2027_v4b_validation.json"
 

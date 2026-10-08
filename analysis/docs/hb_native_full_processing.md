@@ -2,6 +2,14 @@
 
 Follow-up to `hb_native_textlayer_assessment.md`. Question: can we fully process the HB PDFs from the native text layer? **DPWH (the target department): yes, completely — 647/647 structural balance checks pass.**
 
+**8 October 2026 follow-up:** the raw outline is now rebuilt into an additive
+[Native I-B rollup JSON](../data/hb_dpwh_native_rollup.json).
+**660/660 internal nodes** pass immediate-child and recursive leaf checks in
+all four expenditure columns, with **zero unexplained amount rows**. The
+1,746 retained leaves sum to **₱654,102,015,000**, including GAS and S2O.
+See [progressive rollup checks and gap repairs](hb_native_ib_rollup_checks.md)
+and the [machine audit](../data/hb_native_ib_rollup_audit.json).
+
 ## Validator design (`scripts/hb_native_extract3.py`)
 
 Geometry-first, OCR-free:
@@ -30,8 +38,8 @@ Geometry-first, OCR-free:
 
 The v5 net operations residual of ₱5,596,312,000 was OCR damage, not a property of the document.
 
-- Total across all top-level sections (incl. GAS/S2O containers): ₱1,709,735,429,000 vs printed grand ₱654,102,015,000 — the delta is double-counted parent rollups, expected in a raw tree; the leaf-level PAP table above is the additive layer.
-- Artifact: `../../nep-data/hb_dpwh_native_tree.json`
+- Raw leaf sum across detached top-level sections: ₱1,709,735,429,000 vs printed grand ₱654,102,015,000 — the ₱1,055,633,414,000 delta is double-counted controls. The additive rollup fixes this by reattaching five program banners, collapsing 37 evidenced repeated PAP controls, and restoring section/project/agency controls. No allocation amounts change.
+- Artifact: `../data/hb_dpwh_native_tree.json`
 
 ## Other volumes — extractable, different table families
 
@@ -45,6 +53,6 @@ Conclusion: **one geometry profile per table family**, not per volume. The DPWH 
 
 ## Recommendation
 
-1. Adopt `hb_dpwh_native_tree.json` as the DPWH House source of record (supersedes the v5 repair chain)
+1. Use `hb_dpwh_native_rollup.json` as the additive DPWH House control baseline; retain `hb_dpwh_native_tree.json` as its raw-outline predecessor. Native I-B supersedes the v5 control repair chain, but I-C is still required for named local projects.
 2. Add band profiles for the 3-col family (VOL IA/IC agency budgets) and VOL II
 3. Keep PaddleOCR markdown only as a qualitative cross-check

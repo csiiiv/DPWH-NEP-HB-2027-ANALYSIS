@@ -5,7 +5,7 @@ against the DPWH NEP FY 2027 taxonomy, with region-level drilldown.
 
 Data flow:
   HB:  analysis/archive/hb_dpwh_leaves_validated.json  (validated leaf rows)
-  NEP: nep-data/json/fy2027-combined.json      (flat project rows, PHP thousands)
+  NEP: dpwh-transparency-nep-data/json/fy2027-combined.json      (flat project rows, PHP thousands)
 
 Problem this solves: HB `pap` labels mix standard categories with thousands of
 project-specific PAPs inserted by the House, while NEP `pap3` is purely
@@ -38,7 +38,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 
 LEAVES_FILE = "analysis/archive/hb_dpwh_leaves_corrected_v3.json"
-NEP_FILE = "nep-data/json/fy2027-combined.json"
+NEP_FILE = "dpwh-transparency-nep-data/json/fy2027-combined.json"
 OUT_HTML = "analysis/viewers/taxonomy_comparison.html"
 OUT_JSON = "analysis/archive/taxonomy_comparison_data.json"
 
