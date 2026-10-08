@@ -1,0 +1,282 @@
+{
+ "top_increases": [
+  {
+   "nep_name": "Butuan City - Agusan del Norte Logistical Highway, Sta. 14+780 - Sta. 15+934.3, Sta. Sta. 16+144.3 - Sta. 17+000, Masao Section, Butuan City",
+   "nep_amount_thousands": 400000,
+   "hb_amount_thousands": 4652000.0,
+   "delta_thousands": 4252000.0,
+   "nep_office": "Butuan City District Engineering Office"
+  },
+  {
+   "nep_name": "Bacolod North Rd - K0092+118 - K0094 + 000",
+   "nep_amount_thousands": 71248,
+   "hb_amount_thousands": 1135003.0,
+   "delta_thousands": 1063755.0,
+   "nep_office": "Negros Occidental 5th District Engineering Office"
+  },
+  {
+   "nep_name": "Construction of Camarines Sur Iconic Capitol Building, CamSur Uptown Center, Pili, Camarines Sur",
+   "nep_amount_thousands": 360000,
+   "hb_amount_thousands": 1402200.0,
+   "delta_thousands": 1042200.0,
+   "nep_office": "Camarines Sur 3rd District Engineering Office"
+  },
+  {
+   "nep_name": "Jct Milagros-Baleno-Lagta Rd - K0080 + 663 - K0081 + 730",
+   "nep_amount_thousands": 75000,
+   "hb_amount_thousands": 922130.0,
+   "delta_thousands": 847130.0,
+   "nep_office": "Masbate 2nd District Engineering Office"
+  },
+  {
+   "nep_name": "Construction (Completion) of Multi-Purpose Building, Barangay Cadunan, Mabini, Davao de Oro",
+   "nep_amount_thousands": 5000,
+   "hb_amount_thousands": 651500.0,
+   "delta_thousands": 646500.0,
+   "nep_office": "Davao de Oro 1st District Engineering Office"
+  },
+  {
+   "nep_name": "Alicante Br. (B00374NR) along Jct Bagonawa-La Castellana-Isabela Rd",
+   "nep_amount_thousands": 31000,
+   "hb_amount_thousands": 598940.0,
+   "delta_thousands": 567940.0,
+   "nep_office": "Negros Occidental 2nd District Engineering Office"
+  },
+  {
+   "nep_name": "Cangaranan Parallel Br. along Iloilo-Antique Rd",
+   "nep_amount_thousands": 270500,
+   "hb_amount_thousands": 795500.0,
+   "delta_thousands": 525000.0,
+   "nep_office": "Antique District Engineering Office"
+  },
+  {
+   "nep_name": "Construction of Multi-purpose Building (Covered Court) at Brgy. Cabangan, Tabaco City, Albay",
+   "nep_amount_thousands": 12000,
+   "hb_amount_thousands": 331000.0,
+   "delta_thousands": 319000.0,
+   "nep_office": "Albay 1st District Engineering Office"
+  },
+  {
+   "nep_name": "Labangan-Midsalip Road, Labangan, Zamboanga del Sur Sta 25+610 - Sta 28+610",
+   "nep_amount_thousands": 105000,
+   "hb_amount_thousands": 410000.0,
+   "delta_thousands": 305000.0,
+   "nep_office": "Zamboanga del Sur 1st District Engineering Office"
+  },
+  {
+   "nep_name": "Cabuluan Br. (B04806LZ) along Maharlika Highway (LZ)",
+   "nep_amount_thousands": 51000,
+   "hb_amount_thousands": 329000.0,
+   "delta_thousands": 278000.0,
+   "nep_office": "Camarines Norte District Engineering Office"
+  }
+ ],
+ "top_decreases": [
+  {
+   "nep_name": "Davao City Bypass Construction Project, Package II",
+   "nep_amount_thousands": 2000000,
+   "hb_amount_thousands": 1000000.0,
+   "delta_thousands": -1000000.0,
+   "nep_office": "Davao City 2nd District Engineering Office"
+  },
+  {
+   "nep_name": "Construction of Flood Control Structure along Lamunan River, Downstream, Barangay San Andres, San Rafael, Iloilo",
+   "nep_amount_thousands": 688925,
+   "hb_amount_thousands": 103204.0,
+   "delta_thousands": -585721.0,
+   "nep_office": "Iloilo 3rd District Engineering Office"
+  },
+  {
+   "nep_name": "Construction of Concrete Road, Sta. 0 + 000 - 16 + 667, Barangay Umiray, Dingalan, Aurora",
+   "nep_amount_thousands": 400000,
+   "hb_amount_thousands": 57000.0,
+   "delta_thousands": -343000.0,
+   "nep_office": "Aurora District Engineering Office"
+  },
+  {
+   "nep_name": "Construction of Revetment along Carmona River, Barangay Cabilang Baybay, Carmona City, Cavite",
+   "nep_amount_thousands": 450000,
+   "hb_amount_thousands": 150000.0,
+   "delta_thousands": -300000.0,
+   "nep_office": "Cavite 3rd District Engineering Office"
+  },
+  {
+   "nep_name": "Construction of Lake Mainit Circumferential - Lipata Port By-Pass Road to Wind Power Generation, Brgy. Banbanon - Brgy. Oslao, San Francisco, Surigao del Norte",
+   "nep_amount_thousands": 600000,
+   "hb_amount_thousands": 300000.0,
+   "delta_thousands": -300000.0,
+   "nep_office": "Surigao del Norte 2nd District Engineering Office"
+  },
+  {
+   "nep_name": "Construction (Completion) of Multi-Purpose Building, Sentro Komuniudad de Santa Cruz, Manila City (14.61236745, 120.98225658)",
+   "nep_amount_thousands": 400000,
+   "hb_amount_thousands": 100000.0,
+   "delta_thousands": -300000.0,
+   "nep_office": "North Manila District Engineering Office"
+  },
+  {
+   "nep_name": "Construction of National Tobacco Administrative Building, Quezon City (14.635833, 121.026111)",
+   "nep_amount_thousands": 400000,
+   "hb_amount_thousands": 150000.0,
+   "delta_thousands": -250000.0,
+   "nep_office": "Quezon City 2nd District Engineering Office"
+  },
+  {
+   "nep_name": "Construction of University of the Philippines (UP) Diliman College of Arts and Letters (CAL) Building, Diliman, Quezon City (14.652723, 121.066217)",
+   "nep_amount_thousands": 400000,
+   "hb_amount_thousands": 150000.0,
+   "delta_thousands": -250000.0,
+   "nep_office": "Quezon City 2nd District Engineering Office"
+  },
+  {
+   "nep_name": "Bacolod Negros Occidental Economic Highway (BANOCEH) (Victorias - Sagay), Sta. 11+380 - Sta. 15+903, Cadiz City, Negros Occidental",
+   "nep_amount_thousands": 380000,
+   "hb_amount_thousands": 160000.0,
+   "delta_thousands": -220000.0,
+   "nep_office": "Negros Occidental 1st District Engineering Office"
+  },
+  {
+   "nep_name": "Bacolod Negros Occidental Economic Highway (BANOCEH) (Victorias - Sagay), Sta. 3+000 - Sta. 7+464, Manapla, Negros Occidental",
+   "nep_amount_thousands": 375000,
+   "hb_amount_thousands": 168775.0,
+   "delta_thousands": -206225.0,
+   "nep_office": "Negros Occidental 1st District Engineering Office"
+  }
+ ],
+ "top_insertions": [
+  {
+   "hb_name": "1. ORGANIZATIONAL OUTCOME 1: Ensure Safe and Reliable National Road System",
+   "hb_amount_thousands": 35712554.0,
+   "hb_program": "Basic Infrastructure Program (BIP)",
+   "hb_office": "Central Office"
+  },
+  {
+   "hb_name": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide",
+   "hb_amount_thousands": 10915924.0,
+   "hb_program": "Asset Preservation Program",
+   "hb_office": "Dinagat Islands District Engineering Office"
+  },
+  {
+   "hb_name": "c. Laguna Lakeshore Road Network (LLRN) Project - Phase I, KEDCF Loan No. PHL-27, ADB Loan No. 4523-PHI and AIIB Loan No. L0725A",
+   "hb_amount_thousands": 8209919.0,
+   "hb_program": "a. Asset Preservation Program",
+   "hb_office": null
+  },
+  {
+   "hb_name": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Secondary Roads",
+   "hb_amount_thousands": 5736126.0,
+   "hb_program": "Asset Preservation Program",
+   "hb_office": "Surigao del Sur 2nd District Engineering Office"
+  },
+  {
+   "hb_name": "Road Widening - Primary Roads",
+   "hb_amount_thousands": 4836582.0,
+   "hb_program": "Network Development Program",
+   "hb_office": null
+  },
+  {
+   "hb_name": "Region III\\nConstruction (Completion) of Multi-Purpose Building, Barangay Baras-Baras, Tarlac City, Tarlac",
+   "hb_amount_thousands": 4773658.0,
+   "hb_program": "Basic Infrastructure Program (BIP)",
+   "hb_office": null
+  },
+  {
+   "hb_name": "f. Davao City Bypass Construction Project (III) (South and Center Sections), Package I, JICA Loan No. PH-P282",
+   "hb_amount_thousands": 3920440.0,
+   "hb_program": "a. Asset Preservation Program",
+   "hb_office": null
+  },
+  {
+   "hb_name": "2. Flood Control and Drainage Systems, Structures and Related Facilities",
+   "hb_amount_thousands": 3917888.0,
+   "hb_program": null,
+   "hb_office": "b. Cotabato 2nd District Engineering Office"
+  },
+  {
+   "hb_name": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide -\\nTertiary Roads",
+   "hb_amount_thousands": 3575480.0,
+   "hb_program": "Asset Preservation Program",
+   "hb_office": "Region XIII\\nSurigao del Sur 2nd District Engineering Office"
+  },
+  {
+   "hb_name": "e. Cavite Industrial Area Flood Risk Management Project (CIA-FRIMP), JICA Loan Nos. PH-P265 and PH-P284",
+   "hb_amount_thousands": 3066805.0,
+   "hb_program": "a. Asset Preservation Program",
+   "hb_office": null
+  },
+  {
+   "hb_name": "a. Pasig - Marikina River Channel Improvement Project (PMRCIP), Phase IV, JICA Loan Nos. PH-P271 and PH-P283",
+   "hb_amount_thousands": 3039933.0,
+   "hb_program": "a. Asset Preservation Program",
+   "hb_office": null
+  },
+  {
+   "hb_name": "Construction of Multi-Purpose Building, Barangay Impalutao, Municipality of",
+   "hb_amount_thousands": 2649742.0,
+   "hb_program": "Basic Infrastructure Program (BIP)",
+   "hb_office": "amboanga Sibugay 2nd District Engineering Office"
+  }
+ ],
+ "top_removals": [
+  {
+   "nep_name": "Quirino H-way - K0251 +(-511) - K0264 + 968",
+   "nep_amount_thousands": 2195137,
+   "nep_office": "Quezon 4th District Engineering Office"
+  },
+  {
+   "nep_name": "Pancian Viaduct along Manila North Road, Ilocos Norte",
+   "nep_amount_thousands": 2088668,
+   "nep_office": "Ilocos Norte 1st District Engineering Office"
+  },
+  {
+   "nep_name": "Lopez Viaduct (FB50957LZ) along Maharlika Highway, Brgy. Canda Ibaba - Brgy. Pandanan, Calauag, Quezon",
+   "nep_amount_thousands": 1200000,
+   "nep_office": "Quezon 4th District Engineering Office"
+  },
+  {
+   "nep_name": "Maharlika Highway (Sn Isidro-Sn Juanico Br) - K0816 + 000 - K0831 + 000",
+   "nep_amount_thousands": 1000000,
+   "nep_office": "Samar 2nd District Engineering Office"
+  },
+  {
+   "nep_name": "Maharlika Highway (Sn Isidro-Sn Juanico Br) - K0831 + 000 - K0846 + 000",
+   "nep_amount_thousands": 1000000,
+   "nep_office": "Samar 2nd District Engineering Office"
+  },
+  {
+   "nep_name": "Maharlika Highway (Sn Isidro-Sn Juanico Br) - K0846 + 000 - K0861 + 000",
+   "nep_amount_thousands": 1000000,
+   "nep_office": "Samar 2nd District Engineering Office"
+  },
+  {
+   "nep_name": "Maharlika Highway (Sn Isidro-Sn Juanico Br) - K0861 + 000 - K0876 + 000",
+   "nep_amount_thousands": 1000000,
+   "nep_office": "Samar 2nd District Engineering Office"
+  },
+  {
+   "nep_name": "Maharlika Highway (Sn Isidro-Sn Juanico Br) - K0876 + 000 - K0894 + 840",
+   "nep_amount_thousands": 1000000,
+   "nep_office": "Samar 2nd District Engineering Office"
+  },
+  {
+   "nep_name": "Construction of Road Dike along Abacan River, San Juan-San Jose Malino, Mexico, Pampanga, Sta. 0+000 - Sta. 5+139",
+   "nep_amount_thousands": 743746,
+   "nep_office": "Pampanga 1st District Engineering Office"
+  },
+  {
+   "nep_name": "Improvement of Road and Drainage System along Taft Ave. (From UN Ave. to Ayala Blvd.), Manila City",
+   "nep_amount_thousands": 575000,
+   "nep_office": "South Manila District Engineering Office"
+  },
+  {
+   "nep_name": "Dagupan-Mangaldan Diversion Road, Dagupan City-Mangaldan, Sta. 0+861-Sta.1+512, Sta.5+280-Sta.-Sta.6+089.9 Pangasinan",
+   "nep_amount_thousands": 427765,
+   "nep_office": "Pangasinan 2nd District Engineering Office"
+  },
+  {
+   "nep_name": "Construction of Matalahib Creek Pumping Station, Quezon City",
+   "nep_amount_thousands": 410000,
+   "nep_office": "Quezon City 1st District Engineering Office"
+  }
+ ]
+}

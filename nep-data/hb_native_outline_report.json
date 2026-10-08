@@ -1,0 +1,47 @@
+{
+ "checked": 6,
+ "failed": 5,
+ "fails": [
+  {
+   "page": 13,
+   "level": 0,
+   "text": "General Administration and Support",
+   "printed": 9,
+   "leaf_sum": 2153111119,
+   "diff": -2153111110
+  },
+  {
+   "page": 13,
+   "level": 1,
+   "text": "General Management and Supervision",
+   "printed": 17496602000,
+   "leaf_sum": 976757119,
+   "diff": 16519844881
+  },
+  {
+   "page": 13,
+   "level": 2,
+   "text": "National Capital Region (NCR)",
+   "printed": 7459016000,
+   "leaf_sum": 472704015,
+   "diff": 6986311985
+  },
+  {
+   "page": 13,
+   "level": 2,
+   "text": "Region I - Ilocos",
+   "printed": 601359000,
+   "leaf_sum": 504053104,
+   "diff": 97305896
+  },
+  {
+   "page": 14,
+   "level": 1,
+   "text": "Region II - Cagayan Valley",
+   "printed": 581642000,
+   "leaf_sum": 544158000,
+   "diff": 37484000
+  }
+ ],
+ "no_amount": []
+}

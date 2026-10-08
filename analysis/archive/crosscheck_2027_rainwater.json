@@ -1,0 +1,253 @@
+{
+ "pap": "Rainwater Collector System",
+ "fiscal_year": 2027,
+ "hb_printed_total_php": 1027200000,
+ "hb_region_sum_php": 1027200000,
+ "hb_region_sum_matches_printed": true,
+ "api_total_php": 1027200000,
+ "api_total_matches_hb": true,
+ "regions": [
+  {
+   "region": "CAR",
+   "hb_php": 59400000,
+   "api_php": 59400000,
+   "delta_php": 0,
+   "hb_offices": 13,
+   "offices_sum_php": 59400000,
+   "offices_match": true,
+   "api_projects": 13
+  },
+  {
+   "region": "MIMAROPA",
+   "hb_php": 42600000,
+   "api_php": 42600000,
+   "delta_php": 0,
+   "hb_offices": 9,
+   "offices_sum_php": 42600000,
+   "offices_match": true,
+   "api_projects": 9
+  },
+  {
+   "region": "NCR",
+   "hb_php": 46800000,
+   "api_php": 46800000,
+   "delta_php": 0,
+   "hb_offices": 10,
+   "offices_sum_php": 46800000,
+   "offices_match": true,
+   "api_projects": 10
+  },
+  {
+   "region": "NIR",
+   "hb_php": 51000000,
+   "api_php": 51000000,
+   "delta_php": 0,
+   "hb_offices": 11,
+   "offices_sum_php": 51000000,
+   "offices_match": true,
+   "api_projects": 11
+  },
+  {
+   "region": "Nationwide",
+   "hb_php": 38400000,
+   "api_php": 38400000,
+   "delta_php": 0,
+   "hb_offices": 1,
+   "offices_sum_php": 38400000,
+   "offices_match": true,
+   "api_projects": 1
+  },
+  {
+   "region": "Region I",
+   "hb_php": 51000000,
+   "api_php": 51000000,
+   "delta_php": 0,
+   "hb_offices": 11,
+   "offices_sum_php": 51000000,
+   "offices_match": true,
+   "api_projects": 11
+  },
+  {
+   "region": "Region II",
+   "hb_php": 55200000,
+   "api_php": 55200000,
+   "delta_php": 0,
+   "hb_offices": 12,
+   "offices_sum_php": 55200000,
+   "offices_match": true,
+   "api_projects": 12
+  },
+  {
+   "region": "Region III",
+   "hb_php": 76200000,
+   "api_php": 76200000,
+   "delta_php": 0,
+   "hb_offices": 17,
+   "offices_sum_php": 76200000,
+   "offices_match": true,
+   "api_projects": 17
+  },
+  {
+   "region": "Region IV-A",
+   "hb_php": 76200000,
+   "api_php": 76200000,
+   "delta_php": 0,
+   "hb_offices": 17,
+   "offices_sum_php": 76200000,
+   "offices_match": true,
+   "api_projects": 17
+  },
+  {
+   "region": "Region IX",
+   "hb_php": 63600000,
+   "api_php": 63600000,
+   "delta_php": 0,
+   "hb_offices": 14,
+   "offices_sum_php": 63600000,
+   "offices_match": true,
+   "api_projects": 14
+  },
+  {
+   "region": "Region V",
+   "hb_php": 76200000,
+   "api_php": 76200000,
+   "delta_php": 0,
+   "hb_offices": 17,
+   "offices_sum_php": 76200000,
+   "offices_match": true,
+   "api_projects": 17
+  },
+  {
+   "region": "Region VI",
+   "hb_php": 55200000,
+   "api_php": 55200000,
+   "delta_php": 0,
+   "hb_offices": 12,
+   "offices_sum_php": 55200000,
+   "offices_match": true,
+   "api_projects": 12
+  },
+  {
+   "region": "Region VII",
+   "hb_php": 55200000,
+   "api_php": 55200000,
+   "delta_php": 0,
+   "hb_offices": 12,
+   "offices_sum_php": 55200000,
+   "offices_match": true,
+   "api_projects": 12
+  },
+  {
+   "region": "Region VIII",
+   "hb_php": 67800000,
+   "api_php": 67800000,
+   "delta_php": 0,
+   "hb_offices": 15,
+   "offices_sum_php": 67800000,
+   "offices_match": true,
+   "api_projects": 15
+  },
+  {
+   "region": "Region X",
+   "hb_php": 67800000,
+   "api_php": 67800000,
+   "delta_php": 0,
+   "hb_offices": 15,
+   "offices_sum_php": 67800000,
+   "offices_match": true,
+   "api_projects": 15
+  },
+  {
+   "region": "Region XI",
+   "hb_php": 55200000,
+   "api_php": 55200000,
+   "delta_php": 0,
+   "hb_offices": 12,
+   "offices_sum_php": 55200000,
+   "offices_match": true,
+   "api_projects": 12
+  },
+  {
+   "region": "Region XII",
+   "hb_php": 42600000,
+   "api_php": 42600000,
+   "delta_php": 0,
+   "hb_offices": 9,
+   "offices_sum_php": 42600000,
+   "offices_match": true,
+   "api_projects": 9
+  },
+  {
+   "region": "Region XIII",
+   "hb_php": 46800000,
+   "api_php": 46800000,
+   "delta_php": 0,
+   "hb_offices": 10,
+   "offices_sum_php": 46800000,
+   "offices_match": true,
+   "api_projects": 10
+  }
+ ],
+ "hb_region_order": [
+  "NCR",
+  "Region I",
+  "CAR",
+  "Region II",
+  "Region III",
+  "Region IV-A",
+  "MIMAROPA",
+  "Region V",
+  "Region VI",
+  "NIR",
+  "Region VII",
+  "Region VIII",
+  "Region IX",
+  "Region X",
+  "Region XI",
+  "Region XII",
+  "Region XIII",
+  "Nationwide"
+ ],
+ "hb_offices_sample": {
+  "NCR": {
+   "Las Piñas-Muntinlupa District Engineering Office": 4200000,
+   "Malabon-Navotas District Engineering Office": 4200000,
+   "Metro Manila 1st District Engineering Office": 4200000,
+   "Metro Manila 2nd District Engineering Office": 4200000,
+   "Metro Manila 3rd District Engineering Office": 4200000,
+   "NCR Regional Office": 9000000,
+   "North Manila District Engineering Office": 4200000,
+   "Quezon City 1st District Engineering Office": 4200000,
+   "Quezon City 2nd District Engineering Office": 4200000,
+   "South Manila District Engineering Office": 4200000
+  },
+  "Region I": {
+   "Ilocos Norte 1st District Engineering Office": 4200000,
+   "Ilocos Norte 2nd District Engineering Office": 4200000,
+   "Ilocos Sur 1st District Engineering Office": 4200000,
+   "Ilocos Sur 2nd District Engineering Office": 4200000,
+   "La Union 1st District Engineering Office": 4200000,
+   "La Union 2nd District Engineering Office": 4200000,
+   "Pangasinan 1st District Engineering Office": 4200000,
+   "Pangasinan 2nd District Engineering Office": 4200000,
+   "Pangasinan 3rd District Engineering Office": 4200000,
+   "Pangasinan 4th District Engineering Office": 4200000,
+   "Regional Office I": 9000000
+  },
+  "CAR": {
+   "Abra District Engineering Office": 4200000,
+   "Apayao 1st District Engineering Office": 4200000,
+   "Apayao 2nd District Engineering Office": 4200000,
+   "Baguio City District Engineering Office": 4200000,
+   "Benguet 1st District Engineering Office": 4200000,
+   "Benguet 2nd District Engineering Office": 4200000,
+   "CAR Regional Office": 9000000,
+   "Ifugao 1st District Engineering Office": 4200000,
+   "Ifugao 2nd District Engineering Office": 4200000,
+   "Lower Kalinga District Engineering Office": 4200000,
+   "Mountain Province 1st District Engineering Office": 4200000,
+   "Mountain Province 2nd District Engineering Office": 4200000,
+   "Upper Kalinga District Engineering Office": 4200000
+  }
+ }
+}

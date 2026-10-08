@@ -1,14 +1,22 @@
-> **House repair update:** use [hb_known_defect_repairs.md](hb_known_defect_repairs.md) and [hb_dpwh_leaves_corrected_v5.json](hb_dpwh_leaves_corrected_v5.json) for the repaired candidate. v5 has 16,148 positive allocations totaling ₱581.345349B; 38/42 PAP controls and all FAP funding splits balance. The remaining ₱5.596312B net operations gap is confined to four Convergence PAPs. Earlier v4b completeness, program-delta, zero-region, and grand-upper-bound claims below are historical. The printed House grand total is ₱654.102015B. Earlier API matcher/dashboard artifacts have not been regenerated.
+> **House repair update:** use [hb_known_defect_repairs.md](docs/hb_known_defect_repairs.md) and [hb_dpwh_leaves_corrected_v5.json](data/hb_dpwh_leaves_corrected_v5.json) for the repaired candidate. v5 has 16,148 positive allocations totaling ₱581.345349B; 38/42 PAP controls and all FAP funding splits balance. The remaining ₱5.596312B net operations gap is confined to four Convergence PAPs. Earlier v4b completeness, program-delta, zero-region, and grand-upper-bound claims below are historical. The printed House grand total is ₱654.102015B. Earlier API matcher/dashboard artifacts have not been regenerated.
 
 # FY2027 DPWH Budget Crosscheck — Work Summary & Next Steps
 
+**Folder map:** [README.md](README.md) (`builders/` · `viewers/` · `data/` · `docs/` · `tests/`) · **Archive:** [archive/README.md](archive/README.md)
+
 **Date:** Oct 8, 2026 · **Scope:** FY 2027 only (no prior-year crosschecks)
 **Sources:** HB 10858 summary (Volume I-B) and details (Volume I-C, 942 pp) · retained FY2027 NEP Volume II-B PDF and OCR trees (`paddle_pdf_ocr_v2`) · NEP official compilation (`ajamontesa/ph-budget-analysis`) · saved NEP API (BetterGov, 11,372 rows)
-**Current House project candidate:** [House v5](hb_dpwh_leaves_corrected_v5.json) — 16,148 positive allocations, ₱581.345349B; 38/42 local PAP controls balance, zero missing regions, and a ₱5.596312B net operations gap across four unresolved Convergence PAPs. Use printed House controls for aggregate comparisons. [Current static comparison](source_comparison_2027.html) separates printed controls, extraction coverage, PAP mappings, and source-match candidates. Earlier v4b results below are historical.
+**Current House project candidate:** [House v5](data/hb_dpwh_leaves_corrected_v5.json) — 16,148 positive allocations, ₱581.345349B; 38/42 local PAP controls balance, zero missing regions, and a ₱5.596312B net operations gap across four unresolved Convergence PAPs. Use printed House controls for aggregate comparisons. [Current static comparison](viewers/source_comparison_2027.html) separates printed controls, extraction coverage, PAP mappings, and source-match candidates. Earlier v4b results below are historical.
 
 **NEP source update (Oct 8):** `nep_2027_source_projects.json` now provides 11,420 source-page-referenced operations allocations, totaling ₱572.924074B. All 45 non-FAP PAP controls reconcile exactly. See `nep_2027_api_reconciliation.md`; older insertion/drop claims below require source-based review.
 
-**Complete NEP tree (Oct 8):** [nep_2027_tree.html](nep_2027_tree.html) now drills down the full ₱642,612,015,000 new-appropriations baseline, including PS, MOOE, CO, GAS, S2O, and project financing. All 2,552 additive branch checks and the 14,190-unit ledger balance exactly. The source-only builder has no API/House dependency. This establishes an arithmetic baseline, not exhaustive OCR certification: 237 native-text/coordinate discrepancies remain as source-image review candidates. See [method and limits](nep_2027_tree.md) and [review queue](nep_2027_native_amount_review.json).
+**Complete NEP tree (Oct 8):** [nep_2027_tree.html](viewers/nep_2027_tree.html) now drills down the full ₱642,612,015,000 new-appropriations baseline, including PS, MOOE, CO, GAS, S2O, and project financing. All 2,552 additive branch checks and the 14,190-unit ledger balance exactly. The source-only builder has no API/House dependency. This establishes an arithmetic baseline, not exhaustive OCR certification: 237 native-text/coordinate discrepancies remain as source-image review candidates. See [method and limits](viewers/nep_2027_tree.md) and [review queue](data/nep_2027_native_amount_review.json).
+
+**House rollup tree (Oct 8):** [hb_2027_tree.html](viewers/hb_2027_tree.html) rolls the 16,148 v5 allocations up under the printed ₱654,102,015,000 House total through operations zones, programs, PAP controls, regions, offices, projects, and FAP funding partitions. Root, Operations, both zones, and all six program controls balance; 38/42 PAP controls balance with only the four documented unresolved sections mismatching. GAS/S2O remain control-only. Seven regression tests (`test_hb_tree.py`) plus a headless viewer check (`test_hb_tree_viewer.cjs`) pass. See [method and limits](viewers/hb_2027_tree.md).
+
+**House document-native tree (Oct 8):** [hb_2027_source_tree.html](viewers/hb_2027_source_tree.html) drills the same printed total down the bill's own printed hierarchy — Operations (row 2444) → OO1/OO2/LFP/FAP/Convergence-residual → programs → PAPs → regions → offices → projects → GOP/loan partitions — with OCR row/page references at every node. 476 printed controls balance exactly, including 399 office and 15 region subtotals attached from the old strict hierarchy by exact row-set match, and FAP-tail sub-PAP controls verified against v5. OO1 = APP+NDP+Bridge controls exactly; Convergence (₱231,382,287,000) never prints and is the exact residual, marked derived. Nine regression tests (`test_hb_source_tree.py`) plus a headless viewer check pass. See [method and limits](viewers/hb_2027_source_tree.md).
+
+**Native text-layer breakthrough (Oct 8, evening):** the House PDFs are digital InDesign documents with a complete native text layer — no OCR needed. `scripts/hb_native_extract3.py` parses VOL I-B (DPWH office-granularity tables, pp 13–110) with a geometry-first profile: **647/647 internal balance checks pass**, and after dropping 43 printed banner/summary rows the tree reproduces the printed budget **additively to the peso** (GAS/S2O 67,160,354,000 + local PAPs 542,192,650,000 + FAP 44,749,011,000 = 654,102,015,000). Three-way reconciliation ([hb_native_v5_reconciliation.md](docs/hb_native_v5_reconciliation.md)) shows I-B and I-C agree on **35/35 shared PAP controls**, and **all four v5-unresolved PAPs are extraction damage** — the ₱5.596B operations gap was an OCR artifact, not a property of the bill. I-C's native layer also prints the Convergence control (p373) and BIP program control (p412) that the OCR markdown dropped, and reveals the Water Supply family's three sub-PAPs (incl. Septage and Sewerage ₱100M) and the PWD 510M family (PWD 85M + Elderlies 340M + Gender-Responsive 85M). The native tree is the new House control baseline; v5 remains the project-title layer pending a native I-C re-extraction.
 
 ---
 
@@ -61,12 +69,41 @@ Two overlapping defects in the v3 leaf dataset were repaired end-to-end (`repair
 
 
 ### 1.8 Complete source-only NEP tree and recursive validation
-- Built `build_nep_tree.py` from the retained PAP tree, operating-unit PS details, and source PDF; API and House data do not determine its hierarchy or amounts.
+- Built `builders/build_nep_tree.py` from the retained PAP tree, operating-unit PS details, and source PDF; API and House data do not determine its hierarchy or amounts.
 - The full tree has **16,764 nodes**, **14,190 atomic budget units**, and **2,552 passing additive rollup checks** at zero-peso tolerance. PS ₱14.922297B + MOOE ₱24.685746B + CO ₱603.003972B = **₱642.612015B**.
 - Recorded 54 repairs with source references, including the ₱5M Bertese split, hierarchy corrections, title restoration, and funding-label corrections. Two PS groupings are explicitly derived; two financing reference totals are non-additive.
 - Independently compared 16,760 printed rows against PDF text: 16,523 within-box agreements, 23 nearby alignment candidates, and 214 requiring further text/image review. The **237 review candidates are not confirmed amount errors**.
 - Added offline expense/program drilldown, search, printed-versus-child totals, and PDF page references in `nep_2027_tree.html`.
 - Five regression tests passed, including missing projects, repeated paths, lower-branch errors despite a balanced root, and offsetting sibling errors detected by independent evidence. Browser checks passed for both views, search, and leaf details.
+
+### 1.10 House rollup tree
+- Built `builders/build_hb_tree.py` from House v5 allocations, printed summary controls (`hb_json_usability_audit.json`), printed PAP controls (`hb_known_defect_repairs.json`), and the canonical program mapping (`current_pap_controls.json`); NEP/API rows do not determine the hierarchy or amounts.
+- The tree has **18,854 nodes** under the printed **₱654,102,015,000** grand total: root → GAS/S2O/Operations → local/FAP zones → 6 programs (+ FAP program groups) → 42 PAP controls + 2 control-less groups → regions → offices → 16,119 projects + 29 FAP funding partitions (58 nodes).
+- Root, Operations, both zones, and all six local program controls balance exactly; 38/42 printed PAP controls balance. The four unresolved Convergence/local sections mismatch exactly as documented (−₱2.242B, −₱5.116B, +₱305M, +₱1.457B), and the build refuses any other mismatch. Printed controls stay distinct from extraction coverage at every level.
+- The 29 FAP GOP/loan partitions balance to the peso (GOP ₱25,190,650,000 + Loan ₱19,558,361,000).
+- Eight native-section rows whose region field had absorbed the office label were split back to (region, office), recorded in `hb_2027_tree_validation.json`; amounts unchanged.
+- Interactive zone/program drilldown with mismatch/coverage/evidence filters in `hb_2027_tree.html`; per-node NEP control comparisons (canonical PAP IDs, program deltas) are surfaced in details.
+- Seven regression tests (`test_hb_tree.py`) pass: control reproduction, v5 reproduction, documented-mismatch-only rejection of new mismatches, FAP partitions, coverage-gap survival, and localization of injected allocations to their PAP. Headless viewer smoke test (`test_hb_tree_viewer.cjs`) passes.
+
+### 1.11 House document-native tree
+- Built `builders/build_hb_source_tree.py`: a recursive drill-down following the bill's own printed hierarchy instead of attribution grouping. Root → Operations (OCR row 2444) → OO1 (row 2445, = APP+NDP+Bridge controls exactly) / OO2 (row 6979) / Locally-Funded Projects (row 20662, = PPP ₱1B + NBP ₱12,875,943,000) / FAP (row 20962) / Convergence (never printed; exact residual ₱231,382,287,000, marked derived) → programs → PAPs → regions → offices → projects, with GOP/loan partitions in all 29 FAP projects.
+- The FAP tail (rows 20962–21042) is natively structured: FAP-OO1 (35,712,554,000) → `a. Asset Preservation Program` (2,832,301,000, printed) → numbered sub-PAPs with printed controls (rows 20969, 20973, 20977, 21001, 21018) → lettered projects. All printed sub-PAP controls verified against v5 sums at build time.
+- **476 printed controls balance** (44 PAPs, 399 office subtotals, 15 region subtotals, 8 programs, 4 outcomes, 4 sections, root); only the four documented unresolved PAPs mismatch. 18,850 nodes; 16,148 allocations reproduce v5 exactly.
+- Printed office/region subtotals are attached from the old strict hierarchy only when the old block's row set exactly equals the v5 (PAP, region[, office]) group and sums match — 399 offices and 15 regions qualify; all other region/office groupings are marked derived.
+- Document anchor rows are asserted at build time (2444, 2445, 2446, 5811, 6979, 6980, 20662–20670, 20962–21018): if the OCR markdown changes, the build fails rather than producing a silently different tree.
+- Interactive drilldown with printed-controls/mismatch/evidence filters and row/page references in `hb_2027_source_tree.html`; nine regression tests (`test_hb_source_tree.py`) and a headless viewer check (`test_hb_source_tree_viewer.cjs`) pass.
+
+### 1.13 External Ghostscript candidate dumps (`joebert_data/`)
+- Received four HB 10858 candidate extracts under `analysis/joebert_data/` (Ghostscript text; no OCR): DPWH VOL I-C (12,714 rows, ≈₱360.8B), DA FMR (795), DOH HFEP (513; metadata sum = printed grand), NIA (32; gap 0).
+- Schema matches the BetterGov API envelope; every row is `reviewStatus: candidate; verify against PDF`. DPWH dump has almost no PAP labels and only ~3.5k exact title+amount overlaps with v5 — useful independent candidate list, **not** a control or project baseline.
+- **Crosscheck vs native I-B tree** ([joebert_native_crosscheck.md](docs/joebert_native_crosscheck.md)): 192/204 native office names appear (96.9% of office×PAP cells); amount rollups fail (different grain). Joebert swallowed FAP grand ₱44.749B and Flood Mitigation Facilities PAP ₱16.223B×2 as projects, carries ≈₱73B page-break duplicate mass, and matches **0/29** FAP project names. DA/HFEP/NIA dumps have zero overlap with the DPWH native tree.
+
+### 1.12 Native text-layer extraction (I-B) and three-way reconciliation
+- Built `scripts/hb_native_extract3.py` (geometry-first, OCR-free) against VOL I-B's native text layer: tolerance y-clustering, odd-page 13.6pt margin normalization, line-number echo stripping, amount tokens only in the numeric band (x>280), indent bands from amount-row label-x, mirrored-banner dedup, and internal-node validation (sum of leaf descendants == printed amount).
+- Result: 3,348 rows / 2,444 amount rows / **647/647 internal checks pass**; artifact `nep-data/hb_dpwh_native_tree.json`. After dropping 43 printed banner rows (37 PAP-control re-prints + 6 program banners), zones reproduce the printed budget exactly: GAS/S2O 67,160,354,000 + local PAPs 542,192,650,000 + FAP 44,749,011,000 = 654,102,015,000.
+- Three-way reconciliation (`analysis/docs/hb_native_v5_reconciliation.md`): I-B native controls == printed I-C controls on **35/35** shared PAPs; v5 matches native on 34/37 matched PAPs, missing only the four documented sections — now attributed to v5 OCR-era extraction damage (Access Roads −2.242B, Multi-Purpose −5.116B, Coastal +1.457B, Water-family +0.205B net), together exactly the old ₱5.596B "operations gap."
+- New document facts from I-C's native layer: Convergence control **is printed** (p373, ₱231,382,287,000; = BIP 221,004,362,000 + Disaster 1B + PWD family 510M + Water family 8,867,925,000 exactly), BIP program control printed (p412), Water Supply family = WS 7,740,725,000 + Septage/Sewerage 100,000,000 + Rainwater 1,027,200,000, and the PWD 510M family splits PWD 85M + Elderlies 340M + Gender-Responsive 85M (17 regions × 5M).
+- Settled: the native I-B tree (banner-deduped) is the **House control baseline**; v5 remains the project-title layer until a native I-C project-level re-extraction replaces the v3→v5 repair chain.
 
 ### 1.9 House JSON usability audit
 - Inventoried saved House tables and structural/crosscheck artifacts; v4b remains the best project candidate but is incomplete and includes confirmed subtotal/project double counting.
@@ -117,13 +154,14 @@ Local operations increase **₱87.017587B** (House ₱542.192650B versus NEP ₱
 
 ### 2.5 Current source matcher (House v5)
 
-The [current static comparison](source_comparison_2027.html) rematches all 16,148 House allocations against 11,420 NEP source allocations, using canonical PAP IDs and source-node amounts. It finds 8,567 unique normalized-title candidates (259 paired amount differences), 1,648 House rows with fuzzy suggestions, six ambiguous exact-key rows, 5,927 House rows without a suggestion, and 2,853 NEP rows without a unique exact pairing. Suggestions can overlap and do not consume NEP rows. Zero pairs have been manually certified in this run. Unmatched rows do not establish additions/removals; funding partitions stay within project totals.
+The [current static comparison](viewers/source_comparison_2027.html) rematches all 16,148 House allocations against 11,420 NEP source allocations, using canonical PAP IDs and source-node amounts. It finds 8,567 unique normalized-title candidates (259 paired amount differences), 1,648 House rows with fuzzy suggestions, six ambiguous exact-key rows, 5,927 House rows without a suggestion, and 2,853 NEP rows without a unique exact pairing. Suggestions can overlap and do not consume NEP rows. Zero pairs have been manually certified in this run. Unmatched rows do not establish additions/removals; funding partitions stay within project totals.
 
 ## 3. What we settled on (conventions & decisions)
 
 | Decision | Choice | Why |
 |---|---|---|
 | Totals basis | NEP validated source tree ₱642.612015B; House printed controls ₱654.102015B | House v5 covers incomplete operations allocations and cannot supply a grand total |
+| House control baseline | **Native I-B tree** (`nep-data/hb_dpwh_native_tree.json`, banner-deduped; 647/647 checks) | Both volumes print balancing controls; OCR-era v5 sections are the damaged layer, not the bill |
 | OCR validation | Recursive zero-tolerance rollups plus independent PDF evidence | A balanced root or sibling total can hide offsetting errors |
 | Source independence | NEP hierarchy and amounts from PDF/PAP/PS sources only | API omissions must not define the comparison baseline |
 | House-delta signal | **HB − official NEP** (not HB − API) | API incompleteness overstates insertions |
@@ -141,9 +179,9 @@ The [current static comparison](source_comparison_2027.html) rematches all 16,14
 
 **Priority sequence**
 1. **NEP source-image review** — resolve the 237 candidates in `nep_2027_native_amount_review.json`; distinguish PDF text corruption and coordinate drift from genuine amount errors. Record evidence and rerun the recursive checks after any repair.
-2. **House tree reconstruction** — build a source-grounded hierarchy against printed ₱654.102015B new appropriations and ₱586.941661B operations. Repair additive status, dropped rows, stale controls, and PAP/page attribution; require recursive balance as for NEP.
-3. **House boundary and attribution review** — reconstruct the four unresolved v5 sections: BIP access roads/bridges, multi-purpose buildings, Water Supply System, and coastal roads. Missing regions, paving, Rainwater, and PM-Primary defects listed in earlier v4b work have been repaired in v5; inherited row attribution still needs evidence review.
-4. **Source-match review** — the v5/source candidate rematch is complete in the current page. Review ambiguous keys, fuzzy suggestions, unmatched sections, and paired amount differences against both PDFs before certifying project changes. The historical region-conflict and API OCR-title pools remain separate evidence work.
+2. ~~**House tree reconstruction**~~ — **done**: `builders/build_hb_tree.py` builds `hb_2027_tree.{json,html,md}` from v5 allocations and printed controls; see §1.10. Remaining House work is resolving the four Convergence/local sections and inherited-attribution review.
+3. **House boundary and attribution review** — ~~reconstruct the four unresolved v5 sections~~ **diagnosed**: the native I-B/I-C reconciliation ([§1.12](#112-native-text-layer-extraction-i-b-and-three-way-reconciliation), [hb_native_v5_reconciliation.md](docs/hb_native_v5_reconciliation.md)) shows both volumes print balancing controls; the four sections are v5 extraction damage. **Next:** build the I-C geometry profile (indent bands ≈ 79/89.6/100–103/112/123/140.7/154.2) and re-extract project-level leaves natively, superseding the v3→v5 repair chain; re-attribute the Septage ₱100M, Elderlies ₱340M, and Gender-Responsive ₱85M rows.
+4. **Source-match review** — the v5/source candidate rematch is complete in the current page. Review ambiguous keys, fuzzy suggestions, unmatched sections, and paired amount differences against both PDFs before certifying project changes. Optionally cross-check against `joebert_data/hb10858_projects.json` once a native I-C extract exists. The historical region-conflict and API OCR-title pools remain separate evidence work.
 5. **Targeted change verification** — verify the historical 400 re-costing candidates and largest unmatched rows against both PDFs. Check Quirino K0251–K0264 and Andaya coverage; K0264–K0281 already matches unchanged.
 6. **FAP and support comparisons** — compare source GOP/loan partitions and GAS/S2O office allocations across versions. Use House printed FAP ₱44.749011B rather than the older ₱47.95B candidate-leaf sum.
 
@@ -158,27 +196,32 @@ The [current static comparison](source_comparison_2027.html) rematches all 16,14
 
 ## 5. Artifact index
 
-Current page: [source comparison](source_comparison_2027.html), [full candidate results](source_comparison_2027.json), [PAP controls](current_pap_controls.json), and [input manifest](comparison_manifest.json). Regenerate with `python analysis/build_current_pages.py`.
+Current page: [source comparison](viewers/source_comparison_2027.html), [full candidate results](data/source_comparison_2027.json), [PAP controls](data/current_pap_controls.json), and [input manifest](data/comparison_manifest.json). Regenerate with `python analysis/builders/build_current_pages.py`. Folder map: [README.md](README.md).
 
-| File | Purpose |
+| Path | Purpose |
 |---|---|
-| `hb_json_usability_audit.md` | House dataset inventory, printed totals, usable controls, confirmed defects, and limits |
-| `build_nep_tree.py` + `test_nep_tree.py` | Source-only complete NEP build; recursive, missing-row, repeated-path, and offsetting-error regression checks |
-| `nep_2027_tree.{json,html,md}` | Full hierarchy, interactive drilldown, and validation method/limits |
-| `nep_2027_tree_validation.json` + `nep_2027_budget_units.json` | All 2,552 rollup checks, 54 repairs, and 14,190 atomic budget units |
-| `nep_2027_native_amount_{audit,review}.json` | Independent PDF text-layer evidence and 237 source-image review candidates |
-| `reconcile_nep_source.py` + `nep_2027_api_reconciliation.{json,md}` | Reproducible NEP/API audit: all PAP controls and 23 omissions with PDF evidence |
-| `nep_2027_source_projects.json` | Expanded NEP operations reference: 11,420 allocations, ₱572.924074B |
-| `nep_2027_hb_only_reassessment.json` | Source-presence assessments for all 6,073 previous API-unmatched House rows |
-| `crosscheck_2027.{py,json,html,md}` | Three-way program-level crosscheck + dashboard + report |
-| `crosscheck_pap_drilldown.{py,json}` | PAP-level: 42 groups, family rollups, containers, supports |
-| `crosscheck_rainwater.py` + `crosscheck_2027_rainwater.json` | Single-PAP method validation |
-| `crosscheck_lineitems.py` + `crosscheck_2027_lineitems.json` | Line-item matching, insertions/drops (post-v4b) |
-| `validate_v4b_paps.py` + `crosscheck_2027_v4b_validation.json` | v4b leaf sums vs printed vs API pap3 |
-| `hb_program_classifier.py` | HB row → official program mapping |
-| `hb_dpwh_leaves_corrected_v3.json` | Pre-repair leaves (superseded by v4b) |
-| `repair_headingless.py` | v3 → v4: headingless-tag repair (ancestry/own-text) |
-| `repair_stale_pap.py` | v4 → v4b: stale-pap repair (PDF page → bold family heading) |
-| `hb_dpwh_leaves_corrected_v4b.json` | Historical House candidate, superseded by v5 — 15,487 rows, ₱520.651663B; incomplete, 32 missing regions |
-| `hb_dpwh_pap_hierarchy.json` | Original House hierarchy; pre-repair amounts and damaged controls, diagnostic only |
-| `page_family_map.json` | PDF page → governing bold PAP family heading |
+| `docs/hb_native_v5_reconciliation.md` | Native I-B tree vs v5 vs printed I-C controls: zone accounting, 35/35 control agreement, four-section diagnosis |
+| `docs/hb_native_full_processing.md` + `docs/hb_native_textlayer_assessment.md` | Native-layer feasibility and full-processing reports (647/647 checks) |
+| `scripts/hb_native_extract3.py` + `nep-data/hb_dpwh_native_tree.json` | Geometry-first native extractor (I-B) and its balanced tree — House control baseline |
+| `docs/hb_json_usability_audit.md` | House dataset inventory, printed totals, usable controls, confirmed defects, and limits |
+| `builders/build_nep_tree.py` + `tests/test_nep_tree.py` | Source-only complete NEP build; recursive, missing-row, repeated-path, and offsetting-error regression checks |
+| `data/nep_2027_tree.json` · `viewers/nep_2027_tree.{html,md}` | Full hierarchy, interactive drilldown, and validation method/limits |
+| `builders/build_hb_tree.py` + `tests/test_hb_tree.py` + `tests/test_hb_tree_viewer.cjs` | House rollup build over v5 and printed controls |
+| `data/hb_2027_tree.json` · `viewers/hb_2027_tree.{html,md}` | House rollup hierarchy, interactive drilldown, and validation method/limits |
+| `data/hb_2027_tree_validation.json` | Control checks, repairs, region/office normalizations |
+| `builders/build_hb_source_tree.py` + `tests/test_hb_source_tree.py` + `tests/test_hb_source_tree_viewer.cjs` | Document-native House tree build with anchor assertions |
+| `data/hb_2027_source_tree.json` · `viewers/hb_2027_source_tree.{html,md}` | Document-native hierarchy with OCR row references |
+| `data/hb_2027_source_tree_validation.json` | Printed-control checks, attached subtotals, anchor rows |
+| `data/nep_2027_tree_validation.json` + `data/nep_2027_budget_units.json` | All 2,552 rollup checks, 54 repairs, and 14,190 atomic budget units |
+| `data/nep_2027_native_amount_{audit,review}.json` | Independent PDF text-layer evidence and 237 source-image review candidates |
+| `builders/reconcile_nep_source.py` + `data/nep_2027_api_reconciliation.json` + `docs/nep_2027_api_reconciliation.md` | Reproducible NEP/API audit: all PAP controls and 23 omissions with PDF evidence |
+| `data/nep_2027_source_projects.json` | Expanded NEP operations reference: 11,420 allocations, ₱572.924074B |
+| `data/nep_2027_hb_only_reassessment.json` | Source-presence assessments for all 6,073 previous API-unmatched House rows |
+| `builders/crosscheck_2027.py` + `data/crosscheck_2027.json` + `viewers/crosscheck_2027.{html,md}` | Three-way program-level crosscheck (historical labels; current page supersedes its accounting) |
+| `builders/crosscheck_pap_drilldown.py` + `data/crosscheck_2027_pap_drilldown.json` | PAP-level: 42 groups, family rollups, containers, supports |
+| `builders/crosscheck_rainwater.py` + `archive/crosscheck_2027_rainwater.json` | Single-PAP method validation (historical) |
+| `builders/crosscheck_lineitems.py` + `data/crosscheck_2027_lineitems.json` | Line-item matching (post-v4b; historical labels) |
+| `builders/validate_v4b_paps.py` + `archive/crosscheck_2027_v4b_validation.json` | v4b leaf sums vs printed vs API pap3 (historical) |
+| `builders/hb_program_classifier.py` | HB row → official program mapping |
+
+**Historical extraction lineage — [archive/](archive/)** (see [archive/README.md](archive/README.md)): `archive/hb_dpwh_leaves_corrected_v3.json` → `builders/repair_headingless.py` → `archive/hb_dpwh_leaves_corrected_v4.json` → `builders/repair_stale_pap.py` → `archive/hb_dpwh_leaves_corrected_v4b.json` (superseded by v5 / native controls). Active hierarchy export: `data/hb_dpwh_pap_hierarchy.json`. Plus early text-layer audits and matcher outputs under `archive/`.

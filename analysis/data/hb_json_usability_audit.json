@@ -1,0 +1,3787 @@
+{
+  "scope": "Saved FY2027 House JSON audit; original datasets unchanged",
+  "limitations": [
+    "Native exact checks are conservative global title/amount presence checks, not one-to-one page-scoped verification.",
+    "NEP candidate checks require equal PAP/title/amount; title or amount changes remain unresolved, not proven insertions.",
+    "PAP heading checks use native PDF fonts/rows; failure to match is an extraction limitation, not proof a heading is absent.",
+    "Printed controls are from local PDFs; plenary amendment inclusion is not established."
+  ],
+  "pdf_controls_php": {
+    "new_appropriations": 654102015000,
+    "personnel_services": 14922297000,
+    "mooe": 24685746000,
+    "capital_outlays": 614493972000,
+    "gas_total": 18078293000,
+    "s2o_total": 49082061000,
+    "regular_operations": 528316707000,
+    "local_projects": 13875943000,
+    "foreign_assisted_projects": 44749011000,
+    "operations_including_projects": 586941661000
+  },
+  "inventory": [
+    {
+      "file": "crosscheck_2027.json",
+      "bytes": 729579,
+      "keys": [
+        "meta",
+        "grand_totals",
+        "s2o_gas",
+        "printed_sections",
+        "programs",
+        "drilldown"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "crosscheck_2027_lineitems.json",
+      "bytes": 6575262,
+      "keys": [
+        "fiscal_year",
+        "method",
+        "summary",
+        "by_pap",
+        "matched_pairs",
+        "hb_only_items",
+        "api_only_items"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "crosscheck_2027_pap_drilldown.json",
+      "bytes": 99921,
+      "keys": [
+        "fiscal_year",
+        "method",
+        "matched_paps",
+        "family_rollups",
+        "printed_containers",
+        "support_blocks",
+        "hb_only_blocks",
+        "n_hb_pap_blocks",
+        "n_matched_groups"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "crosscheck_2027_rainwater.json",
+      "bytes": 6119,
+      "keys": [
+        "pap",
+        "fiscal_year",
+        "hb_printed_total_php",
+        "hb_region_sum_php",
+        "hb_region_sum_matches_printed",
+        "api_total_php",
+        "api_total_matches_hb",
+        "regions",
+        "hb_region_order",
+        "hb_offices_sample"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "crosscheck_2027_v4b_validation.json",
+      "bytes": 76922,
+      "keys": [
+        "fiscal_year",
+        "method",
+        "n_boundary_risk_leaves",
+        "boundary_risk_php",
+        "boundary_risk_rows",
+        "families"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "crosscheck_results.json",
+      "bytes": 9236893,
+      "keys": [
+        "matched_same_amount",
+        "matched_amount_changed",
+        "matched_review",
+        "hb_only_not_in_nep",
+        "nep_only_not_in_hb"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "crosscheck_summary.json",
+      "bytes": 461,
+      "keys": [
+        "hb_project_rows",
+        "nep_items",
+        "matched_same_amount",
+        "matched_amount_changed",
+        "matched_review",
+        "hb_only_not_in_nep",
+        "nep_only_not_in_hb",
+        "amounts_thousands"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "family_blocks.json",
+      "bytes": 3906,
+      "keys": null,
+      "list_rows": 39
+    },
+    {
+      "file": "hb_block_tree.json",
+      "bytes": 875608,
+      "keys": [
+        "roots"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "hb_dpwh_items.json",
+      "bytes": 7362766,
+      "keys": [
+        "source",
+        "bill",
+        "note",
+        "total_leaf_rows",
+        "project_like_rows",
+        "items"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "hb_dpwh_leaves_corrected.json",
+      "bytes": 8388910,
+      "keys": [
+        "leaves"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "hb_dpwh_leaves_corrected_v2.json",
+      "bytes": 8404907,
+      "keys": [
+        "leaves"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "hb_dpwh_leaves_corrected_v3.json",
+      "bytes": 8408591,
+      "keys": [
+        "leaves"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "hb_dpwh_leaves_corrected_v4.json",
+      "bytes": 9115718,
+      "keys": [
+        "leaves",
+        "parser"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "hb_dpwh_leaves_corrected_v4b.json",
+      "bytes": 10698256,
+      "keys": [
+        "leaves"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "hb_dpwh_leaves_validated.json",
+      "bytes": 9229619,
+      "keys": [
+        "source",
+        "parser",
+        "n_leaves",
+        "leaves",
+        "alloc_lines"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "hb_dpwh_pap_hierarchy.json",
+      "bytes": 4881177,
+      "keys": [
+        "dataset",
+        "source",
+        "parser",
+        "generated_at",
+        "zone_row_ranges",
+        "currency",
+        "validation_legend",
+        "project_flags",
+        "summary",
+        "outcomes",
+        "alloc_lines"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "hb_tree_validation.json",
+      "bytes": 13768,
+      "keys": [
+        "source",
+        "rows",
+        "zones",
+        "blocks_by_kind",
+        "leaves",
+        "alloc_lines",
+        "events",
+        "n_review",
+        "review_head"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "nep_2027_hb_only_reassessment.json",
+      "bytes": 2473024,
+      "keys": [
+        "method",
+        "summary",
+        "items"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "page_family_map.json",
+      "bytes": 79150,
+      "keys": [
+        "4",
+        "48",
+        "109",
+        "122",
+        "138",
+        "147",
+        "154",
+        "165",
+        "171",
+        "173",
+        "181",
+        "186",
+        "189",
+        "194",
+        "196",
+        "200",
+        "210",
+        "212",
+        "232",
+        "241",
+        "242",
+        "246",
+        "251",
+        "254",
+        "255",
+        "264",
+        "269",
+        "282",
+        "293",
+        "294",
+        "363",
+        "373",
+        "400",
+        "408",
+        "409",
+        "410",
+        "411",
+        "628",
+        "629",
+        "923",
+        "925",
+        "926",
+        "938",
+        "939",
+        "940",
+        "941",
+        "0",
+        "1",
+        "2",
+        "3",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66",
+        "67",
+        "68",
+        "69",
+        "70",
+        "71",
+        "72",
+        "73",
+        "74",
+        "75",
+        "76",
+        "77",
+        "78",
+        "79",
+        "80",
+        "81",
+        "82",
+        "83",
+        "84",
+        "85",
+        "86",
+        "87",
+        "88",
+        "89",
+        "90",
+        "91",
+        "92",
+        "93",
+        "94",
+        "95",
+        "96",
+        "97",
+        "98",
+        "99",
+        "100",
+        "101",
+        "102",
+        "103",
+        "104",
+        "105",
+        "106",
+        "107",
+        "108",
+        "110",
+        "111",
+        "112",
+        "113",
+        "114",
+        "115",
+        "116",
+        "117",
+        "118",
+        "119",
+        "120",
+        "121",
+        "123",
+        "124",
+        "125",
+        "126",
+        "127",
+        "128",
+        "129",
+        "130",
+        "131",
+        "132",
+        "133",
+        "134",
+        "135",
+        "136",
+        "137",
+        "139",
+        "140",
+        "141",
+        "142",
+        "143",
+        "144",
+        "145",
+        "146",
+        "148",
+        "149",
+        "150",
+        "151",
+        "152",
+        "153",
+        "155",
+        "156",
+        "157",
+        "158",
+        "159",
+        "160",
+        "161",
+        "162",
+        "163",
+        "164",
+        "166",
+        "167",
+        "168",
+        "169",
+        "170",
+        "172",
+        "174",
+        "175",
+        "176",
+        "177",
+        "178",
+        "179",
+        "180",
+        "182",
+        "183",
+        "184",
+        "185",
+        "187",
+        "188",
+        "190",
+        "191",
+        "192",
+        "193",
+        "195",
+        "197",
+        "198",
+        "199",
+        "201",
+        "202",
+        "203",
+        "204",
+        "205",
+        "206",
+        "207",
+        "208",
+        "209",
+        "211",
+        "213",
+        "214",
+        "215",
+        "216",
+        "217",
+        "218",
+        "219",
+        "220",
+        "221",
+        "222",
+        "223",
+        "224",
+        "225",
+        "226",
+        "227",
+        "228",
+        "229",
+        "230",
+        "231",
+        "233",
+        "234",
+        "235",
+        "236",
+        "237",
+        "238",
+        "239",
+        "240",
+        "243",
+        "244",
+        "245",
+        "247",
+        "248",
+        "249",
+        "250",
+        "252",
+        "253",
+        "256",
+        "257",
+        "258",
+        "259",
+        "260",
+        "261",
+        "262",
+        "263",
+        "265",
+        "266",
+        "267",
+        "268",
+        "270",
+        "271",
+        "272",
+        "273",
+        "274",
+        "275",
+        "276",
+        "277",
+        "278",
+        "279",
+        "280",
+        "281",
+        "283",
+        "284",
+        "285",
+        "286",
+        "287",
+        "288",
+        "289",
+        "290",
+        "291",
+        "292",
+        "295",
+        "296",
+        "297",
+        "298",
+        "299",
+        "300",
+        "301",
+        "302",
+        "303",
+        "304",
+        "305",
+        "306",
+        "307",
+        "308",
+        "309",
+        "310",
+        "311",
+        "312",
+        "313",
+        "314",
+        "315",
+        "316",
+        "317",
+        "318",
+        "319",
+        "320",
+        "321",
+        "322",
+        "323",
+        "324",
+        "325",
+        "326",
+        "327",
+        "328",
+        "329",
+        "330",
+        "331",
+        "332",
+        "333",
+        "334",
+        "335",
+        "336",
+        "337",
+        "338",
+        "339",
+        "340",
+        "341",
+        "342",
+        "343",
+        "344",
+        "345",
+        "346",
+        "347",
+        "348",
+        "349",
+        "350",
+        "351",
+        "352",
+        "353",
+        "354",
+        "355",
+        "356",
+        "357",
+        "358",
+        "359",
+        "360",
+        "361",
+        "362",
+        "364",
+        "365",
+        "366",
+        "367",
+        "368",
+        "369",
+        "370",
+        "371",
+        "372",
+        "374",
+        "375",
+        "376",
+        "377",
+        "378",
+        "379",
+        "380",
+        "381",
+        "382",
+        "383",
+        "384",
+        "385",
+        "386",
+        "387",
+        "388",
+        "389",
+        "390",
+        "391",
+        "392",
+        "393",
+        "394",
+        "395",
+        "396",
+        "397",
+        "398",
+        "399",
+        "401",
+        "402",
+        "403",
+        "404",
+        "405",
+        "406",
+        "407",
+        "412",
+        "413",
+        "414",
+        "415",
+        "416",
+        "417",
+        "418",
+        "419",
+        "420",
+        "421",
+        "422",
+        "423",
+        "424",
+        "425",
+        "426",
+        "427",
+        "428",
+        "429",
+        "430",
+        "431",
+        "432",
+        "433",
+        "434",
+        "435",
+        "436",
+        "437",
+        "438",
+        "439",
+        "440",
+        "441",
+        "442",
+        "443",
+        "444",
+        "445",
+        "446",
+        "447",
+        "448",
+        "449",
+        "450",
+        "451",
+        "452",
+        "453",
+        "454",
+        "455",
+        "456",
+        "457",
+        "458",
+        "459",
+        "460",
+        "461",
+        "462",
+        "463",
+        "464",
+        "465",
+        "466",
+        "467",
+        "468",
+        "469",
+        "470",
+        "471",
+        "472",
+        "473",
+        "474",
+        "475",
+        "476",
+        "477",
+        "478",
+        "479",
+        "480",
+        "481",
+        "482",
+        "483",
+        "484",
+        "485",
+        "486",
+        "487",
+        "488",
+        "489",
+        "490",
+        "491",
+        "492",
+        "493",
+        "494",
+        "495",
+        "496",
+        "497",
+        "498",
+        "499",
+        "500",
+        "501",
+        "502",
+        "503",
+        "504",
+        "505",
+        "506",
+        "507",
+        "508",
+        "509",
+        "510",
+        "511",
+        "512",
+        "513",
+        "514",
+        "515",
+        "516",
+        "517",
+        "518",
+        "519",
+        "520",
+        "521",
+        "522",
+        "523",
+        "524",
+        "525",
+        "526",
+        "527",
+        "528",
+        "529",
+        "530",
+        "531",
+        "532",
+        "533",
+        "534",
+        "535",
+        "536",
+        "537",
+        "538",
+        "539",
+        "540",
+        "541",
+        "542",
+        "543",
+        "544",
+        "545",
+        "546",
+        "547",
+        "548",
+        "549",
+        "550",
+        "551",
+        "552",
+        "553",
+        "554",
+        "555",
+        "556",
+        "557",
+        "558",
+        "559",
+        "560",
+        "561",
+        "562",
+        "563",
+        "564",
+        "565",
+        "566",
+        "567",
+        "568",
+        "569",
+        "570",
+        "571",
+        "572",
+        "573",
+        "574",
+        "575",
+        "576",
+        "577",
+        "578",
+        "579",
+        "580",
+        "581",
+        "582",
+        "583",
+        "584",
+        "585",
+        "586",
+        "587",
+        "588",
+        "589",
+        "590",
+        "591",
+        "592",
+        "593",
+        "594",
+        "595",
+        "596",
+        "597",
+        "598",
+        "599",
+        "600",
+        "601",
+        "602",
+        "603",
+        "604",
+        "605",
+        "606",
+        "607",
+        "608",
+        "609",
+        "610",
+        "611",
+        "612",
+        "613",
+        "614",
+        "615",
+        "616",
+        "617",
+        "618",
+        "619",
+        "620",
+        "621",
+        "622",
+        "623",
+        "624",
+        "625",
+        "626",
+        "627",
+        "630",
+        "631",
+        "632",
+        "633",
+        "634",
+        "635",
+        "636",
+        "637",
+        "638",
+        "639",
+        "640",
+        "641",
+        "642",
+        "643",
+        "644",
+        "645",
+        "646",
+        "647",
+        "648",
+        "649",
+        "650",
+        "651",
+        "652",
+        "653",
+        "654",
+        "655",
+        "656",
+        "657",
+        "658",
+        "659",
+        "660",
+        "661",
+        "662",
+        "663",
+        "664",
+        "665",
+        "666",
+        "667",
+        "668",
+        "669",
+        "670",
+        "671",
+        "672",
+        "673",
+        "674",
+        "675",
+        "676",
+        "677",
+        "678",
+        "679",
+        "680",
+        "681",
+        "682",
+        "683",
+        "684",
+        "685",
+        "686",
+        "687",
+        "688",
+        "689",
+        "690",
+        "691",
+        "692",
+        "693",
+        "694",
+        "695",
+        "696",
+        "697",
+        "698",
+        "699",
+        "700",
+        "701",
+        "702",
+        "703",
+        "704",
+        "705",
+        "706",
+        "707",
+        "708",
+        "709",
+        "710",
+        "711",
+        "712",
+        "713",
+        "714",
+        "715",
+        "716",
+        "717",
+        "718",
+        "719",
+        "720",
+        "721",
+        "722",
+        "723",
+        "724",
+        "725",
+        "726",
+        "727",
+        "728",
+        "729",
+        "730",
+        "731",
+        "732",
+        "733",
+        "734",
+        "735",
+        "736",
+        "737",
+        "738",
+        "739",
+        "740",
+        "741",
+        "742",
+        "743",
+        "744",
+        "745",
+        "746",
+        "747",
+        "748",
+        "749",
+        "750",
+        "751",
+        "752",
+        "753",
+        "754",
+        "755",
+        "756",
+        "757",
+        "758",
+        "759",
+        "760",
+        "761",
+        "762",
+        "763",
+        "764",
+        "765",
+        "766",
+        "767",
+        "768",
+        "769",
+        "770",
+        "771",
+        "772",
+        "773",
+        "774",
+        "775",
+        "776",
+        "777",
+        "778",
+        "779",
+        "780",
+        "781",
+        "782",
+        "783",
+        "784",
+        "785",
+        "786",
+        "787",
+        "788",
+        "789",
+        "790",
+        "791",
+        "792",
+        "793",
+        "794",
+        "795",
+        "796",
+        "797",
+        "798",
+        "799",
+        "800",
+        "801",
+        "802",
+        "803",
+        "804",
+        "805",
+        "806",
+        "807",
+        "808",
+        "809",
+        "810",
+        "811",
+        "812",
+        "813",
+        "814",
+        "815",
+        "816",
+        "817",
+        "818",
+        "819",
+        "820",
+        "821",
+        "822",
+        "823",
+        "824",
+        "825",
+        "826",
+        "827",
+        "828",
+        "829",
+        "830",
+        "831",
+        "832",
+        "833",
+        "834",
+        "835",
+        "836",
+        "837",
+        "838",
+        "839",
+        "840",
+        "841",
+        "842",
+        "843",
+        "844",
+        "845",
+        "846",
+        "847",
+        "848",
+        "849",
+        "850",
+        "851",
+        "852",
+        "853",
+        "854",
+        "855",
+        "856",
+        "857",
+        "858",
+        "859",
+        "860",
+        "861",
+        "862",
+        "863",
+        "864",
+        "865",
+        "866",
+        "867",
+        "868",
+        "869",
+        "870",
+        "871",
+        "872",
+        "873",
+        "874",
+        "875",
+        "876",
+        "877",
+        "878",
+        "879",
+        "880",
+        "881",
+        "882",
+        "883",
+        "884",
+        "885",
+        "886",
+        "887",
+        "888",
+        "889",
+        "890",
+        "891",
+        "892",
+        "893",
+        "894",
+        "895",
+        "896",
+        "897",
+        "898",
+        "899",
+        "900",
+        "901",
+        "902",
+        "903",
+        "904",
+        "905",
+        "906",
+        "907",
+        "908",
+        "909",
+        "910",
+        "911",
+        "912",
+        "913",
+        "914",
+        "915",
+        "916",
+        "917",
+        "918",
+        "919",
+        "920",
+        "921",
+        "922",
+        "924",
+        "927",
+        "928",
+        "929",
+        "930",
+        "931",
+        "932",
+        "933",
+        "934",
+        "935",
+        "936",
+        "937"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "pdf_verification.json",
+      "bytes": 247339,
+      "keys": [
+        "meta",
+        "verdict_counts",
+        "mismatch_amount_delta_total",
+        "results"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "report_highlights.json",
+      "bytes": 11203,
+      "keys": [
+        "top_increases",
+        "top_decreases",
+        "top_insertions",
+        "top_removals"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "taxonomy_comparison_data.json",
+      "bytes": 54721,
+      "keys": [
+        "meta",
+        "summary",
+        "rows"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "textlayer_audit.json",
+      "bytes": 4337065,
+      "keys": [
+        "meta",
+        "verdicts",
+        "results"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "textlayer_audit_v2.json",
+      "bytes": 4553261,
+      "keys": [
+        "meta",
+        "verdicts",
+        "totals",
+        "results"
+      ],
+      "list_rows": null
+    },
+    {
+      "file": "textlayer_audit_v3.json",
+      "bytes": 4624157,
+      "keys": [
+        "meta",
+        "verdicts",
+        "grand_total",
+        "results"
+      ],
+      "list_rows": null
+    }
+  ],
+  "datasets": [
+    {
+      "file": "hb_dpwh_items.json",
+      "rows": 15066,
+      "total_php": 593368882000,
+      "scope": "mixed MOOE/support/projects",
+      "sha256": "fd303fb6cf4c833146ced7afeb943bcb80d733024a5529908fa4285d21eb2e10",
+      "missing_region": 20,
+      "missing_office": 2712,
+      "validation_counts": {
+        "none": 15066
+      },
+      "zones": {
+        "mixed": {
+          "rows": 15066,
+          "php": 593368882000
+        }
+      },
+      "native_exact_title_amount": 13546,
+      "native_exact_project_only": 13543,
+      "native_heading_only": 3,
+      "native_no_exact_title_amount": 1520,
+      "retained_verified_rollups": [],
+      "pap_sums_php": {
+        "a. Infrastructure Planning, Design, Construction and Maintenance": 68566000,
+        "18. Bangsamoro Autonomous Region in Muslim Mindanao (BARMM)": 2309297000,
+        "b.": 5954000,
+        "d.": 11528000,
+        "e.": 12728000,
+        "g.": 6289000,
+        "3. Sorsogon": 49661000,
+        "AMOUNT (PHP)": 4596850000,
+        "b. Procurement of Various Laboratory/ Non-Destructive Testing Equipment/ Apparatus/ Supplies": 80600000,
+        "i. Purchase of Service Vehicles": 273540000,
+        "c.": 333276000,
+        "Marinduque-Quezon Link Expressway (MQLEX) Phase III": 384900000,
+        "2. Updating of Feasibility Study of Mahaplag-Hilongos Road": 189200000,
+        "3. Davao del Norte Viaduct": 55100000,
+        "11. Preparatory Survey and Conceptual Design for the Mindanao-Leyte Interlink Project": 312000000,
+        "a. MP/FS for the Buaya River Basin and the Coastal Areas of Sta. Cruz, Ilocos Sur": 120000000,
+        "4. Indigenous People and Development Plan (IPDP) Preparation and other related activities": 210000000,
+        "3. Disability Affairs related Advocacy Program/ Awareness Activities": 3100000,
+        "14. Consulting Services for the DPWH Value Engineering Institutionalization Program": 150000000,
+        "payments of Right-Of-Way (ROW)": 657251000,
+        "5. PPP projects under TRB:": 2519372000,
+        "Preventive Maintenance - Primary Roads": 7738210000,
+        "Preventive Maintenance - Secondary Roads": 10963126000,
+        "Preventive Maintenance - Tertiary Roads": 4352263000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads": 49884317000,
+        "<empty>": 119743751000,
+        "The Network Development Program focuses specifically on the expansion and improvement of the national road network.It aims to expand the capacity of the national road network by constructing new roads that meet the functional classification criteria and improving the quality of existing national roads through various activities. Eligibility for later classification as a national road is determined by a feasibility study and the functional classification criteria set by DPWH. This is also achieved through a range of activities such as road widening, the construction of bypasses and diversion roads, the construction of missing links/new roads, the construction of flyovers, interchanges, underpasses, long-span bridges, off-carriageway improvement, and the paving of unpaved roads.The program includes several sub-programs aimed at achieving its objectives. These sub-programs include: Road Widening; Construction of By-Passes and Diversion Roads; Construction of Missing Links/ New Roads; Construction of Flyovers/ Interchanges/ Underpasses/ Long Span Bridges; Off-Carriageway Improvement; Paving of Unpaved Roads": 20848192000,
+        "Construction of By-Pass and Diversion Roads": 30081536000,
+        "Construction of Missing Links/ New Roads": 22520751000,
+        "Off-Carriageway Improvement": 5314343000,
+        "Katipunan Viaduct (SB) (B03323LZ) along C-5 Road": 4179093000,
+        "Widening of Permanent Bridges": 11519804000,
+        "Magsaysay Viaduct Br. 1 (B00998MN) along Butuan City-Cagayan de Oro City-Iligan City Road (Agusan-Misamis Or Rd)": 2900349000,
+        "Pancian Viaduct along Manila North Road, Ilocos Norte": 150000000,
+        "Lopez Viaduct (FB50957LZ) along Maharlika Highway, Barangay Canda Ibaba - Barangay Pandanan, Calauaq, Quezon": 1421825000,
+        "Viaduct along Daang Maharlika K0397 + (-192.28) - K0397 + 224.37": 558800000,
+        "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 7925975000,
+        "Construction of Sabo Dam Structures, Kabang (Masarawak) River, Sub Dam per Final Master Plan Report for the Bicol River Basin, Guinobatan, Albay": 6370814000,
+        "Repair/ Rehabilitation/ Improvement/ Maintenance of Flood Mitigation Facilities within Major River Basins and Principal Rivers (Oplan Kontra Baha)": 1176092000,
+        "Water Supply System": 7879125000,
+        "Septage and Sewerage": 510000000,
+        "Construction of New Bridge 1 (Viaduct) along Pili-Tigaon-Albay Bdry Rd": 194103613000,
+        "Multipurpose / Facilities": 7238268000,
+        "FOREIGN-ASSISTED PROJECTS": 35712554000,
+        "a. Bataan-Cavite Interlink Bridge (BCIB) Project, ADB Loan No. 4432-PHI and AIIB Loan No. L0724A": 18890412000,
+        "1. Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 8853487000,
+        "buildings and Other Structures": 182970000
+      },
+      "nep_exact_pap_title_amount_candidates": 1028
+    },
+    {
+      "file": "hb_dpwh_leaves_validated.json",
+      "rows": 15487,
+      "total_php": 538804830000,
+      "scope": "operations candidate leaves",
+      "sha256": "1371267ce5e33ffae25aff52653c4d524e4089d925e38a41b368f87ef1907fa8",
+      "missing_region": 2248,
+      "missing_office": 2944,
+      "validation_counts": {
+        "ok": 15271,
+        "spillover": 206,
+        "dup_in_block": 10
+      },
+      "zones": {
+        "pap": {
+          "rows": 15253,
+          "php": 490908730000
+        },
+        "fap": {
+          "rows": 234,
+          "php": 47896100000
+        }
+      },
+      "native_exact_title_amount": 14006,
+      "native_exact_project_only": 13977,
+      "native_heading_only": 29,
+      "native_no_exact_title_amount": 1481,
+      "retained_verified_rollups": [],
+      "pap_sums_php": {
+        "Preventive Maintenance - Primary Roads": 6502114000,
+        "<headingless @2548> Maharlika Highway( Marbel-Allah Valley-C": 2959594000,
+        "Preventive Maintenance - Secondary Roads": 5110425000,
+        "<headingless @2775> Tagum City Diversion Road K1461 + 115 - ": 6288840000,
+        "Preventive Maintenance - Tertiary Roads": 1331374000,
+        "<headingless @3113> Malvar Rd - K0002 + (-665) - K0002+913": 4562235000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads": 629666000,
+        "<headingless @3348> Quirino H-way - K0264 + 968 - K0281 +198": 1657675000,
+        "Rolando R. Andaya Highway - K281+198 - K0296+418": 1895766000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads": 2072769000,
+        "<headingless @3516> Jolo Port-Bud Daho-Romadier Road (S00003": 2866562000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads": 2809588000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Primary Roads": 817778000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Secondary Roads": 9627406000,
+        "<headingless @4133> Paracelis-Mallig-Roxas Rd - (S04031LZ) C": 5300047000,
+        "Roads": 2398054000,
+        "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Secondary Roads": 2226501000,
+        "Road Widening - Primary Roads": 2800866000,
+        "Road Widening - Secondary Roads": 11911012000,
+        "Road Widening - Tertiary Roads": 2376194000,
+        "Construction of By-Pass and Diversion Roads": 24606463000,
+        "Mapawa-Bahi-Langgawisan, (4+872.500 - 6+605.83), Maragusan, Davao de Oro\\nBypass Road": 4545021000,
+        "Construction of Missing Links/ New Roads": 22266099000,
+        "Construction of Flyovers/ Interchanges/ Underpasses/ Long Span Bridges": 515000000,
+        "Off-Carriageway Improvement - Primary Roads": 1656179000,
+        "ff-Carriageway Improvement - Secondary Roads": 3020074000,
+        "<headingless @5710> Surigao-Davao Coastal Rd - K1431 + 365 -": 2099758000,
+        "<headingless @5789> Paving of Unpaved Roads": 606021000,
+        "<headingless @5796> Paving of Unpaved Roads - Secondary Road": 43984000,
+        "<headingless @5804> Paving of Unpaved Roads - Tertiary Roads": 1138058000,
+        "Bridge Program": 10083251000,
+        "Retrofitting/ Strengthening of Permanent Bridges": 2842245000,
+        "Rehabilitation/ Major Repair of Permanent Bridges": 1733435000,
+        "<headingless @6350> Lana Br. (B00771LZ) along Laoag-Sarrat-P": 2147959000,
+        "Widening of Permanent Bridges": 6711463000,
+        "<headingless @6702> Polo Br. (B00085NR) along Dumaguete Nort": 7111840000,
+        "<headingless @6885> Panoon Br. (B01247MN) along Jct Sayre H-": 1289742000,
+        "Pancian Viaduct along Manila North Road, Ilocos Norte": 150000000,
+        "Subic Ilaya Br. Along Talisay-Laurel-Agoncillo Rd": 2130625000,
+        "Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems": 13358509000,
+        "Construction of Road with Drainage Canal at Barangay San Vicente, Urdaneta City, Pangasinan": 11514285000,
+        "Construction of Groundsill along General Trias Retarding Basin II, General Trias, Cavite": 24021818000,
+        "Rehabilitation of Lower Catador Relief Pumping Station, Barangay Marulas, Valenzuela City, 14.6749633, 120.994859": 1514340000,
+        "Rehabilitation of Drainage System, Lirio St. (Sta. 0+000.00 - Sta. 0+156.70), Lirio Ext. (Sta. 0+000.00 - Sta. 0+039.80), Camia Ext. I (Sta. 0+000.00 - Sta. 0+121.10), Camia Ext. II (Sta. 0+000.00 - Sta. 0+052.30), Camia Ext. III (Sta. 0+000.00 - Sta. 0+028.00) and Alley 4 (Sta. 0+000.00 - Sta. 0+069.00), Barangay Old Capitol Site, Quezon City": 3003320000,
+        "Construction/Improvement of Drainage Structure along Puguis Road (Sta. 0+140) to Wangal-Motorpool Road (Sta. 0+712), La Trinidad, Benguet": 1764120000,
+        "Rehabilitation of Pag-asa Pumping Station, Obando, Bulacan (14.707318, 120.937568)": 1225762000,
+        "Construction of Drainage, Barangay Virgen Delos Remedios, Angeles City, Pampanga Sta. 0+000 - Sta. 0+443.1": 50000000,
+        "Construction of Drainage Canal at Sampaloc Street Barangay Maligaya Tarlac City, Tarlac, Sta. 0+000.00 - Sta. 0+535.00": 50000000,
+        "Rehabilitation of Concrete Slope Protection with Steel Sheet Pile at Mangan-Vaca River, Sta. 1+420 - Sta. 1+620, Subic, Zambales": 540500000,
+        "Batangas": 3403946000,
+        "Construction of Drainage Structure, Sta. 00 + 000.00 - Sta. 00 + 520, Barangay Sto. Rosario, Tibiao, Antique": 4214224000,
+        "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 16222881000,
+        "Water Supply System": 5624300000,
+        "Construction of Water Supply System, Barangay Silanganan, Dolores, Quezon": 880000000,
+        "Construction of Public Water Supply System, Barangay Mantiquil, Siaton, Negros Occidental": 1707825000,
+        "<headingless @9371> Regional Office I": 9000000,
+        "<headingless @9399> Regional Office II": 45000000,
+        "<headingless @9477> Regional Office VI": 9000000,
+        "<headingless @9502> Regional Office VII": 27000000,
+        "<headingless @9550> Regional Office X": 9000000,
+        "<headingless @9564> Regional Office XI": 65400000,
+        "Rehabilitation of Disaster-Related Infrastructure and Other Facilities": 1000000000,
+        "<headingless @9612> Facilities for Elderlies/ Senior Citizen": 340000000,
+        "<headingless @9633> Gender-Responsive Facilities": 85000000,
+        "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities": 50333149000,
+        "Construction of Road, Sitio Macayas, Barangay Mandhi, Sindangan to Sitio Suminugod, Barangay Guibo, Siayan, Zamboanga del Norte": 31081330000,
+        "Upgrading of Road and Drainages along Deato Subd. (C0+000 to C0+140), Barangay Pasolo, Valenzuela City": 10245696000,
+        "Replacement of Bridge (Sta. 0+507 - Sta. 0+544) including Bridge Approaches (Sta. 0+487 - Sta. 0+507, Sta. 0+544 - Sta. 0+564), Barangay Bangag, City of Ilagan, Isabela": 5145616000,
+        "Upgrading of Road Barangay Tenejero, Orani, Bataan": 13907064000,
+        "Construction of Road, Batong Buhay, Sablayan, Occidental Mindoro": 14822420000,
+        "Rehabilitation / Strengthening of Bridge, Tinoon Steel Bridge, Barangay Lokilokon, Paranas, Samar, 11.802441, 125.102497": 2256085000,
+        "Construction of Road, Barangay Tulapok, Margosatubig, Zamboanga del Sur": 10585656000,
+        "3IP - Multi-Purpose Buildings/ Facilities to support Social Services": 36405462000,
+        "Construction (Completion) of North Eastern Mindanao State University, Medical School Building (126.21547, 9.03855)": 160000000,
+        "Rehabilitation of Philam Covered Court, Barangay Pamplona 2, Las Pinas City": 17581558000,
+        "Construction of Multi-Purpose Building at Barangay San Antonio, Magalang, Pampanga, 15.241266, 120.662098": 86000000,
+        "Construction of Multi-Purpose Building, Lyceum Bldg., Barangay Sto.Rosario, Capas, Tarlac": 13825912000,
+        "Rehabilitation of Multi-Purpose Building, Barangay San Juan, San Jose, Camarines Sur": 5615000000,
+        "Construction of Multi-Purpose Building, Sitio Hiyang-Hiyang, Barangay Celestino Villacin, Cadiz City, Negros Occidental": 739500000,
+        "Construction of Multi-Purpose Building, Barangay Tara, Mabinay, Negros Oriental": 6177306000,
+        "Construction of Multi-Purpose Building, Barangay 6, Malaybalay, Bukidnon": 8939563000,
+        "<headingless @20659> BIP - Local Ports and Boat Landing": 1307000000,
+        "Construction of Local Port (Boat Landing), Barangay San Juan, Bulalacao, Oriental Mindoro": 137500000,
+        "Rehabilitation of the Malapatan Boat Landing (Malapatan Wharf), Malapatan, Sarangani": 30000000,
+        "<empty>": 4000000000,
+        "Multipurpose / Facilities": 12852443000,
+        "1. Preventive Maintenance - Primary Roads": 1711754000,
+        "2. Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads": 1120547000,
+        "1. Construction of By-Passes/Diversion Roads": 9052373000,
+        "c. Laguna Lakeshore Road Network (LLRN) Project - Phase I, KEDCF Loan No. PHL-27, ADB Loan No. 4523-PHI and AIIB Loan No. L0725A": 10122526000,
+        "1. Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 8853487000,
+        "buildings and Other Structures": 182970000
+      },
+      "nep_exact_pap_title_amount_candidates": 1479,
+      "operations_net_shortfall_php": 48136831000,
+      "versus_original": {
+        "same_row_ids": true,
+        "amount_changes": 0,
+        "pap_changes": 0,
+        "region_changes": 0
+      }
+    },
+    {
+      "file": "hb_dpwh_leaves_corrected.json",
+      "rows": 15487,
+      "total_php": 528250579000,
+      "scope": "operations candidate leaves",
+      "sha256": "372536b54fbf2ae315ded1fe928b25c1ebc77fb103df3b8bc39540827a32f63f",
+      "missing_region": 2248,
+      "missing_office": 2944,
+      "validation_counts": {
+        "pdf:ok": 14617,
+        "pdf:got_region_subtotal": 13,
+        "ok": 753,
+        "pdf:amount_dropped": 49,
+        "spillover": 46,
+        "dup_in_block": 9
+      },
+      "zones": {
+        "pap": {
+          "rows": 15253,
+          "php": 480304479000
+        },
+        "fap": {
+          "rows": 234,
+          "php": 47946100000
+        }
+      },
+      "native_exact_title_amount": 14062,
+      "native_exact_project_only": 14031,
+      "native_heading_only": 31,
+      "native_no_exact_title_amount": 1425,
+      "retained_verified_rollups": [],
+      "pap_sums_php": {
+        "Preventive Maintenance - Primary Roads": 5387529000,
+        "<headingless @2548> Maharlika Highway( Marbel-Allah Valley-C": 2959594000,
+        "Preventive Maintenance - Secondary Roads": 5184425000,
+        "<headingless @2775> Tagum City Diversion Road K1461 + 115 - ": 6288840000,
+        "Preventive Maintenance - Tertiary Roads": 1331374000,
+        "<headingless @3113> Malvar Rd - K0002 + (-665) - K0002+913": 4697235000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads": 629666000,
+        "<headingless @3348> Quirino H-way - K0264 + 968 - K0281 +198": 1657675000,
+        "Rolando R. Andaya Highway - K281+198 - K0296+418": 1920229000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads": 2072769000,
+        "<headingless @3516> Jolo Port-Bud Daho-Romadier Road (S00003": 2866562000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads": 2951311000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Primary Roads": 731728000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Secondary Roads": 9732862000,
+        "<headingless @4133> Paracelis-Mallig-Roxas Rd - (S04031LZ) C": 5300047000,
+        "Roads": 2398054000,
+        "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Secondary Roads": 2226501000,
+        "Road Widening - Primary Roads": 2800866000,
+        "Road Widening - Secondary Roads": 11063882000,
+        "Road Widening - Tertiary Roads": 2376194000,
+        "Construction of By-Pass and Diversion Roads": 24876463000,
+        "Mapawa-Bahi-Langgawisan, (4+872.500 - 6+605.83), Maragusan, Davao de Oro\\nBypass Road": 4545021000,
+        "Construction of Missing Links/ New Roads": 22366099000,
+        "Construction of Flyovers/ Interchanges/ Underpasses/ Long Span Bridges": 515000000,
+        "Off-Carriageway Improvement - Primary Roads": 1656179000,
+        "ff-Carriageway Improvement - Secondary Roads": 3020074000,
+        "<headingless @5710> Surigao-Davao Coastal Rd - K1431 + 365 -": 3227637000,
+        "<headingless @5789> Paving of Unpaved Roads": 606021000,
+        "<headingless @5796> Paving of Unpaved Roads - Secondary Road": 43984000,
+        "<headingless @5804> Paving of Unpaved Roads - Tertiary Roads": 1138058000,
+        "Bridge Program": 10083251000,
+        "Retrofitting/ Strengthening of Permanent Bridges": 2842245000,
+        "Rehabilitation/ Major Repair of Permanent Bridges": 1725435000,
+        "<headingless @6350> Lana Br. (B00771LZ) along Laoag-Sarrat-P": 2147959000,
+        "Widening of Permanent Bridges": 5340523000,
+        "<headingless @6702> Polo Br. (B00085NR) along Dumaguete Nort": 7111840000,
+        "<headingless @6885> Panoon Br. (B01247MN) along Jct Sayre H-": 1289742000,
+        "Pancian Viaduct along Manila North Road, Ilocos Norte": 150000000,
+        "Subic Ilaya Br. Along Talisay-Laurel-Agoncillo Rd": 2130625000,
+        "Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems": 13578509000,
+        "Construction of Road with Drainage Canal at Barangay San Vicente, Urdaneta City, Pangasinan": 11514285000,
+        "Construction of Groundsill along General Trias Retarding Basin II, General Trias, Cavite": 24021818000,
+        "Rehabilitation of Lower Catador Relief Pumping Station, Barangay Marulas, Valenzuela City, 14.6749633, 120.994859": 1514340000,
+        "Rehabilitation of Drainage System, Lirio St. (Sta. 0+000.00 - Sta. 0+156.70), Lirio Ext. (Sta. 0+000.00 - Sta. 0+039.80), Camia Ext. I (Sta. 0+000.00 - Sta. 0+121.10), Camia Ext. II (Sta. 0+000.00 - Sta. 0+052.30), Camia Ext. III (Sta. 0+000.00 - Sta. 0+028.00) and Alley 4 (Sta. 0+000.00 - Sta. 0+069.00), Barangay Old Capitol Site, Quezon City": 3003320000,
+        "Construction/Improvement of Drainage Structure along Puguis Road (Sta. 0+140) to Wangal-Motorpool Road (Sta. 0+712), La Trinidad, Benguet": 1764120000,
+        "Rehabilitation of Pag-asa Pumping Station, Obando, Bulacan (14.707318, 120.937568)": 1225762000,
+        "Construction of Drainage, Barangay Virgen Delos Remedios, Angeles City, Pampanga Sta. 0+000 - Sta. 0+443.1": 50000000,
+        "Construction of Drainage Canal at Sampaloc Street Barangay Maligaya Tarlac City, Tarlac, Sta. 0+000.00 - Sta. 0+535.00": 50000000,
+        "Rehabilitation of Concrete Slope Protection with Steel Sheet Pile at Mangan-Vaca River, Sta. 1+420 - Sta. 1+620, Subic, Zambales": 540500000,
+        "Batangas": 3403946000,
+        "Construction of Drainage Structure, Sta. 00 + 000.00 - Sta. 00 + 520, Barangay Sto. Rosario, Tibiao, Antique": 4234224000,
+        "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 16222881000,
+        "Water Supply System": 5624300000,
+        "Construction of Water Supply System, Barangay Silanganan, Dolores, Quezon": 886241000,
+        "Construction of Public Water Supply System, Barangay Mantiquil, Siaton, Negros Occidental": 2835025000,
+        "<headingless @9371> Regional Office I": 9000000,
+        "<headingless @9399> Regional Office II": 45000000,
+        "<headingless @9477> Regional Office VI": 9000000,
+        "<headingless @9502> Regional Office VII": 27000000,
+        "<headingless @9550> Regional Office X": 9000000,
+        "<headingless @9564> Regional Office XI": 65400000,
+        "Rehabilitation of Disaster-Related Infrastructure and Other Facilities": 1000000000,
+        "<headingless @9612> Facilities for Elderlies/ Senior Citizen": 340000000,
+        "<headingless @9633> Gender-Responsive Facilities": 85000000,
+        "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities": 50533149000,
+        "Construction of Road, Sitio Macayas, Barangay Mandhi, Sindangan to Sitio Suminugod, Barangay Guibo, Siayan, Zamboanga del Norte": 27257330000,
+        "Upgrading of Road and Drainages along Deato Subd. (C0+000 to C0+140), Barangay Pasolo, Valenzuela City": 10245696000,
+        "Replacement of Bridge (Sta. 0+507 - Sta. 0+544) including Bridge Approaches (Sta. 0+487 - Sta. 0+507, Sta. 0+544 - Sta. 0+564), Barangay Bangag, City of Ilagan, Isabela": 5145616000,
+        "Upgrading of Road Barangay Tenejero, Orani, Bataan": 13907064000,
+        "Construction of Road, Batong Buhay, Sablayan, Occidental Mindoro": 14822420000,
+        "Rehabilitation / Strengthening of Bridge, Tinoon Steel Bridge, Barangay Lokilokon, Paranas, Samar, 11.802441, 125.102497": 2256085000,
+        "Construction of Road, Barangay Tulapok, Margosatubig, Zamboanga del Sur": 10590656000,
+        "3IP - Multi-Purpose Buildings/ Facilities to support Social Services": 29463454000,
+        "Construction (Completion) of North Eastern Mindanao State University, Medical School Building (126.21547, 9.03855)": 160000000,
+        "Rehabilitation of Philam Covered Court, Barangay Pamplona 2, Las Pinas City": 17642058000,
+        "Construction of Multi-Purpose Building at Barangay San Antonio, Magalang, Pampanga, 15.241266, 120.662098": 86000000,
+        "Construction of Multi-Purpose Building, Lyceum Bldg., Barangay Sto.Rosario, Capas, Tarlac": 13845912000,
+        "Rehabilitation of Multi-Purpose Building, Barangay San Juan, San Jose, Camarines Sur": 5626000000,
+        "Construction of Multi-Purpose Building, Sitio Hiyang-Hiyang, Barangay Celestino Villacin, Cadiz City, Negros Occidental": 739500000,
+        "Construction of Multi-Purpose Building, Barangay Tara, Mabinay, Negros Oriental": 6182306000,
+        "Construction of Multi-Purpose Building, Barangay 6, Malaybalay, Bukidnon": 8939563000,
+        "<headingless @20659> BIP - Local Ports and Boat Landing": 1257000000,
+        "Construction of Local Port (Boat Landing), Barangay San Juan, Bulalacao, Oriental Mindoro": 122500000,
+        "Rehabilitation of the Malapatan Boat Landing (Malapatan Wharf), Malapatan, Sarangani": 30000000,
+        "<empty>": 4000000000,
+        "Multipurpose / Facilities": 12902443000,
+        "1. Preventive Maintenance - Primary Roads": 1711754000,
+        "2. Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads": 1120547000,
+        "1. Construction of By-Passes/Diversion Roads": 9052373000,
+        "c. Laguna Lakeshore Road Network (LLRN) Project - Phase I, KEDCF Loan No. PHL-27, ADB Loan No. 4523-PHI and AIIB Loan No. L0725A": 10122526000,
+        "1. Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 8853487000,
+        "buildings and Other Structures": 182970000
+      },
+      "nep_exact_pap_title_amount_candidates": 1494,
+      "operations_net_shortfall_php": 58691082000,
+      "versus_original": {
+        "same_row_ids": true,
+        "amount_changes": 62,
+        "pap_changes": 0,
+        "region_changes": 0
+      }
+    },
+    {
+      "file": "hb_dpwh_leaves_corrected_v2.json",
+      "rows": 15487,
+      "total_php": 522296863000,
+      "scope": "operations candidate leaves",
+      "sha256": "535ff076134276ea54e7ad12d692e27c822267646f2ccb5d906cbcaab9a1a3be",
+      "missing_region": 2248,
+      "missing_office": 2944,
+      "validation_counts": {
+        "pdf2:ok": 14561,
+        "pdf2:got_heading_subtotal": 34,
+        "pdf2:got_prev_row_amount": 57,
+        "ok": 744,
+        "pdf2:amount_dropped": 47,
+        "spillover": 35,
+        "dup_in_block": 9
+      },
+      "zones": {
+        "pap": {
+          "rows": 15253,
+          "php": 474350763000
+        },
+        "fap": {
+          "rows": 234,
+          "php": 47946100000
+        }
+      },
+      "native_exact_title_amount": 14130,
+      "native_exact_project_only": 14101,
+      "native_heading_only": 29,
+      "native_no_exact_title_amount": 1357,
+      "retained_verified_rollups": [],
+      "pap_sums_php": {
+        "Preventive Maintenance - Primary Roads": 5376073000,
+        "<headingless @2548> Maharlika Highway( Marbel-Allah Valley-C": 2948594000,
+        "Preventive Maintenance - Secondary Roads": 5184425000,
+        "<headingless @2775> Tagum City Diversion Road K1461 + 115 - ": 6288840000,
+        "Preventive Maintenance - Tertiary Roads": 1331374000,
+        "<headingless @3113> Malvar Rd - K0002 + (-665) - K0002+913": 4697235000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads": 629666000,
+        "<headingless @3348> Quirino H-way - K0264 + 968 - K0281 +198": 1657675000,
+        "Rolando R. Andaya Highway - K281+198 - K0296+418": 1920229000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads": 2072769000,
+        "<headingless @3516> Jolo Port-Bud Daho-Romadier Road (S00003": 2866562000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads": 2885909000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Primary Roads": 731728000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Secondary Roads": 9732862000,
+        "<headingless @4133> Paracelis-Mallig-Roxas Rd - (S04031LZ) C": 5300047000,
+        "Roads": 2398054000,
+        "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Secondary Roads": 2226501000,
+        "Road Widening - Primary Roads": 2800866000,
+        "Road Widening - Secondary Roads": 11063882000,
+        "Road Widening - Tertiary Roads": 2376194000,
+        "Construction of By-Pass and Diversion Roads": 24876463000,
+        "Mapawa-Bahi-Langgawisan, (4+872.500 - 6+605.83), Maragusan, Davao de Oro\\nBypass Road": 4545021000,
+        "Construction of Missing Links/ New Roads": 22366099000,
+        "Construction of Flyovers/ Interchanges/ Underpasses/ Long Span Bridges": 515000000,
+        "Off-Carriageway Improvement - Primary Roads": 1656179000,
+        "ff-Carriageway Improvement - Secondary Roads": 2980399000,
+        "<headingless @5710> Surigao-Davao Coastal Rd - K1431 + 365 -": 1121554000,
+        "<headingless @5789> Paving of Unpaved Roads": 606021000,
+        "<headingless @5796> Paving of Unpaved Roads - Secondary Road": 43984000,
+        "<headingless @5804> Paving of Unpaved Roads - Tertiary Roads": 1138058000,
+        "Bridge Program": 10083251000,
+        "Retrofitting/ Strengthening of Permanent Bridges": 2842245000,
+        "Rehabilitation/ Major Repair of Permanent Bridges": 1725435000,
+        "<headingless @6350> Lana Br. (B00771LZ) along Laoag-Sarrat-P": 2118859000,
+        "Widening of Permanent Bridges": 5152423000,
+        "<headingless @6702> Polo Br. (B00085NR) along Dumaguete Nort": 7111840000,
+        "<headingless @6885> Panoon Br. (B01247MN) along Jct Sayre H-": 1289742000,
+        "Pancian Viaduct along Manila North Road, Ilocos Norte": 150000000,
+        "Subic Ilaya Br. Along Talisay-Laurel-Agoncillo Rd": 2130625000,
+        "Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems": 13558509000,
+        "Construction of Road with Drainage Canal at Barangay San Vicente, Urdaneta City, Pangasinan": 11514285000,
+        "Construction of Groundsill along General Trias Retarding Basin II, General Trias, Cavite": 24006818000,
+        "Rehabilitation of Lower Catador Relief Pumping Station, Barangay Marulas, Valenzuela City, 14.6749633, 120.994859": 1384340000,
+        "Rehabilitation of Drainage System, Lirio St. (Sta. 0+000.00 - Sta. 0+156.70), Lirio Ext. (Sta. 0+000.00 - Sta. 0+039.80), Camia Ext. I (Sta. 0+000.00 - Sta. 0+121.10), Camia Ext. II (Sta. 0+000.00 - Sta. 0+052.30), Camia Ext. III (Sta. 0+000.00 - Sta. 0+028.00) and Alley 4 (Sta. 0+000.00 - Sta. 0+069.00), Barangay Old Capitol Site, Quezon City": 3003320000,
+        "Construction/Improvement of Drainage Structure along Puguis Road (Sta. 0+140) to Wangal-Motorpool Road (Sta. 0+712), La Trinidad, Benguet": 1764120000,
+        "Rehabilitation of Pag-asa Pumping Station, Obando, Bulacan (14.707318, 120.937568)": 1225762000,
+        "Construction of Drainage, Barangay Virgen Delos Remedios, Angeles City, Pampanga Sta. 0+000 - Sta. 0+443.1": 50000000,
+        "Construction of Drainage Canal at Sampaloc Street Barangay Maligaya Tarlac City, Tarlac, Sta. 0+000.00 - Sta. 0+535.00": 50000000,
+        "Rehabilitation of Concrete Slope Protection with Steel Sheet Pile at Mangan-Vaca River, Sta. 1+420 - Sta. 1+620, Subic, Zambales": 540500000,
+        "Batangas": 3304946000,
+        "Construction of Drainage Structure, Sta. 00 + 000.00 - Sta. 00 + 520, Barangay Sto. Rosario, Tibiao, Antique": 4024224000,
+        "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 16222881000,
+        "Water Supply System": 5609300000,
+        "Construction of Water Supply System, Barangay Silanganan, Dolores, Quezon": 826241000,
+        "Construction of Public Water Supply System, Barangay Mantiquil, Siaton, Negros Occidental": 1809825000,
+        "<headingless @9371> Regional Office I": 9000000,
+        "<headingless @9399> Regional Office II": 45000000,
+        "<headingless @9477> Regional Office VI": 9000000,
+        "<headingless @9502> Regional Office VII": 27000000,
+        "<headingless @9550> Regional Office X": 9000000,
+        "<headingless @9564> Regional Office XI": 65400000,
+        "Rehabilitation of Disaster-Related Infrastructure and Other Facilities": 1000000000,
+        "<headingless @9612> Facilities for Elderlies/ Senior Citizen": 340000000,
+        "<headingless @9633> Gender-Responsive Facilities": 85000000,
+        "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities": 50533149000,
+        "Construction of Road, Sitio Macayas, Barangay Mandhi, Sindangan to Sitio Suminugod, Barangay Guibo, Siayan, Zamboanga del Norte": 27232330000,
+        "Upgrading of Road and Drainages along Deato Subd. (C0+000 to C0+140), Barangay Pasolo, Valenzuela City": 10246196000,
+        "Replacement of Bridge (Sta. 0+507 - Sta. 0+544) including Bridge Approaches (Sta. 0+487 - Sta. 0+507, Sta. 0+544 - Sta. 0+564), Barangay Bangag, City of Ilagan, Isabela": 5115616000,
+        "Upgrading of Road Barangay Tenejero, Orani, Bataan": 13614564000,
+        "Construction of Road, Batong Buhay, Sablayan, Occidental Mindoro": 14822420000,
+        "Rehabilitation / Strengthening of Bridge, Tinoon Steel Bridge, Barangay Lokilokon, Paranas, Samar, 11.802441, 125.102497": 2241085000,
+        "Construction of Road, Barangay Tulapok, Margosatubig, Zamboanga del Sur": 10630656000,
+        "3IP - Multi-Purpose Buildings/ Facilities to support Social Services": 29079254000,
+        "Construction (Completion) of North Eastern Mindanao State University, Medical School Building (126.21547, 9.03855)": 150000000,
+        "Rehabilitation of Philam Covered Court, Barangay Pamplona 2, Las Pinas City": 17650058000,
+        "Construction of Multi-Purpose Building at Barangay San Antonio, Magalang, Pampanga, 15.241266, 120.662098": 86000000,
+        "Construction of Multi-Purpose Building, Lyceum Bldg., Barangay Sto.Rosario, Capas, Tarlac": 13285912000,
+        "Rehabilitation of Multi-Purpose Building, Barangay San Juan, San Jose, Camarines Sur": 5626000000,
+        "Construction of Multi-Purpose Building, Sitio Hiyang-Hiyang, Barangay Celestino Villacin, Cadiz City, Negros Occidental": 739500000,
+        "Construction of Multi-Purpose Building, Barangay Tara, Mabinay, Negros Oriental": 6197306000,
+        "Construction of Multi-Purpose Building, Barangay 6, Malaybalay, Bukidnon": 8295563000,
+        "<headingless @20659> BIP - Local Ports and Boat Landing": 1233000000,
+        "Construction of Local Port (Boat Landing), Barangay San Juan, Bulalacao, Oriental Mindoro": 120000000,
+        "Rehabilitation of the Malapatan Boat Landing (Malapatan Wharf), Malapatan, Sarangani": 25000000,
+        "<empty>": 4000000000,
+        "Multipurpose / Facilities": 12902443000,
+        "1. Preventive Maintenance - Primary Roads": 1711754000,
+        "2. Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads": 1120547000,
+        "1. Construction of By-Passes/Diversion Roads": 9052373000,
+        "c. Laguna Lakeshore Road Network (LLRN) Project - Phase I, KEDCF Loan No. PHL-27, ADB Loan No. 4523-PHI and AIIB Loan No. L0725A": 10122526000,
+        "1. Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 8853487000,
+        "buildings and Other Structures": 182970000
+      },
+      "nep_exact_pap_title_amount_candidates": 1513,
+      "operations_net_shortfall_php": 64644798000,
+      "versus_original": {
+        "same_row_ids": true,
+        "amount_changes": 138,
+        "pap_changes": 0,
+        "region_changes": 0
+      }
+    },
+    {
+      "file": "hb_dpwh_leaves_corrected_v3.json",
+      "rows": 15487,
+      "total_php": 520651663000,
+      "scope": "operations candidate leaves",
+      "sha256": "8ed02c038bd576109c8c1e759af0a5d08ec9f84c9ab8d7511c1575016dab4a1a",
+      "missing_region": 2248,
+      "missing_office": 2944,
+      "validation_counts": {
+        "pdf2:ok": 14561,
+        "pdf2:got_heading_subtotal": 34,
+        "pdf2:got_prev_row_amount": 57,
+        "pdf3:ok": 627,
+        "pdf2:amount_dropped": 47,
+        "ok": 96,
+        "spillover": 23,
+        "pdf3:verified_rollup": 32,
+        "dup_in_block": 7,
+        "pdf3:corrected_region_merged": 3
+      },
+      "zones": {
+        "pap": {
+          "rows": 15253,
+          "php": 472705563000
+        },
+        "fap": {
+          "rows": 234,
+          "php": 47946100000
+        }
+      },
+      "native_exact_title_amount": 14130,
+      "native_exact_project_only": 14101,
+      "native_heading_only": 29,
+      "native_no_exact_title_amount": 1357,
+      "retained_verified_rollups": [
+        {
+          "row": 4681,
+          "title": "ordillera Administrative Region",
+          "php": 127283000,
+          "native_hits": []
+        },
+        {
+          "row": 5711,
+          "title": "off-Carriageway Improvement - Tertiary Roads",
+          "php": 0,
+          "native_hits": []
+        },
+        {
+          "row": 5789,
+          "title": "Paving of Unpaved Roads",
+          "php": 596021000,
+          "native_hits": [
+            {
+              "pdf_page": 255,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 5791,
+          "title": "Paving of Unpaved Roads - Primary Roads",
+          "php": 5000000,
+          "native_hits": [
+            {
+              "pdf_page": 255,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 5796,
+          "title": "Paving of Unpaved Roads - Secondary Roads",
+          "php": 21992000,
+          "native_hits": [
+            {
+              "pdf_page": 255,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 5804,
+          "title": "Paving of Unpaved Roads - Tertiary Roads",
+          "php": 569029000,
+          "native_hits": [
+            {
+              "pdf_page": 255,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 9325,
+          "title": "Construction of Water System at Purok Gawan, Barangay San Jose, General Santos City",
+          "php": 10000000,
+          "native_hits": []
+        },
+        {
+          "row": 9347,
+          "title": "Septage and Sewerage",
+          "php": 100000000,
+          "native_hits": [
+            {
+              "pdf_page": 401,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 9349,
+          "title": "Rainwater Collector System",
+          "php": 0,
+          "native_hits": []
+        },
+        {
+          "row": 9612,
+          "title": "Facilities for Elderlies/ Senior Citizen",
+          "php": 340000000,
+          "native_hits": [
+            {
+              "pdf_page": 410,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 9633,
+          "title": "Gender-Responsive Facilities",
+          "php": 85000000,
+          "native_hits": [
+            {
+              "pdf_page": 411,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20659,
+          "title": "BIP - Local Ports and Boat Landing",
+          "php": 700000000,
+          "native_hits": [
+            {
+              "pdf_page": 924,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20704,
+          "title": "Public-Private Partnership Strategic Support Fund (including ROW, Subsidy, and Variations)",
+          "php": 1000000000,
+          "native_hits": [
+            {
+              "pdf_page": 926,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20705,
+          "title": "National Roads and Bridges",
+          "php": 1000000000,
+          "native_hits": [
+            {
+              "pdf_page": 926,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20765,
+          "title": "Construction of Materials Recovery Facility (MRF), Bataan 3rd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 929,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20766,
+          "title": "Construction of Materials Recovery Facility (MRF), Bukidon 4th District Engineering Office",
+          "php": 600000,
+          "native_hits": []
+        },
+        {
+          "row": 20767,
+          "title": "Construction of Materials Recovery Facility (MRF), Bulacan 3rd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 929,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20768,
+          "title": "Construction of Materials Recovery Facility (MRF), Camarines Norte Sub-District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 929,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20769,
+          "title": "Construction of Materials Recovery Facility (MRF), Cebu 7th District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20771,
+          "title": "Construction of Materials Recovery Facility (MRF), Cotabato 3rd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20772,
+          "title": "Construction of Materials Recovery Facility (MRF), Davao City 3rd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20773,
+          "title": "Construction of Materials Recovery Facility (MRF), Davao de Oro 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20774,
+          "title": "Construction of Materials Recovery Facility (MRF), Davao del Norte 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20775,
+          "title": "Construction of Materials Recovery Facility (MRF), Iligan City District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20777,
+          "title": "Construction of Materials Recovery Facility (MRF), Iloilo 6th District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20779,
+          "title": "Construction of Materials Recovery Facility (MRF), Mt. Province 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20780,
+          "title": "Construction of Materials Recovery Facility (MRF), Negros Occidental 5th District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20781,
+          "title": "Construction of Materials Recovery Facility (MRF), Southern Leyte 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20782,
+          "title": "Construction of Materials Recovery Facility (MRF), Sulu 1st District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20784,
+          "title": "Construction of Materials Recovery Facility (MRF), Sulu 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20786,
+          "title": "Construction of Materials Recovery Facility (MRF), Zamboanga City 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20787,
+          "title": "Construction of Materials Recovery Facility (MRF), Zamboanga del Norte 4th District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        }
+      ],
+      "pap_sums_php": {
+        "Preventive Maintenance - Primary Roads": 5376073000,
+        "<headingless @2548> Maharlika Highway( Marbel-Allah Valley-C": 2948594000,
+        "Preventive Maintenance - Secondary Roads": 5184425000,
+        "<headingless @2775> Tagum City Diversion Road K1461 + 115 - ": 6288840000,
+        "Preventive Maintenance - Tertiary Roads": 1331374000,
+        "<headingless @3113> Malvar Rd - K0002 + (-665) - K0002+913": 4697235000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads": 629666000,
+        "<headingless @3348> Quirino H-way - K0264 + 968 - K0281 +198": 1657675000,
+        "Rolando R. Andaya Highway - K281+198 - K0296+418": 1920229000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads": 2072769000,
+        "<headingless @3516> Jolo Port-Bud Daho-Romadier Road (S00003": 2866562000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads": 2885909000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Primary Roads": 731728000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Secondary Roads": 9732862000,
+        "<headingless @4133> Paracelis-Mallig-Roxas Rd - (S04031LZ) C": 5300047000,
+        "Roads": 2398054000,
+        "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Secondary Roads": 2226501000,
+        "Road Widening - Primary Roads": 2800866000,
+        "Road Widening - Secondary Roads": 11063882000,
+        "Road Widening - Tertiary Roads": 2376194000,
+        "Construction of By-Pass and Diversion Roads": 24876463000,
+        "Mapawa-Bahi-Langgawisan, (4+872.500 - 6+605.83), Maragusan, Davao de Oro\\nBypass Road": 4545021000,
+        "Construction of Missing Links/ New Roads": 22366099000,
+        "Construction of Flyovers/ Interchanges/ Underpasses/ Long Span Bridges": 515000000,
+        "Off-Carriageway Improvement - Primary Roads": 1656179000,
+        "ff-Carriageway Improvement - Secondary Roads": 2980399000,
+        "<headingless @5710> Surigao-Davao Coastal Rd - K1431 + 365 -": 1121554000,
+        "<headingless @5789> Paving of Unpaved Roads": 606021000,
+        "<headingless @5796> Paving of Unpaved Roads - Secondary Road": 43984000,
+        "<headingless @5804> Paving of Unpaved Roads - Tertiary Roads": 1138058000,
+        "Bridge Program": 10083251000,
+        "Retrofitting/ Strengthening of Permanent Bridges": 2842245000,
+        "Rehabilitation/ Major Repair of Permanent Bridges": 1725435000,
+        "<headingless @6350> Lana Br. (B00771LZ) along Laoag-Sarrat-P": 2118859000,
+        "Widening of Permanent Bridges": 5152423000,
+        "<headingless @6702> Polo Br. (B00085NR) along Dumaguete Nort": 7111840000,
+        "<headingless @6885> Panoon Br. (B01247MN) along Jct Sayre H-": 1289742000,
+        "Pancian Viaduct along Manila North Road, Ilocos Norte": 150000000,
+        "Subic Ilaya Br. Along Talisay-Laurel-Agoncillo Rd": 2130625000,
+        "Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems": 13055509000,
+        "Construction of Road with Drainage Canal at Barangay San Vicente, Urdaneta City, Pangasinan": 11514285000,
+        "Construction of Groundsill along General Trias Retarding Basin II, General Trias, Cavite": 24006818000,
+        "Rehabilitation of Lower Catador Relief Pumping Station, Barangay Marulas, Valenzuela City, 14.6749633, 120.994859": 1384340000,
+        "Rehabilitation of Drainage System, Lirio St. (Sta. 0+000.00 - Sta. 0+156.70), Lirio Ext. (Sta. 0+000.00 - Sta. 0+039.80), Camia Ext. I (Sta. 0+000.00 - Sta. 0+121.10), Camia Ext. II (Sta. 0+000.00 - Sta. 0+052.30), Camia Ext. III (Sta. 0+000.00 - Sta. 0+028.00) and Alley 4 (Sta. 0+000.00 - Sta. 0+069.00), Barangay Old Capitol Site, Quezon City": 3003320000,
+        "Construction/Improvement of Drainage Structure along Puguis Road (Sta. 0+140) to Wangal-Motorpool Road (Sta. 0+712), La Trinidad, Benguet": 1764120000,
+        "Rehabilitation of Pag-asa Pumping Station, Obando, Bulacan (14.707318, 120.937568)": 1225762000,
+        "Construction of Drainage, Barangay Virgen Delos Remedios, Angeles City, Pampanga Sta. 0+000 - Sta. 0+443.1": 50000000,
+        "Construction of Drainage Canal at Sampaloc Street Barangay Maligaya Tarlac City, Tarlac, Sta. 0+000.00 - Sta. 0+535.00": 50000000,
+        "Rehabilitation of Concrete Slope Protection with Steel Sheet Pile at Mangan-Vaca River, Sta. 1+420 - Sta. 1+620, Subic, Zambales": 540500000,
+        "Batangas": 3304946000,
+        "Construction of Drainage Structure, Sta. 00 + 000.00 - Sta. 00 + 520, Barangay Sto. Rosario, Tibiao, Antique": 4024224000,
+        "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 16222881000,
+        "Water Supply System": 5609300000,
+        "Construction of Water Supply System, Barangay Silanganan, Dolores, Quezon": 826241000,
+        "Construction of Public Water Supply System, Barangay Mantiquil, Siaton, Negros Occidental": 1809825000,
+        "<headingless @9371> Regional Office I": 9000000,
+        "<headingless @9399> Regional Office II": 45000000,
+        "<headingless @9477> Regional Office VI": 9000000,
+        "<headingless @9502> Regional Office VII": 27000000,
+        "<headingless @9550> Regional Office X": 9000000,
+        "<headingless @9564> Regional Office XI": 65400000,
+        "Rehabilitation of Disaster-Related Infrastructure and Other Facilities": 1000000000,
+        "<headingless @9612> Facilities for Elderlies/ Senior Citizen": 340000000,
+        "<headingless @9633> Gender-Responsive Facilities": 85000000,
+        "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities": 50533149000,
+        "Construction of Road, Sitio Macayas, Barangay Mandhi, Sindangan to Sitio Suminugod, Barangay Guibo, Siayan, Zamboanga del Norte": 27232330000,
+        "Upgrading of Road and Drainages along Deato Subd. (C0+000 to C0+140), Barangay Pasolo, Valenzuela City": 10246196000,
+        "Replacement of Bridge (Sta. 0+507 - Sta. 0+544) including Bridge Approaches (Sta. 0+487 - Sta. 0+507, Sta. 0+544 - Sta. 0+564), Barangay Bangag, City of Ilagan, Isabela": 5115616000,
+        "Upgrading of Road Barangay Tenejero, Orani, Bataan": 13614564000,
+        "Construction of Road, Batong Buhay, Sablayan, Occidental Mindoro": 14822420000,
+        "Rehabilitation / Strengthening of Bridge, Tinoon Steel Bridge, Barangay Lokilokon, Paranas, Samar, 11.802441, 125.102497": 2241085000,
+        "Construction of Road, Barangay Tulapok, Margosatubig, Zamboanga del Sur": 10630656000,
+        "3IP - Multi-Purpose Buildings/ Facilities to support Social Services": 27937054000,
+        "Construction (Completion) of North Eastern Mindanao State University, Medical School Building (126.21547, 9.03855)": 150000000,
+        "Rehabilitation of Philam Covered Court, Barangay Pamplona 2, Las Pinas City": 17650058000,
+        "Construction of Multi-Purpose Building at Barangay San Antonio, Magalang, Pampanga, 15.241266, 120.662098": 86000000,
+        "Construction of Multi-Purpose Building, Lyceum Bldg., Barangay Sto.Rosario, Capas, Tarlac": 13285912000,
+        "Rehabilitation of Multi-Purpose Building, Barangay San Juan, San Jose, Camarines Sur": 5626000000,
+        "Construction of Multi-Purpose Building, Sitio Hiyang-Hiyang, Barangay Celestino Villacin, Cadiz City, Negros Occidental": 739500000,
+        "Construction of Multi-Purpose Building, Barangay Tara, Mabinay, Negros Oriental": 6197306000,
+        "Construction of Multi-Purpose Building, Barangay 6, Malaybalay, Bukidnon": 8295563000,
+        "<headingless @20659> BIP - Local Ports and Boat Landing": 1233000000,
+        "Construction of Local Port (Boat Landing), Barangay San Juan, Bulalacao, Oriental Mindoro": 120000000,
+        "Rehabilitation of the Malapatan Boat Landing (Malapatan Wharf), Malapatan, Sarangani": 25000000,
+        "<empty>": 4000000000,
+        "Multipurpose / Facilities": 12902443000,
+        "1. Preventive Maintenance - Primary Roads": 1711754000,
+        "2. Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads": 1120547000,
+        "1. Construction of By-Passes/Diversion Roads": 9052373000,
+        "c. Laguna Lakeshore Road Network (LLRN) Project - Phase I, KEDCF Loan No. PHL-27, ADB Loan No. 4523-PHI and AIIB Loan No. L0725A": 10122526000,
+        "1. Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 8853487000,
+        "buildings and Other Structures": 182970000
+      },
+      "nep_exact_pap_title_amount_candidates": 1513,
+      "operations_net_shortfall_php": 66289998000,
+      "versus_original": {
+        "same_row_ids": true,
+        "amount_changes": 141,
+        "pap_changes": 0,
+        "region_changes": 0
+      }
+    },
+    {
+      "file": "hb_dpwh_leaves_corrected_v4.json",
+      "rows": 15487,
+      "total_php": 520651663000,
+      "scope": "operations candidate leaves",
+      "sha256": "1ea28aff5e2ca4c67d3678c165828cbc8e0ee0bd2a8d223ad245b4616f9a2e11",
+      "missing_region": 2248,
+      "missing_office": 2944,
+      "validation_counts": {
+        "pdf2:ok": 14561,
+        "pdf2:got_heading_subtotal": 34,
+        "pdf2:got_prev_row_amount": 57,
+        "pdf3:ok": 627,
+        "pdf2:amount_dropped": 47,
+        "ok": 96,
+        "spillover": 23,
+        "pdf3:verified_rollup": 32,
+        "dup_in_block": 7,
+        "pdf3:corrected_region_merged": 3
+      },
+      "zones": {
+        "pap": {
+          "rows": 15253,
+          "php": 472705563000
+        },
+        "fap": {
+          "rows": 234,
+          "php": 47946100000
+        }
+      },
+      "native_exact_title_amount": 14130,
+      "native_exact_project_only": 14101,
+      "native_heading_only": 29,
+      "native_no_exact_title_amount": 1357,
+      "retained_verified_rollups": [
+        {
+          "row": 4681,
+          "title": "ordillera Administrative Region",
+          "php": 127283000,
+          "native_hits": []
+        },
+        {
+          "row": 5711,
+          "title": "off-Carriageway Improvement - Tertiary Roads",
+          "php": 0,
+          "native_hits": []
+        },
+        {
+          "row": 5789,
+          "title": "Paving of Unpaved Roads",
+          "php": 596021000,
+          "native_hits": [
+            {
+              "pdf_page": 255,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 5791,
+          "title": "Paving of Unpaved Roads - Primary Roads",
+          "php": 5000000,
+          "native_hits": [
+            {
+              "pdf_page": 255,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 5796,
+          "title": "Paving of Unpaved Roads - Secondary Roads",
+          "php": 21992000,
+          "native_hits": [
+            {
+              "pdf_page": 255,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 5804,
+          "title": "Paving of Unpaved Roads - Tertiary Roads",
+          "php": 569029000,
+          "native_hits": [
+            {
+              "pdf_page": 255,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 9325,
+          "title": "Construction of Water System at Purok Gawan, Barangay San Jose, General Santos City",
+          "php": 10000000,
+          "native_hits": []
+        },
+        {
+          "row": 9347,
+          "title": "Septage and Sewerage",
+          "php": 100000000,
+          "native_hits": [
+            {
+              "pdf_page": 401,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 9349,
+          "title": "Rainwater Collector System",
+          "php": 0,
+          "native_hits": []
+        },
+        {
+          "row": 9612,
+          "title": "Facilities for Elderlies/ Senior Citizen",
+          "php": 340000000,
+          "native_hits": [
+            {
+              "pdf_page": 410,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 9633,
+          "title": "Gender-Responsive Facilities",
+          "php": 85000000,
+          "native_hits": [
+            {
+              "pdf_page": 411,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20659,
+          "title": "BIP - Local Ports and Boat Landing",
+          "php": 700000000,
+          "native_hits": [
+            {
+              "pdf_page": 924,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20704,
+          "title": "Public-Private Partnership Strategic Support Fund (including ROW, Subsidy, and Variations)",
+          "php": 1000000000,
+          "native_hits": [
+            {
+              "pdf_page": 926,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20705,
+          "title": "National Roads and Bridges",
+          "php": 1000000000,
+          "native_hits": [
+            {
+              "pdf_page": 926,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20765,
+          "title": "Construction of Materials Recovery Facility (MRF), Bataan 3rd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 929,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20766,
+          "title": "Construction of Materials Recovery Facility (MRF), Bukidon 4th District Engineering Office",
+          "php": 600000,
+          "native_hits": []
+        },
+        {
+          "row": 20767,
+          "title": "Construction of Materials Recovery Facility (MRF), Bulacan 3rd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 929,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20768,
+          "title": "Construction of Materials Recovery Facility (MRF), Camarines Norte Sub-District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 929,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20769,
+          "title": "Construction of Materials Recovery Facility (MRF), Cebu 7th District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20771,
+          "title": "Construction of Materials Recovery Facility (MRF), Cotabato 3rd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20772,
+          "title": "Construction of Materials Recovery Facility (MRF), Davao City 3rd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20773,
+          "title": "Construction of Materials Recovery Facility (MRF), Davao de Oro 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20774,
+          "title": "Construction of Materials Recovery Facility (MRF), Davao del Norte 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20775,
+          "title": "Construction of Materials Recovery Facility (MRF), Iligan City District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20777,
+          "title": "Construction of Materials Recovery Facility (MRF), Iloilo 6th District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20779,
+          "title": "Construction of Materials Recovery Facility (MRF), Mt. Province 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20780,
+          "title": "Construction of Materials Recovery Facility (MRF), Negros Occidental 5th District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20781,
+          "title": "Construction of Materials Recovery Facility (MRF), Southern Leyte 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20782,
+          "title": "Construction of Materials Recovery Facility (MRF), Sulu 1st District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20784,
+          "title": "Construction of Materials Recovery Facility (MRF), Sulu 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20786,
+          "title": "Construction of Materials Recovery Facility (MRF), Zamboanga City 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20787,
+          "title": "Construction of Materials Recovery Facility (MRF), Zamboanga del Norte 4th District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        }
+      ],
+      "pap_sums_php": {
+        "Preventive Maintenance - Primary Roads": 8324667000,
+        "Preventive Maintenance - Secondary Roads": 11473265000,
+        "Preventive Maintenance - Tertiary Roads": 6028609000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads": 2287341000,
+        "Rolando R. Andaya Highway - K281+198 - K0296+418": 1920229000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads": 4939331000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads": 2885909000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Primary Roads": 731728000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Secondary Roads": 15032909000,
+        "Roads": 2398054000,
+        "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Secondary Roads": 2226501000,
+        "Road Widening - Primary Roads": 2800866000,
+        "Road Widening - Secondary Roads": 11063882000,
+        "Road Widening - Tertiary Roads": 2376194000,
+        "Construction of By-Pass and Diversion Roads": 24876463000,
+        "Mapawa-Bahi-Langgawisan, (4+872.500 - 6+605.83), Maragusan, Davao de Oro\\nBypass Road": 4545021000,
+        "Construction of Missing Links/ New Roads": 22366099000,
+        "Construction of Flyovers/ Interchanges/ Underpasses/ Long Span Bridges": 515000000,
+        "Off-Carriageway Improvement - Primary Roads": 1656179000,
+        "ff-Carriageway Improvement - Secondary Roads": 2980399000,
+        "Off-Carriageway Improvement - Secondary Roads": 1727575000,
+        "Paving of Unpaved Roads - Secondary Roads": 43984000,
+        "Paving of Unpaved Roads - Tertiary Roads": 1138058000,
+        "Bridge Program": 10083251000,
+        "Retrofitting/ Strengthening of Permanent Bridges": 2842245000,
+        "Rehabilitation/ Major Repair of Permanent Bridges": 3844294000,
+        "Widening of Permanent Bridges": 13554005000,
+        "Pancian Viaduct along Manila North Road, Ilocos Norte": 150000000,
+        "Subic Ilaya Br. Along Talisay-Laurel-Agoncillo Rd": 2130625000,
+        "Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems": 13055509000,
+        "Construction of Road with Drainage Canal at Barangay San Vicente, Urdaneta City, Pangasinan": 11514285000,
+        "Construction of Groundsill along General Trias Retarding Basin II, General Trias, Cavite": 24006818000,
+        "Rehabilitation of Lower Catador Relief Pumping Station, Barangay Marulas, Valenzuela City, 14.6749633, 120.994859": 1384340000,
+        "Rehabilitation of Drainage System, Lirio St. (Sta. 0+000.00 - Sta. 0+156.70), Lirio Ext. (Sta. 0+000.00 - Sta. 0+039.80), Camia Ext. I (Sta. 0+000.00 - Sta. 0+121.10), Camia Ext. II (Sta. 0+000.00 - Sta. 0+052.30), Camia Ext. III (Sta. 0+000.00 - Sta. 0+028.00) and Alley 4 (Sta. 0+000.00 - Sta. 0+069.00), Barangay Old Capitol Site, Quezon City": 3003320000,
+        "Construction/Improvement of Drainage Structure along Puguis Road (Sta. 0+140) to Wangal-Motorpool Road (Sta. 0+712), La Trinidad, Benguet": 1764120000,
+        "Rehabilitation of Pag-asa Pumping Station, Obando, Bulacan (14.707318, 120.937568)": 1225762000,
+        "Construction of Drainage, Barangay Virgen Delos Remedios, Angeles City, Pampanga Sta. 0+000 - Sta. 0+443.1": 50000000,
+        "Construction of Drainage Canal at Sampaloc Street Barangay Maligaya Tarlac City, Tarlac, Sta. 0+000.00 - Sta. 0+535.00": 50000000,
+        "Rehabilitation of Concrete Slope Protection with Steel Sheet Pile at Mangan-Vaca River, Sta. 1+420 - Sta. 1+620, Subic, Zambales": 540500000,
+        "Batangas": 3304946000,
+        "Construction of Drainage Structure, Sta. 00 + 000.00 - Sta. 00 + 520, Barangay Sto. Rosario, Tibiao, Antique": 4024224000,
+        "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 16222881000,
+        "Water Supply System": 5609300000,
+        "Construction of Water Supply System, Barangay Silanganan, Dolores, Quezon": 826241000,
+        "Construction of Public Water Supply System, Barangay Mantiquil, Siaton, Negros Occidental": 1809825000,
+        "S2O - Regional Office allocations (Flood Mgmt section)": 164400000,
+        "Rehabilitation of Disaster-Related Infrastructure and Other Facilities": 1000000000,
+        "Facilities for Elderlies/ Senior Citizen": 340000000,
+        "Gender-Responsive Facilities": 85000000,
+        "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities": 50533149000,
+        "Construction of Road, Sitio Macayas, Barangay Mandhi, Sindangan to Sitio Suminugod, Barangay Guibo, Siayan, Zamboanga del Norte": 27232330000,
+        "Upgrading of Road and Drainages along Deato Subd. (C0+000 to C0+140), Barangay Pasolo, Valenzuela City": 10246196000,
+        "Replacement of Bridge (Sta. 0+507 - Sta. 0+544) including Bridge Approaches (Sta. 0+487 - Sta. 0+507, Sta. 0+544 - Sta. 0+564), Barangay Bangag, City of Ilagan, Isabela": 5115616000,
+        "Upgrading of Road Barangay Tenejero, Orani, Bataan": 13614564000,
+        "Construction of Road, Batong Buhay, Sablayan, Occidental Mindoro": 14822420000,
+        "Rehabilitation / Strengthening of Bridge, Tinoon Steel Bridge, Barangay Lokilokon, Paranas, Samar, 11.802441, 125.102497": 2241085000,
+        "Construction of Road, Barangay Tulapok, Margosatubig, Zamboanga del Sur": 10630656000,
+        "3IP - Multi-Purpose Buildings/ Facilities to support Social Services": 27937054000,
+        "Construction (Completion) of North Eastern Mindanao State University, Medical School Building (126.21547, 9.03855)": 150000000,
+        "Rehabilitation of Philam Covered Court, Barangay Pamplona 2, Las Pinas City": 17650058000,
+        "Construction of Multi-Purpose Building at Barangay San Antonio, Magalang, Pampanga, 15.241266, 120.662098": 86000000,
+        "Construction of Multi-Purpose Building, Lyceum Bldg., Barangay Sto.Rosario, Capas, Tarlac": 13285912000,
+        "Rehabilitation of Multi-Purpose Building, Barangay San Juan, San Jose, Camarines Sur": 5626000000,
+        "Construction of Multi-Purpose Building, Sitio Hiyang-Hiyang, Barangay Celestino Villacin, Cadiz City, Negros Occidental": 739500000,
+        "Construction of Multi-Purpose Building, Barangay Tara, Mabinay, Negros Oriental": 6197306000,
+        "Construction of Multi-Purpose Building, Barangay 6, Malaybalay, Bukidnon": 8295563000,
+        "BIP - Local Ports and Boat Landings": 1233000000,
+        "Construction of Local Port (Boat Landing), Barangay San Juan, Bulalacao, Oriental Mindoro": 120000000,
+        "Rehabilitation of the Malapatan Boat Landing (Malapatan Wharf), Malapatan, Sarangani": 25000000,
+        "<empty>": 4000000000,
+        "Multipurpose / Facilities": 12902443000,
+        "1. Preventive Maintenance - Primary Roads": 1711754000,
+        "2. Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads": 1120547000,
+        "1. Construction of By-Passes/Diversion Roads": 9052373000,
+        "c. Laguna Lakeshore Road Network (LLRN) Project - Phase I, KEDCF Loan No. PHL-27, ADB Loan No. 4523-PHI and AIIB Loan No. L0725A": 10122526000,
+        "1. Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 8853487000,
+        "buildings and Other Structures": 182970000
+      },
+      "nep_exact_pap_title_amount_candidates": 2219,
+      "operations_net_shortfall_php": 66289998000,
+      "versus_original": {
+        "same_row_ids": true,
+        "amount_changes": 141,
+        "pap_changes": 1082,
+        "region_changes": 0
+      }
+    },
+    {
+      "file": "hb_dpwh_leaves_corrected_v4b.json",
+      "rows": 15487,
+      "total_php": 520651663000,
+      "scope": "operations candidate leaves",
+      "sha256": "c3f4360cfab4e27aa4a707b6e57ae844e759ee694c2347545a87d85f34e4c3a0",
+      "missing_region": 32,
+      "missing_office": 2944,
+      "validation_counts": {
+        "pdf2:ok": 14561,
+        "pdf2:got_heading_subtotal": 34,
+        "pdf2:got_prev_row_amount": 57,
+        "pdf3:ok": 627,
+        "pdf2:amount_dropped": 47,
+        "ok": 96,
+        "spillover": 23,
+        "pdf3:verified_rollup": 32,
+        "dup_in_block": 7,
+        "pdf3:corrected_region_merged": 3
+      },
+      "zones": {
+        "pap": {
+          "rows": 15253,
+          "php": 472705563000
+        },
+        "fap": {
+          "rows": 234,
+          "php": 47946100000
+        }
+      },
+      "native_exact_title_amount": 14130,
+      "native_exact_project_only": 14101,
+      "native_heading_only": 29,
+      "native_no_exact_title_amount": 1357,
+      "retained_verified_rollups": [
+        {
+          "row": 4681,
+          "title": "ordillera Administrative Region",
+          "php": 127283000,
+          "native_hits": []
+        },
+        {
+          "row": 5711,
+          "title": "off-Carriageway Improvement - Tertiary Roads",
+          "php": 0,
+          "native_hits": []
+        },
+        {
+          "row": 5789,
+          "title": "Paving of Unpaved Roads",
+          "php": 596021000,
+          "native_hits": [
+            {
+              "pdf_page": 255,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 5791,
+          "title": "Paving of Unpaved Roads - Primary Roads",
+          "php": 5000000,
+          "native_hits": [
+            {
+              "pdf_page": 255,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 5796,
+          "title": "Paving of Unpaved Roads - Secondary Roads",
+          "php": 21992000,
+          "native_hits": [
+            {
+              "pdf_page": 255,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 5804,
+          "title": "Paving of Unpaved Roads - Tertiary Roads",
+          "php": 569029000,
+          "native_hits": [
+            {
+              "pdf_page": 255,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 9325,
+          "title": "Construction of Water System at Purok Gawan, Barangay San Jose, General Santos City",
+          "php": 10000000,
+          "native_hits": []
+        },
+        {
+          "row": 9347,
+          "title": "Septage and Sewerage",
+          "php": 100000000,
+          "native_hits": [
+            {
+              "pdf_page": 401,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 9349,
+          "title": "Rainwater Collector System",
+          "php": 0,
+          "native_hits": []
+        },
+        {
+          "row": 9612,
+          "title": "Facilities for Elderlies/ Senior Citizen",
+          "php": 340000000,
+          "native_hits": [
+            {
+              "pdf_page": 410,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 9633,
+          "title": "Gender-Responsive Facilities",
+          "php": 85000000,
+          "native_hits": [
+            {
+              "pdf_page": 411,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20659,
+          "title": "BIP - Local Ports and Boat Landing",
+          "php": 700000000,
+          "native_hits": [
+            {
+              "pdf_page": 924,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20704,
+          "title": "Public-Private Partnership Strategic Support Fund (including ROW, Subsidy, and Variations)",
+          "php": 1000000000,
+          "native_hits": [
+            {
+              "pdf_page": 926,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20705,
+          "title": "National Roads and Bridges",
+          "php": 1000000000,
+          "native_hits": [
+            {
+              "pdf_page": 926,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20765,
+          "title": "Construction of Materials Recovery Facility (MRF), Bataan 3rd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 929,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20766,
+          "title": "Construction of Materials Recovery Facility (MRF), Bukidon 4th District Engineering Office",
+          "php": 600000,
+          "native_hits": []
+        },
+        {
+          "row": 20767,
+          "title": "Construction of Materials Recovery Facility (MRF), Bulacan 3rd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 929,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20768,
+          "title": "Construction of Materials Recovery Facility (MRF), Camarines Norte Sub-District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 929,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20769,
+          "title": "Construction of Materials Recovery Facility (MRF), Cebu 7th District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20771,
+          "title": "Construction of Materials Recovery Facility (MRF), Cotabato 3rd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20772,
+          "title": "Construction of Materials Recovery Facility (MRF), Davao City 3rd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20773,
+          "title": "Construction of Materials Recovery Facility (MRF), Davao de Oro 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20774,
+          "title": "Construction of Materials Recovery Facility (MRF), Davao del Norte 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20775,
+          "title": "Construction of Materials Recovery Facility (MRF), Iligan City District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20777,
+          "title": "Construction of Materials Recovery Facility (MRF), Iloilo 6th District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20779,
+          "title": "Construction of Materials Recovery Facility (MRF), Mt. Province 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20780,
+          "title": "Construction of Materials Recovery Facility (MRF), Negros Occidental 5th District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20781,
+          "title": "Construction of Materials Recovery Facility (MRF), Southern Leyte 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20782,
+          "title": "Construction of Materials Recovery Facility (MRF), Sulu 1st District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20784,
+          "title": "Construction of Materials Recovery Facility (MRF), Sulu 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20786,
+          "title": "Construction of Materials Recovery Facility (MRF), Zamboanga City 2nd District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        },
+        {
+          "row": 20787,
+          "title": "Construction of Materials Recovery Facility (MRF), Zamboanga del Norte 4th District Engineering Office",
+          "php": 600000,
+          "native_hits": [
+            {
+              "pdf_page": 930,
+              "heading": true
+            }
+          ]
+        }
+      ],
+      "pap_sums_php": {
+        "Preventive Maintenance - Primary Roads": 8324667000,
+        "Preventive Maintenance - Secondary Roads": 11473265000,
+        "Preventive Maintenance - Tertiary Roads": 6028609000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads": 4207570000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads": 4939331000,
+        "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads": 2885909000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Primary Roads": 731728000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Secondary Roads": 15032909000,
+        "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Tertiary Roads": 1649867000,
+        "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Secondary Roads": 2955575000,
+        "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Tertiary": 19113000,
+        "Road Widening - Primary Roads": 2800866000,
+        "Road Widening - Secondary Roads": 11063882000,
+        "Road Widening - Tertiary Roads": 2376194000,
+        "Construction of By-Pass and Diversion Roads": 29421484000,
+        "Construction of Missing Links/ New Roads": 22366099000,
+        "Construction of Flyovers/ Interchanges/ Underpasses/ Long Span Bridges": 515000000,
+        "Off-Carriageway Improvement - Primary Roads": 2188672000,
+        "Off-Carriageway Improvement - Secondary Roads": 4175481000,
+        "Paving of Unpaved Roads - Secondary Roads": 43984000,
+        "Paving of Unpaved Roads - Tertiary Roads": 1138058000,
+        "Bridge Program": 10083251000,
+        "Retrofitting/ Strengthening of Permanent Bridges": 2842245000,
+        "Rehabilitation/ Major Repair of Permanent Bridges": 3844294000,
+        "Widening of Permanent Bridges": 15557270000,
+        "Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems": 64053040000,
+        "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers": 16371025000,
+        "Water Supply System": 8254366000,
+        "Rainwater Collector System": 99000000,
+        "Rehabilitation of Disaster-Related Infrastructure and Other Facilities": 1056400000,
+        "Facilities for Elderlies/ Senior Citizen": 340000000,
+        "Gender-Responsive Facilities": 85000000,
+        "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities": 132686016000,
+        "BIP - Coastal Roads to augment Resiliency of Coastal Communities": 3126800000,
+        "BIP - Multi-Purpose Buildings/ Facilities to support Social Services": 78585593000,
+        "BIP - Local Ports and Boat Landings": 5893000000,
+        "Multipurpose / Facilities": 14104197000,
+        "Construction of By-Passes/Diversion Roads": 17082838000,
+        "Buildings And Other Structures": 12066095000,
+        "buildings and Other Structures": 182970000
+      },
+      "nep_exact_pap_title_amount_candidates": 7350,
+      "operations_net_shortfall_php": 66289998000,
+      "versus_original": {
+        "same_row_ids": true,
+        "amount_changes": 141,
+        "pap_changes": 12613,
+        "region_changes": 2216
+      },
+      "missing_region_by_zone": {
+        "pap": 10,
+        "fap": 22
+      }
+    }
+  ],
+  "structural_checks": [
+    {
+      "file": "hb_dpwh_pap_hierarchy.json",
+      "nodes": 2592,
+      "statuses": {
+        "rollup_only": 315,
+        "review": 261,
+        "validated": 1912,
+        "container": 104
+      },
+      "project_rows": 15487,
+      "embedded_project_sum_php": 538804830000,
+      "same_original_row_amounts": true
+    },
+    {
+      "file": "hb_block_tree.json",
+      "nodes": 2592,
+      "statuses": {
+        "rollup_only": 315,
+        "review": 261,
+        "validated": 1912,
+        "container": 104
+      },
+      "project_rows": 0,
+      "embedded_project_sum_php": 0
+    }
+  ],
+  "program_crosscheck": [
+    {
+      "program": "Asset Preservation Program",
+      "house_local_control_php": 79720290000,
+      "nep_non_fap_source_php": 68418283000,
+      "delta_php": 11302007000
+    },
+    {
+      "program": "Network Development Program",
+      "house_local_control_php": 92435879000,
+      "nep_non_fap_source_php": 92179924000,
+      "delta_php": 255955000
+    },
+    {
+      "program": "Bridge Program",
+      "house_local_control_php": 37590473000,
+      "nep_non_fap_source_php": 38987589000,
+      "delta_php": -1397116000
+    },
+    {
+      "program": "Flood Management Program",
+      "house_local_control_php": 87187778000,
+      "nep_non_fap_source_php": 83846944000,
+      "delta_php": 3340834000
+    },
+    {
+      "program": "Convergence and Special Support Program",
+      "house_local_control_php": 231382287000,
+      "nep_non_fap_source_php": 157308648000,
+      "delta_php": 74073639000
+    },
+    {
+      "program": "Local Program",
+      "house_local_control_php": 13875943000,
+      "nep_non_fap_source_php": 14433675000,
+      "delta_php": -557732000
+    }
+  ],
+  "pap_control_checks": [
+    {
+      "pap": "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities",
+      "drilldown_house_local_php": 134927811000,
+      "pdf_heading_hits": [
+        {
+          "page": 412,
+          "label": "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic",
+          "php": 134927811000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 105725209000,
+      "v4b_exact_label_php": 132686016000,
+      "house_minus_nep_control_php": 29202602000
+    },
+    {
+      "pap": "BIP - Multi-Purpose Buildings/ Facilities to support Social Services",
+      "drilldown_house_local_php": 83706551000,
+      "pdf_heading_hits": [
+        {
+          "page": 630,
+          "label": "BIP - Multi-Purpose Buildings/ Facilities to support Social Services",
+          "php": 83706551000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 40974839000,
+      "v4b_exact_label_php": 78585593000,
+      "house_minus_nep_control_php": 42731712000
+    },
+    {
+      "pap": "Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems",
+      "drilldown_house_local_php": 70964897000,
+      "pdf_heading_hits": [
+        {
+          "page": 295,
+          "label": "Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems",
+          "php": 70964897000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 62988802000,
+      "v4b_exact_label_php": 64053040000,
+      "house_minus_nep_control_php": 7976095000
+    },
+    {
+      "pap": "Construction of By-Pass and Diversion Roads",
+      "drilldown_house_local_php": 44786384000,
+      "pdf_heading_hits": [
+        {
+          "page": 213,
+          "label": "Construction of By-Pass and Diversion Roads",
+          "php": 44786384000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 46458080000,
+      "v4b_exact_label_php": 29421484000,
+      "house_minus_nep_control_php": -1671696000
+    },
+    {
+      "pap": "Construction of Missing Links/ New Roads",
+      "drilldown_house_local_php": 22661099000,
+      "pdf_heading_hits": [
+        {
+          "page": 233,
+          "label": "Construction of Missing Links/ New Roads",
+          "php": 22661099000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 23911762000,
+      "v4b_exact_label_php": 22366099000,
+      "house_minus_nep_control_php": -1250663000
+    },
+    {
+      "pap": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads",
+      "drilldown_house_local_php": 18611152000,
+      "pdf_heading_hits": [
+        {
+          "page": 148,
+          "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads",
+          "php": 28084988000
+        },
+        {
+          "page": 148,
+          "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads",
+          "php": 18611152000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 18330366000,
+      "v4b_exact_label_php": 4207570000,
+      "house_minus_nep_control_php": 280786000
+    },
+    {
+      "pap": "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers",
+      "drilldown_house_local_php": 16222881000,
+      "pdf_heading_hits": [
+        {
+          "page": 364,
+          "label": "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and",
+          "php": 16222881000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 20858142000,
+      "v4b_exact_label_php": 16371025000,
+      "house_minus_nep_control_php": -4635261000
+    },
+    {
+      "pap": "Preventive Maintenance - Secondary Roads",
+      "drilldown_house_local_php": 14433303000,
+      "pdf_heading_hits": [
+        {
+          "page": 123,
+          "label": "Preventive Maintenance - Secondary Roads",
+          "php": 14433303000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 11678686000,
+      "v4b_exact_label_php": 11473265000,
+      "house_minus_nep_control_php": 2754617000
+    },
+    {
+      "pap": "Preventive Maintenance - Primary Roads",
+      "drilldown_house_local_php": 14395583000,
+      "pdf_heading_hits": [
+        {
+          "page": 110,
+          "label": "Preventive Maintenance - Primary Roads",
+          "php": 14395583000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 13343175000,
+      "v4b_exact_label_php": 8324667000,
+      "house_minus_nep_control_php": 1052408000
+    },
+    {
+      "pap": "Widening of Permanent Bridges",
+      "drilldown_house_local_php": 13493005000,
+      "pdf_heading_hits": [
+        {
+          "page": 283,
+          "label": "Widening of Permanent Bridges",
+          "php": 13493005000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 15291066000,
+      "v4b_exact_label_php": 15557270000,
+      "house_minus_nep_control_php": -1798061000
+    },
+    {
+      "pap": "Buildings And Other Structures",
+      "drilldown_house_local_php": 12875943000,
+      "pdf_heading_hits": [
+        {
+          "page": 927,
+          "label": "Buildings And Other Structures",
+          "php": 12875943000
+        },
+        {
+          "page": 942,
+          "label": "a. Buildings and Other Structures",
+          "php": 182970000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 13433675000,
+      "v4b_exact_label_php": 12066095000,
+      "house_minus_nep_control_php": -557732000
+    },
+    {
+      "pap": "Replacement of Permanent Weak Bridges",
+      "drilldown_house_local_php": 11690636000,
+      "pdf_heading_hits": [
+        {
+          "page": 256,
+          "label": "Replacement of Permanent Weak Bridges",
+          "php": 11690636000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 12030210000,
+      "v4b_exact_label_php": 0,
+      "house_minus_nep_control_php": -339574000
+    },
+    {
+      "pap": "Road Widening - Secondary Roads",
+      "drilldown_house_local_php": 10900467000,
+      "pdf_heading_hits": [
+        {
+          "page": 201,
+          "label": "Road Widening - Secondary Roads",
+          "php": 10900467000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 10362723000,
+      "v4b_exact_label_php": 11063882000,
+      "house_minus_nep_control_php": 537744000
+    },
+    {
+      "pap": "Water Supply System",
+      "drilldown_house_local_php": 7740725000,
+      "pdf_heading_hits": [
+        {
+          "page": 374,
+          "label": "Water Supply System",
+          "php": 7740725000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 6171400000,
+      "v4b_exact_label_php": 8254366000,
+      "house_minus_nep_control_php": 1569325000
+    },
+    {
+      "pap": "Preventive Maintenance - Tertiary Roads",
+      "drilldown_house_local_php": 7265937000,
+      "pdf_heading_hits": [
+        {
+          "page": 139,
+          "label": "Preventive Maintenance - Tertiary Roads",
+          "php": 7265937000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 5720057000,
+      "v4b_exact_label_php": 6028609000,
+      "house_minus_nep_control_php": 1545880000
+    },
+    {
+      "pap": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads",
+      "drilldown_house_local_php": 6587927000,
+      "pdf_heading_hits": [
+        {
+          "page": 155,
+          "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads",
+          "php": 6587927000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 4733762000,
+      "v4b_exact_label_php": 4939331000,
+      "house_minus_nep_control_php": 1854165000
+    },
+    {
+      "pap": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Secondary Roads",
+      "drilldown_house_local_php": 5736126000,
+      "pdf_heading_hits": [
+        {
+          "page": 174,
+          "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide -",
+          "php": 5736126000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 4817064000,
+      "v4b_exact_label_php": 15032909000,
+      "house_minus_nep_control_php": 919062000
+    },
+    {
+      "pap": "Construction of New Bridges",
+      "drilldown_house_local_php": 5719293000,
+      "pdf_heading_hits": [
+        {
+          "page": 294,
+          "label": "Construction of New Bridges",
+          "php": 5719293000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 4592468000,
+      "v4b_exact_label_php": 0,
+      "house_minus_nep_control_php": 1126825000
+    },
+    {
+      "pap": "Road Widening - Primary Roads",
+      "drilldown_house_local_php": 4836582000,
+      "pdf_heading_hits": [
+        {
+          "page": 197,
+          "label": "Road Widening - Primary Roads",
+          "php": 4836582000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 4475859000,
+      "v4b_exact_label_php": 2800866000,
+      "house_minus_nep_control_php": 360723000
+    },
+    {
+      "pap": "Rehabilitation/ Major Repair of Permanent Bridges",
+      "drilldown_house_local_php": 3845294000,
+      "pdf_heading_hits": [
+        {
+          "page": 270,
+          "label": "Rehabilitation/ Major Repair of Permanent Bridges",
+          "php": 3845294000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 3866717000,
+      "v4b_exact_label_php": 3844294000,
+      "house_minus_nep_control_php": -21423000
+    },
+    {
+      "pap": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Tertiary Roads",
+      "drilldown_house_local_php": 3575480000,
+      "pdf_heading_hits": [
+        {
+          "page": 182,
+          "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide -",
+          "php": 3575480000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 2932241000,
+      "v4b_exact_label_php": 1649867000,
+      "house_minus_nep_control_php": 643239000
+    },
+    {
+      "pap": "Off-Carriageway Improvement - Secondary Roads",
+      "drilldown_house_local_php": 3030074000,
+      "pdf_heading_hits": [
+        {
+          "page": 247,
+          "label": "Off-Carriageway Improvement - Secondary Roads",
+          "php": 3030074000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 1983747000,
+      "v4b_exact_label_php": 4175481000,
+      "house_minus_nep_control_php": 1046327000
+    },
+    {
+      "pap": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads",
+      "drilldown_house_local_php": 2885909000,
+      "pdf_heading_hits": [
+        {
+          "page": 166,
+          "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads",
+          "php": 2885909000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 1953964000,
+      "v4b_exact_label_php": 2885909000,
+      "house_minus_nep_control_php": 931945000
+    },
+    {
+      "pap": "Retrofitting/ Strengthening of Permanent Bridges",
+      "drilldown_house_local_php": 2842245000,
+      "pdf_heading_hits": [
+        {
+          "page": 265,
+          "label": "Retrofitting/ Strengthening of Permanent Bridges",
+          "php": 2842245000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 3007128000,
+      "v4b_exact_label_php": 2842245000,
+      "house_minus_nep_control_php": -164883000
+    },
+    {
+      "pap": "Road Widening - Tertiary Roads",
+      "drilldown_house_local_php": 2376194000,
+      "pdf_heading_hits": [
+        {
+          "page": 211,
+          "label": "Road Widening - Tertiary Roads",
+          "php": 2376194000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 1630698000,
+      "v4b_exact_label_php": 2376194000,
+      "house_minus_nep_control_php": 745496000
+    },
+    {
+      "pap": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Secondary Roads",
+      "drilldown_house_local_php": 2226501000,
+      "pdf_heading_hits": [
+        {
+          "page": 190,
+          "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Secondary",
+          "php": 2226501000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 1379850000,
+      "v4b_exact_label_php": 2955575000,
+      "house_minus_nep_control_php": 846651000
+    },
+    {
+      "pap": "BIP - Coastal Roads to augment Resiliency of Coastal Communities",
+      "drilldown_house_local_php": 1670000000,
+      "pdf_heading_hits": [
+        {
+          "page": 629,
+          "label": "BIP - Coastal Roads to augment Resiliency of Coastal Communities",
+          "php": 1670000000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 1381000000,
+      "v4b_exact_label_php": 3126800000,
+      "house_minus_nep_control_php": 289000000
+    },
+    {
+      "pap": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Primary Roads",
+      "drilldown_house_local_php": 1668650000,
+      "pdf_heading_hits": [
+        {
+          "page": 187,
+          "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads",
+          "php": 4624555000
+        },
+        {
+          "page": 187,
+          "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Primary",
+          "php": 1668650000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 1651164000,
+      "v4b_exact_label_php": 0,
+      "house_minus_nep_control_php": 17486000
+    },
+    {
+      "pap": "Off-Carriageway Improvement - Primary Roads",
+      "drilldown_house_local_php": 1656179000,
+      "pdf_heading_hits": [
+        {
+          "page": 243,
+          "label": "Off-Carriageway Improvement - Primary Roads",
+          "php": 1656179000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 1313665000,
+      "v4b_exact_label_php": 2188672000,
+      "house_minus_nep_control_php": 342514000
+    },
+    {
+      "pap": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Primary Roads",
+      "drilldown_house_local_php": 1604318000,
+      "pdf_heading_hits": [
+        {
+          "page": 172,
+          "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide",
+          "php": 10915924000
+        },
+        {
+          "page": 172,
+          "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide -",
+          "php": 1604318000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 1693051000,
+      "v4b_exact_label_php": 731728000,
+      "house_minus_nep_control_php": -88733000
+    },
+    {
+      "pap": "Off-Carriageway Improvement - Tertiary Roads",
+      "drilldown_house_local_php": 1077879000,
+      "pdf_heading_hits": [
+        {
+          "page": 252,
+          "label": "Off-Carriageway Improvement - Tertiary Roads",
+          "php": 1077879000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 741599000,
+      "v4b_exact_label_php": 0,
+      "house_minus_nep_control_php": 336280000
+    },
+    {
+      "pap": "Rainwater Collector System",
+      "drilldown_house_local_php": 1027200000,
+      "pdf_heading_hits": [
+        {
+          "page": 401,
+          "label": "Rainwater Collector System",
+          "php": 1027200000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 1027200000,
+      "v4b_exact_label_php": 99000000,
+      "house_minus_nep_control_php": 0
+    },
+    {
+      "pap": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Tertiary Roads",
+      "drilldown_house_local_php": 729404000,
+      "pdf_heading_hits": [
+        {
+          "page": 195,
+          "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Tertiary",
+          "php": 729404000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 184903000,
+      "v4b_exact_label_php": 0,
+      "house_minus_nep_control_php": 544501000
+    },
+    {
+      "pap": "BIP - Local Ports and Boat Landings",
+      "drilldown_house_local_php": 700000000,
+      "pdf_heading_hits": [
+        {
+          "page": 924,
+          "label": "BIP - Local Ports and Boat Landing",
+          "php": 700000000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 419000000,
+      "v4b_exact_label_php": 5893000000,
+      "house_minus_nep_control_php": 281000000
+    },
+    {
+      "pap": "Paving of Unpaved Roads - Tertiary Roads",
+      "drilldown_house_local_php": 569029000,
+      "pdf_heading_hits": [
+        {
+          "page": 255,
+          "label": "Paving of Unpaved Roads - Tertiary Roads",
+          "php": 569029000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 540082000,
+      "v4b_exact_label_php": 1138058000,
+      "house_minus_nep_control_php": 28947000
+    },
+    {
+      "pap": "Construction of Flyovers/ Interchanges/ Underpasses/ Long Span Bridges",
+      "drilldown_house_local_php": 515000000,
+      "pdf_heading_hits": [
+        {
+          "page": 242,
+          "label": "Construction of Flyovers/ Interchanges/ Underpasses/ Long Span Bridges",
+          "php": 515000000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 734717000,
+      "v4b_exact_label_php": 515000000,
+      "house_minus_nep_control_php": -219717000
+    },
+    {
+      "pap": "Facilities for Elderlies/ Senior Citizen",
+      "drilldown_house_local_php": 340000000,
+      "pdf_heading_hits": [
+        {
+          "page": 410,
+          "label": "Facilities for Elderlies/ Senior Citizen",
+          "php": 340000000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 340000000,
+      "v4b_exact_label_php": 340000000,
+      "house_minus_nep_control_php": 0
+    },
+    {
+      "pap": "Septage and Sewerage",
+      "drilldown_house_local_php": 100000000,
+      "pdf_heading_hits": [
+        {
+          "page": 401,
+          "label": "Septage and Sewerage",
+          "php": 100000000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 100000000,
+      "v4b_exact_label_php": 0,
+      "house_minus_nep_control_php": 0
+    },
+    {
+      "pap": "Facilities for Persons with Disabilities (PWD)",
+      "drilldown_house_local_php": 85000000,
+      "pdf_heading_hits": [
+        {
+          "page": 410,
+          "label": "Facilities for Persons with Disabilities (PWD)",
+          "php": 85000000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 85000000,
+      "v4b_exact_label_php": 0,
+      "house_minus_nep_control_php": 0
+    },
+    {
+      "pap": "Gender-Responsive Facilities",
+      "drilldown_house_local_php": 85000000,
+      "pdf_heading_hits": [
+        {
+          "page": 411,
+          "label": "Gender-Responsive Facilities",
+          "php": 85000000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 85000000,
+      "v4b_exact_label_php": 85000000,
+      "house_minus_nep_control_php": 0
+    },
+    {
+      "pap": "Paving of Unpaved Roads - Secondary Roads",
+      "drilldown_house_local_php": 21992000,
+      "pdf_heading_hits": [
+        {
+          "page": 255,
+          "label": "Paving of Unpaved Roads - Secondary Roads",
+          "php": 21992000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 21992000,
+      "v4b_exact_label_php": 43984000,
+      "house_minus_nep_control_php": 0
+    },
+    {
+      "pap": "Paving of Unpaved Roads - Primary Roads",
+      "drilldown_house_local_php": 5000000,
+      "pdf_heading_hits": [
+        {
+          "page": 255,
+          "label": "Paving of Unpaved Roads - Primary Roads",
+          "php": 5000000
+        }
+      ],
+      "native_heading_agrees": true,
+      "nep_printed_control_php": 5000000,
+      "v4b_exact_label_php": 0,
+      "house_minus_nep_control_php": 0
+    }
+  ]
+}

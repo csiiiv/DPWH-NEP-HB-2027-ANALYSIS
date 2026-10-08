@@ -1,0 +1,1370 @@
+{
+  "summary": {
+    "total_php": 654102015000,
+    "gas_s2o_php": 67160354000,
+    "operations_php": 586941661000,
+    "operations_extracted_php": 581345349000,
+    "operations_gap_php": 5596312000,
+    "allocations": 16148,
+    "balanced_paps": 38,
+    "checked_paps": 42,
+    "mismatched_paps": [
+      {
+        "label": "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities",
+        "difference_php": -2241795000
+      },
+      {
+        "label": "BIP - Coastal Roads to augment Resiliency of Coastal Communities",
+        "difference_php": 1456800000
+      },
+      {
+        "label": "BIP - Multi-Purpose Buildings/ Facilities to support Social Services",
+        "difference_php": -5115958000
+      },
+      {
+        "label": "Water Supply System",
+        "difference_php": 304641000
+      }
+    ],
+    "fap_funding_php": {
+      "GOP": 25190650000,
+      "Loan Proceeds": 19558361000
+    },
+    "region_normalizations": 8,
+    "evidence_counts": {
+      "inherited_v4b": 10874,
+      "native_section": 5274
+    },
+    "arithmetic_statuses": {
+      "balanced": 48,
+      "control_only": 2,
+      "derived": 2594,
+      "funding_balanced": 29,
+      "partition": 58,
+      "allocation": 16119,
+      "mismatch": 4
+    }
+  },
+  "repairs": [
+    {
+      "action": "replace_section",
+      "old_row_start": 2450,
+      "old_row_stop_exclusive": 3333,
+      "old_rows": 618,
+      "old_php": 25826541000,
+      "new_rows": 737,
+      "new_php": 36094823000,
+      "pdf_pages": [
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148
+      ],
+      "reason": "Re-extract all three maintenance PAPs; native controls and family sum agree exactly."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 3335,
+      "old_row_stop_exclusive": 3875,
+      "old_rows": 344,
+      "old_php": 12032810000,
+      "new_rows": 416,
+      "new_php": 28084988000,
+      "pdf_pages": [
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172
+      ],
+      "reason": "Restore damaged-paved-road subtype boundaries from native headings; all three PAPs and their family balance."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 3875,
+      "old_row_stop_exclusive": 4457,
+      "old_rows": 330,
+      "old_php": 20389192000,
+      "new_rows": 400,
+      "new_php": 15540479000,
+      "pdf_pages": [
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196
+      ],
+      "reason": "Restore wrapped slope/landslide and drainage PAP headings using native page/amount anchors; all six PAPs balance."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 4923,
+      "old_row_stop_exclusive": 5270,
+      "old_rows": 279,
+      "old_php": 29421484000,
+      "new_rows": 374,
+      "new_php": 44786384000,
+      "pdf_pages": [
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233
+      ],
+      "reason": "Recover bypass-road projects from native rows; the complete section balances the printed control."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 5270,
+      "old_row_stop_exclusive": 5476,
+      "old_rows": 162,
+      "old_php": 22366099000,
+      "new_rows": 165,
+      "new_php": 22661099000,
+      "pdf_pages": [
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242
+      ],
+      "reason": "Recover missing-link/new-road projects from native rows; the section balances the printed control."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 4461,
+      "old_row_stop_exclusive": 4923,
+      "old_rows": 303,
+      "old_php": 16240942000,
+      "new_rows": 322,
+      "new_php": 18113243000,
+      "pdf_pages": [
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213
+      ],
+      "reason": "Re-extract road-widening subtypes and remove misclassified region subtotals; each PAP balances."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 5830,
+      "old_row_stop_exclusive": 7007,
+      "old_rows": 805,
+      "old_php": 32604420000,
+      "new_rows": 836,
+      "new_php": 37590473000,
+      "pdf_pages": [
+        257,
+        258,
+        259,
+        260,
+        261,
+        262,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        269,
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281,
+        282,
+        283,
+        284,
+        285,
+        286,
+        287,
+        288,
+        289,
+        290,
+        291,
+        292,
+        293,
+        294,
+        295
+      ],
+      "reason": "Rebuild all five printed local Bridge PAPs; they sum exactly to the program control without adding parent buckets."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 5484,
+      "old_row_stop_exclusive": 5789,
+      "old_rows": 174,
+      "old_php": 5758132000,
+      "new_rows": 172,
+      "new_php": 5764132000,
+      "pdf_pages": [
+        243,
+        244,
+        245,
+        246,
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254,
+        255
+      ],
+      "reason": "Rebuild all Off-Carriageway subtypes using printed source controls."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 7008,
+      "old_row_stop_exclusive": 8452,
+      "old_rows": 1246,
+      "old_php": 63923824000,
+      "new_rows": 1298,
+      "new_php": 70964897000,
+      "pdf_pages": [
+        296,
+        297,
+        298,
+        299,
+        300,
+        301,
+        302,
+        303,
+        304,
+        305,
+        306,
+        307,
+        308,
+        309,
+        310,
+        311,
+        312,
+        313,
+        314,
+        315,
+        316,
+        317,
+        318,
+        319,
+        320,
+        321,
+        322,
+        323,
+        324,
+        325,
+        326,
+        327,
+        328,
+        329,
+        330,
+        331,
+        332,
+        333,
+        334,
+        335,
+        336,
+        337,
+        338,
+        339,
+        340,
+        341,
+        342,
+        343,
+        344,
+        345,
+        346,
+        347,
+        348,
+        349,
+        350,
+        351,
+        352,
+        353,
+        354,
+        355,
+        356,
+        357,
+        358,
+        359,
+        360,
+        361,
+        362,
+        363,
+        364
+      ],
+      "reason": "Recover flood-mitigation structures and drainage rows; exclude Nationwide/office containers and balance the native control."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 5789,
+      "old_row_stop_exclusive": 5830,
+      "old_rows": 21,
+      "old_php": 1788063000,
+      "new_rows": 17,
+      "new_php": 596021000,
+      "pdf_pages": [
+        255,
+        256
+      ],
+      "reason": "Keep underlying paving projects once; exclude family/PAP subtotals."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 9347,
+      "old_row_stop_exclusive": 9587,
+      "old_rows": 18,
+      "old_php": 364400000,
+      "new_rows": 218,
+      "new_php": 1127200000,
+      "pdf_pages": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409
+      ],
+      "reason": "Restore 217 terminal rainwater allocations and correctly attribute Septage."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 9592,
+      "old_row_stop_exclusive": 9654,
+      "old_rows": 2,
+      "old_php": 425000000,
+      "new_rows": 51,
+      "new_php": 510000000,
+      "pdf_pages": [
+        410,
+        411,
+        412
+      ],
+      "reason": "Replace regional-facility rollups with all 51 printed regional allocations."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 20659,
+      "old_row_stop_exclusive": 20703,
+      "old_rows": 27,
+      "old_php": 1378000000,
+      "new_rows": 29,
+      "new_php": 700000000,
+      "pdf_pages": [
+        924,
+        925,
+        926
+      ],
+      "reason": "Rebuild Local Ports allocations from their complete printed section; exclude the PAP subtotal."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 20703,
+      "old_row_stop_exclusive": 21003,
+      "old_rows": 215,
+      "old_php": 16902443000,
+      "new_rows": 210,
+      "new_php": 13875943000,
+      "pdf_pages": [
+        927,
+        928,
+        929,
+        930,
+        931,
+        932,
+        933,
+        934,
+        935,
+        936,
+        937,
+        938,
+        939
+      ],
+      "reason": "Local projects are not FAP: drop repeated PPP controls, retain the one printed allocation and all building projects."
+    },
+    {
+      "action": "replace_section",
+      "old_row_start": 21003,
+      "old_row_stop_exclusive": 21061,
+      "old_rows": 19,
+      "old_php": 31043657000,
+      "new_rows": 29,
+      "new_php": 44749011000,
+      "pdf_pages": [
+        939,
+        940,
+        941,
+        942
+      ],
+      "reason": "Rebuild the true FAP section: 29 projects, control and every funding split balanced."
+    },
+    {
+      "action": "retain_project",
+      "row": 9325,
+      "reason": "This verified-rollup flag labels an actual construction project, not necessarily a subtotal."
+    },
+    {
+      "action": "correct_boundary_attribution",
+      "row": 20658,
+      "pdf_page": 924,
+      "reason": "Final Barcelona MPB project precedes the Local Ports heading, so it belongs to MPBs."
+    }
+  ],
+  "region_normalizations": [
+    {
+      "row": -1523,
+      "region_raw": "Region XI DAVAO DEL NORTE DISTRICT ENGINEERING OFFICE",
+      "region": "Region XI",
+      "office": "Davao del Norte District Engineering Office",
+      "reason": "Native section row merged the office into the region; split restores the document layout without changing the amount."
+    },
+    {
+      "row": -1524,
+      "region_raw": "Region XI DAVAO DEL NORTE DISTRICT ENGINEERING OFFICE",
+      "region": "Region XI",
+      "office": "Davao del Norte District Engineering Office",
+      "reason": "Native section row merged the office into the region; split restores the document layout without changing the amount."
+    },
+    {
+      "row": -3341,
+      "region_raw": "Region VI ILOILO 1ST DISTRICT ENGINEERING OFFICE",
+      "region": "Region VI",
+      "office": "Iloilo 1st District Engineering Office",
+      "reason": "Native section row merged the office into the region; split restores the document layout without changing the amount."
+    },
+    {
+      "row": -3342,
+      "region_raw": "Region VI ILOILO 1ST DISTRICT ENGINEERING OFFICE",
+      "region": "Region VI",
+      "office": "Iloilo 1st District Engineering Office",
+      "reason": "Native section row merged the office into the region; split restores the document layout without changing the amount."
+    },
+    {
+      "row": -3343,
+      "region_raw": "Region VI ILOILO 1ST DISTRICT ENGINEERING OFFICE",
+      "region": "Region VI",
+      "office": "Iloilo 1st District Engineering Office",
+      "reason": "Native section row merged the office into the region; split restores the document layout without changing the amount."
+    },
+    {
+      "row": -3344,
+      "region_raw": "Region VI ILOILO 1ST DISTRICT ENGINEERING OFFICE",
+      "region": "Region VI",
+      "office": "Iloilo 1st District Engineering Office",
+      "reason": "Native section row merged the office into the region; split restores the document layout without changing the amount."
+    },
+    {
+      "row": -3345,
+      "region_raw": "Region VI ILOILO 1ST DISTRICT ENGINEERING OFFICE",
+      "region": "Region VI",
+      "office": "Iloilo 1st District Engineering Office",
+      "reason": "Native section row merged the office into the region; split restores the document layout without changing the amount."
+    },
+    {
+      "row": -3346,
+      "region_raw": "Region VI ILOILO 1ST DISTRICT ENGINEERING OFFICE",
+      "region": "Region VI",
+      "office": "Iloilo 1st District Engineering Office",
+      "reason": "Native section row merged the office into the region; split restores the document layout without changing the amount."
+    }
+  ],
+  "checks": [
+    {
+      "id": "root",
+      "kind": "agency",
+      "label": "DPWH FY2027 — House Bill 10858 new appropriations",
+      "pdf_pages": [
+        9
+      ],
+      "printed_amount_php": 654102015000,
+      "children_sum_php": 654102015000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": -72756666000,
+      "gap_descendants": 4
+    },
+    {
+      "id": "gas_total",
+      "kind": "summary_control",
+      "label": "General Administration and Support",
+      "pdf_pages": [
+        9
+      ],
+      "printed_amount_php": 18078293000,
+      "children_sum_php": null,
+      "difference_php": null,
+      "status": "control_only",
+      "coverage_difference_php": null,
+      "gap_descendants": 0
+    },
+    {
+      "id": "s2o_total",
+      "kind": "summary_control",
+      "label": "Support to Operations",
+      "pdf_pages": [
+        9
+      ],
+      "printed_amount_php": 49082061000,
+      "children_sum_php": null,
+      "difference_php": null,
+      "status": "control_only",
+      "coverage_difference_php": null,
+      "gap_descendants": 0
+    },
+    {
+      "id": "operations",
+      "kind": "operations",
+      "label": "Operations including local and foreign-assisted projects",
+      "pdf_pages": [
+        9
+      ],
+      "printed_amount_php": 586941661000,
+      "children_sum_php": 586941661000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": -5596312000,
+      "gap_descendants": 4
+    },
+    {
+      "id": "local",
+      "kind": "zone",
+      "label": "Locally funded operations and projects",
+      "pdf_pages": [
+        9
+      ],
+      "printed_amount_php": 542192650000,
+      "children_sum_php": 542192650000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": -5596312000,
+      "gap_descendants": 4
+    },
+    {
+      "id": "fap",
+      "kind": "zone",
+      "label": "Foreign-assisted projects",
+      "pdf_pages": [
+        9
+      ],
+      "printed_amount_php": 44749011000,
+      "children_sum_php": 44749011000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program",
+      "kind": "program",
+      "label": "Asset Preservation Program",
+      "pdf_pages": [
+        9
+      ],
+      "printed_amount_php": 79720290000,
+      "children_sum_php": 79720290000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program:pap:Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Primary Roads",
+      "kind": "pap",
+      "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Primary Roads",
+      "pdf_pages": [
+        187
+      ],
+      "printed_amount_php": 1668650000,
+      "children_sum_php": 1668650000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program:pap:Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Secondary Roads",
+      "kind": "pap",
+      "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Secondary Roads",
+      "pdf_pages": [
+        190
+      ],
+      "printed_amount_php": 2226501000,
+      "children_sum_php": 2226501000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program:pap:Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Tertiary Roads",
+      "kind": "pap",
+      "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Tertiary Roads",
+      "pdf_pages": [
+        195
+      ],
+      "printed_amount_php": 729404000,
+      "children_sum_php": 729404000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program:pap:Preventive Maintenance - Primary Roads",
+      "kind": "pap",
+      "label": "Preventive Maintenance - Primary Roads",
+      "pdf_pages": [
+        110
+      ],
+      "printed_amount_php": 14395583000,
+      "children_sum_php": 14395583000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program:pap:Preventive Maintenance - Secondary Roads",
+      "kind": "pap",
+      "label": "Preventive Maintenance - Secondary Roads",
+      "pdf_pages": [
+        123
+      ],
+      "printed_amount_php": 14433303000,
+      "children_sum_php": 14433303000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program:pap:Preventive Maintenance - Tertiary Roads",
+      "kind": "pap",
+      "label": "Preventive Maintenance - Tertiary Roads",
+      "pdf_pages": [
+        139
+      ],
+      "printed_amount_php": 7265937000,
+      "children_sum_php": 7265937000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program:pap:Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Primary Roads",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Primary Roads",
+      "pdf_pages": [
+        172
+      ],
+      "printed_amount_php": 1604318000,
+      "children_sum_php": 1604318000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program:pap:Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Secondary Roads",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Secondary Roads",
+      "pdf_pages": [
+        174
+      ],
+      "printed_amount_php": 5736126000,
+      "children_sum_php": 5736126000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program:pap:Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Tertiary Roads",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Tertiary Roads",
+      "pdf_pages": [
+        182
+      ],
+      "printed_amount_php": 3575480000,
+      "children_sum_php": 3575480000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program:pap:Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads",
+      "pdf_pages": [
+        148
+      ],
+      "printed_amount_php": 18611152000,
+      "children_sum_php": 18611152000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program:pap:Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads",
+      "pdf_pages": [
+        155
+      ],
+      "printed_amount_php": 6587927000,
+      "children_sum_php": 6587927000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Asset Preservation Program:pap:Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads",
+      "pdf_pages": [
+        166
+      ],
+      "printed_amount_php": 2885909000,
+      "children_sum_php": 2885909000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Bridge Program",
+      "kind": "program",
+      "label": "Bridge Program",
+      "pdf_pages": [
+        9
+      ],
+      "printed_amount_php": 37590473000,
+      "children_sum_php": 37590473000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Bridge Program:pap:Construction of New Bridges",
+      "kind": "pap",
+      "label": "Construction of New Bridges",
+      "pdf_pages": [
+        294
+      ],
+      "printed_amount_php": 5719293000,
+      "children_sum_php": 5719293000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Bridge Program:pap:Rehabilitation/ Major Repair of Permanent Bridges",
+      "kind": "pap",
+      "label": "Rehabilitation/ Major Repair of Permanent Bridges",
+      "pdf_pages": [
+        270
+      ],
+      "printed_amount_php": 3845294000,
+      "children_sum_php": 3845294000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Bridge Program:pap:Replacement of Permanent Weak Bridges",
+      "kind": "pap",
+      "label": "Replacement of Permanent Weak Bridges",
+      "pdf_pages": [
+        256
+      ],
+      "printed_amount_php": 11690636000,
+      "children_sum_php": 11690636000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Bridge Program:pap:Retrofitting/ Strengthening of Permanent Bridges",
+      "kind": "pap",
+      "label": "Retrofitting/ Strengthening of Permanent Bridges",
+      "pdf_pages": [
+        265
+      ],
+      "printed_amount_php": 2842245000,
+      "children_sum_php": 2842245000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Bridge Program:pap:Widening of Permanent Bridges",
+      "kind": "pap",
+      "label": "Widening of Permanent Bridges",
+      "pdf_pages": [
+        283
+      ],
+      "printed_amount_php": 13493005000,
+      "children_sum_php": 13493005000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Convergence and Special Support Program",
+      "kind": "program",
+      "label": "Convergence and Special Support Program",
+      "pdf_pages": [
+        9
+      ],
+      "printed_amount_php": 231382287000,
+      "children_sum_php": 231382287000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": -5596312000,
+      "gap_descendants": 4
+    },
+    {
+      "id": "local:program:Convergence and Special Support Program:pap:BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities",
+      "kind": "pap",
+      "label": "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities",
+      "pdf_pages": [
+        412
+      ],
+      "printed_amount_php": 134927811000,
+      "children_sum_php": 132686016000,
+      "difference_php": -2241795000,
+      "status": "mismatch",
+      "coverage_difference_php": -2241795000,
+      "gap_descendants": 1
+    },
+    {
+      "id": "local:program:Convergence and Special Support Program:pap:BIP - Coastal Roads to augment Resiliency of Coastal Communities",
+      "kind": "pap",
+      "label": "BIP - Coastal Roads to augment Resiliency of Coastal Communities",
+      "pdf_pages": [
+        629
+      ],
+      "printed_amount_php": 1670000000,
+      "children_sum_php": 3126800000,
+      "difference_php": 1456800000,
+      "status": "mismatch",
+      "coverage_difference_php": 1456800000,
+      "gap_descendants": 1
+    },
+    {
+      "id": "local:program:Convergence and Special Support Program:pap:BIP - Local Ports and Boat Landings",
+      "kind": "pap",
+      "label": "BIP - Local Ports and Boat Landings",
+      "pdf_pages": [
+        924
+      ],
+      "printed_amount_php": 700000000,
+      "children_sum_php": 700000000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Convergence and Special Support Program:pap:BIP - Multi-Purpose Buildings/ Facilities to support Social Services",
+      "kind": "pap",
+      "label": "BIP - Multi-Purpose Buildings/ Facilities to support Social Services",
+      "pdf_pages": [
+        630
+      ],
+      "printed_amount_php": 83706551000,
+      "children_sum_php": 78590593000,
+      "difference_php": -5115958000,
+      "status": "mismatch",
+      "coverage_difference_php": -5115958000,
+      "gap_descendants": 1
+    },
+    {
+      "id": "local:program:Convergence and Special Support Program:pap:Facilities for Elderlies/ Senior Citizen",
+      "kind": "pap",
+      "label": "Facilities for Elderlies/ Senior Citizen",
+      "pdf_pages": [
+        410
+      ],
+      "printed_amount_php": 340000000,
+      "children_sum_php": 340000000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Convergence and Special Support Program:pap:Facilities for Persons with Disabilities (PWD)",
+      "kind": "pap",
+      "label": "Facilities for Persons with Disabilities (PWD)",
+      "pdf_pages": [
+        410
+      ],
+      "printed_amount_php": 85000000,
+      "children_sum_php": 85000000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Convergence and Special Support Program:pap:Gender-Responsive Facilities",
+      "kind": "pap",
+      "label": "Gender-Responsive Facilities",
+      "pdf_pages": [
+        411
+      ],
+      "printed_amount_php": 85000000,
+      "children_sum_php": 85000000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Convergence and Special Support Program:pap:Rainwater Collector System",
+      "kind": "pap",
+      "label": "Rainwater Collector System",
+      "pdf_pages": [
+        401
+      ],
+      "printed_amount_php": 1027200000,
+      "children_sum_php": 1027200000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Convergence and Special Support Program:pap:Septage and Sewerage",
+      "kind": "pap",
+      "label": "Septage and Sewerage",
+      "pdf_pages": [
+        401
+      ],
+      "printed_amount_php": 100000000,
+      "children_sum_php": 100000000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Convergence and Special Support Program:pap:Water Supply System",
+      "kind": "pap",
+      "label": "Water Supply System",
+      "pdf_pages": [
+        374
+      ],
+      "printed_amount_php": 7740725000,
+      "children_sum_php": 8045366000,
+      "difference_php": 304641000,
+      "status": "mismatch",
+      "coverage_difference_php": 304641000,
+      "gap_descendants": 1
+    },
+    {
+      "id": "local:program:Flood Management Program",
+      "kind": "program",
+      "label": "Flood Management Program",
+      "pdf_pages": [
+        9
+      ],
+      "printed_amount_php": 87187778000,
+      "children_sum_php": 87187778000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Flood Management Program:pap:Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems",
+      "kind": "pap",
+      "label": "Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems",
+      "pdf_pages": [
+        295
+      ],
+      "printed_amount_php": 70964897000,
+      "children_sum_php": 70964897000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Flood Management Program:pap:Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers",
+      "kind": "pap",
+      "label": "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers",
+      "pdf_pages": [
+        364
+      ],
+      "printed_amount_php": 16222881000,
+      "children_sum_php": 16222881000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Local Program",
+      "kind": "program",
+      "label": "Local Program",
+      "pdf_pages": [
+        9
+      ],
+      "printed_amount_php": 13875943000,
+      "children_sum_php": 13875943000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Local Program:pap:Buildings And Other Structures",
+      "kind": "pap",
+      "label": "Buildings And Other Structures",
+      "pdf_pages": [
+        927,
+        942
+      ],
+      "printed_amount_php": 12875943000,
+      "children_sum_php": 12875943000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program",
+      "kind": "program",
+      "label": "Network Development Program",
+      "pdf_pages": [
+        9
+      ],
+      "printed_amount_php": 92435879000,
+      "children_sum_php": 92435879000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program:pap:Construction of By-Pass and Diversion Roads",
+      "kind": "pap",
+      "label": "Construction of By-Pass and Diversion Roads",
+      "pdf_pages": [
+        213
+      ],
+      "printed_amount_php": 44786384000,
+      "children_sum_php": 44786384000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program:pap:Construction of Flyovers/ Interchanges/ Underpasses/ Long Span Bridges",
+      "kind": "pap",
+      "label": "Construction of Flyovers/ Interchanges/ Underpasses/ Long Span Bridges",
+      "pdf_pages": [
+        242
+      ],
+      "printed_amount_php": 515000000,
+      "children_sum_php": 515000000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program:pap:Construction of Missing Links/ New Roads",
+      "kind": "pap",
+      "label": "Construction of Missing Links/ New Roads",
+      "pdf_pages": [
+        233
+      ],
+      "printed_amount_php": 22661099000,
+      "children_sum_php": 22661099000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program:pap:Off-Carriageway Improvement - Primary Roads",
+      "kind": "pap",
+      "label": "Off-Carriageway Improvement - Primary Roads",
+      "pdf_pages": [
+        243
+      ],
+      "printed_amount_php": 1656179000,
+      "children_sum_php": 1656179000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program:pap:Off-Carriageway Improvement - Secondary Roads",
+      "kind": "pap",
+      "label": "Off-Carriageway Improvement - Secondary Roads",
+      "pdf_pages": [
+        247
+      ],
+      "printed_amount_php": 3030074000,
+      "children_sum_php": 3030074000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program:pap:Off-Carriageway Improvement - Tertiary Roads",
+      "kind": "pap",
+      "label": "Off-Carriageway Improvement - Tertiary Roads",
+      "pdf_pages": [
+        252
+      ],
+      "printed_amount_php": 1077879000,
+      "children_sum_php": 1077879000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program:pap:Paving of Unpaved Roads - Primary Roads",
+      "kind": "pap",
+      "label": "Paving of Unpaved Roads - Primary Roads",
+      "pdf_pages": [
+        255
+      ],
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program:pap:Paving of Unpaved Roads - Secondary Roads",
+      "kind": "pap",
+      "label": "Paving of Unpaved Roads - Secondary Roads",
+      "pdf_pages": [
+        255
+      ],
+      "printed_amount_php": 21992000,
+      "children_sum_php": 21992000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program:pap:Paving of Unpaved Roads - Tertiary Roads",
+      "kind": "pap",
+      "label": "Paving of Unpaved Roads - Tertiary Roads",
+      "pdf_pages": [
+        255
+      ],
+      "printed_amount_php": 569029000,
+      "children_sum_php": 569029000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program:pap:Road Widening - Primary Roads",
+      "kind": "pap",
+      "label": "Road Widening - Primary Roads",
+      "pdf_pages": [
+        197
+      ],
+      "printed_amount_php": 4836582000,
+      "children_sum_php": 4836582000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program:pap:Road Widening - Secondary Roads",
+      "kind": "pap",
+      "label": "Road Widening - Secondary Roads",
+      "pdf_pages": [
+        201
+      ],
+      "printed_amount_php": 10900467000,
+      "children_sum_php": 10900467000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    },
+    {
+      "id": "local:program:Network Development Program:pap:Road Widening - Tertiary Roads",
+      "kind": "pap",
+      "label": "Road Widening - Tertiary Roads",
+      "pdf_pages": [
+        211
+      ],
+      "printed_amount_php": 2376194000,
+      "children_sum_php": 2376194000,
+      "difference_php": 0,
+      "status": "balanced",
+      "coverage_difference_php": 0,
+      "gap_descendants": 0
+    }
+  ],
+  "limitations": [
+    "Remaining inherited project amounts and PAP boundaries are not fully re-extracted.",
+    "A balanced total alone does not establish every title or regional attribution is correct.",
+    "Do not treat unmatched rows as confirmed House insertions or removals.",
+    "Personnel services and GAS/S2O are outside the project table."
+  ],
+  "provenance": {
+    "method": "House v5 allocations grouped by canonical PAP program mapping, region, and office under retained printed summary/program/PAP controls. Derived nodes are child sums; coverage differences are explicit; no residual or inferred allocations.",
+    "inputs_sha256": {
+      "analysis/data/hb_dpwh_leaves_corrected_v5.json": "8e60d400ebbcf4139bcf05dfed4e20d55efac2a4d879924cc08a6e65b3edc668",
+      "analysis/data/hb_known_defect_repairs.json": "9b74951b393bbdf3f12aac9c1d49032c748a609814e5234f5266f435978b8670",
+      "analysis/data/hb_json_usability_audit.json": "0d9042fae6a28abf8ca47b56fdbbc39b0f85bc85499c1994f3b564e3ff249045",
+      "analysis/data/current_pap_controls.json": "2b3cea3df9151d8ba0111e86d3f8146b9d1fa2746f0197d984eb2905abd5d940",
+      "analysis/builders/build_hb_tree.py": "3a204a146fd50ea009e57feec3b7e9f03b551ae8673db280bd1def83ff3efffa",
+      "HB_BUDGET/2 - HB 10858 VOL IB.pdf": "a82800c4cc2684566a37f7780d8f9131d2e7b2c97444d335d94df012dec065b6",
+      "HB_BUDGET/3 - HB 10858 VOL IC.pdf": "0b790d6018db59abab648486c5068108a42ff20a33facc8e21ace0bbedf2d15f"
+    },
+    "source_documents": {
+      "house_summary": "../HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf",
+      "house_details": "../HB_BUDGET/3%20-%20HB%2010858%20VOL%20IC.pdf"
+    }
+  }
+}

@@ -1,0 +1,4966 @@
+{
+  "summary": {
+    "total_php": 654102015000,
+    "operations_php": 586941661000,
+    "nodes": 18850,
+    "allocations": 16148,
+    "inherited_allocations": 10874,
+    "native_allocations": 5274,
+    "balanced_controls": 476,
+    "balanced_paps": 44,
+    "balanced_offices": 399,
+    "balanced_regions": 15,
+    "checked_paps": 42,
+    "mismatched_paps": [
+      {
+        "label": "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities",
+        "difference_php": -2241795000
+      },
+      {
+        "label": "BIP - Coastal Roads to augment Resiliency of Coastal Communities",
+        "difference_php": 1456800000
+      },
+      {
+        "label": "BIP - Multi-Purpose Buildings/ Facilities to support Social Services",
+        "difference_php": -5115958000
+      },
+      {
+        "label": "Water Supply System",
+        "difference_php": 304641000
+      }
+    ],
+    "convergence_php": 231382287000,
+    "attached_office_subtotals": 399,
+    "attached_region_subtotals": 15,
+    "node_kinds": {
+      "agency": 1,
+      "summary_control": 2,
+      "operations": 1,
+      "outcome": 4,
+      "section": 4,
+      "program": 8,
+      "pap": 53,
+      "region": 557,
+      "office": 2014,
+      "project": 16148,
+      "funding": 58
+    },
+    "arithmetic_statuses": {
+      "balanced": 476,
+      "control_only": 2,
+      "derived": 2162,
+      "allocation": 16148,
+      "mismatch": 4,
+      "partition": 58
+    }
+  },
+  "checks": [
+    {
+      "id": "n1",
+      "kind": "agency",
+      "label": "DPWH FY2027 — House Bill 10858 new appropriations",
+      "source_row": null,
+      "printed_amount_php": 654102015000,
+      "children_sum_php": 654102015000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n2",
+      "kind": "summary_control",
+      "label": "General Administration and Support",
+      "source_row": null,
+      "printed_amount_php": 18078293000,
+      "children_sum_php": null,
+      "difference_php": null,
+      "status": "control_only"
+    },
+    {
+      "id": "n3",
+      "kind": "summary_control",
+      "label": "Support to Operations",
+      "source_row": null,
+      "printed_amount_php": 49082061000,
+      "children_sum_php": null,
+      "difference_php": null,
+      "status": "control_only"
+    },
+    {
+      "id": "n4",
+      "kind": "operations",
+      "label": "Operations (VOL I-C details)",
+      "source_row": 2444,
+      "printed_amount_php": 586941661000,
+      "children_sum_php": 586941661000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n5",
+      "kind": "outcome",
+      "label": "Organizational Outcome 1 — Ensure Safe and Reliable National Road System",
+      "source_row": 2445,
+      "printed_amount_php": 209746642000,
+      "children_sum_php": 209746642000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6",
+      "kind": "outcome",
+      "label": "Organizational Outcome 2 — Protect Lives and Properties Against Major Floods",
+      "source_row": 6979,
+      "printed_amount_php": 87187778000,
+      "children_sum_php": 87187778000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7",
+      "kind": "section",
+      "label": "Locally-Funded Projects",
+      "source_row": 20662,
+      "printed_amount_php": 13875943000,
+      "children_sum_php": 13875943000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8",
+      "kind": "section",
+      "label": "Foreign-Assisted Projects",
+      "source_row": 20962,
+      "printed_amount_php": 44749011000,
+      "children_sum_php": 44749011000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9",
+      "kind": "section",
+      "label": "Convergence and Special Support Program",
+      "source_row": null,
+      "printed_amount_php": 231382287000,
+      "children_sum_php": 231382287000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10",
+      "kind": "program",
+      "label": "Asset Preservation Program",
+      "source_row": 2446,
+      "printed_amount_php": 79720290000,
+      "children_sum_php": 79720290000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11",
+      "kind": "program",
+      "label": "Network Development Program",
+      "source_row": 4448,
+      "printed_amount_php": 92435879000,
+      "children_sum_php": 92435879000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12",
+      "kind": "program",
+      "label": "Bridge Program",
+      "source_row": 5811,
+      "printed_amount_php": 37590473000,
+      "children_sum_php": 37590473000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13",
+      "kind": "program",
+      "label": "Flood Management Program",
+      "source_row": 6980,
+      "printed_amount_php": 87187778000,
+      "children_sum_php": 87187778000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14",
+      "kind": "pap",
+      "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Primary Roads",
+      "source_row": null,
+      "printed_amount_php": 1668650000,
+      "children_sum_php": 1668650000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n100",
+      "kind": "pap",
+      "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Secondary Roads",
+      "source_row": null,
+      "printed_amount_php": 2226501000,
+      "children_sum_php": 2226501000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n232",
+      "kind": "pap",
+      "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Tertiary Roads",
+      "source_row": null,
+      "printed_amount_php": 729404000,
+      "children_sum_php": 729404000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n284",
+      "kind": "pap",
+      "label": "Preventive Maintenance - Primary Roads",
+      "source_row": null,
+      "printed_amount_php": 14395583000,
+      "children_sum_php": 14395583000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n593",
+      "kind": "pap",
+      "label": "Preventive Maintenance - Secondary Roads",
+      "source_row": null,
+      "printed_amount_php": 14433303000,
+      "children_sum_php": 14433303000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n1013",
+      "kind": "pap",
+      "label": "Preventive Maintenance - Tertiary Roads",
+      "source_row": null,
+      "printed_amount_php": 7265937000,
+      "children_sum_php": 7265937000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n1276",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Primary Roads",
+      "source_row": null,
+      "printed_amount_php": 1604318000,
+      "children_sum_php": 1604318000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n1328",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Secondary Roads",
+      "source_row": null,
+      "printed_amount_php": 5736126000,
+      "children_sum_php": 5736126000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n1513",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, and Landslide - Tertiary Roads",
+      "source_row": null,
+      "printed_amount_php": 3575480000,
+      "children_sum_php": 3575480000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n1643",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads",
+      "source_row": null,
+      "printed_amount_php": 18611152000,
+      "children_sum_php": 18611152000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n1822",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads",
+      "source_row": null,
+      "printed_amount_php": 6587927000,
+      "children_sum_php": 6587927000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n2084",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads",
+      "source_row": null,
+      "printed_amount_php": 2885909000,
+      "children_sum_php": 2885909000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n2257",
+      "kind": "pap",
+      "label": "Construction of By-Pass and Diversion Roads",
+      "source_row": null,
+      "printed_amount_php": 44786384000,
+      "children_sum_php": 44786384000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n2692",
+      "kind": "pap",
+      "label": "Construction of Flyovers/ Interchanges/ Underpasses/ Long Span Bridges",
+      "source_row": null,
+      "printed_amount_php": 515000000,
+      "children_sum_php": 515000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n2693",
+      "kind": "region",
+      "label": "Region III",
+      "source_row": null,
+      "printed_amount_php": 200000000,
+      "children_sum_php": 200000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n2696",
+      "kind": "region",
+      "label": "Region VII",
+      "source_row": null,
+      "printed_amount_php": 315000000,
+      "children_sum_php": 315000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n2699",
+      "kind": "pap",
+      "label": "Construction of Missing Links/ New Roads",
+      "source_row": null,
+      "printed_amount_php": 22661099000,
+      "children_sum_php": 22661099000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n2908",
+      "kind": "pap",
+      "label": "Off-Carriageway Improvement - Primary Roads",
+      "source_row": null,
+      "printed_amount_php": 1656179000,
+      "children_sum_php": 1656179000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n2999",
+      "kind": "pap",
+      "label": "Off-Carriageway Improvement - Secondary Roads",
+      "source_row": null,
+      "printed_amount_php": 3030074000,
+      "children_sum_php": 3030074000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n3126",
+      "kind": "pap",
+      "label": "Off-Carriageway Improvement - Tertiary Roads",
+      "source_row": null,
+      "printed_amount_php": 1077879000,
+      "children_sum_php": 1077879000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n3202",
+      "kind": "pap",
+      "label": "Paving of Unpaved Roads - Primary Roads",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n3206",
+      "kind": "pap",
+      "label": "Paving of Unpaved Roads - Secondary Roads",
+      "source_row": null,
+      "printed_amount_php": 21992000,
+      "children_sum_php": 21992000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n3214",
+      "kind": "pap",
+      "label": "Paving of Unpaved Roads - Tertiary Roads",
+      "source_row": null,
+      "printed_amount_php": 569029000,
+      "children_sum_php": 569029000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n3237",
+      "kind": "pap",
+      "label": "Road Widening - Primary Roads",
+      "source_row": null,
+      "printed_amount_php": 4836582000,
+      "children_sum_php": 4836582000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n3340",
+      "kind": "pap",
+      "label": "Road Widening - Secondary Roads",
+      "source_row": null,
+      "printed_amount_php": 10900467000,
+      "children_sum_php": 10900467000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n3625",
+      "kind": "pap",
+      "label": "Road Widening - Tertiary Roads",
+      "source_row": null,
+      "printed_amount_php": 2376194000,
+      "children_sum_php": 2376194000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n3695",
+      "kind": "pap",
+      "label": "Construction of New Bridges",
+      "source_row": null,
+      "printed_amount_php": 5719293000,
+      "children_sum_php": 5719293000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n3757",
+      "kind": "pap",
+      "label": "Rehabilitation/ Major Repair of Permanent Bridges",
+      "source_row": null,
+      "printed_amount_php": 3845294000,
+      "children_sum_php": 3845294000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n4139",
+      "kind": "pap",
+      "label": "Replacement of Permanent Weak Bridges",
+      "source_row": null,
+      "printed_amount_php": 11690636000,
+      "children_sum_php": 11690636000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n4388",
+      "kind": "pap",
+      "label": "Retrofitting/ Strengthening of Permanent Bridges",
+      "source_row": null,
+      "printed_amount_php": 2842245000,
+      "children_sum_php": 2842245000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n4573",
+      "kind": "pap",
+      "label": "Widening of Permanent Bridges",
+      "source_row": null,
+      "printed_amount_php": 13493005000,
+      "children_sum_php": 13493005000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n4875",
+      "kind": "pap",
+      "label": "Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems",
+      "source_row": null,
+      "printed_amount_php": 70964897000,
+      "children_sum_php": 70964897000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6328",
+      "kind": "pap",
+      "label": "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers",
+      "source_row": null,
+      "printed_amount_php": 16222881000,
+      "children_sum_php": 16222881000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6333",
+      "kind": "office",
+      "label": "Apayao 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 25000000,
+      "children_sum_php": 25000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6367",
+      "kind": "office",
+      "label": "Metro Manila 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 139000000,
+      "children_sum_php": 139000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6377",
+      "kind": "office",
+      "label": "Quezon City 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 15000000,
+      "children_sum_php": 15000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6379",
+      "kind": "region",
+      "label": "NIR",
+      "source_row": null,
+      "printed_amount_php": 5812000,
+      "children_sum_php": 5812000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6380",
+      "kind": "office",
+      "label": "Negros Occidental 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5812000,
+      "children_sum_php": 5812000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6382",
+      "kind": "region",
+      "label": "Nationwide",
+      "source_row": null,
+      "printed_amount_php": 200000000,
+      "children_sum_php": 200000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6397",
+      "kind": "office",
+      "label": "La Union 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 15000000,
+      "children_sum_php": 15000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6421",
+      "kind": "office",
+      "label": "Cagayan 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 50000000,
+      "children_sum_php": 50000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6423",
+      "kind": "office",
+      "label": "Isabela 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6438",
+      "kind": "office",
+      "label": "Bulacan 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 13000000,
+      "children_sum_php": 13000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6440",
+      "kind": "office",
+      "label": "Nueva Ecija 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 12000000,
+      "children_sum_php": 12000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6442",
+      "kind": "office",
+      "label": "Pampanga 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 65000000,
+      "children_sum_php": 65000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6453",
+      "kind": "office",
+      "label": "Cavite 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 15000000,
+      "children_sum_php": 15000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6456",
+      "kind": "region",
+      "label": "Region IX",
+      "source_row": null,
+      "printed_amount_php": 100000000,
+      "children_sum_php": 100000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6457",
+      "kind": "office",
+      "label": "Zamboanga Sibugay 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 100000000,
+      "children_sum_php": 100000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6469",
+      "kind": "office",
+      "label": "Albay 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 80000000,
+      "children_sum_php": 80000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6479",
+      "kind": "office",
+      "label": "Aklan District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 12000000,
+      "children_sum_php": 12000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6481",
+      "kind": "office",
+      "label": "Iloilo 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 10000000,
+      "children_sum_php": 10000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6483",
+      "kind": "office",
+      "label": "Iloilo 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 4000000,
+      "children_sum_php": 4000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6485",
+      "kind": "office",
+      "label": "Iloilo 6th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 40500000,
+      "children_sum_php": 40500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6496",
+      "kind": "office",
+      "label": "Cebu City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 50000000,
+      "children_sum_php": 50000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6506",
+      "kind": "office",
+      "label": "Levte 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 4780000,
+      "children_sum_php": 4780000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6508",
+      "kind": "region",
+      "label": "Region X",
+      "source_row": null,
+      "printed_amount_php": 2178960000,
+      "children_sum_php": 2178960000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6531",
+      "kind": "office",
+      "label": "Davao del Norte District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 50000000,
+      "children_sum_php": 50000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6537",
+      "kind": "office",
+      "label": "Cotabato 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 50000000,
+      "children_sum_php": 50000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6539",
+      "kind": "pap",
+      "label": "Public-Private Partnership Strategic Support Fund (including ROW, Subsidy, and Variations)",
+      "source_row": 20663,
+      "printed_amount_php": 1000000000,
+      "children_sum_php": 1000000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6541",
+      "kind": "program",
+      "label": "National Building Program",
+      "source_row": 20669,
+      "printed_amount_php": 12875943000,
+      "children_sum_php": 12875943000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6542",
+      "kind": "pap",
+      "label": "Buildings And Other Structures",
+      "source_row": null,
+      "printed_amount_php": 12875943000,
+      "children_sum_php": 12875943000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6820",
+      "kind": "pap",
+      "label": "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities",
+      "source_row": null,
+      "printed_amount_php": 134927811000,
+      "children_sum_php": 132686016000,
+      "difference_php": -2241795000,
+      "status": "mismatch"
+    },
+    {
+      "id": "n6853",
+      "kind": "office",
+      "label": "Abra District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 350000000,
+      "children_sum_php": 350000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6861",
+      "kind": "office",
+      "label": "Apayao 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 100000000,
+      "children_sum_php": 100000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6865",
+      "kind": "office",
+      "label": "Apayao 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 50000000,
+      "children_sum_php": 50000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6867",
+      "kind": "office",
+      "label": "Baquio City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 305485000,
+      "children_sum_php": 305485000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6884",
+      "kind": "office",
+      "label": "Benguet 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 150000000,
+      "children_sum_php": 150000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6888",
+      "kind": "office",
+      "label": "Benguet 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 430000000,
+      "children_sum_php": 430000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6905",
+      "kind": "office",
+      "label": "Ifugao 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 198000000,
+      "children_sum_php": 198000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6920",
+      "kind": "office",
+      "label": "Ifugao 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 195000000,
+      "children_sum_php": 195000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6934",
+      "kind": "office",
+      "label": "Lower Kalinga District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 350000000,
+      "children_sum_php": 350000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n6959",
+      "kind": "office",
+      "label": "Mountain Province 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 315000000,
+      "children_sum_php": 315000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7010",
+      "kind": "office",
+      "label": "Mountain Province 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 125000000,
+      "children_sum_php": 125000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7028",
+      "kind": "office",
+      "label": "Upper Kalinga District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 83500000,
+      "children_sum_php": 83500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7088",
+      "kind": "office",
+      "label": "Mindoro Oriental District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 625000000,
+      "children_sum_php": 625000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7148",
+      "kind": "office",
+      "label": "Palawan 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 133000000,
+      "children_sum_php": 133000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7156",
+      "kind": "office",
+      "label": "Palawan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 115000000,
+      "children_sum_php": 115000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7162",
+      "kind": "office",
+      "label": "Palawan 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 343000000,
+      "children_sum_php": 343000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7186",
+      "kind": "office",
+      "label": "Romblon District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 281480000,
+      "children_sum_php": 281480000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7197",
+      "kind": "office",
+      "label": "Southern Mindoro District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 274000000,
+      "children_sum_php": 274000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7248",
+      "kind": "office",
+      "label": "Malabon Navotas District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 35000000,
+      "children_sum_php": 35000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7250",
+      "kind": "office",
+      "label": "Metro Manila 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 438000000,
+      "children_sum_php": 438000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7275",
+      "kind": "office",
+      "label": "Metro Manila 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 24800000,
+      "children_sum_php": 24800000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7392",
+      "kind": "office",
+      "label": "North Manila District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 12500000,
+      "children_sum_php": 12500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7395",
+      "kind": "office",
+      "label": "Quezon City 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 605650000,
+      "children_sum_php": 605650000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7417",
+      "kind": "office",
+      "label": "Quezon City 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 120000000,
+      "children_sum_php": 120000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7422",
+      "kind": "office",
+      "label": "South Manila District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 282000000,
+      "children_sum_php": 282000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7460",
+      "kind": "office",
+      "label": "Bacolod City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 394000000,
+      "children_sum_php": 394000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7487",
+      "kind": "office",
+      "label": "Negros Occidental 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 110000000,
+      "children_sum_php": 110000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7498",
+      "kind": "office",
+      "label": "Negros Occidental 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 241000000,
+      "children_sum_php": 241000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7512",
+      "kind": "office",
+      "label": "Negros Occidental 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 196000000,
+      "children_sum_php": 196000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7524",
+      "kind": "office",
+      "label": "Negros Occidental 5th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 34000000,
+      "children_sum_php": 34000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7526",
+      "kind": "office",
+      "label": "Negros Oriental 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 157000000,
+      "children_sum_php": 157000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7551",
+      "kind": "office",
+      "label": "Negros Oriental 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 395000000,
+      "children_sum_php": 395000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7575",
+      "kind": "office",
+      "label": "Ros Oriental 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 206000000,
+      "children_sum_php": 206000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7598",
+      "kind": "office",
+      "label": "os Occidental 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 552516000,
+      "children_sum_php": 552516000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7644",
+      "kind": "office",
+      "label": "suijor District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 365000000,
+      "children_sum_php": 365000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7662",
+      "kind": "office",
+      "label": "Sulu 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 330000000,
+      "children_sum_php": 330000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7670",
+      "kind": "office",
+      "label": "Sulu 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 150000000,
+      "children_sum_php": 150000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7675",
+      "kind": "office",
+      "label": "as Pinas Muntinlupa District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 397000000,
+      "children_sum_php": 397000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7749",
+      "kind": "office",
+      "label": "Gasinan 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 131000000,
+      "children_sum_php": 131000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7860",
+      "kind": "office",
+      "label": "Ilocos Norte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 308000000,
+      "children_sum_php": 308000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7874",
+      "kind": "office",
+      "label": "Ilocos Sur 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 20000000,
+      "children_sum_php": 20000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7876",
+      "kind": "office",
+      "label": "La Union 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 170000000,
+      "children_sum_php": 170000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7890",
+      "kind": "office",
+      "label": "La Union 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 764830000,
+      "children_sum_php": 764830000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7938",
+      "kind": "office",
+      "label": "Pangasinan 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 501000000,
+      "children_sum_php": 501000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n7992",
+      "kind": "office",
+      "label": "Pangasinan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 580415000,
+      "children_sum_php": 580415000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8056",
+      "kind": "office",
+      "label": "Pangasinan 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 582000000,
+      "children_sum_php": 582000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8137",
+      "kind": "office",
+      "label": "Batanas District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 50000000,
+      "children_sum_php": 50000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8155",
+      "kind": "office",
+      "label": "Cagayan 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 363681000,
+      "children_sum_php": 363681000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8273",
+      "kind": "office",
+      "label": "Isabela 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 1098520000,
+      "children_sum_php": 1098520000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8331",
+      "kind": "office",
+      "label": "Isabela 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 1150596000,
+      "children_sum_php": 1150596000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8528",
+      "kind": "office",
+      "label": "Isabela City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 50000000,
+      "children_sum_php": 50000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8530",
+      "kind": "office",
+      "label": "Nueva Vizcaya 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 110000000,
+      "children_sum_php": 110000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8543",
+      "kind": "office",
+      "label": "Nueva Vizcaya District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 125000000,
+      "children_sum_php": 125000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8568",
+      "kind": "office",
+      "label": "Quirino District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 170000000,
+      "children_sum_php": 170000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8582",
+      "kind": "office",
+      "label": "ayan 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 260000000,
+      "children_sum_php": 260000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8742",
+      "kind": "office",
+      "label": "Bataan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 68000000,
+      "children_sum_php": 68000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8746",
+      "kind": "office",
+      "label": "Bataan 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 195000000,
+      "children_sum_php": 195000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8775",
+      "kind": "office",
+      "label": "Bulacan 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 1340230000,
+      "children_sum_php": 1340230000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8854",
+      "kind": "office",
+      "label": "Bulacan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 2078000000,
+      "children_sum_php": 2078000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n8950",
+      "kind": "office",
+      "label": "Bulacan 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 215000000,
+      "children_sum_php": 215000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9131",
+      "kind": "office",
+      "label": "Pampanga 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 700000000,
+      "children_sum_php": 700000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9221",
+      "kind": "office",
+      "label": "Tarlac 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 44000000,
+      "children_sum_php": 44000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9227",
+      "kind": "office",
+      "label": "Tarlac District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 248500000,
+      "children_sum_php": 248500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9248",
+      "kind": "office",
+      "label": "Zambales 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 335000000,
+      "children_sum_php": 335000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9263",
+      "kind": "office",
+      "label": "Zambales 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 230000000,
+      "children_sum_php": 230000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9355",
+      "kind": "office",
+      "label": "va Ecija 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 10000000,
+      "children_sum_php": 10000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9438",
+      "kind": "office",
+      "label": "Batangas 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 758000000,
+      "children_sum_php": 758000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9497",
+      "kind": "office",
+      "label": "Cavite 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 978978000,
+      "children_sum_php": 978978000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9558",
+      "kind": "office",
+      "label": "Cavite 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9560",
+      "kind": "office",
+      "label": "Cavite 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 133000000,
+      "children_sum_php": 133000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9573",
+      "kind": "office",
+      "label": "Laguna 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 42000000,
+      "children_sum_php": 42000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9577",
+      "kind": "office",
+      "label": "Laguna 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 501500000,
+      "children_sum_php": 501500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9596",
+      "kind": "office",
+      "label": "Laguna 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 206000000,
+      "children_sum_php": 206000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9611",
+      "kind": "office",
+      "label": "Quezon 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 200000000,
+      "children_sum_php": 200000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9624",
+      "kind": "office",
+      "label": "Quezon 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 407100000,
+      "children_sum_php": 407100000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9653",
+      "kind": "office",
+      "label": "Quezon 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 200000000,
+      "children_sum_php": 200000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9664",
+      "kind": "office",
+      "label": "Quezon 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 275750000,
+      "children_sum_php": 275750000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9678",
+      "kind": "office",
+      "label": "Rizal 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 551000000,
+      "children_sum_php": 551000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9711",
+      "kind": "office",
+      "label": "Rizal 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 33000000,
+      "children_sum_php": 33000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9713",
+      "kind": "office",
+      "label": "congas 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 528000000,
+      "children_sum_php": 528000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9756",
+      "kind": "office",
+      "label": "ngas 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 362000000,
+      "children_sum_php": 362000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9806",
+      "kind": "office",
+      "label": "Zamboanga City 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 10000000,
+      "children_sum_php": 10000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9809",
+      "kind": "office",
+      "label": "Zamboanga Sibugay 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 184500000,
+      "children_sum_php": 184500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9830",
+      "kind": "office",
+      "label": "Zamboanga Sibugay 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 205000000,
+      "children_sum_php": 205000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9844",
+      "kind": "office",
+      "label": "Zamboanga del Norte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 227500000,
+      "children_sum_php": 227500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9876",
+      "kind": "office",
+      "label": "Zamboanga del Norte 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 113650000,
+      "children_sum_php": 113650000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n9884",
+      "kind": "office",
+      "label": "Zamboanga del Norte 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 215000000,
+      "children_sum_php": 215000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10006",
+      "kind": "office",
+      "label": "Albay 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 118278000,
+      "children_sum_php": 118278000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10011",
+      "kind": "office",
+      "label": "Albay 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 211500000,
+      "children_sum_php": 211500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10044",
+      "kind": "office",
+      "label": "Albay 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 100000000,
+      "children_sum_php": 100000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10048",
+      "kind": "office",
+      "label": "Camarines Norte District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 255000000,
+      "children_sum_php": 255000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10057",
+      "kind": "office",
+      "label": "Camarines Sur 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 276575000,
+      "children_sum_php": 276575000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10079",
+      "kind": "office",
+      "label": "Camarines Sur 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 64472000,
+      "children_sum_php": 64472000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10105",
+      "kind": "office",
+      "label": "Camarines Sur 5th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 193681000,
+      "children_sum_php": 193681000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10114",
+      "kind": "office",
+      "label": "Catanduanes District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 97000000,
+      "children_sum_php": 97000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10127",
+      "kind": "office",
+      "label": "Marines Sur 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 649000000,
+      "children_sum_php": 649000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10158",
+      "kind": "office",
+      "label": "Masbate 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 109000000,
+      "children_sum_php": 109000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10161",
+      "kind": "office",
+      "label": "Masbate 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 258000000,
+      "children_sum_php": 258000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10171",
+      "kind": "office",
+      "label": "Masbate 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 170000000,
+      "children_sum_php": 170000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10183",
+      "kind": "office",
+      "label": "Sorsogon 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 274460000,
+      "children_sum_php": 274460000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10194",
+      "kind": "office",
+      "label": "Sorsogon District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 201000000,
+      "children_sum_php": 201000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10211",
+      "kind": "office",
+      "label": "Aklan District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 279000000,
+      "children_sum_php": 279000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10254",
+      "kind": "office",
+      "label": "Antique District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 73000000,
+      "children_sum_php": 73000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10259",
+      "kind": "office",
+      "label": "Capiz 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 195000000,
+      "children_sum_php": 195000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10268",
+      "kind": "office",
+      "label": "Capiz 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 192000000,
+      "children_sum_php": 192000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10283",
+      "kind": "office",
+      "label": "Guimarães District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 449900000,
+      "children_sum_php": 449900000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10309",
+      "kind": "office",
+      "label": "Iloilo 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 301950000,
+      "children_sum_php": 301950000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10325",
+      "kind": "office",
+      "label": "Iloilo 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 118000000,
+      "children_sum_php": 118000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10339",
+      "kind": "office",
+      "label": "Iloilo 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 128250000,
+      "children_sum_php": 128250000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10351",
+      "kind": "office",
+      "label": "Iloilo 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 50000000,
+      "children_sum_php": 50000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10354",
+      "kind": "office",
+      "label": "Iloilo 6th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 290500000,
+      "children_sum_php": 290500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10374",
+      "kind": "office",
+      "label": "Iloilo City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 25000000,
+      "children_sum_php": 25000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10401",
+      "kind": "office",
+      "label": "Bohol 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 422275000,
+      "children_sum_php": 422275000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10427",
+      "kind": "office",
+      "label": "Cebu 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 159690000,
+      "children_sum_php": 159690000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10446",
+      "kind": "office",
+      "label": "Cebu 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 170000000,
+      "children_sum_php": 170000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10480",
+      "kind": "office",
+      "label": "Cebu 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 50000000,
+      "children_sum_php": 50000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10489",
+      "kind": "office",
+      "label": "Cebu 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 65000000,
+      "children_sum_php": 65000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10502",
+      "kind": "office",
+      "label": "Cebu 5th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 125000000,
+      "children_sum_php": 125000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10526",
+      "kind": "office",
+      "label": "Cebu 6th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 336325000,
+      "children_sum_php": 336325000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10547",
+      "kind": "office",
+      "label": "Cebu 7th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 378000000,
+      "children_sum_php": 378000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10587",
+      "kind": "office",
+      "label": "Cebu City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 292200000,
+      "children_sum_php": 292200000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10638",
+      "kind": "office",
+      "label": "Biliran District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 188200000,
+      "children_sum_php": 188200000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10652",
+      "kind": "office",
+      "label": "Eastern Samar District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 478500000,
+      "children_sum_php": 478500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10676",
+      "kind": "office",
+      "label": "Leyte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 208500000,
+      "children_sum_php": 208500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10697",
+      "kind": "office",
+      "label": "Leyte 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 615000000,
+      "children_sum_php": 615000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10726",
+      "kind": "office",
+      "label": "Leyte 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 250000000,
+      "children_sum_php": 250000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10735",
+      "kind": "office",
+      "label": "Leyte 5th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 185000000,
+      "children_sum_php": 185000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10763",
+      "kind": "office",
+      "label": "Northern Samar 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 86168000,
+      "children_sum_php": 86168000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10770",
+      "kind": "office",
+      "label": "Northern Samar 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 558000000,
+      "children_sum_php": 558000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10932",
+      "kind": "office",
+      "label": "Bukidnon 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 105000000,
+      "children_sum_php": 105000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10937",
+      "kind": "office",
+      "label": "Bukidnon 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 110660000,
+      "children_sum_php": 110660000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10942",
+      "kind": "office",
+      "label": "Cagayan de Oro City 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 235000000,
+      "children_sum_php": 235000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10970",
+      "kind": "office",
+      "label": "Cagayan de Oro City 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 170000000,
+      "children_sum_php": 170000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n10998",
+      "kind": "office",
+      "label": "Camiguin District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 538000000,
+      "children_sum_php": 538000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11024",
+      "kind": "office",
+      "label": "Iligan City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 111160000,
+      "children_sum_php": 111160000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11036",
+      "kind": "office",
+      "label": "Lanao del Norte 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 159000000,
+      "children_sum_php": 159000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11044",
+      "kind": "office",
+      "label": "Lanao del Norte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 277500000,
+      "children_sum_php": 277500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11058",
+      "kind": "office",
+      "label": "Misamis Occidental 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 215000000,
+      "children_sum_php": 215000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11067",
+      "kind": "office",
+      "label": "Misamis Occidental 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 1227980000,
+      "children_sum_php": 1227980000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11121",
+      "kind": "office",
+      "label": "Misamis Oriental 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 194882000,
+      "children_sum_php": 194882000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11132",
+      "kind": "office",
+      "label": "Misamis Oriental 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 280000000,
+      "children_sum_php": 280000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11191",
+      "kind": "office",
+      "label": "Davao de Oro 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 591000000,
+      "children_sum_php": 591000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11212",
+      "kind": "office",
+      "label": "Davao del Norte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 130250000,
+      "children_sum_php": 130250000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11223",
+      "kind": "office",
+      "label": "Davao del Norte District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 377000000,
+      "children_sum_php": 377000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11237",
+      "kind": "office",
+      "label": "Davao del Sur District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 325000000,
+      "children_sum_php": 325000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11245",
+      "kind": "office",
+      "label": "vao de Oro 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 107679000,
+      "children_sum_php": 107679000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11281",
+      "kind": "office",
+      "label": "Cotabato 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 215500000,
+      "children_sum_php": 215500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11303",
+      "kind": "office",
+      "label": "Cotabato 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 76000000,
+      "children_sum_php": 76000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11308",
+      "kind": "office",
+      "label": "Cotabato 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 207000000,
+      "children_sum_php": 207000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11319",
+      "kind": "office",
+      "label": "Sarangani District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11388",
+      "kind": "office",
+      "label": "Sultan Kudarat 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 585416000,
+      "children_sum_php": 585416000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11419",
+      "kind": "office",
+      "label": "Sultan Kudarat 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 186326000,
+      "children_sum_php": 186326000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11451",
+      "kind": "office",
+      "label": "Aguan del Sur 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 60000000,
+      "children_sum_php": 60000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11454",
+      "kind": "office",
+      "label": "Butuan City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 188403000,
+      "children_sum_php": 188403000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11467",
+      "kind": "office",
+      "label": "Dinagat Islands District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 309400000,
+      "children_sum_php": 309400000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11491",
+      "kind": "office",
+      "label": "Surigao del Norte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 70000000,
+      "children_sum_php": 70000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11502",
+      "kind": "pap",
+      "label": "BIP - Coastal Roads to augment Resiliency of Coastal Communities",
+      "source_row": null,
+      "printed_amount_php": 1670000000,
+      "children_sum_php": 3126800000,
+      "difference_php": 1456800000,
+      "status": "mismatch"
+    },
+    {
+      "id": "n11519",
+      "kind": "office",
+      "label": "Negros Occidental 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 10000000,
+      "children_sum_php": 10000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11522",
+      "kind": "office",
+      "label": "Negros Occidental 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 20000000,
+      "children_sum_php": 20000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11524",
+      "kind": "region",
+      "label": "Region I",
+      "source_row": null,
+      "printed_amount_php": 25000000,
+      "children_sum_php": 25000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11525",
+      "kind": "office",
+      "label": "Ilocos Norte 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 25000000,
+      "children_sum_php": 25000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11527",
+      "kind": "region",
+      "label": "Region II",
+      "source_row": null,
+      "printed_amount_php": 100000000,
+      "children_sum_php": 100000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11533",
+      "kind": "region",
+      "label": "Region IV-A",
+      "source_row": null,
+      "printed_amount_php": 120000000,
+      "children_sum_php": 120000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11539",
+      "kind": "office",
+      "label": "Cebu 6th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 75000000,
+      "children_sum_php": 75000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11543",
+      "kind": "region",
+      "label": "Region X",
+      "source_row": null,
+      "printed_amount_php": 750000000,
+      "children_sum_php": 750000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11553",
+      "kind": "pap",
+      "label": "BIP - Local Ports and Boat Landings",
+      "source_row": null,
+      "printed_amount_php": 700000000,
+      "children_sum_php": 700000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11606",
+      "kind": "pap",
+      "label": "BIP - Multi-Purpose Buildings/ Facilities to support Social Services",
+      "source_row": null,
+      "printed_amount_php": 83706551000,
+      "children_sum_php": 78590593000,
+      "difference_php": -5115958000,
+      "status": "mismatch"
+    },
+    {
+      "id": "n11621",
+      "kind": "office",
+      "label": "Abra District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 250000000,
+      "children_sum_php": 250000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11627",
+      "kind": "office",
+      "label": "Apayao 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 37000000,
+      "children_sum_php": 37000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11632",
+      "kind": "office",
+      "label": "Apayao 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 165000000,
+      "children_sum_php": 165000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11645",
+      "kind": "office",
+      "label": "Baquio City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 204775000,
+      "children_sum_php": 204775000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11656",
+      "kind": "office",
+      "label": "Benguet 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 50000000,
+      "children_sum_php": 50000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11658",
+      "kind": "office",
+      "label": "Benguet 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11662",
+      "kind": "office",
+      "label": "Ifugao 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 272000000,
+      "children_sum_php": 272000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11689",
+      "kind": "office",
+      "label": "Mountain Province 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 149000000,
+      "children_sum_php": 149000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11721",
+      "kind": "office",
+      "label": "Mountain Province 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 49000000,
+      "children_sum_php": 49000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11734",
+      "kind": "office",
+      "label": "Upper Kalinga District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 47500000,
+      "children_sum_php": 47500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11744",
+      "kind": "office",
+      "label": "fugao 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 180000000,
+      "children_sum_php": 180000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11780",
+      "kind": "office",
+      "label": "ver Kalinga District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 87000000,
+      "children_sum_php": 87000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11797",
+      "kind": "office",
+      "label": "Marinduque District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 57000000,
+      "children_sum_php": 57000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11803",
+      "kind": "office",
+      "label": "Mindoro Occidental District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 342500000,
+      "children_sum_php": 342500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11836",
+      "kind": "office",
+      "label": "Mindoro Oriental District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 185000000,
+      "children_sum_php": 185000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11873",
+      "kind": "office",
+      "label": "Palawan 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 243435000,
+      "children_sum_php": 243435000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11900",
+      "kind": "office",
+      "label": "Palawan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11902",
+      "kind": "office",
+      "label": "Palawan 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 224000000,
+      "children_sum_php": 224000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n11926",
+      "kind": "office",
+      "label": "Romblon District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 181000000,
+      "children_sum_php": 181000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12005",
+      "kind": "office",
+      "label": "Malabon Navotas District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12008",
+      "kind": "office",
+      "label": "Metro Manila 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 880000000,
+      "children_sum_php": 880000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12048",
+      "kind": "office",
+      "label": "Metro Manila 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 117000000,
+      "children_sum_php": 117000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12055",
+      "kind": "office",
+      "label": "Metro Manila 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 425600000,
+      "children_sum_php": 425600000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12092",
+      "kind": "office",
+      "label": "North Manila District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 140000000,
+      "children_sum_php": 140000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12103",
+      "kind": "office",
+      "label": "Quezon City 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 634060000,
+      "children_sum_php": 634060000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12131",
+      "kind": "office",
+      "label": "Quezon City 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 31000000,
+      "children_sum_php": 31000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12134",
+      "kind": "office",
+      "label": "South Manila District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 158810000,
+      "children_sum_php": 158810000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12204",
+      "kind": "office",
+      "label": "Negros Occidental 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 209000000,
+      "children_sum_php": 209000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12237",
+      "kind": "office",
+      "label": "Negros Occidental 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 75000000,
+      "children_sum_php": 75000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12249",
+      "kind": "office",
+      "label": "Negros Occidental 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 195000000,
+      "children_sum_php": 195000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12289",
+      "kind": "office",
+      "label": "Negros Occidental 5th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 18000000,
+      "children_sum_php": 18000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12366",
+      "kind": "office",
+      "label": "Negros Oriental 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 85000000,
+      "children_sum_php": 85000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12374",
+      "kind": "office",
+      "label": "Siquijor District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 157300000,
+      "children_sum_php": 157300000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12399",
+      "kind": "office",
+      "label": "Sulu 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12401",
+      "kind": "office",
+      "label": "Sulu 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 65000000,
+      "children_sum_php": 65000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12463",
+      "kind": "office",
+      "label": "Ilocos Norte 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 1910850000,
+      "children_sum_php": 1910850000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12696",
+      "kind": "office",
+      "label": "Ilocos Norte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 374000000,
+      "children_sum_php": 374000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12730",
+      "kind": "office",
+      "label": "La Union 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 493200000,
+      "children_sum_php": 493200000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12790",
+      "kind": "office",
+      "label": "Pangasinan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 665500000,
+      "children_sum_php": 665500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12958",
+      "kind": "office",
+      "label": "Pangasinan 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 63500000,
+      "children_sum_php": 63500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n12972",
+      "kind": "office",
+      "label": "angasinan 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 301000000,
+      "children_sum_php": 301000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13020",
+      "kind": "office",
+      "label": "Batanas District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 309000000,
+      "children_sum_php": 309000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13046",
+      "kind": "office",
+      "label": "Cagayan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 185000000,
+      "children_sum_php": 185000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13162",
+      "kind": "office",
+      "label": "Isabela 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 275780000,
+      "children_sum_php": 275780000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13182",
+      "kind": "office",
+      "label": "Isabela 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 873500000,
+      "children_sum_php": 873500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13397",
+      "kind": "office",
+      "label": "Nueva Vizcaya District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 282000000,
+      "children_sum_php": 282000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13435",
+      "kind": "office",
+      "label": "Quirino District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13437",
+      "kind": "office",
+      "label": "ela 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 570500000,
+      "children_sum_php": 570500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13493",
+      "kind": "office",
+      "label": "ueva Vizcaya 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 315000000,
+      "children_sum_php": 315000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13624",
+      "kind": "office",
+      "label": "Aurora District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 432000000,
+      "children_sum_php": 432000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13678",
+      "kind": "office",
+      "label": "Bataan 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 138000000,
+      "children_sum_php": 138000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13703",
+      "kind": "office",
+      "label": "Bataan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 527000000,
+      "children_sum_php": 527000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13738",
+      "kind": "office",
+      "label": "Bataan 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 190000000,
+      "children_sum_php": 190000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13829",
+      "kind": "office",
+      "label": "Bulacan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 774000000,
+      "children_sum_php": 774000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13885",
+      "kind": "office",
+      "label": "Bulacan 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 350000000,
+      "children_sum_php": 350000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13995",
+      "kind": "office",
+      "label": "Nueva Ecija 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 35000000,
+      "children_sum_php": 35000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n13999",
+      "kind": "office",
+      "label": "Pampanga 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 458764000,
+      "children_sum_php": 458764000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14047",
+      "kind": "office",
+      "label": "Pampanga 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 100000000,
+      "children_sum_php": 100000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14050",
+      "kind": "office",
+      "label": "Pampanga 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 31000000,
+      "children_sum_php": 31000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14062",
+      "kind": "office",
+      "label": "Tarlac District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 735000000,
+      "children_sum_php": 735000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14123",
+      "kind": "office",
+      "label": "Zambales 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 993200000,
+      "children_sum_php": 993200000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14179",
+      "kind": "office",
+      "label": "Zambales 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 821764000,
+      "children_sum_php": 821764000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14210",
+      "kind": "office",
+      "label": "Batangas 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 99000000,
+      "children_sum_php": 99000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14291",
+      "kind": "office",
+      "label": "Batangas 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 647114000,
+      "children_sum_php": 647114000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14366",
+      "kind": "office",
+      "label": "Cavite 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 924000000,
+      "children_sum_php": 924000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14496",
+      "kind": "office",
+      "label": "Cavite 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 70000000,
+      "children_sum_php": 70000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14501",
+      "kind": "office",
+      "label": "Cavite 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 264500000,
+      "children_sum_php": 264500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14527",
+      "kind": "office",
+      "label": "Laguna 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 394000000,
+      "children_sum_php": 394000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14558",
+      "kind": "office",
+      "label": "Laguna 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 900000000,
+      "children_sum_php": 900000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14615",
+      "kind": "office",
+      "label": "Laguna 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 633000000,
+      "children_sum_php": 633000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14666",
+      "kind": "office",
+      "label": "Quezon 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 501500000,
+      "children_sum_php": 501500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14754",
+      "kind": "office",
+      "label": "Quezon 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 250000000,
+      "children_sum_php": 250000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14778",
+      "kind": "office",
+      "label": "Quezon 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 362000000,
+      "children_sum_php": 362000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14818",
+      "kind": "office",
+      "label": "Quezon 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 388500000,
+      "children_sum_php": 388500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14861",
+      "kind": "office",
+      "label": "Rizal 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 131000000,
+      "children_sum_php": 131000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14874",
+      "kind": "office",
+      "label": "atangas 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 1184399000,
+      "children_sum_php": 1184399000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14982",
+      "kind": "office",
+      "label": "Zamboanga City 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 80000000,
+      "children_sum_php": 80000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14989",
+      "kind": "office",
+      "label": "Zamboanga City 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 13000000,
+      "children_sum_php": 13000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n14992",
+      "kind": "office",
+      "label": "Zamboanga Sibugay 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 421000000,
+      "children_sum_php": 421000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15017",
+      "kind": "office",
+      "label": "Zamboanga del Norte 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 73750000,
+      "children_sum_php": 73750000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15026",
+      "kind": "office",
+      "label": "Zamboanga del Norte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 78000000,
+      "children_sum_php": 78000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15048",
+      "kind": "office",
+      "label": "Zamboanga del Norte 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 250000000,
+      "children_sum_php": 250000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15076",
+      "kind": "office",
+      "label": "Zamboanga del Norte 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 38000000,
+      "children_sum_php": 38000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15082",
+      "kind": "office",
+      "label": "Zamboanga del Sur 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 215000000,
+      "children_sum_php": 215000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15093",
+      "kind": "office",
+      "label": "Zamboanga del Sur 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 209000000,
+      "children_sum_php": 209000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15106",
+      "kind": "office",
+      "label": "amboanga Sibugay 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 209000000,
+      "children_sum_php": 209000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15141",
+      "kind": "office",
+      "label": "Albay 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 199500000,
+      "children_sum_php": 199500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15187",
+      "kind": "office",
+      "label": "Camarines Sur 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 157500000,
+      "children_sum_php": 157500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15204",
+      "kind": "office",
+      "label": "Camarines Sur 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 430000000,
+      "children_sum_php": 430000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15285",
+      "kind": "office",
+      "label": "Camarines Sur 5th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 75000000,
+      "children_sum_php": 75000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15290",
+      "kind": "office",
+      "label": "Catanduanes District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 373500000,
+      "children_sum_php": 373500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15344",
+      "kind": "office",
+      "label": "Masbate 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 60000000,
+      "children_sum_php": 60000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15353",
+      "kind": "office",
+      "label": "Sorsogon 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 375000000,
+      "children_sum_php": 375000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15392",
+      "kind": "office",
+      "label": "Sorsogon District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 206500000,
+      "children_sum_php": 206500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15427",
+      "kind": "office",
+      "label": "Aklan District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 484950000,
+      "children_sum_php": 484950000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15512",
+      "kind": "office",
+      "label": "Antique District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15518",
+      "kind": "office",
+      "label": "Capiz 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 336000000,
+      "children_sum_php": 336000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15556",
+      "kind": "office",
+      "label": "Capiz 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 105550000,
+      "children_sum_php": 105550000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15570",
+      "kind": "office",
+      "label": "Guimarães District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 160000000,
+      "children_sum_php": 160000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15578",
+      "kind": "office",
+      "label": "Iloilo 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 398500000,
+      "children_sum_php": 398500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15621",
+      "kind": "office",
+      "label": "Iloilo 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 574500000,
+      "children_sum_php": 574500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15656",
+      "kind": "office",
+      "label": "Iloilo 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 361750000,
+      "children_sum_php": 361750000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15725",
+      "kind": "office",
+      "label": "Iloilo 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 467250000,
+      "children_sum_php": 467250000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15784",
+      "kind": "office",
+      "label": "Iloilo 6th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 422000000,
+      "children_sum_php": 422000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15820",
+      "kind": "office",
+      "label": "Iloilo City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 460000000,
+      "children_sum_php": 460000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15862",
+      "kind": "office",
+      "label": "Bohol 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 1054150000,
+      "children_sum_php": 1054150000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n15949",
+      "kind": "office",
+      "label": "Bohol 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16033",
+      "kind": "office",
+      "label": "Cebu 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 215000000,
+      "children_sum_php": 215000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16060",
+      "kind": "office",
+      "label": "Cebu 5th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16067",
+      "kind": "office",
+      "label": "Cebu 6th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 253000000,
+      "children_sum_php": 253000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16083",
+      "kind": "office",
+      "label": "Cebu 7th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 169000000,
+      "children_sum_php": 169000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16101",
+      "kind": "office",
+      "label": "Cebu City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 190000000,
+      "children_sum_php": 190000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16118",
+      "kind": "office",
+      "label": "Biliran District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 196000000,
+      "children_sum_php": 196000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16135",
+      "kind": "office",
+      "label": "Eastern Samar District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 489530000,
+      "children_sum_php": 489530000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16179",
+      "kind": "office",
+      "label": "Levte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 200800000,
+      "children_sum_php": 200800000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16204",
+      "kind": "office",
+      "label": "Levye 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 105000000,
+      "children_sum_php": 105000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16220",
+      "kind": "office",
+      "label": "Levye 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 130000000,
+      "children_sum_php": 130000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16226",
+      "kind": "office",
+      "label": "Leyte 5th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 180000000,
+      "children_sum_php": 180000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16283",
+      "kind": "office",
+      "label": "Samar 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 165000000,
+      "children_sum_php": 165000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16314",
+      "kind": "office",
+      "label": "Samar 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 154500000,
+      "children_sum_php": 154500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16418",
+      "kind": "office",
+      "label": "Asamis Occidental 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 130000000,
+      "children_sum_php": 130000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16426",
+      "kind": "office",
+      "label": "Bukidnon 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 10000000,
+      "children_sum_php": 10000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16428",
+      "kind": "office",
+      "label": "Bukidnon 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 54750000,
+      "children_sum_php": 54750000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16434",
+      "kind": "office",
+      "label": "Caayaan de Oro City 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 159500000,
+      "children_sum_php": 159500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16459",
+      "kind": "office",
+      "label": "Cagayan de Oro City 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 205500000,
+      "children_sum_php": 205500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16493",
+      "kind": "office",
+      "label": "Camiguin District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 347000000,
+      "children_sum_php": 347000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16517",
+      "kind": "office",
+      "label": "Iligan City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 42500000,
+      "children_sum_php": 42500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16524",
+      "kind": "office",
+      "label": "Lanao del Norte 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 254500000,
+      "children_sum_php": 254500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16553",
+      "kind": "office",
+      "label": "Lanao del Norte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 257000000,
+      "children_sum_php": 257000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16588",
+      "kind": "office",
+      "label": "Misamis Occidental 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 483000000,
+      "children_sum_php": 483000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16624",
+      "kind": "office",
+      "label": "Misamis Oriental 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 275000000,
+      "children_sum_php": 275000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16660",
+      "kind": "office",
+      "label": "Misamis Oriental 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 245992000,
+      "children_sum_php": 245992000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16755",
+      "kind": "office",
+      "label": "Davao de Oro 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 452321000,
+      "children_sum_php": 452321000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16785",
+      "kind": "office",
+      "label": "Davao del Norte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 548000000,
+      "children_sum_php": 548000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16844",
+      "kind": "office",
+      "label": "Davao del Norte District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 157000000,
+      "children_sum_php": 157000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16854",
+      "kind": "office",
+      "label": "Davao del Sur District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 185000000,
+      "children_sum_php": 185000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16929",
+      "kind": "office",
+      "label": "Cotabato 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 67000000,
+      "children_sum_php": 67000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n16971",
+      "kind": "office",
+      "label": "Cotabato 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 263000000,
+      "children_sum_php": 263000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17019",
+      "kind": "office",
+      "label": "Sarangani District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17021",
+      "kind": "office",
+      "label": "South Cotabato 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 50000000,
+      "children_sum_php": 50000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17237",
+      "kind": "office",
+      "label": "Sultan Kudarat 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 10000000,
+      "children_sum_php": 10000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17305",
+      "kind": "region",
+      "label": "Region XIII",
+      "source_row": null,
+      "printed_amount_php": 1779500000,
+      "children_sum_php": 1779500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17306",
+      "kind": "office",
+      "label": "Aguasn del Norte District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 47500000,
+      "children_sum_php": 47500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17314",
+      "kind": "office",
+      "label": "Butuan City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 786000000,
+      "children_sum_php": 786000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17382",
+      "kind": "office",
+      "label": "Dinagat Islands District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 349500000,
+      "children_sum_php": 349500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17418",
+      "kind": "office",
+      "label": "Surigao del Norte 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 169000000,
+      "children_sum_php": 169000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17449",
+      "kind": "office",
+      "label": "Surigao del Norte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 107500000,
+      "children_sum_php": 107500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17466",
+      "kind": "office",
+      "label": "Surigao del Sur 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 230000000,
+      "children_sum_php": 230000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17486",
+      "kind": "office",
+      "label": "Surigao del Sur 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 90000000,
+      "children_sum_php": 90000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17497",
+      "kind": "pap",
+      "label": "Facilities for Elderlies/ Senior Citizen",
+      "source_row": null,
+      "printed_amount_php": 340000000,
+      "children_sum_php": 340000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17549",
+      "kind": "pap",
+      "label": "Facilities for Persons with Disabilities (PWD)",
+      "source_row": null,
+      "printed_amount_php": 85000000,
+      "children_sum_php": 85000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17601",
+      "kind": "pap",
+      "label": "Gender-Responsive Facilities",
+      "source_row": null,
+      "printed_amount_php": 85000000,
+      "children_sum_php": 85000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n17653",
+      "kind": "pap",
+      "label": "Rainwater Collector System",
+      "source_row": null,
+      "printed_amount_php": 1027200000,
+      "children_sum_php": 1027200000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18107",
+      "kind": "region",
+      "label": "NCR",
+      "source_row": null,
+      "printed_amount_php": 1000000000,
+      "children_sum_php": 1000000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18108",
+      "kind": "office",
+      "label": "Central Office",
+      "source_row": null,
+      "printed_amount_php": 1000000000,
+      "children_sum_php": 1000000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18110",
+      "kind": "pap",
+      "label": "Septage and Sewerage",
+      "source_row": null,
+      "printed_amount_php": 100000000,
+      "children_sum_php": 100000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18114",
+      "kind": "pap",
+      "label": "Water Supply System",
+      "source_row": null,
+      "printed_amount_php": 7740725000,
+      "children_sum_php": 8045366000,
+      "difference_php": 304641000,
+      "status": "mismatch"
+    },
+    {
+      "id": "n18125",
+      "kind": "office",
+      "label": "Abra District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 210000000,
+      "children_sum_php": 210000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18133",
+      "kind": "office",
+      "label": "Apayao 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18135",
+      "kind": "office",
+      "label": "Benquet 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18137",
+      "kind": "office",
+      "label": "Mountain Province 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 3000000,
+      "children_sum_php": 3000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18139",
+      "kind": "office",
+      "label": "Upper Kalinga District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18141",
+      "kind": "region",
+      "label": "MIMAROPA",
+      "source_row": null,
+      "printed_amount_php": 210500000,
+      "children_sum_php": 210500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18142",
+      "kind": "office",
+      "label": "Mindoro Occidental District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 56500000,
+      "children_sum_php": 56500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18149",
+      "kind": "office",
+      "label": "Palawan 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 94000000,
+      "children_sum_php": 94000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18161",
+      "kind": "office",
+      "label": "Palawan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 50000000,
+      "children_sum_php": 50000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18163",
+      "kind": "office",
+      "label": "Palawan 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 10000000,
+      "children_sum_php": 10000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18169",
+      "kind": "office",
+      "label": "Bacolod City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 36500000,
+      "children_sum_php": 36500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18198",
+      "kind": "office",
+      "label": "La Union 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 143000000,
+      "children_sum_php": 143000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18210",
+      "kind": "office",
+      "label": "Pangasinan 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 15000000,
+      "children_sum_php": 15000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18278",
+      "kind": "region",
+      "label": "Region II",
+      "source_row": null,
+      "printed_amount_php": 348000000,
+      "children_sum_php": 348000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18279",
+      "kind": "office",
+      "label": "Batanes District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 10000000,
+      "children_sum_php": 10000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18281",
+      "kind": "office",
+      "label": "Cagayan 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 20000000,
+      "children_sum_php": 20000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18285",
+      "kind": "office",
+      "label": "Cagayan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18287",
+      "kind": "office",
+      "label": "Cagayan 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 75000000,
+      "children_sum_php": 75000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18302",
+      "kind": "office",
+      "label": "Isabela 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 145000000,
+      "children_sum_php": 145000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18310",
+      "kind": "office",
+      "label": "Isabela 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 55000000,
+      "children_sum_php": 55000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18313",
+      "kind": "office",
+      "label": "Isabela 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18315",
+      "kind": "office",
+      "label": "Nueva Vizcaya District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 3000000,
+      "children_sum_php": 3000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18317",
+      "kind": "office",
+      "label": "Quirino District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18329",
+      "kind": "office",
+      "label": "Bataan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18331",
+      "kind": "office",
+      "label": "Bataan 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 20000000,
+      "children_sum_php": 20000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18335",
+      "kind": "office",
+      "label": "Bulacan 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 20000000,
+      "children_sum_php": 20000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18338",
+      "kind": "office",
+      "label": "Nueva Eciia 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 156000000,
+      "children_sum_php": 156000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18365",
+      "kind": "office",
+      "label": "Nueva Ecija 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 7000000,
+      "children_sum_php": 7000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18367",
+      "kind": "office",
+      "label": "Tarlac District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 20000000,
+      "children_sum_php": 20000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18369",
+      "kind": "office",
+      "label": "Zambales 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 7000000,
+      "children_sum_php": 7000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18371",
+      "kind": "office",
+      "label": "Zambales 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 60000000,
+      "children_sum_php": 60000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18377",
+      "kind": "office",
+      "label": "Batangas 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 115000000,
+      "children_sum_php": 115000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18392",
+      "kind": "office",
+      "label": "Batangas 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 41500000,
+      "children_sum_php": 41500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18400",
+      "kind": "office",
+      "label": "Batangas 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 35000000,
+      "children_sum_php": 35000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18407",
+      "kind": "office",
+      "label": "Cavite 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 180000000,
+      "children_sum_php": 180000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18416",
+      "kind": "office",
+      "label": "Laquna 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 70000000,
+      "children_sum_php": 70000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18435",
+      "kind": "office",
+      "label": "Quezon 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 7000000,
+      "children_sum_php": 7000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18437",
+      "kind": "office",
+      "label": "Quezon 4th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18445",
+      "kind": "office",
+      "label": "Rizal 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18456",
+      "kind": "office",
+      "label": "Zamboanga Sibugay 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 101000000,
+      "children_sum_php": 101000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18468",
+      "kind": "office",
+      "label": "Zamboanga Sibugay 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18470",
+      "kind": "office",
+      "label": "Zamboanga del Norte 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 20000000,
+      "children_sum_php": 20000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18475",
+      "kind": "office",
+      "label": "Zamboanga del Norte 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 2500000,
+      "children_sum_php": 2500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18481",
+      "kind": "office",
+      "label": "Albay 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 100000000,
+      "children_sum_php": 100000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18484",
+      "kind": "office",
+      "label": "Camarines Sur 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 57000000,
+      "children_sum_php": 57000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18490",
+      "kind": "office",
+      "label": "Catanduanes District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 28500000,
+      "children_sum_php": 28500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18497",
+      "kind": "office",
+      "label": "Masbate 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18499",
+      "kind": "office",
+      "label": "Sorsogon 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 25000000,
+      "children_sum_php": 25000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18508",
+      "kind": "office",
+      "label": "Capiz 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 22000000,
+      "children_sum_php": 22000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18511",
+      "kind": "office",
+      "label": "Guimarães District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18514",
+      "kind": "region",
+      "label": "Region VII",
+      "source_row": null,
+      "printed_amount_php": 245000000,
+      "children_sum_php": 245000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18515",
+      "kind": "office",
+      "label": "Bohol 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 40000000,
+      "children_sum_php": 40000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18517",
+      "kind": "office",
+      "label": "Bohol 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 95000000,
+      "children_sum_php": 95000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18520",
+      "kind": "office",
+      "label": "Cebu 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 25000000,
+      "children_sum_php": 25000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18528",
+      "kind": "office",
+      "label": "Cebu 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 10000000,
+      "children_sum_php": 10000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18531",
+      "kind": "office",
+      "label": "Cebu 5th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18534",
+      "kind": "office",
+      "label": "Cebu 7th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 70000000,
+      "children_sum_php": 70000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18541",
+      "kind": "office",
+      "label": "Eastern Samar District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 20000000,
+      "children_sum_php": 20000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18545",
+      "kind": "office",
+      "label": "Leyte 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 15000000,
+      "children_sum_php": 15000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18549",
+      "kind": "office",
+      "label": "Leyte 5th District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 17500000,
+      "children_sum_php": 17500000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18557",
+      "kind": "office",
+      "label": "Northern Samar 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 39900000,
+      "children_sum_php": 39900000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18576",
+      "kind": "office",
+      "label": "Cagayan de Oro City 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 60000000,
+      "children_sum_php": 60000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18583",
+      "kind": "office",
+      "label": "Iliagan City District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 12000000,
+      "children_sum_php": 12000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18585",
+      "kind": "office",
+      "label": "Lanao del Norte 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 30000000,
+      "children_sum_php": 30000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18591",
+      "kind": "office",
+      "label": "Misamis Occidental 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 20000000,
+      "children_sum_php": 20000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18593",
+      "kind": "office",
+      "label": "Misamis Oriental 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 5000000,
+      "children_sum_php": 5000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18595",
+      "kind": "office",
+      "label": "Misamis Oriental 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 75925000,
+      "children_sum_php": 75925000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18658",
+      "kind": "office",
+      "label": "Davao del Sur District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 225000000,
+      "children_sum_php": 225000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18708",
+      "kind": "office",
+      "label": "Cotabato 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 11000000,
+      "children_sum_php": 11000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18712",
+      "kind": "office",
+      "label": "Cotabato 2nd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 17000000,
+      "children_sum_php": 17000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18716",
+      "kind": "office",
+      "label": "Cotabato 3rd District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 25000000,
+      "children_sum_php": 25000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18726",
+      "kind": "office",
+      "label": "South Cotabato 1st District Engineering Office",
+      "source_row": null,
+      "printed_amount_php": 10000000,
+      "children_sum_php": 10000000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18749",
+      "kind": "outcome",
+      "label": "Organizational Outcome 1 — FAP",
+      "source_row": 20967,
+      "printed_amount_php": 35712554000,
+      "children_sum_php": 35712554000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18750",
+      "kind": "outcome",
+      "label": "Organizational Outcome 2 — FAP",
+      "source_row": 21000,
+      "printed_amount_php": 8853487000,
+      "children_sum_php": 8853487000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18751",
+      "kind": "section",
+      "label": "National Building Program — FAP",
+      "source_row": 21016,
+      "printed_amount_php": 182970000,
+      "children_sum_php": 182970000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18752",
+      "kind": "program",
+      "label": "Asset Preservation Program",
+      "source_row": 20968,
+      "printed_amount_php": 2832301000,
+      "children_sum_php": 2832301000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18753",
+      "kind": "pap",
+      "label": "Preventive Maintenance - Primary Roads",
+      "source_row": 20969,
+      "printed_amount_php": 1711754000,
+      "children_sum_php": 1711754000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18757",
+      "kind": "pap",
+      "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads",
+      "source_row": 20973,
+      "printed_amount_php": 1120547000,
+      "children_sum_php": 1120547000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18761",
+      "kind": "program",
+      "label": "Network Development Program",
+      "source_row": null,
+      "printed_amount_php": 29572974000,
+      "children_sum_php": 29572974000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18762",
+      "kind": "pap",
+      "label": "Construction of By-Passes/Diversion Roads",
+      "source_row": 20977,
+      "printed_amount_php": 27384818000,
+      "children_sum_php": 27384818000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18807",
+      "kind": "program",
+      "label": "Bridge Program",
+      "source_row": null,
+      "printed_amount_php": 3307279000,
+      "children_sum_php": 3307279000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18828",
+      "kind": "pap",
+      "label": "Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers",
+      "source_row": 21001,
+      "printed_amount_php": 8853487000,
+      "children_sum_php": 8853487000,
+      "difference_php": 0,
+      "status": "balanced"
+    },
+    {
+      "id": "n18847",
+      "kind": "pap",
+      "label": "Philippines Seismic Risk Reduction and Resilience Project (PSRRRP)",
+      "source_row": 21018,
+      "printed_amount_php": 182970000,
+      "children_sum_php": 182970000,
+      "difference_php": 0,
+      "status": "balanced"
+    }
+  ],
+  "mismatched_controls": [
+    {
+      "id": "n6820",
+      "kind": "pap",
+      "label": "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities",
+      "source_row": null,
+      "printed_amount_php": 134927811000,
+      "children_sum_php": 132686016000,
+      "difference_php": -2241795000,
+      "status": "mismatch"
+    },
+    {
+      "id": "n11502",
+      "kind": "pap",
+      "label": "BIP - Coastal Roads to augment Resiliency of Coastal Communities",
+      "source_row": null,
+      "printed_amount_php": 1670000000,
+      "children_sum_php": 3126800000,
+      "difference_php": 1456800000,
+      "status": "mismatch"
+    },
+    {
+      "id": "n11606",
+      "kind": "pap",
+      "label": "BIP - Multi-Purpose Buildings/ Facilities to support Social Services",
+      "source_row": null,
+      "printed_amount_php": 83706551000,
+      "children_sum_php": 78590593000,
+      "difference_php": -5115958000,
+      "status": "mismatch"
+    },
+    {
+      "id": "n18114",
+      "kind": "pap",
+      "label": "Water Supply System",
+      "source_row": null,
+      "printed_amount_php": 7740725000,
+      "children_sum_php": 8045366000,
+      "difference_php": 304641000,
+      "status": "mismatch"
+    }
+  ],
+  "provenance": {
+    "method": "Document-native recursive tree from printed VOL I-C section anchors and v5 repaired allocations. Region→office→project under each PAP from v5 attribution; printed office/region subtotals attached only when the old strict-hierarchy row set exactly equals the v5 group with equal sum. Convergence is the exact residual of printed controls. Zero invented amounts.",
+    "inputs": {
+      "v5": "analysis/data/hb_dpwh_leaves_corrected_v5.json",
+      "repairs": "analysis/data/hb_known_defect_repairs.json",
+      "audit": "analysis/data/hb_json_usability_audit.json",
+      "controls": "analysis/data/current_pap_controls.json",
+      "hierarchy": "analysis/data/hb_dpwh_pap_hierarchy.json"
+    },
+    "inputs_sha256": {
+      "analysis/data/hb_dpwh_leaves_corrected_v5.json": "8e60d400ebbcf4139bcf05dfed4e20d55efac2a4d879924cc08a6e65b3edc668",
+      "analysis/data/hb_known_defect_repairs.json": "9b74951b393bbdf3f12aac9c1d49032c748a609814e5234f5266f435978b8670",
+      "analysis/data/hb_json_usability_audit.json": "0d9042fae6a28abf8ca47b56fdbbc39b0f85bc85499c1994f3b564e3ff249045",
+      "analysis/data/current_pap_controls.json": "2b3cea3df9151d8ba0111e86d3f8146b9d1fa2746f0197d984eb2905abd5d940",
+      "analysis/data/hb_dpwh_pap_hierarchy.json": "5f0f2f145d8ad1b0fcb4a47e9262b61a3fcc1cace37d603214bab1c41366e6df"
+    },
+    "source_documents": {
+      "house_summary": "../HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf",
+      "house_details": "../HB_BUDGET/3%20-%20HB%2010858%20VOL%20IC.pdf"
+    },
+    "anchor_rows": {
+      "operations_total": 2444,
+      "oo1": 2445,
+      "app": 2446,
+      "bridge": 5811,
+      "oo2": 6979,
+      "fmp": 6980,
+      "lfp": 20662,
+      "ppp": 20663,
+      "nbp": 20669,
+      "bos": 20670,
+      "fap": 20962,
+      "fap_oo1": 20967,
+      "fap_oo2": 21000,
+      "fap_oo2_pap": 21001,
+      "fap_nbp": 21016
+    },
+    "validation_policy": "Root, Operations, all sections, programs, outcomes must balance at zero tolerance; only the four documented unresolved PAPs may mismatch; structural checks reject multiple paths, orphan nodes, and inconsistent links."
+  },
+  "limitations": [
+    "Remaining inherited project amounts and PAP boundaries are not fully re-extracted.",
+    "A balanced total alone does not establish every title or regional attribution is correct.",
+    "Do not treat unmatched rows as confirmed House insertions or removals.",
+    "Personnel services and GAS/S2O are outside the project table."
+  ]
+}

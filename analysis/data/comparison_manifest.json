@@ -1,0 +1,48 @@
+{
+  "schema_version": 2,
+  "fiscal_year": 2027,
+  "built_at": "2026-10-08T22:15:04+08:00",
+  "stages": {
+    "nep": "Executive NEP proposal",
+    "house": "HB 10858 supplied source documents; amendment completeness not certified"
+  },
+  "house_version": "v5",
+  "nep_version": 1,
+  "scope": "New appropriations excluding automatic appropriations; operations project comparison; local and FAP separated",
+  "units": "Integer Philippine pesos",
+  "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Amount does not determine identity. Duplicate keys remain ambiguous. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; suggestions do not consume NEP rows. No pair has been manually certified.",
+  "generator": {
+    "path": "analysis/builders/build_current_pages.py",
+    "sha256": "4c4e3929dbc6642691e3aef77335657ffe9382b569f8e2fdc208f81d949bce59"
+  },
+  "inputs": {
+    "nep_2027_tree.json": "d6af6f78aeeec23613bd821093ed7d35a4f40cf1021a376a08aa459367728509",
+    "nep_2027_tree_validation.json": "8756ed062587533ba44153903e3f7e1f1300bc40ed5f54c7a2f8e41d041100d4",
+    "nep_2027_source_projects.json": "3426fc0ee6e8ba6591aaaa76529279335ac1c718f14cb321e8a0e0c278c3bcea",
+    "nep_2027_budget_units.json": "867533e24902024f954201b678c19d8d5e553634b6010a590cf9c5d016fcbe24",
+    "nep_2027_native_amount_audit.json": "535089972e417b34ed8be36f509421a8f8770ea6f4fd082272c65a769d7b32b9",
+    "nep_2027_native_amount_review.json": "256144c411470ba93e9a2b328c5707dfcd4de217fa3ed0b8e4c752ff781328c3",
+    "hb_dpwh_leaves_corrected_v5.json": "8e60d400ebbcf4139bcf05dfed4e20d55efac2a4d879924cc08a6e65b3edc668",
+    "hb_known_defect_repairs.json": "9b74951b393bbdf3f12aac9c1d49032c748a609814e5234f5266f435978b8670",
+    "hb_json_usability_audit.json": "0d9042fae6a28abf8ca47b56fdbbc39b0f85bc85499c1994f3b564e3ff249045",
+    "nep_2027_api_reconciliation.json": "fd8dfef9ba34062f81818b3510311678b774bdbc758abfe341d28b9302196a0f"
+  },
+  "api_snapshot": {
+    "path": "nep-data/json/fy2027-combined.json",
+    "sha256": "dd57319349db0174fb59ae2a1939274a6ee072f889a48e85712818980a480e2e"
+  },
+  "source_documents": {
+    "house_summary": {
+      "path": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+      "sha256": "a82800c4cc2684566a37f7780d8f9131d2e7b2c97444d335d94df012dec065b6"
+    },
+    "house_details": {
+      "path": "HB_BUDGET/3 - HB 10858 VOL IC.pdf",
+      "sha256": "0b790d6018db59abab648486c5068108a42ff20a33facc8e21ace0bbedf2d15f"
+    }
+  },
+  "source_pdf_sha256": {
+    "house": "0b790d6018db59abab648486c5068108a42ff20a33facc8e21ace0bbedf2d15f",
+    "nep": "bfc8282de8e3603f347f82aa2be34c25a38147e30aa34c12b11413766b7e7523"
+  }
+}

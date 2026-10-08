@@ -4,10 +4,29 @@ Scripts, source audits, extracted datasets, and offline dashboards for comparing
 FY2027 DPWH National Expenditure Program allocations, House budget controls,
 and the saved BetterGov API project snapshot.
 
-Start with [the work summary](analysis/FY2027_work_summary.md),
-[NEP validation and limits](analysis/nep_2027_tree.md), and
-[House JSON usability audit](analysis/hb_json_usability_audit.md).
-Open [the NEP drilldown](analysis/nep_2027_tree.html) locally in a browser.
+Start with [analysis/README.md](analysis/README.md) (folder map + settled baselines),
+then [the work summary](analysis/FY2027_work_summary.md),
+[native House reconciliation](analysis/docs/hb_native_v5_reconciliation.md),
+[NEP validation](analysis/viewers/nep_2027_tree.md), and
+[House rollup tree](analysis/viewers/hb_2027_tree.md).
+Open [the NEP drilldown](analysis/viewers/nep_2027_tree.html) or
+[the House tree drilldown](analysis/viewers/hb_2027_tree.html) locally in a browser.
+
+## Repository layout
+
+```
+├── analysis/           Workbench (builders · viewers · data · docs · tests · archive)
+├── nep-data/           Native House control tree + saved BetterGov API snapshot
+├── HB_BUDGET/          House PDFs and OCR markdown inputs
+├── scripts/            Packaging, validation, native House extractor
+├── site/               Dashboard index (source; packaged into _site/)
+└── reference/          Pinned ph-budget-analysis submodule
+```
+
+Inside `analysis/`, current code and datasets are split by role — see
+[analysis/README.md](analysis/README.md). Superseded extracts live in
+[analysis/archive/](analysis/archive/README.md); third-party Ghostscript dumps in
+[analysis/joebert_data/](analysis/joebert_data/README.md).
 
 ## Latest usable datasets
 
@@ -17,20 +36,23 @@ automatic appropriations are excluded.
 
 | Purpose | Recommended artifact | Coverage and limits |
 |---|---|---|
-| NEP hierarchy and program/PAP controls | [Canonical NEP tree](analysis/nep_2027_tree.json) and [validation report](analysis/nep_2027_tree.md) | ₱642,612,015,000; 2,552 additive rollups balance exactly. Independent evidence review remains open. |
-| NEP totals without counting parents and children twice | [Atomic budget units](analysis/nep_2027_budget_units.json) | 14,190 units reproduce the root. GOP/loan units partition project totals; they are not separate projects. |
-| NEP provenance, repairs, and evidence | [Validation and repair ledger](analysis/nep_2027_tree_validation.json), [native amount audit](analysis/nep_2027_native_amount_audit.json), and [review queue](analysis/nep_2027_native_amount_review.json) | 54 repairs; 237 review candidates, not confirmed errors, plus four nodes without comparable printed evidence. Arithmetic balance alone does not certify OCR amounts. |
-| NEP source projects and API coverage | [Source projects](analysis/nep_2027_source_projects.json), [source audit](analysis/nep_2027_source_audit.md), and [API reconciliation](analysis/nep_2027_api_reconciliation.md) | Use alongside the canonical tree for project-level comparison and documented API omissions. |
-| House project/allocation extract | [House v5](analysis/hb_dpwh_leaves_corrected_v5.json) and [repair report](analysis/hb_known_defect_repairs.md) | Best current repaired candidate: 16,148 positive allocations, ₱581,345,349,000; 38/42 local PAP controls balance. Not a complete certified budget. |
-| House printed PAP controls | [PAP drilldown](analysis/crosscheck_2027_pap_drilldown.json) and [usability audit](analysis/hb_json_usability_audit.md) | All 42 saved local PAP controls checked against native PDF headings; this does not certify every extracted project. The audit's historical tables refer to earlier versions; its opening update directs readers to v5. |
+| NEP hierarchy and program/PAP controls | [Canonical NEP tree](analysis/data/nep_2027_tree.json) and [validation report](analysis/viewers/nep_2027_tree.md) | ₱642,612,015,000; 2,552 additive rollups balance exactly. Independent evidence review remains open. |
+| NEP totals without counting parents and children twice | [Atomic budget units](analysis/data/nep_2027_budget_units.json) | 14,190 units reproduce the root. GOP/loan units partition project totals; they are not separate projects. |
+| NEP provenance, repairs, and evidence | [Validation and repair ledger](analysis/data/nep_2027_tree_validation.json), [native amount audit](analysis/data/nep_2027_native_amount_audit.json), and [review queue](analysis/data/nep_2027_native_amount_review.json) | 54 repairs; 237 review candidates, not confirmed errors, plus four nodes without comparable printed evidence. Arithmetic balance alone does not certify OCR amounts. |
+| NEP source projects and API coverage | [Source projects](analysis/data/nep_2027_source_projects.json), [source audit](analysis/docs/nep_2027_source_audit.md), and [API reconciliation](analysis/docs/nep_2027_api_reconciliation.md) | Use alongside the canonical tree for project-level comparison and documented API omissions. |
+| House **control** baseline (native text layer) | [Native I-B tree](nep-data/hb_dpwh_native_tree.json), [extractor](scripts/hb_native_extract3.py), [reconciliation](analysis/docs/hb_native_v5_reconciliation.md) | 647/647 internal checks; zones reproduce ₱654.102015B after banner dedup. Office-granularity. Both volumes print balancing controls; the old ₱5.596B “operations gap” was OCR extraction damage. |
+| House project/allocation extract | [House v5](analysis/data/hb_dpwh_leaves_corrected_v5.json) and [repair report](analysis/docs/hb_known_defect_repairs.md) | Best current **project-title** candidate: 16,148 positive allocations, ₱581,345,349,000; 38/42 local PAP controls balance. Pending native I-C re-extract for the four damaged sections. |
+| House hierarchy rollup | [House rollup tree](analysis/data/hb_2027_tree.json), [validation report](analysis/viewers/hb_2027_tree.md), and [drilldown](analysis/viewers/hb_2027_tree.html) | 18,854 nodes under the printed ₱654,102,015,000 total: zones, programs, PAP controls, regions, offices, projects, FAP funding splits. Root/zone/program controls balance; the four unresolved PAPs and net operations gap stay explicit. |
+| House document-native drilldown | [Document-native tree](analysis/data/hb_2027_source_tree.json), [report](analysis/viewers/hb_2027_source_tree.md), and [drilldown](analysis/viewers/hb_2027_source_tree.html) | 18,850 nodes following the bill's printed hierarchy with OCR row references. 476 printed controls balance (44 PAPs, 399 office + 15 region subtotals attached by exact row-set match, programs, outcomes, sections); four unresolved PAPs only. |
+| House printed PAP controls | [PAP drilldown](analysis/data/crosscheck_2027_pap_drilldown.json) and [usability audit](analysis/docs/hb_json_usability_audit.md) | All 42 saved local PAP controls checked against native PDF headings; this does not certify every extracted project. The audit's historical tables refer to earlier versions; its opening update directs readers to v5. |
 | Saved BetterGov API snapshot | [FY2027 combined JSON](nep-data/json/fy2027-combined.json) | 11,372 project rows, ₱445,378,063,000. A separate, incomplete coverage baseline; not the full NEP budget. |
 
 House Volume I-B prints **₱654,102,015,000** new appropriations, including
-**₱586,941,661,000** operations. House v5 covers operations allocations and is
-short of that printed control by a net **₱5,596,312,000**. Four local PAPs remain
-unresolved: BIP access roads/bridges to public facilities, BIP multi-purpose
-buildings, Water Supply System, and BIP coastal roads. Their deficits and excesses
-offset; the net gap does not measure all missing or misattributed rows.
+**₱586,941,661,000** operations. The native I-B tree reproduces that total
+additively. House v5’s net **₱5,596,312,000** shortfall against operations is
+**OCR-era extraction damage** on four Convergence sections (Access Roads,
+Multi-Purpose, Coastal Roads, Water Supply family) — both volumes print
+balancing controls; see the native reconciliation.
 
 The 29 House FAP projects total ₱44,749,011,000 and their funding splits balance.
 GAS/S2O and personnel-services allocations are outside the v5 project table.
@@ -73,9 +95,9 @@ analysis are:
 | `HB_BUDGET/3 - HB 10858 VOL IC.pdf` | 942-page DPWH allocation details; primary source for v5 repairs and PAP checks. |
 
 Volume I-A and Volume II are also present locally, but do not determine the v5
-DPWH allocation table. The [v5 JSON provenance](analysis/hb_dpwh_leaves_corrected_v5.json)
+DPWH allocation table. The [v5 JSON provenance](analysis/data/hb_dpwh_leaves_corrected_v5.json)
 records the Volume I-C filename and SHA-256; repaired rows carry PDF page/source
-identifiers. The [repair ledger](analysis/hb_known_defect_repairs.json) records
+identifiers. The [repair ledger](analysis/data/hb_known_defect_repairs.json) records
 section replacements and unresolved control differences.
 
 These House PDFs were supplied locally and are included in Git with the retained
@@ -121,7 +143,7 @@ commits, snapshots, and provenance identify the material actually used.
 ## Shared dashboards
 
 [Open the dashboard index](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/)
-for the NEP tree and the current [source comparison](analysis/source_comparison_2027.html),
+for the NEP tree and the current [source comparison](analysis/viewers/source_comparison_2027.html),
 including printed controls, House v5 coverage, PAP mappings, and project candidates.
 Earlier three-way and title-taxonomy viewers remain labeled historical.
 `.github/workflows/pages.yml` builds and publishes the committed viewers on
@@ -154,13 +176,13 @@ deltas are green, negative deltas red, and zero neutral.
 To regenerate pages from the retained JSON inputs (no PDF extraction needed):
 
 ```sh
-python analysis/build_current_pages.py
-python -m unittest discover -s analysis -p test_current_pages.py -v
+python analysis/builders/build_current_pages.py
+python -m unittest discover -s analysis/tests -p test_current_pages.py -v
 python scripts/build_pages.py
 ```
 
 The builder records input hashes and the matching method in
-[the comparison manifest](analysis/comparison_manifest.json). Packaging rejects
+[the comparison manifest](analysis/data/comparison_manifest.json). Packaging rejects
 stale inputs, mismatched embedded data, and invalid accounting. House summary
 and detail PDFs are packaged for working page citations; the NEP PDF remains
 local. The earlier viewers still use House v4b/v3 and the saved API; their
@@ -186,7 +208,7 @@ the retained `paddle_pdf_ocr_v2` source directory:
 
 ```sh
 python -m pip install PyMuPDF
-python analysis/build_nep_tree.py --source-dir /path/to/paddle_pdf_ocr_v2
+python analysis/builders/build_nep_tree.py --source-dir /path/to/paddle_pdf_ocr_v2
 ```
 
 Required files relative to that directory:
@@ -199,7 +221,7 @@ The build writes source paths and SHA-256 hashes into the generated provenance.
 After rebuilding against your local inputs, run the regression checks:
 
 ```sh
-python -m unittest discover -s analysis -p test_nep_tree.py -v
+python -m unittest discover -s analysis/tests -p test_nep_tree.py -v
 ```
 
 House extraction scripts additionally require the HB 10858 source PDFs and
@@ -210,7 +232,7 @@ require the source files on your machine.
 To rerun the targeted House repairs with the retained inputs, use:
 
 ```sh
-python analysis/repair_hb_known_defects.py
+python analysis/builders/repair_hb_known_defects.py
 ```
 
 This regenerates the v5 candidate and repair reports from v4b, the source PDF,

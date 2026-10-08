@@ -31,9 +31,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Check current accounting, data freshness and matching
-        run: python3 -m unittest discover -s analysis -p test_current_pages.py -v
+        run: python3 -m unittest discover -s analysis/tests -p test_current_pages.py -v
       - name: Check budget display units, signs and numeric sorting
-        run: node --test analysis/test_budget_display.cjs
+        run: node --test analysis/tests/test_budget_display.cjs
       - name: Prepare static viewers
         run: python3 scripts/build_pages.py
       - name: Configure Pages
