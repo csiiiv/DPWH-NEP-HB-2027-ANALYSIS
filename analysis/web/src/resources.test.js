@@ -16,5 +16,9 @@ test('resources route is registered and catalog covers data, docs, and PDFs', ()
   assert.ok(items.some((item) => item.kind === 'pdf' && item.path.includes('HB_BUDGET_3rd_reading')));
   assert.ok(items.some((item) => item.kind === 'repo' && item.path.endsWith('NEP-2027-VOLUME-3_OCR.pdf')));
   assert.ok(items.some((item) => item.kind === 'external' && item.path.startsWith('https://www.dbm.gov.ph/')));
+  assert.ok(items.some((item) => item.kind === 'external' && item.path.includes('kimileeee/gab-fy2027-dataset')));
+  assert.ok(items.some((item) => item.kind === 'external' && item.path.includes('ajamontesa/ph-budget-analysis')));
+  assert.ok(items.some((item) => item.kind === 'external' && item.path.includes('dpwh-transparency-data-api-scraper')));
+  assert.ok(resourceGroups.some((group) => group.id === 'repos'));
   assert.ok(items.filter((item) => item.kind === 'doc').every((item) => item.path.endsWith('.md')));
 });

@@ -1,6 +1,84 @@
 /** Latest workable datasets and source PDFs for the Resources tab. */
 export const resourceGroups = [
   {
+    id: "repos",
+    title: "Referenced repositories",
+    blurb:
+      "Pinned external sources and this workbench. Public pages and APIs can change; retained commits and snapshots identify what was actually used.",
+    items: [
+      {
+        label: "DPWH NEP / House FY2027 analysis (this workbench)",
+        kind: "external",
+        path: "https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS",
+        purpose: "Canonical repository for the datasets, audits, and React workbench",
+        coverage:
+          "Hosted app: csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS. Source of the Resources catalog.",
+      },
+      {
+        label: "kimileeee/gab-fy2027-dataset",
+        kind: "external",
+        path: "https://github.com/kimileeee/gab-fy2027-dataset/tree/1de94242a1342c7174a9efdce71301538dcf43e0",
+        purpose: "Independent House GAB appropriation and drill-down extract used for cross-check",
+        coverage:
+          "Pinned commit 1de94242. Corroborates native 2nd/3rd-reading controls; does not replace the native House baselines. See the local cross-check report.",
+      },
+      {
+        label: "GAB cross-check report (local)",
+        kind: "doc",
+        path: "analysis/docs/gab_fy2027_reference_crosscheck.md",
+        purpose: "How the external GAB dataset compares to native House readings",
+        coverage:
+          "22 exact control agreements per reading, plus the ₱134M third-reading reallocation checks.",
+      },
+      {
+        label: "ajamontesa/ph-budget-analysis",
+        kind: "external",
+        path: "https://github.com/ajamontesa/ph-budget-analysis/tree/558a56311dc510b513af2b18b13a49d55d501c02",
+        purpose: "Pinned Philippine budget analysis submodule under reference/",
+        coverage:
+          "Commit 558a5631. Submodule path reference/ph-budget-analysis. Contextual only; does not determine the canonical NEP tree.",
+      },
+      {
+        label: "ph-budget-analysis · reference site",
+        kind: "external",
+        path: "https://ajamontesa.github.io/ph-budget-analysis/index.html",
+        purpose: "Published reference pages for agency and FY2027 assessments",
+        coverage:
+          "Includes DPWH, FY2027 NEP assessment, and FY2027 House assessment pages. Check stage and peso units before comparing figures.",
+      },
+      {
+        label: "ph-budget-analysis · Compiled DPWH workbook",
+        kind: "external",
+        path: "https://github.com/ajamontesa/ph-budget-analysis/blob/558a56311dc510b513af2b18b13a49d55d501c02/data/Compiled_-_DPWH.xlsx",
+        purpose: "Pinned Compiled DPWH workbook from the reference checkout",
+        coverage: "Supplementary compilation; not the canonical NEP or House native trees.",
+      },
+      {
+        label: "ph-budget-analysis · Compiled PAPs workbook",
+        kind: "external",
+        path: "https://github.com/ajamontesa/ph-budget-analysis/blob/558a56311dc510b513af2b18b13a49d55d501c02/data/Compiled_-_PAPs.xlsx",
+        purpose: "Pinned Compiled PAPs workbook from the reference checkout",
+        coverage: "Supplementary compilation; verify stage and units before use.",
+      },
+      {
+        label: "csiiiv/dpwh-transparency-data-api-scraper",
+        kind: "external",
+        path: "https://github.com/csiiiv/dpwh-transparency-data-api-scraper/tree/de96ab393a069792964b086a7d155e7801909c2a",
+        purpose: "Supplementary DPWH Transparency API scraper checkout",
+        coverage:
+          "Pinned commit de96ab39. The BetterGov NEP snapshot used here is fetched by this repo’s dpwh-transparency-nep-data scripts.",
+      },
+      {
+        label: "BetterGov DPWH NEP API (FY2027 listing)",
+        kind: "external",
+        path: "https://api.dpwh.bettergov.ph/nep/projects?fiscalYear=2027&page=1&limit=100",
+        purpose: "Live project-list endpoint behind the retained Transparency snapshot",
+        coverage:
+          "Comparisons use the committed fy2027-combined.json snapshot, not a live query. Incomplete vs full NEP budget.",
+      },
+    ],
+  },
+  {
     id: "pdfs",
     title: "Source PDFs",
     blurb:
