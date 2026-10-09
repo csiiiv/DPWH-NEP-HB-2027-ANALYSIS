@@ -146,6 +146,7 @@ separately; see [archive commands](archive/README.md).
 
 ## Documentation
 
+- [Native House migration — complete change report, 9 October 2026](docs/native_house_migration_change_report_2026-10-09.md)
 - [Frontend and PDF migration](docs/react_vite_migration.md)
 - [Codebase reassessment](docs/codebase_reassessment.md)
 - [Source-verification workflow](docs/source_hierarchy_verification.md)

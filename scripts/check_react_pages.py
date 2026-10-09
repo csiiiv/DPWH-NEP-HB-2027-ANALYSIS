@@ -7,7 +7,7 @@ from pathlib import Path
 import sys, tempfile, threading, json, re, os
 from functools import partial
 from http.server import ThreadingHTTPServer
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -137,10 +137,19 @@ with sync_playwright() as p:
         page.evaluate("window.spaNavigationProbe = 42")
         nav = page.get_by_role("navigation", name="Workbench pages", exact=True)
         for name, key in [("House GAB", "house"), ("DBM NEP", "nep"), ("DPWH Transparency NEP", "transparency")]:
-            nav.get_by_role("link", name=name, exact=True).click()
+            link = nav.get_by_role("link", name=name, exact=True)
+            link.click()
+            # The previous workspace can still match #tree until React commits
+            # the hash change. Wait for the requested route and source first.
+            expect(link).to_have_attribute("aria-current", "page")
+            heading = {
+                "house": "House GAB — source hierarchy",
+                "nep": "DBM NEP — source hierarchy",
+                "transparency": "DPWH Transparency NEP — FY2027 API hierarchy",
+            }[key]
+            expect(page.locator(".retained-view h1")).to_have_text(heading, timeout=60000)
             page.locator(".retained-view #tree [data-node]").first.wait_for(timeout=60000)
             assert page.evaluate("window.spaNavigationProbe") == 42
-            assert nav.get_by_role("link", name=name, exact=True).get_attribute("aria-current") == "page"
             assert page.get_by_role("alert").count() == 0
             if key == "house":
                 summary = page.locator("#projectDetailSummary").inner_text()
