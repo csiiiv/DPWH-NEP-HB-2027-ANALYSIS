@@ -9,25 +9,27 @@ current retained datasets, rather than freezing a historical data snapshot.
 
 ## Comparison tables
 
-`#compare?view=readings&q=Caloocan&status=third_only`
+`#compare?view=projects&q=Caloocan&change=third_only`
 shows third-reading additions matching Caloocan.
 
 Supported parameters:
 
 | Parameter | Meaning |
 |---|---|
-| `view` | `paps`, `projects`, `readings`, or `gaps` |
+| `view` | `paps`, `projects`, or `gaps` |
 | `q` | Search text |
 | `program`, `region`, `office` | Exact recorded filter values; use the UI to obtain the office key |
-| `status` | Match status; `all` includes unchanged reading records |
-| `sort` | `title`, stage index `0`/`1`/`2`, `reading_delta`, or listing-gap `amount`/`region`/`pdf_page`, depending on table |
+| `status` | NEP/HGAB2 candidate match status |
+| `change` | House reading change: `reading_changed`, `third_only`, `same_amount`, `amount_changed`, `second_only`, `repeated_key`, or `no_house_record` |
+| `sort` | `title`, stage index `0`/`1`/`2`/`3`, `reading_delta`, or listing-gap `amount`/`region`/`pdf_page`, depending on table |
 | `metric` | `total`, `delta`, or `percent` |
 | `order` | `asc` (default) or `desc` |
 | `page` | One-based results page; pages beyond the results clamp to the last page |
 
 Search, filters and sorting apply to the full dataset before pagination.
-Changing a filter resets the page. House readings default to changed allocations;
-`status=all` explicitly overrides that default.
+Changing a filter resets the page. Both tables show all records by default. HGAB2 and HGAB3 appear together.
+Old `view=readings` links open Project records with the equivalent House change
+filter; their status and two-column sorting parameters are translated.
 
 ## Source hierarchies
 

@@ -9,7 +9,7 @@
       "drilldown_coverage": "2a9c5f47ef0d2134ee70d6499b6a3fa24874c425520f6888df961e9d80677bd9"
     },
     "generator_sha256": "7ab136a71250dba65dccdb7e8e7b63317b25caeb17d545e8883585e6d3d3da75",
-    "native_reading_comparison_sha256": "3ca2806eea52d40721544183a06394c537bab4fc0a963d28a1447b598c3e8234",
+    "native_reading_comparison_sha256": "69343357f0fa590f868a03983af322b0e3f98f66983b4fa38d45bc57f0d18431",
     "native_ib_artifacts_sha256": {
       "analysis/data/hb_dpwh_native_rollup.json": "b3b12f43867a96600f803702f193f622e176ab7659325290d22410e4f8cf6c0c",
       "analysis/data/hb_dpwh_native_rollup_3rd_reading.json": "79d825795071577d02a55665280b9d1e0dd741b8fcb1bbb7908e3a20bc013635"

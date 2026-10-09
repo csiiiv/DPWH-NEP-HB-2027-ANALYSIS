@@ -6,10 +6,14 @@ export function boundedInteger(value, fallback, min, max) {
 }
 const choice = (value, options, fallback) => options.includes(value) ? value : fallback;
 export function comparisonState(params) {
-  const tab = choice(params.get('view') || (params.get('section') === 'house-readings' ? 'readings' : ''), ['paps','projects','readings','gaps'], 'paps');
+  const legacy = params.get('view') === 'readings' || params.get('section') === 'house-readings';
+  const tab = legacy ? 'projects' : choice(params.get('view'), ['paps','projects','gaps'], 'paps');
+  const oldSort=params.get('sort');
+  const column=legacy && ['0','1'].includes(oldSort) ? String(Number(oldSort)+2) : oldSort;
   return {tab, query:params.get('q') || '', program:params.get('program') || '', region:params.get('region') || '', office:params.get('office') || '',
-    trace:params.get('status') === 'all' ? '' : params.get('status') || (tab === 'readings' ? 'reading_changed' : ''),
-    column:choice(params.get('sort'), tab === 'gaps' ? ['title','amount','region','pdf_page'] : ['title','0','1',...(tab === 'readings' ? ['reading_delta'] : ['2'])], 'title'),
+    trace:legacy ? '' : params.get('status') === 'all' ? '' : params.get('status') || '',
+    readingStatus:legacy ? (params.get('status') === 'all' ? '' : params.get('status') || 'reading_changed') : params.get('change') || '',
+    column:choice(column, tab === 'gaps' ? ['title','amount','region','pdf_page'] : ['title','0','1','2','3','reading_delta'], 'title'),
     mode:choice(params.get('metric'), ['total','delta','percent'], 'total'), direction:params.get('order') === 'desc' ? -1 : 1,
     page:boundedInteger(params.get('page'),1,1,100000)-1};
 }
@@ -17,7 +21,7 @@ export function comparisonParams(state) {
   const p = {view:state.tab};
   for (const [key,value] of Object.entries({q:state.query,program:state.program,region:state.region,office:state.office})) if (value) p[key]=value;
   if (state.trace) p.status=state.trace;
-  else if (state.tab === 'readings') p.status='all';
+  if (state.readingStatus) p.change=state.readingStatus;
   if (state.column !== 'title') p.sort=state.column;
   if (state.mode !== 'total') p.metric=state.mode;
   if (state.direction === -1) p.order='desc';

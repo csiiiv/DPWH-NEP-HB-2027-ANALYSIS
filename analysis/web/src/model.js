@@ -33,11 +33,12 @@ export function compare(a, b, direction = 1) {
 export function values(row, tab) {
   if (tab === "readings") return [row.second?.amount_php ?? null, row.third?.amount_php ?? null];
   return tab === "paps"
-    ? [row.api_php, row.nep_php, row.house_control_php ?? row.house_extract_php]
+    ? [row.api_php, row.nep_php, Object.hasOwn(row,'second_php') ? row.second_php : row.house_control_php ?? row.house_extract_php, row.third_php ?? null]
     : [
         row.api?.amount_php ?? null,
         row.nep?.amount_php ?? null,
-        row.house?.amount_php ?? null,
+        row.second?.amount_php ?? row.house?.amount_php ?? null,
+        row.third?.amount_php ?? null,
       ];
 }
 export function selectRows(
@@ -48,6 +49,7 @@ export function selectRows(
     region = "",
     office = "",
     trace = "",
+    readingStatus = "",
     column = "title",
     mode = "total",
     direction = 1,
@@ -62,13 +64,14 @@ export function selectRows(
         (!program || r.program === program) &&
         (!region || r.region === region) &&
         matchesOffice(r, office, region) &&
+        (!readingStatus || (readingStatus === 'reading_changed' ? r.reading_delta_php != null && r.reading_delta_php !== 0 || ['second_only','third_only'].includes(r.reading_status) : r.reading_status === readingStatus)) &&
         (!trace || (trace === "reading_changed" && tab === "readings"
           ? r.delta_php !== 0 || ["second_only", "third_only"].includes(r.trace)
           : r.trace === trace)),
     )
     .sort((a, b) => {
       const key = (r) => {
-        if (column === "reading_delta") return r.delta_php;
+        if (column === "reading_delta") return r.reading_delta_php ?? r.delta_php;
         if (column === "title") return r.title ?? r.label;
         if (["region", "pdf_page", "trace"].includes(column))
           return r[column] ?? null;

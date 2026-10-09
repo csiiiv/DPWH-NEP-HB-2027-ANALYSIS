@@ -73,18 +73,26 @@ with sync_playwright() as p:
         )
         assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
         page.get_by_role("link", name="Open sortable comparison").click()
-        page.locator("tbody tr").first.wait_for(timeout=60000)
-        assert page.locator("tbody tr").count() == 46
+        page.locator(".comparison-table tbody tr").first.wait_for(timeout=60000)
+        assert page.locator(".comparison-table tbody tr").count() == 46
         assert "native Volume I-C; v5 is retired" in page.locator("main").inner_text()
         fap = page.locator(".comparison-table tbody tr").filter(has_text="Foreign-assisted projects (FAP)")
         expect(fap).to_have_count(1)
         expect(fap).to_contain_text("117.749B")
         expect(fap).to_contain_text("44.749B")
         assert fap.locator("td").first.inner_text() == "—"
-        expect(page.locator("tbody button.source-link").filter(has_text="House 2nd · I-C").first).to_be_visible()
+        expect(page.locator(".comparison-table thead")).to_contain_text("HGAB2 · 2nd reading")
+        expect(page.locator(".comparison-table thead")).to_contain_text("HGAB3 · 3rd reading")
+        assert page.get_by_role("button",name="House readings",exact=True).count()==0
+        page.get_by_label("House reading change",exact=True).select_option("reading_changed")
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(2)
+        expect(page.locator(".comparison-table tbody")).to_contain_text("+₱68.000M")
+        expect(page.locator(".comparison-table tbody")).to_contain_text("+₱66.000M")
+        page.get_by_label("House reading change",exact=True).select_option("")
+        expect(page.locator(".comparison-table tbody button.source-link").filter(has_text="House 2nd · I-C").first).to_be_visible()
         page.get_by_role("button", name="Missing from listing", exact=True).click()
-        assert page.locator("tbody tr").count() == 23
-        page.locator("tbody button.source-link").first.click()
+        assert page.locator(".comparison-table tbody tr").count() == 23
+        page.locator(".comparison-table tbody button.source-link").first.click()
         page.locator(".pdf-pane").wait_for()
         page.get_by_role("status").filter(
             has_text=re.compile(r"^Page \d+ of \d+$")
@@ -108,20 +116,20 @@ with sync_playwright() as p:
         page.get_by_role("button", name="Clear preview").click()
         assert page.locator(".pdf-pane").count() == 0
         page.get_by_role("button", name="Project records", exact=True).click()
-        page.get_by_role("button", name="Sort by House GAB", exact=True).click()
+        page.get_by_role("button", name="Sort by HGAB2 · 2nd reading", exact=True).click()
         page.get_by_role("menuitemradio", name="Delta vs previous", exact=False).click()
-        page.get_by_role("button", name="Sort by House GAB", exact=True).click()
+        page.get_by_role("button", name="Sort by HGAB2 · 2nd reading", exact=True).click()
         page.get_by_role("menuitemradio", name="Delta vs previous", exact=False).click()
         assert (
-            page.locator("thead th").nth(3).get_attribute("aria-sort") == "descending"
+            page.locator(".comparison-table thead th").nth(3).get_attribute("aria-sort") == "descending"
         )
         data = json.loads((ROOT / "analysis/data/stage_trace_2027.json").read_text())
         expected = max(
             (r for r in data["projects"] if r["nep"] and r["house"]),
             key=lambda r: r["house"]["amount_php"] - r["nep"]["amount_php"],
         )
-        assert page.locator("tbody th").first.inner_text().startswith(expected["title"])
-        assert page.locator("tbody tr").count() == 50
+        assert page.locator(".comparison-table tbody th").first.inner_text().startswith(expected["title"])
+        assert page.locator(".comparison-table tbody tr").count() == 50
         page.get_by_role("button", name="Next", exact=True).click()
         assert "51–100" in page.locator(".pager").inner_text()
         # Office filtering consumes all records, not just the displayed page.
@@ -134,8 +142,8 @@ with sync_playwright() as p:
         page.get_by_label("Engineering office / DEO", exact=True).select_option(office)
         expect(page.locator(".result-count")).to_contain_text(f"{office_count:,} of")
         expect(page.locator(".pager")).to_contain_text("1–50")
-        assert page.locator("tbody tr").count() == 50
-        for text in page.locator("tbody th").all_inner_texts():
+        assert page.locator(".comparison-table tbody tr").count() == 50
+        for text in page.locator(".comparison-table tbody th").all_inner_texts():
             assert office in text
         page.get_by_role("button", name="Next", exact=True).click()
         expect(page.locator(".pager")).to_contain_text("51–100")
@@ -144,8 +152,8 @@ with sync_playwright() as p:
         assert office not in page.get_by_label("Engineering office / DEO", exact=True).inner_text()
         page.get_by_label("Region", exact=True).select_option("")
         page.get_by_label("Search", exact=True).fill("Mindanao Transport Connectivity")
-        page.locator("tbody th").first.wait_for()
-        house = page.locator("tbody button.source-link").filter(has_text="House").first
+        page.locator(".comparison-table tbody th").first.wait_for()
+        house = page.locator(".comparison-table tbody button.source-link").filter(has_text="House").first
         house.click()
         page.get_by_role("status").filter(
             has_text=re.compile(r"^Page \d+ of \d+$")
@@ -156,8 +164,8 @@ with sync_playwright() as p:
         assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
         page.goto(base + "#compare", wait_until="networkidle")
         page.reload(wait_until="networkidle")
-        page.locator("tbody tr").first.wait_for(timeout=60000)
-        assert page.locator("tbody tr").count() == 46
+        page.locator(".comparison-table tbody tr").first.wait_for(timeout=60000)
+        assert page.locator(".comparison-table tbody tr").count() == 46
         # All workspaces share the same shell and navigate without a document reload.
         page.evaluate("window.spaNavigationProbe = 42")
         nav = page.get_by_role("navigation", name="Workbench pages", exact=True)
@@ -211,18 +219,18 @@ with sync_playwright() as p:
                 assert page.locator(".workspace-jump").get_attribute("href") == jump_href
             assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
         nav.get_by_role("link", name="Compare stages", exact=True).click()
-        page.get_by_role("button", name="House readings", exact=True).click()
+        page.get_by_role("button", name="Project records", exact=True).click()
         expect(page.get_by_role("region", name="House reading changes")).to_contain_text("₱134.000M", timeout=60000)
-        page.get_by_label("Match status", exact=True).select_option("third_only")
+        page.get_by_label("House reading change", exact=True).select_option("third_only")
         expect(page.locator(".comparison-table tbody tr")).to_have_count(5)
         expect(page.locator(".result-count")).to_contain_text("5 of")
         assert all("+₱" in text for text in page.locator(".comparison-table tbody tr").all_inner_texts())
         page.get_by_label("Engineering office / DEO", exact=True).select_option("Metro Manila 3rd District Engineering Office")
         expect(page.locator(".comparison-table tbody tr")).to_have_count(5)
         finding_url=page.url
-        assert "status=third_only" in finding_url and "office=" in finding_url
+        assert "change=third_only" in finding_url and "office=" in finding_url
         page.reload(wait_until="networkidle")
-        expect(page.get_by_label("Match status", exact=True)).to_have_value("third_only", timeout=60000)
+        expect(page.get_by_label("House reading change", exact=True)).to_have_value("third_only", timeout=60000)
         expect(page.get_by_label("Engineering office / DEO", exact=True)).to_have_value("Metro Manila 3rd District Engineering Office")
         expect(page.locator(".comparison-table tbody tr")).to_have_count(5)
         page.context.grant_permissions(["clipboard-read", "clipboard-write"])
@@ -237,8 +245,8 @@ with sync_playwright() as p:
         page.get_by_role("button", name="Clear preview", exact=True).click()
         assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
         page.goto(base + "#compare?view=readings", wait_until="networkidle")
-        expect(page.get_by_role("button", name="House readings", exact=True)).to_have_attribute("aria-pressed", "true")
-        expect(page.locator(".comparison-table thead")).to_contain_text("3rd − 2nd")
+        expect(page.get_by_role("button", name="Project records", exact=True)).to_have_attribute("aria-pressed", "true")
+        expect(page.locator(".comparison-table thead")).to_contain_text("HGAB3 − HGAB2")
         page.get_by_role("navigation", name="Detail workspaces").get_by_role("link", name="House / NEP detail").click()
         page.locator("#budgetRows tr").first.wait_for(timeout=60000)
         assert "House native I-C operations extract" in page.locator("#cards").inner_text()

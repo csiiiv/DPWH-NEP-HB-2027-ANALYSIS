@@ -340,8 +340,9 @@ order, validation commands, and open coverage/evidence work.
 
 ## House reading differences and office filters
 
-The comparison app preserves both House readings. Its **House readings** tab
-shows second/third amounts and their differences, with region and engineering
-office filters. Five additional printed project records total ₱134 million;
+The comparison app shows **HGAB2** (second reading), **HGAB3** (latest, third
+reading), and their delta in both **PAP totals** and **Project records**, beside
+Transparency and NEP. Search, reading-change, region and engineering-office
+filters are shareable through the URL. Five additional printed project records total ₱134 million;
 Support to Operations decreases by the same amount and the agency total is
 unchanged. See [the reading comparison and checks](analysis/docs/house_reading_comparison_checks.md).

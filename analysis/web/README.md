@@ -117,12 +117,15 @@ python scripts/validate_current_pages.py
 
 ## House reading comparison
 
-The **House readings** tab (`#compare?view=readings`) retains both native House
-readings, showing both amounts, 3rd-minus-2nd deltas and distinct source PDFs.
-It defaults to changed allocations. The operations increase is ₱134,000,000,
-with five additional records and an offsetting Support to Operations decrease.
-The agency total is unchanged. Repeated keys are grouped without individual
-pairing. See [methods and checks](../docs/house_reading_comparison_checks.md).
+Both **PAP totals** and **Project records** show HGAB2 (second reading), HGAB3
+(third reading), and HGAB3-minus-HGAB2 beside Transparency and NEP. HGAB3 is the
+latest House reading; the former generic House column was HGAB2. All records
+are shown by default. The House reading change filter can select changes,
+unchanged amounts, and third-only records without leaving either table.
+The operations increase is ₱134,000,000, offset by Support to Operations.
+Agency total is unchanged. Repeated House keys remain grouped; NEP/API candidate
+anchors retain their second-reading provenance. See
+[methods and checks](../docs/house_reading_comparison_checks.md).
 
 Rebuild `python analysis/builders/build_house_readings.py` alongside the other
 retained payload builders before packaging.
@@ -140,13 +143,12 @@ source. Suggested fuzzy counterparts do not establish office assignments.
 **No recorded office** selects records without an office in any displayed
 source; no office is inferred from a project's title or location. These filters
 use the shared native hierarchy fields and also support the third-reading
-artifacts. The House/NEP detail retains the second reading; the **House readings**
-tab compares both native readings. Open `#compare?view=readings` directly.
+artifacts. House/NEP detail retains the second reading; the main comparison
+shows both. Open `#compare?view=projects&change=reading_changed` for changes.
 
 ## Open work
 
-The React PAP table shows 45 non-FAP controls; adding a separate FAP section is
-deferred. All 44 mapped non-FAP House PAP controls balance; one NEP PAP remains
+The React PAP table includes 45 local controls and the separate FAP control. All 44 mapped non-FAP House PAP controls balance; one NEP PAP remains
 unmapped. DBM source checks, project identity, and amendment completeness remain
 open. The detailed comparison exposes local/FAP totals with zero House extraction
 gap. PDF

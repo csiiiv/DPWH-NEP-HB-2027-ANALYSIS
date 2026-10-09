@@ -70,7 +70,7 @@ def compare_readings(second, third):
 def build():
     source = json.loads((DATA / INPUTS[0]).read_text())
     programs = {r['pap3']: r['program'] for r in source['projects'] if r['zone'] == 'non_fap'}
-    allocations, controls, totals, summaries, documents = [], [], [], [], {}
+    allocations, controls, totals, summaries, documents, fap_pages = [], [], [], [], {}, []
     for reading, suffix in [('second', ''), ('third', '_3rd_reading')]:
         ic = json.loads((DATA / f'hb_dpwh_native_ic_projects{suffix}.json').read_text())
         ib = json.loads((DATA / f'hb_dpwh_native_rollup{suffix}.json').read_text())
@@ -82,6 +82,13 @@ def build():
         for path, sha in ib['provenance_sha256'].items():
             if digest(REPO / path) != sha:
                 raise ValueError(f'Stale reading I-B source: {path}')
+        pending, headings = [ic['root']], []
+        while pending:
+            node = pending.pop(); pending.extend(node['children'])
+            if node['label'].upper() == 'FOREIGN-ASSISTED PROJECTS' and node['kind'] == 'section':
+                headings.append(node['source']['pdf_page'])
+        if len(headings) != 1: raise ValueError('Expected one native I-C FAP control heading')
+        fap_pages.append(headings)
         rows, paps, printed = comparison_inputs(ic, ib, source['pap_controls'], programs, region)
         allocations.append(rows); controls.append(paps); totals.append(printed)
         summaries.append({'allocations': len(rows), 'named_projects': ic['audit_summary']['named_project_leaves'],
@@ -96,9 +103,11 @@ def build():
         a, b = controls[0].get(name), controls[1].get(name)
         paps.append({'label': name, 'program': programs[name],
                      'second_php': a['printed_php'] if a else None, 'third_php': b['printed_php'] if b else None,
+                     'second_pages': a['source_pages'] if a else [], 'third_pages': b['source_pages'] if b else [],
                      'delta_php': (b['printed_php'] if b else 0) - (a['printed_php'] if a else 0)})
     paps.append({'label': 'Foreign-assisted projects (FAP)', 'program': 'Foreign-assisted projects',
                  'second_php': totals[0]['foreign_assisted_projects'], 'third_php': totals[1]['foreign_assisted_projects'],
+                 'second_pages': fap_pages[0], 'third_pages': fap_pages[1],
                  'delta_php': totals[1]['foreign_assisted_projects'] - totals[0]['foreign_assisted_projects']})
     summary = {'second': summaries[0], 'third': summaries[1],
                'control_deltas_php': {key: totals[1][key] - totals[0][key] for key in totals[0]},

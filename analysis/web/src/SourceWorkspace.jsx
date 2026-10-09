@@ -156,7 +156,7 @@ export default function SourceWorkspace({ route }) {
     <nav className="page-tabs section-tabs" aria-label="House reading">
       <a href={`#house?view=${view}&reading=third`} aria-current={reading === 'third' ? 'page' : undefined}>3rd reading</a>
       <a href={`#house?view=${view}&reading=second`} aria-current={reading === 'second' ? 'page' : undefined}>2nd reading</a>
-      <a href="#compare?view=readings">Changes from 2nd to 3rd</a>
+      <a href="#compare?view=projects&change=reading_changed">Changes from 2nd to 3rd</a>
     </nav>
     <nav className="page-tabs section-tabs" aria-label="House data views">
       <a href={`#house?view=controls&reading=${reading}`} aria-current={view === 'controls' ? 'page' : undefined}>I-B totals and controls</a>

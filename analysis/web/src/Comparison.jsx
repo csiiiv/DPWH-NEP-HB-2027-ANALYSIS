@@ -1,10 +1,11 @@
 import React, { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { loadData, sourceReference, siteUrl, repo } from "./data.js";
 import { amount, metric, selectRows, values, officeOptions, officeLabels } from "./model.js";
+import {unifiedComparison} from "./unifiedComparison.js";
 import ShareLink from "./ShareLink.jsx";
 import {useComparisonFinding} from "./useComparisonFinding.js";
 const PdfPreview = lazy(() => import("./PdfPreview.jsx"));
-const names = ["DPWH Transparency NEP", "DBM NEP", "House GAB"];
+const names = ["DPWH Transparency NEP", "DBM NEP", "HGAB2 · 2nd reading", "HGAB3 · 3rd reading"];
 const label = (value) => (value ?? "").replaceAll("_", " ");
 export default function Comparison({ route }) {
   const [data, setData] = useState(null),
@@ -14,9 +15,9 @@ export default function Comparison({ route }) {
     [panel, setPanel] = useState("table"),
     [menu, setMenu] = useState(null);
   const [finding,setFinding] = useComparisonFinding(route);
-  const {tab,query,program,region,office,trace,column,mode,direction,page} = finding;
+  const {tab,query,program,region,office,trace,readingStatus,column,mode,direction,page} = finding;
   const setTab=v=>setFinding('tab',v), setQuery=v=>setFinding('query',v), setProgram=v=>setFinding('program',v),
-    setRegion=v=>setFinding('region',v), setOffice=v=>setFinding('office',v), setTrace=v=>setFinding('trace',v),
+    setRegion=v=>setFinding('region',v), setOffice=v=>setFinding('office',v), setTrace=v=>setFinding('trace',v), setReadingStatus=v=>setFinding('readingStatus',v),
     setColumn=v=>setFinding('column',v), setMode=v=>setFinding('mode',v), setDirection=v=>setFinding('direction',v), setPage=v=>setFinding('page',v);
   useEffect(()=>{setSource(null);setPanel('table');setMenu(null);},[route]);
   const menuRef = useRef(null);
@@ -32,13 +33,11 @@ export default function Comparison({ route }) {
       });
     return () => c.abort();
   }, []);
-  const rows = data
-    ? tab === "paps"
-      ? data.paps
-      : tab === "gaps"
-        ? data.transparency_gaps
-        : tab === "readings" ? readings.projects : data.projects
-    : [];
+  const unified = useMemo(()=>{
+    if (!data || !readings) return {paps:[],projects:[]};
+    try {return unifiedComparison(data,readings);} catch(e){return {error:e.message,paps:[],projects:[]};}
+  },[data,readings]);
+  const rows = data ? tab === 'paps' ? unified.paps : tab === 'gaps' ? data.transparency_gaps : unified.projects : [];
   const filtered = useMemo(
     () =>
       selectRows(rows, {
@@ -47,12 +46,13 @@ export default function Comparison({ route }) {
         region,
         office,
         trace,
+        readingStatus,
         column,
         mode,
         direction,
         tab,
       }),
-    [rows, query, program, region, office, trace, column, mode, direction, tab],
+    [rows, query, program, region, office, trace, readingStatus, column, mode, direction, tab],
   );
   useEffect(()=>{
     if (data && readings && page > Math.max(0,Math.ceil(filtered.length/50)-1)) setPage(Math.max(0,Math.ceil(filtered.length/50)-1));
@@ -136,7 +136,8 @@ export default function Comparison({ route }) {
     setProgram("");
     setRegion("");
     setOffice("");
-    setTrace(t === "readings" ? "reading_changed" : "");
+    setTrace("");
+    setReadingStatus("");
     setColumn("title");
     setMode("total");
     setPage(0);
@@ -162,10 +163,10 @@ export default function Comparison({ route }) {
         {sourceReference(kind, p, title)?.pageLabel} p.{p}
       </button>
     ));
-  if (error)
+  if (error || unified.error)
     return (
       <p role="alert">
-        {error}{" "}
+        {error || unified.error}{" "}
         <a href={repo + "analysis/data/stage_trace_2027.json"}>
           Inspect retained comparison data
         </a>
@@ -175,7 +176,7 @@ export default function Comparison({ route }) {
   const maxPage=Math.max(0,Math.ceil(filtered.length/50)-1);
   const visiblePage=Math.min(page,maxPage);
   const stages = data.summary.stages;
-  const tableNames = tab === "readings" ? ["House 2nd reading", "House 3rd reading"] : names;
+  const tableNames = names;
   return (
     <>
       <div className="comparison-heading">
@@ -213,7 +214,7 @@ export default function Comparison({ route }) {
           </p>
         </article>
         <article>
-          <h3>House 3rd reading</h3>
+          <h3>{names[3]}</h3>
           <strong>{amount(readings.summary.third.operations_including_projects)}</strong>
           <p>Operations · agency total {amount(readings.summary.third.new_appropriations)}</p>
           <p>3rd − 2nd operations: {readings.summary.allocation_delta_php > 0 ? "+" : ""}{amount(readings.summary.allocation_delta_php)}</p>
@@ -224,8 +225,7 @@ export default function Comparison({ route }) {
         {[
           ["paps", "PAP totals"],
           ["projects", "Project records"],
-          ["readings", "House readings"],
-          ["gaps", "Missing from listing"],
+                    ["gaps", "Missing from listing"],
         ].map(([key, name]) => (
           <button
             key={key}
@@ -236,7 +236,7 @@ export default function Comparison({ route }) {
           </button>
         ))}
       </nav>
-      {tab === "readings" && <section className="notice" aria-label="House reading changes">
+      {tab !== "gaps" && <section className="notice" aria-label="House reading changes">
         <p>2nd → 3rd reading. Differences are 3rd minus 2nd. Agency total: {amount(readings.summary.control_deltas_php.new_appropriations)};
           {" "}Operations: {amount(readings.summary.control_deltas_php.operations_including_projects)};
           {" "}Support to Operations: {amount(readings.summary.control_deltas_php.s2o_total)}.</p>
@@ -252,7 +252,7 @@ export default function Comparison({ route }) {
           </table>
         </div>
       </section>}
-      {tab === "projects" && <p className="notice">These House/NEP project comparisons use the 2nd reading. <a href="#house?view=projects&reading=third">Search the 3rd-reading House project tree</a> or <a href="#compare?view=readings">compare both House readings</a>.</p>}
+      {tab === "projects" && <p className="notice">HGAB3 is the latest House reading. NEP/API matches were established against HGAB2; HGAB3 uses the recorded reading comparison. Repeated House records appear as one grouped row. <a href="#house?view=projects&reading=third">Search the 3rd-reading House project tree</a> or <a href="#compare?view=projects&change=reading_changed">show changed House allocations</a>.</p>}
       {tab === "paps" && <p className="muted">PAP totals include the separate Foreign-assisted projects (FAP) control and reconcile to operations. FAP is outside the Transparency listing scope; its Transparency amount is unavailable.</p>}
       <div className="workspace-switch" aria-label="Workspace panels">
         <button
@@ -304,11 +304,12 @@ export default function Comparison({ route }) {
                 </select>
               </label>
             )}
-            {tab === "readings" ? <label>Match status
-              <select aria-label="Match status" value={trace} onChange={e => setTrace(e.target.value)}>
-                {[["", "All records"], ["reading_changed", "Changed allocations"], ["third_only", "3rd reading only"], ["second_only", "2nd reading only"], ["amount_changed", "Paired amount changes"], ["repeated_key", "Repeated keys / grouped"], ["same_amount", "Same amount"]].map(([value, text]) => <option key={value} value={value}>{text}</option>)}
+            {tab !== 'gaps' && <label>House reading change
+              <select aria-label="House reading change" value={readingStatus} onChange={e=>setReadingStatus(e.target.value)}>
+                {[["", "All records"], ["reading_changed", "Changed allocations"], ["third_only", "HGAB3 only"], ["second_only", "HGAB2 only"], ["amount_changed", "Paired amount changes"], ["repeated_key", "Repeated keys / grouped"], ["same_amount", "Same House amount"], ["no_house_record", "No House record"]].map(([value,text])=><option key={value} value={value}>{text}</option>)}
               </select>
-            </label> : tab === "projects" && (
+            </label>}
+            {tab === "projects" && (
               <Filter
                 label="Match status"
                 rows={rows}
@@ -346,7 +347,7 @@ export default function Comparison({ route }) {
                           {header(n, String(i), true)}
                         </React.Fragment>
                       ))}
-                      {tab === "readings" && header("3rd − 2nd", "reading_delta")}
+                      {header("HGAB3 − HGAB2", "reading_delta")}
                       <th scope="col">Source evidence</th>
                     </>
                   )}
@@ -360,12 +361,13 @@ export default function Comparison({ route }) {
                       <small>
                         {r.program} · {r.region ?? ""}
                       </small>
-                      {(tab === "projects" || tab === "readings") && (
+                      {(tab === "projects") && (
                         <small>
                           {label(r.trace)} ·{" "}
-                          {tab === "readings" ? r.match_basis : r.nep?.id ?? r.house?.id ?? r.api?.id}
+                          {r.nep?.id ?? r.third?.id ?? r.second?.id ?? r.api?.id}
                         </small>
                       )}
+                      {tab !== "gaps" && <small>House: {label(r.reading_status)}{r.reading_status === "repeated_key" ? ` · ${r.match_basis}` : ""}</small>}
                       {tab !== "paps" && (officeLabels(r).length
                         ? officeLabels(r).map(text => <small key={text}>{text}</small>)
                         : <small>No recorded office</small>)}
@@ -384,27 +386,24 @@ export default function Comparison({ route }) {
                         />
                       ))
                     )}
-                    {tab === "readings" && <td className={`num ${r.delta_php > 0 ? "up" : r.delta_php < 0 ? "down" : ""}`}>
-                      {r.delta_php > 0 ? "+" : ""}{amount(r.delta_php)}
+                    {tab !== "gaps" && <td className={`num ${r.reading_delta_php > 0 ? "up" : r.reading_delta_php < 0 ? "down" : ""}`}>
+                      {r.reading_delta_php > 0 ? "+" : ""}{amount(r.reading_delta_php)}
                     </td>}
                     <td>
                       {tab === "paps" ? (
                         <>
                           {sourceButtons("nep", [r.nep_page], r.label)}
-                          {sourceButtons("house", r.house_pages, r.label)}
+                          {sourceButtons("house-second", r.second_pages, r.label)}
+                          {sourceButtons("house-third", r.third_pages, r.label)}
                         </>
                       ) : tab === "gaps" ? (
                         sourceButtons("nep", [r.pdf_page], r.title)
-                      ) : tab === "readings" ? (
-                        <>
-                          {sourceButtons("house-second", r.second?.pdf_pages, r.title)}
-                          {sourceButtons("house-third", r.third?.pdf_pages, r.title)}
-                        </>
                       ) : (
                         <>
                           {sourceButtons("nep", [r.nep?.pdf_page], r.title)}
-                          {sourceButtons("house", [r.house?.pdf_page], r.title)}
-                          {!r.nep?.pdf_page && !r.house?.pdf_page && (
+                          {sourceButtons("house-second", r.second?.pdf_pages, r.title)}
+                          {sourceButtons("house-third", r.third?.pdf_pages, r.title)}
+                          {!r.nep?.pdf_page && !r.second?.pdf_page && !r.third?.pdf_page && (
                             <small>No PDF page recorded</small>
                           )}
                         </>

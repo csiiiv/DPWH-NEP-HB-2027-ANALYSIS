@@ -127,3 +127,20 @@ unchanged between second and third readings; the reading comparison's PAP
 controls include that zero-delta FAP row. FAP is outside the Transparency
 listing scope, so its API amount and API-to-NEP change are unavailable.
 The 44 balanced local House PAP count continues to describe local controls.
+
+## Combined comparison display
+
+PAP totals and Project records now include explicit HGAB2 and HGAB3 columns,
+with HGAB3-minus-HGAB2 beside Transparency and NEP. The latest House reading is
+HGAB3; the earlier generic House column represented HGAB2. All rows are shown
+by default. The `change` URL parameter filters House changes on either table;
+legacy `view=readings` links translate to the combined Project records view.
+
+The adapter attaches the audited reading ledger through each second-reading
+record's retained `source_record_id`. It consumes every HGAB2 allocation once,
+keeps repeated keys grouped, and adds third-only records. Both House columns
+reconcile independently to their operations controls; NEP/API amounts are
+preserved. Project rows total 18,440, including one grouped repeated House key.
+The 46 PAP/FAP rows likewise reconcile, with two changed PAP controls (+₱68M
+flood maintenance, +₱66M BIP access roads). Unmapped House controls remain
+unavailable. PAP PDF references now carry each reading's printed heading pages.
