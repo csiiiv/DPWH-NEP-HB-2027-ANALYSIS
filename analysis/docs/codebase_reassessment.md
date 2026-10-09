@@ -133,8 +133,10 @@ A post-archive defect encoded `${s.page}` in the homepage template, causing all
 runtime source-card links to point to nonexistent pages. Earlier post-archive
 browser coverage loaded viewers directly; it did not establish that the
 homepage links worked. The correction restores template interpolation and makes
-the existing sortable stage comparison directly visible alongside House/NEP
-candidates and the detailed NEP tree.
+the existing sortable stage comparison directly visible. The simplified homepage
+now contains three source cards, one stage-comparison entry, and README links.
+Earlier House/NEP candidates and the detailed NEP tree remain available through
+the workbench README; the archive is also documented there.
 
 The publication checks now execute the packaged homepage script and resolve its
 rendered URLs under the GitHub Pages project prefix. An encoded-placeholder

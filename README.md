@@ -6,8 +6,9 @@ and the saved BetterGov API project snapshot.
 
 **Current phase:** [verify the independent source hierarchies first](analysis/docs/source_hierarchy_verification.md).
 The [static overview](site/index.html) now leads with Native House I-B, NEP source,
-and the retained DPWH Transparency NEP API tree. Arithmetic, evidence, coverage,
-and scope are shown separately; comparisons remain deferred.
+and the retained DPWH Transparency NEP API tree, followed by one sortable stage
+comparison. Source certification remains open; comparison results are provisional.
+Additional retained viewers and historical material are indexed in the workbench README.
 
 Start with [analysis/README.md](analysis/README.md) (folder map + settled baselines),
 then [the verification workflow](analysis/docs/source_hierarchy_verification.md),

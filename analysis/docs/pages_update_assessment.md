@@ -90,3 +90,19 @@ runs this test after packaging. Browser validation follows all seven rendered
 source, review, and comparison links at 390px and 1440px under the project prefix,
 checks rendered local downloads, and exercises delta/percent sort controls in
 both PAP and project tables.
+
+
+## Simplified homepage — 9 October 2026
+
+The landing page now has three concise source-verification cards, a direct entry
+to the sortable stage comparison, and links to both READMEs and the repository.
+It keeps each source’s total, arithmetic status, rollup count, and the NEP review
+shortcut. A single note states that source review/coverage remain open and
+comparisons are provisional.
+
+The repeated verification table, next-work list, archive disclosure, older
+House/NEP comparison card, detailed NEP card, and build-download footer links
+have been removed from the homepage. The retained detail/comparison pages and
+archive remain discoverable in the workbench README. Source data and the six
+packaged viewers are unchanged. Navigation regressions check that only the
+current stage comparison appears in the homepage comparison section.

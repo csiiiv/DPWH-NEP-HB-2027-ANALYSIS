@@ -39,11 +39,12 @@ test('encoded template regression is rejected after rendering', () => {
   assert.throws(() => renderedSourceLinks(corrupted).forEach(assertHostedTarget), /Unexpanded URL/);
 });
 
-test('sortable comparison and current detail pages are visible outside archive disclosure', () => {
-  const section = html.match(/<section id="comparisons">([\s\S]*?)<\/section>/)[1];
-  assert.ok(html.indexOf('<section id="comparisons">') < html.indexOf('<details>'));
+test('homepage focuses on current sources and the sortable stage comparison', () => {
+  const section = html.match(/<section id="comparisons"[^>]*>([\s\S]*?)<\/section>/)[1];
   const links = [...section.matchAll(/href="([^"]+)"/g)].map(match => match[1]);
-  assert.deepEqual(links, ['analysis/stage_trace_2027.html', 'analysis/source_comparison_2027.html', 'analysis/nep_2027_tree.html']);
+  assert.deepEqual(links, ['analysis/stage_trace_2027.html']);
   links.forEach(assertHostedTarget);
   assert.match(section, /delta, or percent change/);
+  assert.doesNotMatch(html, /source_comparison_2027\.html|nep_2027_tree\.html|analysis\/archive|Verification checklist|Next work/);
+  assert.match(html, /differences remain provisional/);
 });
