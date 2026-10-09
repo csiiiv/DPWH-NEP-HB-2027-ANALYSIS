@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { loadData, sourceReference, siteUrl, repo } from "./data.js";
-import { amount, selectRows, values, officeOptions, warmSearchIndex, matchesProgram, programLabel } from "./model.js";
+import { amount, metric, selectRows, values, officeOptions, warmSearchIndex, matchesProgram, programLabel } from "./model.js";
 import {suggestedCounterparts} from "./suggestedCounterparts.js";
 import {regionCandidates} from "./regionCandidates.js";
 import {officeAssignments} from "../../viewers/project_offices.mjs";
@@ -432,6 +432,7 @@ export default function Comparison({ route }) {
                         <Money
                           key={index}
                           value={value}
+                          prior={values(r, tab)[index - 1]}
                           caption={tableNames[index]}
                         />
                       ))
@@ -577,8 +578,12 @@ function Filter({ label: caption, rows, field, value, set, extraOptions=[] }) {
     </label>
   );
 }
-function Money({value,caption}) {
- return <td className="num" data-label={caption} title={value==null?'No amount recorded':`${value.toLocaleString('en-PH')} PHP`}><strong>{amount(value)}</strong></td>;
+function Money({value,prior,caption}) {
+ const delta=metric(value,prior,'delta'),percent=metric(value,prior,'percent');
+ return <td className="num" data-label={caption} title={value==null?'No amount recorded':`${value.toLocaleString('en-PH')} PHP`}>
+  <strong>{amount(value)}</strong>
+  {delta!=null && <small className={`delta ${delta>0?'up':delta<0?'down':''}`}>Δ {delta>0?'+':''}{amount(delta)} ({percent==null?'n/a':`${percent>0?'+':''}${percent.toFixed(1)}%`})</small>}
+ </td>;
 }
 
 function StatusInfo({info,fallback}) {
