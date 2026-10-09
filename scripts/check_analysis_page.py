@@ -31,6 +31,25 @@ with tempfile.TemporaryDirectory() as folder:
                 office=page.get_by_role('region',name='Central Office vs DEOs',exact=True)
                 expect(office).to_contain_text(f"{data['sources']['third']['offices']['Central Office']['records']:,}")
                 expect(office).to_contain_text('No recorded office')
+                # Column sorting: click Category for ascending, again for
+                # descending, again to clear back to the default order.
+                office.get_by_role('button',name='Category',exact=True).click()
+                expect(office.locator('tbody th').first).to_have_text('Central Office')
+                expect(office.locator('thead th').first).to_have_attribute('aria-sort','ascending')
+                office.get_by_role('button',name='Category',exact=True).click()
+                expect(office.locator('tbody th').first).not_to_have_text('Central Office')
+                expect(office.locator('thead th').first).to_have_attribute('aria-sort','descending')
+                office.get_by_role('button',name='Category',exact=True).click()
+                expect(office.locator('thead th').first).to_have_attribute('aria-sort','none')
+                office.get_by_role('button',name='Allocation (PHP)',exact=True).click()
+                expected_office=max(data['sources']['third']['offices'].items(),key=lambda item:item[1]['amount_php'])[0]
+                expect(office.locator('tbody th').first).to_have_text(expected_office)
+                descending=office.locator('tbody th').all_text_contents()
+                office.get_by_role('button',name='Allocation (PHP)',exact=True).click()
+                expect(office.locator('thead th').last).to_have_attribute('aria-sort','ascending')
+                assert office.locator('tbody th').all_text_contents()==list(reversed(descending))
+                office.get_by_role('button',name='Allocation (PHP)',exact=True).click()
+                expect(office.locator('thead th').last).to_have_attribute('aria-sort','none')
                 expect(page.get_by_role('region',name='Records by program',exact=True)).to_contain_text('FAPs')
                 # Overview must stay light: no lazy detail fetch on this view.
                 assert not any('comparison_projects_2027.json' in url for url in requests),requests
@@ -54,6 +73,14 @@ with tempfile.TemporaryDirectory() as folder:
                 page.goto(base+'#analysis?view=adjustments',wait_until='networkidle')
                 expect(page.get_by_role('region',name='Reading adjustments',exact=True).locator('tbody tr')).to_have_count(5)
                 expect(page.get_by_role('region',name='Top House vs NEP differences',exact=True).locator('tbody tr').first).to_be_visible(timeout=60000)
+                differences=page.get_by_role('region',name='Top House vs NEP differences',exact=True)
+                expect(differences.locator('thead th').last).to_have_attribute('aria-sort','descending')
+                differences.get_by_role('button',name='House',exact=True).click()
+                expect(differences.locator('thead th').nth(1)).to_have_attribute('aria-sort','descending')
+                house_values=differences.locator('tbody tr td:first-of-type').evaluate_all("cells => cells.map(c => Number(c.querySelector('[title]').title.replace(/[^0-9.-]/g, '')))")
+                assert house_values==sorted(house_values,reverse=True),house_values
+                page.get_by_label('Revision direction',exact=True).select_option('reduced')
+                expect(differences.locator('thead th').last).to_have_attribute('aria-sort','ascending')
                 assert any('comparison_projects_2027.json' in url for url in requests)
                 page.screenshot(path=f'/tmp/analysis-adjustments-{width}.png')
                 # Statistics subtab: descriptive lenses render from the same lazy payload.

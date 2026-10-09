@@ -3,6 +3,7 @@ import {loadData} from './data.js';
 import {amount} from './model.js';
 import {routeHref} from './routes.js';
 import ShareLink from './ShareLink.jsx';
+import SortableTable from './SortableTable.jsx';
 import {benford,trailingZeros,lastDigits,roundingLadder,valueBands,kmeansClusters,exactConcentrations} from './analysisStats.js';
 const names={third:'HGAB3 · 3rd reading',second:'HGAB2 · 2nd reading',nep:'DBM NEP',api:'DPWH Transparency NEP'};
 const labels={'Bridge Program':'Bridges','Convergence and Special Support Program':'CSSP','Foreign-assisted projects':'FAPs'};
@@ -12,6 +13,7 @@ const views=[['overview','Overview'],['insertions','Insertions'],['adjustments',
 const dimensions=[['overall','Overall'],['region','Region'],['office','District office'],['program','Category'],['pap','PAP']];
 const pick=(params,key,allowed,fallback)=>allowed.includes(params.get(key))?params.get(key):fallback;
 const dimensionTitle=dim=>dim==='office'?'district office':dim==='pap'?'PAP':dim;
+const amountCell=(value,title)=><span title={(title??(value?.toLocaleString('en-PH')??''))+' PHP'}>{amount(value)}</span>;
 export default function Analysis({route}){
  const [data,setData]=useState(null),[detail,setDetail]=useState(null),[error,setError]=useState('');
  const view=pick(route.params,'view',views.map(v=>v[0]),'overview');
@@ -30,23 +32,23 @@ export default function Analysis({route}){
  function change(key,value){const params=Object.fromEntries(route.params);params[key]=value;window.location.hash=routeHref('analysis',params);}
  if(error)return <p role="alert">{error}</p>;
  if(!data)return <p role="status">Loading analysis…</p>;
- const reading=['second','third'].includes(source)?source:'third';
  const stats=data.headlines.sources[source];
- const needsDetail=['revisions','statistics'].includes(view)&&!detail;
+ const needsDetail=['adjustments','statistics'].includes(view)&&!detail;
  return <div className="headline-analysis">
   <p className="eyebrow">DPWH · FY2027</p><h1>Analysis</h1>
   <p>Office assignments, program allocations and review candidates from the retained budget records.</p>
   <div className="analysis-controls"><label>Budget source<select aria-label="Analysis budget source" value={source} onChange={e=>change('source',e.target.value)}>{Object.entries(names).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label><ShareLink /></div>
   <nav className="analysis-subtabs" role="tablist" aria-label="Analysis views">{views.map(([key,title])=>
    <button key={key} role="tab" aria-selected={view===key} onClick={()=>change('view',key)}>{title}</button>)}</nav>
-  <p className="notice">Counts refer to source allocation records, including grouped members, rather than unique projects across stages. Office assignments come from the selected source; missing assignments are shown separately. Scope: operations, including local and foreign-assisted projects. Transparency reflects its retained listing.</p>
+  <p className="notice">Counts refer to source allocation records, including grouped members, rather than unique projects across stages. Office assignments come from the selected source; missing assignments are shown separately. Scope: operations, including local and foreign-assisted projects. Transparency reflects its retained listing. Tables sort on any column.</p>
   {needsDetail&&<p role="status">Loading per-record data…</p>}
   {view==='overview'&&<Overview stats={stats} source={source}/>}
-  {view==='insertions'&&<Insertions headlines={data.headlines} reading={reading} ranking={ranking} dim={dim} change={change}/>}
-  {view==='adjustments'&&detail&&<Revisions detail={detail} revisionSets={data.headlines.revisionSets} dim={dim} direction={direction} change={change}/>}
+  {view==='insertions'&&<Insertions headlines={data.headlines} reading={reading(source)} ranking={ranking} dim={dim} change={change}/>}
+  {view==='adjustments'&&detail&&<Adjustments detail={detail} revisionSets={data.headlines.revisionSets} dim={dim} direction={direction} change={change}/>}
   {view==='statistics'&&detail&&<Statistics detail={detail} source={source} dim={dim} change={change}/>}
  </div>;
 }
+const reading=source=>['second','third'].includes(source)?source:'third';
 function DimensionChips({dim,change}){
  return <div className="dimension-chips" role="group" aria-label="Break down by">{dimensions.map(([key,title])=>
   <button key={key} className={dim===key?'active':''} aria-pressed={dim===key} onClick={()=>change('dim',key)}>{title}</button>)}</div>;
@@ -56,14 +58,22 @@ function Overview({stats,source}){
   <div className="cards analysis-headlines"><article><h3>Source allocation records</h3><strong>{stats.records.toLocaleString()}</strong><p>{names[source]}</p></article><article><h3>Allocated amount</h3><strong>{amount(stats.amount_php)}</strong><p>PHP · selected source only</p></article><article><h3>Central Office / DEOs</h3><strong>{stats.offices['Central Office'].records.toLocaleString()} / {stats.offices['District engineering offices (DEOs)'].records.toLocaleString()}</strong><p>Allocation records · regional and missing offices separate</p></article></div>
   <div className="analysis-distributions"><Distribution title="Central Office vs DEOs" buckets={stats.offices} total={stats.records}/><Distribution title="Records by program" buckets={stats.programs} total={stats.records}/></div>
   <section className="analysis-section"><h2>Explore further</h2><div className="analysis-crosslinks">
-   <a href={routeHref('analysis',{view:'insertions'})}>Insertion candidates by region, office and category →</a>
+   <a href={routeHref('analysis',{view:'insertions'})}>Insertion candidates by region, office, category and PAP →</a>
    <a href={routeHref('analysis',{view:'adjustments'})}>Reading adjustments and cross-document differences →</a>
    <a href={routeHref('analysis',{view:'statistics'})}>Rounding, Benford and value clustering →</a>
   </div></section>
  </>;
 }
 function Distribution({title,buckets,total}){
- return <section className="analysis-section"><h2>{title}</h2><div className="table-scroll" tabIndex={0} role="region" aria-label={title}><table><thead><tr><th>Category</th><th>Allocation records</th><th>Share of records</th><th>Allocation (PHP)</th></tr></thead><tbody>{Object.entries(buckets).map(([key,b])=><tr key={key}><th scope="row">{short(key)}</th><td className="num">{b.records.toLocaleString()}</td><td className="num">{total?(b.records/total*100).toFixed(1):'0.0'}%</td><td className="num" title={b.amount_php.toLocaleString('en-PH')+' PHP'}>{amount(b.amount_php)}</td></tr>)}</tbody></table></div></section>;
+ const rows=Object.entries(buckets).map(([key,b])=>({id:key,label:short(key),records:b.records,share:b.records/(total||1),amount_php:b.amount_php}));
+ return <section className="analysis-section"><h2>{title}</h2>
+  <SortableTable ariaLabel={title} initialSort={{key:'amount_php',direction:'desc'}} rows={rows} columns={[
+   {key:'label',label:'Category',scope:'row'},
+   {key:'records',label:'Allocation records',align:'num'},
+   {key:'share',label:'Share of records',align:'num',render:r=><span>{(r.share*100).toFixed(1)}%</span>},
+   {key:'amount_php',label:'Allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
+  ]}/>
+ </section>;
 }
 function Insertions({headlines,reading,ranking,dim,change}){
  const list=headlines.rankings[reading][ranking];
@@ -73,33 +83,53 @@ function Insertions({headlines,reading,ranking,dim,change}){
   <p className="muted">Ranked by {names[reading]} allocation · top 20 of {list.comparison_rows.toLocaleString()} comparison rows · {amount(list.amount_php)} across this group. Grouped allocations remain grouped.</p>
   <p className="notice">{ranking==='no_suggestion'?'House records with no attached NEP/Transparency source and no retained NEP suggestion. These are review candidates, not confirmed insertions.':ranking==='unresolved'?'House records with possible or ambiguous NEP counterparts are separated from the no-suggestion list. Review their suggestions before claiming an insertion.':'Records present only in HGAB3 under the retained reading key. This shows a reading difference, not confirmed absence from NEP.'} Unique different-region title candidates are linked for review and excluded from the House-only groups.</p>
   {dim!=='overall'&&<AggregateTable title={`Totals by ${dimensionTitle(dim)}`} groups={list.by_dim[dim]}/>}
-  <div className="table-scroll" role="region" aria-label="Top insertion candidates" tabIndex={0}><table><thead><tr><th>Rank</th><th>Project / assignment</th><th>Allocation (PHP)</th><th>Records / status</th><th>Review</th></tr></thead><tbody>{list.top.map((r,i)=><tr key={r.id}><td>{i+1}</td><th scope="row">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {r.region} · {r.office||'No recorded office'}</small></th><td className="num" title={r.amount_php.toLocaleString('en-PH')+' PHP'}>{amount(r.amount_php)}</td><td>{r.allocation_records} source allocation {r.allocation_records===1?'record':'records'}<small>{r.trace.replaceAll('_',' ')}</small></td><td><a href={routeHref('compare',{view:'projects',region_match:'ignore',q:r.id,record:r.id})}>Review comparison</a><br/><a href={routeHref('house',{view:'projects',reading:reading==='third'?'third':'second',node:r.source_id})}>{r.allocation_records>1?'House source tree · first allocation':'House source tree'}</a></td></tr>)}</tbody></table></div>
-  {!list.top.length && <p>No records in this group for the selected House reading.</p>}
+  <SortableTable ariaLabel="Top insertion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
+   {key:'rank',label:'#',sortable:false,render:(r,i)=><span>{i+1}</span>},
+   {key:'title',label:'Project / assignment',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {r.region} · {r.office||'No recorded office'}</small></span>},
+   {key:'amount_php',label:'Allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
+   {key:'allocation_records',label:'Records / status',align:'num',render:r=><span>{r.allocation_records} source allocation {r.allocation_records===1?'record':'records'}<small>{r.trace.replaceAll('_',' ')}</small></span>},
+   {key:'review',label:'Review',sortable:false,render:r=><span><a href={routeHref('compare',{view:'projects',region_match:'ignore',q:r.id,record:r.id})}>Review comparison</a><br/><a href={routeHref('house',{view:'projects',reading:reading==='third'?'third':'second',node:r.source_id})}>{r.allocation_records>1?'House source tree · first allocation':'House source tree'}</a></span>},
+  ]} empty="No records in this group for the selected House reading."/>
  </section>;
 }
 function AggregateTable({title,groups}){
  if(!groups?.length)return null;
- const total=groups.reduce((sum,g)=>sum+g.amount_php,0);
- return <div className="table-scroll aggregate-table" role="region" aria-label={title} tabIndex={0}><h3>{title} · top {groups.length}</h3><table><thead><tr><th>Group</th><th>Rows</th><th>Allocation (PHP)</th></tr></thead><tbody>{groups.map(g=><tr key={g.label}><th scope="row">{short(g.label)??g.label}</th><td className="num">{g.rows.toLocaleString()}</td><td className="num" title={g.amount_php.toLocaleString('en-PH')+' PHP'}>{amount(g.amount_php)}</td></tr>)}</tbody></table></div>;
+ return <div className="aggregate-table"><h3>{title} · top {groups.length}</h3>
+  <SortableTable ariaLabel={title} initialSort={{key:'amount_php',direction:'desc'}} rows={groups.map(g=>({...g,id:g.label}))} columns={[
+   {key:'label',label:'Group',scope:'row'},
+   {key:'rows',label:'Rows',align:'num'},
+   {key:'amount_php',label:'Allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
+  ]}/>
+ </div>;
 }
-function Revisions({detail,revisionSets,dim,direction,change}){
+function Adjustments({detail,revisionSets,dim,direction,change}){
  const cross=useMemo(()=>detail.filter(r=>['candidate_increase','candidate_decrease','transparency_gap_then_candidate_increase','transparency_gap_then_candidate_decrease'].includes(r.trace))
   .map(r=>({...r,gap:houseMinusNep(r)})).filter(r=>r.gap!==null),[detail]);
- const shown=useMemo(()=>[...cross].sort((a,b)=>direction==='increased'?b.gap-a.gap:a.gap-b.gap),[cross,direction]);
+ const shown=useMemo(()=>direction==='increased'?[...cross].sort((a,b)=>b.gap-a.gap):[...cross].sort((a,b)=>a.gap-b.gap),[cross,direction]);
  const byDim=useMemo(()=>dim==='overall'?null:aggregate(cross.map(r=>{const house=r.third??r.second;
   return {amount_php:Math.abs(r.gap),region:r.region,office:house?.office??r.nep?.office??'',program:r.program,pap:r.pap};}),dim),[cross,dim]);
  return <>
   <section className="analysis-section"><h2>Reading adjustments · HGAB3 vs HGAB2</h2>
    <p className="notice">Recorded 2nd→3rd reading differences under the retained matching key: {revisionSets.reading.length.toLocaleString()} rows · net {amount(revisionSets.delta_php)}. Repeated keys remain grouped.</p>
-   <div className="table-scroll" role="region" aria-label="Reading adjustments" tabIndex={0}><table><thead><tr><th>Project</th><th>HGAB2</th><th>HGAB3</th><th>Δ</th></tr></thead><tbody>{revisionSets.reading.map(r=><tr key={r.id}><th scope="row">{r.title}<small>{short(r.program)} · {r.region}</small></th><td className="num">{r.second_php!=null?amount(r.second_php):'—'}</td><td className="num">{r.third_php!=null?amount(r.third_php):'—'}</td><td className="num">{r.reading_delta_php!=null?amount(r.reading_delta_php):'new in HGAB3'}</td></tr>)}</tbody></table></div>
+   <SortableTable ariaLabel="Reading adjustments" initialSort={{key:'reading_delta_php',direction:'desc'}} rows={revisionSets.reading} columns={[
+    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {r.region}</small></span>},
+    {key:'second_php',label:'HGAB2',align:'num',render:r=>r.second_php!=null?amountCell(r.second_php):<span>—</span>},
+    {key:'third_php',label:'HGAB3',align:'num',render:r=>r.third_php!=null?amountCell(r.third_php):<span>—</span>},
+    {key:'reading_delta_php',label:'Δ',align:'num',render:r=>r.reading_delta_php!=null?amountCell(r.reading_delta_php):<span>new in HGAB3</span>},
+   ]}/>
   </section>
   <section className="analysis-section"><h2>House vs NEP differences · provisional identity</h2>
    <DimensionChips dim={dim} change={change}/>
    <div className="analysis-controls"><label>Direction<select aria-label="Revision direction" value={direction} onChange={e=>change('direction',e.target.value)}><option value="increased">Most increased (House above NEP)</option><option value="reduced">Most reduced (House below NEP)</option></select></label></div>
-   <p className="muted">{cross.length.toLocaleString()} comparison rows · {amount(cross.reduce((sum,r)=>sum+Math.abs(r.gap),0))} aggregate absolute difference.</p>
+   <p className="muted">{cross.length.toLocaleString()} comparison rows · {amount(cross.reduce((sum,r)=>sum+Math.abs(r.gap),0))} aggregate absolute difference. Direction presets the sort; click any column to re-sort.</p>
    <p className="notice">These rows carry exact House/NEP candidate pairs with unequal amounts. Identity is proposed by title/scope matching and is not manually certified; the House−NEP gap often reflects GAA-like versus full-project-cost bases, especially for FAPs. This is a cross-document comparison, not a House reading change.</p>
    {byDim&&<AggregateTable title={`Differences by ${dimensionTitle(dim)}`} groups={byDim}/>}
-   <div className="table-scroll" role="region" aria-label="Top House vs NEP differences" tabIndex={0}><table><thead><tr><th>Project</th><th>House</th><th>NEP</th><th>House − NEP</th></tr></thead><tbody>{shown.slice(0,20).map(r=>{const house=r.third??r.second;return <tr key={r.id}><th scope="row">{r.title}<small>{short(r.program)} · {r.region} · {r.trace.replaceAll('_',' ')}</small></th><td className="num">{house?amount(house.amount_php):'—'}</td><td className="num">{amount(r.nep.amount_php)}</td><td className="num">{amount(r.gap)}</td></tr>;})}</tbody></table></div>
+   <SortableTable ariaLabel="Top House vs NEP differences" initialSort={{key:'gap',direction:direction==='increased'?'desc':'asc'}} rows={shown.slice(0,20)} columns={[
+    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {r.region} · {r.trace.replaceAll('_',' ')}</small></span>},
+    {key:'house_php',label:'House',align:'num',value:r=>(r.third??r.second)?.amount_php,render:r=>{const house=r.third??r.second;return house?amountCell(house.amount_php):<span>—</span>;}},
+    {key:'nep_php',label:'NEP',align:'num',value:r=>r.nep?.amount_php,render:r=>amountCell(r.nep.amount_php)},
+    {key:'gap',label:'House − NEP',align:'num',render:r=>amountCell(r.gap)},
+   ]}/>
   </section>
  </>;
 }
@@ -139,7 +169,11 @@ function Statistics({detail,source,dim,change}){
   <p className="notice">These are descriptive lenses for targeting review, not fraud tests. Appropriations are policy numbers: round values are expected, and print conventions (thousands, memo amounts) can drive digit patterns. Benford conformity is not evidence of correctness, and deviation is not evidence of wrongdoing.</p>
   <section className="analysis-section"><h2>Rounding pattern</h2>
    <p className="muted">Share of {amounts.length.toLocaleString()} allocation records at each rounding granularity.</p>
-   <div className="table-scroll" role="region" aria-label="Rounding pattern" tabIndex={0}><table><thead><tr><th>Granularity</th><th>Records</th><th>Share</th></tr></thead><tbody>{ladder.map(e=><tr key={e.step}><th scope="row">{amount(e.step)}</th><td className="num">{e.records.toLocaleString()}</td><td className="num">{(e.share*100).toFixed(1)}%</td></tr>)}</tbody></table></div>
+   <SortableTable ariaLabel="Rounding pattern" initialSort={{key:'step',direction:'asc'}} rows={ladder} columns={[
+    {key:'step',label:'Granularity',scope:'row',value:r=>r.step,render:r=><span>{amount(r.step)}</span>},
+    {key:'records',label:'Records',align:'num'},
+    {key:'share',label:'Share',align:'num',render:r=><span>{(r.share*100).toFixed(1)}%</span>},
+   ]}/>
   </section>
   <section className="analysis-section"><h2>Benford first-digit</h2>
    <p className="muted">Observed vs expected leading-digit share · mean absolute deviation {ben.mad.toFixed(4)}.</p>
@@ -155,16 +189,37 @@ function Statistics({detail,source,dim,change}){
   </section></div>
   <section className="analysis-section"><h2>Value bands and clusters</h2>
    <p className="muted">Fixed peso bands and deterministic k-means clusters on log amounts.</p>
-   <div className="analysis-columns"><div className="table-scroll" role="region" aria-label="Value bands" tabIndex={0}><table><thead><tr><th>Band</th><th>Records</th><th>Share</th><th>Amount</th></tr></thead><tbody>{bands.map(b=><tr key={b.label}><th scope="row">{b.label}</th><td className="num">{b.records.toLocaleString()}</td><td className="num">{(b.share*100).toFixed(1)}%</td><td className="num">{amount(b.amount_php)}</td></tr>)}</tbody></table></div>
-   <div className="table-scroll" role="region" aria-label="K-means clusters" tabIndex={0}><table><thead><tr><th>Cluster center</th><th>Share of records</th></tr></thead><tbody>{clusters.map((c,i)=><tr key={i}><th scope="row">{amount(c.center_php)}</th><td className="num">{(c.share*100).toFixed(1)}%</td></tr>)}</tbody></table></div></div>
+   <div className="analysis-columns"><div>
+   <SortableTable ariaLabel="Value bands" initialSort={{key:'order',direction:'asc'}} rows={bands.map((b,i)=>({...b,id:`band-${i}`,order:i}))} columns={[
+    {key:'label',label:'Band',scope:'row'},
+    {key:'records',label:'Records',align:'num'},
+    {key:'share',label:'Share',align:'num',render:r=><span>{(r.share*100).toFixed(1)}%</span>},
+    {key:'amount_php',label:'Amount',align:'num',render:r=>amountCell(r.amount_php)},
+   ]}/>
+   </div><div>
+   <SortableTable ariaLabel="K-means clusters" initialSort={{key:'share',direction:'desc'}} rows={clusters.map((c,i)=>({...c,id:`cluster-${i}`}))} columns={[
+    {key:'center_php',label:'Cluster center',scope:'row',render:r=><span>{amount(r.center_php)}</span>},
+    {key:'share',label:'Share of records',align:'num',render:r=><span>{(r.share*100).toFixed(1)}%</span>},
+   ]}/>
+   </div></div>
   </section>
   {dim!=='overall'&&deviants&&<section className="analysis-section"><h2>Deviant subsets · by {dimensionTitle(dim)}</h2>
    <p className="muted">Groups with at least 100 records, ranked by million-round share against the overall baseline ({(amounts.filter(v=>v%1e6===0).length/amounts.length*100).toFixed(1)}%).</p>
-   <div className="table-scroll" role="region" aria-label="Deviant subsets" tabIndex={0}><table><thead><tr><th>Group</th><th>Records</th><th>Million-round share</th><th>vs overall</th></tr></thead><tbody>{deviants.map(d=><tr key={d.label}><th scope="row">{short(d.label)??d.label}</th><td className="num">{d.records.toLocaleString()}</td><td className="num">{(d.share*100).toFixed(1)}%</td><td className="num">{d.deviation>=0?'+':''}{(d.deviation*100).toFixed(1)} pts</td></tr>)}</tbody></table></div>
+   <SortableTable ariaLabel="Deviant subsets" initialSort={{key:'deviation',direction:'desc'}} rows={deviants} columns={[
+    {key:'label',label:'Group',scope:'row'},
+    {key:'records',label:'Records',align:'num'},
+    {key:'share',label:'Million-round share',align:'num',render:r=><span>{(r.share*100).toFixed(1)}%</span>},
+    {key:'deviation',label:'vs overall',align:'num',render:r=><span>{r.deviation>=0?'+':''}{(r.deviation*100).toFixed(1)} pts</span>},
+   ]}/>
   </section>}
   <section className="analysis-section"><h2>Exact repeated amounts · blanket fixed allocations</h2>
    <p className="muted">Where many line items share one exact peso value (≥5 repeats), grouped by {dimensionTitle(dim==='overall'?'program':dim)}.</p>
-   {concentrations.length?<div className="table-scroll" role="region" aria-label="Exact repeated amounts" tabIndex={0}><table><thead><tr><th>Group</th><th>Exact amount</th><th>Line items</th><th>Examples</th></tr></thead><tbody>{concentrations.map((e,i)=><tr key={i}><th scope="row">{short(e.group)??e.group}</th><td className="num">{amount(e.amount_php)}</td><td className="num">{e.records}</td><td><small>{e.examples.join(' · ')}</small></td></tr>)}</tbody></table></div>:<p>No exact-value concentration at this threshold.</p>}
+   {concentrations.length?<SortableTable ariaLabel="Exact repeated amounts" initialSort={{key:'records',direction:'desc'}} rows={concentrations.map((e,i)=>({...e,id:`conc-${i}`}))} columns={[
+    {key:'group',label:'Group',scope:'row'},
+    {key:'amount_php',label:'Exact amount',align:'num',render:r=>amountCell(r.amount_php)},
+    {key:'records',label:'Line items',align:'num'},
+    {key:'examples',label:'Examples',sortable:false,render:r=><small className="cell-inline">{r.examples.join(' · ')}</small>},
+   ]}/>:<p>No exact-value concentration at this threshold.</p>}
   </section>
  </>;
 }
