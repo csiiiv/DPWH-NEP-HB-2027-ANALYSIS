@@ -827,3 +827,8 @@ th.num .th-sort{justify-content:flex-end}
 .analysis-crosslinks{display:grid;gap:.5rem}
 .analysis-columns>div{min-width:0}
 @media(max-width:700px){.sortable-table table{min-width:0}.sortable-table thead th{white-space:normal}.sortable-table td.num,.sortable-table th.num{white-space:normal}}
+.group-open{border:0;background:none;padding:0;font:inherit;font-weight:600;color:#1f4d7a;text-decoration:underline;cursor:pointer;text-align:left}
+.group-open:hover{color:#123}
+.group-projects-dialog .group-projects-content{padding:12px 20px 20px;overflow:auto;flex:1;min-height:0}
+.group-projects-dialog .sortable-table{max-height:none}
+.group-projects-dialog .analytics-header .muted{margin:0 0 12px}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check Analysis subtabs, headlines, sharing and evidence links under a project prefix."""
 from pathlib import Path
-import sys,threading,tempfile,json
+import sys,threading,tempfile,json,re
 from functools import partial
 from http.server import ThreadingHTTPServer
 from playwright.sync_api import sync_playwright,expect
@@ -63,6 +63,12 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(page.get_by_role('region',name='Totals by PAP',exact=True)).to_contain_text('BIP')
                 page.get_by_role('button',name='Region',exact=True).click()
                 expect(page.get_by_role('region',name='Totals by region',exact=True)).to_contain_text('National Capital Region')
+                page.get_by_role('region',name='Totals by region',exact=True).get_by_role('button',name=re.compile(r'^Show ')).first.click()
+                dialog=page.get_by_role('dialog')
+                expect(dialog.get_by_role('heading')).to_contain_text('National Capital Region',timeout=60000)
+                expect(dialog.get_by_role('region',name='Group project records',exact=True).locator('tbody tr').first).to_be_visible()
+                dialog.get_by_role('button',name='Close group records',exact=True).click()
+                expect(dialog).to_have_count(0)
                 expect(page.get_by_role('button',name='District office',exact=True)).to_be_visible()
                 page.reload(wait_until='networkidle')
                 expect(page.get_by_role('tab',name='Insertions',exact=True)).to_have_attribute('aria-selected','true')
@@ -89,6 +95,13 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(by_region.get_by_role('columnheader',name='Total increased',exact=True)).to_be_visible()
                 expect(by_region.get_by_role('columnheader',name='Total decreased',exact=True)).to_be_visible()
                 expect(by_region.get_by_role('columnheader',name='Total change',exact=True)).to_be_visible()
+                by_region.get_by_role('button',name=re.compile(r'^Show ')).first.click()
+                dialog=page.get_by_role('dialog')
+                expect(dialog.get_by_role('heading')).to_be_visible(timeout=60000)
+                expect(dialog.get_by_role('region',name='Group project records',exact=True).locator('tbody tr').first).to_be_visible()
+                expect(dialog.get_by_role('link',name='Open closest filtered view in Compare stages →',exact=True)).to_be_visible()
+                dialog.get_by_role('button',name='Close group records',exact=True).click()
+                expect(dialog).to_have_count(0)
                 assert any('comparison_projects_2027.json' in url for url in requests)
                 page.screenshot(path=f'/tmp/analysis-adjustments-{width}.png')
                 # Statistics subtab: descriptive lenses render from the same lazy payload.

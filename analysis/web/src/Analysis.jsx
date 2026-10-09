@@ -1,11 +1,13 @@
-import React,{useEffect,useMemo,useState} from 'react';
+import React,{lazy,Suspense,useEffect,useMemo,useState} from 'react';
 import {loadData} from './data.js';
+import {hydrateProjects} from './comparisonData.js';
 import {amount} from './model.js';
 import {routeHref} from './routes.js';
 import ShareLink from './ShareLink.jsx';
 import SortableTable from './SortableTable.jsx';
 import {benford,trailingZeros,lastDigits,roundingLadder,valueBands,kmeansClusters,exactConcentrations} from './analysisStats.js';
 import {regionName} from './regionNames.js';
+const GroupProjectsModal=lazy(()=>import('./GroupProjectsModal.jsx'));
 const names={third:'HGAB3 · 3rd reading',second:'HGAB2 · 2nd reading',nep:'DBM NEP',api:'DPWH Transparency NEP'};
 const labels={'Bridge Program':'Bridges','Convergence and Special Support Program':'CSSP','Foreign-assisted projects':'FAPs'};
 const short=value=>labels[value]??value;
@@ -25,37 +27,39 @@ function percentChange(current,prior){
  return (current-prior)/Math.abs(prior)*100;
 }
 export default function Analysis({route}){
- const [data,setData]=useState(null),[detail,setDetail]=useState(null),[error,setError]=useState('');
+ const [data,setData]=useState(null),[detail,setDetail]=useState(null),[error,setError]=useState(''),[group,setGroup]=useState(null);
  const view=pick(route.params,'view',views.map(v=>v[0]),'overview');
  const source=pick(route.params,'source',Object.keys(names),'third');
  const ranking=pick(route.params,'ranking',Object.keys(modes),'no_suggestion');
  const dim=pick(route.params,'dim',dimensions.map(d=>d[0]),'overall');
  const direction=pick(route.params,'direction',['increased','reduced'],'increased');
  useEffect(()=>{const c=new AbortController();loadData('comparison_overview_2027.json',c.signal).then(setData).catch(e=>{if(e.name!=='AbortError')setError(e.message);});return()=>c.abort();},[]);
- // Detail rows load lazily only when a view needs per-record data.
+ // Detail rows load lazily for adjustments/statistics, or when a group modal opens.
  useEffect(()=>{
-  if(!['adjustments','statistics'].includes(view)||!data||detail)return;
+  if((!['adjustments','statistics'].includes(view)&&!group)||!data||detail)return;
   const c=new AbortController();loadData('comparison_projects_2027.json',c.signal)
-   .then(payload=>setDetail(payload.projects)).catch(e=>{if(e.name!=='AbortError')setError(e.message);});
+   .then(payload=>setDetail(hydrateProjects(payload))).catch(e=>{if(e.name!=='AbortError')setError(e.message);});
   return()=>c.abort();
- },[view,data,detail]);
+ },[view,data,detail,group]);
  function change(key,value){const params=Object.fromEntries(route.params);params[key]=value;window.location.hash=routeHref('analysis',params);}
+ function openGroup(next){setGroup(next);}
  if(error)return <p role="alert">{error}</p>;
  if(!data)return <p role="status">Loading analysis…</p>;
  const stats=data.headlines.sources[source];
- const needsDetail=['adjustments','statistics'].includes(view)&&!detail;
+ const needsDetail=(['adjustments','statistics'].includes(view)||group)&&!detail;
  return <div className="headline-analysis">
   <p className="eyebrow">DPWH · FY2027</p><h1>Analysis</h1>
   <p>Office assignments, program allocations and review candidates from the retained budget records.</p>
   <div className="analysis-controls"><label>Budget source<select aria-label="Analysis budget source" value={source} onChange={e=>change('source',e.target.value)}>{Object.entries(names).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label><ShareLink /></div>
   <nav className="analysis-subtabs" role="tablist" aria-label="Analysis views">{views.map(([key,title])=>
    <button key={key} role="tab" aria-selected={view===key} onClick={()=>change('view',key)}>{title}</button>)}</nav>
-  <p className="notice">Counts refer to source allocation records, including grouped members, rather than unique projects across stages. Office assignments come from the selected source; missing assignments are shown separately. Scope: operations, including local and foreign-assisted projects. Transparency reflects its retained listing. Tables sort on any column.</p>
+  <p className="notice">Counts refer to source allocation records, including grouped members, rather than unique projects across stages. Office assignments come from the selected source; missing assignments are shown separately. Scope: operations, including local and foreign-assisted projects. Transparency reflects its retained listing. Tables sort on any column. Click a group name to list its comparison rows.</p>
   {needsDetail&&<p role="status">Loading per-record data…</p>}
   {view==='overview'&&<Overview stats={stats} source={source}/>}
-  {view==='insertions'&&<Insertions headlines={data.headlines} reading={reading(source)} ranking={ranking} dim={dim} change={change}/>}
-  {view==='adjustments'&&detail&&<Adjustments detail={detail} revisionSets={data.headlines.revisionSets} dim={dim} direction={direction} change={change}/>}
+  {view==='insertions'&&<Insertions headlines={data.headlines} reading={reading(source)} ranking={ranking} dim={dim} change={change} onOpenGroup={openGroup}/>}
+  {view==='adjustments'&&detail&&<Adjustments detail={detail} revisionSets={data.headlines.revisionSets} dim={dim} direction={direction} change={change} onOpenGroup={openGroup}/>}
   {view==='statistics'&&detail&&<Statistics detail={detail} source={source} dim={dim} change={change}/>}
+  {group&&detail&&<Suspense fallback={null}><GroupProjectsModal projects={detail} group={group} onClose={()=>setGroup(null)}/></Suspense>}
  </div>;
 }
 const reading=source=>['second','third'].includes(source)?source:'third';
@@ -85,14 +89,15 @@ function Distribution({title,buckets,total}){
   ]}/>
  </section>;
 }
-function Insertions({headlines,reading,ranking,dim,change}){
+function Insertions({headlines,reading,ranking,dim,change,onOpenGroup}){
  const list=headlines.rankings[reading][ranking];
  return <section className="analysis-section"><h2>Top insertion candidates</h2>
   <div className="analysis-controls"><label>Candidate group<select aria-label="Analysis candidate group" value={ranking} onChange={e=>change('ranking',e.target.value)}>{Object.entries(modes).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></div>
   <DimensionChips dim={dim} change={change}/>
   <p className="muted">Ranked by {names[reading]} allocation · top {Math.min(100,list.comparison_rows).toLocaleString()} of {list.comparison_rows.toLocaleString()} comparison rows · {amount(list.amount_php)} across this group. Grouped allocations remain grouped.</p>
   <p className="notice">{ranking==='no_suggestion'?'House records with no attached NEP/Transparency source and no retained NEP suggestion. These are review candidates, not confirmed insertions.':ranking==='unresolved'?'House records with possible or ambiguous NEP counterparts are separated from the no-suggestion list. Review their suggestions before claiming an insertion.':'Records present only in HGAB3 under the retained reading key. This shows a reading difference, not confirmed absence from NEP.'} Unique different-region title candidates are linked for review and excluded from the House-only groups.</p>
-  {dim!=='overall'&&<AggregateTable title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}/>}
+  {dim!=='overall'&&<AggregateTable title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
+   onOpenGroup={g=>onOpenGroup({scope:'insertions',reading,ranking,dim,label:g.label,displayLabel:groupLabel(dim,g.label)})}/>}
   <SortableTable ariaLabel="Top insertion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
    {key:'rank',label:'#',sortable:false,render:(r,i)=><span>{i+1}</span>},
    {key:'title',label:'Project / assignment',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {regionName(r.region)} · {r.office||'No recorded office'}</small></span>},
@@ -102,17 +107,18 @@ function Insertions({headlines,reading,ranking,dim,change}){
   ]} empty="No records in this group for the selected House reading."/>
  </section>;
 }
-function AggregateTable({title,groups,dim}){
+function AggregateTable({title,groups,dim,onOpenGroup}){
  if(!groups?.length)return null;
  return <div className="aggregate-table"><h3>{title} · {groups.length.toLocaleString()} group{groups.length===1?'':'s'}</h3>
   <SortableTable ariaLabel={title} initialSort={{key:'amount_php',direction:'desc'}} rows={groups.map(g=>({...g,id:g.label}))} columns={[
-   {key:'label',label:'Group',scope:'row',render:r=><span>{groupLabel(dim,r.label)}</span>},
+   {key:'label',label:'Group',scope:'row',render:r=><button type="button" className="group-open" onClick={()=>onOpenGroup?.(r)}>{groupLabel(dim,r.label)}</button>},
    {key:'rows',label:'Rows',align:'num'},
    {key:'amount_php',label:'Allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
+   {key:'projects',label:'Projects',sortable:false,render:r=><button type="button" className="group-open" onClick={()=>onOpenGroup?.(r)}>Show {r.rows.toLocaleString()} rows</button>},
   ]}/>
  </div>;
 }
-function Adjustments({detail,revisionSets,dim,direction,change}){
+function Adjustments({detail,revisionSets,dim,direction,change,onOpenGroup}){
  const cross=useMemo(()=>detail.filter(r=>['candidate_increase','candidate_decrease','transparency_gap_then_candidate_increase','transparency_gap_then_candidate_decrease'].includes(r.trace))
   .map(r=>{const house=r.third??r.second,gap=houseMinusNep(r);
    return {...r,gap,house_php:house?.amount_php??null,nep_php:r.nep?.amount_php??null,
@@ -136,7 +142,8 @@ function Adjustments({detail,revisionSets,dim,direction,change}){
    <div className="analysis-controls"><label>Direction<select aria-label="Revision direction" value={direction} onChange={e=>change('direction',e.target.value)}><option value="increased">Most increased (House above NEP)</option><option value="reduced">Most reduced (House below NEP)</option></select></label></div>
    <p className="muted">{cross.length.toLocaleString()} comparison rows · increased {signedCell(totals.increased)} · decreased {signedCell(-totals.decreased)} · net {signedCell(totals.net)}. Direction presets the sort; click any column to re-sort.</p>
    <p className="notice">These rows carry exact House/NEP candidate pairs with unequal amounts. Identity is proposed by title/scope matching and is not manually certified; the House−NEP gap often reflects GAA-like versus full-project-cost bases, especially for FAPs. This is a cross-document comparison, not a House reading change. % change is House relative to NEP.</p>
-   {byDim&&<DifferenceAggregate title={`Differences by ${dimensionTitle(dim)}`} groups={byDim}/>}
+   {byDim&&<DifferenceAggregate title={`Differences by ${dimensionTitle(dim)}`} dim={dim} groups={byDim}
+    onOpenGroup={g=>onOpenGroup({scope:'differences',reading:'third',dim,label:g.raw||g.label,displayLabel:g.label})}/>}
    <SortableTable key={direction} ariaLabel="Top House vs NEP differences" initialSort={{key:'gap',direction:direction==='increased'?'desc':'asc'}} rows={shown.slice(0,100)} columns={[
     {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {regionName(r.region)} · {r.trace.replaceAll('_',' ')}</small></span>},
     {key:'house_php',label:'House',align:'num',render:r=>r.house_php!=null?amountCell(r.house_php):<span>—</span>},
@@ -167,17 +174,18 @@ function differenceByDimension(rows,dim){
   entry.net+=row.gap;groups.set(raw,entry);
  }
  return [...groups.values()].sort((a,b)=>Math.abs(b.net)-Math.abs(a.net)||a.label.localeCompare(b.label)).slice(0,100)
-  .map(g=>({...g,label:groupLabel(dim,g.label)}));
+  .map(g=>({...g,raw:g.label,label:groupLabel(dim,g.label)}));
 }
-function DifferenceAggregate({title,groups}){
+function DifferenceAggregate({title,groups,onOpenGroup}){
  if(!groups?.length)return null;
  return <div className="aggregate-table"><h3>{title} · {groups.length.toLocaleString()} group{groups.length===1?'':'s'}</h3>
-  <SortableTable ariaLabel={title} initialSort={{key:'net',direction:'desc'}} rows={groups.map(g=>({...g,id:g.label}))} columns={[
-   {key:'label',label:'Group',scope:'row'},
+  <SortableTable ariaLabel={title} initialSort={{key:'net',direction:'desc'}} rows={groups.map(g=>({...g,id:g.raw||g.label}))} columns={[
+   {key:'label',label:'Group',scope:'row',render:r=><button type="button" className="group-open" onClick={()=>onOpenGroup?.(r)}>{r.label}</button>},
    {key:'rows',label:'Rows',align:'num'},
    {key:'increased',label:'Total increased',align:'num',render:r=>signedCell(r.increased)},
    {key:'decreased',label:'Total decreased',align:'num',render:r=>r.decreased?signedCell(-r.decreased):amountCell(0)},
    {key:'net',label:'Total change',align:'num',render:r=>signedCell(r.net)},
+   {key:'projects',label:'Projects',sortable:false,render:r=><button type="button" className="group-open" onClick={()=>onOpenGroup?.(r)}>Show {r.rows.toLocaleString()} rows</button>},
   ]}/>
  </div>;
 }
