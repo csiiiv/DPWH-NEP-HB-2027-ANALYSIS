@@ -214,10 +214,11 @@ function Statistics({detail,source,dim,change}){
   </section>}
   <section className="analysis-section"><h2>Exact repeated amounts · blanket fixed allocations</h2>
    <p className="muted">Where many line items share one exact peso value (≥5 repeats), grouped by {dimensionTitle(dim==='overall'?'program':dim)}.</p>
-   {concentrations.length?<SortableTable ariaLabel="Exact repeated amounts" initialSort={{key:'records',direction:'desc'}} rows={concentrations.map((e,i)=>({...e,id:`conc-${i}`}))} columns={[
+   {concentrations.length?<SortableTable ariaLabel="Exact repeated amounts" initialSort={{key:'total_php',direction:'desc'}} rows={concentrations.map((e,i)=>({...e,id:`conc-${i}`}))} columns={[
     {key:'group',label:'Group',scope:'row'},
     {key:'amount_php',label:'Exact amount',align:'num',render:r=>amountCell(r.amount_php)},
     {key:'records',label:'Line items',align:'num'},
+    {key:'total_php',label:'Total allocation',align:'num',render:r=>amountCell(r.total_php)},
     {key:'examples',label:'Examples',sortable:false,render:r=><small className="cell-inline">{r.examples.join(' · ')}</small>},
    ]}/>:<p>No exact-value concentration at this threshold.</p>}
   </section>

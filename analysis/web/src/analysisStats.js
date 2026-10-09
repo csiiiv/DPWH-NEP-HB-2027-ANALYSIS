@@ -106,6 +106,7 @@ export function exactConcentrations(rows,minRepeat=5,field='program'){
     .sort((a,b)=>b.records-a.records||b.amount_php-a.amount_php)
     .slice(0,15)
     .map(({program,amount_php,records,titles})=>({field,group:program,amount_php,records,
+      total_php:amount_php*records,
       share:total?records/total:0,examples:[...titles]}));
 }
 

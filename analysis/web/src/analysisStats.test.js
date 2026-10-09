@@ -40,6 +40,7 @@ test('k-means and exact concentrations return stable, conserved summaries',()=>{
    assert.ok(entry.records>=5);
    assert.equal(entry.field,'program');
    assert.ok(entry.group);
+   assert.equal(entry.total_php,entry.amount_php*entry.records);
    assert.equal(new Set(entry.examples).size,entry.examples.length);
  }
  const totals=groupTotals(flat,'program');

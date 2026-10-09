@@ -88,6 +88,9 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(page.get_by_role('heading',name='Benford first-digit',exact=True)).to_be_visible(timeout=60000)
                 expect(page.get_by_role('heading',name='Rounding pattern',exact=True)).to_be_visible()
                 expect(page.get_by_role('region',name='Rounding pattern',exact=True)).to_contain_text('₱1.000M')
+                exact=page.get_by_role('region',name='Exact repeated amounts',exact=True)
+                expect(exact.locator('thead th').nth(3)).to_contain_text('Total allocation')
+                expect(exact.locator('tbody tr').first.locator('td').nth(2)).to_be_visible()
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 page.screenshot(path=f'/tmp/analysis-statistics-{width}.png')
                 # Deep-link state restore on a non-default source.
