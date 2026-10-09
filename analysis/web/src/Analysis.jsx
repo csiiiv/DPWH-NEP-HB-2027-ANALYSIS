@@ -18,6 +18,12 @@ const groupLabel=(dim,label)=>dim==='region'?regionName(label):label;
 const amountCell=(value,title)=><span title={(title??(value?.toLocaleString('en-PH')??''))+' PHP'}>{amount(value)}</span>;
 // Signed amounts color green when positive, red when negative.
 const signedCell=value=><span className={value>0?'up':value<0?'down':''} title={(value?.toLocaleString('en-PH')??'')+' PHP'}>{value>0?'+':''}{amount(value)}</span>;
+const signedPercent=value=>value==null?<span>n/a</span>
+ :<span className={value>0?'up':value<0?'down':''}>{value>0?'+':''}{value.toFixed(1)}%</span>;
+function percentChange(current,prior){
+ if(current==null||prior==null||!Number.isFinite(current)||!Number.isFinite(prior)||prior===0)return null;
+ return (current-prior)/Math.abs(prior)*100;
+}
 export default function Analysis({route}){
  const [data,setData]=useState(null),[detail,setDetail]=useState(null),[error,setError]=useState('');
  const view=pick(route.params,'view',views.map(v=>v[0]),'overview');
@@ -108,10 +114,12 @@ function AggregateTable({title,groups,dim}){
 }
 function Adjustments({detail,revisionSets,dim,direction,change}){
  const cross=useMemo(()=>detail.filter(r=>['candidate_increase','candidate_decrease','transparency_gap_then_candidate_increase','transparency_gap_then_candidate_decrease'].includes(r.trace))
-  .map(r=>({...r,gap:houseMinusNep(r)})).filter(r=>r.gap!==null),[detail]);
+  .map(r=>{const house=r.third??r.second,gap=houseMinusNep(r);
+   return {...r,gap,house_php:house?.amount_php??null,nep_php:r.nep?.amount_php??null,
+    pct:percentChange(house?.amount_php,r.nep?.amount_php)};}).filter(r=>r.gap!==null),[detail]);
  const shown=useMemo(()=>direction==='increased'?[...cross].sort((a,b)=>b.gap-a.gap):[...cross].sort((a,b)=>a.gap-b.gap),[cross,direction]);
- const byDim=useMemo(()=>dim==='overall'?null:aggregate(cross.map(r=>{const house=r.third??r.second;
-  return {amount_php:Math.abs(r.gap),region:r.region,office:house?.office??r.nep?.office??'',program:r.program,pap:r.pap};}),dim),[cross,dim]);
+ const totals=useMemo(()=>signedTotals(cross),[cross]);
+ const byDim=useMemo(()=>dim==='overall'?null:differenceByDimension(cross,dim),[cross,dim]);
  return <>
   <section className="analysis-section"><h2>Reading adjustments · HGAB3 vs HGAB2</h2>
    <p className="notice">Recorded 2nd→3rd reading differences under the retained matching key: {revisionSets.reading.length.toLocaleString()} rows · net {amount(revisionSets.delta_php)}. Repeated keys remain grouped.</p>
@@ -120,33 +128,58 @@ function Adjustments({detail,revisionSets,dim,direction,change}){
     {key:'second_php',label:'HGAB2',align:'num',render:r=>r.second_php!=null?amountCell(r.second_php):<span>—</span>},
     {key:'third_php',label:'HGAB3',align:'num',render:r=>r.third_php!=null?amountCell(r.third_php):<span>—</span>},
     {key:'reading_delta_php',label:'Δ',align:'num',render:r=>r.reading_delta_php!=null?signedCell(r.reading_delta_php):<span>new in HGAB3</span>},
+    {key:'pct',label:'% change',align:'num',value:r=>percentChange(r.third_php,r.second_php),render:r=>signedPercent(percentChange(r.third_php,r.second_php))},
    ]}/>
   </section>
   <section className="analysis-section"><h2>House vs NEP differences · provisional identity</h2>
    <DimensionChips dim={dim} change={change}/>
    <div className="analysis-controls"><label>Direction<select aria-label="Revision direction" value={direction} onChange={e=>change('direction',e.target.value)}><option value="increased">Most increased (House above NEP)</option><option value="reduced">Most reduced (House below NEP)</option></select></label></div>
-   <p className="muted">{cross.length.toLocaleString()} comparison rows · {amount(cross.reduce((sum,r)=>sum+Math.abs(r.gap),0))} aggregate absolute difference. Direction presets the sort; click any column to re-sort.</p>
-   <p className="notice">These rows carry exact House/NEP candidate pairs with unequal amounts. Identity is proposed by title/scope matching and is not manually certified; the House−NEP gap often reflects GAA-like versus full-project-cost bases, especially for FAPs. This is a cross-document comparison, not a House reading change.</p>
-   {byDim&&<AggregateTable title={`Differences by ${dimensionTitle(dim)}`} dim={dim} groups={byDim}/>}
-   <SortableTable ariaLabel="Top House vs NEP differences" initialSort={{key:'gap',direction:direction==='increased'?'desc':'asc'}} rows={shown.slice(0,20)} columns={[
+   <p className="muted">{cross.length.toLocaleString()} comparison rows · increased {signedCell(totals.increased)} · decreased {signedCell(-totals.decreased)} · net {signedCell(totals.net)}. Direction presets the sort; click any column to re-sort.</p>
+   <p className="notice">These rows carry exact House/NEP candidate pairs with unequal amounts. Identity is proposed by title/scope matching and is not manually certified; the House−NEP gap often reflects GAA-like versus full-project-cost bases, especially for FAPs. This is a cross-document comparison, not a House reading change. % change is House relative to NEP.</p>
+   {byDim&&<DifferenceAggregate title={`Differences by ${dimensionTitle(dim)}`} groups={byDim}/>}
+   <SortableTable key={direction} ariaLabel="Top House vs NEP differences" initialSort={{key:'gap',direction:direction==='increased'?'desc':'asc'}} rows={shown.slice(0,100)} columns={[
     {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {regionName(r.region)} · {r.trace.replaceAll('_',' ')}</small></span>},
-    {key:'house_php',label:'House',align:'num',value:r=>(r.third??r.second)?.amount_php,render:r=>{const house=r.third??r.second;return house?amountCell(house.amount_php):<span>—</span>;}},
-    {key:'nep_php',label:'NEP',align:'num',value:r=>r.nep?.amount_php,render:r=>amountCell(r.nep.amount_php)},
+    {key:'house_php',label:'House',align:'num',render:r=>r.house_php!=null?amountCell(r.house_php):<span>—</span>},
+    {key:'nep_php',label:'NEP',align:'num',render:r=>r.nep_php!=null?amountCell(r.nep_php):<span>—</span>},
     {key:'gap',label:'House − NEP',align:'num',render:r=>signedCell(r.gap)},
+    {key:'pct',label:'% change',align:'num',render:r=>signedPercent(r.pct)},
    ]}/>
   </section>
  </>;
 }
 function houseMinusNep(row){const house=row.third??row.second;return house!=null&&row.nep!=null?house.amount_php-row.nep.amount_php:null;}
-function aggregate(rows,dim){
+function signedTotals(rows){
+ let increased=0,decreased=0;
+ for(const row of rows){if(row.gap>0)increased+=row.gap;else if(row.gap<0)decreased+=-row.gap;}
+ return {increased,decreased,net:increased-decreased};
+}
+// Per-dimension House−NEP aggregates keep increased, decreased and net
+// separate so a large cut elsewhere cannot hide a large add.
+function differenceByDimension(rows,dim){
  const groups=new Map();
  for(const row of rows){
-  const label=dim==='office'?(row.office||'No recorded office'):row[dim]||`No recorded ${dim==='pap'?'PAP':dim}`;
-  const entry=groups.get(label)||{label,rows:0,amount_php:0};
-  entry.rows++;entry.amount_php+=row.amount_php;groups.set(label,entry);
+  const house=row.third??row.second;
+  const raw=dim==='office'?(house?.office??row.nep?.office??'')||'No recorded office'
+   :row[dim]||`No recorded ${dim==='pap'?'PAP':dim}`;
+  const entry=groups.get(raw)||{label:raw,rows:0,increased:0,decreased:0,net:0};
+  entry.rows++;
+  if(row.gap>0)entry.increased+=row.gap;else if(row.gap<0)entry.decreased+=-row.gap;
+  entry.net+=row.gap;groups.set(raw,entry);
  }
- return [...groups.values()].sort((a,b)=>b.amount_php-a.amount_php||a.label.localeCompare(b.label)).slice(0,100)
+ return [...groups.values()].sort((a,b)=>Math.abs(b.net)-Math.abs(a.net)||a.label.localeCompare(b.label)).slice(0,100)
   .map(g=>({...g,label:groupLabel(dim,g.label)}));
+}
+function DifferenceAggregate({title,groups}){
+ if(!groups?.length)return null;
+ return <div className="aggregate-table"><h3>{title} · {groups.length.toLocaleString()} group{groups.length===1?'':'s'}</h3>
+  <SortableTable ariaLabel={title} initialSort={{key:'net',direction:'desc'}} rows={groups.map(g=>({...g,id:g.label}))} columns={[
+   {key:'label',label:'Group',scope:'row'},
+   {key:'rows',label:'Rows',align:'num'},
+   {key:'increased',label:'Total increased',align:'num',render:r=>signedCell(r.increased)},
+   {key:'decreased',label:'Total decreased',align:'num',render:r=>r.decreased?signedCell(-r.decreased):amountCell(0)},
+   {key:'net',label:'Total change',align:'num',render:r=>signedCell(r.net)},
+  ]}/>
+ </div>;
 }
 function Statistics({detail,source,dim,change}){
  const records=useMemo(()=>{
