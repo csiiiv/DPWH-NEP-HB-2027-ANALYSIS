@@ -381,6 +381,41 @@ with sync_playwright() as p:
         expect(page.locator(".result-count")).to_contain_text("0 of")
         page.goto(sorted_url,wait_until="networkidle")
         expect(page.locator(".pager")).to_contain_text("51–100",timeout=60000)
+        # Clicking project records expands the complete retained source path;
+        # selected record and path source are themselves shareable.
+        page.goto(base+"#compare?view=projects&change=third_only&q=J.P.+Rizal+box+culvert+Caloocan",wait_until="networkidle")
+        title=page.locator(".project-record-title").filter(has_text="Barangay 34 and 35").first
+        title.wait_for(timeout=60000)
+        title.click()
+        paths=page.get_by_role("region",name="Project tree paths",exact=True)
+        expect(paths).to_contain_text("Metro Manila 3rd District Engineering Office",timeout=60000)
+        expect(paths).to_contain_text("National Capital Region")
+        assert "record=" in page.url
+        page.reload(wait_until="networkidle")
+        paths=page.get_by_role("region",name="Project tree paths",exact=True)
+        expect(paths).to_contain_text("Metro Manila 3rd District Engineering Office",timeout=60000)
+        paths.get_by_role("link",name="Open this entry in the source tree",exact=False).click()
+        expect(page.locator("#details .node-path")).to_contain_text("Metro Manila 3rd District Engineering Office",timeout=60000)
+        expect(page.locator(".tree-pdf-pane").get_by_role("status").filter(has_text=re.compile(r"^Page 323 of 942$"))).to_be_visible(timeout=60000)
+        page.goto(base+"#compare?view=projects&q=2027DPWH-Proposal-36944",wait_until="networkidle")
+        page.locator(".project-record-title").first.click(timeout=60000)
+        paths=page.get_by_role("region",name="Project tree paths",exact=True)
+        expect(paths.get_by_role("link",name="Open this entry in the source tree",exact=False)).to_be_visible(timeout=60000)
+        paths.get_by_role("button",name="DBM NEP",exact=True).click()
+        expect(paths.get_by_role("link",name="Open this entry in the source tree",exact=False)).to_have_attribute("href","#nep?node=p196%3Ar12",timeout=60000)
+        assert "path_source=nep" in page.url
+        page.reload(wait_until="networkidle")
+        paths=page.get_by_role("region",name="Project tree paths",exact=True)
+        expect(paths.get_by_role("button",name="DBM NEP",exact=True)).to_have_attribute("aria-pressed","true",timeout=60000)
+        expect(paths.get_by_role("link",name="Open this entry in the source tree",exact=False)).to_have_attribute("href","#nep?node=p196%3Ar12",timeout=60000)
+        paths.get_by_role("button",name="DPWH Transparency NEP",exact=True).click()
+        expect(paths.get_by_role("link",name="Open this entry in the source tree",exact=False)).to_have_attribute("href","#transparency?node=2027DPWH-Proposal-36944",timeout=60000)
+        page.goto(base+"#compare?view=projects&change=repeated_key",wait_until="networkidle")
+        page.locator(".project-record-title").first.click(timeout=60000)
+        paths=page.get_by_role("region",name="Project tree paths",exact=True)
+        expect(paths).to_contain_text("Grouped record 2 of 2",timeout=60000)
+        expect(paths.get_by_role("link",name="Open this entry in the source tree",exact=False)).to_have_count(2)
+        assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
         page.close()
     assert not errors, errors
     assert not bad, bad

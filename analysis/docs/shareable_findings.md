@@ -24,6 +24,7 @@ Supported parameters:
 | `sort` | `title`, stage index `0`/`1`/`2`/`3`, `reading_delta`, or listing-gap `amount`/`region`/`pdf_page`, depending on table |
 | `metric` | `total`, `delta`, or `percent` |
 | `order` | `asc` (default) or `desc` |
+| `record`, `path_source` | Expanded project record ID and selected tree source (`third`, `second`, `nep`, `api`) |
 | `page` | One-based results page; pages beyond the results clamp to the last page |
 
 Search, filters and sorting apply to the full dataset before pagination.
@@ -55,3 +56,10 @@ NEP detail (`#nep-detail`) supports `q`, `tree=program|expense`, `filter`
 
 A copied link restores UI state and recorded source context. Matching and
 source-review qualifications remain the same as on the unfiltered page.
+
+Click a project title in Project records to expand its complete source-tree
+ancestry. Source buttons switch between HGAB3, HGAB2, NEP and Transparency where
+recorded. Each ancestor links to its actual source node. Grouped House records
+show separate paths for every member. Paths are loaded from the retained source
+hierarchies on demand, rather than inferred from title geography. Copy link also
+retains the expanded record and selected path source.

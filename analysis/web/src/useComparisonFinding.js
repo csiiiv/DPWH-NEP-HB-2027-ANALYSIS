@@ -8,6 +8,7 @@ export function useComparisonFinding(route) {
   useEffect(()=>{writeFindingRoute('compare',comparisonParams(state));},[state]);
   const set=(key,value)=>setStored(previous=>({route:previous.route,state:{...previous.state,
     [key]:typeof value === 'function' ? value(previous.state[key]) : value,
-    ...(key === 'page' ? {} : {page:0})}}));
+    ...(['page','record','pathSource'].includes(key) ? {} : {page:0}),
+    ...(key==='record' ? {pathSource:''} : key==='pathSource' ? {} : {record:'',pathSource:''})}}));
   return [state,set];
 }

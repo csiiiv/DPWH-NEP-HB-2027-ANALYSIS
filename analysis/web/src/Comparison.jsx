@@ -4,6 +4,7 @@ import { amount, metric, selectRows, values, officeOptions, officeLabels } from 
 import {unifiedComparison} from "./unifiedComparison.js";
 import ShareLink from "./ShareLink.jsx";
 import {useComparisonFinding} from "./useComparisonFinding.js";
+const ProjectPaths = lazy(()=>import("./ProjectPaths.jsx"));
 const PdfPreview = lazy(() => import("./PdfPreview.jsx"));
 const names = ["DPWH Transparency NEP", "DBM NEP", "HGAB2 · 2nd reading", "HGAB3 · 3rd reading"];
 const label = (value) => (value ?? "").replaceAll("_", " ");
@@ -355,9 +356,9 @@ export default function Comparison({ route }) {
               </thead>
               <tbody>
                 {filtered.slice(visiblePage * 50, visiblePage * 50 + 50).map((r, i) => (
-                  <tr key={r.id ?? r.source_id ?? `${page}-${i}`}>
+                  <React.Fragment key={r.id ?? r.source_id ?? `${page}-${i}`}><tr>
                     <th scope="row">
-                      {r.label ?? r.title}
+                      {tab === 'projects' ? <button className="project-record-title" aria-expanded={finding.record===r.id} onClick={()=>setFinding('record',finding.record===r.id?'':r.id)}>{r.title}</button> : r.label ?? r.title}
                       <small>
                         {r.program} · {r.region ?? ""}
                       </small>
@@ -410,6 +411,10 @@ export default function Comparison({ route }) {
                       )}
                     </td>
                   </tr>
+                  {tab==='projects' && finding.record===r.id && <tr className="project-path-detail"><td colSpan={7}><Suspense fallback={<p role="status">Loading project path…</p>}>
+                    <ProjectPaths row={r} sourceKey={finding.pathSource} onSourceChange={key=>setFinding('pathSource',key)} />
+                  </Suspense></td></tr>}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>

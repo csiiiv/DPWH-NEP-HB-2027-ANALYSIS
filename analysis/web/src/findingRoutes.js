@@ -15,6 +15,7 @@ export function comparisonState(params) {
     readingStatus:legacy ? (params.get('status') === 'all' ? '' : params.get('status') || 'reading_changed') : params.get('change') || '',
     column:choice(column, tab === 'gaps' ? ['title','amount','region','pdf_page'] : ['title','0','1','2','3','reading_delta'], 'title'),
     mode:choice(params.get('metric'), ['total','delta','percent'], 'total'), direction:params.get('order') === 'desc' ? -1 : 1,
+    record:tab === 'projects' ? params.get('record') || '' : '', pathSource:choice(params.get('path_source'),['third','second','nep','api'],''),
     page:boundedInteger(params.get('page'),1,1,100000)-1};
 }
 export function comparisonParams(state) {
@@ -25,6 +26,7 @@ export function comparisonParams(state) {
   if (state.column !== 'title') p.sort=state.column;
   if (state.mode !== 'total') p.metric=state.mode;
   if (state.direction === -1) p.order='desc';
+  if(state.tab==='projects' && state.record){p.record=state.record;if(state.pathSource)p.path_source=state.pathSource;}
   if (state.page) p.page=String(state.page+1);
   return p;
 }

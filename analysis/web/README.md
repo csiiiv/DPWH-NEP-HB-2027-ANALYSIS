@@ -180,3 +180,8 @@ Searches, filters, sort order and pagination now have shareable hash URLs.
 Use **Copy link** on comparison and source workspaces. Opening a link restores
 its settings after loading the retained data. See
 [shareable findings](../docs/shareable_findings.md) for route parameters and examples.
+
+Project titles in the comparison expand full source-tree paths inline. Source
+buttons select HGAB3/HGAB2/NEP/Transparency; ancestor links open the corresponding
+hierarchy node. Repeated House records retain separate member paths. Expanded
+records and selected sources are included in shared URLs.
