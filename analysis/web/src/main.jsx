@@ -4,6 +4,14 @@ import { loadData } from "./data.js";
 import "./styles.css";
 import WorkbenchHeader from "./WorkbenchHeader.jsx";
 import { routes, readRoute, routeHref, legacyRoutes } from "./routes.js";
+// PDF.js aborts its initial full response after discovering range support and
+// again on teardown; Chromium surfaces those as "signal is aborted without
+// reason" TypeErrors. They are expected cancellations, not failures.
+window.addEventListener("unhandledrejection", (event) => {
+  const message = String(event.reason?.message ?? event.reason ?? "");
+  if (/abort|cancel/i.test(message) || event.reason?.name === "AbortError")
+    event.preventDefault();
+});
 const SourceWorkspace = lazy(() => import("./SourceWorkspace.jsx"));
 const Analysis = lazy(()=>import("./Analysis.jsx"));
 const Comparison = lazy(() => import("./Comparison.jsx"));
