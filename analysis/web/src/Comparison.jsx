@@ -165,7 +165,7 @@ export default function Comparison({ view }) {
         key={kind + p}
         onClick={() => open(kind, p, title)}
       >
-        {kind === "house-third" ? "House 3rd" : kind === "house-second" ? "House 2nd" : kind === "house" ? "House" : "NEP"} p.{p}
+        {sourceReference(kind, p, title)?.pageLabel} p.{p}
       </button>
     ));
   if (error)

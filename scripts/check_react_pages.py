@@ -81,6 +81,7 @@ with sync_playwright() as p:
         expect(fap).to_contain_text("117.749B")
         expect(fap).to_contain_text("44.749B")
         assert fap.locator("td").first.inner_text() == "—"
+        expect(page.locator("tbody button.source-link").filter(has_text="House 2nd · I-C").first).to_be_visible()
         page.get_by_role("button", name="Missing from listing", exact=True).click()
         assert page.locator("tbody tr").count() == 23
         page.locator("tbody button.source-link").first.click()
@@ -188,6 +189,8 @@ with sync_playwright() as p:
                 pane.locator("canvas").wait_for(timeout=60000)
                 pane.get_by_role("status").filter(has_text=re.compile(r"^Page \d+ of \d+$")).wait_for(timeout=60000)
                 assert pane.get_by_label("PDF page", exact=True).input_value() == ("9" if key == "house" else "8")
+                if key == "house":
+                    expect(pane).to_contain_text("House 2nd reading · Volume I-B")
                 assert pane.locator("canvas").evaluate("e=>e.width>0 && e.height>0")
                 if width == 1440:
                     left = page.locator(".tree-evidence-column").bounding_box()
@@ -220,6 +223,7 @@ with sync_playwright() as p:
         assert all("+₱" in text for text in page.locator(".comparison-table tbody tr").all_inner_texts())
         page.get_by_label("Engineering office / DEO", exact=True).select_option("Metro Manila 3rd District Engineering Office")
         expect(page.locator(".comparison-table tbody tr")).to_have_count(5)
+        expect(page.locator(".comparison-table tbody button.source-link").filter(has_text="House 3rd · I-C").first).to_be_visible()
         page.locator(".comparison-table tbody button.source-link").filter(has_text="House 3rd").first.click()
         page.get_by_role("status").filter(has_text=re.compile(r"^Page \d+ of \d+$")).wait_for(timeout=60000)
         assert "House 3rd reading" in page.locator(".pdf-pane").inner_text()

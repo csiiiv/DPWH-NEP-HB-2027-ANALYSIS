@@ -156,3 +156,7 @@ declarative component conversion remain future work.
 PAP totals include a separate FAP control, so local PAPs plus FAP reconcile
 to operations. FAP has no Transparency comparison amount because it is
 outside that listing scope. Both House reading PAP controls retain FAP.
+
+Source page links name the reading and volume. House hierarchy links use I-B;
+PAP/project comparisons use I-C. NEP references use the retained II-B OCR PDF.
+See [source page reference checks](../docs/source_page_reference_checks.md).

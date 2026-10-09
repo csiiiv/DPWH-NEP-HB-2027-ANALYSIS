@@ -75,7 +75,7 @@
   function sourcePageReference(n) {
     const page = n.source?.pdf_page;
     if (!page) return '';
-    const label = `PDF page ${page}`;
+    const label = D.key === 'hb' ? `House 2nd · I-B p.${page}` : `PDF page ${page}`;
     const href = D.key === 'hb'
       ? (window.SITE_CONFIG?.housePdf || '../../HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf') + '#page=' + page
       : n.review_image ? (window.SITE_CONFIG?.hosted ? '' : '../data/') + n.review_image.path : null;
@@ -172,7 +172,7 @@
     if (D.key === 'dpwh_nep_api') evidence = n.kind === 'project' ? 'Retained NEP API project record; amount converted from thousands of PHP' : 'Derived grouping of retained NEP API projects';
     let sourceLink = '';
     if (D.key === 'hb' && source.pdf_page) {
-      sourceLink = `<a href="${esc(window.SITE_CONFIG?.housePdf || '../../HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf')}#page=${source.pdf_page}">House PDF page ${source.pdf_page}</a>`;
+      sourceLink = `<a href="${esc(window.SITE_CONFIG?.housePdf || '../../HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf')}#page=${source.pdf_page}">House 2nd · I-B p.${source.pdf_page}</a>`;
     } else if (source.pdf_page) sourceLink = `Retained NEP PDF page ${source.pdf_page} (PDF is a local source input)`;
     else if (source.project_code) sourceLink = `${esc(source.project_code)} · combined snapshot row ${source.source_row} · API ID ${source.project_id}`;
     const childNodes = n.children.map(c => nodes.get(c)).filter(c => c.additive);

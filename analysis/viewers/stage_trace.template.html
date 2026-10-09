@@ -209,7 +209,7 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const php = BudgetDisplay.amount;
 const hbLink = p => p
-  ? `<a href="../../HB_BUDGET/3%20-%20HB%2010858%20VOL%20IC.pdf#page=${Number(p)}" target="_blank" rel="noopener">p.${Number(p)}</a>`
+  ? `<a href="../../HB_BUDGET/3%20-%20HB%2010858%20VOL%20IC.pdf#page=${Number(p)}" target="_blank" rel="noopener">House 2nd · I-C p.${Number(p)}</a>`
   : '—';
 
 const TRACE_LABELS = {

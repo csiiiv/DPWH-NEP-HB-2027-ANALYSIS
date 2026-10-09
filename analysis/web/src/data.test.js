@@ -33,3 +33,12 @@ test('each House reading opens its own I-C PDF under the project prefix', () => 
   assert.equal(third.document, 'House 3rd reading · Volume I-C');
   assert.notEqual(second.url, third.url);
 });
+
+test('page labels identify the volume and reading without renumbering file pages', () => {
+  globalThis.window = {location: {href: 'https://example.test/project/app/#compare'}};
+  assert.equal(sourceReference('house', 373).pageLabel, 'House 2nd · I-C');
+  assert.equal(sourceReference('house-third', 373).pageLabel, 'House 3rd · I-C');
+  assert.equal(treeSourceReference('house', {source: {pdf_page: 25}}).pageLabel, 'House 2nd · I-B');
+  assert.equal(sourceReference('nep', 688).pageLabel, 'NEP · II-B (retained OCR)');
+  assert.equal(sourceReference('house-third', 373).page, 373);
+});

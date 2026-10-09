@@ -65,7 +65,7 @@ export function mountVerification(document, { onSourceSelection, initialNode, re
       matchesReview(n,query,filter) && (!reviewBranch || pathOf(n).some(p => p.id === reviewBranch)))
       .sort((a,b) => priority[a.review_kind]-priority[b.review_kind] || (a.source?.pdf_page||0)-(b.source?.pdf_page||0) || a.id.localeCompare(b.id, 'en', {numeric:true}));
   }
-  function pdfReference(n, label = `PDF page ${n.source?.pdf_page}`) {
+  function pdfReference(n, label = `${D.key === 'hb' ? 'House 2nd · I-B' : 'NEP · II-B (retained OCR)'} p.${n.source?.pdf_page}`) {
     const page = n.source?.pdf_page;
     if (!Number.isInteger(page) || page < 1) return '';
     if (!['hb', 'nep'].includes(D.key)) return esc(label);
@@ -163,7 +163,7 @@ export function mountVerification(document, { onSourceSelection, initialNode, re
     onSourceSelection?.(n);
     if (D.key === 'dpwh_nep_api') evidence = n.kind === 'project' ? 'Retained NEP API project record; amount converted from thousands of PHP' : 'Derived grouping of retained NEP API projects';
     let sourceLink = '';
-    if (source.pdf_page) sourceLink = pdfReference(n, `${D.key === 'hb' ? 'House GAB' : 'DBM NEP'} PDF page ${source.pdf_page}`);
+    if (source.pdf_page) sourceLink = pdfReference(n, `${D.key === 'hb' ? 'House 2nd · I-B' : 'NEP · II-B (retained OCR)'} p.${source.pdf_page}`);
     else if (source.project_code) sourceLink = `${esc(source.project_code)} · combined snapshot row ${source.source_row} · API ID ${source.project_id}`;
     const childNodes = n.children.map(c => nodes.get(c)).filter(c => c.additive);
     let running = 0;
