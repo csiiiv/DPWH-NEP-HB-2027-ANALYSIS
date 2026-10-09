@@ -6,6 +6,7 @@ on:
     paths:
       - 'analysis/**'
       - 'site/**'
+      - 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
       - 'scripts/**'
       - 'dpwh-transparency-nep-data/**'
       - 'HB_BUDGET/*.pdf'
@@ -14,6 +15,7 @@ on:
     paths:
       - 'analysis/**'
       - 'site/**'
+      - 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
       - 'scripts/**'
       - 'dpwh-transparency-nep-data/**'
       - 'HB_BUDGET/*.pdf'
@@ -44,8 +46,27 @@ jobs:
         run: |
           python3 -m unittest discover -s analysis/tests -p test_stage_trace.py -v
           python3 -m unittest discover -s analysis/tests -p test_static_pages.py -v
-      - name: Prepare static viewers
-        run: python3 scripts/build_pages.py
+          python3 -m unittest discover -s analysis/tests -p test_pdf_range_server.py -v
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: analysis/web/package-lock.json
+      - name: Build and check React migration preview
+        working-directory: analysis/web
+        run: |
+          npm ci
+          npm test
+          npm run build
+      - name: Prepare static viewers and React preview
+        run: python3 scripts/build_pages.py --with-react
+      - name: Check React navigation, sorting and real PDF range rendering
+        run: |
+          python3 -m pip install playwright==1.55.0
+          if [ ! -x /usr/bin/google-chrome ]; then
+            python3 -m playwright install --with-deps chromium
+          fi
+          python3 scripts/check_react_pages.py
       - name: Check rendered homepage navigation under project base
         run: node --test analysis/tests/test_static_navigation.cjs
       - name: Configure Pages

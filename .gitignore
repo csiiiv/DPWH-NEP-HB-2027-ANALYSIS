@@ -40,3 +40,7 @@ Thumbs.db
 
 # Generated GitHub Pages deployment artifact
 /_site/
+
+# React migration dependencies and build output
+/analysis/web/node_modules/
+/analysis/web/dist/

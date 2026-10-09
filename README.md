@@ -280,3 +280,9 @@ on GitHub; local links follow the checkout layout. Packaging checks that both
 README links are present on every published page.
 
 See [the current codebase reassessment](analysis/docs/codebase_reassessment.md) for implemented capabilities, dependency flow, concrete gaps, and verification priorities.
+
+
+The [React + Vite migration plan](analysis/docs/react_vite_migration.md) documents the new `/app/` preview,
+PDF evidence loading, rebuild commands, and parity requirements before root cutover.
+
+[Open the React migration preview](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/).

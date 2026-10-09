@@ -17,6 +17,8 @@ alternatives were rejected.
 | [0009](0009-navigable-source-review-workspace.md) | Navigate source paths within a shared review workspace | Accepted |
 | [0010](0010-archive-superseded-analysis-work.md) | Archive superseded and exploratory analysis by role | Accepted |
 
+| [0011](0011-react-vite-migration.md) | Incremental React + Vite migration with PDF.js evidence | Accepted for preview |
+
 ## How to add an ADR
 
 1. Copy the next number: `NNNN-short-title-with-dashes.md`

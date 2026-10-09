@@ -144,3 +144,13 @@ fixture reproduces the failure. Packaging also rejects encoded URL placeholders.
 Browser checks follow every source/review/comparison card and exercise the PAP
 and project delta/percent controls. This complements the stage-data freshness
 and accounting checks; no source amount changes are involved in this fix.
+
+
+## React migration started
+
+A first React + Vite presentation slice now lives under `analysis/web`, with
+its own lockfile and build/test commands. It is packaged at `/app/` alongside
+the retained static site. It provides the homepage, candidate stage comparison,
+and lazy PDF.js source-page preview. Python artifacts and audit gates remain
+authoritative. Verification viewers remain in their current implementation;
+this is not a completed rewrite. See the [migration plan](react_vite_migration.md).

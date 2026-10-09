@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 """Package committed static viewers without rerunning local PDF extraction."""
+import argparse
+import hashlib
+import json
 import re
 import shutil
 from html.parser import HTMLParser
@@ -95,7 +98,7 @@ def validate_site():
                 raise ValueError(f'Broken local link: {file.name}: {link}')
 
 
-def main():
+def main(with_react=False):
     validate_current_pages()
     OUTPUT.mkdir(exist_ok=True)
     for path in OUTPUT.iterdir():
@@ -131,9 +134,22 @@ def main():
     for name in ['2 - HB 10858 VOL IB.pdf', '3 - HB 10858 VOL IC.pdf']:
         shutil.copyfile(ROOT / 'HB_BUDGET' / name, pdfs / name)
     (OUTPUT / '.nojekyll').touch()
+    if with_react:
+        frontend = ROOT / 'analysis/web/dist'
+        if not (frontend / 'index.html').is_file():
+            raise ValueError('Build the React preview first: npm run build --prefix analysis/web')
+        pdf = ROOT / 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
+        expected = json.loads((DATA / 'nep_2027_tree.json').read_text())['provenance']['sha256']['pdf']
+        if not pdf.is_file() or hashlib.sha256(pdf.read_bytes()).hexdigest() != expected:
+            raise ValueError('React PDF preview requires the exact retained NEP Volume II-B source PDF')
+        shutil.copytree(frontend, OUTPUT / 'app')
+        (OUTPUT / 'pdfs').mkdir()
+        shutil.copyfile(pdf, OUTPUT / 'pdfs' / pdf.name)
     validate_site()
     print(f'Prepared and checked {len(VIEWER_NAMES)} dashboards in {OUTPUT}')
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--with-react', action='store_true', help='Include the built React migration preview and retained NEP PDF')
+    main(with_react=parser.parse_args().with_react)
