@@ -47,6 +47,7 @@ DOWNLOADS = [
     'nep_2027_tree.json', 'nep_2027_tree_validation.json',
     'nep_2027_native_amount_review.json', 'nep_2027_native_amount_audit.json',
     'nep_2027_budget_units.json', 'nep_2027_api_reconciliation.json',
+    'nep_2027_source_projects.json',
     'hb_dpwh_native_ic_projects.json', 'hb_dpwh_native_ic_rollup_audit.json',
     'source_comparison_2027.json', 'stage_trace_2027.json', 'current_pap_controls.json',
     'comparison_manifest.json',
@@ -154,11 +155,19 @@ def main(with_react=True):
         shutil.copyfile(VIEWERS / name, target / name)
     pdfs = OUTPUT / 'HB_BUDGET'
     pdfs.mkdir()
-    for name in ['2 - HB 10858 VOL IB.pdf', '3 - HB 10858 VOL IC.pdf']:
+    for name in [
+        '2 - HB 10858 VOL IB.pdf',
+        '3 - HB 10858 VOL IC.pdf',
+        '4 - HB 10858 VOL II.pdf',
+    ]:
         shutil.copyfile(ROOT / 'HB_BUDGET' / name, pdfs / name)
     third_pdfs = OUTPUT / 'HB_BUDGET_3rd_reading'
     third_pdfs.mkdir()
-    for name in ['2- HB 10858 FOR 3RD READING VOL I-B.pdf', '3- HB 10858 FOR 3RD READING VOL I-C .pdf']:
+    for name in [
+        '2- HB 10858 FOR 3RD READING VOL I-B.pdf',
+        '3- HB 10858 FOR 3RD READING VOL I-C .pdf',
+        '4-HB 10858 3RD READING VOL II.pdf',
+    ]:
         shutil.copyfile(ROOT / 'HB_BUDGET_3rd_reading' / name, third_pdfs / name)
     (OUTPUT / '.nojekyll').touch()
     if with_react:

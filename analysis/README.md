@@ -44,6 +44,7 @@ is preserved; two archived helpers still support active House repairs. See the
 | `#house` | House GAB I-B hierarchy, rollups, and embedded I-B PDF |
 | `#nep` | DBM NEP hierarchy, expenditure classes, source review, and embedded II-B PDF |
 | `#transparency` | DPWH Transparency NEP snapshot hierarchy |
+| `#resources` | Direct links to the latest workable JSON datasets and audit docs |
 | `#house-nep` | Printed budgets, local/FAP program controls, House extraction gaps, and candidates |
 | `#nep-detail` | Detailed expense/program tree and native-text evidence |
 

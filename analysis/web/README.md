@@ -32,6 +32,7 @@ live Transparency data or regenerate source outputs.
 | `#house` | Native I-B controls and native I-C project-detail summary |
 | `#nep` | DBM NEP verification |
 | `#transparency` | Transparency NEP verification |
+| `#resources` | Direct links to the latest workable JSON and audit docs |
 | `#house-nep` | Native I-C / NEP allocation candidates |
 | `#nep-detail` | Detailed NEP tree |
 

@@ -44,6 +44,7 @@ function retainedFiles() {
               root + "/analysis/data",
               root + "/_site/analysis",
               root + "/analysis/viewers",
+              root + "/dpwh-transparency-nep-data/json",
             ],
           ],
           ["/pdfs/", [root + "/dbm-nep-data"]],

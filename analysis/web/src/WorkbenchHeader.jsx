@@ -8,6 +8,7 @@ const pages = [
   ["house", "House GAB", "#house"],
   ["nep", "DBM NEP", "#nep"],
   ["transparency", "DPWH Transparency NEP", "#transparency"],
+  ["resources", "Resources", "#resources"],
 ];
 
 export default function WorkbenchHeader({ route }) {

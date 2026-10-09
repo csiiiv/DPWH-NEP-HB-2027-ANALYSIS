@@ -179,7 +179,7 @@ commits, snapshots, and provenance identify the material actually used.
 
 ## Current application
 
-All seven workspaces use one React shell and shared navigation. Hash routes
+All eight workspaces use one React shell and shared navigation. Hash routes
 support refresh and browser history under the GitHub Pages project prefix.
 
 | Workspace | App route | Purpose |
@@ -189,6 +189,7 @@ support refresh and browser history under the GitHub Pages project prefix.
 | House GAB | [House tree](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#house) | Native I-B hierarchy, expenditure columns, and recursive rollups |
 | DBM NEP | [DBM tree](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#nep) | PS/MOOE/CO hierarchy, progressive rollups, and source review |
 | DPWH Transparency NEP | [Transparency tree](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#transparency) | Retained listing hierarchy and snapshot checks |
+| Resources | [Resources](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#resources) | Direct links to the latest workable JSON datasets and audit docs |
 | House / NEP detail | [Detail comparison](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#house-nep) | Printed controls, local/FAP program totals, extraction gaps, and candidates |
 | NEP detail | [Detail tree](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#nep-detail) | Expense/program tree and native-text evidence |
 
