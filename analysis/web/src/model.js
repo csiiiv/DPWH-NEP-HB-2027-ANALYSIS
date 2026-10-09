@@ -1,9 +1,40 @@
-import { matchesSearch } from "./search.js";
+import { searchTokens } from "./search.js";
 import { matchesOffice, officeAssignments } from "../../viewers/project_offices.mjs";
 export { officeOptions, officeLabels, NO_OFFICE } from "../../viewers/project_offices.mjs";
 
+const textOrder=new Intl.Collator(undefined,{numeric:true});
+const searches=new WeakMap(),sorts=new WeakMap();
+function searchText(row) {
+  if(!searches.has(row)) {
+    const fields=value=>Object.values(value || {}).filter(v=>typeof v==='string' || typeof v==='number');
+    const sources=[row.house,row.second,row.third,row.nep,row.api,
+      ...(row.second?.records || []),...(row.third?.records || []),
+      ...(row.suggestions || []).map(s=>s.nep)];
+    searches.set(row,searchTokens([...new Set([...fields(row),...sources.flatMap(fields)])].join(' ')).join(' '));
+  }
+  return searches.get(row);
+}
+// Inputs are immutable retained rows. Reuse ordering across tab/filter changes.
+function sortedRows(rows,tab,column,mode,direction) {
+  if(!sorts.has(rows))sorts.set(rows,new Map());
+  const cache=sorts.get(rows),id=JSON.stringify([tab,column,mode,direction]);
+  if(!cache.has(id)) {
+    const key=r=>{
+      if(column==='reading_delta')return r.reading_delta_php ?? r.delta_php;
+      if(column==='title')return r.title ?? r.label;
+      if(['region','pdf_page','trace'].includes(column))return r[column] ?? null;
+      if(tab==='gaps')return r.amount_php ?? null;
+      const amounts=values(r,tab),index=Number(column);
+      return metric(amounts[index],amounts[index-1],mode);
+    };
+    cache.set(id,rows.map(row=>({row,key:key(row)})).sort((a,b)=>compare(a.key,b.key,direction)).map(item=>item.row));
+  }
+  return cache.get(id);
+}
+
 export function amount(value) {
   if (value == null || !Number.isFinite(value)) return "—";
+  if(value===0)return "₱0";
   const magnitude = Math.abs(value),
     [scale, suffix] =
       magnitude >= 1e9
@@ -27,7 +58,7 @@ export function compare(a, b, direction = 1) {
     direction *
     (typeof a === "number" && typeof b === "number"
       ? a - b
-      : String(a).localeCompare(String(b), undefined, { numeric: true }))
+      : textOrder.compare(String(a),String(b)))
   );
 }
 export function values(row, tab) {
@@ -56,32 +87,30 @@ export function selectRows(
     tab = "projects",
   },
 ) {
-  const q = query.trim().toLowerCase();
-  return rows
+  const tokens=searchTokens(query);
+  return sortedRows(rows,tab,column,mode,direction)
     .filter(
       (r) =>
-        (!q || matchesSearch(JSON.stringify(r), q)) &&
+        (!tokens.length || tokens.every(token=>searchText(r).includes(token))) &&
         (!program || r.program === program) &&
         (!region || officeAssignments(r).some(a=>a.region===region)) &&
         matchesOffice(r, office, region) &&
-        (!readingStatus || (readingStatus === 'reading_changed' ? r.reading_delta_php != null && r.reading_delta_php !== 0 || ['second_only','third_only'].includes(r.reading_status) : r.reading_status === readingStatus)) &&
+        (!readingStatus || (readingStatus === 'house_records_only' ? (tab==='paps' ? (r.second_php != null || r.third_php != null) && r.nep_php == null && r.api_php == null : Boolean(r.second || r.third) && !r.nep && !r.api) : readingStatus === 'reading_changed' ? r.reading_delta_php != null && r.reading_delta_php !== 0 || ['second_only','third_only'].includes(r.reading_status) : r.reading_status === readingStatus)) &&
         (!trace || (trace === "reading_changed" && tab === "readings"
           ? r.delta_php !== 0 || ["second_only", "third_only"].includes(r.trace)
           : r.trace === trace)),
-    )
-    .sort((a, b) => {
-      const key = (r) => {
-        if (column === "reading_delta") return r.reading_delta_php ?? r.delta_php;
-        if (column === "title") return r.title ?? r.label;
-        if (["region", "pdf_page", "trace"].includes(column))
-          return r[column] ?? null;
-        if (tab === "gaps") return r.amount_php ?? null;
-        return metric(
-          values(r, tab)[Number(column)],
-          values(r, tab)[Number(column) - 1],
-          mode,
-        );
-      };
-      return compare(key(a), key(b), direction);
-    });
+    );
+}
+
+// Prepare in small cancellable batches so initial indexing does not block typing.
+export function warmSearchIndex(rows) {
+  let index=0,timer=null,cancelled=false;
+  const batch=()=>{
+    if(cancelled)return;
+    const end=Math.min(index+128,rows.length);
+    while(index<end)searchText(rows[index++]);
+    if(index<rows.length)timer=setTimeout(batch,0);
+  };
+  timer=setTimeout(batch,0);
+  return ()=>{cancelled=true;clearTimeout(timer);};
 }

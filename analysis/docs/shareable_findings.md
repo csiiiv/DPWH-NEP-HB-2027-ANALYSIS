@@ -85,3 +85,129 @@ The current data yields **28 additional candidates: 24 FAP and four local**.
 BCIB (4432-PHI), LLRN Phase I (PHL-27) and Davao Bypass III (PH-P282) each join
 House Nationwide records to NEP NCR/Central Office records. These are candidates,
 not manually certified identities. Disable the mode to restore separate rows.
+
+
+### Search responsiveness
+
+Comparison search keeps typed text visible immediately and updates results and
+URL after a 250 ms pause. Enter or leaving the search input applies it immediately.
+Opening a shared URL restores its search without the typing delay. Switching
+to another finding cancels pending text. Switching comparison tables preserves
+the applied search and shared program filter; leaving the input first commits
+its draft. Filters that do not apply to a table are ignored there and restored
+when returning. Sort orders,
+searchable source fields and filter options are cached; initial project search
+indexing runs in small batches to keep the page responsive.
+
+
+### Analytics for project findings
+
+**Show analytics** on Project records opens a modal for all filtered results,
+including rows on other pages. The modal captures the applied search and filters.
+Source totals/coverage with HGAB3 and NEP hero amounts, side-by-side House/NEP
+region and engineering-office distributions, House reading changes, match
+statuses and overlapping review flags are computed from those rows. Distribution
+groups chart each source under its own recorded label, so differing region or
+office assignments stay visible instead of being merged.
+
+HGAB3-only/HGAB2-only records describe recorded reading differences. Unmatched
+NEP/House rows are candidate statuses, not certified policy insertions or removals.
+Review flags identify differing source assignments, repeated keys, missing offices,
+provisional matching and retained NEP amount-evidence review statuses. They do not
+establish fraud or replace the full source-review queue. Totals sum project or
+allocation records once; FAP funding components are not additional projects.
+Grouped entries show both comparison-row and member-allocation counts. Empty
+source coverage shows an unavailable amount, rather than a claimed zero budget.
+
+
+The analytics modal separates **Overview**, **Distribution**, **Changes & matches**
+and **Review flags**. Its header, applied filters and close control remain visible
+while results scroll. Each status and flag has an **i** button that expands a
+plain-language definition, including the source stages and limits of the claim.
+Definitions work with keyboard and touch. Distribution charts show House (HGAB3)
+and DBM NEP amounts side by side per group on one shared scale, with per-source
+shares under each group. Charts initially show the top eight
+groups, with an option to expand all groups. The review badge counts distinct
+flagged rows; individual categories can overlap.
+
+
+### Comparison workspace and filtered exports
+
+The comparison starts with PAP totals, search and results. **Source scopes,
+reading controls and downloads** expands global source coverage and the House
+control reconciliation. These totals describe the source scope, not the filtered
+rows. **More filters** reveals engineering office, reading change, region matching
+and candidate match status; active filter chips remove individual constraints,
+and **Clear filters** resets the finding.
+
+Amounts show each stage independently. The dedicated change column always means
+**HGAB3 minus HGAB2**. Header sorting menus name their comparison baseline:
+NEP versus Transparency describes listing coverage, HGAB2 versus NEP describes
+a candidate difference, and HGAB3 versus HGAB2 describes a reading difference.
+Status information expands inline. Select a project title for its full source-tree
+path, or a page reference for a closable PDF panel. The table uses the full width
+until a source opens; mobile records show a labeled grid of stage amounts and
+a separate sorting control.
+
+**Export CSV** and **Export JSON** include every currently filtered row in the
+selected order, across all pages. CSV keeps exact PHP values, blank unavailable
+amounts and both House columns. JSON includes the finding settings, PHP unit and
+source records, including grouped members. These are finding exports; canonical
+dataset downloads remain in the source-context section.
+
+The build generates `comparison_overview_2027.json` and
+`comparison_projects_2027.json` from the retained stage trace and House reading
+comparison. The initial overview is about **44 KB**; Project records lazily loads
+about **26 MB**, compared with about **86 MB** for both original inputs. Sizes are
+uncompressed. Compact sources preserve original amounts, identities, recorded
+assignments, evidence and page references; repeated fields are restored on load.
+Both payloads carry their input SHA-256 hashes and a mixed-build pair is rejected.
+Canonical inputs are retained independently. `npm run dev`, `npm run build` and
+the React packaging step regenerate these derived files.
+
+
+**House only · no NEP / Transparency** in the House reading change filter keeps
+HGAB2/HGAB3 records with neither an attached NEP reference nor a Transparency
+source. This includes paired, single-reading and grouped House records. They are
+**insertion candidates**: unmatched titles, regions or offices can also explain
+missing anchors, so this does not establish absence from the printed NEP. Optional
+region matching can resolve some candidates and remove them from this selection.
+On PAP totals the same rule applies to recorded source controls. Share this
+selection with `#compare?view=projects&change=house_records_only`; analytics and
+exports use the same filtered result set.
+
+
+### Inspecting suggested NEP matches
+
+On Project records, **Review N NEP suggestions** or the project title expands
+the retained fuzzy/ambiguous candidates above the full House source-tree path.
+A compact comparison table stacks the full title above its assignment in one
+column, with separate columns for source/similarity, amount, differences and evidence.
+It shows House sources once, followed by each suggested
+NEP record. Each suggestion shows its recorded text-similarity score, exact House/NEP amounts,
+full titles, region, office, program/PAP, source ID, page and amount-evidence flag.
+Open the suggested NEP source-tree entry or preview its PDF page to cross-check.
+The expanded record is preserved in shared URLs.
+
+The score is a normalized-title similarity measure, not a calibrated probability.
+Fuzzy matching retains up to three suggestions above 0.85 from a token-overlap
+shortlist of at most 20 unmatched NEP records in the same region/PAP/funding scope.
+Abbreviations are not expanded; for example, Lopez Viaduct’s `Barangay` versus
+`Brgy.` wording yields 0.9529. Ambiguous candidates instead share a duplicate
+exact key. Suggestions do not attach NEP sources, consume counterpart records
+or contribute additional amounts to comparison or analytics totals.
+
+
+### What record counts mean
+
+Project result counts and analytics show **comparison rows**, not deduplicated
+unique projects. A House fuzzy candidate and its unlinked NEP counterpart can
+appear as two rows even when they likely describe the same project. Suggested
+NEP counterpart rows are marked as unresolved and retained separately pending
+review. The badges identify suggestions, not accepted matches.
+
+Source coverage reports **source allocation records** independently for HGAB2,
+HGAB3, NEP and Transparency, including grouped members. Do not sum those counts
+across stages to estimate unique projects. Match-status counts also count rows;
+a suggested pair must not be interpreted as both a confirmed insertion and
+a confirmed removal. JSON finding exports label the counting units explicitly.

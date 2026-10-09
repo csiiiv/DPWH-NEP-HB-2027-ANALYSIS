@@ -132,6 +132,11 @@ def main(with_react=True):
             path.unlink()
     target = OUTPUT / 'analysis'
     target.mkdir()
+    if with_react:
+        import subprocess
+        subprocess.run(['node', str(ROOT / 'analysis/web/buildComparisonData.mjs')], check=True, cwd=ROOT)
+        for name in ('comparison_overview_2027.json', 'comparison_projects_2027.json'):
+            shutil.copyfile(DATA / name, target / name)
     index = hosted_report_links((ROOT / 'site/index.html').read_text(), ROOT / 'site/index.html')
     # Site template still uses ../analysis/<viewer>.html — rewrite to packaged layout.
     index = index.replace('href="../analysis/', 'href="analysis/').replace('src="../analysis/', 'src="analysis/')

@@ -1,0 +1,31 @@
+export const readingInfo={
+ same_amount:['Same House amount','The recorded HGAB2 and HGAB3 allocation amounts are equal for this paired reading key.'],
+ amount_changed:['Paired amount change','A unique reading key exists in both House readings with different amounts. The delta is HGAB3 minus HGAB2.'],
+ third_only:['HGAB3 only','This allocation record appears in the third-reading ledger without a second-reading counterpart under the recorded matching key. This is a reading difference, not proof of absence from NEP.'],
+ second_only:['HGAB2 only','This allocation record appears in the second-reading ledger without a third-reading counterpart under the recorded matching key. It does not establish cancellation of a project.'],
+ repeated_key:['Repeated keys / grouped','Multiple House allocations share a reading key. They are grouped for accounting, with member records preserved; individual project identities are unresolved.'],
+ no_house_record:['No House record','This comparison row contains a NEP or Transparency record without an attached House reading record. An unmatched row does not prove source absence.'],
+};
+export const matchInfo={
+ amount_same:['Same candidate amount','A retained HGAB2/NEP candidate pair has equal amounts. Title, region and PAP matching proposes identity; amount equality does not certify it.'],
+ candidate_increase:['Candidate increase','HGAB2 is larger than NEP for a retained candidate pair. This compares House second reading against NEP, not third versus second reading.'],
+ candidate_decrease:['Candidate decrease','HGAB2 is smaller than NEP for a retained candidate pair. Identity remains provisional. This is separate from the House reading delta.'],
+ house_only_candidate:['House without NEP anchor','The House record has no attached NEP candidate. Matching scope or source assignments can explain this; it is not a confirmed insertion.'],
+ nep_only_candidate:['NEP without House anchor','The NEP record has no attached House candidate. This does not establish removal from House or cancellation.'],
+ fuzzy_candidate:['Fuzzy title candidate','Similar titles within the retained matching scope generated suggestions. They are unconfirmed and do not consume or attach NEP records.'],
+ ambiguous:['Ambiguous identity','Duplicate exact matching keys prevent a unique one-to-one source pairing. No individual identity is assigned automatically.'],
+ outside_api_nep_only:['NEP outside API scope','A NEP record is outside the Transparency listing scope and has no attached House anchor in this comparison row. FAP records are included here.'],
+ transparency_gap_then_amount_same:['Listing gap · same candidate amount','A printed NEP allocation is missing from the retained Transparency listing and has an HGAB2 candidate with the same amount.'],
+ transparency_gap_then_candidate_decrease:['Listing gap · candidate decrease','A printed NEP allocation is missing from the retained Transparency listing and its HGAB2 candidate has a smaller amount.'],
+ transparency_gap_then_candidate_increase:['Listing gap · candidate increase','A printed NEP allocation is missing from the retained Transparency listing and its HGAB2 candidate has a larger amount.'],
+ transparency_gap_nep_only:['Listing gap · no House anchor','A printed NEP allocation is missing from the retained Transparency listing and has no attached House candidate.'],
+ region_difference_candidate:['Different-region candidate','The optional mode joins a unique normalized title within the same program, PAP and funding zone across different recorded regions. Original assignments are preserved; identity remains provisional.'],
+};
+export const flagInfo={
+ region_difference:['Different source regions','Two or more recorded sources assign different regions to this row. It can reflect document organization rather than the project’s physical location.'],
+ office_difference:['Different source offices','Two or more nonblank recorded office names differ. This is an assignment discrepancy to inspect, not evidence of wrongdoing.'],
+ no_office:['No recorded office','None of the sources attached to this comparison row provides an office name. We do not infer an office from the project title.'],
+ repeated_key:['Grouped House records','Repeated House reading keys require grouping. Inspect each member’s source-tree path before making individual identity claims.'],
+ uncertain_match:['Provisional matching','The cross-source status is ambiguous, fuzzy, or an optional different-region candidate. These are suggestions or candidates, not certified identities.'],
+ nep_evidence_review:['NEP amount evidence review','The attached NEP record has a retained ambiguous-row, nearby-alignment, text-review or unchecked amount-evidence status. Inspect its source PDF; the amount is not automatically changed.'],
+};

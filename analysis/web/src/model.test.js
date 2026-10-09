@@ -120,3 +120,35 @@ test("reading tables filter both offices and sort 3rd minus 2nd numerically", ()
   assert.deepEqual(selectRows(rows, {tab: "readings", office: "DEO A", column: "reading_delta", direction: -1}).map(r => r.title), ["Changed", "Third only"]);
   assert.deepEqual(officeLabels(rows[0]), ["House 2nd: DEO A", "House 3rd: DEO A"]);
 });
+
+
+test("cached searches preserve project titles, recorded IDs, office names and stable sorting",()=>{
+ const rows=[
+  {title:'Road 10',program:'Flood Management',second:{title:'Construction of Box Culvert, Barangay 34 and 35',office:'Metro Manila 3rd District Engineering Office',records:[{source_record_id:'hb:ic:c5246'}]}},
+  {title:'Road 2',nep:{title:'Different project',id:'p688:r17',region:'NCR',amount_php:22494406000}},
+  {title:'Road 3',nep:{amount_php:null}},
+ ];
+ assert.deepEqual(selectRows(rows,{}).map(r=>r.title),['Road 2','Road 3','Road 10']);
+ assert.deepEqual(selectRows(rows,{query:'Culvert Barangays 35 34'}).map(r=>r.title),['Road 10']);
+ assert.deepEqual(selectRows(rows,{query:'hb:ic:c5246'}).map(r=>r.title),['Road 10']);
+ assert.deepEqual(selectRows(rows,{query:'p688:r17'}).map(r=>r.title),['Road 2']);
+ assert.deepEqual(selectRows(rows,{query:'Metro Manila 3rd'}).map(r=>r.title),['Road 10']);
+ assert.deepEqual(selectRows(rows,{column:'1',direction:-1}).map(r=>r.title),['Road 2','Road 10','Road 3']);
+ assert.deepEqual(selectRows(rows,{query:'Different',column:'1',direction:-1}).map(r=>r.title),['Road 2']);
+ assert.equal(rows[0].title,'Road 10');
+});
+test('House-only insertion candidates exclude any attached NEP or Transparency source',()=>{
+ const rows=[
+  {id:'paired',title:'A',second:{amount_php:0},third:{amount_php:0},nep:{amount_php:0}},
+  {id:'second',title:'B',second:{amount_php:2}},
+  {id:'third',title:'C',third:{amount_php:3}},
+  {id:'grouped',title:'D',second:{amount_php:4,records:[{amount_php:2},{amount_php:2}]}},
+  {id:'nep',title:'E',nep:{amount_php:5}},
+  {id:'api',title:'F',api:{amount_php:6}},
+  {id:'api-paired',title:'G',third:{amount_php:7},api:{amount_php:0}},
+  {id:'zero-house',title:'H',second:{amount_php:0},third:{amount_php:0}}
+ ];
+ assert.deepEqual(selectRows(rows,{readingStatus:'house_records_only'}).map(r=>r.id),['second','third','grouped','zero-house']);
+ const paps=[{title:'A',second_php:0,nep_php:0},{title:'B',third_php:2},{title:'C',nep_php:3},{title:'D',second_php:4,api_php:0}];
+ assert.deepEqual(selectRows(paps,{tab:'paps',readingStatus:'house_records_only'}).map(r=>r.title),['B']);
+});

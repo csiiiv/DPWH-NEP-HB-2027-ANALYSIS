@@ -1,11 +1,16 @@
 import React, { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { loadData, sourceReference, siteUrl, repo } from "./data.js";
-import { amount, metric, selectRows, values, officeOptions, officeLabels } from "./model.js";
+import { amount, selectRows, values, officeOptions, warmSearchIndex } from "./model.js";
+import {suggestedCounterparts} from "./suggestedCounterparts.js";
 import {regionCandidates} from "./regionCandidates.js";
 import {officeAssignments} from "../../viewers/project_offices.mjs";
-import {unifiedComparison} from "./unifiedComparison.js";
+import {readingInfo,matchInfo} from "./analyticsStatusInfo.js";
+import {hydrateProjects} from "./comparisonData.js";
+import {downloadResults} from "./comparisonExport.js";
+import {useDebouncedSearch} from "./useDebouncedSearch.js";
 import ShareLink from "./ShareLink.jsx";
 import {useComparisonFinding} from "./useComparisonFinding.js";
+const ProjectAnalytics = lazy(()=>import("./ProjectAnalytics.jsx"));
 const ProjectPaths = lazy(()=>import("./ProjectPaths.jsx"));
 const PdfPreview = lazy(() => import("./PdfPreview.jsx"));
 const names = ["DPWH Transparency NEP", "DBM NEP", "HGAB2 · 2nd reading", "HGAB3 · 3rd reading"];
@@ -16,41 +21,52 @@ export default function Comparison({ route }) {
     [error, setError] = useState(""),
     [source, setSource] = useState(null),
     [panel, setPanel] = useState("table"),
-    [menu, setMenu] = useState(null);
+    [menu, setMenu] = useState(null),
+    [analytics,setAnalytics]=useState(null), [projects,setProjects]=useState(null), [moreFilters,setMoreFilters]=useState(false);
   const [finding,setFinding] = useComparisonFinding(route);
   const {tab,query,program,region,office,trace,readingStatus,regionMatching,column,mode,direction,page} = finding;
-  const setTab=v=>setFinding('tab',v), setQuery=v=>setFinding('query',v), setProgram=v=>setFinding('program',v),
+  const setQuery=v=>setFinding('query',v), setProgram=v=>setFinding('program',v),
     setRegion=v=>setFinding('region',v), setOffice=v=>setFinding('office',v), setTrace=v=>setFinding('trace',v), setReadingStatus=v=>setFinding('readingStatus',v),
     setColumn=v=>setFinding('column',v), setMode=v=>setFinding('mode',v), setDirection=v=>setFinding('direction',v), setPage=v=>setFinding('page',v);
-  useEffect(()=>{setSource(null);setPanel('table');setMenu(null);},[route]);
-  const menuRef = useRef(null);
+  const [searchDraft,setSearchDraft]=useDebouncedSearch(query,setQuery,route,tab);
+  useEffect(()=>{setSource(null);setPanel('table');setMenu(null);setAnalytics(null);},[route]);
+  const menuRef = useRef(null),analyticsButton=useRef(null);
   useLayoutEffect(() => {
     if (menu) menuRef.current?.querySelector("button")?.focus({ preventScroll: true });
   }, [menu]);
   useEffect(() => {
     const c = new AbortController();
-    Promise.all([loadData("stage_trace_2027.json", c.signal), loadData("house_reading_changes_2027.json", c.signal)])
-      .then(([stages, readings]) => { setData(stages); setReadings(readings); })
+    loadData("comparison_overview_2027.json", c.signal)
+      .then(overview => { setData(overview); setReadings({summary:overview.readingSummary}); })
       .catch((e) => {
         if (e.name !== "AbortError") setError(e.message);
       });
     return () => c.abort();
   }, []);
-  const unified = useMemo(()=>{
-    if (!data || !readings) return {paps:[],projects:[]};
-    try {return unifiedComparison(data,readings);} catch(e){return {error:e.message,paps:[],projects:[]};}
-  },[data,readings]);
+  useEffect(()=>{
+    if(tab!=='projects' || projects || !data) return;
+    const c=new AbortController();
+    loadData('comparison_projects_2027.json',c.signal).then(payload=>{
+      if(JSON.stringify(payload.input_sha256)!==JSON.stringify(data.input_sha256)) throw new Error('Comparison files belong to different builds. Refresh to load the current version.');
+      setProjects(hydrateProjects(payload));
+    }).catch(e=>{if(e.name!=='AbortError')setError(e.message);});
+    return ()=>c.abort();
+  },[tab,projects,data]);
+  const unified=useMemo(()=>({paps:data?.paps??[],projects:projects??[]}),[data,projects]);
   const projectRows=useMemo(()=>regionMatching==='ignore' ? regionCandidates(unified.projects) : unified.projects,[unified,regionMatching]);
+  const counterpartCounts=useMemo(()=>suggestedCounterparts(projectRows),[projectRows]);
+  useEffect(()=>warmSearchIndex(projectRows),[projectRows]);
   const rows = data ? tab === 'paps' ? unified.paps : tab === 'gaps' ? data.transparency_gaps : projectRows : [];
+  const offices=useMemo(()=>officeOptions(rows.filter(r=>(!program || r.program===program) && (!region || officeAssignments(r).some(a=>a.region===region))),region),[rows,program,region]);
   const filtered = useMemo(
     () =>
       selectRows(rows, {
         query,
         program,
-        region,
-        office,
-        trace,
-        readingStatus,
+        region:tab==='paps' ? '' : region,
+        office:tab==='paps' ? '' : office,
+        trace:tab==='projects' ? trace : '',
+        readingStatus:tab==='gaps' ? '' : readingStatus,
         column,
         mode,
         direction,
@@ -59,7 +75,7 @@ export default function Comparison({ route }) {
     [rows, query, program, region, office, trace, readingStatus, column, mode, direction, tab],
   );
   useEffect(()=>{
-    if (data && readings && page > Math.max(0,Math.ceil(filtered.length/50)-1)) setPage(Math.max(0,Math.ceil(filtered.length/50)-1));
+    if (data && readings && (tab!=='projects' || projects) && page > Math.max(0,Math.ceil(filtered.length/50)-1)) setPage(Math.max(0,Math.ceil(filtered.length/50)-1));
   },[data,readings,filtered.length,page]);
   useEffect(() => {
     if (!menu) return;
@@ -134,14 +150,8 @@ export default function Comparison({ route }) {
     </th>
   );
   const changeTab = (t) => {
-    setTab(t);
+    setFinding('tab',t);
     setMenu(null);
-    setQuery("");
-    setProgram("");
-    setRegion("");
-    setOffice("");
-    setTrace("");
-    setReadingStatus("");
     setColumn("title");
     setMode("total");
     setPage(0);
@@ -179,6 +189,7 @@ export default function Comparison({ route }) {
   if (!data) return <p role="status">Loading retained comparison data…</p>;
   const maxPage=Math.max(0,Math.ceil(filtered.length/50)-1);
   const visiblePage=Math.min(page,maxPage);
+  const hasFilters=Boolean(query || program || region || office || trace || readingStatus || regionMatching==='ignore');
   const stages = data.summary.stages;
   const tableNames = names;
   return (
@@ -187,6 +198,7 @@ export default function Comparison({ route }) {
         <p className="eyebrow">DPWH · FY2027</p>
         <h1>Compare budget stages</h1>
       </div>
+      <details className="comparison-context"><summary>Source scopes, reading controls and downloads</summary>
       <p className="notice comparison-notice">
         Candidate matches do not certify additions, removals, or final
         amendments. Source totals and extraction coverage describe different
@@ -224,23 +236,7 @@ export default function Comparison({ route }) {
           <p>3rd − 2nd operations: {readings.summary.allocation_delta_php > 0 ? "+" : ""}{amount(readings.summary.allocation_delta_php)}</p>
         </article>
       </div>
-      <ShareLink />
-      <nav className="view-tabs" aria-label="Comparison tables">
-        {[
-          ["paps", "PAP totals"],
-          ["projects", "Project records"],
-                    ["gaps", "Missing from listing"],
-        ].map(([key, name]) => (
-          <button
-            key={key}
-            aria-pressed={tab === key}
-            onClick={() => changeTab(key)}
-          >
-            {name}
-          </button>
-        ))}
-      </nav>
-      {tab !== "gaps" && <section className="notice" aria-label="House reading changes">
+            {tab !== "gaps" && <section className="notice" aria-label="House reading changes">
         <p>2nd → 3rd reading. Differences are 3rd minus 2nd. Agency total: {amount(readings.summary.control_deltas_php.new_appropriations)};
           {" "}Operations: {amount(readings.summary.control_deltas_php.operations_including_projects)};
           {" "}Support to Operations: {amount(readings.summary.control_deltas_php.s2o_total)}.</p>
@@ -258,7 +254,28 @@ export default function Comparison({ route }) {
       </section>}
       {tab === "projects" && <p className="notice">HGAB3 is the latest House reading. Retained NEP/API matches were established against HGAB2; HGAB3 uses the recorded reading comparison. Repeated House records appear as one grouped row. The optional region matching mode adds flagged candidates across different source regions. <a href="#house?view=projects&reading=third">Search the 3rd-reading House project tree</a> or <a href="#compare?view=projects&change=reading_changed">show changed House allocations</a>.</p>}
       {tab === "paps" && <p className="muted">PAP totals include the separate Foreign-assisted projects (FAP) control and reconcile to operations. FAP is outside the Transparency listing scope; its Transparency amount is unavailable.</p>}
-      <div className="workspace-switch" aria-label="Workspace panels">
+
+      </details>
+      <nav className="view-tabs" aria-label="Comparison tables">
+        {[
+          ["paps", "PAP totals"],
+          ["projects", "Project records"],
+                    ["gaps", "Missing from listing"],
+        ].map(([key, name]) => (
+          <button
+            key={key}
+            aria-pressed={tab === key}
+            onClick={() => changeTab(key)}
+          >
+            {name}
+          </button>
+        ))}
+      </nav>
+      <p className="comparison-scope">Amounts in PHP · HGAB3 is the latest House reading · Change = HGAB3 − HGAB2.
+        {tab==='projects' && ' NEP matches are candidates established against HGAB2. Select a project title to inspect its full tree path.'}
+        {tab==='paps' && ' Operations include local and foreign-assisted projects; Transparency covers its retained listing only.'}
+      </p>
+      {source && <div className="workspace-switch" aria-label="Workspace panels">
         <button
           aria-pressed={panel === "table"}
           onClick={() => setPanel("table")}
@@ -269,14 +286,17 @@ export default function Comparison({ route }) {
           PDF source
         </button>
       </div>
-      <div className={`comparison-workspace ${panel}-active`}>
+      }
+      <div className={`comparison-workspace ${source ? 'has-source' : ''} ${panel}-active`}>
         <section className="comparison-table" aria-label="Comparison table">
           <div className="filters">
             <label>
               Search
               <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                value={searchDraft}
+                onChange={(e) => setSearchDraft(e.target.value)}
+                onBlur={()=>{if(searchDraft!==query)setQuery(searchDraft);}}
+                onKeyDown={e=>{if(e.key==='Enter' && searchDraft!==query)setQuery(searchDraft);}}
                 placeholder="Title, source ID, or office"
               />
             </label>
@@ -296,13 +316,16 @@ export default function Comparison({ route }) {
                 set={(value) => { setRegion(value); setOffice(""); }}
               />
             )}{" "}
+            <button className="more-filters" aria-expanded={moreFilters} onClick={()=>setMoreFilters(!moreFilters)}>More filters</button>
+          </div>
+          <div className={`filters advanced-filters ${moreFilters ? 'open' : ''}`}>
             {tab !== "paps" && (
               <label>
                 Engineering office / DEO
                 <select aria-label="Engineering office / DEO" value={office} onChange={(e) => setOffice(e.target.value)}>
                   <option value="">All offices</option>
-                  {office && !officeOptions(rows.filter(r => (!program || r.program === program) && (!region || officeAssignments(r).some(a=>a.region===region))), region).some(o=>o.value===office) && <option value={office}>Unavailable office: {office}</option>}
-                  {officeOptions(rows.filter(r => (!program || r.program === program) && (!region || officeAssignments(r).some(a=>a.region===region))), region).map(o => (
+                  {office && !offices.some(o=>o.value===office) && <option value={office}>Unavailable office: {office}</option>}
+                  {offices.map(o => (
                     <option key={o.value} value={o.value}>{o.label}</option>
                   ))}
                 </select>
@@ -310,7 +333,7 @@ export default function Comparison({ route }) {
             )}
             {tab !== 'gaps' && <label>House reading change
               <select aria-label="House reading change" value={readingStatus} onChange={e=>setReadingStatus(e.target.value)}>
-                {[["", "All records"], ["reading_changed", "Changed allocations"], ["third_only", "HGAB3 only"], ["second_only", "HGAB2 only"], ["amount_changed", "Paired amount changes"], ["repeated_key", "Repeated keys / grouped"], ["same_amount", "Same House amount"], ["no_house_record", "No House record"]].map(([value,text])=><option key={value} value={value}>{text}</option>)}
+                {[["", "All records"], ["house_records_only", "House only · no NEP / Transparency"], ["reading_changed", "Changed allocations"], ["third_only", "HGAB3 only"], ["second_only", "HGAB2 only"], ["amount_changed", "Paired amount changes"], ["repeated_key", "Repeated keys / grouped"], ["same_amount", "Same House amount"], ["no_house_record", "No House record"]].map(([value,text])=><option key={value} value={value}>{text}</option>)}
               </select>
             </label>}
             {tab === "projects" && <label>Region matching
@@ -334,10 +357,24 @@ export default function Comparison({ route }) {
             {projectRows.filter(r=>r.region_difference).length.toLocaleString()} additional candidates join unique titles within the same program, PAP and funding scope across different regions.
             Source regions and offices remain recorded separately. Duplicate titles stay separate; amounts do not determine identity. PAP totals are unchanged.
           </p>}
-          <p className="result-count" aria-live="polite">
-            {filtered.length.toLocaleString()} of {rows.length.toLocaleString()}{" "}
-            rows · Click a header to sort. Amounts in PHP · total / Δ / %.
-          </p>
+          {hasFilters && <div className="active-filters" aria-label="Active filters">
+            {[['query',query],['program',program],...(tab==='paps'?[]:[['region',region],['office',office]]),...(tab==='gaps'?[]:[['readingStatus',readingStatus]]),...(tab==='projects'?[['trace',trace],...(regionMatching==='ignore'?[['regionMatching','Allow different regions']]:[])]:[])].filter(([,v])=>v).map(([key,v])=><button key={key} onClick={()=>{setFinding(key,key==='regionMatching'?'strict':'');if(key==='query')setSearchDraft('');}} aria-label={`Remove ${key} filter`}>{key==='readingStatus' && v==='house_records_only' ? 'House only · no NEP / Transparency' : label(v)} ×</button>)}
+            <button onClick={()=>{for(const key of ['query','program','region','office','trace','readingStatus'])setFinding(key,'');setFinding('regionMatching','strict');setSearchDraft('');}}>Clear filters</button>
+          </div>}
+          {readingStatus==='house_records_only' && <p className="muted">Insertion candidates: HGAB2 or HGAB3 records with no attached NEP or Transparency source. Unmatched records can reflect title or assignment differences; this does not confirm absence from the NEP PDF.</p>}
+          <div className="mobile-sort">
+            <label>Sort results<select aria-label="Sort results" value={column} onChange={e=>{setColumn(e.target.value);setMode('total');}}>
+              {(tab==='gaps'?[['title','Project'],['amount','Amount'],['region','Region'],['pdf_page','PDF page']]:[['title',tab==='paps'?'PAP':'Project'],...tableNames.map((n,i)=>[String(i),n]),['reading_delta','HGAB3 − HGAB2']]).map(([v,n])=><option key={v} value={v}>{n}</option>)}
+            </select></label><button onClick={()=>setDirection(-direction)}>{direction===1?'Ascending ↑':'Descending ↓'}</button>
+          </div>
+          <div className="results-toolbar">
+            <p className="result-count" aria-live="polite">{tab==='projects' && !projects ? 'Loading project records…' : `${filtered.length.toLocaleString()} of ${rows.length.toLocaleString()} ${tab==='projects'?'comparison rows':'rows'}`}{searchDraft!==query ? ' · Updating search…':''}</p>
+            {tab==='projects' && <button ref={analyticsButton} disabled={!filtered.length || searchDraft!==query} onClick={()=>setAnalytics({rows:filtered,finding:{...finding}})}>Show analytics</button>}
+            <ShareLink />
+            <button disabled={!filtered.length || searchDraft!==query} onClick={()=>downloadResults(filtered,finding,'csv')}>Export CSV</button>
+            <button disabled={!filtered.length || searchDraft!==query} onClick={()=>downloadResults(filtered,finding,'json')}>Export JSON</button>
+          </div>
+          {tab==='projects' && <p className="muted count-explanation">Comparison rows are not unique projects. Unresolved House/NEP counterparts may appear separately. Source allocation records and amounts are counted independently.</p>}
           <div
             className="table-scroll"
             tabIndex="0"
@@ -375,36 +412,32 @@ export default function Comparison({ route }) {
                       <small>
                         {r.program} · {r.region ?? ""}
                       </small>
-                      {(tab === "projects") && (
-                        <small>
-                          {label(r.trace)} ·{" "}
-                          {r.nep?.id ?? r.third?.id ?? r.second?.id ?? r.api?.id}
-                        </small>
-                      )}
+                      {tab==='projects' && <StatusInfo info={matchInfo[r.trace]} fallback={label(r.trace)} />}
+                      {counterpartCounts.has(r.id) && <small className="counterpart-badge">Suggested NEP counterpart · unresolved ({counterpartCounts.get(r.id)} House comparison {counterpartCounts.get(r.id)===1?'row':'rows'}). Kept separately pending review.</small>}
+                      {r.suggestions?.length>0 && <button className="candidate-review-button" aria-expanded={finding.record===r.id} onClick={()=>setFinding('record',finding.record===r.id?'':r.id)}>Review {r.suggestions.length} NEP {r.suggestions.length===1?'suggestion':'suggestions'}</button>}
                       {r.region_difference && <small>Region differs · House: {r.region_difference.house} · NEP: {r.region_difference.nep} · candidate only</small>}
-                      {tab !== "gaps" && <small>House: {label(r.reading_status)}{r.reading_status === "repeated_key" ? ` · ${r.match_basis}` : ""}</small>}
-                      {tab !== "paps" && (officeLabels(r).length
-                        ? officeLabels(r).map(text => <small key={text}>{text}</small>)
-                        : <small>No recorded office</small>)}
+                      {tab !== "gaps" && <StatusInfo info={readingInfo[r.reading_status]} fallback={label(r.reading_status)} />}
+                      {tab !== 'paps' && <small>{compactOffices(r)}</small>}
+
                     </th>
                     {tab === "gaps" ? (
                       <>
-                        <td className="num">{amount(r.amount_php)}</td>
-                        <td>{r.region}</td>
+                        <td className="num" data-label="Amount">{amount(r.amount_php)}</td>
+                        <td data-label="Region">{r.region}</td>
                       </>
                     ) : (
                       values(r, tab).map((value, index) => (
                         <Money
                           key={index}
                           value={value}
-                          prior={values(r, tab)[index - 1]}
+                          caption={tableNames[index]}
                         />
                       ))
                     )}
-                    {tab !== "gaps" && <td className={`num ${r.reading_delta_php > 0 ? "up" : r.reading_delta_php < 0 ? "down" : ""}`}>
+                    {tab !== "gaps" && <td data-label="HGAB3 − HGAB2" className={`num ${r.reading_delta_php > 0 ? "up" : r.reading_delta_php < 0 ? "down" : ""}`}>
                       {r.reading_delta_php > 0 ? "+" : ""}{amount(r.reading_delta_php)}
                     </td>}
-                    <td>
+                    <td data-label="Source evidence">
                       {tab === "paps" ? (
                         <>
                           {sourceButtons("nep", [r.nep_page], r.label)}
@@ -426,7 +459,7 @@ export default function Comparison({ route }) {
                     </td>
                   </tr>
                   {tab==='projects' && finding.record===r.id && <tr className="project-path-detail"><td colSpan={7}><Suspense fallback={<p role="status">Loading project path…</p>}>
-                    <ProjectPaths row={r} sourceKey={finding.pathSource} onSourceChange={key=>setFinding('pathSource',key)} />
+                    <ProjectPaths row={r} onPreview={(record)=>open("nep",record.pdf_page,record.title)} sourceKey={finding.pathSource} onSourceChange={key=>setFinding('pathSource',key)} />
                   </Suspense></td></tr>}
                   </React.Fragment>
                 ))}
@@ -450,30 +483,16 @@ export default function Comparison({ route }) {
             >
               Next
             </button>
-            <a href={siteUrl("analysis/stage_trace_2027.json")} download>
-              Download retained JSON
-            </a>
+
           </div>
         </section>
-        <aside className="source-pane" aria-label="PDF source pane">
-          {source ? (
-            <Suspense fallback={<p role="status">Loading PDF preview…</p>}>
-              <PdfPreview
-                source={source}
-                onClose={() => {
-                  setSource(null);
-                  setPanel("table");
-                }}
-              />
-            </Suspense>
-          ) : (
-            <div className="pdf-empty">
-              <h2>Source PDF</h2>
-              <p>Select a NEP or House page in the table to inspect it here.</p>
-            </div>
-          )}
-        </aside>
+        {source && <aside className="source-pane" aria-label="PDF source pane">
+          <Suspense fallback={<p role="status">Loading PDF preview…</p>}>
+            <PdfPreview source={source} onClose={()=>{setSource(null);setPanel('table');}} />
+          </Suspense>
+        </aside>}
       </div>
+      {analytics && <Suspense fallback={<p role="status">Loading analytics…</p>}><ProjectAnalytics rows={analytics.rows} finding={analytics.finding} returnFocus={analyticsButton.current} onClose={()=>setAnalytics(null)}/></Suspense>}
       {menu && (
         <div
           className="sort-menu"
@@ -506,8 +525,8 @@ export default function Comparison({ route }) {
           <strong>{menu.name}</strong>
           {[
             ["total", "Total value"],
-            ["delta", "Delta vs previous"],
-            ["percent", "Percent change"],
+            ["delta", `Change: ${['Transparency coverage','NEP − Transparency (coverage)','HGAB2 − NEP (candidate)','HGAB3 − HGAB2'][Number(menu.column)]}`],
+            ["percent", `Percent change vs ${['Transparency','Transparency','NEP','HGAB2'][Number(menu.column)]}`],
           ]
             .filter(
               ([m]) => m === "total" || (menu.column !== "0" && tab !== "gaps"),
@@ -534,7 +553,7 @@ export default function Comparison({ route }) {
   );
 }
 function Filter({ label: caption, rows, field, value, set }) {
-  const options=[...new Set(rows.flatMap(r=>field==='region' ? officeAssignments(r).map(a=>a.region) : [r[field]]).filter(Boolean))].sort();
+  const options=useMemo(()=>[...new Set(rows.flatMap(r=>field==='region' ? officeAssignments(r).map(a=>a.region) : [r[field]]).filter(Boolean))].sort(),[rows,field]);
   return (
     <label>
       {caption}
@@ -555,29 +574,16 @@ function Filter({ label: caption, rows, field, value, set }) {
     </label>
   );
 }
-function Money({ value, prior }) {
-  const delta = metric(value, prior, "delta"),
-    percent = metric(value, prior, "percent");
-  return (
-    <td
-      className="num"
-      title={
-        value == null
-          ? "No amount recorded"
-          : `${value.toLocaleString("en-PH")} PHP`
-      }
-    >
-      <strong>{amount(value)}</strong>
-      {delta != null && (
-        <small className={delta > 0 ? "up" : delta < 0 ? "down" : ""}>
-          Δ {delta > 0 ? "+" : ""}
-          {amount(delta)} (
-          {percent == null
-            ? "n/a"
-            : `${percent > 0 ? "+" : ""}${percent.toFixed(1)}%`}
-          )
-        </small>
-      )}
-    </td>
-  );
+function Money({value,caption}) {
+ return <td className="num" data-label={caption} title={value==null?'No amount recorded':`${value.toLocaleString('en-PH')} PHP`}><strong>{amount(value)}</strong></td>;
+}
+
+function StatusInfo({info,fallback}) {
+ if(!info)return <small>{fallback}</small>;
+ return <details className="status-info"><summary>{info[0]} <span aria-label="Status information">ⓘ</span></summary><p>{info[1]}</p></details>;
+}
+function compactOffices(row){
+ const groups=new Map();
+ for(const a of officeAssignments(row))if(a.office)groups.set(a.office,[...(groups.get(a.office)??[]),a.source]);
+ return groups.size ? [...groups].map(([office,sources])=>`${office} (${sources.join(', ')})`).join(' · ') : 'No recorded office';
 }

@@ -75,6 +75,7 @@ with sync_playwright() as p:
         page.get_by_role("link", name="Open sortable comparison").click()
         page.locator(".comparison-table tbody tr").first.wait_for(timeout=60000)
         assert page.locator(".comparison-table tbody tr").count() == 46
+        page.locator(".comparison-context > summary").click()
         assert "native Volume I-C; v5 is retired" in page.locator("main").inner_text()
         fap = page.locator(".comparison-table tbody tr").filter(has_text="Foreign-assisted projects (FAP)")
         expect(fap).to_have_count(1)
@@ -84,10 +85,12 @@ with sync_playwright() as p:
         expect(page.locator(".comparison-table thead")).to_contain_text("HGAB2 · 2nd reading")
         expect(page.locator(".comparison-table thead")).to_contain_text("HGAB3 · 3rd reading")
         assert page.get_by_role("button",name="House readings",exact=True).count()==0
+        if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
         page.get_by_label("House reading change",exact=True).select_option("reading_changed")
         expect(page.locator(".comparison-table tbody tr")).to_have_count(2)
         expect(page.locator(".comparison-table tbody")).to_contain_text("+₱68.000M")
         expect(page.locator(".comparison-table tbody")).to_contain_text("+₱66.000M")
+        if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
         page.get_by_label("House reading change",exact=True).select_option("")
         expect(page.locator(".comparison-table tbody button.source-link").filter(has_text="House 2nd · I-C").first).to_be_visible()
         page.get_by_role("button", name="Missing from listing", exact=True).click()
@@ -116,10 +119,10 @@ with sync_playwright() as p:
         page.get_by_role("button", name="Clear preview").click()
         assert page.locator(".pdf-pane").count() == 0
         page.get_by_role("button", name="Project records", exact=True).click()
-        page.get_by_role("button", name="Sort by HGAB2 · 2nd reading", exact=True).click()
-        page.get_by_role("menuitemradio", name="Delta vs previous", exact=False).click()
-        page.get_by_role("button", name="Sort by HGAB2 · 2nd reading", exact=True).click()
-        page.get_by_role("menuitemradio", name="Delta vs previous", exact=False).click()
+        page.get_by_role("button", name="Sort by HGAB2 · 2nd reading", exact=True).dispatch_event("click")
+        page.get_by_role("menuitemradio", name="Change: HGAB2 − NEP (candidate)", exact=False).click()
+        page.get_by_role("button", name="Sort by HGAB2 · 2nd reading", exact=True).dispatch_event("click")
+        page.get_by_role("menuitemradio", name="Change: HGAB2 − NEP (candidate)", exact=False).click()
         assert (
             page.locator(".comparison-table thead th").nth(3).get_attribute("aria-sort") == "descending"
         )
@@ -139,6 +142,7 @@ with sync_playwright() as p:
             (r.get(stage) or {}).get("office") == office and (r.get(stage) or {}).get("region") == region
             for stage in ("house", "nep", "api")) for r in data["projects"])
         page.get_by_label("Region", exact=True).select_option(region)
+        if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
         page.get_by_label("Engineering office / DEO", exact=True).select_option(office)
         expect(page.locator(".result-count")).to_contain_text(f"{office_count:,} of")
         expect(page.locator(".pager")).to_contain_text("1–50")
@@ -152,7 +156,7 @@ with sync_playwright() as p:
         assert office not in page.get_by_label("Engineering office / DEO", exact=True).inner_text()
         page.get_by_label("Region", exact=True).select_option("")
         page.get_by_label("Search", exact=True).fill("Mindanao Transport Connectivity")
-        page.locator(".comparison-table tbody th").first.wait_for()
+        expect(page.locator(".comparison-table tbody th").first).to_contain_text("Mindanao Transport Connectivity",timeout=60000)
         house = page.locator(".comparison-table tbody button.source-link").filter(has_text="House").first
         house.click()
         page.get_by_role("status").filter(
@@ -220,11 +224,13 @@ with sync_playwright() as p:
             assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
         nav.get_by_role("link", name="Compare stages", exact=True).click()
         page.get_by_role("button", name="Project records", exact=True).click()
-        expect(page.get_by_role("region", name="House reading changes")).to_contain_text("₱134.000M", timeout=60000)
+        expect(page.get_by_role("region", name="House reading changes", include_hidden=True)).to_contain_text("₱134.000M", timeout=60000)
+        if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
         page.get_by_label("House reading change", exact=True).select_option("third_only")
         expect(page.locator(".comparison-table tbody tr")).to_have_count(5)
         expect(page.locator(".result-count")).to_contain_text("5 of")
         assert all("+₱" in text for text in page.locator(".comparison-table tbody tr").all_inner_texts())
+        if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
         page.get_by_label("Engineering office / DEO", exact=True).select_option("Metro Manila 3rd District Engineering Office")
         expect(page.locator(".comparison-table tbody tr")).to_have_count(5)
         finding_url=page.url
@@ -366,26 +372,46 @@ with sync_playwright() as p:
         expect(page.locator(".pager")).to_contain_text("51–100",timeout=60000)
         expect(page.locator(".comparison-table tbody tr").first).to_have_text(first_result, use_inner_text=True)
         page.get_by_label("Search",exact=True).fill("no such project 9f87x")
-        expect(page.locator(".result-count")).to_contain_text("0 of")
+        expect(page.locator(".result-count")).to_contain_text(re.compile(r"^0 of"))
         expect(page.locator(".pager")).to_contain_text("0 / 0")
+        page.wait_for_function("location.hash.includes('q=no+such+project+9f87x') && !location.hash.includes('page=')")
         filtered_url=page.url
         assert "page=" not in filtered_url and "q=" in filtered_url
         page.goto(sorted_url,wait_until="networkidle")
         expect(page.locator(".pager")).to_contain_text("51–100",timeout=60000)
         expect(page.get_by_label("Search",exact=True)).to_have_value("")
         page.get_by_label("Search",exact=True).fill("no such project 9f87x")
-        expect(page.locator(".result-count")).to_contain_text("0 of")
+        expect(page.locator(".result-count")).to_contain_text(re.compile(r"^0 of"))
         page.goto(base+"#home",wait_until="networkidle")
         page.go_back(wait_until="networkidle")
         expect(page.get_by_label("Search",exact=True)).to_have_value("no such project 9f87x",timeout=60000)
-        expect(page.locator(".result-count")).to_contain_text("0 of")
+        expect(page.locator(".result-count")).to_contain_text(re.compile(r"^0 of"))
         page.goto(sorted_url,wait_until="networkidle")
         expect(page.locator(".pager")).to_contain_text("51–100",timeout=60000)
+        # Rapid typing is visible immediately, but commits one debounced query.
+        # Switching tabs preserves the search, including text committed on blur.
+        page.goto(base+"#compare?view=projects",wait_until="networkidle")
+        search=page.get_by_label("Search",exact=True)
+        search.press_sequentially("4432-PHI",delay=20)
+        expect(search).to_have_value("4432-PHI")
+        assert "q=" not in page.url
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(2,timeout=60000)
+        page.wait_for_function("location.hash.includes('q=4432-PHI')")
+        assert "q=4432-PHI" in page.url
+        search.fill("pending text should not survive tab switch")
+        page.get_by_role("button",name="PAP totals",exact=True).click()
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(0)
+        expect(page.get_by_label("Search",exact=True)).to_have_value("pending text should not survive tab switch")
+        page.get_by_role("button",name="Clear filters",exact=True).click()
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(46)
+        page.get_by_role("button",name="Project records",exact=True).click()
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(50)
         # Optional region candidates restore FAP comparisons without rewriting
         # source assignments, and their mode/path choices survive shared URLs.
         page.goto(base+"#compare?view=projects&q=4432-PHI",wait_until="networkidle")
         expect(page.locator(".comparison-table tbody tr")).to_have_count(2,timeout=60000)
         expect(page.get_by_label("Region matching",exact=True)).to_have_value("strict")
+        if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
         page.get_by_label("Region matching",exact=True).select_option("ignore")
         expect(page.locator(".comparison-table tbody tr")).to_have_count(1)
         expect(page.locator(".comparison-table tbody")).to_contain_text("Region differs · House: Nationwide · NEP: NCR")
@@ -393,6 +419,7 @@ with sync_playwright() as p:
         expect(page.locator(".comparison-table tbody")).to_contain_text("8.494B")
         assert "region_match=ignore" in page.url
         page.get_by_label("Region",exact=True).select_option("NCR")
+        if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
         page.get_by_label("Engineering office / DEO",exact=True).select_option("Central Office")
         expect(page.locator(".comparison-table tbody tr")).to_have_count(1)
         page.locator(".project-record-title").click()
@@ -404,7 +431,9 @@ with sync_playwright() as p:
         expect(page.get_by_label("Region matching",exact=True)).to_have_value("ignore",timeout=60000)
         expect(page.get_by_role("region",name="Project tree paths",exact=True)).to_contain_text("Central Office",timeout=60000)
         page.get_by_label("Region",exact=True).select_option("")
+        if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
         page.get_by_label("Engineering office / DEO",exact=True).select_option("")
+        if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
         page.get_by_label("Region matching",exact=True).select_option("strict")
         expect(page.locator(".comparison-table tbody tr")).to_have_count(2)
         assert "region_match=" not in page.url

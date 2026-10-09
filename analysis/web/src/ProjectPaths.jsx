@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react';
+import CandidateDetails from './CandidateDetails.jsx';
 import {projectSources,loadProjectPaths,pathHref} from './projectPaths.js';
-export default function ProjectPaths({row,sourceKey,onSourceChange}) {
+export default function ProjectPaths({row,sourceKey,onSourceChange,onPreview}) {
   const sources=projectSources(row),source=sources.find(s=>s.key===sourceKey) || sources[0];
   const [result,setResult]=useState({loading:true,paths:[],error:''});
   useEffect(()=>{
@@ -11,6 +12,7 @@ export default function ProjectPaths({row,sourceKey,onSourceChange}) {
     return ()=>{live=false;};
   },[row,source?.key]);
   return <section className="project-paths" aria-label="Project tree paths">
+    {row.suggestions?.length>0 && <CandidateDetails row={row} onPreview={onPreview} />}
     <h3>Full source-tree path</h3>
     <div className="view-tabs" aria-label="Project path sources">{sources.map(s=><button key={s.key} aria-pressed={s.key===source?.key} onClick={()=>onSourceChange(s.key)}>{s.label}</button>)}</div>
     {result.loading && <p role="status">Loading source hierarchy…</p>}

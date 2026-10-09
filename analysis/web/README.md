@@ -191,3 +191,26 @@ candidates**. Strict region matching remains the default. The optional mode
 finds 28 unique candidates (24 FAP, four local), labels both source regions,
 and preserves duplicate records, source assignments, tree paths and totals.
 Use `#compare?view=projects&region_match=ignore&q=4432-PHI` to share a finding.
+
+Project records offer **Show analytics** for the entire applied search/filter
+result, including all pages. The modal leads with HGAB3 and NEP source totals,
+charts House (HGAB3) and DBM NEP amounts side by side per recorded region and
+office, and counts House changes, candidate statuses and overlapping review
+flags. Missing source amounts remain unavailable. Reading-only entries and provisional
+matches do not certify policy insertions; review flags do not establish fraud.
+After packaging, run `python3 scripts/check_project_analytics.py` to check
+mobile/desktop modal scope, source switching, closing and focus restoration.
+
+Comparison results use the full workspace until a PDF source opens. Source scopes
+and canonical downloads are collapsible; advanced filters, active chips and
+filtered CSV/JSON exports sit beside the results. Mobile rows use labeled amount
+cards with a sorting control. Search and program selections persist across tabs.
+
+`buildComparisonData.mjs` generates a small PAP overview and lazy project payload
+from the retained inputs before development/build and during site packaging.
+Input hashes prevent mixing builds; unit checks compare compact source amounts,
+identities, assignments, page evidence and grouped records with the full ledger.
+
+After packaging, `python3 scripts/check_comparison_workspace.py` checks lazy
+loading, desktop/mobile layouts, preserved filters, exact filtered exports and
+the analytics modal under the GitHub Pages project prefix.

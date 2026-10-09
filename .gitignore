@@ -44,3 +44,7 @@ Thumbs.db
 # React migration dependencies and build output
 /analysis/web/node_modules/
 /analysis/web/dist/
+
+# Derived compact comparison payloads (rebuilt for dev and packaging)
+analysis/data/comparison_overview_2027.json
+analysis/data/comparison_projects_2027.json
