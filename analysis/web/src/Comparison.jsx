@@ -233,7 +233,7 @@ export default function Comparison({ route }) {
           <h3>{names[3]}</h3>
           <strong>{amount(readings.summary.third.operations_including_projects)}</strong>
           <p>Operations · agency total {amount(readings.summary.third.new_appropriations)}</p>
-          <p>3rd − 2nd operations: {readings.summary.allocation_delta_php > 0 ? "+" : ""}{amount(readings.summary.allocation_delta_php)}</p>
+          <p>3rd − 2nd operations: <span className={readings.summary.allocation_delta_php>0?'up':readings.summary.allocation_delta_php<0?'down':''}>{readings.summary.allocation_delta_php > 0 ? "+" : ""}{amount(readings.summary.allocation_delta_php)}</span></p>
         </article>
       </div>
             {tab !== "gaps" && <section className="notice" aria-label="House reading changes">
@@ -247,8 +247,9 @@ export default function Comparison({ route }) {
           {" · "}<a href={siteUrl("analysis/hb_dpwh_native_ic_projects_3rd_reading.json")} download>3rd reading native I-C</a></p>
         <div className="table-scroll" tabIndex="0" role="region" aria-label="House reading control differences">
           <table><thead><tr><th>Scope</th><th>2nd reading</th><th>3rd reading</th><th>3rd − 2nd</th></tr></thead>
-            <tbody>{[["Agency total", "new_appropriations"], ["Support to Operations", "s2o_total"], ["Operations incl. local/FAP", "operations_including_projects"]].map(([name, key]) =>
-              <tr key={key}><th scope="row">{name}</th><td>{amount(readings.summary.second[key])}</td><td>{amount(readings.summary.third[key])}</td><td>{amount(readings.summary.control_deltas_php[key])}</td></tr>)}</tbody>
+            <tbody>{[["Agency total", "new_appropriations"], ["Support to Operations", "s2o_total"], ["Operations incl. local/FAP", "operations_including_projects"]].map(([name, key]) => {
+              const delta=readings.summary.control_deltas_php[key];
+              return <tr key={key}><th scope="row">{name}</th><td>{amount(readings.summary.second[key])}</td><td>{amount(readings.summary.third[key])}</td><td className={delta>0?'up':delta<0?'down':''}>{delta > 0 ? "+" : ""}{amount(delta)}</td></tr>;})}</tbody>
           </table>
         </div>
       </section>}

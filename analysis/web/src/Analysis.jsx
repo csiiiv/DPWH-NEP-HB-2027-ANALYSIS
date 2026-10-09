@@ -16,6 +16,8 @@ const pick=(params,key,allowed,fallback)=>allowed.includes(params.get(key))?para
 const dimensionTitle=dim=>dim==='office'?'district office':dim==='pap'?'PAP':dim;
 const groupLabel=(dim,label)=>dim==='region'?regionName(label):label;
 const amountCell=(value,title)=><span title={(title??(value?.toLocaleString('en-PH')??''))+' PHP'}>{amount(value)}</span>;
+// Signed amounts color green when positive, red when negative.
+const signedCell=value=><span className={value>0?'up':value<0?'down':''} title={(value?.toLocaleString('en-PH')??'')+' PHP'}>{value>0?'+':''}{amount(value)}</span>;
 export default function Analysis({route}){
  const [data,setData]=useState(null),[detail,setDetail]=useState(null),[error,setError]=useState('');
  const view=pick(route.params,'view',views.map(v=>v[0]),'overview');
@@ -117,7 +119,7 @@ function Adjustments({detail,revisionSets,dim,direction,change}){
     {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {regionName(r.region)}</small></span>},
     {key:'second_php',label:'HGAB2',align:'num',render:r=>r.second_php!=null?amountCell(r.second_php):<span>—</span>},
     {key:'third_php',label:'HGAB3',align:'num',render:r=>r.third_php!=null?amountCell(r.third_php):<span>—</span>},
-    {key:'reading_delta_php',label:'Δ',align:'num',render:r=>r.reading_delta_php!=null?amountCell(r.reading_delta_php):<span>new in HGAB3</span>},
+    {key:'reading_delta_php',label:'Δ',align:'num',render:r=>r.reading_delta_php!=null?signedCell(r.reading_delta_php):<span>new in HGAB3</span>},
    ]}/>
   </section>
   <section className="analysis-section"><h2>House vs NEP differences · provisional identity</h2>
@@ -130,7 +132,7 @@ function Adjustments({detail,revisionSets,dim,direction,change}){
     {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {regionName(r.region)} · {r.trace.replaceAll('_',' ')}</small></span>},
     {key:'house_php',label:'House',align:'num',value:r=>(r.third??r.second)?.amount_php,render:r=>{const house=r.third??r.second;return house?amountCell(house.amount_php):<span>—</span>;}},
     {key:'nep_php',label:'NEP',align:'num',value:r=>r.nep?.amount_php,render:r=>amountCell(r.nep.amount_php)},
-    {key:'gap',label:'House − NEP',align:'num',render:r=>amountCell(r.gap)},
+    {key:'gap',label:'House − NEP',align:'num',render:r=>signedCell(r.gap)},
    ]}/>
   </section>
  </>;
@@ -212,7 +214,7 @@ function Statistics({detail,source,dim,change}){
     {key:'label',label:'Group',scope:'row'},
     {key:'records',label:'Records',align:'num'},
     {key:'share',label:'Million-round share',align:'num',render:r=><span>{(r.share*100).toFixed(1)}%</span>},
-    {key:'deviation',label:'vs overall',align:'num',render:r=><span>{r.deviation>=0?'+':''}{(r.deviation*100).toFixed(1)} pts</span>},
+    {key:'deviation',label:'vs overall',align:'num',render:r=><span className={r.deviation>0?'up':r.deviation<0?'down':''}>{r.deviation>=0?'+':''}{(r.deviation*100).toFixed(1)} pts</span>},
    ]}/>
   </section>}
   <section className="analysis-section"><h2>Exact repeated amounts · blanket fixed allocations</h2>
