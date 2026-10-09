@@ -1,6 +1,6 @@
 # House known-defect repairs — v5
 
-**Current context — 9 October 2026:** this report retains its original extraction/crosscheck scope. The additive House control baseline is [Native I-B](../data/hb_dpwh_native_rollup.json); named local projects still require Native I-C. See [independent source verification](source_hierarchy_verification.md) before using these candidates in comparisons.
+**Retired v5 report — 9 October 2026:** the figures below describe the historical OCR candidate. Current House controls use [Native I-B](../data/hb_dpwh_native_rollup.json); project titles and comparisons use [Native I-C](../data/hb_dpwh_native_ic_projects.json). The [I-C audit](hb_native_ic_rollup_checks.md) closes the four historical extraction gaps. v5 is retained for reproduction and is excluded from current webpage inputs and downloads.
 
 Original v4b and historical artifacts are preserved. v5 is a repaired candidate, not a complete certified budget.
 
@@ -88,7 +88,7 @@ Original v4b and historical artifacts are preserved. v5 is a repaired candidate,
 | Paving of Unpaved Roads - Secondary Roads | 0.021992 | 0.021992 | +0.000000 |
 | Paving of Unpaved Roads - Primary Roads | 0.005000 | 0.005000 | +0.000000 |
 
-## Remaining work
+## Historical v5 limitations
 
 - The overall operations residual is explicitly retained; no invented balancing projects were added.
 - Unrepaired PAP boundary attribution, missing project rows, and possible subtotal contamination still require source-section reconstruction.

@@ -1,6 +1,6 @@
 # Native-layer HB extraction — full processing results
 
-Follow-up to `hb_native_textlayer_assessment.md`. Question: can we fully process the HB PDFs from the native text layer? **DPWH Native I-B controls: 647/647 raw structural balance checks pass.** This completes the retained I-B control outline, at office granularity for local allocations. Named local projects still require Native I-C extraction.
+Follow-up to `hb_native_textlayer_assessment.md`. Question: can we fully process the HB PDFs from the native text layer? **DPWH Native I-B controls: 647/647 raw structural balance checks pass.** This completes the retained I-B control outline, at office granularity for local allocations. Native I-C now supplies named local projects; see the 9 October follow-up below.
 
 **8 October 2026 follow-up:** the raw outline is now rebuilt into an additive
 [Native I-B rollup JSON](../data/hb_dpwh_native_rollup.json).
@@ -10,6 +10,13 @@ all four expenditure columns, with **zero unexplained amount rows**. The
 See [progressive rollup checks and gap repairs](hb_native_ib_rollup_checks.md)
 and the [machine audit](../data/hb_native_ib_rollup_audit.json).
 The [verification viewer](../viewers/hb_native_verification.html) exposes source pages, progressive sums, and navigable paths. See [current source verification](source_hierarchy_verification.md) for the remaining scope before comparisons.
+
+**9 October 2026 follow-up:** native I-C detail now retains 15,972 named-project
+leaves plus 29 FAP totals, with 2,477 balancing internal controls and 56
+independent I-B checks. Current comparisons use native I-C instead of v5;
+44/44 mapped local PAP controls balance. Continuation ownership and classification
+repairs are documented in [the I-C checks](hb_native_ic_rollup_checks.md).
+The earlier I-C TODO statements below describe the 8 October assessment.
 
 ## Validator design (`scripts/hb_native_extract3.py`)
 
@@ -54,6 +61,6 @@ Conclusion: **one geometry profile per table family**, not per volume. The DPWH 
 
 ## Recommendation
 
-1. Use `hb_dpwh_native_rollup.json` as the additive DPWH House control baseline; retain `hb_dpwh_native_tree.json` as its raw-outline predecessor. Native I-B supersedes the v5 control repair chain, but I-C is still required for named local projects.
+1. Use `hb_dpwh_native_rollup.json` as the additive DPWH House control baseline; retain `hb_dpwh_native_tree.json` as its raw-outline predecessor. Use `hb_dpwh_native_ic_projects.json` for named project titles and operation allocations. Together these native layers replace the retired v5 pipeline.
 2. Add band profiles for the 3-col family (VOL IA/IC agency budgets) and VOL II
 3. Keep PaddleOCR markdown only as a qualitative cross-check

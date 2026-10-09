@@ -14,15 +14,15 @@ homepage. No server application or persisted review-decision store is implemente
 
 | Capability | Implementation and current result | Remaining limit |
 |---|---|---|
-| Native House I-B | Geometry-first PDF outline plus additive rollup; 660 internal checks across PS/MOOE/CO/Total; 1,746 leaves reproduce ₱654,102,015,000 | Office grain for local allocations; Native I-C named-project extraction is open |
+| Native House I-B | Geometry-first PDF outline plus additive rollup; 660 internal checks across PS/MOOE/CO/Total; 1,746 leaves reproduce ₱654,102,015,000 | Office grain for local allocations; Native I-C detail is implemented; project identity remains provisional |
 | Complete NEP source hierarchy | PS/MOOE/CO tree, 54 historical extraction repairs, 2,552 additive checks, 14,190 atomic units reproduce ₱642,612,015,000 | Arithmetic cannot certify every retained OCR row |
 | Per-item NEP amount interpretation | Every node has an amount basis; 307 operating-unit rows retain full printed columns; page-specific column polygons and multi-line ambiguity checks | 3,193 actionable source checks remain; missing captures stay null |
 | Independent Transparency NEP hierarchy | 11,372 unique FY2027 records; exact thousand-peso conversion; 2,662 derived grouping checks reproduce ₱445,378,063,000 | Group sums are derived; document/release coverage against printed budgets remains open |
 | Source review workspace | Navigable parent paths, class/branch queues, progressive/direct/recursive sums, page references, 3,193 source-crop mappings, exact PHP, reset/search shortcuts, mobile tree/evidence panels | Flags are exposed for review; no saved approve/correct workflow |
-| Candidate House/NEP comparison | v5 title layer, printed controls, source mappings, exact/fuzzy/ambiguous/unmatched candidate pools | Four House PAP extraction gaps; zero pairs manually certified |
+| Candidate House/NEP comparison | Native I-C title/amount layer, native I-B controls, source mappings, exact/fuzzy/ambiguous/unmatched candidate pools | 44/44 mapped local PAP controls balance; zero pairs manually certified |
 | Candidate stage trace | 19,001 records join retained API↔NEP reconciliation with House/NEP candidates; PAP tables, missing-listing rows, filtering, pagination, and amount/delta/% sorting | Candidate chains are not a certified budget amendment history |
 | Static publication | Homepage plus six viewers, shared assets, JSON downloads, House PDFs, source crops, README links; CI and GitHub Pages workflow | External NEP extraction inputs and ignored raw API downloads are not reproduced by Pages CI |
-| Archive | 104 relocations by role; 102 versioned files and two ignored local caches; original paths/hashes retained | Active v5 repairs still explicitly import two archived helpers; historical JSON paths retain their original provenance |
+| Archive | 104 relocations by role; 102 versioned files and two ignored local caches; original paths/hashes retained | Historical v5 reproduction still explicitly imports two archived helpers; current builds use native I-C; historical JSON paths retain their original provenance |
 
 The stage trace is an existing feature. Its DBM NEP comparison layer has
 11,420 operations allocations; that count differs from the complete NEP tree's
@@ -43,9 +43,10 @@ flowchart TD
     NT --> V
     IM --> V
     AT --> V
-    OLD[Archived repair helpers and v4b audit inputs] --> H5[Retained House v5 candidate]
+    IC[Retained House I-C PDF] --> HIC[Native I-C detail and title-line provenance]
+    HBT --> HIC
     REC[Source/API reconciliation] --> C[Candidate comparison]
-    H5 --> C
+    HIC --> C
     NT --> C
     REC --> ST[Candidate stage trace]
     C --> ST
@@ -74,8 +75,8 @@ image generation, and static rendering remain separate steps. The current
    joined amounts, and changed source headlines. This checks consistency with
    retained inputs; it does not certify source identity or printed row evidence.
 2. **Source-review completion is the principal correctness prerequisite.**
-   All three sources retain `comparison_ready: false`. The NEP queue, Native I-C
-   project coverage, and API release/document coverage remain open. Building a
+   All three sources retain `comparison_ready: false`. The NEP queue, House project identity/amendment completeness,
+   and API release/document coverage remain open. Building a
    second tree or another comparison page does not finish those checks.
 3. **Review decisions have no retained workflow yet.** The current UI is a
    read-only inspection tool. A future decision ledger should retain node ID,
@@ -118,7 +119,7 @@ or comprehensive accessibility certification.
 The next work should resolve source evidence and allocation grain:
 
 1. Record and resolve NEP row/column checks with retained page evidence.
-2. Build the Native I-C named-project layer and reconcile it against I-B controls.
+2. Native I-C now feeds matching and passes 56 I-B cross-volume checks; review project identities and House amendment completeness.
 3. Confirm Transparency NEP release/document coverage and comparable expense scope.
 4. Establish a saved review-decision ledger and a reproducible rebuild sequence.
 5. Benchmark the existing viewers and reduce duplicate payloads where measurements justify it.

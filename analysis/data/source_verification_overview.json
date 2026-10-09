@@ -7,7 +7,7 @@
       "key": "hb",
       "title": "DPWH House Bill — Native I-B",
       "scope": "FY2027 new appropriations · DPWH only · I-B pages 9 and 13–110",
-      "grain": "Office allocations; FAP named projects and funding partitions",
+      "grain": "I-B control tree: office allocations and FAP funding partitions. Native I-C supplies current named-project detail.",
       "scale": 1,
       "audit": {
         "total": 654102015000,
@@ -19,14 +19,40 @@
       "evidence_status": "Native printed controls verified",
       "coverage_status": "No unexplained amount rows in the I-B DPWH table",
       "gaps": [
-        "Native I-C extraction is still needed for named local projects. Office allocations do not certify project-title coverage."
+        "Native I-C detail balances and title ownership is regression-checked; individual project identities and amendment completeness still require review."
       ],
       "comparison_ready": false,
       "review_summary": {
         "needs_source_check": 0,
         "types": {}
       },
-      "page": "hb_native_verification.html"
+      "page": "hb_native_verification.html",
+      "project_detail_summary": {
+        "nodes": 21289,
+        "leaves": 18812,
+        "internal_nodes": 2477,
+        "recursive_checks": 2477,
+        "failed_nodes": 0,
+        "closing_control_checks": 3,
+        "failed_closing_controls": 0,
+        "unexplained_amount_rows": 0,
+        "unexplained_title_rows": 0,
+        "rollup_echoes": 211,
+        "additive_leaf_total_php": 639179718000,
+        "named_project_leaves": 15972,
+        "fap_projects": 29,
+        "zero_funding_observations": 9,
+        "region_nodes": 1471,
+        "office_nodes": 3380,
+        "funding_leaves": 49,
+        "shared_controls_with_ib": 56,
+        "crossvolume_disagreements": 0,
+        "repair_counts": {
+          "fold_family_container": 7,
+          "null_glyph_cleanup": 4,
+          "recover_artifact_title": 1
+        }
+      }
     },
     {
       "key": "nep",

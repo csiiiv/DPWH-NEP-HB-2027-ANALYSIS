@@ -9,6 +9,7 @@ import sys
 from pathlib import Path as _Path
 sys.path[:0] = [str(_Path(__file__).resolve().parents[1]), str(_Path(__file__).resolve().parents[1] / 'builders')]
 from paths import ANALYSIS, REPO, DATA, VIEWERS, DOCS, ARCHIVE, EVIDENCE
+from house_native import comparison_inputs, validate_native_detail
 
 import hashlib
 import json
@@ -26,8 +27,8 @@ VIEWER_OUT = VIEWERS
 INPUTS = ['nep_2027_tree.json', 'nep_2027_tree_validation.json',
           'nep_2027_source_projects.json', 'nep_2027_budget_units.json',
           'nep_2027_native_amount_audit.json', 'nep_2027_native_amount_review.json',
-          'hb_dpwh_leaves_corrected_v5.json', 'hb_known_defect_repairs.json',
-          'hb_json_usability_audit.json', 'nep_2027_api_reconciliation.json']
+          'hb_dpwh_native_ic_projects.json', 'hb_dpwh_native_ic_rollup_audit.json',
+          'hb_dpwh_native_rollup.json', 'hb_native_ib_rollup_audit.json', 'nep_2027_api_reconciliation.json']
 METHOD = ('Unique normalized title + canonical region + canonical PAP node ID '
           '(FAP uses program and zone), one-to-one exact candidates. Amount does '
           'not determine identity. Duplicate keys remain ambiguous. Remaining '
@@ -119,9 +120,13 @@ def project_matches(house, source):
 
 
 def build():
-    tree, source, hb, repairs, audit = [read(n) for n in
+    tree, source, hb, ib, audit = [read(n) for n in
         ['nep_2027_tree.json', 'nep_2027_source_projects.json',
-         'hb_dpwh_leaves_corrected_v5.json', 'hb_known_defect_repairs.json', 'hb_json_usability_audit.json']]
+         'hb_dpwh_native_ic_projects.json', 'hb_dpwh_native_rollup.json', 'hb_dpwh_native_ic_rollup_audit.json']]
+    validate_native_detail(hb, audit, ROOT)
+    assert hb['audit_summary'] == audit['summary']
+    assert all(audit['summary'][k] == 0 for k in ('failed_nodes', 'failed_closing_controls',
+                                                'unexplained_amount_rows', 'crossvolume_disagreements'))
     nodes = {n['id']: n for n in tree['nodes']}
     controls = source['pap_controls']
     pap_programs = {r['pap3']: r['program'] for r in source['projects'] if r['zone'] == 'non_fap'}
@@ -140,42 +145,26 @@ def build():
                     'pdf_page': r['pdf_page'], 'bbox': n['source'].get('bbox'),
                     'evidence': n.get('native_amount_status', 'not_checked'),
                     'funding_php': {nodes[c]['label']: nodes[c]['amount_php'] for c in n['children'] if nodes[c]['kind'] == 'funding'}})
-    house = []
-    for i, r in enumerate(hb['leaves']):
-        pap_id = controls[r['pap']]['id'] if r['zone'] == 'pap' and r['pap'] in controls else None
-        assert pap_id is not None or r['zone'] == 'fap', r['pap']
-        house.append({'id': r.get('source_id') or f"v5:row:{r['row']}:{i}",
-                      'title': r['project'], 'amount_php': r['amount_php'],
-                      'pap': r['pap'] if r['zone'] == 'pap' else 'Foreign-assisted projects',
-                      'pap_id': pap_id or 'fap:' + r['program'],
-                      'program': pap_programs[r['pap']] if r['zone'] == 'pap' else r['program'],
-                      'zone': 'local' if r['zone'] == 'pap' else 'fap',
-                      'region': region(r['region']), 'office': r.get('office', ''),
-                      'pdf_page': r.get('pdf_page'),
-                      'evidence': r.get('provenance_status') or r.get('validation', 'unreviewed'),
-                      'funding_php': r.get('funding_php', {})})
+    house, hb_paps, printed = comparison_inputs(hb, ib, controls, pap_programs, region)
     api_checks = {r['pap3']: r for r in read('nep_2027_api_reconciliation.json')['pap_checks']}
-    printed = audit['pdf_controls_php']
     programs = []
-    for r in audit['program_crosscheck']:
-        p = r['program']
+    for p in sorted(set(pap_programs.values()) | {n['program'] for n in nep if n['zone'] == 'fap'}):
         nlocal = sum(n['amount_php'] for n in nep if n['zone'] == 'local' and n['program'] == p)
-        assert nlocal == r['nep_non_fap_source_php']
-        programs.append({'program': p, 'house_local_control_php': r['house_local_control_php'],
+        programs.append({'program': p,
+                         'house_local_control_php': sum(c['printed_php'] for name, c in hb_paps.items() if pap_programs[name] == p),
                          'nep_local_control_php': nlocal,
                          'api_coverage_php': sum(api_checks[name]['api_php'] for name in controls if pap_programs[name] == p),
                          'house_local_extracted_php': sum(h['amount_php'] for h in house if h['zone'] == 'local' and h['program'] == p),
                          'house_fap_extracted_php': sum(h['amount_php'] for h in house if h['zone'] == 'fap' and h['program'] == p),
                          'nep_fap_control_php': sum(n['amount_php'] for n in nep if n['zone'] == 'fap' and n['program'] == p),
                          'nep_total_control_php': tree['summary']['program_totals_php'][p]})
-    hb_paps = {r['pap']: r for r in repairs['pap_controls']}
     paps = []
     for name, control in controls.items():
         h = hb_paps.get(name)
         extracted = sum(r['amount_php'] for r in house if r['zone'] == 'local' and r['pap'] == name)
         assert sum(r['amount_php'] for r in nep if r['zone'] == 'local' and r['pap'] == name) == control['amount_php']
         if h:
-            assert extracted == h['v5_leaves_php'] and control['amount_php'] == h['nep_source_php']
+            assert extracted == h['extracted_php']
         regions = []
         for reg in sorted({r['region'] for r in house + nep if r['zone'] == 'local' and r['pap'] == name}):
             regions.append({'region': reg,
@@ -193,6 +182,12 @@ def build():
                      'house_pages': h['source_pages'] if h else [], 'nep_page': control['page'], 'regions': regions})
     assert all(api_checks[name]['source_php'] == c['amount_php'] for name, c in controls.items())
     records = project_matches(house, nep)
+    # Only the source/API coverage fields rendered by the current comparison.
+    # Historical House-only reassessment figures refer to retired OCR candidates.
+    api_summary = read('nep_2027_api_reconciliation.json')['summary']
+    api_coverage = {key: api_summary[key] for key in
+                    ('api_rows', 'api_php', 'unpaired_source_rows', 'unpaired_source_php')}
+
     summary = {'nep_printed_php': tree['summary']['total_php'],
                'house_printed_php': printed['new_appropriations'],
                'printed_delta_php': printed['new_appropriations'] - tree['summary']['total_php'],
@@ -201,33 +196,35 @@ def build():
                'house_gas_s2o_printed_php': printed['gas_total'] + printed['s2o_total'],
                'nep_gas_s2o_printed_php': sum(tree['summary']['program_totals_php'][p] for p in ['General Administration and Support', 'Support to Operations']),
                'house_extracted_php': sum(h['amount_php'] for h in house),
-               'house_allocations': len(house), 'house_local_extracted_php': hb['summary']['zones_php']['pap'],
-               'house_fap_php': hb['summary']['zones_php']['fap'],
+               'house_allocations': len(house), 'house_local_extracted_php': sum(h['amount_php'] for h in house if h['zone'] == 'local'),
+               'house_fap_php': sum(h['amount_php'] for h in house if h['zone'] == 'fap'),
                'nep_fap_php': source['summary']['fap_php'],
                'house_operations_gap_php': printed['operations_including_projects'] - sum(h['amount_php'] for h in house),
                'house_balanced_paps': sum(p['coverage_difference_php'] == 0 for p in paps),
-               'house_checked_paps': len(hb_paps), 'nep_evidence': tree['summary']['native_amount_audit'],
+               'house_checked_paps': len(hb_paps), 'house_fap_projects': sum(h['zone'] == 'fap' for h in house), 'nep_evidence': tree['summary']['native_amount_audit'],
                'match_counts': dict(Counter(r['status'] for r in records)),
-               'reviewed_pairs': 0, 'api': read('nep_2027_api_reconciliation.json')['summary']}
+               'reviewed_pairs': 0, 'api': api_coverage}
     assert summary['house_printed_php'] == summary['house_operations_printed_php'] + summary['house_gas_s2o_printed_php']
     assert summary['nep_printed_php'] == summary['nep_operations_printed_php'] + summary['nep_gas_s2o_printed_php']
-    assert summary['house_balanced_paps'] == hb['summary']['balanced_pap_controls']
+    assert summary['house_balanced_paps'] == len(hb_paps)
     assert all(sum(r['funding_php'].values()) == r['amount_php'] for r in house if r['zone'] == 'fap')
     assert sum(sum(r['funding_php'].values()) for r in house if r['zone'] == 'fap') == summary['house_fap_php']
     manifest = {'schema_version': 2, 'fiscal_year': 2027,
                 'built_at': datetime.now(ZoneInfo('Asia/Manila')).isoformat(timespec='seconds'),
                 'stages': {'nep': 'Executive NEP proposal', 'house': 'HB 10858 supplied source documents; amendment completeness not certified'},
-                'house_version': 'v5', 'nep_version': tree['schema_version'],
+                'house_version': 'native_ic_v2', 'comparison_ready': False, 'nep_version': tree['schema_version'],
                 'scope': 'New appropriations excluding automatic appropriations; operations project comparison; local and FAP separated',
                 'units': 'Integer Philippine pesos', 'matching_method': METHOD,
                 'generator': {'path': 'analysis/builders/build_current_pages.py', 'sha256': digest(Path(__file__))},
+                'generator_dependencies': {name: digest(ROOT / name) for name in
+                    ('analysis/builders/house_native.py', 'scripts/hb_native_labels.py')},
                 'inputs': {n: digest(OUT / n) for n in INPUTS},
                 'api_snapshot': {'path': 'dpwh-transparency-nep-data/json/fy2027-combined.json', 'sha256': digest(ROOT / 'dpwh-transparency-nep-data/json/fy2027-combined.json')},
                 'source_documents': {key: {'path': str(path.relative_to(ROOT)), 'sha256': digest(path)} for key, path in [('house_summary', ROOT / 'HB_BUDGET/2 - HB 10858 VOL IB.pdf'), ('house_details', ROOT / 'HB_BUDGET/3 - HB 10858 VOL IC.pdf')]},
-                'source_pdf_sha256': {'house': hb['provenance']['source_pdf_sha256'], 'nep': tree['provenance']['sha256']['pdf']}}
+                'source_pdf_sha256': {'house': hb['provenance_sha256']['HB_BUDGET/3 - HB 10858 VOL IC.pdf'], 'nep': tree['provenance']['sha256']['pdf']}}
     payload = {'manifest': manifest, 'summary': summary, 'programs': programs, 'paps': paps,
                'unresolved_paps': [p for p in paps if p['coverage_difference_php'] not in (None, 0)],
-               'projects': records, 'house_repairs': repairs['repairs']}
+               'projects': records, 'house_repairs': audit['repairs']}
     write('comparison_manifest.json', manifest)
     write('source_comparison_2027.json', payload)
     write('current_pap_controls.json', {k: v for k, v in payload.items() if k != 'projects'})

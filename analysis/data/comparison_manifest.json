@@ -1,19 +1,24 @@
 {
   "schema_version": 2,
   "fiscal_year": 2027,
-  "built_at": "2026-10-09T02:28:19+08:00",
+  "built_at": "2026-10-09T12:32:02+08:00",
   "stages": {
     "nep": "Executive NEP proposal",
     "house": "HB 10858 supplied source documents; amendment completeness not certified"
   },
-  "house_version": "v5",
+  "house_version": "native_ic_v2",
+  "comparison_ready": false,
   "nep_version": 1,
   "scope": "New appropriations excluding automatic appropriations; operations project comparison; local and FAP separated",
   "units": "Integer Philippine pesos",
   "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Amount does not determine identity. Duplicate keys remain ambiguous. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; suggestions do not consume NEP rows. No pair has been manually certified.",
   "generator": {
     "path": "analysis/builders/build_current_pages.py",
-    "sha256": "cf832baf5542214abad5dc461a31ad3190814cdef5c1b55357889fde053b86e4"
+    "sha256": "bb6922df33945d3c784a13541600663711889555b771ba6de4532e0b0a480c34"
+  },
+  "generator_dependencies": {
+    "analysis/builders/house_native.py": "3db655b22360c73864aa73b35f7add63d626abc3d0870e8901b84b366b8d9975",
+    "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
   },
   "inputs": {
     "nep_2027_tree.json": "ca064af3f8cdb6c73e074ef8347f9e65d5cfe66c25024e332a4438ebfae3766d",
@@ -22,9 +27,10 @@
     "nep_2027_budget_units.json": "a3d3aa17095d4bdf7531b180e73504f6dbc8808b86495e843ae9fb56021250de",
     "nep_2027_native_amount_audit.json": "362621533024a1e478981fbaf4d4e6a10aa04c6f7658a7228f82a87eaab4db5b",
     "nep_2027_native_amount_review.json": "9e4826c4541f272811de1b6e55df871825ddcca3cb59a4162667f13f65a95832",
-    "hb_dpwh_leaves_corrected_v5.json": "8e60d400ebbcf4139bcf05dfed4e20d55efac2a4d879924cc08a6e65b3edc668",
-    "hb_known_defect_repairs.json": "9b74951b393bbdf3f12aac9c1d49032c748a609814e5234f5266f435978b8670",
-    "hb_json_usability_audit.json": "0d9042fae6a28abf8ca47b56fdbbc39b0f85bc85499c1994f3b564e3ff249045",
+    "hb_dpwh_native_ic_projects.json": "e3ff2f0f23a8251c70040e3ed107c2c2223e366b3505caf54dfe38fa4e604bfe",
+    "hb_dpwh_native_ic_rollup_audit.json": "7558ce2f77dac3215e5b06ebfd59d3cc839f9c9bc35baf3913142d9b909fc959",
+    "hb_dpwh_native_rollup.json": "53119ce718ef0c88898c9a3db7e24a6979ed85a4199c500b726b17bcf0b8a981",
+    "hb_native_ib_rollup_audit.json": "777310fcbfd6a713c9f93d336d5136e003d8aadc2e069ae53b5a0e4ba5c946ca",
     "nep_2027_api_reconciliation.json": "fd8dfef9ba34062f81818b3510311678b774bdbc758abfe341d28b9302196a0f"
   },
   "api_snapshot": {

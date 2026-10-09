@@ -1,0 +1,449 @@
+#!/usr/bin/env python3
+"""Native text-layer extractor for HB 10858 VOL I-C (DPWH project details).
+
+Geometry-first, same pattern as the VOL I-B extractor (hb_native_extract3.py),
+extended for I-C's deeper outline and its two known text-layer artifacts:
+
+  1. Mirrored margins: odd pages shift content ~+13.6pt; normalize by parity
+     before band matching.
+  2. Rows: tolerance-based y-clustering of words (label + amount of one
+     printed row can differ ~0.3pt in y).
+  3. Amount tokens live in the single AMOUNT column (x > 280 after shift
+     removal); other numerals are label content (coordinates, loan numbers).
+  4. Title wraps: continuation lines at the project indent carry no amount
+     and attach to the amount row ABOVE them (post-wrap). One amount row has an unreadable standalone title glyph (U+0000);
+     three continuation lines contain trailing nulls. Preserve the title
+     text and attach every continuation to its preceding amount row.
+  5. Narrative paragraphs are size ~7.7 Tahoma; table rows are 8.5. Font
+     weight (Tahoma,Bold) marks printed control headings; regular weight
+     marks region/office/project detail rows.
+  6. Levels by normalized label-x band (built from amount rows only):
+     I-C detail tables use ~59/68/79/89/100/112/123/141 (some sections add
+     ~154). Textual fallbacks snap known heading patterns to their level.
+
+Every retained amount row is accounted for: rows failing level assignment or
+wrap attachment are reported, never silently dropped.
+
+Usage:
+  python3 hb_native_ic_extract.py <vol-ic.pdf> [start_page] [end_page] [out.json]
+"""
+import json
+import re
+import sys
+
+import pymupdf
+
+AMT = re.compile(r"^\d{1,3}(?:,\d{3})+$")
+SMALL_INT = re.compile(r"^\d{1,3}$")
+ENUM_RX = re.compile(r"^(?:\d{1,2}|[a-k])[.)]\s*")
+ENUM_REGION_RX = re.compile(r"^(\d{1,2})\.\s+Region\b")
+AMOUNT_X = 280.0      # normalized: everything right of this is the amount column
+ODD_SHIFT = 13.6      # odd pages: content shifted right by this much
+Y_MERGE = 2.5         # words within this y distance belong to one visual row
+TABLE_SIZE = 8.0      # table rows are 8.5pt; narrative paragraphs are ~7.7pt
+ARTIFACT = "\x00"     # one standalone glyph and three trailing continuation glyphs
+
+SUBTOTAL = re.compile(r"^(Sub-total|Subtotal|Total)\b", re.I)
+REGION_RE = re.compile(
+    r"^(Region [IVX]{1,4}[A-B]?\b[-–]? ?|National Capital Region\b(?: \(?NCR?\)?)?"
+    r"|Cordillera Administrative Region\b|Negros Island Region\b(?: \(?NIR?\)?)?"
+    r"|MIMAROPA Region\b|Nationwide\b|BARMM\b)")
+DEO_RE = re.compile(r"(District Engineering Office|Central Office\b"
+                    r"|Regional Office\b|District Office\b|Bureau Proper\b)")
+FUNDING_RE = re.compile(r"^(GOP|Loan Proceeds|Grant Proceeds|GOP Counterpart"
+                        r"|GOP Equity|Counterpart Funding)\b", re.I)
+# bold headings that define the fixed semantic levels
+SECTION_RE = re.compile(
+    r"^(MAINTENANCE AND OTHER OPERATING EXPENSES|CAPITAL OUTLAYS|OPERATIONS"
+    r"|GENERAL ADMINISTRATIVE AND SUPPORT|SUPPORT TO OPERATIONS"
+    r"|LOCALLY-FUNDED PROJECTS|FOREIGN-ASSISTED PROJECTS)$")
+FAP_PAP_RE = re.compile(r"^[1-9]\. .+")
+PROGRAM_RE = re.compile(r"^(ORGANIZATIONAL OUTCOME \d+|CONVERGENCE AND SPECIAL SUPPORT PROGRAM)")
+
+
+def page_rows(page):
+    """Visual rows with font metadata: [(x, y, text, font, size), ...].
+    Second-chance merge: a few rows print the amount up to ~6pt off the
+    title baseline (typesetting defect). After primary clustering, a lone
+    amount cluster merges with a lone label cluster within 6pt."""
+    words = []
+    for block in page.get_text("dict")["blocks"]:
+        if block.get("type", 0) != 0:
+            continue
+        for line in block.get("lines", []):
+            for span in line["spans"]:
+                for token in span["text"].split(" "):
+                    if token:
+                        words.append((span["bbox"][0], span["bbox"][1], token,
+                                      span["font"], round(span["size"], 1)))
+    words.sort(key=lambda w: (w[1], w[0]))
+    clusters = []
+    for w in words:
+        if clusters and w[1] - clusters[-1][0] <= Y_MERGE:
+            clusters[-1][1].append(w)
+        else:
+            clusters.append([w[1], [w]])
+    merged = _merge_split_amounts(clusters, page.rect.width)
+    rows = []
+    for _, ws in merged:
+        ws.sort(key=lambda w: w[0])
+        rows.append(ws)
+    return rows
+
+
+def _merge_split_amounts(clusters, page_width):
+    """Merge lone-amount clusters into a lone-label cluster within 6pt.
+    Returns the cluster list with merges applied."""
+    def is_amount_only(ws):
+        return ws and all(AMT.match(w[2]) and w[0] > AMOUNT_X for w in ws)
+
+    def is_label_only(ws):
+        return ws and not any(AMT.match(w[2]) and w[0] > AMOUNT_X for w in ws)
+
+    out = []
+    used = set()
+    for i, (y, ws) in enumerate(clusters):
+        if i in used:
+            continue
+        if is_amount_only(ws):
+            # find label cluster within 6pt
+            best = None
+            for j, (y2, ws2) in enumerate(clusters):
+                if j in used or j == i:
+                    continue
+                if is_label_only(ws2) and 0 < abs(y2 - y) <= 6.0:
+                    if best is None or abs(y2 - y) < abs(clusters[best][0] - y):
+                        best = j
+            if best is not None:
+                by, bws = clusters[best]
+                used.update({i, best})
+                out.append((min(y, by), ws + bws))
+                continue
+        out.append((y, ws))
+    return out
+
+
+def norm_row(ws, page_number):
+    """Normalize one visual row: parity shift, strip running heads/echoes,
+    split label vs amount tokens. Returns dict or None for noise rows."""
+    odd = (page_number + 1) % 2 == 1
+    shift = ODD_SHIFT if odd else 0.0
+    toks = [(x - shift, t, f, s) for x, _, t, f, s in ws]
+    # running heads and column headers repeat on every page
+    text_probe = " ".join(t for _, t, _, _ in toks)
+    if re.match(r"^(GENERAL APPROPRIATIONS BILL|DETAILS OF DPWH|PROGRAMS / ACTIVITIES)", text_probe):
+        return None
+    # left printed line numbers and their right-margin echoes
+    while toks and SMALL_INT.match(toks[0][1]) and toks[0][0] < 60:
+        toks = toks[1:]
+    if re.match(r"^(GENERAL APPROPRIATIONS BILL|DETAILS OF DPWH|PROGRAMS / ACTIVITIES|AMOUNT)",
+                " ".join(t for _, t, _, _ in toks)):
+        return None
+    # amounts: trailing comma-grouped numerals at the row's right edge (the
+    # single AMOUNT column). Long titles can cross x=280; only the FINAL
+    # numeric token group counts as the amount, earlier numerals stay label.
+    amounts = []
+    label = list(toks)
+    while label:
+        x, t, f, s = label[-1]
+        if AMT.match(t):
+            amounts.append(int(t.replace(",", "")))
+            label.pop()
+        else:
+            break
+    amounts.reverse()
+    label = [(x, t, f, s) for x, t, f, s in label if t != "P" or x < AMOUNT_X]
+    if not label:
+        return None
+    bold = all("Bold" in f for _, _, f, _ in label)
+    size = max(s for _, _, _, s in label)
+    # narrative paragraphs between headings are ~7.7pt; table rows are 8.5
+    if size < TABLE_SIZE and not amounts:
+        return None
+    x = label[0][0]
+    # Two-digit enumerators ("10.") print ~4-5pt left of one-digit ("9.").
+    # Widen by the enumerator width ONLY when the raw x matches no band:
+    # rows already sitting on a band (indent drift or deeper heading) keep it.
+    m = ENUM_RX.match(" ".join(t for _, t, _, _ in label))
+    if m and amounts and _off_band(x, _NORM_BANDS):
+        x = round(x + min(len(m.group(0).rstrip("). ")) * 2.2, 5.0), 1)
+    return {"x": round(x, 1), "text": " ".join(t for _, t, _, _ in label),
+            "bold": bold, "size": size, "amounts": sorted(set(amounts))}
+
+
+# nearest-band probe shared with the enumerator rule (set by extract_rows)
+_NORM_BANDS = []
+
+
+def _off_band(x, bands, tol=5.0):
+    return all(abs(x - b) > tol for b in bands)
+
+
+def extract_rows(doc, p_start, p_end):
+    """All normalized rows from pages [p_start, p_end) (0-based). Two passes:
+    pass 1 collects rows without band knowledge; pass 2 re-normalizes with
+    band-aware enumerator widening once bands are known."""
+    global _NORM_BANDS
+    _NORM_BANDS = []
+    rows = _collect(doc, p_start, p_end)
+    bands = build_bands(rows)
+    if bands:
+        _NORM_BANDS = bands
+        rows = _collect(doc, p_start, p_end)
+    return rows
+
+
+def _collect(doc, p_start, p_end):
+    rows = []
+    for pno in range(p_start, p_end):
+        for ws in page_rows(doc[pno]):
+            r = norm_row(ws, pno)
+            if r is None:
+                continue
+            r["page"] = pno + 1
+            r["source_row"] = len(rows)
+            rows.append(r)
+    return rows
+
+
+def build_bands(rows, min_members=6, tol=3.0):
+    xs = sorted(r["x"] for r in rows if r["amounts"])
+    bands = []
+    for x in xs:
+        if bands and x - bands[-1][-1] <= tol:
+            bands[-1].append(x)
+        else:
+            bands.append([x])
+    return [round(sum(b) / len(b), 1) for b in bands if len(b) >= min_members]
+
+
+# semantic levels (fixed ints BELOW any geometry band index so band rows
+# nest beneath sections/programs instead of popping them)
+LEVEL_SECTION, LEVEL_PROGRAM = -2, -1
+
+
+def band_index(r, bands, tol=5.0):
+    """Nearest indent band index for a row's normalized label x."""
+    best, dist = None, 1e9
+    for i, b in enumerate(bands):
+        d = abs(r["x"] - b)
+        if d < dist:
+            best, dist = i, d
+    return best if dist <= tol else None
+
+
+def row_level(r, bands):
+    """Outline level: fixed semantic level for the six section headings and
+    the OPERATIONS-family program banners; band index for everything else.
+    Region/office/funding rows stay at their band — in I-C they are parents,
+    not terminal leaves, so fixed deep levels would break band nesting."""
+    if r["bold"]:
+        if SECTION_RE.match(r["text"]):
+            return LEVEL_SECTION
+        if PROGRAM_RE.match(r["text"]):
+            return LEVEL_PROGRAM
+    return band_index(r, bands)
+
+
+def build_outline(rows, bands):
+    """Outline from amount rows. Wrap fragments (no amount, same band) attach
+    to the amount row ABOVE them (post-wrap). Consecutive duplicate-printed
+    controls collapse. Section/program banners reset the stack so a new
+    section never nests under the previous section's deepest row. Family
+    containers (bold heading at the same band as its parts) are folded by a
+    post-pass when the parts sum to the heading exactly. A null-only title
+    recovers its text from following wraps; trailing nulls are cleaned.
+
+    Returns (nodes, skipped, suppressed) where skipped lists amount rows not placed in
+    the outline (outside every band) for audit reporting."""
+    nodes, stack, skipped = [], [], []
+    suppressed = []        # second printed observations (rollup echoes)
+    last_node = None       # continuation owner, including across a page break
+    last_enum_region = None  # (enum_value, level) of the last region row
+    for r in rows:
+        lvl = row_level(r, bands)
+        if not r["amounts"]:
+            if FUNDING_RE.match(r["text"]):
+                # A printed dash/blank funding partition is a zero observation,
+                # never a continuation of the preceding funding label.
+                if len(stack) >= 2 and FUNDING_RE.match(stack[-1]["text"]):
+                    stack[-2].setdefault("zero_funding_rows", []).append(r["source_row"])
+                continue
+            if last_node is not None and r["page"] <= last_node["page"] + 1 \
+                    and r["x"] >= last_node["label_x"] - 5.0:
+                last_node["text"] = (last_node["text"] + " " + r["text"]).strip()
+                last_node["title_rows"].append(r["source_row"])
+                if ARTIFACT in r["text"]:
+                    last_node["null_glyph_cleanup"] = True
+            continue
+        # section/program banners clear all pending structure
+        if lvl in (LEVEL_SECTION, LEVEL_PROGRAM):
+            stack.clear()
+            last_enum_region = None
+            nodes.append({"page": r["page"], "level": lvl, "text": r["text"],
+                          "source_row": r["source_row"], "amount": r["amounts"][-1],
+                          "amounts": r["amounts"], "children": [],
+                          "label_x": r["x"], "title_rows": [r["source_row"]]})
+            last_node = nodes[-1]
+            stack.append(nodes[-1])
+            continue
+        if r["amounts"]:
+            if lvl is None:
+                skipped.append(r)
+                continue
+            # FAP head funding summary: GOP/Loan totals printed directly under
+            # the FOREIGN-ASSISTED PROJECTS banner summarize the per-project
+            # funding splits below — a second decomposition, not allocations.
+            if stack and FUNDING_RE.match(r["text"]) \
+                    and stack[-1].get("level") == LEVEL_SECTION \
+                    and "FOREIGN-ASSISTED" in stack[-1]["text"]:
+                suppressed.append(r)
+                continue
+            # rollup echo: a REGION/OFFICE heading that would become the FIRST
+            # CHILD of a childless parent while repeating the parent's amount —
+            # a second printed observation of the same control (p9/45/49
+            # NCR/CO pattern; FAP head prints the same trio in bold).
+            # Equal-amount SIBLINGS (lvl == parent level) are legitimate.
+            if stack and not stack[-1]["children"] \
+                    and lvl > stack[-1]["level"] \
+                    and r["amounts"][-1] == stack[-1]["amount"] \
+                    and (REGION_RE.match(r["text"]) or DEO_RE.search(r["text"])):
+                suppressed.append(r)
+                continue
+            # enumerated-region drift: "14. Region X" prints ~5pt right of its
+            # sequence siblings; the enumerator continues the sequence, so it
+            # snaps to the previous region's level (indent drift repair).
+            m = ENUM_REGION_RX.match(r["text"])
+            if m and last_enum_region:
+                enum_value, lvl_prev = last_enum_region
+                if int(m.group(1)) == enum_value + 1 and lvl > lvl_prev:
+                    lvl = lvl_prev
+                last_enum_region = (int(m.group(1)), lvl)
+            elif m:
+                last_enum_region = (int(m.group(1)), lvl)
+            text = r["text"].replace(ARTIFACT, " ").strip()
+            node = {"page": r["page"], "level": lvl, "text": text,
+                    "title_recovered_from_wraps": not text,
+                    "null_glyph_cleanup": ARTIFACT in r["text"],
+                    "source_row": r["source_row"], "label_x": r["x"],
+                    "title_rows": [r["source_row"]], "bold": r["bold"],
+                    "amount": r["amounts"][-1], "amounts": r["amounts"], "children": []}
+            while stack and stack[-1]["level"] >= lvl:
+                stack.pop()
+            target = stack[-1]["children"] if stack else nodes
+            if target and target[-1]["text"] == node["text"] and \
+                    target[-1]["amount"] == node["amount"] and \
+                    target[-1]["level"] == lvl and text:
+                continue  # consecutive duplicate-printed control
+            if stack:
+                stack[-1]["children"].append(node)
+            else:
+                nodes.append(node)
+            stack.append(node)
+            last_node = node
+    for top in nodes:
+        _fold_family_containers(top)
+    return nodes, skipped, suppressed
+
+
+def _fold_family_containers(node):
+    """Post-pass: a childless BOLD heading followed by consecutive same-band
+    BOLD siblings takes the sibling prefix whose sum reaches its amount
+    exactly as its children. I-C prints 'Preventive Maintenance' (container)
+    and '- Primary/- Secondary/- Tertiary Roads' (parts) at the SAME indent
+    band; the parts appear in order and cumulatively close the container."""
+    kids = node["children"]
+    for k in kids:
+        _fold_family_containers(k)
+    i = 0
+    while i < len(kids):
+        k = kids[i]
+        if not k["children"] and k.get("bold"):
+            run, j = 0, i + 1
+            while j < len(kids) and run < k["amount"]:
+                part = kids[j]
+                if part["level"] < k["level"] or \
+                        (part["level"] == k["level"] and not part.get("bold")):
+                    break  # a shallower or non-bold sibling ends the family
+                run += part["amount"]
+                j += 1
+            if run == k["amount"] and j > i + 2:
+                # at least two parts (a single equal part is a duplicate print)
+                k["children"] = kids[i + 1:j]
+                k["family_container"] = True
+                del kids[i + 1:j]
+        i += 1
+
+
+def attach_post_wraps(nodes, rows, bands):
+    """Normalize labels after build_outline has attached each continuation.
+
+    Kept as the extractor's finalization entry point. A null-only amount row
+    must have recovered actual text; trailing nulls never erase a title.
+    """
+    def fix(node):
+        node["text"] = re.sub(r"\s+", " ", node["text"].replace(ARTIFACT, " ")).strip()
+        if not node["text"]:
+            raise ValueError(f"Empty title at source row {node['source_row']}")
+        for child in node["children"]:
+            fix(child)
+    for node in nodes:
+        fix(node)
+    return nodes
+
+
+def sum_leaf(node):
+    if not node["children"]:
+        return node["amount"]
+    return sum(sum_leaf(c) for c in node["children"])
+
+
+def validate(node, rep, depth=0):
+    if node["children"]:
+        s = sum_leaf(node)
+        if node["amount"]:
+            rep["checked"] += 1
+            if s != node["amount"]:
+                rep["failed"] += 1
+                rep["fails"].append({"page": node["page"], "level": node["level"],
+                                     "text": node["text"][:70], "printed": node["amount"],
+                                     "leaf_sum": s, "diff": node["amount"] - s})
+        for c in node["children"]:
+            validate(c, rep, depth + 1)
+
+
+def main():
+    path = sys.argv[1] if len(sys.argv) > 1 else "HB_BUDGET/3 - HB 10858 VOL IC.pdf"
+    p_start = int(sys.argv[2]) - 1 if len(sys.argv) > 2 else 8
+    p_end = int(sys.argv[3]) if len(sys.argv) > 3 else None
+    out_path = sys.argv[4] if len(sys.argv) > 4 else None
+
+    doc = pymupdf.open(path)
+    p_end = p_end if p_end is not None else len(doc)
+    rows = extract_rows(doc, p_start, p_end)
+    bands = build_bands(rows)
+    print(f"rows: {len(rows)}  amount rows: {sum(1 for r in rows if r['amounts'])}")
+    print(f"indent bands ({len(bands)}): {bands}")
+    nodes, skipped, suppressed = build_outline(rows, bands)
+    print(f"amount rows skipped (outside every band): {len(skipped)}")
+    print(f"rollup echoes suppressed: {len(suppressed)}")
+    for r in skipped[:10]:
+        print(f"  p{r['page']:>3} x={r['x']:>6} {r['text'][:60]!r} {r['amounts']}")
+    nodes = attach_post_wraps(nodes, rows, bands)
+    rep = {"checked": 0, "failed": 0, "fails": []}
+    for node in nodes:
+        validate(node, rep)
+    print(f"top-level nodes: {len(nodes)}")
+    print(f"internal checks: {rep['checked']}  failed: {rep['failed']}")
+    for f in rep["fails"][:25]:
+        print(f"  p{f['page']:>3} L{f['level']} {f['text'][:55]:55s} "
+              f"printed {f['printed']:>15,} sum {f['leaf_sum']:>15,} "
+              f"diff {f['diff']:>14,}")
+    if out_path:
+        with open(out_path, "w") as fh:
+            json.dump({"bands": bands, "tree": nodes, "report": rep}, fh, ensure_ascii=False, indent=1)
+        print(f"tree -> {out_path}")
+
+
+if __name__ == "__main__":
+    main()

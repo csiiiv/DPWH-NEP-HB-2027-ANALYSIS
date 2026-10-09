@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build Transparency NEP → Official NEP → House candidate stage trace.
 
-Chains retained API↔NEP reconciliation pairs with the House v5 / NEP candidate
+Chains retained API↔NEP reconciliation pairs with the House native I-C / NEP candidate
 matcher. Amount deltas and presence gaps are review candidates, never certified
 additions, removals, or policy cuts.
 """
@@ -207,7 +207,7 @@ def build() -> dict:
                 'allocations': s['house_allocations'],
                 'extracted_php': s['house_extracted_php'],
                 'printed_new_appropriations_php': s['house_printed_php'],
-                'grain': 'Project-title extract; four PAPs still unresolved',
+                'grain': 'Native I-C operations allocations; project matches remain provisional',
             },
         },
         'transparency_to_official': {

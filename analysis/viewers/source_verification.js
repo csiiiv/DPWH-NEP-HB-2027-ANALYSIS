@@ -25,6 +25,12 @@
   $('grain').textContent = D.grain;
   $('evidenceStatus').textContent = 'Source evidence: ' + D.evidence_status;
   $('coverageStatus').textContent = 'Coverage: ' + D.coverage_status;
+  const projectDetail = D.project_detail_summary;
+  if (projectDetail) {
+    $('projectDetail').hidden = false;
+    $('projectDetailSummary').textContent = `${projectDetail.named_project_leaves.toLocaleString()} named-project leaves + ${projectDetail.fap_projects.toLocaleString()} FAP totals · ${money(projectDetail.additive_leaf_total_php)} MOOE + CO (excludes PS) · ${projectDetail.recursive_checks.toLocaleString()} internal checks · ${projectDetail.shared_controls_with_ib.toLocaleString()} independent I-B checks.`;
+  }
+
   $('reviewSummary').textContent = D.review_summary.needs_source_check
     ? `${D.review_summary.needs_source_check.toLocaleString()} nodes need a source check`
     : 'No row-level source flags in this viewer; scope review remains separate';

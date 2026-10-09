@@ -6,7 +6,7 @@ Each viewer separates hierarchy arithmetic, source evidence, coverage, and scope
 
 | Source | Retained total (PHP) | Arithmetic | Outstanding verification |
 |---|---:|---|---|
-| [House Native I-B](../viewers/hb_native_verification.html) | 654,102,015,000 | 660 internal nodes pass direct and recursive checks across four expenditure columns | Named local projects require Native I-C extraction. |
+| [House Native I-B](../viewers/hb_native_verification.html) | 654,102,015,000 | 660 internal nodes pass direct and recursive checks across four expenditure columns | Native I-C detail and cross-volume checks pass; project identities and amendment completeness remain provisional. |
 | [NEP PDF source](../viewers/nep_source_verification.html) | 642,612,015,000 | 2,552 additive branch checks pass; atomic ledger agrees | 3,193 source checks remain after the per-item column reassessment; two derived groupings are informational. |
 | [DPWH Transparency NEP API](../viewers/dpwh_nep_api_verification.html) | 445,378,063,000 | 2,662 derived grouping checks pass; 11,372 unique project records match retained listing summaries | Source documents and API release coverage need confirmation before comparison with printed budgets. |
 
@@ -102,6 +102,7 @@ python3 analysis/builders/build_dpwh_nep_api_tree.py
 python3 scripts/hb_native_extract3.py \
   'HB_BUDGET/2 - HB 10858 VOL IB.pdf' 13 110 analysis/data/hb_dpwh_native_tree.json
 python3 scripts/hb_native_rollup.py
+python3 scripts/hb_native_ic_rollup.py
 ```
 
 These source commands are independent choices; run only those relevant to your
@@ -113,4 +114,4 @@ The API tree importer uses the committed combined snapshot, and checks original 
 
 Packaging recomputes unique traversal paths, parent links, reachability, immediate-child and recursive sums, API project identities/amounts/labels/parent metadata paths, and NEP atomic units. HB also checks expenditure-column partitions. The [manifest](../data/source_verification_manifest.json) records source and presentation hashes; stale pages or datasets stop packaging.
 
-CI uses committed snapshots and normalized trees, without requiring local listing/detail downloads, external NEP OCR directories, or PyMuPDF. Before comparisons resume, finish the open PDF/document review and confirm each source's allocation grain and coverage.
+CI uses committed snapshots and normalized trees without local listing/detail downloads or external NEP OCR directories. Native House regressions additionally install pinned PyMuPDF and read the committed I-B/I-C PDFs. Before comparisons resume, finish the open PDF/document review and confirm each source's allocation grain and coverage.

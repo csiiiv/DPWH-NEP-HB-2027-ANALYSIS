@@ -20,7 +20,10 @@ INPUTS = ['analysis/data/hb_dpwh_native_rollup.json', 'analysis/data/hb_native_i
           'analysis/data/dpwh_transparency_nep_tree.json', 'analysis/data/dpwh_transparency_nep_tree_validation.json',
           'dpwh-transparency-nep-data/json/fy2027-combined.json',
           'analysis/data/source_review_evidence.json',
-          'analysis/data/nep_2027_amount_column_reassessment.json']
+          'analysis/data/nep_2027_amount_column_reassessment.json',
+          'analysis/data/hb_dpwh_native_ic_projects.json',
+          'analysis/data/hb_dpwh_native_ic_rollup_audit.json',
+          'analysis/builders/house_native.py', 'scripts/hb_native_labels.py']
 PAGES = {'hb': 'hb_native_verification.html', 'nep': 'nep_source_verification.html',
          'dpwh_nep_api': 'dpwh_nep_api_verification.html'}
 
@@ -213,18 +216,25 @@ def payloads():
         raise ValueError('Missing/unexpected source snippets in review queue')
     hr = prepare_reviews(hn)
     ar = prepare_reviews(tn)
+    from house_native import validate_native_detail
+    ic = read('analysis/data/hb_dpwh_native_ic_projects.json')
+    validate_native_detail(ic, read('analysis/data/hb_dpwh_native_ic_rollup_audit.json'), ROOT)
     common = {'comparison_ready': False, 'comparisons': 'Deferred until source evidence, coverage, and compatible scope are confirmed.'}
     sources = {
         'hb': {**common, 'key': 'hb', 'title': 'DPWH House Bill — Native I-B', 'scale': 1,
                'scope': 'FY2027 new appropriations · DPWH only · I-B pages 9 and 13–110',
-               'grain': 'Office allocations; FAP named projects and funding partitions',
+               'grain': 'I-B control tree: office allocations and FAP funding partitions. Native I-C supplies current named-project detail.',
                'evidence_status': 'Native printed controls verified',
                'coverage_status': 'No unexplained amount rows in the I-B DPWH table',
-               'gaps': ['Native I-C extraction is still needed for named local projects. Office allocations do not certify project-title coverage.'],
+               'gaps': ['Native I-C detail balances and title ownership is regression-checked; individual project identities and amendment completeness still require review.'],
+               'project_detail_summary': ic['audit_summary'],
                'root': hb['root']['id'], 'nodes': hn, 'audit': ha, 'detail_summary': hs, 'review_summary': hr,
                'downloads': [{'label': 'Additive native JSON', 'href': '../data/hb_dpwh_native_rollup.json'},
                              {'label': 'Four-column audit and repairs', 'href': '../data/hb_native_ib_rollup_audit.json'},
-                             {'label': 'Method and remaining gaps', 'href': '../docs/hb_native_ib_rollup_checks.md'}]},
+                             {'label': 'Method and remaining gaps', 'href': '../docs/hb_native_ib_rollup_checks.md'},
+                             {'label': 'Native I-C project detail', 'href': '../data/hb_dpwh_native_ic_projects.json'},
+                             {'label': 'I-C source and rollup audit', 'href': '../data/hb_dpwh_native_ic_rollup_audit.json'},
+                             {'label': 'I-C method and scope', 'href': '../docs/hb_native_ic_rollup_checks.md'}]},
         'nep': {**common, 'key': 'nep', 'title': 'DPWH NEP — Source hierarchy', 'scale': 1,
                 'scope': 'FY2027 new appropriations · automatic appropriations excluded',
                 'grain': 'Source expense classes, programs, offices, projects, and funding',
@@ -274,7 +284,9 @@ def payloads():
     overview = {**common, 'phase': 'Verify each source hierarchy before comparisons',
                 'sources': [{k: d[k] for k in ('key', 'title', 'scope', 'grain', 'scale', 'audit',
                                               'evidence_status', 'coverage_status', 'gaps', 'comparison_ready', 'review_summary')}
-                            | {'page': PAGES[key]} for key, d in sources.items()]}
+                            | {'page': PAGES[key]}
+                            | ({'project_detail_summary': d['project_detail_summary']} if 'project_detail_summary' in d else {})
+                            for key, d in sources.items()]}
     manifest = {'schema_version': 1, 'phase': overview['phase'], 'comparison_ready': False,
                 'inputs': {p: digest(ROOT / p) for p in INPUTS} | image_hashes,
                 'presentation': {p: digest(ROOT / p) for p in

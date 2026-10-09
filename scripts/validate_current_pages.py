@@ -37,13 +37,29 @@ def validate_current_pages():
     generator = manifest['generator']
     require(hashlib.sha256((ROOT / generator['path']).read_bytes()).hexdigest() == generator['sha256'],
             'Comparison generator changed; rebuild current pages')
+    for name, expected in manifest['generator_dependencies'].items():
+        require(hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == expected,
+                f'Comparison dependency changed: {name}; rebuild current pages')
     for document in manifest['source_documents'].values():
         require(hashlib.sha256((ROOT / document['path']).read_bytes()).hexdigest() == document['sha256'],
                 'House PDF changed; source evidence requires review')
     api = manifest['api_snapshot']
     require(hashlib.sha256((ROOT / api['path']).read_bytes()).hexdigest() == api['sha256'], 'API snapshot changed')
-    require(manifest['house_version'] == 'v5' and manifest['fiscal_year'] == 2027, 'Wrong dataset version/year')
-    data, tree, house = read('source_comparison_2027.json'), read('nep_2027_tree.json'), read('hb_dpwh_leaves_corrected_v5.json')
+    require(manifest['house_version'] == 'native_ic_v2' and manifest['comparison_ready'] is False and manifest['fiscal_year'] == 2027, 'Wrong dataset version/year')
+    data, tree, house = read('source_comparison_2027.json'), read('nep_2027_tree.json'), read('hb_dpwh_native_ic_projects.json')
+    sys.path.insert(0, str(ANALYSIS / 'builders'))
+    from house_native import comparison_inputs, validate_native_detail
+    from build_current_pages import INPUTS, region
+    require(set(manifest['inputs']) == set(INPUTS), 'Incomplete comparison input manifest')
+    require(set(manifest['generator_dependencies']) ==
+            {'analysis/builders/house_native.py', 'scripts/hb_native_labels.py'},
+            'Incomplete comparison dependency manifest')
+    source = read('nep_2027_source_projects.json')
+    pap_programs = {r['pap3']: r['program'] for r in source['projects'] if r['zone'] == 'non_fap'}
+    validate_native_detail(house, read('hb_dpwh_native_ic_rollup_audit.json'), ROOT)
+    house_records, house_controls, printed = comparison_inputs(
+        house, read('hb_dpwh_native_rollup.json'), source['pap_controls'], pap_programs, region)
+    expected_house = {r['id']: r for r in house_records}
     require(data['manifest'] == manifest, 'Manifest/payload mismatch')
     require(embedded('source_comparison_2027.html', 'comparisonData') == data, 'Stale embedded comparison payload')
     controls = {k: v for k, v in data.items() if k != 'projects'}
@@ -68,9 +84,9 @@ def validate_current_pages():
                 f'{stage} accounting identity failed')
     require(s['printed_delta_php'] == s['house_printed_php'] - s['nep_printed_php'] == 11490000000, 'Printed total delta failed')
     require(s['house_gas_s2o_printed_php'] - s['nep_gas_s2o_printed_php'] == -2527587000, 'GAS/S2O scope or accounting failed')
-    require(s['house_extracted_php'] == sum(r['amount_php'] for r in house['leaves']), 'House extraction sum failed')
+    require(s['house_extracted_php'] == sum(r['amount_php'] for r in house_records), 'House extraction sum failed')
     require(s['house_operations_gap_php'] == s['house_operations_printed_php'] - s['house_extracted_php'], 'Coverage gap failed')
-    require(s['house_checked_paps'] == 42 and s['house_balanced_paps'] == 38 and len(data['unresolved_paps']) == 4, 'PAP coverage status failed')
+    require(s['house_checked_paps'] == len(house_controls) and s['house_balanced_paps'] == len(house_controls) and not data['unresolved_paps'], 'PAP coverage status failed')
     require(sum(p['coverage_difference_php'] for p in data['unresolved_paps']) == -s['house_operations_gap_php'],
             'Offsetting discrepancies do not reconcile')
     units = read('nep_2027_budget_units.json')['units']
@@ -87,12 +103,22 @@ def validate_current_pages():
         require(p['api_coverage_php'] == api_checks[p['label']]['api_php'] and p['source_api_gap_php'] == p['nep_printed_php'] - p['api_coverage_php'],
                 'PAP API scope/coverage failed')
         require(nodes[p['id']]['amount_php'] == p['nep_printed_php'], f'PAP control stale: {p["id"]}')
+        h = house_controls.get(p['label'])
+        require(p['house_printed_php'] == (h['printed_php'] if h else None) and
+                p['house_extracted_php'] == (h['extracted_php'] if h else 0) and
+                p['coverage_difference_php'] == (h['difference_php'] if h else None) and
+                p['house_pages'] == (h['source_pages'] if h else []),
+                'House PAP controls differ from native detail')
         if p['house_printed_php'] is not None:
             require(p['house_extracted_php'] - p['house_printed_php'] == p['coverage_difference_php'], 'PAP extracted scope failed')
+    require(s['house_printed_php'] == printed['new_appropriations'] and
+            s['house_operations_printed_php'] == printed['operations_including_projects'],
+            'House printed controls differ from Native I-B')
     hids, nids = [], []
     for r in data['projects']:
         if r.get('house'):
             hids.append(r['house']['id'])
+            require(r['house'] == expected_house.get(r['house']['id']), 'House project title/source mismatch')
             if r['house']['zone'] == 'fap':
                 require(sum(r['house']['funding_php'].values()) == r['house']['amount_php'], 'House FAP funding split failed')
         if r.get('nep'):
@@ -103,7 +129,7 @@ def validate_current_pages():
             require(r['delta_php'] == r['house']['amount_php'] - r['nep']['amount_php'], 'Paired delta failed')
         for c in r.get('candidates', []):
             require(c['nep']['amount_php'] == nodes[c['nep']['id']]['amount_php'], 'Suggestion source mismatch')
-    require(len(hids) == len(set(hids)) == len(house['leaves']), 'House matching double counted or omitted rows')
+    require(len(hids) == len(set(hids)) == len(house_records), 'House matching double counted or omitted rows')
     require(len(nids) == len(set(nids)) == len(read('nep_2027_source_projects.json')['projects']),
             'NEP matching double counted project totals/funding units')
     require(dict(Counter(r['status'] for r in data['projects'])) == s['match_counts'], 'Matcher headline counts stale')

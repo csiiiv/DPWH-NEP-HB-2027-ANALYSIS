@@ -16,6 +16,10 @@
     "dpwh-transparency-nep-data/json/fy2027-combined.json": "dd57319349db0174fb59ae2a1939274a6ee072f889a48e85712818980a480e2e",
     "analysis/data/source_review_evidence.json": "c64d1c1822ad89267f726dc7ff4c13421ef77d32690e5efe8252cfa73094848b",
     "analysis/data/nep_2027_amount_column_reassessment.json": "83b66c5177eb12c70facf2158662037c591254896828ca2f298a69f34e2fa4a9",
+    "analysis/data/hb_dpwh_native_ic_projects.json": "e3ff2f0f23a8251c70040e3ed107c2c2223e366b3505caf54dfe38fa4e604bfe",
+    "analysis/data/hb_dpwh_native_ic_rollup_audit.json": "7558ce2f77dac3215e5b06ebfd59d3cc839f9c9bc35baf3913142d9b909fc959",
+    "analysis/builders/house_native.py": "3db655b22360c73864aa73b35f7add63d626abc3d0870e8901b84b366b8d9975",
+    "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317",
     "analysis/data/source_review_evidence/p115-r2.webp": "e2e36ad72e1cccb25af91ef362f35f4dadc58cd4b79ea59c1adc56f634bac71c",
     "analysis/data/source_review_evidence/p115-r22.webp": "5170fea6009c4d2b304d941f301a51e2f970aba3ded610e90db32b2bda6bc0e6",
     "analysis/data/source_review_evidence/p117-r34.webp": "9dc7ac28a3e9eefd611986123cb2819cd02c6a15372c2e0cad0191cdd019efdc",
@@ -3210,11 +3214,11 @@
     "analysis/data/source_review_evidence/summary-page-8.webp": "e1ea25fbd9dd7a172f992b58aca03167be9279733a6dd022566afaf9a7c0163a"
   },
   "presentation": {
-    "analysis/builders/build_source_verification.py": "ef30334589593eb1999f944a963b279b4062466cdc2e0715e68c7fa107facc1a",
-    "analysis/viewers/source_verification.template.html": "54d5de70f3d5cb0eb4ba8f881e3bf19f07986047a14aa01f18f806f35b1a104f",
-    "analysis/viewers/source_verification.js": "600de32ab97faa8bcff05b32649f370ec978f3551d5a42059e9de036502d4470",
+    "analysis/builders/build_source_verification.py": "666865e2f871770611370777becd272b617fd0cc176e27ca921e38de78efff3e",
+    "analysis/viewers/source_verification.template.html": "a99af0eadb9819426ec4f2a8545096f17ab9579f9dafb80f2b99519c63d69f87",
+    "analysis/viewers/source_verification.js": "ec30c8b50667d728d713046af193d05685102f1dccd79b8d0f03171c02871723",
     "analysis/viewers/source_verification.css": "90513cede560f965cc49346be2a770ab32ab4b3e2be4f33b69bbfe0bb59e1e92",
     "analysis/viewers/page_navigation.css": "2217b8a31f6d133346b145edf7afe7d68a5de65912a6f49790dcc82b412b5c2c",
-    "site/index.template.html": "ec186895803b0a3a6ab28eba55b199fd78edeb433f1bb6e837aff8918a87d639"
+    "site/index.template.html": "9d49e197fb0484727b1912b435e6cf0811e302e6e9991e9cacc34c42319945df"
   }
 }

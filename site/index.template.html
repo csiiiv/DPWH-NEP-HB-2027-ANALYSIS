@@ -39,7 +39,7 @@
 const D=JSON.parse(document.getElementById('indexData').textContent);
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const sourceInfo={
-  hb:{title:'House Bill',scope:'Native I-B office allocations, with PS, MOOE, CO and total amounts.',status:'Arithmetic verified'},
+  hb:{title:'House Bill',scope:'Native I-B agency controls (PS, MOOE, CO) and native I-C project detail.',status:'Arithmetic verified'},
   nep:{title:'Official NEP',scope:'Printed budget hierarchy, with expense breakdowns and page evidence.',status:'Source review pending'},
   dpwh_nep_api:{title:'DPWH Transparency NEP',scope:'FY2027 project listing and rollups from the retained API snapshot.',status:'Snapshot arithmetic verified'}
 };
@@ -47,7 +47,9 @@ document.getElementById('sources').innerHTML=D.sources.map(s=>{
   const info=sourceInfo[s.key];
   const failures=s.audit.failures.length;
   const status=failures?'Arithmetic needs review':info.status;
-  return `<article><span class="tag ${failures||s.key==='nep'?'pending':''}">${esc(status)}</span><h3>${esc(info.title)}</h3><p class="scope">${esc(info.scope)}</p><p class="amount">₱${(s.audit.total/s.scale).toLocaleString('en-PH',{maximumFractionDigits:2})}</p><p class="checks">${s.audit.internal_checks.toLocaleString()} rollup checks · ${failures} arithmetic failures</p><div class="actions"><a href="../analysis/viewers/${s.page}">Inspect hierarchy →</a>${s.review_summary.needs_source_check?`<p class="review-entry"><a href="../analysis/viewers/${s.page}#review">Review ${s.review_summary.needs_source_check.toLocaleString()} source checks →</a></p>`:''}</div></article>`;
+  const ic=s.project_detail_summary;
+  const detail=ic?`<p class="scope">Native I-C · ${ic.named_project_leaves.toLocaleString()} named-project leaves + ${ic.fap_projects} FAP totals · ₱${ic.additive_leaf_total_php.toLocaleString('en-PH')} MOOE + CO (excludes PS)</p>`:'';
+  return `<article><span class="tag ${failures||s.key==='nep'?'pending':''}">${esc(status)}</span><h3>${esc(info.title)}</h3><p class="scope">${esc(info.scope)}</p><p class="amount">₱${(s.audit.total/s.scale).toLocaleString('en-PH',{maximumFractionDigits:2})}</p><p class="checks">${s.audit.internal_checks.toLocaleString()} rollup checks · ${failures} arithmetic failures</p>${detail}<div class="actions">${ic?'<a href="../analysis/viewers/source_comparison_2027.html">Inspect native I-C allocation candidates →</a>':''}<a href="../analysis/viewers/${s.page}">Inspect hierarchy →</a>${s.review_summary.needs_source_check?`<p class="review-entry"><a href="../analysis/viewers/${s.page}#review">Review ${s.review_summary.needs_source_check.toLocaleString()} source checks →</a></p>`:''}</div></article>`;
 }).join('');
 </script>
 </body>

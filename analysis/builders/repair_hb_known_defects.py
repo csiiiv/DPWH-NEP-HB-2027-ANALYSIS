@@ -285,13 +285,13 @@ def main():
     (DATA/'hb_dpwh_leaves_corrected_v5.json').write_text(json.dumps({'provenance':provenance,'summary':summary,'leaves':result},indent=2)+'\n')
     (DATA/'hb_known_defect_repairs.json').write_text(json.dumps({'summary':summary,'repairs':edits,
         'removed_rows':removed,'pap_controls':controls,'limitations':provenance['limitations']},indent=2)+'\n')
-    lines=['# House known-defect repairs — v5','', 'Original v4b and historical artifacts are preserved. v5 is a repaired candidate, not a complete certified budget.', '',
+    lines=['# House known-defect repairs — v5','', '**Retired v5 report — 9 October 2026:** the figures below describe the historical OCR candidate. Current House controls use [Native I-B](../data/hb_dpwh_native_rollup.json); project titles and comparisons use [Native I-C](../data/hb_dpwh_native_ic_projects.json). The [I-C audit](hb_native_ic_rollup_checks.md) closes the four historical extraction gaps. v5 is retained for reproduction and is excluded from current webpage inputs and downloads.', '',
         '## Results','']+[f'- {k}: {v}' for k,v in summary.items()]+['', '## Source-verified repairs','']
     for e in edits:
         if e['action']=='replace_section':lines.append(f"- {e['reason']} PDF pages {e['pdf_pages']}; {e['old_rows']} → {e['new_rows']} rows; ₱{e['old_php']/1e9:.6f}B → ₱{e['new_php']/1e9:.6f}B.")
     lines += ['', '## PAP control crosscheck','', '| PAP | Printed ₱B | v5 ₱B | v5 − printed ₱B |','|---|---:|---:|---:|']
     for p in controls:lines.append(f"| {p['pap']} | {p['printed_php']/1e9:.6f} | {p['v5_leaves_php']/1e9:.6f} | {p['difference_php']/1e9:+.6f} |")
-    lines += ['', '## Remaining work','', '- The overall operations residual is explicitly retained; no invented balancing projects were added.',
+    lines += ['', '## Historical v5 limitations','', '- The overall operations residual is explicitly retained; no invented balancing projects were added.',
         '- Unrepaired PAP boundary attribution, missing project rows, and possible subtotal contamination still require source-section reconstruction.',
         '- Earlier API matching and historical dashboards remain version-specific. Use this source-control crosscheck to assess v5; no earlier matcher claims were relabeled as verified.',
         '- The prior House grand upper-bound claim is invalid. Volume I-B prints ₱654.102015B, comprising ₱586.941661B operations and ₱67.160354B GAS/S2O across expense classes.']

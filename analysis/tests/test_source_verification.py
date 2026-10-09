@@ -97,6 +97,12 @@ class CommittedPageTests(unittest.TestCase):
         self.assertEqual(len(overview['sources']),3)
         sources = {s['key']:s for s in overview['sources']}
         self.assertEqual(sources['hb']['audit']['internal_checks'],660)
+        ic = json.loads((ROOT/'analysis/data/hb_dpwh_native_ic_projects.json').read_text())
+        self.assertEqual(sources['hb']['project_detail_summary'], ic['audit_summary'])
+        self.assertEqual(sources['hb']['project_detail_summary']['named_project_leaves'],15972)
+        self.assertEqual(sources['hb']['project_detail_summary']['additive_leaf_total_php'],639179718000)
+        self.assertNotIn('project_detail_summary',sources['nep'])
+
         self.assertEqual(sources['nep']['audit']['internal_checks'],2552)
         self.assertEqual(sources['dpwh_nep_api']['audit']['leaf_count'],11372)
         for s in sources.values():

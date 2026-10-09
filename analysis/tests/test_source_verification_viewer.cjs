@@ -24,6 +24,11 @@ function matching(v,count){assert.match(v.el('searchStatus').textContent,new Reg
 test('native House source renders parent details, page reference and zero final balance',()=>{
   const v=viewer('hb_native_verification.html');
   assert.match(v.el('cards').innerHTML,/₱654\.102B/);
+  assert.equal(v.el('projectDetail').hidden,false);
+  assert.match(v.el('projectDetailSummary').textContent,/15,972 named-project leaves \+ 29 FAP totals/);
+  assert.match(v.el('projectDetailSummary').textContent,/₱639,179,718,000 MOOE \+ CO \(excludes PS\)/);
+  assert.match(v.el('projectDetailSummary').textContent,/2,477 internal checks · 56 independent I-B checks/);
+
   assert.match(v.el('tree').innerHTML,/#page=9/);
   assert.match(v.el('tree').innerHTML,/PDF page 9<\/a>/);
   assert.match(v.el('details').innerHTML,/₱654,102,015,000/);

@@ -86,7 +86,16 @@ function Home() {
               {s.audit.internal_checks.toLocaleString()} rollup checks ·{" "}
               {s.audit.failures.length} arithmetic failures
             </p>
+            {s.project_detail_summary && (
+              <p className="native-project-summary">
+                Native I-C · {s.project_detail_summary.named_project_leaves.toLocaleString()} named-project leaves
+                {" + "}{s.project_detail_summary.fap_projects} FAP totals ·{" "}
+                {new Intl.NumberFormat("en-PH", { style: "currency", currency: "PHP", maximumFractionDigits: 0 }).format(s.project_detail_summary.additive_leaf_total_php)} MOOE + CO (excludes PS)
+              </p>
+            )}
             <a href={routeHref(legacyRoutes[s.page])}>Inspect hierarchy →</a>
+            {s.project_detail_summary && <a href="#house-nep">Inspect native I-C allocation candidates →</a>}
+
             {s.review_summary.needs_source_check > 0 && (
               <a href={routeHref(legacyRoutes[s.page], { view: "review" })}>
                 Review {s.review_summary.needs_source_check.toLocaleString()}{" "}

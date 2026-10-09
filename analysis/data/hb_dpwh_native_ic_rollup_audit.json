@@ -1,0 +1,1963 @@
+{
+  "scope": "DPWH VOL I-C project details pp9–942 (native text layer)",
+  "units": "PHP",
+  "summary": {
+    "nodes": 21289,
+    "leaves": 18812,
+    "internal_nodes": 2477,
+    "recursive_checks": 2477,
+    "failed_nodes": 0,
+    "closing_control_checks": 3,
+    "failed_closing_controls": 0,
+    "unexplained_amount_rows": 0,
+    "unexplained_title_rows": 0,
+    "rollup_echoes": 211,
+    "additive_leaf_total_php": 639179718000,
+    "named_project_leaves": 15972,
+    "fap_projects": 29,
+    "zero_funding_observations": 9,
+    "region_nodes": 1471,
+    "office_nodes": 3380,
+    "funding_leaves": 49,
+    "shared_controls_with_ib": 56,
+    "crossvolume_disagreements": 0,
+    "repair_counts": {
+      "fold_family_container": 7,
+      "null_glyph_cleanup": 4,
+      "recover_artifact_title": 1
+    }
+  },
+  "repairs": [
+    {
+      "kind": "fold_family_container",
+      "node_id": "c0981",
+      "label": "Preventive Maintenance",
+      "pdf_page": 110
+    },
+    {
+      "kind": "fold_family_container",
+      "node_id": "c1583",
+      "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads",
+      "pdf_page": 148
+    },
+    {
+      "kind": "fold_family_container",
+      "node_id": "c1927",
+      "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, an",
+      "pdf_page": 172
+    },
+    {
+      "kind": "fold_family_container",
+      "node_id": "c2174",
+      "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roa",
+      "pdf_page": 187
+    },
+    {
+      "kind": "fold_family_container",
+      "node_id": "c2617",
+      "label": "Road Widening",
+      "pdf_page": 197
+    },
+    {
+      "kind": "fold_family_container",
+      "node_id": "c3524",
+      "label": "Off-Carriageway Improvement",
+      "pdf_page": 243
+    },
+    {
+      "kind": "fold_family_container",
+      "node_id": "c3554",
+      "label": "Paving of Unpaved Roads",
+      "pdf_page": 255
+    },
+    {
+      "kind": "null_glyph_cleanup",
+      "node_id": "c8928",
+      "pdf_page": 490
+    },
+    {
+      "kind": "recover_artifact_title",
+      "node_id": "c8928",
+      "label": "Construction of Concrete Road (Section 1: Sta. 0+000 - Sta. 0+292, Sec",
+      "pdf_page": 490
+    },
+    {
+      "kind": "null_glyph_cleanup",
+      "node_id": "c10528",
+      "pdf_page": 561
+    },
+    {
+      "kind": "null_glyph_cleanup",
+      "node_id": "c15535",
+      "pdf_page": 800
+    },
+    {
+      "kind": "null_glyph_cleanup",
+      "node_id": "c15536",
+      "pdf_page": 800
+    }
+  ],
+  "failures": [],
+  "closing_checks": [
+    {
+      "label": "OPERATIONS = outcomes sum",
+      "pdf_page": 110,
+      "printed_php": 586941661000,
+      "observed_sum_php": 586941661000,
+      "difference_php": 0
+    },
+    {
+      "label": "CAPITAL OUTLAYS = GAS+S2O+OPS (CO copy)",
+      "pdf_page": 45,
+      "printed_php": 614493972000,
+      "observed_sum_php": 614493972000,
+      "difference_php": 0
+    },
+    {
+      "label": "MOOE = GAS+S2O (MOOE copy)",
+      "pdf_page": 9,
+      "printed_php": 24685746000,
+      "observed_sum_php": 24685746000,
+      "difference_php": 0
+    }
+  ],
+  "rollup_echoes": [
+    {
+      "pdf_page": 9,
+      "text": "National Capital Region",
+      "amounts": [
+        1505758000
+      ]
+    },
+    {
+      "pdf_page": 9,
+      "text": "Central Office",
+      "amounts": [
+        1505758000
+      ]
+    },
+    {
+      "pdf_page": 9,
+      "text": "National Capital Region",
+      "amounts": [
+        23179988000
+      ]
+    },
+    {
+      "pdf_page": 9,
+      "text": "Central Office",
+      "amounts": [
+        23179988000
+      ]
+    },
+    {
+      "pdf_page": 33,
+      "text": "a. CAR Regional Office",
+      "amounts": [
+        11867000
+      ]
+    },
+    {
+      "pdf_page": 34,
+      "text": "a. Regional Office I",
+      "amounts": [
+        5656000
+      ]
+    },
+    {
+      "pdf_page": 34,
+      "text": "a. Regional Office II",
+      "amounts": [
+        17695000
+      ]
+    },
+    {
+      "pdf_page": 34,
+      "text": "a. Laguna 2nd District Engineering Office",
+      "amounts": [
+        6333000
+      ]
+    },
+    {
+      "pdf_page": 34,
+      "text": "a. Regional Office V",
+      "amounts": [
+        20581000
+      ]
+    },
+    {
+      "pdf_page": 35,
+      "text": "a. Regional Office VI",
+      "amounts": [
+        12197000
+      ]
+    },
+    {
+      "pdf_page": 35,
+      "text": "a. Regional Office NIR",
+      "amounts": [
+        12762000
+      ]
+    },
+    {
+      "pdf_page": 35,
+      "text": "a. Regional Office VII",
+      "amounts": [
+        5836000
+      ]
+    },
+    {
+      "pdf_page": 35,
+      "text": "a. Regional Office VIII",
+      "amounts": [
+        12715000
+      ]
+    },
+    {
+      "pdf_page": 35,
+      "text": "a. Regional Office IX",
+      "amounts": [
+        6310000
+      ]
+    },
+    {
+      "pdf_page": 35,
+      "text": "a. Regional Office X",
+      "amounts": [
+        6016000
+      ]
+    },
+    {
+      "pdf_page": 35,
+      "text": "a. Regional Office XI",
+      "amounts": [
+        24738000
+      ]
+    },
+    {
+      "pdf_page": 35,
+      "text": "a. Regional Office XII",
+      "amounts": [
+        6822000
+      ]
+    },
+    {
+      "pdf_page": 36,
+      "text": "a. Regional Office XIII",
+      "amounts": [
+        11470000
+      ]
+    },
+    {
+      "pdf_page": 45,
+      "text": "National Capital Region",
+      "amounts": [
+        2777545000
+      ]
+    },
+    {
+      "pdf_page": 45,
+      "text": "Central Office",
+      "amounts": [
+        2777545000
+      ]
+    },
+    {
+      "pdf_page": 49,
+      "text": "National Capital Region",
+      "amounts": [
+        10533243000
+      ]
+    },
+    {
+      "pdf_page": 49,
+      "text": "Central Office",
+      "amounts": [
+        10533243000
+      ]
+    },
+    {
+      "pdf_page": 109,
+      "text": "National Capital Region",
+      "amounts": [
+        13241523000
+      ]
+    },
+    {
+      "pdf_page": 109,
+      "text": "Central Office",
+      "amounts": [
+        13241523000
+      ]
+    },
+    {
+      "pdf_page": 110,
+      "text": "National Capital Region",
+      "amounts": [
+        1000000000
+      ]
+    },
+    {
+      "pdf_page": 110,
+      "text": "Central Office",
+      "amounts": [
+        1000000000
+      ]
+    },
+    {
+      "pdf_page": 119,
+      "text": "Isabela 3rd District Engineering Office",
+      "amounts": [
+        117296000
+      ]
+    },
+    {
+      "pdf_page": 122,
+      "text": "Davao City 2nd District Engineering Office",
+      "amounts": [
+        13367000
+      ]
+    },
+    {
+      "pdf_page": 123,
+      "text": "Surigao del Sur 2nd District Engineering Office",
+      "amounts": [
+        47506000
+      ]
+    },
+    {
+      "pdf_page": 138,
+      "text": "Davao del Norte District Engineering Office",
+      "amounts": [
+        200000000
+      ]
+    },
+    {
+      "pdf_page": 142,
+      "text": "La Union 1st District Engineering Office",
+      "amounts": [
+        143911000
+      ]
+    },
+    {
+      "pdf_page": 143,
+      "text": "Lower Kalinga District Engineering Office",
+      "amounts": [
+        85029000
+      ]
+    },
+    {
+      "pdf_page": 147,
+      "text": "Misamis Oriental 1st District Engineering Office",
+      "amounts": [
+        29500000
+      ]
+    },
+    {
+      "pdf_page": 148,
+      "text": "Dinagat Islands District Engineering Office",
+      "amounts": [
+        1618000
+      ]
+    },
+    {
+      "pdf_page": 153,
+      "text": "Isabela 2nd District Engineering Office",
+      "amounts": [
+        9130000
+      ]
+    },
+    {
+      "pdf_page": 153,
+      "text": "Ilolilo 2nd District Engineering Office",
+      "amounts": [
+        10800000
+      ]
+    },
+    {
+      "pdf_page": 154,
+      "text": "Cebu 2nd District Engineering Office",
+      "amounts": [
+        149955000
+      ]
+    },
+    {
+      "pdf_page": 155,
+      "text": "Leyte 2nd District Engineering Office",
+      "amounts": [
+        66127000
+      ]
+    },
+    {
+      "pdf_page": 155,
+      "text": "Misamis Oriental 1st District Engineering Office",
+      "amounts": [
+        33048000
+      ]
+    },
+    {
+      "pdf_page": 155,
+      "text": "Cotabato 1st District Engineering Office",
+      "amounts": [
+        49110000
+      ]
+    },
+    {
+      "pdf_page": 159,
+      "text": "Nueva Ecija 1st District Engineering Office",
+      "amounts": [
+        11500000
+      ]
+    },
+    {
+      "pdf_page": 166,
+      "text": "Cotabato 2nd District Engineering Office",
+      "amounts": [
+        41011000
+      ]
+    },
+    {
+      "pdf_page": 172,
+      "text": "Samar 1st District Engineering Office",
+      "amounts": [
+        19209000
+      ]
+    },
+    {
+      "pdf_page": 172,
+      "text": "Lanao del Norte 2nd District Engineering Office",
+      "amounts": [
+        26800000
+      ]
+    },
+    {
+      "pdf_page": 172,
+      "text": "Sarangani District Engineering Office",
+      "amounts": [
+        5878000
+      ]
+    },
+    {
+      "pdf_page": 172,
+      "text": "Dinagat Islands District Engineering Office",
+      "amounts": [
+        45806000
+      ]
+    },
+    {
+      "pdf_page": 172,
+      "text": "Central Office",
+      "amounts": [
+        1383780000
+      ]
+    },
+    {
+      "pdf_page": 174,
+      "text": "Cagayan de Oro City 2nd District Engineering Office",
+      "amounts": [
+        33250000
+      ]
+    },
+    {
+      "pdf_page": 174,
+      "text": "Davao City 2nd District Engineering Office",
+      "amounts": [
+        70890000
+      ]
+    },
+    {
+      "pdf_page": 174,
+      "text": "Surigao del Sur 2nd District Engineering Office",
+      "amounts": [
+        40000000
+      ]
+    },
+    {
+      "pdf_page": 174,
+      "text": "Central Office",
+      "amounts": [
+        3661641000
+      ]
+    },
+    {
+      "pdf_page": 180,
+      "text": "Masbate 2nd District Engineering Office",
+      "amounts": [
+        100000000
+      ]
+    },
+    {
+      "pdf_page": 180,
+      "text": "Iloilo 2nd District Engineering Office",
+      "amounts": [
+        17500000
+      ]
+    },
+    {
+      "pdf_page": 180,
+      "text": "Cebu City District Engineering Office",
+      "amounts": [
+        150000000
+      ]
+    },
+    {
+      "pdf_page": 181,
+      "text": "Zamboanga City 1st District Engineering Office",
+      "amounts": [
+        110836000
+      ]
+    },
+    {
+      "pdf_page": 181,
+      "text": "Bukidnon 1st District Engineering Office",
+      "amounts": [
+        49000000
+      ]
+    },
+    {
+      "pdf_page": 181,
+      "text": "Sultan Kudarat 2nd District Engineering Office",
+      "amounts": [
+        127436000
+      ]
+    },
+    {
+      "pdf_page": 182,
+      "text": "Surigao del Sur 2nd District Engineering Office",
+      "amounts": [
+        90500000
+      ]
+    },
+    {
+      "pdf_page": 182,
+      "text": "Central Office",
+      "amounts": [
+        1873900000
+      ]
+    },
+    {
+      "pdf_page": 183,
+      "text": "La Union 1st District Engineering Office",
+      "amounts": [
+        88750000
+      ]
+    },
+    {
+      "pdf_page": 186,
+      "text": "Cagayan 2nd District Engineering Office",
+      "amounts": [
+        210000000
+      ]
+    },
+    {
+      "pdf_page": 186,
+      "text": "Camarines Sur 4th District Engineering Office",
+      "amounts": [
+        44000000
+      ]
+    },
+    {
+      "pdf_page": 186,
+      "text": "Iloilo 2nd District Engineering Office",
+      "amounts": [
+        47566000
+      ]
+    },
+    {
+      "pdf_page": 187,
+      "text": "Davao de Oro 1st District Engineering Office",
+      "amounts": [
+        10000000
+      ]
+    },
+    {
+      "pdf_page": 187,
+      "text": "Sarangani District Engineering Office",
+      "amounts": [
+        23000000
+      ]
+    },
+    {
+      "pdf_page": 187,
+      "text": "Butuan City District Engineering Office",
+      "amounts": [
+        85000000
+      ]
+    },
+    {
+      "pdf_page": 187,
+      "text": "Central Office",
+      "amounts": [
+        1182646000
+      ]
+    },
+    {
+      "pdf_page": 190,
+      "text": "Iloilo City District Engineering Office",
+      "amounts": [
+        7000000
+      ]
+    },
+    {
+      "pdf_page": 190,
+      "text": "Cebu 5th District Engineering Office",
+      "amounts": [
+        10000000
+      ]
+    },
+    {
+      "pdf_page": 190,
+      "text": "Leyte 4th District Engineering Office",
+      "amounts": [
+        8000000
+      ]
+    },
+    {
+      "pdf_page": 190,
+      "text": "Central Office",
+      "amounts": [
+        1193954000
+      ]
+    },
+    {
+      "pdf_page": 192,
+      "text": "Isabela 1st District Engineering Office",
+      "amounts": [
+        11000000
+      ]
+    },
+    {
+      "pdf_page": 193,
+      "text": "Batangas 2nd District Engineering Office",
+      "amounts": [
+        88500000
+      ]
+    },
+    {
+      "pdf_page": 193,
+      "text": "Masbate 2nd District Engineering Office",
+      "amounts": [
+        25000000
+      ]
+    },
+    {
+      "pdf_page": 194,
+      "text": "Cebu 5th District Engineering Office",
+      "amounts": [
+        20000000
+      ]
+    },
+    {
+      "pdf_page": 194,
+      "text": "Zamboanga del Norte 4th District Engineering Office",
+      "amounts": [
+        43025000
+      ]
+    },
+    {
+      "pdf_page": 194,
+      "text": "Davao del Norte District Engineering Office",
+      "amounts": [
+        20000000
+      ]
+    },
+    {
+      "pdf_page": 195,
+      "text": "Sultan Kudarat 2nd District Engineering Office",
+      "amounts": [
+        41748000
+      ]
+    },
+    {
+      "pdf_page": 195,
+      "text": "Central Office",
+      "amounts": [
+        517624000
+      ]
+    },
+    {
+      "pdf_page": 195,
+      "text": "Ifugao 1st District Engineering Office",
+      "amounts": [
+        19970000
+      ]
+    },
+    {
+      "pdf_page": 196,
+      "text": "Camarines Sur 3rd District Engineering Office",
+      "amounts": [
+        50000000
+      ]
+    },
+    {
+      "pdf_page": 196,
+      "text": "Iloilo 2nd District Engineering Office",
+      "amounts": [
+        24894000
+      ]
+    },
+    {
+      "pdf_page": 196,
+      "text": "Negros Occidental 1st District Engineering Office",
+      "amounts": [
+        5060000
+      ]
+    },
+    {
+      "pdf_page": 196,
+      "text": "Northern Samar 1st District Engineering Office",
+      "amounts": [
+        8768000
+      ]
+    },
+    {
+      "pdf_page": 196,
+      "text": "Lanao del Norte 2nd District Engineering Office",
+      "amounts": [
+        10345000
+      ]
+    },
+    {
+      "pdf_page": 197,
+      "text": "Central Office",
+      "amounts": [
+        4308848000
+      ]
+    },
+    {
+      "pdf_page": 200,
+      "text": "Tarlac 2nd District Engineering Office",
+      "amounts": [
+        23000000
+      ]
+    },
+    {
+      "pdf_page": 200,
+      "text": "Laguna 1st District Engineering Office",
+      "amounts": [
+        59489000
+      ]
+    },
+    {
+      "pdf_page": 200,
+      "text": "Capiz 2nd District Engineering Office",
+      "amounts": [
+        16365000
+      ]
+    },
+    {
+      "pdf_page": 200,
+      "text": "Negros Oriental 3rd District Engineering Office",
+      "amounts": [
+        83061000
+      ]
+    },
+    {
+      "pdf_page": 200,
+      "text": "Cebu 1st District Engineering Office",
+      "amounts": [
+        48020000
+      ]
+    },
+    {
+      "pdf_page": 200,
+      "text": "Zamboanga del Sur 1st District Engineering Office",
+      "amounts": [
+        103283000
+      ]
+    },
+    {
+      "pdf_page": 200,
+      "text": "Davao del Sur District Engineering Office",
+      "amounts": [
+        62500000
+      ]
+    },
+    {
+      "pdf_page": 201,
+      "text": "Central Office",
+      "amounts": [
+        7701011000
+      ]
+    },
+    {
+      "pdf_page": 209,
+      "text": "Negros Occidental 3rd District Engineering Office",
+      "amounts": [
+        88290000
+      ]
+    },
+    {
+      "pdf_page": 210,
+      "text": "Zamboanga del Norte 4th District Engineering Office",
+      "amounts": [
+        250558000
+      ]
+    },
+    {
+      "pdf_page": 211,
+      "text": "Surigao del Norte 1st District Engineering Office",
+      "amounts": [
+        40087000
+      ]
+    },
+    {
+      "pdf_page": 211,
+      "text": "Central Office",
+      "amounts": [
+        1912393000
+      ]
+    },
+    {
+      "pdf_page": 212,
+      "text": "Palawan 1st District Engineering Office",
+      "amounts": [
+        12006000
+      ]
+    },
+    {
+      "pdf_page": 213,
+      "text": "Leyte 4th District Engineering Office",
+      "amounts": [
+        41042000
+      ]
+    },
+    {
+      "pdf_page": 213,
+      "text": "Surigao del Norte 1st District Engineering Office",
+      "amounts": [
+        36746000
+      ]
+    },
+    {
+      "pdf_page": 213,
+      "text": "Central Office",
+      "amounts": [
+        42857840000
+      ]
+    },
+    {
+      "pdf_page": 230,
+      "text": "Cagayan 2nd District Engineering Office",
+      "amounts": [
+        19500000
+      ]
+    },
+    {
+      "pdf_page": 231,
+      "text": "Cebu 3rd District Engineering Office",
+      "amounts": [
+        88000000
+      ]
+    },
+    {
+      "pdf_page": 233,
+      "text": "Misamis Oriental 1st District Engineering Office",
+      "amounts": [
+        20000000
+      ]
+    },
+    {
+      "pdf_page": 233,
+      "text": "Butuan City District Engineering Office",
+      "amounts": [
+        95000000
+      ]
+    },
+    {
+      "pdf_page": 233,
+      "text": "Central Office",
+      "amounts": [
+        21993233000
+      ]
+    },
+    {
+      "pdf_page": 242,
+      "text": "Leyte 4th District Engineering Office",
+      "amounts": [
+        30000000
+      ]
+    },
+    {
+      "pdf_page": 242,
+      "text": "Zamboanga Sibugay 1st District Engineering Office",
+      "amounts": [
+        35000000
+      ]
+    },
+    {
+      "pdf_page": 242,
+      "text": "Sultan Kudarat 1st District Engineering Office",
+      "amounts": [
+        84937000
+      ]
+    },
+    {
+      "pdf_page": 243,
+      "text": "National Capital Region",
+      "amounts": [
+        515000000
+      ]
+    },
+    {
+      "pdf_page": 243,
+      "text": "Central Office",
+      "amounts": [
+        515000000
+      ]
+    },
+    {
+      "pdf_page": 244,
+      "text": "Lower Kalinga District Engineering Office",
+      "amounts": [
+        15000000
+      ]
+    },
+    {
+      "pdf_page": 244,
+      "text": "Nueva Ecija 1st District Engineering Office",
+      "amounts": [
+        16500000
+      ]
+    },
+    {
+      "pdf_page": 246,
+      "text": "Cotabato 1st District Engineering Office",
+      "amounts": [
+        14076000
+      ]
+    },
+    {
+      "pdf_page": 247,
+      "text": "Central Office",
+      "amounts": [
+        1557100000
+      ]
+    },
+    {
+      "pdf_page": 248,
+      "text": "Pangasinan 3rd District Engineering Office",
+      "amounts": [
+        10000000
+      ]
+    },
+    {
+      "pdf_page": 248,
+      "text": "Cagayan 2nd District Engineering Office",
+      "amounts": [
+        18500000
+      ]
+    },
+    {
+      "pdf_page": 249,
+      "text": "Nueva Ecija 1st District Engineering Office",
+      "amounts": [
+        44000000
+      ]
+    },
+    {
+      "pdf_page": 249,
+      "text": "Palawan 3rd District Engineering Office",
+      "amounts": [
+        65000000
+      ]
+    },
+    {
+      "pdf_page": 249,
+      "text": "Masbate 3rd District Engineering Office",
+      "amounts": [
+        30000000
+      ]
+    },
+    {
+      "pdf_page": 249,
+      "text": "Iloilo 1st District Engineering Office",
+      "amounts": [
+        150000000
+      ]
+    },
+    {
+      "pdf_page": 250,
+      "text": "Cebu 4th District Engineering Office",
+      "amounts": [
+        2040000
+      ]
+    },
+    {
+      "pdf_page": 250,
+      "text": "Zamboanga City 1st District Engineering Office",
+      "amounts": [
+        76000000
+      ]
+    },
+    {
+      "pdf_page": 252,
+      "text": "Central Office",
+      "amounts": [
+        356590000
+      ]
+    },
+    {
+      "pdf_page": 253,
+      "text": "Batanes District Engineering Office",
+      "amounts": [
+        10912000
+      ]
+    },
+    {
+      "pdf_page": 253,
+      "text": "Laguna 3rd District Engineering Office",
+      "amounts": [
+        4781000
+      ]
+    },
+    {
+      "pdf_page": 253,
+      "text": "Palawan 3rd District Engineering Office",
+      "amounts": [
+        2500000
+      ]
+    },
+    {
+      "pdf_page": 254,
+      "text": "Iloilo 1st District Engineering Office",
+      "amounts": [
+        150000000
+      ]
+    },
+    {
+      "pdf_page": 254,
+      "text": "Zamboanga City 1st District Engineering Office",
+      "amounts": [
+        28500000
+      ]
+    },
+    {
+      "pdf_page": 255,
+      "text": "National Capital Region",
+      "amounts": [
+        5000000
+      ]
+    },
+    {
+      "pdf_page": 255,
+      "text": "Central Office",
+      "amounts": [
+        5000000
+      ]
+    },
+    {
+      "pdf_page": 255,
+      "text": "Region IX",
+      "amounts": [
+        5000000
+      ]
+    },
+    {
+      "pdf_page": 255,
+      "text": "Zamboanga City 1st District Engineering Office",
+      "amounts": [
+        12074000
+      ]
+    },
+    {
+      "pdf_page": 255,
+      "text": "Davao Occidental District Engineering Office",
+      "amounts": [
+        9918000
+      ]
+    },
+    {
+      "pdf_page": 255,
+      "text": "Central Office",
+      "amounts": [
+        396627000
+      ]
+    },
+    {
+      "pdf_page": 256,
+      "text": "Mountain Province 1st District Engineering Office",
+      "amounts": [
+        10000000
+      ]
+    },
+    {
+      "pdf_page": 256,
+      "text": "Zamboanga del Sur 2nd District Engineering Office",
+      "amounts": [
+        26628000
+      ]
+    },
+    {
+      "pdf_page": 256,
+      "text": "Lanao del Norte 2nd District Engineering Office",
+      "amounts": [
+        135774000
+      ]
+    },
+    {
+      "pdf_page": 261,
+      "text": "Ilocos Norte 1st District Engineering Office",
+      "amounts": [
+        20000000
+      ]
+    },
+    {
+      "pdf_page": 262,
+      "text": "Cagayan 1st District Engineering Office",
+      "amounts": [
+        31200000
+      ]
+    },
+    {
+      "pdf_page": 262,
+      "text": "Laguna 3rd District Engineering Office",
+      "amounts": [
+        18000000
+      ]
+    },
+    {
+      "pdf_page": 263,
+      "text": "Siquijor District Engineering Office",
+      "amounts": [
+        20000000
+      ]
+    },
+    {
+      "pdf_page": 264,
+      "text": "Sultan Kudarat 2nd District Engineering Office",
+      "amounts": [
+        80022000
+      ]
+    },
+    {
+      "pdf_page": 265,
+      "text": "Surigao del Norte 2nd District Engineering Office",
+      "amounts": [
+        48000000
+      ]
+    },
+    {
+      "pdf_page": 267,
+      "text": "Apayao 2nd District Engineering Office",
+      "amounts": [
+        10000000
+      ]
+    },
+    {
+      "pdf_page": 267,
+      "text": "Isabela 2nd District Engineering Office",
+      "amounts": [
+        76000000
+      ]
+    },
+    {
+      "pdf_page": 267,
+      "text": "Zambales 2nd District Engineering Office",
+      "amounts": [
+        40000000
+      ]
+    },
+    {
+      "pdf_page": 269,
+      "text": "Capiz 2nd District Engineering Office",
+      "amounts": [
+        16800000
+      ]
+    },
+    {
+      "pdf_page": 269,
+      "text": "Cebu 1st District Engineering Office",
+      "amounts": [
+        10000000
+      ]
+    },
+    {
+      "pdf_page": 269,
+      "text": "Zamboanga City 1st District Engineering Office",
+      "amounts": [
+        3000000
+      ]
+    },
+    {
+      "pdf_page": 270,
+      "text": "Davao de Oro 1st District Engineering Office",
+      "amounts": [
+        17000000
+      ]
+    },
+    {
+      "pdf_page": 270,
+      "text": "Butuan City District Engineering Office",
+      "amounts": [
+        30000000
+      ]
+    },
+    {
+      "pdf_page": 274,
+      "text": "Ilocos Norte 1st District Engineering Office",
+      "amounts": [
+        42000000
+      ]
+    },
+    {
+      "pdf_page": 280,
+      "text": "Zamboanga Sibugay 2nd District Engineering Office",
+      "amounts": [
+        6200000
+      ]
+    },
+    {
+      "pdf_page": 283,
+      "text": "Central Office",
+      "amounts": [
+        10226564000
+      ]
+    },
+    {
+      "pdf_page": 289,
+      "text": "Nueva Ecija 1st District Engineering Office",
+      "amounts": [
+        39900000
+      ]
+    },
+    {
+      "pdf_page": 294,
+      "text": "Central Office",
+      "amounts": [
+        5244933000
+      ]
+    },
+    {
+      "pdf_page": 294,
+      "text": "Batanes District Engineering Office",
+      "amounts": [
+        20000000
+      ]
+    },
+    {
+      "pdf_page": 295,
+      "text": "Cebu 2nd District Engineering Office",
+      "amounts": [
+        20000000
+      ]
+    },
+    {
+      "pdf_page": 295,
+      "text": "Eastern Samar District Engineering Office",
+      "amounts": [
+        50000000
+      ]
+    },
+    {
+      "pdf_page": 295,
+      "text": "Zamboanga del Sur 2nd District Engineering Office",
+      "amounts": [
+        105360000
+      ]
+    },
+    {
+      "pdf_page": 295,
+      "text": "Camiguin District Engineering Office",
+      "amounts": [
+        45000000
+      ]
+    },
+    {
+      "pdf_page": 295,
+      "text": "South Cotabato 2nd District Engineering Office",
+      "amounts": [
+        30000000
+      ]
+    },
+    {
+      "pdf_page": 372,
+      "text": "La Union 1st District Engineering Office",
+      "amounts": [
+        15000000
+      ]
+    },
+    {
+      "pdf_page": 372,
+      "text": "Apayao 2nd District Engineering Office",
+      "amounts": [
+        25000000
+      ]
+    },
+    {
+      "pdf_page": 372,
+      "text": "Cavite 1st District Engineering Office",
+      "amounts": [
+        15000000
+      ]
+    },
+    {
+      "pdf_page": 372,
+      "text": "Albay 1st District Engineering Office",
+      "amounts": [
+        80000000
+      ]
+    },
+    {
+      "pdf_page": 373,
+      "text": "Cebu City District Engineering Office",
+      "amounts": [
+        50000000
+      ]
+    },
+    {
+      "pdf_page": 373,
+      "text": "Negros Occidental 2nd District Engineering Office",
+      "amounts": [
+        5812000
+      ]
+    },
+    {
+      "pdf_page": 373,
+      "text": "Leyte 1st District Engineering Office",
+      "amounts": [
+        4780000
+      ]
+    },
+    {
+      "pdf_page": 373,
+      "text": "Zamboanga Sibugay 2nd District Engineering Office",
+      "amounts": [
+        100000000
+      ]
+    },
+    {
+      "pdf_page": 373,
+      "text": "Davao del Norte District Engineering Office",
+      "amounts": [
+        50000000
+      ]
+    },
+    {
+      "pdf_page": 373,
+      "text": "Cotabato 3rd District Engineering Office",
+      "amounts": [
+        50000000
+      ]
+    },
+    {
+      "pdf_page": 374,
+      "text": "Central Office",
+      "amounts": [
+        3243000000
+      ]
+    },
+    {
+      "pdf_page": 401,
+      "text": "National Capital Region",
+      "amounts": [
+        100000000
+      ]
+    },
+    {
+      "pdf_page": 401,
+      "text": "Central Office",
+      "amounts": [
+        100000000
+      ]
+    },
+    {
+      "pdf_page": 401,
+      "text": "National Capital Region",
+      "amounts": [
+        100000000
+      ]
+    },
+    {
+      "pdf_page": 401,
+      "text": "National Capital Region",
+      "amounts": [
+        1027200000
+      ]
+    },
+    {
+      "pdf_page": 401,
+      "text": "Central Office",
+      "amounts": [
+        1027200000
+      ]
+    },
+    {
+      "pdf_page": 409,
+      "text": "BARMM",
+      "amounts": [
+        38400000
+      ]
+    },
+    {
+      "pdf_page": 409,
+      "text": "National Capital Region",
+      "amounts": [
+        1000000000
+      ]
+    },
+    {
+      "pdf_page": 409,
+      "text": "Central Office",
+      "amounts": [
+        1000000000
+      ]
+    },
+    {
+      "pdf_page": 410,
+      "text": "National Capital Region",
+      "amounts": [
+        85000000
+      ]
+    },
+    {
+      "pdf_page": 410,
+      "text": "Central Office",
+      "amounts": [
+        85000000
+      ]
+    },
+    {
+      "pdf_page": 410,
+      "text": "National Capital Region",
+      "amounts": [
+        340000000
+      ]
+    },
+    {
+      "pdf_page": 410,
+      "text": "Central Office",
+      "amounts": [
+        340000000
+      ]
+    },
+    {
+      "pdf_page": 411,
+      "text": "National Capital Region",
+      "amounts": [
+        85000000
+      ]
+    },
+    {
+      "pdf_page": 411,
+      "text": "Central Office",
+      "amounts": [
+        85000000
+      ]
+    },
+    {
+      "pdf_page": 629,
+      "text": "Central Office",
+      "amounts": [
+        1540000000
+      ]
+    },
+    {
+      "pdf_page": 629,
+      "text": "Ilocos Norte 1st District Engineering Office",
+      "amounts": [
+        25000000
+      ]
+    },
+    {
+      "pdf_page": 630,
+      "text": "Cebu 6th District Engineering Office",
+      "amounts": [
+        75000000
+      ]
+    },
+    {
+      "pdf_page": 924,
+      "text": "Central Office",
+      "amounts": [
+        311000000
+      ]
+    },
+    {
+      "pdf_page": 925,
+      "text": "Pangasinan 1st District Engineering Office",
+      "amounts": [
+        30000000
+      ]
+    },
+    {
+      "pdf_page": 925,
+      "text": "Masbate 3rd District Engineering Office",
+      "amounts": [
+        30000000
+      ]
+    },
+    {
+      "pdf_page": 926,
+      "text": "Bohol 2nd District Engineering Office",
+      "amounts": [
+        50000000
+      ]
+    },
+    {
+      "pdf_page": 926,
+      "text": "Misamis Occidental 1st District Engineering Office",
+      "amounts": [
+        25000000
+      ]
+    },
+    {
+      "pdf_page": 926,
+      "text": "Sarangani District Engineering Office",
+      "amounts": [
+        15000000
+      ]
+    },
+    {
+      "pdf_page": 926,
+      "text": "National Capital Region",
+      "amounts": [
+        1000000000
+      ]
+    },
+    {
+      "pdf_page": 926,
+      "text": "Central Office",
+      "amounts": [
+        1000000000
+      ]
+    },
+    {
+      "pdf_page": 933,
+      "text": "Upper Kalinga District Engineering Office",
+      "amounts": [
+        17000000
+      ]
+    },
+    {
+      "pdf_page": 934,
+      "text": "Construction (Completion) of DPWH Isabela 1st District Engineering Office, Baran",
+      "amounts": [
+        30000000
+      ]
+    },
+    {
+      "pdf_page": 937,
+      "text": "Rehabilitation of DPWH Building, Iloilo 2nd District Engineering Office, Baranga",
+      "amounts": [
+        25075000
+      ]
+    },
+    {
+      "pdf_page": 937,
+      "text": "Construction (Completion) of Three Storey DPWH Regional Office VI Building, Fort",
+      "amounts": [
+        20000000
+      ]
+    },
+    {
+      "pdf_page": 937,
+      "text": "Construction of DPWH Leyte 1st District Engineering Office (DEO) Multi-Purpose",
+      "amounts": [
+        6900000
+      ]
+    },
+    {
+      "pdf_page": 938,
+      "text": "Construction of DPWH Lanao del Norte 2nd District Engineering Office (DEO) Build",
+      "amounts": [
+        50000000
+      ]
+    },
+    {
+      "pdf_page": 939,
+      "text": "Butuan City District Engineering Office",
+      "amounts": [
+        92000000
+      ]
+    },
+    {
+      "pdf_page": 939,
+      "text": "National Capital Region",
+      "amounts": [
+        44749011000
+      ]
+    },
+    {
+      "pdf_page": 939,
+      "text": "Central Office",
+      "amounts": [
+        44749011000
+      ]
+    },
+    {
+      "pdf_page": 939,
+      "text": "GOP",
+      "amounts": [
+        25190650000
+      ]
+    },
+    {
+      "pdf_page": 939,
+      "text": "Loan Proceeds",
+      "amounts": [
+        19558361000
+      ]
+    }
+  ],
+  "crossvolume_controls": [
+    {
+      "label": "Operations core (OO1+OO2+CSSP) vs I-B Operations",
+      "ic_php": 528316707000,
+      "ib_php": 528316707000,
+      "difference_php": 0
+    },
+    {
+      "label": "LFP",
+      "ic_php": 13875943000,
+      "ib_php": 13875943000,
+      "difference_php": 0
+    },
+    {
+      "label": "FAP",
+      "ic_php": 44749011000,
+      "ib_php": 44749011000,
+      "difference_php": 0
+    },
+    {
+      "label": "I-C MOOE+CO + printed I-B PS vs I-B total",
+      "ic_php": 654102015000,
+      "ib_php": 654102015000,
+      "difference_php": 0
+    },
+    {
+      "label": "Implied PS vs I-B PS column",
+      "ic_php": 14922297000,
+      "ib_php": 14922297000,
+      "difference_php": 0
+    },
+    {
+      "label": "MOOE vs I-B MOOE column",
+      "ic_php": 24685746000,
+      "ib_php": 24685746000,
+      "difference_php": 0
+    },
+    {
+      "label": "Capital Outlays vs I-B CO column",
+      "ic_php": 614493972000,
+      "ib_php": 614493972000,
+      "difference_php": 0
+    },
+    {
+      "label": "General Administration and Support (mooe)",
+      "ic_php": 1505758000,
+      "ib_php": 1505758000,
+      "difference_php": 0
+    },
+    {
+      "label": "Support to Operations (mooe)",
+      "ic_php": 23179988000,
+      "ib_php": 23179988000,
+      "difference_php": 0
+    },
+    {
+      "label": "General Administration and Support (co)",
+      "ic_php": 2777545000,
+      "ib_php": 2777545000,
+      "difference_php": 0
+    },
+    {
+      "label": "Support to Operations (co)",
+      "ic_php": 24774766000,
+      "ib_php": 24774766000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: ASSET PRESERVATION PROGRAM",
+      "ic_php": 79720290000,
+      "ib_php": 79720290000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Preventive Maintenance - Primary Roads",
+      "ic_php": 14395583000,
+      "ib_php": 14395583000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Preventive Maintenance - Secondary Roads",
+      "ic_php": 14433303000,
+      "ib_php": 14433303000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Preventive Maintenance - Tertiary Roads",
+      "ic_php": 7265937000,
+      "ib_php": 7265937000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Primary Roads",
+      "ic_php": 18611152000,
+      "ib_php": 18611152000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Secondary Roads",
+      "ic_php": 6587927000,
+      "ib_php": 6587927000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads - Tertiary Roads",
+      "ic_php": 2885909000,
+      "ib_php": 2885909000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse and Landslide - Primary Roads",
+      "ic_php": 1604318000,
+      "ib_php": 1604318000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse and Landslide - Secondary Roads",
+      "ic_php": 5736126000,
+      "ib_php": 5736126000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse and Landslide - Tertiary Roads",
+      "ic_php": 3575480000,
+      "ib_php": 3575480000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Primary Roads",
+      "ic_php": 1668650000,
+      "ib_php": 1668650000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Secondary Roads",
+      "ic_php": 2226501000,
+      "ib_php": 2226501000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Construction/ Upgrading/ Rehabilitation of Drainage along National Roads - Tertiary Roads",
+      "ic_php": 729404000,
+      "ib_php": 729404000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: NETWORK DEVELOPMENT PROGRAM",
+      "ic_php": 92435879000,
+      "ib_php": 92435879000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Road Widening - Primary Roads",
+      "ic_php": 4836582000,
+      "ib_php": 4836582000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Road Widening - Secondary Roads",
+      "ic_php": 10900467000,
+      "ib_php": 10900467000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Road Widening - Tertiary Roads",
+      "ic_php": 2376194000,
+      "ib_php": 2376194000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Construction of By-Pass and Diversion Roads",
+      "ic_php": 44786384000,
+      "ib_php": 44786384000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Construction of Missing Links/New Roads",
+      "ic_php": 22661099000,
+      "ib_php": 22661099000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Construction of Flyovers/Interchanges/ Underpasses/Long Span Bridges",
+      "ic_php": 515000000,
+      "ib_php": 515000000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Off-Carriageway Improvement - Primary Roads",
+      "ic_php": 1656179000,
+      "ib_php": 1656179000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Off-Carriageway Improvement - Secondary Roads",
+      "ic_php": 3030074000,
+      "ib_php": 3030074000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Off-Carriageway Improvement - Tertiary Roads",
+      "ic_php": 1077879000,
+      "ib_php": 1077879000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Paving of Unpaved Roads - Primary Roads",
+      "ic_php": 5000000,
+      "ib_php": 5000000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Paving of Unpaved Roads - Secondary Roads",
+      "ic_php": 21992000,
+      "ib_php": 21992000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Paving of Unpaved Roads - Tertiary Roads",
+      "ic_php": 569029000,
+      "ib_php": 569029000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: BRIDGE PROGRAM",
+      "ic_php": 37590473000,
+      "ib_php": 37590473000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Replacement of Permanent Weak Bridges",
+      "ic_php": 11690636000,
+      "ib_php": 11690636000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Retrofitting/Strengthening of Permanent Bridges",
+      "ic_php": 2842245000,
+      "ib_php": 2842245000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Rehabilitation/Major Repair of Permanent Bridges",
+      "ic_php": 3845294000,
+      "ib_php": 3845294000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Widening of Permanent Bridges",
+      "ic_php": 13493005000,
+      "ib_php": 13493005000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Construction of New Bridges",
+      "ic_php": 5719293000,
+      "ib_php": 5719293000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: FLOOD MANAGEMENT PROGRAM",
+      "ic_php": 87187778000,
+      "ib_php": 87187778000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Construction/ Maintenance of Flood Mitigation Structures and Drainage Systems",
+      "ic_php": 70964897000,
+      "ib_php": 70964897000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Construction/ Rehabilitation of Flood Mitigation Facilities within Major River Basins and Principal Rivers",
+      "ic_php": 16222881000,
+      "ib_php": 16222881000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: CONVERGENCE AND SPECIAL SUPPORT PROGRAM",
+      "ic_php": 231382287000,
+      "ib_php": 231382287000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Rehabilitation of Disaster-Related Infrastructure and Other Facilities",
+      "ic_php": 1000000000,
+      "ib_php": 1000000000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Construction/Rehabilitation of Water Supply/ Septage and Sewerage/ Rain Water Collector Systems",
+      "ic_php": 8867925000,
+      "ib_php": 8867925000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Construction/Rehabilitation/Improvement of Facilities for Persons with Disabilities (PWD) and Elderlies/Senior Citizens, including Gender-Responsive Facilities",
+      "ic_php": 510000000,
+      "ib_php": 510000000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Basic Infrastructure Program (BIP) - Access Roads and/or Bridges from the National Roads leading to Major/Strategic Public Buildings/Facilities",
+      "ic_php": 134927811000,
+      "ib_php": 134927811000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Basic Infrastructure Program (BIP) - Multi-Purpose Buildings/Facilities to support Social Services",
+      "ic_php": 83706551000,
+      "ib_php": 83706551000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Basic Infrastructure Program (BIP) - Coastal Roads to Augment Resiliency of Coastal Communities",
+      "ic_php": 1670000000,
+      "ib_php": 1670000000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Basic Infrastructure Program (BIP) - Local Ports and Boat Landings",
+      "ic_php": 700000000,
+      "ib_php": 700000000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Buildings and Other Structures - Multipurpose / Facilities - National Building Program",
+      "ic_php": 12875943000,
+      "ib_php": 12875943000,
+      "difference_php": 0
+    },
+    {
+      "label": "PAP/program: Public-Private Partnership Strategic Support Fund (including ROW, Subsidy, and Variations)",
+      "ic_php": 1000000000,
+      "ib_php": 1000000000,
+      "difference_php": 0
+    }
+  ],
+  "crossvolume_failures": [],
+  "implied_personnel_services_php": 14922297000,
+  "unexplained_amount_rows": [],
+  "unexplained_title_rows": [],
+  "skipped_rows": [],
+  "remaining_gaps": [
+    {
+      "kind": "artifacts",
+      "description": "One standalone null title on p490 is recovered from following lines; three trailing nulls on pp561/800 are cleaned without changing title ownership."
+    },
+    {
+      "kind": "scope",
+      "description": "I-C prints no Personnel Services detail; the I-C additive root is MOOE+CO (₱639,179,718,000). Implied PS = I-B total − I-C total = ₱14,922,297,000."
+    }
+  ],
+  "provenance_sha256": {
+    "HB_BUDGET/3 - HB 10858 VOL IC.pdf": "0b790d6018db59abab648486c5068108a42ff20a33facc8e21ace0bbedf2d15f",
+    "analysis/data/hb_dpwh_native_rollup.json": "53119ce718ef0c88898c9a3db7e24a6979ed85a4199c500b726b17bcf0b8a981",
+    "scripts/hb_native_ic_rollup.py": "1afb029b3195f1226b133a1a769362d697926c01a74749a8a37328f704436a7e",
+    "scripts/hb_native_ic_extract.py": "8372d3fc1e730796de80eb5ccf939516ff7b529763d7d1e55c52deef6f79866b",
+    "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
+  }
+}

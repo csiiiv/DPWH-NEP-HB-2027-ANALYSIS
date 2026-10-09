@@ -2,6 +2,8 @@
 
 **Current context — 9 October 2026:** this is an earlier coverage reconciliation, not certification of every PDF row. Its arithmetic findings retain their original scope; the per-item reassessment now leaves 3,193 actionable NEP source checks. See [current verification workflow](source_hierarchy_verification.md) before certified source comparisons.
 
+The House-only reassessment below uses retired OCR-era candidates. Its candidate counts and amounts are historical, not current native I-C results. Use the [current comparison](../viewers/source_comparison_2027.html) and [native I-C audit](hb_native_ic_rollup_checks.md) for the active House layer.
+
 Date: October 8, 2026. Scope: DPWH FY2027 only. PDF pages are one-based file pages.
 
 ## Result

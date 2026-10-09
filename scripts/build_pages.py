@@ -47,7 +47,7 @@ DOWNLOADS = [
     'nep_2027_tree.json', 'nep_2027_tree_validation.json',
     'nep_2027_native_amount_review.json', 'nep_2027_native_amount_audit.json',
     'nep_2027_budget_units.json', 'nep_2027_api_reconciliation.json',
-    'hb_dpwh_leaves_corrected_v5.json', 'hb_known_defect_repairs.json',
+    'hb_dpwh_native_ic_projects.json', 'hb_dpwh_native_ic_rollup_audit.json',
     'source_comparison_2027.json', 'stage_trace_2027.json', 'current_pap_controls.json',
     'comparison_manifest.json',
 ]

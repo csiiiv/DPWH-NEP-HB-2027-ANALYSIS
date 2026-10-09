@@ -39,3 +39,19 @@ test('verification route payloads retain canonical audit results', () => {
     assert.ok(data.nodes.some(n => n.id === data.root));
   }
 });
+
+test('packaging supplies native I-C detail and audit instead of the v5 candidate', () => {
+  for (const name of ['hb_dpwh_native_ic_projects.json', 'hb_dpwh_native_ic_rollup_audit.json']) {
+    assert.ok(fs.existsSync(path.join(root, 'analysis', name)));
+  }
+  assert.equal(fs.existsSync(path.join(root, 'analysis/hb_dpwh_leaves_corrected_v5.json')), false);
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, 'analysis/comparison_manifest.json')));
+  assert.equal(manifest.house_version, 'native_ic_v2');
+  assert.equal(manifest.comparison_ready, false);
+  const overview = JSON.parse(fs.readFileSync(path.join(root, 'analysis/source_verification_overview.json')));
+  const house = JSON.parse(fs.readFileSync(path.join(root, 'analysis/verification_hb.json')));
+  assert.deepEqual(overview.sources.find(s => s.key === 'hb').project_detail_summary, house.project_detail_summary);
+  assert.equal(house.project_detail_summary.named_project_leaves, 15972);
+  assert.equal(house.project_detail_summary.shared_controls_with_ib, 56);
+
+});

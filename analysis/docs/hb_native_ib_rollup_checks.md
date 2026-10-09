@@ -59,7 +59,7 @@ The build exits nonzero on arithmetic discrepancies or unexplained amount rows. 
 
 ## Remaining gaps
 
-I-B's local leaves are **office allocations**, not named construction projects. Their arithmetic is complete within this scope, but this cannot repair the four OCR-era I-C project-title gaps or establish project-level overlap with Joebert/NEP. Those require native I-C extraction. FAP branches retain the 29 named projects and their 49 funding leaves.
+I-B's local leaves are **office allocations**, not named construction projects. Their arithmetic is complete within this scope. The separate [Native I-C layer](hb_native_ic_rollup_checks.md) now closes the four OCR-era extraction gaps and supplies project titles. Project-level overlap with Joebert/NEP still requires identity review. FAP branches retain the 29 named projects and their 49 funding leaves.
 
 The separate object-of-expenditures table begins on page 110 and uses **thousands of pesos**. It is explicitly excluded before hierarchy construction. Other I-B departments also need their own table-family profiles.
 
@@ -79,4 +79,7 @@ The [Native I-B verification viewer](../viewers/hb_native_verification.html)
 shows direct, recursive, and progressive sums with PS/MOOE/CO/Total evidence.
 Click a parent path to navigate to that entity or a PDF reference to inspect the
 retained page. This certifies the retained additive controls at their stated
-grain; Native I-C named-project extraction remains open. See [source verification](source_hierarchy_verification.md).
+grain. Native I-C detail is now implemented and supplies the current comparison
+pipeline, with 56 cross-volume checks; see [I-C checks](hb_native_ic_rollup_checks.md).
+Project identity and amendment completeness remain provisional. See
+[source verification](source_hierarchy_verification.md).

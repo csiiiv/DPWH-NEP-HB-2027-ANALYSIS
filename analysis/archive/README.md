@@ -3,7 +3,9 @@
 Archived on **9 October 2026**. This tree preserves superseded scripts, viewers,
 reports, outputs, exploratory external candidates, and historical evidence.
 Start current work from [analysis/README.md](../README.md) and
-[source verification](../docs/source_hierarchy_verification.md).
+[source verification](../docs/source_hierarchy_verification.md). The current
+[React SPA](../web/README.md) serves the active workspaces; these archived
+viewers are outside its route list.
 
 [manifest.json](manifest.json) lists **104 relocated files**, original paths,
 pre-move SHA-256 hashes, and reasons. Of the 104 moves, 102 are versioned and

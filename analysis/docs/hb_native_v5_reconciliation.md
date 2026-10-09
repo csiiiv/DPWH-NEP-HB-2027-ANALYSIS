@@ -1,6 +1,6 @@
 # Native VOL I-B tree vs v5 / VOL I-C — three-way reconciliation
 
-**Current context — 9 October 2026:** this report retains its original extraction/crosscheck scope. The additive House control baseline is [Native I-B](../data/hb_dpwh_native_rollup.json); named local projects still require Native I-C. See [independent source verification](source_hierarchy_verification.md) before using these candidates in comparisons.
+**Retired v5 report — 9 October 2026:** the figures below describe the historical OCR candidate. Current House controls use [Native I-B](../data/hb_dpwh_native_rollup.json); project titles and comparisons use [Native I-C](../data/hb_dpwh_native_ic_projects.json). The [I-C audit](hb_native_ic_rollup_checks.md) closes the four historical extraction gaps. v5 is retained for reproduction and is excluded from current webpage inputs and downloads.
 
 **Date:** 8 October 2026 · **Inputs:** `../data/hb_dpwh_native_tree.json`
 (native text-layer parse of VOL I-B pp 13–110, `scripts/hb_native_extract3.py`),
@@ -89,9 +89,9 @@ remaining defect; the bill itself balances everywhere.
 |---|---|
 | Was the ₱5.596B v5 operations gap real? | **No.** Both volumes print controls that balance; the gap is v5 OCR-era extraction damage confined to four sections. |
 | Is Convergence ever printed? | **Yes** — I-C p373 (and I-B p80 zone arithmetic). The "derived residual" framing was an OCR artifact. |
-| Best House control baseline | `../data/hb_dpwh_native_tree.json` after banner dedup: 647/647 internal checks pass, zones reproduce GAS+S2O / local / FAP exactly. |
-| v5 still needed? | Yes — for project titles (I-B is office-granularity). But its four bad sections should be rebuilt from I-C's native layer, not trusted as-is. |
-| Next extraction step | An I-C geometry profile (bands ≈ 79 / 89.6 / 100–103 / 112 / 123 / 140.7 / 154.2) to regenerate project-level leaves natively, superseding the v3→v5 repair chain. |
+| Current House control baseline | [Additive Native I-B](../data/hb_dpwh_native_rollup.json): 660/660 internal checks pass across PS/MOOE/CO/Total. The raw tree below is its historical predecessor. |
+| v5 still needed? | No for current processing. Native I-C replaces its project-title layer; v5 remains a historical reproduction artifact. |
+| Native I-C extraction | Complete: 15,972 named-project leaves, 29 FAP totals, 2,477 balanced internal controls, and 56 independent I-B checks. Current comparisons balance 44/44 mapped non-FAP PAPs; one NEP PAP remains unmapped. |
 
 ## 5. Reproduce
 

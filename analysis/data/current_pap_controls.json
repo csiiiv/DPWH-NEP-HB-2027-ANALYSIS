@@ -2,19 +2,24 @@
   "manifest": {
     "schema_version": 2,
     "fiscal_year": 2027,
-    "built_at": "2026-10-09T02:28:19+08:00",
+    "built_at": "2026-10-09T12:32:02+08:00",
     "stages": {
       "nep": "Executive NEP proposal",
       "house": "HB 10858 supplied source documents; amendment completeness not certified"
     },
-    "house_version": "v5",
+    "house_version": "native_ic_v2",
+    "comparison_ready": false,
     "nep_version": 1,
     "scope": "New appropriations excluding automatic appropriations; operations project comparison; local and FAP separated",
     "units": "Integer Philippine pesos",
     "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Amount does not determine identity. Duplicate keys remain ambiguous. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; suggestions do not consume NEP rows. No pair has been manually certified.",
     "generator": {
       "path": "analysis/builders/build_current_pages.py",
-      "sha256": "cf832baf5542214abad5dc461a31ad3190814cdef5c1b55357889fde053b86e4"
+      "sha256": "bb6922df33945d3c784a13541600663711889555b771ba6de4532e0b0a480c34"
+    },
+    "generator_dependencies": {
+      "analysis/builders/house_native.py": "3db655b22360c73864aa73b35f7add63d626abc3d0870e8901b84b366b8d9975",
+      "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
     },
     "inputs": {
       "nep_2027_tree.json": "ca064af3f8cdb6c73e074ef8347f9e65d5cfe66c25024e332a4438ebfae3766d",
@@ -23,9 +28,10 @@
       "nep_2027_budget_units.json": "a3d3aa17095d4bdf7531b180e73504f6dbc8808b86495e843ae9fb56021250de",
       "nep_2027_native_amount_audit.json": "362621533024a1e478981fbaf4d4e6a10aa04c6f7658a7228f82a87eaab4db5b",
       "nep_2027_native_amount_review.json": "9e4826c4541f272811de1b6e55df871825ddcca3cb59a4162667f13f65a95832",
-      "hb_dpwh_leaves_corrected_v5.json": "8e60d400ebbcf4139bcf05dfed4e20d55efac2a4d879924cc08a6e65b3edc668",
-      "hb_known_defect_repairs.json": "9b74951b393bbdf3f12aac9c1d49032c748a609814e5234f5266f435978b8670",
-      "hb_json_usability_audit.json": "0d9042fae6a28abf8ca47b56fdbbc39b0f85bc85499c1994f3b564e3ff249045",
+      "hb_dpwh_native_ic_projects.json": "e3ff2f0f23a8251c70040e3ed107c2c2223e366b3505caf54dfe38fa4e604bfe",
+      "hb_dpwh_native_ic_rollup_audit.json": "7558ce2f77dac3215e5b06ebfd59d3cc839f9c9bc35baf3913142d9b909fc959",
+      "hb_dpwh_native_rollup.json": "53119ce718ef0c88898c9a3db7e24a6979ed85a4199c500b726b17bcf0b8a981",
+      "hb_native_ib_rollup_audit.json": "777310fcbfd6a713c9f93d336d5136e003d8aadc2e069ae53b5a0e4ba5c946ca",
       "nep_2027_api_reconciliation.json": "fd8dfef9ba34062f81818b3510311678b774bdbc758abfe341d28b9302196a0f"
     },
     "api_snapshot": {
@@ -55,14 +61,15 @@
     "nep_operations_printed_php": 572924074000,
     "house_gas_s2o_printed_php": 67160354000,
     "nep_gas_s2o_printed_php": 69687941000,
-    "house_extracted_php": 581345349000,
-    "house_allocations": 16148,
-    "house_local_extracted_php": 536596338000,
+    "house_extracted_php": 586941661000,
+    "house_allocations": 16270,
+    "house_local_extracted_php": 542192650000,
     "house_fap_php": 44749011000,
     "nep_fap_php": 117749011000,
-    "house_operations_gap_php": 5596312000,
-    "house_balanced_paps": 38,
-    "house_checked_paps": 42,
+    "house_operations_gap_php": 0,
+    "house_balanced_paps": 44,
+    "house_checked_paps": 44,
+    "house_fap_projects": 29,
     "nep_evidence": {
       "checked": 16760,
       "not_checked": 4,
@@ -75,40 +82,18 @@
       "review_candidates": 3191
     },
     "match_counts": {
-      "exact_candidate": 8567,
-      "fuzzy_candidate": 1648,
-      "house_unmatched": 5927,
-      "ambiguous": 6,
-      "nep_unmatched": 2853
+      "exact_candidate": 9254,
+      "house_unmatched": 5833,
+      "fuzzy_candidate": 1181,
+      "ambiguous": 2,
+      "nep_unmatched": 2166
     },
     "reviewed_pairs": 0,
     "api": {
-      "non_fap_rows": 11395,
-      "non_fap_php": 455175063000,
-      "fap_rows": 25,
-      "fap_php": 117749011000,
-      "operations_php": 572924074000,
       "api_rows": 11372,
       "api_php": 445378063000,
-      "pap_controls_passed": 45,
-      "api_pairs": 11372,
-      "api_pair_kinds": {
-        "exact_title_amount": 11199,
-        "ocr_title_candidate": 173
-      },
       "unpaired_source_rows": 23,
-      "unpaired_source_php": 9797000000,
-      "unpaired_api_rows": 0,
-      "unpaired_api_php": 0,
-      "hb_only_reassessment": {
-        "unresolved_no_exact_source_title_match": 5934,
-        "source_title_present_region_conflict": 97,
-        "nep_source_title_present": 33,
-        "possible_heading_or_allocation_row": 9
-      },
-      "hb_source_present_php": 4969500000,
-      "hb_api_omission_subset_n": 17,
-      "hb_api_omission_subset_php": 4488000000
+      "unpaired_source_php": 9797000000
     }
   },
   "programs": [
@@ -123,16 +108,6 @@
       "nep_total_control_php": 76500584000
     },
     {
-      "program": "Network Development Program",
-      "house_local_control_php": 92435879000,
-      "nep_local_control_php": 92179924000,
-      "api_coverage_php": 91476924000,
-      "house_local_extracted_php": 92435879000,
-      "house_fap_extracted_php": 29572974000,
-      "nep_fap_control_php": 84457720000,
-      "nep_total_control_php": 176637644000
-    },
-    {
       "program": "Bridge Program",
       "house_local_control_php": 37590473000,
       "nep_local_control_php": 38987589000,
@@ -141,6 +116,16 @@
       "house_fap_extracted_php": 3307279000,
       "nep_fap_control_php": 5422533000,
       "nep_total_control_php": 44410122000
+    },
+    {
+      "program": "Convergence and Special Support Program",
+      "house_local_control_php": 231382287000,
+      "nep_local_control_php": 157308648000,
+      "api_coverage_php": 156105648000,
+      "house_local_extracted_php": 231382287000,
+      "house_fap_extracted_php": 0,
+      "nep_fap_control_php": 0,
+      "nep_total_control_php": 157308648000
     },
     {
       "program": "Flood Management Program",
@@ -153,24 +138,24 @@
       "nep_total_control_php": 103450431000
     },
     {
-      "program": "Convergence and Special Support Program",
-      "house_local_control_php": 231382287000,
-      "nep_local_control_php": 157308648000,
-      "api_coverage_php": 156105648000,
-      "house_local_extracted_php": 225785975000,
-      "house_fap_extracted_php": 0,
-      "nep_fap_control_php": 0,
-      "nep_total_control_php": 157308648000
-    },
-    {
       "program": "Local Program",
       "house_local_control_php": 13875943000,
       "nep_local_control_php": 14433675000,
       "api_coverage_php": 12324675000,
       "house_local_extracted_php": 13875943000,
-      "house_fap_extracted_php": 182970000,
+      "house_fap_extracted_php": 0,
       "nep_fap_control_php": 182970000,
       "nep_total_control_php": 14616645000
+    },
+    {
+      "program": "Network Development Program",
+      "house_local_control_php": 92435879000,
+      "nep_local_control_php": 92179924000,
+      "api_coverage_php": 91476924000,
+      "house_local_extracted_php": 92435879000,
+      "house_fap_extracted_php": 29572974000,
+      "nep_fap_control_php": 84457720000,
+      "nep_total_control_php": 176637644000
     }
   ],
   "paps": [
@@ -198,7 +183,7 @@
         },
         {
           "region": "NCR",
-          "house_extracted_php": 89314000,
+          "house_extracted_php": 109887000,
           "nep_source_php": 109887000
         },
         {
@@ -268,7 +253,7 @@
         },
         {
           "region": "Region XIII",
-          "house_extracted_php": 691166000,
+          "house_extracted_php": 670593000,
           "nep_source_php": 670593000
         }
       ]
@@ -302,7 +287,7 @@
         },
         {
           "region": "NCR",
-          "house_extracted_php": 111140000,
+          "house_extracted_php": 223144000,
           "nep_source_php": 217144000
         },
         {
@@ -372,7 +357,7 @@
         },
         {
           "region": "Region XIII",
-          "house_extracted_php": 523398000,
+          "house_extracted_php": 411394000,
           "nep_source_php": 411394000
         }
       ]
@@ -406,7 +391,7 @@
         },
         {
           "region": "NCR",
-          "house_extracted_php": 84690000,
+          "house_extracted_php": 180379000,
           "nep_source_php": 148179000
         },
         {
@@ -471,7 +456,7 @@
         },
         {
           "region": "Region XII",
-          "house_extracted_php": 895277000,
+          "house_extracted_php": 799588000,
           "nep_source_php": 799588000
         },
         {
@@ -500,7 +485,7 @@
       "regions": [
         {
           "region": "NCR",
-          "house_extracted_php": 0,
+          "house_extracted_php": 23681000,
           "nep_source_php": 23681000
         },
         {
@@ -510,7 +495,7 @@
         },
         {
           "region": "Nationwide",
-          "house_extracted_php": 423681000,
+          "house_extracted_php": 400000000,
           "nep_source_php": 1000000000
         },
         {
@@ -609,7 +594,7 @@
         },
         {
           "region": "NCR",
-          "house_extracted_php": 106233000,
+          "house_extracted_php": 198111000,
           "nep_source_php": 91878000
         },
         {
@@ -619,7 +604,7 @@
         },
         {
           "region": "Nationwide",
-          "house_extracted_php": 295878000,
+          "house_extracted_php": 204000000,
           "nep_source_php": 204000000
         },
         {
@@ -708,7 +693,7 @@
         },
         {
           "region": "NCR",
-          "house_extracted_php": 0,
+          "house_extracted_php": 166143000,
           "nep_source_php": 191143000
         },
         {
@@ -763,7 +748,7 @@
         },
         {
           "region": "Region XII",
-          "house_extracted_php": 228666000,
+          "house_extracted_php": 62523000,
           "nep_source_php": 62523000
         },
         {
@@ -1193,12 +1178,7 @@
         },
         {
           "region": "Region XI",
-          "house_extracted_php": 70000000,
-          "nep_source_php": 0
-        },
-        {
-          "region": "Region XI DAVAO DEL NORTE DISTRICT ENGINEERING OFFICE",
-          "house_extracted_php": 20000000,
+          "house_extracted_php": 90000000,
           "nep_source_php": 0
         },
         {
@@ -1779,13 +1759,18 @@
           "nep_source_php": 17528000
         },
         {
+          "region": "NCR",
+          "house_extracted_php": 35576000,
+          "nep_source_php": 0
+        },
+        {
           "region": "NIR",
           "house_extracted_php": 225399000,
           "nep_source_php": 186361000
         },
         {
           "region": "Nationwide",
-          "house_extracted_php": 235576000,
+          "house_extracted_php": 200000000,
           "nep_source_php": 500000000
         },
         {
@@ -1903,7 +1888,7 @@
           "nep_source_php": 0
         },
         {
-          "region": "Region VI ILOILO 1ST DISTRICT ENGINEERING OFFICE",
+          "region": "Region VI",
           "house_extracted_php": 150000000,
           "nep_source_php": 0
         },
@@ -2021,8 +2006,13 @@
       "nep_page": 310,
       "regions": [
         {
-          "region": "Region IX",
+          "region": "Nationwide",
           "house_extracted_php": 5000000,
+          "nep_source_php": 0
+        },
+        {
+          "region": "Region IX",
+          "house_extracted_php": 0,
           "nep_source_php": 5000000
         }
       ]
@@ -2141,7 +2131,7 @@
         },
         {
           "region": "NCR",
-          "house_extracted_php": 0,
+          "house_extracted_php": 24400000,
           "nep_source_php": 24400000
         },
         {
@@ -2151,7 +2141,7 @@
         },
         {
           "region": "Nationwide",
-          "house_extracted_php": 224400000,
+          "house_extracted_php": 200000000,
           "nep_source_php": 500000000
         },
         {
@@ -2250,7 +2240,7 @@
         },
         {
           "region": "NCR",
-          "house_extracted_php": 135000000,
+          "house_extracted_php": 318223000,
           "nep_source_php": 318223000
         },
         {
@@ -2260,7 +2250,7 @@
         },
         {
           "region": "Nationwide",
-          "house_extracted_php": 383223000,
+          "house_extracted_php": 200000000,
           "nep_source_php": 500000000
         },
         {
@@ -2359,7 +2349,7 @@
         },
         {
           "region": "NCR",
-          "house_extracted_php": 161900000,
+          "house_extracted_php": 372100000,
           "nep_source_php": 372100000
         },
         {
@@ -2369,7 +2359,7 @@
         },
         {
           "region": "Nationwide",
-          "house_extracted_php": 410200000,
+          "house_extracted_php": 200000000,
           "nep_source_php": 500000000
         },
         {
@@ -2646,7 +2636,7 @@
         },
         {
           "region": "NCR",
-          "house_extracted_php": 12337509000,
+          "house_extracted_php": 16657242000,
           "nep_source_php": 13411314000
         },
         {
@@ -2656,7 +2646,7 @@
         },
         {
           "region": "Nationwide",
-          "house_extracted_php": 5189733000,
+          "house_extracted_php": 870000000,
           "nep_source_php": 1170000000
         },
         {
@@ -2835,9 +2825,9 @@
       "label": "Water Supply System",
       "program": "Convergence and Special Support Program",
       "house_printed_php": 7740725000,
-      "house_extracted_php": 8045366000,
+      "house_extracted_php": 7740725000,
       "nep_printed_php": 6171400000,
-      "coverage_difference_php": 304641000,
+      "coverage_difference_php": 0,
       "api_coverage_php": 6171400000,
       "source_api_gap_php": 0,
       "delta_php": 1569325000,
@@ -2859,12 +2849,12 @@
         },
         {
           "region": "NIR",
-          "house_extracted_php": 214241000,
+          "house_extracted_php": 215000000,
           "nep_source_php": 390000000
         },
         {
           "region": "Region I",
-          "house_extracted_php": 906000000,
+          "house_extracted_php": 653000000,
           "nep_source_php": 563000000
         },
         {
@@ -2879,7 +2869,7 @@
         },
         {
           "region": "Region IV-A",
-          "house_extracted_php": 841300000,
+          "house_extracted_php": 773900000,
           "nep_source_php": 471000000
         },
         {
@@ -2914,17 +2904,17 @@
         },
         {
           "region": "Region XI",
-          "house_extracted_php": 799500000,
+          "house_extracted_php": 809500000,
           "nep_source_php": 443500000
         },
         {
           "region": "Region XII",
-          "house_extracted_php": 124000000,
+          "house_extracted_php": 100000000,
           "nep_source_php": 58500000
         },
         {
           "region": "Region XIII",
-          "house_extracted_php": 867500000,
+          "house_extracted_php": 896500000,
           "nep_source_php": 877500000
         }
       ]
@@ -2948,8 +2938,13 @@
       "regions": [
         {
           "region": "NCR",
-          "house_extracted_php": 100000000,
+          "house_extracted_php": 0,
           "nep_source_php": 100000000
+        },
+        {
+          "region": "Nationwide",
+          "house_extracted_php": 100000000,
+          "nep_source_php": 0
         }
       ]
     },
@@ -3066,21 +3061,28 @@
       "id": "p430:r24",
       "label": "Rehabilitation of Disaster-Related Infrastructure and Other Facilities",
       "program": "Convergence and Special Support Program",
-      "house_printed_php": null,
+      "house_printed_php": 1000000000,
       "house_extracted_php": 1000000000,
       "nep_printed_php": 1000000000,
-      "coverage_difference_php": null,
+      "coverage_difference_php": 0,
       "api_coverage_php": 0,
       "source_api_gap_php": 1000000000,
-      "delta_php": null,
-      "comparison_status": "unmapped_control",
-      "house_pages": [],
+      "delta_php": 0,
+      "comparison_status": "exact_controls",
+      "house_pages": [
+        409
+      ],
       "nep_page": 430,
       "regions": [
         {
           "region": "NCR",
-          "house_extracted_php": 1000000000,
+          "house_extracted_php": 0,
           "nep_source_php": 1000000000
+        },
+        {
+          "region": "Nationwide",
+          "house_extracted_php": 1000000000,
+          "nep_source_php": 0
         }
       ]
     },
@@ -3401,9 +3403,9 @@
       "label": "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities",
       "program": "Convergence and Special Support Program",
       "house_printed_php": 134927811000,
-      "house_extracted_php": 132686016000,
+      "house_extracted_php": 134927811000,
       "nep_printed_php": 105725209000,
-      "coverage_difference_php": -2241795000,
+      "coverage_difference_php": 0,
       "api_coverage_php": 105522209000,
       "source_api_gap_php": 203000000,
       "delta_php": 29202602000,
@@ -3420,12 +3422,12 @@
         },
         {
           "region": "MIMAROPA",
-          "house_extracted_php": 6953353000,
+          "house_extracted_php": 6971353000,
           "nep_source_php": 7862788000
         },
         {
           "region": "NCR",
-          "house_extracted_php": 6031118000,
+          "house_extracted_php": 6425718000,
           "nep_source_php": 5882218000
         },
         {
@@ -3435,22 +3437,22 @@
         },
         {
           "region": "Nationwide",
-          "house_extracted_php": 1080000000,
+          "house_extracted_php": 203000000,
           "nep_source_php": 203000000
         },
         {
           "region": "Region I",
-          "house_extracted_php": 8313799000,
+          "house_extracted_php": 8383799000,
           "nep_source_php": 3806830000
         },
         {
           "region": "Region II",
-          "house_extracted_php": 10693612000,
+          "house_extracted_php": 10633612000,
           "nep_source_php": 6637696000
         },
         {
           "region": "Region III",
-          "house_extracted_php": 19461532000,
+          "house_extracted_php": 19550727000,
           "nep_source_php": 18849704000
         },
         {
@@ -3460,7 +3462,7 @@
         },
         {
           "region": "Region IX",
-          "house_extracted_php": 2100585000,
+          "house_extracted_php": 4675585000,
           "nep_source_php": 3473000000
         },
         {
@@ -3480,7 +3482,7 @@
         },
         {
           "region": "Region VIII",
-          "house_extracted_php": 6274368000,
+          "house_extracted_php": 6146368000,
           "nep_source_php": 2959668000
         },
         {
@@ -3495,12 +3497,12 @@
         },
         {
           "region": "Region XII",
-          "house_extracted_php": 5390676000,
+          "house_extracted_php": 5400676000,
           "nep_source_php": 4425666000
         },
         {
           "region": "Region XIII",
-          "house_extracted_php": 5674803000,
+          "house_extracted_php": 5824803000,
           "nep_source_php": 5739403000
         }
       ]
@@ -3510,9 +3512,9 @@
       "label": "BIP - Coastal Roads to augment Resiliency of Coastal Communities",
       "program": "Convergence and Special Support Program",
       "house_printed_php": 1670000000,
-      "house_extracted_php": 3126800000,
+      "house_extracted_php": 1670000000,
       "nep_printed_php": 1381000000,
-      "coverage_difference_php": 1456800000,
+      "coverage_difference_php": 0,
       "api_coverage_php": 1381000000,
       "source_api_gap_php": 0,
       "delta_php": 289000000,
@@ -3522,11 +3524,6 @@
       ],
       "nep_page": 559,
       "regions": [
-        {
-          "region": "NCR",
-          "house_extracted_php": 1376800000,
-          "nep_source_php": 0
-        },
         {
           "region": "NIR",
           "house_extracted_php": 230000000,
@@ -3561,11 +3558,6 @@
           "region": "Region X",
           "house_extracted_php": 750000000,
           "nep_source_php": 450000000
-        },
-        {
-          "region": "Region XIII",
-          "house_extracted_php": 80000000,
-          "nep_source_php": 0
         }
       ]
     },
@@ -3574,9 +3566,9 @@
       "label": "BIP - Multi-Purpose Buildings/ Facilities to support Social Services",
       "program": "Convergence and Special Support Program",
       "house_printed_php": 83706551000,
-      "house_extracted_php": 78590593000,
+      "house_extracted_php": 83706551000,
       "nep_printed_php": 40974839000,
-      "coverage_difference_php": -5115958000,
+      "coverage_difference_php": 0,
       "api_coverage_php": 40974839000,
       "source_api_gap_php": 0,
       "delta_php": 42731712000,
@@ -3593,52 +3585,47 @@
         },
         {
           "region": "MIMAROPA",
-          "house_extracted_php": 1359935000,
+          "house_extracted_php": 1539935000,
           "nep_source_php": 952000000
         },
         {
           "region": "NCR",
-          "house_extracted_php": 5762460000,
+          "house_extracted_php": 7204260000,
           "nep_source_php": 4569360000
         },
         {
           "region": "NIR",
-          "house_extracted_php": 1942300000,
+          "house_extracted_php": 1848300000,
           "nep_source_php": 964300000
         },
         {
-          "region": "Nationwide",
-          "house_extracted_php": 95000000,
-          "nep_source_php": 0
-        },
-        {
           "region": "Region I",
-          "house_extracted_php": 7803950000,
+          "house_extracted_php": 7814950000,
           "nep_source_php": 3287900000
         },
         {
           "region": "Region II",
-          "house_extracted_php": 6640949000,
+          "house_extracted_php": 6637949000,
           "nep_source_php": 3395000000
         },
         {
           "region": "Region III",
-          "house_extracted_php": 14918928000,
+          "house_extracted_php": 12549386000,
           "nep_source_php": 7097658000
         },
         {
           "region": "Region IV-A",
-          "house_extracted_php": 7638013000,
+          "house_extracted_php": 11863513000,
           "nep_source_php": 6641020000
         },
         {
           "region": "Region IX",
-          "house_extracted_php": 2232750000,
+          "house_extracted_php": 2327750000,
           "nep_source_php": 1114000000
         },
         {
           "region": "Region V",
-          "house_extracted_php": 2828000000,
+          "house_extracted_php": 4237200000,
           "nep_source_php": 1792200000
         },
         {
@@ -3648,32 +3635,32 @@
         },
         {
           "region": "Region VII",
-          "house_extracted_php": 4167650000,
+          "house_extracted_php": 4170150000,
           "nep_source_php": 1079000000
         },
         {
           "region": "Region VIII",
-          "house_extracted_php": 2397606000,
+          "house_extracted_php": 2392606000,
           "nep_source_php": 1371576000
         },
         {
           "region": "Region X",
-          "house_extracted_php": 4934182000,
+          "house_extracted_php": 5119182000,
           "nep_source_php": 2073000000
         },
         {
           "region": "Region XI",
-          "house_extracted_php": 2396321000,
+          "house_extracted_php": 2418821000,
           "nep_source_php": 810500000
         },
         {
           "region": "Region XII",
-          "house_extracted_php": 3407500000,
+          "house_extracted_php": 3017500000,
           "nep_source_php": 1197000000
         },
         {
           "region": "Region XIII",
-          "house_extracted_php": 1779500000,
+          "house_extracted_php": 2279500000,
           "nep_source_php": 1265500000
         }
       ]
@@ -3741,21 +3728,28 @@
       "id": "p678:r1",
       "label": "Public-Private Partnership Strategic Support Fund (including ROW, Subsidy, and Variations)",
       "program": "Local Program",
-      "house_printed_php": null,
+      "house_printed_php": 1000000000,
       "house_extracted_php": 1000000000,
       "nep_printed_php": 1000000000,
-      "coverage_difference_php": null,
+      "coverage_difference_php": 0,
       "api_coverage_php": 0,
       "source_api_gap_php": 1000000000,
-      "delta_php": null,
-      "comparison_status": "unmapped_control",
-      "house_pages": [],
+      "delta_php": 0,
+      "comparison_status": "exact_controls",
+      "house_pages": [
+        926
+      ],
       "nep_page": 678,
       "regions": [
         {
           "region": "NCR",
-          "house_extracted_php": 1000000000,
+          "house_extracted_php": 0,
           "nep_source_php": 1000000000
+        },
+        {
+          "region": "Nationwide",
+          "house_extracted_php": 1000000000,
+          "nep_source_php": 0
         }
       ]
     },
@@ -3772,8 +3766,7 @@
       "delta_php": -557732000,
       "comparison_status": "control_difference",
       "house_pages": [
-        927,
-        942
+        927
       ],
       "nep_page": 678,
       "regions": [
@@ -3855,870 +3848,75 @@
       ]
     }
   ],
-  "unresolved_paps": [
-    {
-      "id": "p404:r2",
-      "label": "Water Supply System",
-      "program": "Convergence and Special Support Program",
-      "house_printed_php": 7740725000,
-      "house_extracted_php": 8045366000,
-      "nep_printed_php": 6171400000,
-      "coverage_difference_php": 304641000,
-      "api_coverage_php": 6171400000,
-      "source_api_gap_php": 0,
-      "delta_php": 1569325000,
-      "comparison_status": "control_difference",
-      "house_pages": [
-        374
-      ],
-      "nep_page": 404,
-      "regions": [
-        {
-          "region": "CAR",
-          "house_extracted_php": 893000000,
-          "nep_source_php": 703000000
-        },
-        {
-          "region": "MIMAROPA",
-          "house_extracted_php": 210500000,
-          "nep_source_php": 205500000
-        },
-        {
-          "region": "NIR",
-          "house_extracted_php": 214241000,
-          "nep_source_php": 390000000
-        },
-        {
-          "region": "Region I",
-          "house_extracted_php": 906000000,
-          "nep_source_php": 563000000
-        },
-        {
-          "region": "Region II",
-          "house_extracted_php": 348000000,
-          "nep_source_php": 330000000
-        },
-        {
-          "region": "Region III",
-          "house_extracted_php": 525000000,
-          "nep_source_php": 584000000
-        },
-        {
-          "region": "Region IV-A",
-          "house_extracted_php": 841300000,
-          "nep_source_php": 471000000
-        },
-        {
-          "region": "Region IX",
-          "house_extracted_php": 248500000,
-          "nep_source_php": 193500000
-        },
-        {
-          "region": "Region V",
-          "house_extracted_php": 295500000,
-          "nep_source_php": 275500000
-        },
-        {
-          "region": "Region VI",
-          "house_extracted_php": 55000000,
-          "nep_source_php": 55000000
-        },
-        {
-          "region": "Region VII",
-          "house_extracted_php": 245000000,
-          "nep_source_php": 225000000
-        },
-        {
-          "region": "Region VIII",
-          "house_extracted_php": 252400000,
-          "nep_source_php": 62400000
-        },
-        {
-          "region": "Region X",
-          "house_extracted_php": 1219925000,
-          "nep_source_php": 734000000
-        },
-        {
-          "region": "Region XI",
-          "house_extracted_php": 799500000,
-          "nep_source_php": 443500000
-        },
-        {
-          "region": "Region XII",
-          "house_extracted_php": 124000000,
-          "nep_source_php": 58500000
-        },
-        {
-          "region": "Region XIII",
-          "house_extracted_php": 867500000,
-          "nep_source_php": 877500000
-        }
-      ]
-    },
-    {
-      "id": "p433:r1",
-      "label": "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities",
-      "program": "Convergence and Special Support Program",
-      "house_printed_php": 134927811000,
-      "house_extracted_php": 132686016000,
-      "nep_printed_php": 105725209000,
-      "coverage_difference_php": -2241795000,
-      "api_coverage_php": 105522209000,
-      "source_api_gap_php": 203000000,
-      "delta_php": 29202602000,
-      "comparison_status": "control_difference",
-      "house_pages": [
-        412
-      ],
-      "nep_page": 433,
-      "regions": [
-        {
-          "region": "CAR",
-          "house_extracted_php": 5903272000,
-          "nep_source_php": 4571417000
-        },
-        {
-          "region": "MIMAROPA",
-          "house_extracted_php": 6953353000,
-          "nep_source_php": 7862788000
-        },
-        {
-          "region": "NCR",
-          "house_extracted_php": 6031118000,
-          "nep_source_php": 5882218000
-        },
-        {
-          "region": "NIR",
-          "house_extracted_php": 4414002000,
-          "nep_source_php": 4007766000
-        },
-        {
-          "region": "Nationwide",
-          "house_extracted_php": 1080000000,
-          "nep_source_php": 203000000
-        },
-        {
-          "region": "Region I",
-          "house_extracted_php": 8313799000,
-          "nep_source_php": 3806830000
-        },
-        {
-          "region": "Region II",
-          "house_extracted_php": 10693612000,
-          "nep_source_php": 6637696000
-        },
-        {
-          "region": "Region III",
-          "house_extracted_php": 19461532000,
-          "nep_source_php": 18849704000
-        },
-        {
-          "region": "Region IV-A",
-          "house_extracted_php": 13887228000,
-          "nep_source_php": 9901728000
-        },
-        {
-          "region": "Region IX",
-          "house_extracted_php": 2100585000,
-          "nep_source_php": 3473000000
-        },
-        {
-          "region": "Region V",
-          "house_extracted_php": 7788850000,
-          "nep_source_php": 5750532000
-        },
-        {
-          "region": "Region VI",
-          "house_extracted_php": 2627717000,
-          "nep_source_php": 2125900000
-        },
-        {
-          "region": "Region VII",
-          "house_extracted_php": 4229490000,
-          "nep_source_php": 3468075000
-        },
-        {
-          "region": "Region VIII",
-          "house_extracted_php": 6274368000,
-          "nep_source_php": 2959668000
-        },
-        {
-          "region": "Region X",
-          "house_extracted_php": 15898182000,
-          "nep_source_php": 12514568000
-        },
-        {
-          "region": "Region XI",
-          "house_extracted_php": 5963429000,
-          "nep_source_php": 3545250000
-        },
-        {
-          "region": "Region XII",
-          "house_extracted_php": 5390676000,
-          "nep_source_php": 4425666000
-        },
-        {
-          "region": "Region XIII",
-          "house_extracted_php": 5674803000,
-          "nep_source_php": 5739403000
-        }
-      ]
-    },
-    {
-      "id": "p559:r0",
-      "label": "BIP - Coastal Roads to augment Resiliency of Coastal Communities",
-      "program": "Convergence and Special Support Program",
-      "house_printed_php": 1670000000,
-      "house_extracted_php": 3126800000,
-      "nep_printed_php": 1381000000,
-      "coverage_difference_php": 1456800000,
-      "api_coverage_php": 1381000000,
-      "source_api_gap_php": 0,
-      "delta_php": 289000000,
-      "comparison_status": "control_difference",
-      "house_pages": [
-        629
-      ],
-      "nep_page": 559,
-      "regions": [
-        {
-          "region": "NCR",
-          "house_extracted_php": 1376800000,
-          "nep_source_php": 0
-        },
-        {
-          "region": "NIR",
-          "house_extracted_php": 230000000,
-          "nep_source_php": 230000000
-        },
-        {
-          "region": "Region I",
-          "house_extracted_php": 25000000,
-          "nep_source_php": 0
-        },
-        {
-          "region": "Region II",
-          "house_extracted_php": 100000000,
-          "nep_source_php": 100000000
-        },
-        {
-          "region": "Region III",
-          "house_extracted_php": 120000000,
-          "nep_source_php": 120000000
-        },
-        {
-          "region": "Region IV-A",
-          "house_extracted_php": 120000000,
-          "nep_source_php": 120000000
-        },
-        {
-          "region": "Region VII",
-          "house_extracted_php": 325000000,
-          "nep_source_php": 361000000
-        },
-        {
-          "region": "Region X",
-          "house_extracted_php": 750000000,
-          "nep_source_php": 450000000
-        },
-        {
-          "region": "Region XIII",
-          "house_extracted_php": 80000000,
-          "nep_source_php": 0
-        }
-      ]
-    },
-    {
-      "id": "p560:r0",
-      "label": "BIP - Multi-Purpose Buildings/ Facilities to support Social Services",
-      "program": "Convergence and Special Support Program",
-      "house_printed_php": 83706551000,
-      "house_extracted_php": 78590593000,
-      "nep_printed_php": 40974839000,
-      "coverage_difference_php": -5115958000,
-      "api_coverage_php": 40974839000,
-      "source_api_gap_php": 0,
-      "delta_php": 42731712000,
-      "comparison_status": "control_difference",
-      "house_pages": [
-        630
-      ],
-      "nep_page": 560,
-      "regions": [
-        {
-          "region": "CAR",
-          "house_extracted_php": 2951925000,
-          "nep_source_php": 1617425000
-        },
-        {
-          "region": "MIMAROPA",
-          "house_extracted_php": 1359935000,
-          "nep_source_php": 952000000
-        },
-        {
-          "region": "NCR",
-          "house_extracted_php": 5762460000,
-          "nep_source_php": 4569360000
-        },
-        {
-          "region": "NIR",
-          "house_extracted_php": 1942300000,
-          "nep_source_php": 964300000
-        },
-        {
-          "region": "Nationwide",
-          "house_extracted_php": 95000000,
-          "nep_source_php": 0
-        },
-        {
-          "region": "Region I",
-          "house_extracted_php": 7803950000,
-          "nep_source_php": 3287900000
-        },
-        {
-          "region": "Region II",
-          "house_extracted_php": 6640949000,
-          "nep_source_php": 3395000000
-        },
-        {
-          "region": "Region III",
-          "house_extracted_php": 14918928000,
-          "nep_source_php": 7097658000
-        },
-        {
-          "region": "Region IV-A",
-          "house_extracted_php": 7638013000,
-          "nep_source_php": 6641020000
-        },
-        {
-          "region": "Region IX",
-          "house_extracted_php": 2232750000,
-          "nep_source_php": 1114000000
-        },
-        {
-          "region": "Region V",
-          "house_extracted_php": 2828000000,
-          "nep_source_php": 1792200000
-        },
-        {
-          "region": "Region VI",
-          "house_extracted_php": 5333624000,
-          "nep_source_php": 1747400000
-        },
-        {
-          "region": "Region VII",
-          "house_extracted_php": 4167650000,
-          "nep_source_php": 1079000000
-        },
-        {
-          "region": "Region VIII",
-          "house_extracted_php": 2397606000,
-          "nep_source_php": 1371576000
-        },
-        {
-          "region": "Region X",
-          "house_extracted_php": 4934182000,
-          "nep_source_php": 2073000000
-        },
-        {
-          "region": "Region XI",
-          "house_extracted_php": 2396321000,
-          "nep_source_php": 810500000
-        },
-        {
-          "region": "Region XII",
-          "house_extracted_php": 3407500000,
-          "nep_source_php": 1197000000
-        },
-        {
-          "region": "Region XIII",
-          "house_extracted_php": 1779500000,
-          "nep_source_php": 1265500000
-        }
-      ]
-    }
-  ],
+  "unresolved_paps": [],
   "house_repairs": [
     {
-      "action": "replace_section",
-      "old_row_start": 2450,
-      "old_row_stop_exclusive": 3333,
-      "old_rows": 618,
-      "old_php": 25826541000,
-      "new_rows": 737,
-      "new_php": 36094823000,
-      "pdf_pages": [
-        111,
-        112,
-        113,
-        114,
-        115,
-        116,
-        117,
-        118,
-        119,
-        120,
-        121,
-        122,
-        123,
-        124,
-        125,
-        126,
-        127,
-        128,
-        129,
-        130,
-        131,
-        132,
-        133,
-        134,
-        135,
-        136,
-        137,
-        138,
-        139,
-        140,
-        141,
-        142,
-        143,
-        144,
-        145,
-        146,
-        147,
-        148
-      ],
-      "reason": "Re-extract all three maintenance PAPs; native controls and family sum agree exactly."
+      "kind": "fold_family_container",
+      "node_id": "c0981",
+      "label": "Preventive Maintenance",
+      "pdf_page": 110
     },
     {
-      "action": "replace_section",
-      "old_row_start": 3335,
-      "old_row_stop_exclusive": 3875,
-      "old_rows": 344,
-      "old_php": 12032810000,
-      "new_rows": 416,
-      "new_php": 28084988000,
-      "pdf_pages": [
-        148,
-        149,
-        150,
-        151,
-        152,
-        153,
-        154,
-        155,
-        156,
-        157,
-        158,
-        159,
-        160,
-        161,
-        162,
-        163,
-        164,
-        165,
-        166,
-        167,
-        168,
-        169,
-        170,
-        171,
-        172
-      ],
-      "reason": "Restore damaged-paved-road subtype boundaries from native headings; all three PAPs and their family balance."
+      "kind": "fold_family_container",
+      "node_id": "c1583",
+      "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads",
+      "pdf_page": 148
     },
     {
-      "action": "replace_section",
-      "old_row_start": 3875,
-      "old_row_stop_exclusive": 4457,
-      "old_rows": 330,
-      "old_php": 20389192000,
-      "new_rows": 400,
-      "new_php": 15540479000,
-      "pdf_pages": [
-        173,
-        174,
-        175,
-        176,
-        177,
-        178,
-        179,
-        180,
-        181,
-        182,
-        183,
-        184,
-        185,
-        186,
-        187,
-        188,
-        189,
-        190,
-        191,
-        192,
-        193,
-        194,
-        195,
-        196
-      ],
-      "reason": "Restore wrapped slope/landslide and drainage PAP headings using native page/amount anchors; all six PAPs balance."
+      "kind": "fold_family_container",
+      "node_id": "c1927",
+      "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, an",
+      "pdf_page": 172
     },
     {
-      "action": "replace_section",
-      "old_row_start": 4923,
-      "old_row_stop_exclusive": 5270,
-      "old_rows": 279,
-      "old_php": 29421484000,
-      "new_rows": 374,
-      "new_php": 44786384000,
-      "pdf_pages": [
-        213,
-        214,
-        215,
-        216,
-        217,
-        218,
-        219,
-        220,
-        221,
-        222,
-        223,
-        224,
-        225,
-        226,
-        227,
-        228,
-        229,
-        230,
-        231,
-        232,
-        233
-      ],
-      "reason": "Recover bypass-road projects from native rows; the complete section balances the printed control."
+      "kind": "fold_family_container",
+      "node_id": "c2174",
+      "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roa",
+      "pdf_page": 187
     },
     {
-      "action": "replace_section",
-      "old_row_start": 5270,
-      "old_row_stop_exclusive": 5476,
-      "old_rows": 162,
-      "old_php": 22366099000,
-      "new_rows": 165,
-      "new_php": 22661099000,
-      "pdf_pages": [
-        233,
-        234,
-        235,
-        236,
-        237,
-        238,
-        239,
-        240,
-        241,
-        242
-      ],
-      "reason": "Recover missing-link/new-road projects from native rows; the section balances the printed control."
+      "kind": "fold_family_container",
+      "node_id": "c2617",
+      "label": "Road Widening",
+      "pdf_page": 197
     },
     {
-      "action": "replace_section",
-      "old_row_start": 4461,
-      "old_row_stop_exclusive": 4923,
-      "old_rows": 303,
-      "old_php": 16240942000,
-      "new_rows": 322,
-      "new_php": 18113243000,
-      "pdf_pages": [
-        197,
-        198,
-        199,
-        200,
-        201,
-        202,
-        203,
-        204,
-        205,
-        206,
-        207,
-        208,
-        209,
-        210,
-        211,
-        212,
-        213
-      ],
-      "reason": "Re-extract road-widening subtypes and remove misclassified region subtotals; each PAP balances."
+      "kind": "fold_family_container",
+      "node_id": "c3524",
+      "label": "Off-Carriageway Improvement",
+      "pdf_page": 243
     },
     {
-      "action": "replace_section",
-      "old_row_start": 5830,
-      "old_row_stop_exclusive": 7007,
-      "old_rows": 805,
-      "old_php": 32604420000,
-      "new_rows": 836,
-      "new_php": 37590473000,
-      "pdf_pages": [
-        257,
-        258,
-        259,
-        260,
-        261,
-        262,
-        263,
-        264,
-        265,
-        266,
-        267,
-        268,
-        269,
-        270,
-        271,
-        272,
-        273,
-        274,
-        275,
-        276,
-        277,
-        278,
-        279,
-        280,
-        281,
-        282,
-        283,
-        284,
-        285,
-        286,
-        287,
-        288,
-        289,
-        290,
-        291,
-        292,
-        293,
-        294,
-        295
-      ],
-      "reason": "Rebuild all five printed local Bridge PAPs; they sum exactly to the program control without adding parent buckets."
+      "kind": "fold_family_container",
+      "node_id": "c3554",
+      "label": "Paving of Unpaved Roads",
+      "pdf_page": 255
     },
     {
-      "action": "replace_section",
-      "old_row_start": 5484,
-      "old_row_stop_exclusive": 5789,
-      "old_rows": 174,
-      "old_php": 5758132000,
-      "new_rows": 172,
-      "new_php": 5764132000,
-      "pdf_pages": [
-        243,
-        244,
-        245,
-        246,
-        247,
-        248,
-        249,
-        250,
-        251,
-        252,
-        253,
-        254,
-        255
-      ],
-      "reason": "Rebuild all Off-Carriageway subtypes using printed source controls."
+      "kind": "null_glyph_cleanup",
+      "node_id": "c8928",
+      "pdf_page": 490
     },
     {
-      "action": "replace_section",
-      "old_row_start": 7008,
-      "old_row_stop_exclusive": 8452,
-      "old_rows": 1246,
-      "old_php": 63923824000,
-      "new_rows": 1298,
-      "new_php": 70964897000,
-      "pdf_pages": [
-        296,
-        297,
-        298,
-        299,
-        300,
-        301,
-        302,
-        303,
-        304,
-        305,
-        306,
-        307,
-        308,
-        309,
-        310,
-        311,
-        312,
-        313,
-        314,
-        315,
-        316,
-        317,
-        318,
-        319,
-        320,
-        321,
-        322,
-        323,
-        324,
-        325,
-        326,
-        327,
-        328,
-        329,
-        330,
-        331,
-        332,
-        333,
-        334,
-        335,
-        336,
-        337,
-        338,
-        339,
-        340,
-        341,
-        342,
-        343,
-        344,
-        345,
-        346,
-        347,
-        348,
-        349,
-        350,
-        351,
-        352,
-        353,
-        354,
-        355,
-        356,
-        357,
-        358,
-        359,
-        360,
-        361,
-        362,
-        363,
-        364
-      ],
-      "reason": "Recover flood-mitigation structures and drainage rows; exclude Nationwide/office containers and balance the native control."
+      "kind": "recover_artifact_title",
+      "node_id": "c8928",
+      "label": "Construction of Concrete Road (Section 1: Sta. 0+000 - Sta. 0+292, Sec",
+      "pdf_page": 490
     },
     {
-      "action": "replace_section",
-      "old_row_start": 5789,
-      "old_row_stop_exclusive": 5830,
-      "old_rows": 21,
-      "old_php": 1788063000,
-      "new_rows": 17,
-      "new_php": 596021000,
-      "pdf_pages": [
-        255,
-        256
-      ],
-      "reason": "Keep underlying paving projects once; exclude family/PAP subtotals."
+      "kind": "null_glyph_cleanup",
+      "node_id": "c10528",
+      "pdf_page": 561
     },
     {
-      "action": "replace_section",
-      "old_row_start": 9347,
-      "old_row_stop_exclusive": 9587,
-      "old_rows": 18,
-      "old_php": 364400000,
-      "new_rows": 218,
-      "new_php": 1127200000,
-      "pdf_pages": [
-        401,
-        402,
-        403,
-        404,
-        405,
-        406,
-        407,
-        408,
-        409
-      ],
-      "reason": "Restore 217 terminal rainwater allocations and correctly attribute Septage."
+      "kind": "null_glyph_cleanup",
+      "node_id": "c15535",
+      "pdf_page": 800
     },
     {
-      "action": "replace_section",
-      "old_row_start": 9592,
-      "old_row_stop_exclusive": 9654,
-      "old_rows": 2,
-      "old_php": 425000000,
-      "new_rows": 51,
-      "new_php": 510000000,
-      "pdf_pages": [
-        410,
-        411,
-        412
-      ],
-      "reason": "Replace regional-facility rollups with all 51 printed regional allocations."
-    },
-    {
-      "action": "replace_section",
-      "old_row_start": 20659,
-      "old_row_stop_exclusive": 20703,
-      "old_rows": 27,
-      "old_php": 1378000000,
-      "new_rows": 29,
-      "new_php": 700000000,
-      "pdf_pages": [
-        924,
-        925,
-        926
-      ],
-      "reason": "Rebuild Local Ports allocations from their complete printed section; exclude the PAP subtotal."
-    },
-    {
-      "action": "replace_section",
-      "old_row_start": 20703,
-      "old_row_stop_exclusive": 21003,
-      "old_rows": 215,
-      "old_php": 16902443000,
-      "new_rows": 210,
-      "new_php": 13875943000,
-      "pdf_pages": [
-        927,
-        928,
-        929,
-        930,
-        931,
-        932,
-        933,
-        934,
-        935,
-        936,
-        937,
-        938,
-        939
-      ],
-      "reason": "Local projects are not FAP: drop repeated PPP controls, retain the one printed allocation and all building projects."
-    },
-    {
-      "action": "replace_section",
-      "old_row_start": 21003,
-      "old_row_stop_exclusive": 21061,
-      "old_rows": 19,
-      "old_php": 31043657000,
-      "new_rows": 29,
-      "new_php": 44749011000,
-      "pdf_pages": [
-        939,
-        940,
-        941,
-        942
-      ],
-      "reason": "Rebuild the true FAP section: 29 projects, control and every funding split balanced."
-    },
-    {
-      "action": "retain_project",
-      "row": 9325,
-      "reason": "This verified-rollup flag labels an actual construction project, not necessarily a subtotal."
-    },
-    {
-      "action": "correct_boundary_attribution",
-      "row": 20658,
-      "pdf_page": 924,
-      "reason": "Final Barcelona MPB project precedes the Local Ports heading, so it belongs to MPBs."
+      "kind": "null_glyph_cleanup",
+      "node_id": "c15536",
+      "pdf_page": 800
     }
   ]
 }

@@ -153,7 +153,7 @@ ported controllers; no crop/coordinate overlays or saved review decisions; proje
 suggestions and detailed provenance panels have not been fully ported; no
 performance improvement claim yet. PDF canvas output is visual evidence, not an
 accessible text layer. Keep the original PDF link and add a text layer in the
-accessibility phase. Source certification and Native I-C extraction remain open.
+accessibility phase. Native I-C now feeds the candidate comparison and stage trace; source certification and project identity review remain open.
 
 
 ## Validation of the first slice

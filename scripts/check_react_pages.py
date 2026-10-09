@@ -59,6 +59,12 @@ with sync_playwright() as p:
         before = len(requests)
         page.goto(base, wait_until="networkidle")
         page.locator(".cards article").first.wait_for()
+        native_summary = page.locator(".native-project-summary").inner_text()
+        assert "15,972 named-project leaves" in native_summary
+        assert "29 FAP totals" in native_summary
+        assert "639,179,718,000" in native_summary and "excludes PS" in native_summary
+        assert page.get_by_role("link", name="Inspect native I-C allocation candidates").get_attribute("href") == "#house-nep"
+
         assert not any(
             "stage_trace_2027.json" in url
             or "PdfPreview-" in url
@@ -69,6 +75,7 @@ with sync_playwright() as p:
         page.get_by_role("link", name="Open sortable comparison").click()
         page.locator("tbody tr").first.wait_for(timeout=60000)
         assert page.locator("tbody tr").count() == 45
+        assert "native Volume I-C; v5 is retired" in page.locator("main").inner_text()
         page.get_by_role("button", name="Missing from listing", exact=True).click()
         assert page.locator("tbody tr").count() == 23
         page.locator("tbody button.source-link").first.click()
@@ -135,6 +142,14 @@ with sync_playwright() as p:
             assert page.evaluate("window.spaNavigationProbe") == 42
             assert nav.get_by_role("link", name=name, exact=True).get_attribute("aria-current") == "page"
             assert page.get_by_role("alert").count() == 0
+            if key == "house":
+                summary = page.locator("#projectDetailSummary").inner_text()
+                assert page.locator("#projectDetail").is_visible()
+                for value in ("15,972", "29 FAP totals", "639,179,718,000", "2,477", "56 independent I-B checks", "excludes PS"):
+                    assert value in summary
+                assert page.locator("#projectDetail a").get_attribute("href") == "#house-nep"
+            else:
+                assert page.locator("#projectDetail").is_hidden()
             if key in ("house", "nep"):
                 pane = page.locator(".tree-pdf-pane")
                 pane.locator("canvas").wait_for(timeout=60000)
@@ -165,6 +180,12 @@ with sync_playwright() as p:
             assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
         page.get_by_role("navigation", name="Detail workspaces").get_by_role("link", name="House / NEP detail").click()
         page.locator("#budgetRows tr").first.wait_for(timeout=60000)
+        assert "House native I-C operations extract" in page.locator("#cards").inner_text()
+        assert "44/44" in page.locator("#coverageSummary").inner_text()
+        assert "All mapped native I-C PAP controls balance" in page.locator("#unresolvedRows").inner_text()
+        for filename in ("hb_dpwh_native_ic_projects.json", "hb_dpwh_native_ic_rollup_audit.json"):
+            link = page.locator(f'a[download][href$="{filename}"]').first
+            assert page.request.head(link.get_attribute("href")).status == 200
         page.locator("#budget table th button").first.wait_for()
         page.locator("#budget table th button").first.click()
         assert page.locator("#budget table th").first.get_attribute("aria-sort") in ("ascending", "descending")

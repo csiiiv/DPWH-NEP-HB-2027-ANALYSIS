@@ -34,6 +34,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check native House extraction and source-title regressions
+        run: |
+          python3 -m pip install PyMuPDF==1.28.2
+          python3 scripts/hb_native_ic_rollup.py --check
+          python3 -m unittest scripts.tests.test_hb_native_ic_rollup scripts.tests.test_hb_native_rollup -v
       - name: Check current accounting, data freshness and matching
         run: python3 -m unittest discover -s analysis/tests -p test_current_pages.py -v
       - name: Check budget display units, signs and numeric sorting

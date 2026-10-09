@@ -18,7 +18,7 @@ The raw [native outline](../data/hb_dpwh_native_tree.json) has detached/repeated
 
 Each nested node retains an ID, label, kind, printed amount, source reference, children, and `columns_php` for `ps`, `mooe`, `co`, and `total`. Checks require PS + MOOE + CO = Total and validate direct children and recursive leaves for every column. All 660 internal nodes pass; 1,746 leaves reproduce the agency total. Progressive child sums show the remaining balance after each child.
 
-I-B's local allocations are mostly offices. Named local project extraction requires Native I-C. The v5 title layer and [older PAP export](../archive/data/hb_dpwh_pap_hierarchy.json) are supplementary candidates with their own coverage defects; they do not replace native I-B controls.
+I-B's local allocations are mostly offices. Native I-C now supplies named project detail and current candidate matching; 44/44 mapped local PAPs balance. The historical v5 title layer and [older PAP export](../archive/data/hb_dpwh_pap_hierarchy.json) are supplementary candidates with their own coverage defects; they do not replace native I-B controls.
 
 ## NEP PDF and expense basis
 
@@ -52,7 +52,7 @@ All viewers separate arithmetic from source evidence and coverage. Clickable pat
 
 ## Comparison gate and later matching
 
-`comparison_ready` remains false for every source. Resolve printed row identities/amounts, Native I-C coverage, and API release scope before certifying comparisons.
+`comparison_ready` remains false for every source. Resolve printed row identities/amounts, House project identity and amendment completeness, and API release scope before certifying comparisons.
 
 Later matching must preserve source-local entity IDs and evidence rather than replacing one source with another. Align fiscal year, budget stage, appropriation scope, expense class, local/FAP partition, allocation grain, and units first. A printed agency/control comparison and a project-set comparison answer different questions.
 

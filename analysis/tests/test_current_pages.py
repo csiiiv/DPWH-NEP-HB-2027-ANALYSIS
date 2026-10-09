@@ -6,6 +6,7 @@ sys.path[:0] = [str(_Path(__file__).resolve().parents[1]), str(_Path(__file__).r
 from paths import DATA
 import sys
 import unittest
+import json
 from pathlib import Path
 
 from build_current_pages import project_matches, region, normalized, scope_key
@@ -22,7 +23,7 @@ def allocation(id, title='Construction of Road at Barangay Mabini, Sample City',
 class CurrentPageTests(unittest.TestCase):
     def test_committed_pages_have_current_inputs_and_valid_accounting(self):
         data = validate_current_pages()
-        self.assertEqual(data['summary']['house_balanced_paps'], 38)
+        self.assertEqual(data['summary']['house_balanced_paps'], 44)
         self.assertEqual(data['summary']['reviewed_pairs'], 0)
         for row in data['projects']:
             if row['status'] == 'exact_candidate':
@@ -30,6 +31,33 @@ class CurrentPageTests(unittest.TestCase):
                 self.assertEqual(scope_key(row['house']), scope_key(row['nep']))
             for suggestion in row.get('candidates', []):
                 self.assertEqual(scope_key(row['house']), scope_key(suggestion['nep']))
+
+    def test_native_house_replaces_v5_and_preserves_funding_scope(self):
+        data = json.loads((DATA / 'source_comparison_2027.json').read_text())
+        house = [r['house'] for r in data['projects'] if r.get('house')]
+        self.assertEqual(data['manifest']['house_version'], 'native_ic_v2')
+        self.assertFalse(data['manifest']['comparison_ready'])
+        self.assertTrue(all(r['id'].startswith('hb:ic:') for r in house))
+        self.assertNotIn('hb_dpwh_leaves_corrected_v5.json', data['manifest']['inputs'])
+        self.assertEqual(set(data['summary']['api']),
+                         {'api_rows', 'api_php', 'unpaired_source_rows', 'unpaired_source_php'})
+        self.assertEqual(sum(r['amount_php'] for r in house), 586_941_661_000)
+        self.assertEqual(data['summary']['house_operations_gap_php'], 0)
+        self.assertEqual(data['unresolved_paps'], [])
+        self.assertEqual(len([r for r in house if r['zone'] == 'fap']), 29)
+        self.assertTrue(all(r['record_kind'] != 'funding' for r in house))
+        self.assertTrue(any(r['record_kind'] == 'region' for r in house))
+        self.assertTrue(any(r['record_kind'] == 'allocation' for r in house))
+        self.assertTrue(any(r['funding_php'].get('Loan Proceeds') == 0 for r in house if r['zone'] == 'fap'))
+
+    def test_title_tampering_fails_even_when_every_amount_still_balances(self):
+        from house_native import validate_native_detail, walk
+        ic = json.loads((DATA / 'hb_dpwh_native_ic_projects.json').read_text())
+        audit = json.loads((DATA / 'hb_dpwh_native_ic_rollup_audit.json').read_text())
+        n = next(n for n in walk(ic['root']) if 'Pangpang to Del Rosario' in n['label'])
+        n['label'] = 'Wrong project with the same amount'
+        with self.assertRaisesRegex(ValueError, 'title/source mismatch'):
+            validate_native_detail(ic, audit, DATA.parents[1])
 
     def test_unique_title_pair_does_not_require_equal_amount(self):
         rows = project_matches([allocation('h', amount=12000000)], [allocation('n')])

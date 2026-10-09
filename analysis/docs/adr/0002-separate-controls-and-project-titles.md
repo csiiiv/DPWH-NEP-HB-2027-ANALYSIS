@@ -32,23 +32,26 @@ Chosen option: **3 — dual baseline**.
 |---|---|
 | Additive control baseline | `analysis/data/hb_dpwh_native_rollup.json` (660 direct/recursive checks across four columns) |
 | Raw outline for existing consumers | `analysis/data/hb_dpwh_native_tree.json` (647 structural checks) |
-| Project-title candidate | `analysis/data/hb_dpwh_leaves_corrected_v5.json` (until native I-C) |
+| Named-project layer | `analysis/data/hb_dpwh_native_ic_projects.json` (native I-C, 15,972 named project leaves plus 29 FAP totals, 2,477 balancing controls) — since 2026-10-09 |
+| Historical project-title candidate | `analysis/data/hb_dpwh_leaves_corrected_v5.json` (OCR lineage, retired) |
 | Rollup / document views | `hb_2027_tree.json`, `hb_2027_source_tree.json` under printed controls |
 
 Trees mark nodes without printed controls as **derived** (child sums). No
-subtotal or hierarchy amount is invented to close gaps. The four unresolved
-v5 PAPs and the ₱5.596B net operations gap stay explicit as extraction
-limits, not bill deficits.
+subtotal or hierarchy amount is invented to close gaps. The former v5 gap
+is closed natively: the I-C layer agrees with I-B to the peso on 56 independent
+controls, including expense columns and all shared I-B PAP/program controls.
 
 ### Consequences
 
 * Good: dashboards can separate printed deltas from extraction coverage
-* Good: native control wins when v5 disagrees on a printed PAP total
+* Good: native control wins when a derived layer disagrees on a printed PAP total
+* Good: v5 retired — both halves of the dual baseline are now native text layer
+* Good: current matching, stage trace, downloads, and packaging consume native I-C; 44/44 mapped local PAPs balance
 * Bad: two House artifacts must be kept in sync and clearly labeled
-* Bad: v5 still required for titles until I-C native re-extract lands
 
 ## More Information
 
+* [../hb_native_ic_rollup_checks.md](../hb_native_ic_rollup_checks.md)
 * [../hb_known_defect_repairs.md](../hb_known_defect_repairs.md)
 * [../../viewers/hb_2027_tree.md](../../archive/viewers/hb_2027_tree.md)
 * [../../viewers/hb_2027_source_tree.md](../../archive/viewers/hb_2027_source_tree.md)

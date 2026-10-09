@@ -42,8 +42,8 @@ OCR-era extraction damage on four Convergence sections.
 
 * Good: House control baseline no longer depends on OCR quality
 * Good: “derived Convergence residual” framing is corrected — I-C prints it
-* Bad: I-B is office-granularity; project titles still need I-C (native or v5)
-* Bad: I-C project-level native extract is still TODO
+* Scope: I-B is office-granularity; native I-C supplies current project titles. v5 is retired from the active pipeline.
+* Follow-up, 2026-10-09: native I-C is implemented and feeds the current comparison pipeline; see ADR-0002 and the I-C audit.
 
 ## More Information
 

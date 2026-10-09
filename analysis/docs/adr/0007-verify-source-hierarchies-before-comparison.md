@@ -35,7 +35,7 @@ BetterGov-hosted API endpoint in provenance.
 
 - Source identity, coverage, and allocation grain are visible before comparisons.
 - CI validates committed snapshots and trees without local detail downloads.
-- Native I-C extraction, NEP source-image review, and API document/release coverage
+- House project identity/amendment review, NEP source-image review, and API document/release coverage
   remain explicit prerequisites for certified comparisons.
 
 See [source verification methods](../source_hierarchy_verification.md).

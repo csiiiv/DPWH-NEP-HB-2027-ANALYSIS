@@ -16,8 +16,7 @@ alternatives were rejected.
 | [0008](0008-per-item-amount-columns-and-evidence.md) | Preserve per-item columns and page-specific source evidence | Accepted |
 | [0009](0009-navigable-source-review-workspace.md) | Navigate source paths within a shared review workspace | Accepted |
 | [0010](0010-archive-superseded-analysis-work.md) | Archive superseded and exploratory analysis by role | Accepted |
-
-| [0011](0011-react-vite-migration.md) | Incremental React + Vite migration with PDF.js evidence | Accepted for preview |
+| [0011](0011-react-vite-migration.md) | Incremental React + Vite migration with PDF.js evidence | Accepted; SPA routes and PDF panes implemented |
 
 ## How to add an ADR
 

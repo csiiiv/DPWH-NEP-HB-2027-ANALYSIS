@@ -184,6 +184,9 @@ export default function Comparison() {
         amendments. Source totals and extraction coverage describe different
         scopes.
       </p>
+      <p className="muted">House allocations and titles use native Volume I-C; v5 is retired.
+        {" "}<a href="#house-nep">Inspect extraction controls and allocation candidates →</a>
+      </p>
       <div className="cards stage-totals">
         <article>
           <h3>{names[0]}</h3>
