@@ -80,7 +80,7 @@ function Insertions({headlines,reading,ranking,dim,change}){
  return <section className="analysis-section"><h2>Top insertion candidates</h2>
   <div className="analysis-controls"><label>Candidate group<select aria-label="Analysis candidate group" value={ranking} onChange={e=>change('ranking',e.target.value)}>{Object.entries(modes).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></div>
   <DimensionChips dim={dim} change={change}/>
-  <p className="muted">Ranked by {names[reading]} allocation · top 20 of {list.comparison_rows.toLocaleString()} comparison rows · {amount(list.amount_php)} across this group. Grouped allocations remain grouped.</p>
+  <p className="muted">Ranked by {names[reading]} allocation · top {Math.min(100,list.comparison_rows).toLocaleString()} of {list.comparison_rows.toLocaleString()} comparison rows · {amount(list.amount_php)} across this group. Grouped allocations remain grouped.</p>
   <p className="notice">{ranking==='no_suggestion'?'House records with no attached NEP/Transparency source and no retained NEP suggestion. These are review candidates, not confirmed insertions.':ranking==='unresolved'?'House records with possible or ambiguous NEP counterparts are separated from the no-suggestion list. Review their suggestions before claiming an insertion.':'Records present only in HGAB3 under the retained reading key. This shows a reading difference, not confirmed absence from NEP.'} Unique different-region title candidates are linked for review and excluded from the House-only groups.</p>
   {dim!=='overall'&&<AggregateTable title={`Totals by ${dimensionTitle(dim)}`} groups={list.by_dim[dim]}/>}
   <SortableTable ariaLabel="Top insertion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
@@ -94,7 +94,7 @@ function Insertions({headlines,reading,ranking,dim,change}){
 }
 function AggregateTable({title,groups}){
  if(!groups?.length)return null;
- return <div className="aggregate-table"><h3>{title} · top {groups.length}</h3>
+ return <div className="aggregate-table"><h3>{title} · {groups.length.toLocaleString()} group{groups.length===1?'':'s'}</h3>
   <SortableTable ariaLabel={title} initialSort={{key:'amount_php',direction:'desc'}} rows={groups.map(g=>({...g,id:g.label}))} columns={[
    {key:'label',label:'Group',scope:'row'},
    {key:'rows',label:'Rows',align:'num'},
@@ -141,7 +141,7 @@ function aggregate(rows,dim){
   const entry=groups.get(label)||{label,rows:0,amount_php:0};
   entry.rows++;entry.amount_php+=row.amount_php;groups.set(label,entry);
  }
- return [...groups.values()].sort((a,b)=>b.amount_php-a.amount_php||a.label.localeCompare(b.label)).slice(0,10);
+ return [...groups.values()].sort((a,b)=>b.amount_php-a.amount_php||a.label.localeCompare(b.label)).slice(0,100);
 }
 function Statistics({detail,source,dim,change}){
  const records=useMemo(()=>{
@@ -236,7 +236,7 @@ function deviantSubsets(records,dim){
  const baseline=records.length?records.filter(r=>r.amount_php%1e6===0).length/records.length:0;
  return [...groups.values()].filter(g=>g.records>=100)
   .map(g=>({...g,share:g.round/g.records,deviation:g.round/g.records-baseline}))
-  .sort((a,b)=>Math.abs(b.deviation)-Math.abs(a.deviation)).slice(0,8);
+  .sort((a,b)=>Math.abs(b.deviation)-Math.abs(a.deviation)).slice(0,100);
 }
 function DigitBars({digits}){
  const max=Math.max(...digits.map(d=>Math.max(d.observed,d.expected??0)),0.01);

@@ -46,7 +46,7 @@ export function headlineStats(input){
      reading_delta_php:r.reading_delta_php,source_id:r[side].native_node_id??r[side].records?.[0]?.native_node_id??r[side].records?.[0]?.id??r[side].id}))
     .sort((a,b)=>b.amount_php-a.amount_php || a.id.localeCompare(b.id));
    return [key,{comparison_rows:list.length,amount_php:list.reduce((sum,r)=>sum+r[side].amount_php,0),
-    top:flat.slice(0,20),by_dim:byDimension(flat)}];
+    top:flat.slice(0,100),by_dim:byDimension(flat)}];
   }));
  }
  return {matching_mode:'ignore',sources,rankings,revisionSets:revisionSets(rows)};
@@ -61,7 +61,7 @@ function byDimension(flat){
    const entry=groups.get(label)||{label,rows:0,amount_php:0};
    entry.rows++;entry.amount_php+=row.amount_php;groups.set(label,entry);
   }
-  result[dim]=[...groups.values()].sort((a,b)=>b.amount_php-a.amount_php||a.label.localeCompare(b.label)).slice(0,10);
+  result[dim]=[...groups.values()].sort((a,b)=>b.amount_php-a.amount_php||a.label.localeCompare(b.label)).slice(0,100);
  }
  return result;
 }
