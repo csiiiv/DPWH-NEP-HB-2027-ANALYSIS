@@ -61,6 +61,8 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(page.get_by_role('region',name='Top insertion candidates',exact=True).locator('tbody tr')).to_have_count(5)
                 page.get_by_role('button',name='PAP',exact=True).click()
                 expect(page.get_by_role('region',name='Totals by PAP',exact=True)).to_contain_text('BIP')
+                page.get_by_role('button',name='Region',exact=True).click()
+                expect(page.get_by_role('region',name='Totals by region',exact=True)).to_contain_text('National Capital Region')
                 expect(page.get_by_role('button',name='District office',exact=True)).to_be_visible()
                 page.reload(wait_until='networkidle')
                 expect(page.get_by_role('tab',name='Insertions',exact=True)).to_have_attribute('aria-selected','true')

@@ -5,6 +5,7 @@ import {routeHref} from './routes.js';
 import ShareLink from './ShareLink.jsx';
 import SortableTable from './SortableTable.jsx';
 import {benford,trailingZeros,lastDigits,roundingLadder,valueBands,kmeansClusters,exactConcentrations} from './analysisStats.js';
+import {regionName} from './regionNames.js';
 const names={third:'HGAB3 · 3rd reading',second:'HGAB2 · 2nd reading',nep:'DBM NEP',api:'DPWH Transparency NEP'};
 const labels={'Bridge Program':'Bridges','Convergence and Special Support Program':'CSSP','Foreign-assisted projects':'FAPs'};
 const short=value=>labels[value]??value;
@@ -13,6 +14,7 @@ const views=[['overview','Overview'],['insertions','Insertions'],['adjustments',
 const dimensions=[['overall','Overall'],['region','Region'],['office','District office'],['program','Category'],['pap','PAP']];
 const pick=(params,key,allowed,fallback)=>allowed.includes(params.get(key))?params.get(key):fallback;
 const dimensionTitle=dim=>dim==='office'?'district office':dim==='pap'?'PAP':dim;
+const groupLabel=(dim,label)=>dim==='region'?regionName(label):label;
 const amountCell=(value,title)=><span title={(title??(value?.toLocaleString('en-PH')??''))+' PHP'}>{amount(value)}</span>;
 export default function Analysis({route}){
  const [data,setData]=useState(null),[detail,setDetail]=useState(null),[error,setError]=useState('');
@@ -82,21 +84,21 @@ function Insertions({headlines,reading,ranking,dim,change}){
   <DimensionChips dim={dim} change={change}/>
   <p className="muted">Ranked by {names[reading]} allocation · top {Math.min(100,list.comparison_rows).toLocaleString()} of {list.comparison_rows.toLocaleString()} comparison rows · {amount(list.amount_php)} across this group. Grouped allocations remain grouped.</p>
   <p className="notice">{ranking==='no_suggestion'?'House records with no attached NEP/Transparency source and no retained NEP suggestion. These are review candidates, not confirmed insertions.':ranking==='unresolved'?'House records with possible or ambiguous NEP counterparts are separated from the no-suggestion list. Review their suggestions before claiming an insertion.':'Records present only in HGAB3 under the retained reading key. This shows a reading difference, not confirmed absence from NEP.'} Unique different-region title candidates are linked for review and excluded from the House-only groups.</p>
-  {dim!=='overall'&&<AggregateTable title={`Totals by ${dimensionTitle(dim)}`} groups={list.by_dim[dim]}/>}
+  {dim!=='overall'&&<AggregateTable title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}/>}
   <SortableTable ariaLabel="Top insertion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
    {key:'rank',label:'#',sortable:false,render:(r,i)=><span>{i+1}</span>},
-   {key:'title',label:'Project / assignment',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {r.region} · {r.office||'No recorded office'}</small></span>},
+   {key:'title',label:'Project / assignment',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {regionName(r.region)} · {r.office||'No recorded office'}</small></span>},
    {key:'amount_php',label:'Allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
    {key:'allocation_records',label:'Records / status',align:'num',render:r=><span>{r.allocation_records} source allocation {r.allocation_records===1?'record':'records'}<small>{r.trace.replaceAll('_',' ')}</small></span>},
    {key:'review',label:'Review',sortable:false,render:r=><span><a href={routeHref('compare',{view:'projects',region_match:'ignore',q:r.id,record:r.id})}>Review comparison</a><br/><a href={routeHref('house',{view:'projects',reading:reading==='third'?'third':'second',node:r.source_id})}>{r.allocation_records>1?'House source tree · first allocation':'House source tree'}</a></span>},
   ]} empty="No records in this group for the selected House reading."/>
  </section>;
 }
-function AggregateTable({title,groups}){
+function AggregateTable({title,groups,dim}){
  if(!groups?.length)return null;
  return <div className="aggregate-table"><h3>{title} · {groups.length.toLocaleString()} group{groups.length===1?'':'s'}</h3>
   <SortableTable ariaLabel={title} initialSort={{key:'amount_php',direction:'desc'}} rows={groups.map(g=>({...g,id:g.label}))} columns={[
-   {key:'label',label:'Group',scope:'row'},
+   {key:'label',label:'Group',scope:'row',render:r=><span>{groupLabel(dim,r.label)}</span>},
    {key:'rows',label:'Rows',align:'num'},
    {key:'amount_php',label:'Allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
   ]}/>
@@ -112,7 +114,7 @@ function Adjustments({detail,revisionSets,dim,direction,change}){
   <section className="analysis-section"><h2>Reading adjustments · HGAB3 vs HGAB2</h2>
    <p className="notice">Recorded 2nd→3rd reading differences under the retained matching key: {revisionSets.reading.length.toLocaleString()} rows · net {amount(revisionSets.delta_php)}. Repeated keys remain grouped.</p>
    <SortableTable ariaLabel="Reading adjustments" initialSort={{key:'reading_delta_php',direction:'desc'}} rows={revisionSets.reading} columns={[
-    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {r.region}</small></span>},
+    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {regionName(r.region)}</small></span>},
     {key:'second_php',label:'HGAB2',align:'num',render:r=>r.second_php!=null?amountCell(r.second_php):<span>—</span>},
     {key:'third_php',label:'HGAB3',align:'num',render:r=>r.third_php!=null?amountCell(r.third_php):<span>—</span>},
     {key:'reading_delta_php',label:'Δ',align:'num',render:r=>r.reading_delta_php!=null?amountCell(r.reading_delta_php):<span>new in HGAB3</span>},
@@ -123,9 +125,9 @@ function Adjustments({detail,revisionSets,dim,direction,change}){
    <div className="analysis-controls"><label>Direction<select aria-label="Revision direction" value={direction} onChange={e=>change('direction',e.target.value)}><option value="increased">Most increased (House above NEP)</option><option value="reduced">Most reduced (House below NEP)</option></select></label></div>
    <p className="muted">{cross.length.toLocaleString()} comparison rows · {amount(cross.reduce((sum,r)=>sum+Math.abs(r.gap),0))} aggregate absolute difference. Direction presets the sort; click any column to re-sort.</p>
    <p className="notice">These rows carry exact House/NEP candidate pairs with unequal amounts. Identity is proposed by title/scope matching and is not manually certified; the House−NEP gap often reflects GAA-like versus full-project-cost bases, especially for FAPs. This is a cross-document comparison, not a House reading change.</p>
-   {byDim&&<AggregateTable title={`Differences by ${dimensionTitle(dim)}`} groups={byDim}/>}
+   {byDim&&<AggregateTable title={`Differences by ${dimensionTitle(dim)}`} dim={dim} groups={byDim}/>}
    <SortableTable ariaLabel="Top House vs NEP differences" initialSort={{key:'gap',direction:direction==='increased'?'desc':'asc'}} rows={shown.slice(0,20)} columns={[
-    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {r.region} · {r.trace.replaceAll('_',' ')}</small></span>},
+    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {regionName(r.region)} · {r.trace.replaceAll('_',' ')}</small></span>},
     {key:'house_php',label:'House',align:'num',value:r=>(r.third??r.second)?.amount_php,render:r=>{const house=r.third??r.second;return house?amountCell(house.amount_php):<span>—</span>;}},
     {key:'nep_php',label:'NEP',align:'num',value:r=>r.nep?.amount_php,render:r=>amountCell(r.nep.amount_php)},
     {key:'gap',label:'House − NEP',align:'num',render:r=>amountCell(r.gap)},
@@ -141,7 +143,8 @@ function aggregate(rows,dim){
   const entry=groups.get(label)||{label,rows:0,amount_php:0};
   entry.rows++;entry.amount_php+=row.amount_php;groups.set(label,entry);
  }
- return [...groups.values()].sort((a,b)=>b.amount_php-a.amount_php||a.label.localeCompare(b.label)).slice(0,100);
+ return [...groups.values()].sort((a,b)=>b.amount_php-a.amount_php||a.label.localeCompare(b.label)).slice(0,100)
+  .map(g=>({...g,label:groupLabel(dim,g.label)}));
 }
 function Statistics({detail,source,dim,change}){
  const records=useMemo(()=>{
@@ -235,7 +238,7 @@ function deviantSubsets(records,dim){
  }
  const baseline=records.length?records.filter(r=>r.amount_php%1e6===0).length/records.length:0;
  return [...groups.values()].filter(g=>g.records>=100)
-  .map(g=>({...g,share:g.round/g.records,deviation:g.round/g.records-baseline}))
+  .map(g=>({...g,share:g.round/g.records,deviation:g.round/g.records-baseline,label:groupLabel(dim,g.label)}))
   .sort((a,b)=>Math.abs(b.deviation)-Math.abs(a.deviation)).slice(0,100);
 }
 function DigitBars({digits}){
