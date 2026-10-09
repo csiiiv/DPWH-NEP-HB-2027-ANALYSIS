@@ -14,6 +14,7 @@ export const repo =
 const documents = {
   "house-tree": { path: "HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf", label: "House 2nd reading · Volume I-B", pageLabel: "House 2nd · I-B" },
   "house-projects": { path: "HB_BUDGET/3%20-%20HB%2010858%20VOL%20IC.pdf", label: "House 2nd reading · Volume I-C", pageLabel: "House 2nd · I-C" },
+  "house-third-controls": { path: "HB_BUDGET_3rd_reading/2-%20HB%2010858%20FOR%203RD%20READING%20VOL%20I-B.pdf", label: "House 3rd reading · Volume I-B", pageLabel: "House 3rd · I-B" },
   "house-third": { path: "HB_BUDGET_3rd_reading/3-%20HB%2010858%20FOR%203RD%20READING%20VOL%20I-C%20.pdf", label: "House 3rd reading · Volume I-C", pageLabel: "House 3rd · I-C" },
   nep: { path: "pdfs/NEP-2027-VOLUME-2B_OCR.pdf", label: "DBM NEP · Volume II-B (retained OCR)", pageLabel: "NEP · II-B (retained OCR)" },
 };

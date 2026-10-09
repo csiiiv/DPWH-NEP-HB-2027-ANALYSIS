@@ -75,7 +75,7 @@ function mount(root, template, route, payloads, onSourceSelection, onPdfSlot) {
   };
   let budget, destroyController;
   if (['house', 'nep', 'transparency'].includes(route.key)) {
-    root.querySelector("h1").textContent = payloads[0].native_ic ? payloads[0].title : route.key === "house" ? "House GAB — source hierarchy" : route.key === "nep" ? "DBM NEP — source hierarchy" : payloads[0].title;
+    root.querySelector("h1").textContent = (payloads[0].native_ic || payloads[0].native_ib) ? payloads[0].title : route.key === "house" ? "House GAB — source hierarchy" : route.key === "nep" ? "DBM NEP — source hierarchy" : payloads[0].title;
     mountVerification(localDocument, {
       onSourceSelection, initialNode: route.params.get("node"), initialQuery: route.params.get("q"),
       projectsOnly: route.key === "nep" && route.params.get("view") === "projects",
@@ -124,12 +124,13 @@ export default function SourceWorkspace({ route }) {
     const keys = {house: 'hb', nep: 'nep', transparency: 'dpwh_nep_api'};
     const ic = route.key === "house" && route.params.get("view") === "projects";
     const reading = route.params.get("reading") === "second" ? "second" : "third";
-    const files = ic ? [`hb_dpwh_native_ic_projects${reading === "third" ? "_3rd_reading" : ""}.json`] : keys[route.key] ? [`verification_${keys[route.key]}.json`] : route.key === "nep-detail" ?
+    const ib = route.key === "house" && !ic;
+    const files = ib ? [`hb_dpwh_native_rollup${reading === "third" ? "_3rd_reading" : ""}.json`] : ic ? [`hb_dpwh_native_ic_projects${reading === "third" ? "_3rd_reading" : ""}.json`] : keys[route.key] ? [`verification_${keys[route.key]}.json`] : route.key === "nep-detail" ?
       ["nep_2027_tree.json", "nep_2027_native_amount_review.json", "nep_2027_tree_validation.json"] : ["source_comparison_2027.json"];
     setLoading(true); setError(""); setSource(null); setPdfSlot(null);
     Promise.all(files.map(name => loadData(name, controller.signal))).then(payloads => {
       if (controller.signal.aborted) return;
-      if (ic) payloads = [houseProjectTree(payloads[0], reading)];
+      if (ic || ib) payloads = [houseProjectTree(payloads[0], reading, ic ? "I-C" : "I-B")];
       const selectSource = (node, { reveal = false } = {}) => {
         setSource(treeSourceReference(route.key, node));
         if (reveal) host.current.querySelector(".tree-pdf-pane")?.scrollIntoView({ block: "start", behavior: "instant" });
@@ -139,11 +140,19 @@ export default function SourceWorkspace({ route }) {
     }).catch(e => { if (e.name !== "AbortError") { setError(e.message); setLoading(false); } });
     return () => { controller.abort(); dispose?.(); };
   }, [route.key, route.params.toString()]);
-  return <>{route.key === "house" && <nav className="page-tabs section-tabs" aria-label="House data views">
-    <a href="#house" aria-current={route.params.get('view') !== 'projects' ? 'page' : undefined}>I-B controls · 2nd reading</a>
-    <a href="#house?view=projects&reading=second" aria-current={route.params.get('view') === 'projects' && route.params.get('reading') === 'second' ? 'page' : undefined}>I-C projects · 2nd reading</a>
-    <a href="#house?view=projects&reading=third" aria-current={route.params.get('view') === 'projects' && route.params.get('reading') !== 'second' ? 'page' : undefined}>I-C projects · 3rd reading</a>
-  </nav>}{route.key === "nep" && <nav className="page-tabs section-tabs" aria-label="NEP data views">
+  const reading = route.params.get('reading') === 'second' ? 'second' : 'third';
+  const view = route.params.get('view') === 'projects' ? 'projects' : 'controls';
+  return <>{route.key === "house" && <>
+    <nav className="page-tabs section-tabs" aria-label="House reading">
+      <a href={`#house?view=${view}&reading=third`} aria-current={reading === 'third' ? 'page' : undefined}>3rd reading</a>
+      <a href={`#house?view=${view}&reading=second`} aria-current={reading === 'second' ? 'page' : undefined}>2nd reading</a>
+      <a href="#compare?view=readings">Changes from 2nd to 3rd</a>
+    </nav>
+    <nav className="page-tabs section-tabs" aria-label="House data views">
+      <a href={`#house?view=controls&reading=${reading}`} aria-current={view === 'controls' ? 'page' : undefined}>I-B totals and controls</a>
+      <a href={`#house?view=projects&reading=${reading}`} aria-current={view === 'projects' ? 'page' : undefined}>I-C project line items</a>
+    </nav>
+  </>}{route.key === "nep" && <nav className="page-tabs section-tabs" aria-label="NEP data views">
     <a href="#nep">Full hierarchy</a><a href="#nep?view=projects">Project line items</a>
   </nav>}{loading && <p role="status">Loading source workspace…</p>}{error && <p role="alert">{error}</p>}
     <div className={`retained-view ${["house", "nep"].includes(route.key) ? "with-tree-pdf" : ""}`} ref={host} />

@@ -168,7 +168,7 @@ with sync_playwright() as p:
             # the hash change. Wait for the requested route and source first.
             expect(link).to_have_attribute("aria-current", "page")
             heading = {
-                "house": "House GAB — source hierarchy",
+                "house": "House 3rd reading — I-B control hierarchy",
                 "nep": "DBM NEP — source hierarchy",
                 "transparency": "DPWH Transparency NEP — FY2027 API hierarchy",
             }[key]
@@ -176,21 +176,17 @@ with sync_playwright() as p:
             page.locator(".retained-view #tree [data-node]").first.wait_for(timeout=60000)
             assert page.evaluate("window.spaNavigationProbe") == 42
             assert page.get_by_role("alert").count() == 0
+            assert page.locator("#projectDetail").is_hidden()
             if key == "house":
-                summary = page.locator("#projectDetailSummary").inner_text()
-                assert page.locator("#projectDetail").is_visible()
-                for value in ("15,972", "29 FAP totals", "639,179,718,000", "2,477", "56 independent I-B checks", "excludes PS"):
-                    assert value in summary
-                assert page.locator("#projectDetail a").get_attribute("href") == "#house-nep"
-            else:
-                assert page.locator("#projectDetail").is_hidden()
+                expect(page.get_by_role("navigation", name="House reading").get_by_role("link", name="3rd reading", exact=True)).to_have_attribute("aria-current", "page")
+                expect(page.locator("#expenseBreakdown")).to_contain_text("654,102,015,000")
             if key in ("house", "nep"):
                 pane = page.locator(".tree-pdf-pane")
                 pane.locator("canvas").wait_for(timeout=60000)
                 pane.get_by_role("status").filter(has_text=re.compile(r"^Page \d+ of \d+$")).wait_for(timeout=60000)
                 assert pane.get_by_label("PDF page", exact=True).input_value() == ("9" if key == "house" else "8")
                 if key == "house":
-                    expect(pane).to_contain_text("House 2nd reading · Volume I-B")
+                    expect(pane).to_contain_text("House 3rd reading · Volume I-B")
                 assert pane.locator("canvas").evaluate("e=>e.width>0 && e.height>0")
                 if width == 1440:
                     left = page.locator(".tree-evidence-column").bounding_box()
@@ -280,6 +276,18 @@ with sync_playwright() as p:
         page.go_back(wait_until="networkidle")
         page.locator(".retained-view #tree [data-node]").first.wait_for(timeout=60000)
         assert page.get_by_role("alert").count() == 0
+        # Reading toggles keep the active volume and load the correct PDF.
+        page.goto(base + "#house?view=controls&reading=second", wait_until="networkidle")
+        expect(page.locator(".retained-view h1")).to_have_text("House 2nd reading — I-B control hierarchy")
+        expect(page.locator(".tree-pdf-pane")).to_contain_text("House 2nd reading · Volume I-B")
+        page.locator(".tree-pdf-pane").get_by_role("status").filter(has_text=re.compile(r"^Page 9 of \d+$")).wait_for(timeout=60000)
+        page.get_by_role("navigation", name="House reading").get_by_role("link", name="3rd reading", exact=True).click()
+        expect(page.locator(".retained-view h1")).to_have_text("House 3rd reading — I-B control hierarchy")
+        page.locator(".tree-pdf-pane").get_by_role("status").filter(has_text=re.compile(r"^Page 9 of \d+$")).wait_for(timeout=60000)
+        page.get_by_role("link", name="I-C project line items", exact=True).click()
+        expect(page.locator(".retained-view h1")).to_have_text("House 3rd reading — I-C project hierarchy")
+        page.get_by_role("navigation", name="House reading").get_by_role("link", name="2nd reading", exact=True).click()
+        expect(page.locator(".retained-view h1")).to_have_text("House 2nd reading — I-C project hierarchy")
         # Native I-C project browsing is separate from I-B control money.
         page.goto(base + "#house?view=projects&reading=third", wait_until="networkidle")
         page.get_by_label("Search hierarchy labels or source IDs").wait_for(timeout=60000)

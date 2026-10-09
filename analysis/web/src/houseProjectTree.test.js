@@ -27,3 +27,17 @@ test('native tree rejects a modified amount even when cached audit says it passe
  const leaf={id:'leaf',label:'Road',kind:'project',children:[],source:{pdf_page:10},printed_amount_php:10,recursive_leaf_sum_php:11,difference_php:0};
  assert.throws(()=>houseProjectTree({root:leaf}),/does not balance/);
 });
+
+test('third-reading controls retain PS and reference third-reading I-B',()=>{
+ globalThis.window={location:{href:'https://example.test/project/app/#house'}};
+ const data=JSON.parse(readFileSync(new URL('../../data/hb_dpwh_native_rollup_3rd_reading.json',import.meta.url)));
+ const tree=houseProjectTree(data,'third','I-B');
+ assert.equal(tree.audit.total,654102015000);
+ assert.equal(tree.native_ic,false);
+ assert.equal(tree.expense_breakdown.reduce((sum,c)=>sum+c.amount_php,0),tree.audit.total);
+ const root=tree.nodes.find(n=>n.id===tree.root);
+ assert.equal(root.columns_php.ps,14922297000);
+ const source=treeSourceReference('house',root);
+ assert.equal(source.page,9);
+ assert.match(source.url,/HB_BUDGET_3rd_reading\/.*I-B\.pdf$/);
+});

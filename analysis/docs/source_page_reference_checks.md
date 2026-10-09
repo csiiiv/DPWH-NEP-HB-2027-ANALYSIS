@@ -75,3 +75,9 @@ as “Barangay”. For example, `J.P. Rizal box culvert, Barangays 34–35, Calo
 finds the ₱32M third-reading record on I-C page 323. It has no second-reading
 counterpart. The House/NEP comparison retains the second-reading baseline and
 links explicitly to the third-reading project tree and reading comparison.
+
+The default House workspace now uses third-reading I-B controls. Reading and
+I-B/I-C view toggles preserve the other selection. Third-reading I-B references
+open `HB_BUDGET_3rd_reading/2- HB 10858 FOR 3RD READING VOL I-B.pdf`;
+second-reading I-B references continue to open their original PDF. The complete
+agency total includes PS in either I-B view; I-C remains a separate project view.

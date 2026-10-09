@@ -29,7 +29,7 @@ live Transparency data or regenerate source outputs.
 |---|---|
 | `#home` | Overview |
 | `#compare` | Stage comparison |
-| `#house` | Native I-B controls and native I-C project-detail summary |
+| `#house` | Third-reading native I-B totals and controls; reading and project-view toggles |
 | `#nep` | DBM NEP verification |
 | `#transparency` | Transparency NEP verification |
 | `#resources` | Direct links to the latest workable JSON and audit docs |
@@ -167,3 +167,9 @@ from the I-B controls. `#nep?view=projects` filters the NEP tree to project line
 items. Project search accepts reordered words and punctuation variations;
 `Barangays 34–35` can match `Barangay 34 and 35`. Parent paths and source PDF
 previews remain available in each view.
+
+The House workspace defaults to third reading. `#house?view=controls&reading=second`
+opens second-reading I-B controls. The reading controls preserve the selected
+I-B/I-C view; the view controls preserve the selected reading. Both I-B views
+include PS, MOOE and CO, while I-C project totals exclude PS. The changes link
+opens the existing second-to-third-reading comparison.
