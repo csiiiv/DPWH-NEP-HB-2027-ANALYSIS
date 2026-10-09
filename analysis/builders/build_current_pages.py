@@ -76,6 +76,14 @@ def digits_omitted(value):
     return re.sub(r'\d+', '', normalized(value))
 
 
+# Pre-normalization baseline (no abbreviation expansion or repeat collapse).
+# Exact pairs whose raw titles differ under this baseline matched only because
+# of the normalization rules; they carry a review reason.
+def raw_normalized(value):
+    value = unicodedata.normalize('NFKC', value or '').casefold().replace('\n', ' ')
+    return re.sub(r'[^a-z0-9]', '', value)
+
+
 def fap_control_row(ic, tree, house, nep):
     """Keep the printed FAP control separate from local PAPs and funding parts."""
     from house_native import walk
@@ -127,9 +135,17 @@ def project_matches(house, source):
     for k in sorted(hi):
         if len(hi[k]) == len(ni.get(k, [])) == 1:
             h, n = hi[k][0], ni[k][0]
+            # Audit trail: keep normalization-dependent exact matches visible.
+            # If the raw titles are not normalized-equal without abbreviation
+            # expansion and repeated-token collapse, the pairing depends on
+            # those rules and stays reviewable.
+            raw_equal = raw_normalized(house[h]['title']) == raw_normalized(source[n]['title'])
             records.append({'status': 'exact_candidate', 'confidence': 1,
                             'house': house[h], 'nep': source[n],
-                            'delta_php': house[h]['amount_php'] - source[n]['amount_php']})
+                            'delta_php': house[h]['amount_php'] - source[n]['amount_php'],
+                            'reason': None if raw_equal else
+                                      'Titles match only after abbreviation/repeat '
+                                      'normalization; raw spellings differ.'})
             matched_h.add(h)
             matched_n.add(n)
     # Token index narrows suggestions without ranking by amount or claiming identity.

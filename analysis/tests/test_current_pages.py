@@ -133,6 +133,16 @@ class CurrentPageTests(unittest.TestCase):
         self.assertEqual(project_matches([h], [allocation('n3', title='Unrelated seawall')])[0]['status'],
                          'house_unmatched')
 
+    def test_normalization_dependent_exact_matches_carry_an_audit_reason(self):
+        # Identical raw titles stay unflagged; abbreviation-only matches are flagged.
+        plain = project_matches([allocation('h')], [allocation('n')])
+        self.assertIsNone(plain[0].get('reason'))
+        flagged = project_matches(
+            [allocation('h', title='Reconstruction of Road, Brgy. Mabini, Sample City')],
+            [allocation('n', title='Reconstruction of Road, Barangay Mabini, Sample City')])
+        self.assertEqual(flagged[0]['status'], 'exact_candidate')
+        self.assertIn('normalization', flagged[0]['reason'])
+
 
 if __name__ == '__main__':
     unittest.main()

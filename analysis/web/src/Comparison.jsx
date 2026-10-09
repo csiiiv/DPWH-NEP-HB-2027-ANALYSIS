@@ -417,6 +417,7 @@ export default function Comparison({ route }) {
                       {counterpartCounts.has(r.id) && <small className="counterpart-badge">Suggested NEP counterpart · unresolved ({counterpartCounts.get(r.id)} House comparison {counterpartCounts.get(r.id)===1?'row':'rows'}). Kept separately pending review.</small>}
                       {r.suggestions?.length>0 && <button className="candidate-review-button" aria-expanded={finding.record===r.id} onClick={()=>setFinding('record',finding.record===r.id?'':r.id)}>Review {r.suggestions.length} NEP {r.suggestions.length===1?'suggestion':'suggestions'}</button>}
                       {r.region_difference && <small>Region differs · House: {r.region_difference.house} · NEP: {r.region_difference.nep} · candidate only</small>}
+                      {r.reason && <small className="normalized-match-badge">Matched after title normalization ({r.reason})</small>}
                       {tab !== "gaps" && <StatusInfo info={readingInfo[r.reading_status]} fallback={label(r.reading_status)} />}
                       {tab !== 'paps' && <small>{compactOffices(r)}</small>}
 
