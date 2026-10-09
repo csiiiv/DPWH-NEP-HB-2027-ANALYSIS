@@ -1,3 +1,4 @@
+import { matchesSearch } from "./search.js";
 import { matchesOffice } from "../../viewers/project_offices.mjs";
 export { officeOptions, officeLabels, NO_OFFICE } from "../../viewers/project_offices.mjs";
 
@@ -57,7 +58,7 @@ export function selectRows(
   return rows
     .filter(
       (r) =>
-        (!q || JSON.stringify(r).toLowerCase().includes(q)) &&
+        (!q || matchesSearch(JSON.stringify(r), q)) &&
         (!program || r.program === program) &&
         (!region || r.region === region) &&
         matchesOffice(r, office, region) &&

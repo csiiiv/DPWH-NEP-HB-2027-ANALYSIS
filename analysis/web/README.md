@@ -160,3 +160,10 @@ outside that listing scope. Both House reading PAP controls retain FAP.
 Source page links name the reading and volume. House hierarchy links use I-B;
 PAP/project comparisons use I-C. NEP references use the retained II-B OCR PDF.
 See [source page reference checks](../docs/source_page_reference_checks.md).
+
+House project browsing: `#house?view=projects&reading=third` and
+`#house?view=projects&reading=second` show the native I-C hierarchies separately
+from the I-B controls. `#nep?view=projects` filters the NEP tree to project line
+items. Project search accepts reordered words and punctuation variations;
+`Barangays 34–35` can match `Barangay 34 and 35`. Parent paths and source PDF
+previews remain available in each view.

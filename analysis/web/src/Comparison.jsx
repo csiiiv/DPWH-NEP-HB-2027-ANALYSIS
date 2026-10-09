@@ -255,6 +255,7 @@ export default function Comparison({ view }) {
           </table>
         </div>
       </section>}
+      {tab === "projects" && <p className="notice">These House/NEP project comparisons use the 2nd reading. <a href="#house?view=projects&reading=third">Search the 3rd-reading House project tree</a> or <a href="#compare?view=readings">compare both House readings</a>.</p>}
       {tab === "paps" && <p className="muted">PAP totals include the separate Foreign-assisted projects (FAP) control and reconcile to operations. FAP is outside the Transparency listing scope; its Transparency amount is unavailable.</p>}
       <div className="workspace-switch" aria-label="Workspace panels">
         <button

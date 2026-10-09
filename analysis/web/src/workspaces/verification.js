@@ -1,5 +1,6 @@
+import { matchesSearch } from "../search.js";
 /* Independent hierarchy exploration; no cross-source matching or budget deltas. */
-export function mountVerification(document, { onSourceSelection, initialNode, reviewMode, matchMedia, downloadUrl }, D) {
+export function mountVerification(document, { onSourceSelection, initialNode, initialQuery, projectsOnly, reviewMode, matchMedia, downloadUrl }, D) {
   const nodes = new Map(D.nodes.map(n => [n.id, n]));
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -50,12 +51,19 @@ export function mountVerification(document, { onSourceSelection, initialNode, re
     $('expenseScopeControl').hidden = false;
     $('expenseScope').innerHTML = '<option value="all">Total · all classes</option>' + expenseClasses.map(c=>`<option value="${esc(c.node_id)}">${esc(c.key.toUpperCase())} · ${esc(c.label)}</option>`).join('');
   }
+  if (D.native_ic) {
+    $('expenseDisclosure').textContent = 'Expense scope · MOOE + Capital Outlays';
+    $('expenseBreakdown').textContent = 'I-C excludes Personnel Services. The I-B control view retains the full agency total.';
+  }
+  if (D.nodes.some(n => ['project','fap_project'].includes(n.kind))) $('filter').add(new Option('Project line items', 'projects'));
+  if (projectsOnly) $('filter').value = 'projects';
+  if (initialQuery) $('search').value = initialQuery;
   $('gaps').innerHTML = D.gaps.map(g => `<li>${esc(g)}</li>`).join('');
   $('downloads').innerHTML = D.downloads.filter(d => !d.href.endsWith('source_review_evidence.json')).map(d => `<a href="${esc(downloadUrl(d.href))}">${esc(d.label)}</a>`).join(' · ');
 
   function matchesReview(n, query, filter) {
-    return pathOf(n).some(p=>p.id === expenseRoot) && (!query || (n.label+' '+n.id).toLowerCase().includes(query)) &&
-      (filter === 'all' || filter === 'review' && review(n) || filter === 'mismatch' && n.status === 'mismatch' || filter === 'derived' && n.status === 'derived' ||
+    return pathOf(n).some(p=>p.id === expenseRoot) && (!query || matchesSearch(n.label+' '+n.id, query)) &&
+      (filter === 'all' || filter === 'projects' && ['project','fap_project'].includes(n.kind) || filter === 'review' && review(n) || filter === 'mismatch' && n.status === 'mismatch' || filter === 'derived' && n.status === 'derived' ||
        filter === 'branch_review' && n.source_checks_below > 0 || filter === n.review_kind);
   }
   function queueNodes() {
@@ -65,7 +73,7 @@ export function mountVerification(document, { onSourceSelection, initialNode, re
       matchesReview(n,query,filter) && (!reviewBranch || pathOf(n).some(p => p.id === reviewBranch)))
       .sort((a,b) => priority[a.review_kind]-priority[b.review_kind] || (a.source?.pdf_page||0)-(b.source?.pdf_page||0) || a.id.localeCompare(b.id, 'en', {numeric:true}));
   }
-  function pdfReference(n, label = `${D.key === 'hb' ? 'House 2nd · I-B' : 'NEP · II-B (retained OCR)'} p.${n.source?.pdf_page}`) {
+  function pdfReference(n, label = `${D.page_label || (D.key === 'hb' ? 'House 2nd · I-B' : 'NEP · II-B (retained OCR)')} p.${n.source?.pdf_page}`) {
     const page = n.source?.pdf_page;
     if (!Number.isInteger(page) || page < 1) return '';
     if (!['hb', 'nep'].includes(D.key)) return esc(label);
@@ -163,7 +171,7 @@ export function mountVerification(document, { onSourceSelection, initialNode, re
     onSourceSelection?.(n);
     if (D.key === 'dpwh_nep_api') evidence = n.kind === 'project' ? 'Retained NEP API project record; amount converted from thousands of PHP' : 'Derived grouping of retained NEP API projects';
     let sourceLink = '';
-    if (source.pdf_page) sourceLink = pdfReference(n, `${D.key === 'hb' ? 'House 2nd · I-B' : 'NEP · II-B (retained OCR)'} p.${source.pdf_page}`);
+    if (source.pdf_page) sourceLink = pdfReference(n, `${D.page_label || (D.key === 'hb' ? 'House 2nd · I-B' : 'NEP · II-B (retained OCR)')} p.${source.pdf_page}`);
     else if (source.project_code) sourceLink = `${esc(source.project_code)} · combined snapshot row ${source.source_row} · API ID ${source.project_id}`;
     const childNodes = n.children.map(c => nodes.get(c)).filter(c => c.additive);
     let running = 0;

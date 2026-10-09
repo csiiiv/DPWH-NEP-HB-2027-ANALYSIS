@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { houseProjectTree } from "./houseProjectTree.js";
 import verificationTemplate from "../../viewers/source_verification.template.html?raw";
 import treeTemplate from "../../viewers/nep_tree_viewer.template.html?raw";
 import comparisonTemplate from "../../viewers/current_dashboard.template.html?raw";
@@ -74,9 +75,10 @@ function mount(root, template, route, payloads, onSourceSelection, onPdfSlot) {
   };
   let budget, destroyController;
   if (['house', 'nep', 'transparency'].includes(route.key)) {
-    root.querySelector("h1").textContent = route.key === "house" ? "House GAB — source hierarchy" : route.key === "nep" ? "DBM NEP — source hierarchy" : payloads[0].title;
+    root.querySelector("h1").textContent = payloads[0].native_ic ? payloads[0].title : route.key === "house" ? "House GAB — source hierarchy" : route.key === "nep" ? "DBM NEP — source hierarchy" : payloads[0].title;
     mountVerification(localDocument, {
-      onSourceSelection, initialNode: route.params.get("node"),
+      onSourceSelection, initialNode: route.params.get("node"), initialQuery: route.params.get("q"),
+      projectsOnly: route.key === "nep" && route.params.get("view") === "projects",
       reviewMode: route.params.get("view") === "review", matchMedia: window.matchMedia.bind(window),
       downloadUrl: retainedAssetUrl,
     }, payloads[0]);
@@ -120,11 +122,14 @@ export default function SourceWorkspace({ route }) {
   useEffect(() => {
     const controller = new AbortController(); let dispose;
     const keys = {house: 'hb', nep: 'nep', transparency: 'dpwh_nep_api'};
-    const files = keys[route.key] ? [`verification_${keys[route.key]}.json`] : route.key === "nep-detail" ?
+    const ic = route.key === "house" && route.params.get("view") === "projects";
+    const reading = route.params.get("reading") === "second" ? "second" : "third";
+    const files = ic ? [`hb_dpwh_native_ic_projects${reading === "third" ? "_3rd_reading" : ""}.json`] : keys[route.key] ? [`verification_${keys[route.key]}.json`] : route.key === "nep-detail" ?
       ["nep_2027_tree.json", "nep_2027_native_amount_review.json", "nep_2027_tree_validation.json"] : ["source_comparison_2027.json"];
     setLoading(true); setError(""); setSource(null); setPdfSlot(null);
     Promise.all(files.map(name => loadData(name, controller.signal))).then(payloads => {
       if (controller.signal.aborted) return;
+      if (ic) payloads = [houseProjectTree(payloads[0], reading)];
       const selectSource = (node, { reveal = false } = {}) => {
         setSource(treeSourceReference(route.key, node));
         if (reveal) host.current.querySelector(".tree-pdf-pane")?.scrollIntoView({ block: "start", behavior: "instant" });
@@ -134,7 +139,13 @@ export default function SourceWorkspace({ route }) {
     }).catch(e => { if (e.name !== "AbortError") { setError(e.message); setLoading(false); } });
     return () => { controller.abort(); dispose?.(); };
   }, [route.key, route.params.toString()]);
-  return <>{loading && <p role="status">Loading source workspace…</p>}{error && <p role="alert">{error}</p>}
+  return <>{route.key === "house" && <nav className="page-tabs section-tabs" aria-label="House data views">
+    <a href="#house" aria-current={route.params.get('view') !== 'projects' ? 'page' : undefined}>I-B controls · 2nd reading</a>
+    <a href="#house?view=projects&reading=second" aria-current={route.params.get('view') === 'projects' && route.params.get('reading') === 'second' ? 'page' : undefined}>I-C projects · 2nd reading</a>
+    <a href="#house?view=projects&reading=third" aria-current={route.params.get('view') === 'projects' && route.params.get('reading') !== 'second' ? 'page' : undefined}>I-C projects · 3rd reading</a>
+  </nav>}{route.key === "nep" && <nav className="page-tabs section-tabs" aria-label="NEP data views">
+    <a href="#nep">Full hierarchy</a><a href="#nep?view=projects">Project line items</a>
+  </nav>}{loading && <p role="status">Loading source workspace…</p>}{error && <p role="alert">{error}</p>}
     <div className={`retained-view ${["house", "nep"].includes(route.key) ? "with-tree-pdf" : ""}`} ref={host} />
     {pdfSlot && createPortal(source ? <Suspense fallback={<p role="status">Loading PDF preview…</p>}>
       <PdfPreview source={source} onClose={() => setSource(null)} />

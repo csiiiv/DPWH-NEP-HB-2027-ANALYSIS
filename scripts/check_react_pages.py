@@ -280,6 +280,27 @@ with sync_playwright() as p:
         page.go_back(wait_until="networkidle")
         page.locator(".retained-view #tree [data-node]").first.wait_for(timeout=60000)
         assert page.get_by_role("alert").count() == 0
+        # Native I-C project browsing is separate from I-B control money.
+        page.goto(base + "#house?view=projects&reading=third", wait_until="networkidle")
+        page.get_by_label("Search hierarchy labels or source IDs").wait_for(timeout=60000)
+        page.get_by_label("Search hierarchy labels or source IDs").fill("J.P. Rizal box culvert, Barangays 34–35, Caloocan")
+        expect(page.locator("#searchStatus")).to_contain_text("1 matching nodes")
+        page.locator("#tree button[data-select]").first.click()
+        expect(page.locator("#details")).to_contain_text("32,000,000")
+        expect(page.locator("#details")).to_contain_text("Metro Manila 3rd District Engineering Office")
+        expect(page.locator(".tree-pdf-pane")).to_contain_text("House 3rd reading · Volume I-C")
+        expect(page.locator(".tree-pdf-pane").get_by_role("status").filter(has_text="Page 323 of 942")).to_be_visible(timeout=60000)
+        page.goto(base + "#house?view=projects&reading=second", wait_until="networkidle")
+        page.get_by_label("Search hierarchy labels or source IDs").fill("J.P. Rizal box culvert, Barangays 34–35, Caloocan")
+        expect(page.locator("#searchStatus")).to_contain_text("0 matching nodes")
+        page.goto(base + "#nep?view=projects", wait_until="networkidle")
+        page.get_by_label("Verification filter").wait_for(timeout=60000)
+        expect(page.get_by_label("Verification filter")).to_have_value("projects")
+        page.get_by_label("Search hierarchy labels or source IDs").fill("Maharlika Highway")
+        expect(page.locator("#tree [data-node]").first).to_be_visible()
+        page.locator("#tree button[data-select]").first.click()
+        expect(page.locator(".tree-pdf-pane")).to_contain_text("DBM NEP · Volume II-B")
+        expect(page.locator(".tree-pdf-pane").get_by_role("status").filter(has_text=re.compile(r"^Page \d+ of \d+$"))).to_be_visible(timeout=60000)
         page.close()
     assert not errors, errors
     assert not bad, bad

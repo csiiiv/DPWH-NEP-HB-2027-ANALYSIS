@@ -56,3 +56,22 @@ npm run build --prefix analysis/web
 python scripts/build_pages.py
 python scripts/check_react_pages.py
 ```
+
+## Project browsing and search
+
+The House workspace provides separate I-B controls and native I-C project
+hierarchies for both readings. Open `#house?view=projects&reading=third` for
+third-reading projects, or use `reading=second` for the second reading. Their
+MOOE+CO totals remain separate from I-B's full agency total; no detail is added
+to the control tree. The synthetic I-C root has no standalone printed control
+or source-page button. Actual source nodes retain their I-C page references.
+
+NEP's `#nep?view=projects` selects project line items from its existing full
+source hierarchy. Parent paths and the recorded II-B OCR pages remain available.
+The verification filter can switch between project line items and all nodes.
+
+Search matches words regardless of punctuation or order and treats “Barangays”
+as “Barangay”. For example, `J.P. Rizal box culvert, Barangays 34–35, Caloocan`
+finds the ₱32M third-reading record on I-C page 323. It has no second-reading
+counterpart. The House/NEP comparison retains the second-reading baseline and
+links explicitly to the third-reading project tree and reading comparison.

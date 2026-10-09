@@ -36,7 +36,7 @@ export function sourceReference(kind, page, title = "Source evidence") {
   return documentReference(["house", "house-second"].includes(kind) ? "house-projects" : kind, page, title);
 }
 export function treeSourceReference(route, node) {
-  return documentReference(route === "house" ? "house-tree" : route === "nep" ? "nep" : null,
+  return documentReference(node.source?.document_key || (route === "house" ? "house-tree" : route === "nep" ? "nep" : null),
     node.source?.pdf_page, node.label);
 }
 export function retainedAssetUrl(value) {
