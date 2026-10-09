@@ -9,8 +9,16 @@ import { routes, readRoute, routeHref, legacyRoutes } from "./routes.js";
 // reason" TypeErrors. They are expected cancellations, not failures.
 window.addEventListener("unhandledrejection", (event) => {
   const message = String(event.reason?.message ?? event.reason ?? "");
-  if (/abort|cancel/i.test(message) || event.reason?.name === "AbortError")
+  if (/abort|cancel|Worker was terminated/i.test(message) || event.reason?.name === "AbortError")
     event.preventDefault();
+});
+// Same class of expected cancellations can also surface as page errors.
+window.addEventListener("error", (event) => {
+  const message = String(event.message ?? event.error?.message ?? "");
+  if (/abort|cancel|Worker was terminated/i.test(message)) {
+    event.preventDefault();
+    return true;
+  }
 });
 const SourceWorkspace = lazy(() => import("./SourceWorkspace.jsx"));
 const Analysis = lazy(()=>import("./Analysis.jsx"));

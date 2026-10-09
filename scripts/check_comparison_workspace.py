@@ -62,6 +62,8 @@ with tempfile.TemporaryDirectory() as folder:
                 assert len(exported['rows'])==5
                 assert sum(row['reading_delta_php'] for row in exported['rows'])==134000000
                 assert exported['amount_unit']=='PHP'
+                # The filename describes the active filters at export time.
+                assert download.value.suggested_filename=='dpwh-view-projects_reading-third_only.json',download.value.suggested_filename
                 page.get_by_role('button',name='Remove readingStatus filter',exact=True).click()
                 expect(page.locator('.result-count')).to_contain_text('18,159 of')
                 if width==390:
