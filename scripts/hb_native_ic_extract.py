@@ -20,6 +20,13 @@ extended for I-C's deeper outline and its two known text-layer artifacts:
   6. Levels by normalized label-x band (built from amount rows only):
      I-C detail tables use ~59/68/79/89/100/112/123/141 (some sections add
      ~154). Textual fallbacks snap known heading patterns to their level.
+  7. Lightly re-typeset pages (3rd-reading amendments) print their tables
+     at 8.2pt with wider indent steps, so their raw x values never match
+     the 8.5pt bands and must never seed band construction. Their rows are
+     clustered into a separate re-typeset ladder and renormalized onto the
+     standard bands by optimal order-preserving rung assignment (a band the
+     re-typeset pages dropped — the two-digit enumerator drift band — is
+     simply left unassigned).
 
 Every retained amount row is accounted for: rows failing level assignment or
 wrap attachment are reported, never silently dropped.
@@ -161,13 +168,17 @@ def norm_row(ws, page_number):
     if size < TABLE_SIZE and not amounts:
         return None
     x = label[0][0]
+    retype = 8.05 <= size <= 8.4  # lightly re-typeset pages (3rd-reading edits)
     # Two-digit enumerators ("10.") print ~4-5pt left of one-digit ("9.").
     # Widen by the enumerator width ONLY when the raw x matches no band:
     # rows already sitting on a band (indent drift or deeper heading) keep it.
+    # Re-typeset pages fixed the enumerator drift: their rows print at the
+    # same x regardless of enumerator width, so they never take this rule.
     m = ENUM_RX.match(" ".join(t for _, t, _, _ in label))
-    if m and amounts and _off_band(x, _NORM_BANDS):
+    if m and amounts and not retype and _off_band(x, _NORM_BANDS):
         x = round(x + min(len(m.group(0).rstrip("). ")) * 2.2, 5.0), 1)
-    return {"x": round(x, 1), "text": " ".join(t for _, t, _, _ in label),
+    return {"x": round(x, 1), "retype": retype,
+            "text": " ".join(t for _, t, _, _ in label),
             "bold": bold, "size": size, "amounts": sorted(set(amounts))}
 
 
@@ -182,7 +193,9 @@ def _off_band(x, bands, tol=5.0):
 def extract_rows(doc, p_start, p_end):
     """All normalized rows from pages [p_start, p_end) (0-based). Two passes:
     pass 1 collects rows without band knowledge; pass 2 re-normalizes with
-    band-aware enumerator widening once bands are known."""
+    band-aware enumerator widening once bands are known. Rows from lightly
+    re-typeset (8.2pt) pages are renormalized onto the standard bands after
+    collection (see module docstring §7)."""
     global _NORM_BANDS
     _NORM_BANDS = []
     rows = _collect(doc, p_start, p_end)
@@ -190,6 +203,7 @@ def extract_rows(doc, p_start, p_end):
     if bands:
         _NORM_BANDS = bands
         rows = _collect(doc, p_start, p_end)
+    _renorm_retyped_x(rows, bands)
     return rows
 
 
@@ -207,14 +221,65 @@ def _collect(doc, p_start, p_end):
 
 
 def build_bands(rows, min_members=6, tol=3.0):
-    xs = sorted(r["x"] for r in rows if r["amounts"])
-    bands = []
-    for x in xs:
-        if bands and x - bands[-1][-1] <= tol:
-            bands[-1].append(x)
+    """Standard indent bands from standard-typeset (non-retype) amount rows.
+    Re-typeset pages print wider indent steps at 8.2pt; letting them seed or
+    chain clusters would merge neighbouring standard bands (89.5 and 95.5
+    became one 93.1 band on the 3rd-reading PDFs). Retype rows are only
+    ADMITTED into a cluster (within tol of a non-retype member) so a band
+    whose 6th member happens to sit on a re-typeset page still exists; they
+    never move the mean and never bridge clusters."""
+    standard = sorted(r["x"] for r in rows if r["amounts"] and not r.get("retype"))
+    clusters = []
+    for x in standard:
+        if clusters and x - clusters[-1][-1] <= tol:
+            clusters[-1].append(x)
         else:
-            bands.append([x])
-    return [round(sum(b) / len(b), 1) for b in bands if len(b) >= min_members]
+            clusters.append([x])
+    retype_xs = [r["x"] for r in rows if r["amounts"] and r.get("retype")]
+    bands = []
+    for cluster in clusters:
+        lo, hi = cluster[0] - tol, cluster[-1] + tol
+        admitted = sum(1 for x in retype_xs if lo <= x <= hi)
+        if len(cluster) + admitted >= min_members:
+            bands.append(round(sum(cluster) / len(cluster), 1))
+    return bands
+
+
+def _assign_ladder_rungs(rungs, bands):
+    """Optimal order-preserving assignment of re-typeset indent rungs
+    (ascending cluster means) to standard bands: monotone in rung and band
+    index, minimizing total |rung - band| distance, every rung assigned.
+    A standard band the re-typeset pages dropped (the two-digit enumerator
+    drift band) stays unused. Returns {rung_x: band_index}."""
+    if not rungs or not bands:
+        return {}
+    n, m = len(rungs), len(bands)
+    INF = float("inf")
+    # dp[i][j] = min cost of assigning rungs[i:] to bands >= j.
+    dp = [[INF] * (m + 1) for _ in range(n + 1)]
+    pick = [[-1] * (m + 1) for _ in range(n + 1)]
+    for j in range(m + 1):
+        dp[n][j] = 0.0
+    for i in range(n - 1, -1, -1):
+        for j in range(m - 1, -1, -1):
+            skip = dp[i][j + 1]           # leave standard band j unused
+            take = abs(rungs[i] - bands[j]) + dp[i + 1][j + 1]
+            if take < skip:
+                dp[i][j], pick[i][j] = take, j
+            else:
+                dp[i][j], pick[i][j] = skip, -1
+        # dp[i][m] stays INF: rung i must take some band
+    ladder = {}
+    i = j = 0
+    while i < n and j < m:
+        b = pick[i][j]
+        if b < 0:                         # band j unused; advance
+            j += 1
+            continue
+        ladder[round(rungs[i], 1)] = b
+        i += 1
+        j = b + 1
+    return ladder if len(ladder) == n else {}
 
 
 # semantic levels (fixed ints BELOW any geometry band index so band rows
@@ -243,6 +308,49 @@ def row_level(r, bands):
         if PROGRAM_RE.match(r["text"]):
             return LEVEL_PROGRAM
     return band_index(r, bands)
+
+
+def _renorm_retyped_x(rows, bands):
+    """Rewrite the indent x of re-typeset (8.2pt) rows onto the standard
+    bands. The re-typeset pages print the same logical indent ladder with
+    wider steps, so their rungs (x clusters) are matched to standard bands
+    by optimal order-preserving assignment; each row's x becomes its rung's
+    band x. Wrap continuation rows take their nearest rung's band so the
+    post-wrap attach rule (x >= owner_x - 5) keeps its original meaning.
+    Rows whose rung found no band keep their x (reported as skipped)."""
+    retype_rows = [r for r in rows if r.get("retype")]
+    amount_rows = [r for r in retype_rows if r["amounts"]]
+    if not amount_rows or not bands:
+        return
+    # cluster retype amount-x values into rungs with the band chain tolerance
+    xs = sorted(r["x"] for r in amount_rows)
+    clusters = []
+    for x in xs:
+        if clusters and x - clusters[-1][-1] <= 3.0:
+            clusters[-1].append(x)
+        else:
+            clusters.append([x])
+    rung_means = [round(sum(c) / len(c), 1) for c in clusters]
+    ladder = _assign_ladder_rungs(rung_means, bands)
+    if not ladder:
+        return
+    rung_of_x = {}
+    for cluster, mean in zip(clusters, rung_means):
+        for x in cluster:
+            rung_of_x[round(x, 1)] = mean
+    for r in amount_rows:
+        mean = rung_of_x.get(round(r["x"], 1))
+        band = ladder.get(round(mean, 1)) if mean is not None else None
+        if band is not None:
+            r["x"] = bands[band]
+    # wrap continuation rows: nearest rung by original x, then its band
+    for r in retype_rows:
+        if r["amounts"]:
+            continue
+        mean = min(rung_means, key=lambda m: abs(m - r["x"]))
+        band = ladder.get(mean)
+        if band is not None and abs(mean - r["x"]) <= 8.0:
+            r["x"] = bands[band]
 
 
 def build_outline(rows, bands):

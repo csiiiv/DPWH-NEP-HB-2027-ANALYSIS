@@ -135,7 +135,16 @@ def validate_current_pages():
     require(dict(Counter(r['status'] for r in data['projects'])) == s['match_counts'], 'Matcher headline counts stale')
     require('hb_grand_upper_php' not in s, 'Invalid upper-bound accounting returned')
     validate_stage_trace(data)
+    validate_house_readings()
     return data
+
+
+def validate_house_readings():
+    from build_house_readings import build
+    expected = build()
+    require(read('house_reading_changes_2027.json') == expected,
+            'Stale House reading comparisons; rebuild build_house_readings.py')
+    return expected
 
 
 def validate_stage_trace(comparison=None):

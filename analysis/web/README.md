@@ -114,6 +114,34 @@ python analysis/builders/build_stage_trace.py
 python scripts/validate_current_pages.py
 ```
 
+## House reading comparison
+
+The **House readings** tab (`#compare?view=readings`) retains both native House
+readings, showing both amounts, 3rd-minus-2nd deltas and distinct source PDFs.
+It defaults to changed allocations. The operations increase is ₱134,000,000,
+with five additional records and an offsetting Support to Operations decrease.
+The agency total is unchanged. Repeated keys are grouped without individual
+pairing. See [methods and checks](../docs/house_reading_comparison_checks.md).
+
+Rebuild `python analysis/builders/build_house_readings.py` alongside the other
+retained payload builders before packaging.
+
+## Project office filters
+
+The stage comparison and House/NEP detail view offer region and engineering
+office/DEO selectors. Office options narrow to the selected region; changing
+region clears the office selection. Filtering applies to the entire result
+before sorting and pagination. Source-labelled office names appear on each
+project row, including Central Office and regional offices where recorded.
+
+A record matches an office assigned by any displayed House, NEP or Transparency
+source. Suggested fuzzy counterparts do not establish office assignments.
+**No recorded office** selects records without an office in any displayed
+source; no office is inferred from a project's title or location. These filters
+use the shared native hierarchy fields and also support the third-reading
+artifacts. The House/NEP detail retains the second reading; the **House readings**
+tab compares both native readings. Open `#compare?view=readings` directly.
+
 ## Open work
 
 The React PAP table shows 45 non-FAP controls; adding a separate FAP section is

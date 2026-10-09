@@ -118,6 +118,25 @@ with sync_playwright() as p:
         assert page.locator("tbody tr").count() == 50
         page.get_by_role("button", name="Next", exact=True).click()
         assert "51–100" in page.locator(".pager").inner_text()
+        # Office filtering consumes all records, not just the displayed page.
+        office = "Ilocos Norte 1st District Engineering Office"
+        region = "Region I"
+        office_count = sum(r["region"] == region and any(
+            (r.get(stage) or {}).get("office") == office and (r.get(stage) or {}).get("region") == region
+            for stage in ("house", "nep", "api")) for r in data["projects"])
+        page.get_by_label("Region", exact=True).select_option(region)
+        page.get_by_label("Engineering office / DEO", exact=True).select_option(office)
+        expect(page.locator(".result-count")).to_contain_text(f"{office_count:,} of")
+        expect(page.locator(".pager")).to_contain_text("1–50")
+        assert page.locator("tbody tr").count() == 50
+        for text in page.locator("tbody th").all_inner_texts():
+            assert office in text
+        page.get_by_role("button", name="Next", exact=True).click()
+        expect(page.locator(".pager")).to_contain_text("51–100")
+        page.get_by_label("Region", exact=True).select_option("Region V")
+        expect(page.get_by_label("Engineering office / DEO", exact=True)).to_have_value("")
+        assert office not in page.get_by_label("Engineering office / DEO", exact=True).inner_text()
+        page.get_by_label("Region", exact=True).select_option("")
         page.get_by_label("Search", exact=True).fill("Mindanao Transport Connectivity")
         page.locator("tbody th").first.wait_for()
         house = page.locator("tbody button.source-link").filter(has_text="House").first
@@ -187,6 +206,24 @@ with sync_playwright() as p:
                 assert "Personnel Services" in page.locator("#details h2").inner_text()
                 assert page.locator(".workspace-jump").get_attribute("href") == jump_href
             assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
+        nav.get_by_role("link", name="Compare stages", exact=True).click()
+        page.get_by_role("button", name="House readings", exact=True).click()
+        expect(page.get_by_role("region", name="House reading changes")).to_contain_text("₱134.000M", timeout=60000)
+        page.get_by_label("Match status", exact=True).select_option("third_only")
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(5)
+        expect(page.locator(".result-count")).to_contain_text("5 of")
+        assert all("+₱" in text for text in page.locator(".comparison-table tbody tr").all_inner_texts())
+        page.get_by_label("Engineering office / DEO", exact=True).select_option("Metro Manila 3rd District Engineering Office")
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(5)
+        page.locator(".comparison-table tbody button.source-link").filter(has_text="House 3rd").first.click()
+        page.get_by_role("status").filter(has_text=re.compile(r"^Page \d+ of \d+$")).wait_for(timeout=60000)
+        assert "House 3rd reading" in page.locator(".pdf-pane").inner_text()
+        assert "HB_BUDGET_3rd_reading" in page.locator(".pdf-pane a[href*=pdf]").first.get_attribute("href")
+        page.get_by_role("button", name="Clear preview", exact=True).click()
+        assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
+        page.goto(base + "#compare?view=readings", wait_until="networkidle")
+        expect(page.get_by_role("button", name="House readings", exact=True)).to_have_attribute("aria-pressed", "true")
+        expect(page.locator(".comparison-table thead")).to_contain_text("3rd − 2nd")
         page.get_by_role("navigation", name="Detail workspaces").get_by_role("link", name="House / NEP detail").click()
         page.locator("#budgetRows tr").first.wait_for(timeout=60000)
         assert "House native I-C operations extract" in page.locator("#cards").inner_text()
@@ -195,6 +232,24 @@ with sync_playwright() as p:
         for filename in ("hb_dpwh_native_ic_projects.json", "hb_dpwh_native_ic_rollup_audit.json"):
             link = page.locator(f'a[download][href$="{filename}"]').first
             assert page.request.head(link.get_attribute("href")).status == 200
+        office = "Albay 1st District Engineering Office"
+        region = "Region V"
+        detail = json.loads((ROOT / "analysis/data/source_comparison_2027.json").read_text())
+        office_count = sum((r.get("house") or r.get("nep"))["region"] == region and any(
+            (r.get(stage) or {}).get("office") == office and (r.get(stage) or {}).get("region") == region
+            for stage in ("house", "nep")) for r in detail["projects"])
+        page.locator("#projectRegion").select_option(region)
+        page.locator("#projectOffice").select_option(office)
+        expect(page.locator("#projectCount")).to_contain_text(f"of {office_count:,} matching records")
+        for text in page.locator("#projectRows tr").all_inner_texts():
+            assert office in text
+        page.locator("#projectSearch").fill("no such project 9f87x")
+        expect(page.locator("#projectCount")).to_contain_text("0 matching records")
+        page.locator("#projectSearch").fill("")
+        page.locator("#projectRegion").select_option("NCR")
+        expect(page.locator("#projectOffice")).to_have_value("")
+        assert office not in page.locator("#projectOffice").inner_text()
+        page.locator("#projectRegion").select_option("")
         page.locator("#budget table th button").first.wait_for()
         page.locator("#budget table th button").first.click()
         assert page.locator("#budget table th").first.get_attribute("aria-sort") in ("ascending", "descending")

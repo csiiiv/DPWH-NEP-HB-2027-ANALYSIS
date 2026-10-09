@@ -24,7 +24,7 @@ Additive hierarchy assembled from the extractor's outline:
 Cross-volume check: every printed program/PAP control shared with the
 additive Native I-B baseline must agree to the peso.
 
-Usage: python3 scripts/hb_native_ic_rollup.py [--check]
+Usage: python3 scripts/hb_native_ic_rollup.py [--check] [--pdf PATH] [--ib-rollup PATH] [--out PATH] [--report PATH]
 Exits nonzero on any unexplained source row or arithmetic discrepancy.
 """
 import argparse
@@ -79,8 +79,10 @@ def classify(raw_node, zone, ancestors=()):
     return 'project'
 
 
-def build():
-    with pymupdf.open(PDF) as doc:
+def build(pdf=PDF, ib_rollup=IB_ROLLUP):
+    pdf = Path(pdf).resolve()
+    ib_rollup = Path(ib_rollup).resolve()
+    with pymupdf.open(pdf) as doc:
         rows = extract_rows(doc, 8, len(doc))
     bands = build_bands(rows)
     raw, skipped, suppressed = build_outline(rows, bands)
@@ -269,7 +271,7 @@ def build():
     #   2. I-C LFP             ==  I-B Locally-Funded Project(s)
     #   3. I-C FAP             ==  I-B Foreign-Assisted Project(s)
     #   4. I-C MOOE+CO + independently printed I-B PS == I-B total
-    ib = json.loads(IB_ROLLUP.read_text())
+    ib = json.loads(Path(ib_rollup).read_text())
 
     def ib_find(label):
         for n in _ib_control_iter(ib['root']):
@@ -374,8 +376,9 @@ def build():
              'description': 'I-C prints no Personnel Services detail; the I-C additive root is MOOE+CO (₱639,179,718,000). Implied PS = I-B total − I-C total = '
                             f'₱{ps_implied:,}.'},
         ],
-        'provenance_sha256': {str(p.relative_to(ROOT)): digest(p) for p in
-                              (PDF, IB_ROLLUP, Path(__file__), ROOT / 'scripts/hb_native_ic_extract.py',
+        'provenance_sha256': {str(Path(p).relative_to(ROOT)): digest(p) for p in
+                              (pdf, Path(ib_rollup), Path(__file__),
+                               ROOT / 'scripts/hb_native_ic_extract.py',
                                ROOT / 'scripts/hb_native_labels.py')},
     }
     artifact = {'schema_version': 2, 'units': 'PHP', 'scope': audit['scope'],
@@ -393,13 +396,19 @@ def _ib_control_iter(node):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
+    parser.add_argument('--pdf', default=str(PDF),
+                        help='input VOL I-C PDF (default: certified 2nd-reading copy)')
+    parser.add_argument('--ib-rollup', default=str(IB_ROLLUP),
+                        help='Native I-B additive tree used for cross-volume checks')
+    parser.add_argument('--out', default=str(OUT), help='output additive tree JSON')
+    parser.add_argument('--report', default=str(REPORT), help='output audit JSON')
     args = parser.parse_args()
-    tree, audit = build()
-    for path, value in ((OUT, tree), (REPORT, audit)):
+    tree, audit = build(Path(args.pdf), Path(args.ib_rollup))
+    for path, value in ((Path(args.out), tree), (Path(args.report), audit)):
         encoded = json.dumps(value, ensure_ascii=False, indent=2) + '\n'
         if args.check:
             if not path.exists() or path.read_text() != encoded:
-                raise SystemExit(f'Stale artifact: {path.relative_to(ROOT)}')
+                raise SystemExit(f'Stale artifact: {path}')
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(encoded)

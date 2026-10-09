@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Rebuild the DPWH Native I-B additive tree and audit every peso column.
 
-Usage: python3 scripts/hb_native_rollup.py [--check]
+Usage: python3 scripts/hb_native_rollup.py [--check] [--pdf PATH] [--out PATH] [--report PATH]
 --check compares deterministic artifacts without writing them. Exits nonzero
 on any unexplained source row, duplicate linkage, or arithmetic discrepancy.
 Scope: DPWH summary p9 and detail pp13–110, not the entire I-B volume.
@@ -28,8 +28,9 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def build():
-    with pymupdf.open(PDF) as doc:
+def build(pdf=PDF):
+    pdf = Path(pdf).resolve()
+    with pymupdf.open(pdf) as doc:
         summary = extract_rows(doc, 8, 9, with_columns=True)
         rows = extract_rows(doc, 12, 110, with_columns=True)
     # The subsequent table uses thousands of pesos and must never be mixed in.
@@ -230,8 +231,8 @@ def build():
             {'kind': 'granularity', 'description': 'I-B local leaves are office allocations, not named infrastructure projects. Native I-C extraction is still required for project title coverage.'},
             {'kind': 'scope', 'description': 'Other I-B departments and the separate thousands-of-pesos object table are outside this DPWH rollup.'},
         ],
-        'provenance_sha256': {str(p.relative_to(ROOT)): digest(p) for p in
-                              (PDF, Path(__file__), ROOT / 'scripts/hb_native_extract3.py')},
+        'provenance_sha256': {str(Path(p).relative_to(ROOT)): digest(p) for p in
+                              (pdf, Path(__file__), ROOT / 'scripts/hb_native_extract3.py')},
     }
     artifact = {'schema_version': 1, 'units': 'PHP', 'scope': audit['scope'],
                 'root': root, 'audit_summary': audit['summary'],
@@ -242,13 +243,17 @@ def build():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
+    parser.add_argument('--pdf', default=str(PDF),
+                        help='input VOL I-B PDF (default: certified 2nd-reading copy)')
+    parser.add_argument('--out', default=str(OUT), help='output additive tree JSON')
+    parser.add_argument('--report', default=str(REPORT), help='output audit JSON')
     args = parser.parse_args()
-    tree, audit = build()
-    for path, value in ((OUT, tree), (REPORT, audit)):
+    tree, audit = build(Path(args.pdf))
+    for path, value in ((Path(args.out), tree), (Path(args.report), audit)):
         encoded = json.dumps(value, ensure_ascii=False, indent=2) + '\n'
         if args.check:
             if not path.exists() or path.read_text() != encoded:
-                raise SystemExit(f'Stale artifact: {path.relative_to(ROOT)}')
+                raise SystemExit(f'Stale artifact: {path}')
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(encoded)

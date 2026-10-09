@@ -23,3 +23,13 @@ test('source assets resolve centrally without preserving obsolete checkout URL p
   assert.equal(retainedAssetUrl('../docs/nep_2027_source_audit.md#scope'),
     'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/docs/nep_2027_source_audit.md#scope');
 });
+
+test('each House reading opens its own I-C PDF under the project prefix', () => {
+  globalThis.window = {location: {href: 'https://example.test/project/app/#compare?view=readings'}};
+  const second = sourceReference('house-second', 323);
+  const third = sourceReference('house-third', 323);
+  assert.match(second.url, /project\/HB_BUDGET\//);
+  assert.match(third.url, /project\/HB_BUDGET_3rd_reading\//);
+  assert.equal(third.document, 'House 3rd reading · Volume I-C');
+  assert.notEqual(second.url, third.url);
+});

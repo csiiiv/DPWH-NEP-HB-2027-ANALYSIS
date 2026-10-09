@@ -10,6 +10,7 @@ on:
       - 'scripts/**'
       - 'dpwh-transparency-nep-data/**'
       - 'HB_BUDGET/*.pdf'
+      - 'HB_BUDGET_3rd_reading/*.pdf'
       - '.github/workflows/pages.yml'
   pull_request:
     paths:
@@ -19,6 +20,7 @@ on:
       - 'scripts/**'
       - 'dpwh-transparency-nep-data/**'
       - 'HB_BUDGET/*.pdf'
+      - 'HB_BUDGET_3rd_reading/*.pdf'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -41,9 +43,12 @@ jobs:
         run: |
           python3 -m pip install PyMuPDF==1.28.2
           python3 scripts/hb_native_ic_rollup.py --check
+          python3 scripts/hb_native_ic_rollup.py --check --pdf "HB_BUDGET_3rd_reading/3- HB 10858 FOR 3RD READING VOL I-C .pdf" --ib-rollup analysis/data/hb_dpwh_native_rollup_3rd_reading.json --out analysis/data/hb_dpwh_native_ic_projects_3rd_reading.json --report analysis/data/hb_dpwh_native_ic_rollup_audit_3rd_reading.json
           python3 -m unittest scripts.tests.test_hb_native_ic_rollup scripts.tests.test_hb_native_rollup -v
       - name: Check current accounting, data freshness and matching
-        run: python3 -m unittest discover -s analysis/tests -p test_current_pages.py -v
+        run: |
+          python3 -m unittest discover -s analysis/tests -p test_current_pages.py -v
+          python3 -m unittest discover -s analysis/tests -p test_house_readings.py -v
       - name: Check budget display units, signs and numeric sorting
         run: node --test analysis/tests/test_budget_display.cjs
       - name: Check independent source verification and snapshot accounting

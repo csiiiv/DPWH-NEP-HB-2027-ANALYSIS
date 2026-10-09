@@ -31,7 +31,7 @@ function App() {
       <WorkbenchHeader route={route.key} />
       <main id="main" tabIndex="-1" className="shell">
         <Suspense fallback={<p role="status">Loading workspace…</p>}>
-          {route.key === "compare" ? <Comparison /> : route.key === "home" ? <Home /> : routes[route.key] ?
+          {route.key === "compare" ? <Comparison view={route.params.get("view") || (route.params.get("section") === "house-readings" ? "readings" : null)} /> : route.key === "home" ? <Home /> : routes[route.key] ?
             <SourceWorkspace key={route.key} route={route} /> :
             <section><h1>Page not found</h1><p>This workbench route is unavailable.</p><a href="#home">Return home</a></section>}
         </Suspense>

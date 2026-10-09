@@ -50,8 +50,11 @@ DOWNLOADS = [
     'hb_dpwh_native_ic_projects.json', 'hb_dpwh_native_ic_rollup_audit.json',
     'source_comparison_2027.json', 'stage_trace_2027.json', 'current_pap_controls.json',
     'comparison_manifest.json',
+    'house_reading_changes_2027.json', 'hb_dpwh_native_rollup_3rd_reading.json',
+    'hb_native_ib_rollup_audit_3rd_reading.json', 'hb_dpwh_native_ic_projects_3rd_reading.json',
+    'hb_dpwh_native_ic_rollup_audit_3rd_reading.json',
 ]
-SCRIPTS = ['nep_tree_viewer.js', 'budget_display.js', 'source_verification.js', 'source_verification.css', 'page_navigation.css']
+SCRIPTS = ['project_offices.mjs', 'nep_tree_viewer.js', 'budget_display.js', 'source_verification.js', 'source_verification.css', 'page_navigation.css']
 def hosted_report_links(text, source):
     """Open repository Markdown as rendered GitHub documents at hosted URLs."""
     def report_link(match):
@@ -153,6 +156,10 @@ def main(with_react=True):
     pdfs.mkdir()
     for name in ['2 - HB 10858 VOL IB.pdf', '3 - HB 10858 VOL IC.pdf']:
         shutil.copyfile(ROOT / 'HB_BUDGET' / name, pdfs / name)
+    third_pdfs = OUTPUT / 'HB_BUDGET_3rd_reading'
+    third_pdfs.mkdir()
+    for name in ['2- HB 10858 FOR 3RD READING VOL I-B.pdf', '3- HB 10858 FOR 3RD READING VOL I-C .pdf']:
+        shutil.copyfile(ROOT / 'HB_BUDGET_3rd_reading' / name, third_pdfs / name)
     (OUTPUT / '.nojekyll').touch()
     if with_react:
         frontend = ROOT / 'analysis/web/dist'

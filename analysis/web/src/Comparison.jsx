@@ -1,17 +1,19 @@
 import React, { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { loadData, sourceReference, siteUrl, repo } from "./data.js";
-import { amount, metric, selectRows, values } from "./model.js";
+import { amount, metric, selectRows, values, officeOptions, officeLabels } from "./model.js";
 const PdfPreview = lazy(() => import("./PdfPreview.jsx"));
 const names = ["DPWH Transparency NEP", "DBM NEP", "House GAB"];
 const label = (value) => (value ?? "").replaceAll("_", " ");
-export default function Comparison() {
+export default function Comparison({ view }) {
   const [data, setData] = useState(null),
+    [readings, setReadings] = useState(null),
     [error, setError] = useState(""),
-    [tab, setTab] = useState("paps"),
+    [tab, setTab] = useState(view === "readings" ? "readings" : "paps"),
     [query, setQuery] = useState(""),
     [program, setProgram] = useState(""),
     [region, setRegion] = useState(""),
-    [trace, setTrace] = useState(""),
+    [office, setOffice] = useState(""),
+    [trace, setTrace] = useState(view === "readings" ? "reading_changed" : ""),
     [column, setColumn] = useState("title"),
     [mode, setMode] = useState("total"),
     [direction, setDirection] = useState(1),
@@ -25,8 +27,8 @@ export default function Comparison() {
   }, [menu]);
   useEffect(() => {
     const c = new AbortController();
-    loadData("stage_trace_2027.json", c.signal)
-      .then(setData)
+    Promise.all([loadData("stage_trace_2027.json", c.signal), loadData("house_reading_changes_2027.json", c.signal)])
+      .then(([stages, readings]) => { setData(stages); setReadings(readings); })
       .catch((e) => {
         if (e.name !== "AbortError") setError(e.message);
       });
@@ -37,7 +39,7 @@ export default function Comparison() {
       ? data.paps
       : tab === "gaps"
         ? data.transparency_gaps
-        : data.projects
+        : tab === "readings" ? readings.projects : data.projects
     : [];
   const filtered = useMemo(
     () =>
@@ -45,17 +47,18 @@ export default function Comparison() {
         query,
         program,
         region,
+        office,
         trace,
         column,
         mode,
         direction,
         tab,
       }),
-    [rows, query, program, region, trace, column, mode, direction, tab],
+    [rows, query, program, region, office, trace, column, mode, direction, tab],
   );
   useEffect(
     () => setPage(0),
-    [query, program, region, trace, column, mode, direction, tab],
+    [query, program, region, office, trace, column, mode, direction, tab],
   );
   useEffect(() => {
     if (!menu) return;
@@ -135,11 +138,15 @@ export default function Comparison() {
     setQuery("");
     setProgram("");
     setRegion("");
-    setTrace("");
+    setOffice("");
+    setTrace(t === "readings" ? "reading_changed" : "");
     setColumn("title");
     setMode("total");
     setPage(0);
   };
+  useEffect(() => {
+    if (view === "readings") changeTab("readings");
+  }, [view]);
   const open = (kind, p, title) => {
     const reference = sourceReference(kind, p, title);
     if (reference) {
@@ -153,13 +160,12 @@ export default function Comparison() {
         className="source-link"
         aria-pressed={
           source?.page === p &&
-          source?.document ===
-            (kind === "house" ? "House GAB · Volume I-C" : "DBM NEP · Volume II-B")
+          source?.document === sourceReference(kind, p, title)?.document
         }
         key={kind + p}
         onClick={() => open(kind, p, title)}
       >
-        {kind === "house" ? "House" : "NEP"} p.{p}
+        {kind === "house-third" ? "House 3rd" : kind === "house-second" ? "House 2nd" : kind === "house" ? "House" : "NEP"} p.{p}
       </button>
     ));
   if (error)
@@ -173,6 +179,7 @@ export default function Comparison() {
     );
   if (!data) return <p role="status">Loading retained comparison data…</p>;
   const stages = data.summary.stages;
+  const tableNames = tab === "readings" ? ["House 2nd reading", "House 3rd reading"] : names;
   return (
     <>
       <div className="comparison-heading">
@@ -205,15 +212,22 @@ export default function Comparison() {
           <h3>{names[2]}</h3>
           <strong>{amount(stages.house.extracted_php)}</strong>
           <p>
-            Extracted allocations · printed{" "}
+            2nd reading operations · agency total{" "}
             {amount(stages.house.printed_new_appropriations_php)}
           </p>
+        </article>
+        <article>
+          <h3>House 3rd reading</h3>
+          <strong>{amount(readings.summary.third.operations_including_projects)}</strong>
+          <p>Operations · agency total {amount(readings.summary.third.new_appropriations)}</p>
+          <p>3rd − 2nd operations: {readings.summary.allocation_delta_php > 0 ? "+" : ""}{amount(readings.summary.allocation_delta_php)}</p>
         </article>
       </div>
       <nav className="view-tabs" aria-label="Comparison tables">
         {[
           ["paps", "PAP totals"],
           ["projects", "Project records"],
+          ["readings", "House readings"],
           ["gaps", "Missing from listing"],
         ].map(([key, name]) => (
           <button
@@ -225,6 +239,22 @@ export default function Comparison() {
           </button>
         ))}
       </nav>
+      {tab === "readings" && <section className="notice" aria-label="House reading changes">
+        <p>2nd → 3rd reading. Differences are 3rd minus 2nd. Agency total: {amount(readings.summary.control_deltas_php.new_appropriations)};
+          {" "}Operations: {amount(readings.summary.control_deltas_php.operations_including_projects)};
+          {" "}Support to Operations: {amount(readings.summary.control_deltas_php.s2o_total)}.</p>
+        <p>{readings.summary.status_counts.third_only ?? 0} records appear only in the 3rd reading.
+          {" "}Repeated keys are grouped; source absence counts as zero for ledger differences and does not establish project identity.</p>
+        <a href={siteUrl("analysis/house_reading_changes_2027.json")} download>Download both readings and differences</a>
+        <p><a href={siteUrl("analysis/hb_dpwh_native_ic_projects.json")} download>2nd reading native I-C</a>
+          {" · "}<a href={siteUrl("analysis/hb_dpwh_native_ic_projects_3rd_reading.json")} download>3rd reading native I-C</a></p>
+        <div className="table-scroll" tabIndex="0" role="region" aria-label="House reading control differences">
+          <table><thead><tr><th>Scope</th><th>2nd reading</th><th>3rd reading</th><th>3rd − 2nd</th></tr></thead>
+            <tbody>{[["Agency total", "new_appropriations"], ["Support to Operations", "s2o_total"], ["Operations incl. local/FAP", "operations_including_projects"]].map(([name, key]) =>
+              <tr key={key}><th scope="row">{name}</th><td>{amount(readings.summary.second[key])}</td><td>{amount(readings.summary.third[key])}</td><td>{amount(readings.summary.control_deltas_php[key])}</td></tr>)}</tbody>
+          </table>
+        </div>
+      </section>}
       <div className="workspace-switch" aria-label="Workspace panels">
         <button
           aria-pressed={panel === "table"}
@@ -252,7 +282,7 @@ export default function Comparison() {
               rows={rows}
               field="program"
               value={program}
-              set={setProgram}
+              set={(value) => { setProgram(value); setOffice(""); }}
             />
             {tab !== "paps" && (
               <Filter
@@ -260,10 +290,25 @@ export default function Comparison() {
                 rows={rows}
                 field="region"
                 value={region}
-                set={setRegion}
+                set={(value) => { setRegion(value); setOffice(""); }}
               />
             )}{" "}
-            {tab === "projects" && (
+            {tab !== "paps" && (
+              <label>
+                Engineering office / DEO
+                <select aria-label="Engineering office / DEO" value={office} onChange={(e) => setOffice(e.target.value)}>
+                  <option value="">All offices</option>
+                  {officeOptions(rows.filter(r => (!program || r.program === program) && (!region || r.region === region)), region).map(o => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
+              </label>
+            )}
+            {tab === "readings" ? <label>Match status
+              <select aria-label="Match status" value={trace} onChange={e => setTrace(e.target.value)}>
+                {[["", "All records"], ["reading_changed", "Changed allocations"], ["third_only", "3rd reading only"], ["second_only", "2nd reading only"], ["amount_changed", "Paired amount changes"], ["repeated_key", "Repeated keys / grouped"], ["same_amount", "Same amount"]].map(([value, text]) => <option key={value} value={value}>{text}</option>)}
+              </select>
+            </label> : tab === "projects" && (
               <Filter
                 label="Match status"
                 rows={rows}
@@ -273,6 +318,7 @@ export default function Comparison() {
               />
             )}{" "}
           </div>
+          {tab !== "paps" && <p className="muted">Office filters use recorded source assignments. Paired sources may list different offices; fuzzy suggestions are excluded.</p>}
           <p className="result-count" aria-live="polite">
             {filtered.length.toLocaleString()} of {rows.length.toLocaleString()}{" "}
             rows · Click a header to sort. Amounts in PHP · total / Δ / %.
@@ -295,11 +341,12 @@ export default function Comparison() {
                     </>
                   ) : (
                     <>
-                      {names.map((n, i) => (
+                      {tableNames.map((n, i) => (
                         <React.Fragment key={n}>
                           {header(n, String(i), true)}
                         </React.Fragment>
                       ))}
+                      {tab === "readings" && header("3rd − 2nd", "reading_delta")}
                       <th scope="col">Source evidence</th>
                     </>
                   )}
@@ -313,12 +360,15 @@ export default function Comparison() {
                       <small>
                         {r.program} · {r.region ?? ""}
                       </small>
-                      {tab === "projects" && (
+                      {(tab === "projects" || tab === "readings") && (
                         <small>
                           {label(r.trace)} ·{" "}
-                          {r.nep?.id ?? r.house?.id ?? r.api?.id}
+                          {tab === "readings" ? r.match_basis : r.nep?.id ?? r.house?.id ?? r.api?.id}
                         </small>
                       )}
+                      {tab !== "paps" && (officeLabels(r).length
+                        ? officeLabels(r).map(text => <small key={text}>{text}</small>)
+                        : <small>No recorded office</small>)}
                     </th>
                     {tab === "gaps" ? (
                       <>
@@ -334,6 +384,9 @@ export default function Comparison() {
                         />
                       ))
                     )}
+                    {tab === "readings" && <td className={`num ${r.delta_php > 0 ? "up" : r.delta_php < 0 ? "down" : ""}`}>
+                      {r.delta_php > 0 ? "+" : ""}{amount(r.delta_php)}
+                    </td>}
                     <td>
                       {tab === "paps" ? (
                         <>
@@ -342,6 +395,11 @@ export default function Comparison() {
                         </>
                       ) : tab === "gaps" ? (
                         sourceButtons("nep", [r.pdf_page], r.title)
+                      ) : tab === "readings" ? (
+                        <>
+                          {sourceButtons("house-second", r.second?.pdf_pages, r.title)}
+                          {sourceButtons("house-third", r.third?.pdf_pages, r.title)}
+                        </>
                       ) : (
                         <>
                           {sourceButtons("nep", [r.nep?.pdf_page], r.title)}

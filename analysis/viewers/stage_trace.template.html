@@ -135,10 +135,12 @@ th.num button.table-sort{text-align:right}
   </section>
 
   <section id="projects">
-    <h2>Project / allocation records</h2>
-    <p class="hint" id="matchSummary"></p>
+    <h2>Project / allocation records</h2><p><a href="stage_trace_2027.html#house-readings">Compare House 2nd and 3rd readings, with amount differences →</a></p>
+    <p class="hint" id="matchSummary"></p><p class="hint">Office filters use assignments in the displayed House, NEP or Transparency source, excluding fuzzy suggestions.</p>
     <div class="toolbar">
       <label>Search<input id="q" type="search" placeholder="Title, PAP, region, ID"></label>
+      <label>Region<select id="projectRegion" aria-label="Region"><option value="">All regions</option></select></label>
+      <label>Engineering office / DEO<select id="projectOffice" aria-label="Engineering office / DEO"><option value="">All offices</option></select></label>
       <label>Outcome<select id="trace">
         <option value="">All</option>
         <option value="amount_same">Same amount</option>
@@ -197,7 +199,8 @@ th.num button.table-sort{text-align:right}
 
 <script id="traceData" type="application/json">__PAYLOAD__</script>
 <script src="budget_display.js"></script>
-<script>
+<script type="module">
+import { matchesOffice, officeOptions, officeLabels } from "./project_offices.mjs";
 'use strict';
 const D = JSON.parse(document.getElementById('traceData').textContent);
 const S = D.summary;
@@ -479,6 +482,14 @@ const records = D.projects.map((r, i) => ({
   index: i,
   search: JSON.stringify([r.title, r.pap, r.program, r.region, r.api, r.nep, r.house]).toLowerCase()
 }));
+[...new Set(records.map(r => r.region).filter(Boolean))].sort().forEach(region => $('projectRegion').add(new Option(region, region)));
+function updateOffices() {
+  const region = $('projectRegion').value;
+  const rows = records.filter(r => !region || r.region === region);
+  $('projectOffice').innerHTML = '<option value="">All offices</option>' + officeOptions(rows, region)
+    .map(o => `<option value="${esc(o.value)}">${esc(o.label)}</option>`).join('');
+}
+updateOffices();
 let page = 0, filtered = records.slice();
 const pageSize = 100;
 const money = side => side ? side.amount_php : null;
@@ -507,6 +518,7 @@ function render() {
     return `<tr>
       <th scope="row" class="title">${esc(title)}
         <span class="sub">${esc(r.pap)} · ${esc(r.region)} · ${esc(r.zone)}</span>
+        ${officeLabels(r).map(text => `<span class="sub">${esc(text)}</span>`).join('') || '<span class="sub">No recorded office</span>'}
         <details class="details"><summary>IDs / pages</summary>
           <div class="flow">
             <div><strong>DPWH Transparency NEP</strong><br>${r.api ? esc(r.api.id) : esc(r.api_presence)}</div>
@@ -526,13 +538,16 @@ function filter() {
   const q = $('q').value.toLowerCase().trim();
   filtered = records.filter(r =>
     (!q || r.search.includes(q)) &&
+    (!$('projectRegion').value || r.region === $('projectRegion').value) &&
+    matchesOffice(r, $('projectOffice').value, $('projectRegion').value) &&
     matchesTraceFilter(r.trace, $('trace').value) &&
     (!$('zone').value || r.zone === $('zone').value)
   );
   page = 0;
   render();
 }
-['q', 'trace', 'zone'].forEach(id => $(id).addEventListener(id === 'q' ? 'input' : 'change', () => {
+['q', 'trace', 'zone', 'projectOffice', 'projectRegion'].forEach(id => $(id).addEventListener(id === 'q' ? 'input' : 'change', () => {
+  if (id === 'projectRegion') updateOffices();
   sortState.project.column = null;
   sortState.project.direction = 1;
   updateSortHeaders(projectTable, sortState.project);

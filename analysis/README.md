@@ -126,7 +126,7 @@ extracts its route payloads from the validated retained pages.
 House native rebuild order is `python3 scripts/hb_native_rollup.py`, then
 `python3 scripts/hb_native_ic_rollup.py`, followed by the dependent builders
 above. Native extraction needs the retained PDFs and PyMuPDF; no House OCR
-input is required. Third-reading PDFs remain a separate unprocessed source set.
+input is required. Both readings remain available; the House readings comparator retains distinct source documents and amount deltas.
 
 Source extraction uses `build_nep_tree.py`, `build_dpwh_nep_api_tree.py`, and
 native House scripts under `scripts/`. External NEP OCR trees and page geometry
@@ -146,6 +146,7 @@ separately; see [archive commands](archive/README.md).
 
 ## Documentation
 
+- [House 2nd/3rd reading differences and engineering office filters](docs/house_reading_comparison_checks.md)
 - [Native House migration — complete change report, 9 October 2026](docs/native_house_migration_change_report_2026-10-09.md)
 - [Frontend and PDF migration](docs/react_vite_migration.md)
 - [Codebase reassessment](docs/codebase_reassessment.md)

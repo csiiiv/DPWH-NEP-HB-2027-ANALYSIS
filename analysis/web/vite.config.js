@@ -48,6 +48,7 @@ function retainedFiles() {
           ],
           ["/pdfs/", [root + "/dbm-nep-data"]],
           ["/HB_BUDGET/", [root + "/HB_BUDGET"]],
+          ["/HB_BUDGET_3rd_reading/", [root + "/HB_BUDGET_3rd_reading"]],
           ["/legacy/", [root + "/_site"]],
         ];
         const route = routes.find(([prefix]) => pathname.startsWith(prefix));
@@ -72,6 +73,7 @@ function retainedFiles() {
             ".html": "text/html",
             ".css": "text/css",
             ".js": "application/javascript",
+            ".mjs": "application/javascript",
             ".webp": "image/webp",
           }[path.extname(file)] || "application/octet-stream",
         );

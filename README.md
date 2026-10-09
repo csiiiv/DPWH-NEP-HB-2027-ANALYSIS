@@ -128,8 +128,14 @@ analysis are:
 Volume I-A and Volume II are also present locally; the current extraction is
 DPWH-only. The [native I-C audit](analysis/data/hb_dpwh_native_ic_rollup_audit.json)
 records source/code hashes and repairs; titles retain their raw constituent
-lines and one-based PDF pages. The separate `HB_BUDGET_3rd_reading/` PDFs are
-not yet processed and do not determine these outputs.
+lines and one-based PDF pages. Certified workbench outputs still use the
+second-reading copies under `HB_BUDGET/`. A side-by-side **third-reading**
+extract from `HB_BUDGET_3rd_reading/` is also available
+([I-B](analysis/data/hb_dpwh_native_rollup_3rd_reading.json),
+[I-C](analysis/data/hb_dpwh_native_ic_projects_3rd_reading.json)): same
+₱654.102015B new-appropriations total, with a ₱134M reallocation from
+Support-to-Operations Right-of-Way into five new Caloocan City projects
+under Flood Management (+₱68M) and Convergence BIP (+₱66M).
 
 These House PDFs were supplied locally and are included in Git with the retained
 House OCR outputs. An exact
@@ -300,7 +306,22 @@ python3 analysis/builders/build_current_pages.py
 python3 analysis/builders/build_stage_trace.py
 python3 scripts/validate_current_pages.py
 ```
- The SPA package includes the retained House I-B/I-C PDFs and DBM NEP preview PDF.
+
+Rebuild the third-reading side-by-side extract (does not replace certified outputs):
+
+```sh
+python3 scripts/hb_native_rollup.py \
+  --pdf "HB_BUDGET_3rd_reading/2- HB 10858 FOR 3RD READING VOL I-B.pdf" \
+  --out analysis/data/hb_dpwh_native_rollup_3rd_reading.json \
+  --report analysis/data/hb_native_ib_rollup_audit_3rd_reading.json
+python3 scripts/hb_native_ic_rollup.py \
+  --pdf "HB_BUDGET_3rd_reading/3- HB 10858 FOR 3RD READING VOL I-C .pdf" \
+  --ib-rollup analysis/data/hb_dpwh_native_rollup_3rd_reading.json \
+  --out analysis/data/hb_dpwh_native_ic_projects_3rd_reading.json \
+  --report analysis/data/hb_dpwh_native_ic_rollup_audit_3rd_reading.json
+```
+
+The SPA package includes the retained House I-B/I-C PDFs and DBM NEP preview PDF.
 
 To reproduce the historical OCR-era House repairs with retained inputs, use:
 
@@ -315,3 +336,11 @@ comparison pages.
 
 See [analysis/README.md](analysis/README.md) for current artifacts, source rebuild
 order, validation commands, and open coverage/evidence work.
+
+## House reading differences and office filters
+
+The comparison app preserves both House readings. Its **House readings** tab
+shows second/third amounts and their differences, with region and engineering
+office filters. Five additional printed project records total ₱134 million;
+Support to Operations decreases by the same amount and the agency total is
+unchanged. See [the reading comparison and checks](analysis/docs/house_reading_comparison_checks.md).
