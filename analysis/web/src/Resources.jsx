@@ -4,7 +4,7 @@ import { routeHref } from "./routes.js";
 import { kindLabel, resourceGroups } from "./resources.js";
 
 function itemHref(item) {
-  if (item.kind === "doc") return repo + item.path;
+  if (item.kind === "doc" || item.kind === "repo") return repo + item.path;
   if (item.kind === "external") return item.path;
   return siteUrl(item.path);
 }
@@ -12,9 +12,6 @@ function itemHref(item) {
 function itemProps(item) {
   if (item.kind === "data") {
     return { download: item.path.split("/").pop() };
-  }
-  if (item.kind === "pdf") {
-    return { target: "_blank", rel: "noreferrer" };
   }
   return { target: "_blank", rel: "noreferrer" };
 }

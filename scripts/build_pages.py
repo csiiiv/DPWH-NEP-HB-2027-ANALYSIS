@@ -164,6 +164,7 @@ def main(with_react=True):
     third_pdfs = OUTPUT / 'HB_BUDGET_3rd_reading'
     third_pdfs.mkdir()
     for name in [
+        '1- HB 10858 FOR 3RD READING VOL I-A.pdf',
         '2- HB 10858 FOR 3RD READING VOL I-B.pdf',
         '3- HB 10858 FOR 3RD READING VOL I-C .pdf',
         '4-HB 10858 3RD READING VOL II.pdf',

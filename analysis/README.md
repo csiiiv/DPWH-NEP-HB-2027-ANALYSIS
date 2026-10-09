@@ -13,6 +13,11 @@ matching. All three sources retain `comparison_ready: false`: arithmetic
 passes, while DBM row evidence, House project identity and amendment completeness, and
 Transparency release/document coverage remain open.
 
+An [external GAB dataset cross-check](docs/gab_fy2027_reference_crosscheck.md)
+corroborates both native House readings and records coverage and office/region
+differences against a pinned independent extraction. It is reference evidence;
+the webpages retain the native House baselines.
+
 ## Layout
 
 ```text

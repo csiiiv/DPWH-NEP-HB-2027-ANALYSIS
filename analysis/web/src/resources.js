@@ -12,7 +12,31 @@ export const resourceGroups = [
         path: "pdfs/NEP-2027-VOLUME-2B_OCR.pdf",
         purpose: "Executive proposal · DPWH detail source for the canonical NEP tree",
         coverage:
-          "722 pages. Page 8 new appropriations; pp. 13–28 PS rows; pp. 115–690 PAP details. SHA-256 recorded in the canonical tree provenance.",
+          "722 pages. Page 8 new appropriations; pp. 13–28 PS rows; pp. 115–690 PAP details. SHA-256 recorded in the canonical tree provenance. Packaged with the workbench site.",
+      },
+      {
+        label: "DBM NEP · Volume I (retained OCR)",
+        kind: "repo",
+        path: "dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf",
+        purpose: "Retained OCR of NEP Volume I for reference",
+        coverage:
+          "Committed in the repository; not packaged into the Pages site. Open from the GitHub tree or local checkout.",
+      },
+      {
+        label: "DBM NEP · Volume II-A (retained OCR)",
+        kind: "repo",
+        path: "dbm-nep-data/NEP-2027-VOLUME-2A_OCR.pdf",
+        purpose: "Retained OCR of NEP Volume II-A for reference",
+        coverage:
+          "Committed in the repository; not packaged into the Pages site. Open from the GitHub tree or local checkout.",
+      },
+      {
+        label: "DBM NEP · Volume III (retained OCR)",
+        kind: "repo",
+        path: "dbm-nep-data/NEP-2027-VOLUME-3_OCR.pdf",
+        purpose: "Retained OCR of NEP Volume III for reference",
+        coverage:
+          "1,096 pages. Lightly recompressed (deflate/garbage collect) to stay under GitHub’s 100 MB limit; page count and extracted text spot-checks match the prior file. Not packaged into the Pages site.",
       },
       {
         label: "DBM NEP · Volume II-B (official publication)",
@@ -37,6 +61,13 @@ export const resourceGroups = [
         coverage: "Different pagination from the retained Volume II-B OCR file.",
       },
       {
+        label: "House GAB 2nd reading · Volume I-A",
+        kind: "pdf",
+        path: "HB_BUDGET/1%20-%20HB%2010858%20VOL%20IA.pdf",
+        purpose: "House Volume I-A reference copy",
+        coverage: "Present in the repository; current extraction is DPWH-only from I-B / I-C.",
+      },
+      {
         label: "House GAB 2nd reading · Volume I-B",
         kind: "pdf",
         path: "HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf",
@@ -58,6 +89,13 @@ export const resourceGroups = [
         path: "HB_BUDGET/4%20-%20HB%2010858%20VOL%20II.pdf",
         purpose: "House Volume II reference copy",
         coverage: "Present locally; current extraction is DPWH-only from I-B / I-C.",
+      },
+      {
+        label: "House GAB 3rd reading · Volume I-A",
+        kind: "pdf",
+        path: "HB_BUDGET_3rd_reading/1-%20HB%2010858%20FOR%203RD%20READING%20VOL%20I-A.pdf",
+        purpose: "Third-reading Volume I-A reference copy",
+        coverage: "Present in the repository; current extraction is DPWH-only from I-B / I-C.",
       },
       {
         label: "House GAB 3rd reading · Volume I-B",
@@ -337,5 +375,6 @@ export const kindLabel = {
   data: "JSON",
   doc: "Docs",
   pdf: "PDF",
+  repo: "Repo",
   external: "Link",
 };
