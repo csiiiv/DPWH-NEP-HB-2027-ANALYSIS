@@ -26,7 +26,7 @@ with tempfile.TemporaryDirectory() as folder:
                 page.goto(base+'#analysis',wait_until='networkidle')
                 expect(page.get_by_role('heading',name='Analysis',exact=True)).to_be_visible()
                 expect(page.get_by_role('link',name='Analysis',exact=True)).to_have_attribute('aria-current','page')
-                for tab in ['Overview','Insertions','Revisions','Statistics']:
+                for tab in ['Overview','Insertions','Adjustments','Statistics']:
                     expect(page.get_by_role('tab',name=tab,exact=True)).to_be_visible()
                 office=page.get_by_role('region',name='Central Office vs DEOs',exact=True)
                 expect(office).to_contain_text(f"{data['sources']['third']['offices']['Central Office']['records']:,}")
@@ -50,12 +50,12 @@ with tempfile.TemporaryDirectory() as folder:
                 href=link.get_attribute('href');assert 'record=' in href and 'region_match=ignore' in href
                 link.click()
                 expect(page.get_by_role('region',name='Project tree paths',exact=True)).to_be_visible(timeout=60000)
-                # Revisions subtab: reading ledger plus cross-document differences (lazy detail).
-                page.goto(base+'#analysis?view=revisions',wait_until='networkidle')
-                expect(page.get_by_role('region',name='Reading revisions',exact=True).locator('tbody tr')).to_have_count(5)
+                # Adjustments subtab: reading ledger plus cross-document differences (lazy detail).
+                page.goto(base+'#analysis?view=adjustments',wait_until='networkidle')
+                expect(page.get_by_role('region',name='Reading adjustments',exact=True).locator('tbody tr')).to_have_count(5)
                 expect(page.get_by_role('region',name='Top House vs NEP differences',exact=True).locator('tbody tr').first).to_be_visible(timeout=60000)
                 assert any('comparison_projects_2027.json' in url for url in requests)
-                page.screenshot(path=f'/tmp/analysis-revisions-{width}.png')
+                page.screenshot(path=f'/tmp/analysis-adjustments-{width}.png')
                 # Statistics subtab: descriptive lenses render from the same lazy payload.
                 page.get_by_role('tab',name='Statistics',exact=True).click()
                 expect(page.get_by_role('heading',name='Benford first-digit',exact=True)).to_be_visible(timeout=60000)
@@ -71,5 +71,5 @@ with tempfile.TemporaryDirectory() as folder:
                 page.close()
             browser.close()
         assert not errors,errors
-        print(json.dumps({'widths':[390,1440],'subtabs':['overview','insertions','revisions','statistics'],'source_counts':True,'candidate_groups':True,'share_and_evidence_links':True,'lazy_detail':True,'statistics':True,'errors':errors}))
+        print(json.dumps({'widths':[390,1440],'subtabs':['overview','insertions','adjustments','statistics'],'source_counts':True,'candidate_groups':True,'share_and_evidence_links':True,'lazy_detail':True,'statistics':True,'errors':errors}))
     finally:server.shutdown()

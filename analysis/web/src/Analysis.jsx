@@ -8,7 +8,7 @@ const names={third:'HGAB3 · 3rd reading',second:'HGAB2 · 2nd reading',nep:'DBM
 const labels={'Bridge Program':'Bridges','Convergence and Special Support Program':'CSSP','Foreign-assisted projects':'FAPs'};
 const short=value=>labels[value]??value;
 const modes={no_suggestion:'House-only · no NEP suggestion',unresolved:'Unresolved NEP suggestions',third_only:'New 3rd-reading records'};
-const views=[['overview','Overview'],['insertions','Insertions'],['revisions','Revisions'],['statistics','Statistics']];
+const views=[['overview','Overview'],['insertions','Insertions'],['adjustments','Adjustments'],['statistics','Statistics']];
 const dimensions=[['overall','Overall'],['region','Region'],['office','District office'],['program','Category'],['pap','PAP']];
 const pick=(params,key,allowed,fallback)=>allowed.includes(params.get(key))?params.get(key):fallback;
 const dimensionTitle=dim=>dim==='office'?'district office':dim==='pap'?'PAP':dim;
@@ -22,7 +22,7 @@ export default function Analysis({route}){
  useEffect(()=>{const c=new AbortController();loadData('comparison_overview_2027.json',c.signal).then(setData).catch(e=>{if(e.name!=='AbortError')setError(e.message);});return()=>c.abort();},[]);
  // Detail rows load lazily only when a view needs per-record data.
  useEffect(()=>{
-  if(!['revisions','statistics'].includes(view)||!data||detail)return;
+  if(!['adjustments','statistics'].includes(view)||!data||detail)return;
   const c=new AbortController();loadData('comparison_projects_2027.json',c.signal)
    .then(payload=>setDetail(payload.projects)).catch(e=>{if(e.name!=='AbortError')setError(e.message);});
   return()=>c.abort();
@@ -43,7 +43,7 @@ export default function Analysis({route}){
   {needsDetail&&<p role="status">Loading per-record data…</p>}
   {view==='overview'&&<Overview stats={stats} source={source}/>}
   {view==='insertions'&&<Insertions headlines={data.headlines} reading={reading} ranking={ranking} dim={dim} change={change}/>}
-  {view==='revisions'&&detail&&<Revisions detail={detail} revisionSets={data.headlines.revisionSets} dim={dim} direction={direction} change={change}/>}
+  {view==='adjustments'&&detail&&<Revisions detail={detail} revisionSets={data.headlines.revisionSets} dim={dim} direction={direction} change={change}/>}
   {view==='statistics'&&detail&&<Statistics detail={detail} source={source} dim={dim} change={change}/>}
  </div>;
 }
@@ -57,7 +57,7 @@ function Overview({stats,source}){
   <div className="analysis-distributions"><Distribution title="Central Office vs DEOs" buckets={stats.offices} total={stats.records}/><Distribution title="Records by program" buckets={stats.programs} total={stats.records}/></div>
   <section className="analysis-section"><h2>Explore further</h2><div className="analysis-crosslinks">
    <a href={routeHref('analysis',{view:'insertions'})}>Insertion candidates by region, office and category →</a>
-   <a href={routeHref('analysis',{view:'revisions'})}>Reading revisions and cross-document differences →</a>
+   <a href={routeHref('analysis',{view:'adjustments'})}>Reading adjustments and cross-document differences →</a>
    <a href={routeHref('analysis',{view:'statistics'})}>Rounding, Benford and value clustering →</a>
   </div></section>
  </>;
@@ -89,9 +89,9 @@ function Revisions({detail,revisionSets,dim,direction,change}){
  const byDim=useMemo(()=>dim==='overall'?null:aggregate(cross.map(r=>{const house=r.third??r.second;
   return {amount_php:Math.abs(r.gap),region:r.region,office:house?.office??r.nep?.office??'',program:r.program,pap:r.pap};}),dim),[cross,dim]);
  return <>
-  <section className="analysis-section"><h2>Reading revisions · HGAB3 vs HGAB2</h2>
+  <section className="analysis-section"><h2>Reading adjustments · HGAB3 vs HGAB2</h2>
    <p className="notice">Recorded 2nd→3rd reading differences under the retained matching key: {revisionSets.reading.length.toLocaleString()} rows · net {amount(revisionSets.delta_php)}. Repeated keys remain grouped.</p>
-   <div className="table-scroll" role="region" aria-label="Reading revisions" tabIndex={0}><table><thead><tr><th>Project</th><th>HGAB2</th><th>HGAB3</th><th>Δ</th></tr></thead><tbody>{revisionSets.reading.map(r=><tr key={r.id}><th scope="row">{r.title}<small>{short(r.program)} · {r.region}</small></th><td className="num">{r.second_php!=null?amount(r.second_php):'—'}</td><td className="num">{r.third_php!=null?amount(r.third_php):'—'}</td><td className="num">{r.reading_delta_php!=null?amount(r.reading_delta_php):'new in HGAB3'}</td></tr>)}</tbody></table></div>
+   <div className="table-scroll" role="region" aria-label="Reading adjustments" tabIndex={0}><table><thead><tr><th>Project</th><th>HGAB2</th><th>HGAB3</th><th>Δ</th></tr></thead><tbody>{revisionSets.reading.map(r=><tr key={r.id}><th scope="row">{r.title}<small>{short(r.program)} · {r.region}</small></th><td className="num">{r.second_php!=null?amount(r.second_php):'—'}</td><td className="num">{r.third_php!=null?amount(r.third_php):'—'}</td><td className="num">{r.reading_delta_php!=null?amount(r.reading_delta_php):'new in HGAB3'}</td></tr>)}</tbody></table></div>
   </section>
   <section className="analysis-section"><h2>House vs NEP differences · provisional identity</h2>
    <DimensionChips dim={dim} change={change}/>
