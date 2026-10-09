@@ -63,3 +63,25 @@ recorded. Each ancestor links to its actual source node. Grouped House records
 show separate paths for every member. Paths are loaded from the retained source
 hierarchies on demand, rather than inferred from title geography. Copy link also
 retains the expanded record and selected path source.
+
+### Candidates with different regions
+
+Project records default to **Require same region**. The **Region matching**
+selector can instead **Allow different regions · flag candidates**. Share this
+mode with `region_match=ignore`, for example:
+
+`#compare?view=projects&region_match=ignore&q=4432-PHI`
+
+This optional display join combines only previously unpaired, unique normalized
+House/NEP titles within the same program, canonical PAP and funding zone.
+Uniqueness is checked across all records, including existing matches. Repeated
+House groups and duplicate titles stay separate; amounts do not identify projects.
+Existing matches are retained. The join preserves NEP/API records, source pages,
+full tree paths and every amount; the retained JSON and PAP controls are unchanged.
+Each additional candidate labels the original House and NEP regions separately.
+Region and office filters use the recorded assignments of either source.
+
+The current data yields **28 additional candidates: 24 FAP and four local**.
+BCIB (4432-PHI), LLRN Phase I (PHL-27) and Davao Bypass III (PH-P282) each join
+House Nationwide records to NEP NCR/Central Office records. These are candidates,
+not manually certified identities. Disable the mode to restore separate rows.

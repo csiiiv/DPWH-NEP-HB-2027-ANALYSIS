@@ -185,3 +185,9 @@ Project titles in the comparison expand full source-tree paths inline. Source
 buttons select HGAB3/HGAB2/NEP/Transparency; ancestor links open the corresponding
 hierarchy node. Repeated House records retain separate member paths. Expanded
 records and selected sources are included in shared URLs.
+
+Project records offer **Region matching → Allow different regions · flag
+candidates**. Strict region matching remains the default. The optional mode
+finds 28 unique candidates (24 FAP, four local), labels both source regions,
+and preserves duplicate records, source assignments, tree paths and totals.
+Use `#compare?view=projects&region_match=ignore&q=4432-PHI` to share a finding.

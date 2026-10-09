@@ -381,6 +381,34 @@ with sync_playwright() as p:
         expect(page.locator(".result-count")).to_contain_text("0 of")
         page.goto(sorted_url,wait_until="networkidle")
         expect(page.locator(".pager")).to_contain_text("51–100",timeout=60000)
+        # Optional region candidates restore FAP comparisons without rewriting
+        # source assignments, and their mode/path choices survive shared URLs.
+        page.goto(base+"#compare?view=projects&q=4432-PHI",wait_until="networkidle")
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(2,timeout=60000)
+        expect(page.get_by_label("Region matching",exact=True)).to_have_value("strict")
+        page.get_by_label("Region matching",exact=True).select_option("ignore")
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(1)
+        expect(page.locator(".comparison-table tbody")).to_contain_text("Region differs · House: Nationwide · NEP: NCR")
+        expect(page.locator(".comparison-table tbody")).to_contain_text("22.494B")
+        expect(page.locator(".comparison-table tbody")).to_contain_text("8.494B")
+        assert "region_match=ignore" in page.url
+        page.get_by_label("Region",exact=True).select_option("NCR")
+        page.get_by_label("Engineering office / DEO",exact=True).select_option("Central Office")
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(1)
+        page.locator(".project-record-title").click()
+        paths=page.get_by_role("region",name="Project tree paths",exact=True)
+        paths.get_by_role("button",name="DBM NEP",exact=True).click()
+        expect(paths).to_contain_text("Central Office",timeout=60000)
+        expect(paths.get_by_role("link",name="Open this entry in the source tree",exact=False)).to_have_attribute("href","#nep?node=p688%3Ar17")
+        page.reload(wait_until="networkidle")
+        expect(page.get_by_label("Region matching",exact=True)).to_have_value("ignore",timeout=60000)
+        expect(page.get_by_role("region",name="Project tree paths",exact=True)).to_contain_text("Central Office",timeout=60000)
+        page.get_by_label("Region",exact=True).select_option("")
+        page.get_by_label("Engineering office / DEO",exact=True).select_option("")
+        page.get_by_label("Region matching",exact=True).select_option("strict")
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(2)
+        assert "region_match=" not in page.url
+        assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
         # Clicking project records expands the complete retained source path;
         # selected record and path source are themselves shareable.
         page.goto(base+"#compare?view=projects&change=third_only&q=J.P.+Rizal+box+culvert+Caloocan",wait_until="networkidle")

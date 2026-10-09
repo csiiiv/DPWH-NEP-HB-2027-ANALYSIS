@@ -25,6 +25,18 @@ The NEP **Expense class** selector opens the retained PS, MOOE, or CO branch. Se
 
 The builder verifies that the three retained expense-class controls reproduce each printed source's total. These are independent source checks; they do not establish that the sources cover the same allocations.
 
+## General extraction context
+
+The [PDF dataset method](pdf_budget_dataset_method.md) explains the reusable
+source-to-row-to-hierarchy workflow and concrete edge cases. Native House
+extraction and NEP's OCR-derived hierarchy with PDF-text checks share accounting
+rules but have different source-evidence limits. The guide includes complete
+BCIB paths and funding partitions in both sources.
+
+The comparison's optional region-independent mode adds flagged unique
+candidates while retaining source assignments. It does not resolve source-review
+flags or certify project identity. See [shareable findings](shareable_findings.md).
+
 ## Per-item amount reassessment (9 October 2026)
 
 The earlier expense selector did not reassess individual values. In particular, the operating-unit portion displayed PS alone under a generic amount label and omitted the other printed columns. The earlier native-text check also used a fixed x range for PS and PAP amounts: the PS range can read MOOE on continuation pages such as PDF page 14. A matching amount anywhere in a large row area was accepted even when it covered neighbouring rows. Those checks were insufficient.

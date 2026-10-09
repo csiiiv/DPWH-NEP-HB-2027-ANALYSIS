@@ -338,11 +338,20 @@ comparison pages.
 See [analysis/README.md](analysis/README.md) for current artifacts, source rebuild
 order, validation commands, and open coverage/evidence work.
 
+## PDF dataset approach
+
+[From budget PDFs to auditable datasets](analysis/docs/pdf_budget_dataset_method.md)
+explains source selection, row extraction, root-to-entry hierarchies, funding
+partitions and validation, with House and NEP as worked examples.
+
 ## House reading differences and office filters
 
 The comparison app shows **HGAB2** (second reading), **HGAB3** (latest, third
 reading), and their delta in both **PAP totals** and **Project records**, beside
 Transparency and NEP. Search, reading-change, region and engineering-office
-filters are shareable through the URL. Five additional printed project records total ₱134 million;
+filters are shareable through the URL. Project records also offer an optional
+region-independent candidate match, with differing source regions flagged;
+strict matching remains the default. See [shareable findings](analysis/docs/shareable_findings.md).
+Five additional printed project records total ₱134 million;
 Support to Operations decreases by the same amount and the agency total is
 unchanged. See [the reading comparison and checks](analysis/docs/house_reading_comparison_checks.md).

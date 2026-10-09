@@ -144,3 +144,20 @@ preserved. Project rows total 18,440, including one grouped repeated House key.
 The 46 PAP/FAP rows likewise reconcile, with two changed PAP controls (+₱68M
 flood maintenance, +₱66M BIP access roads). Unmapped House controls remain
 unavailable. PAP PDF references now carry each reading's printed heading pages.
+
+
+## Optional candidates across different source regions
+
+The 18,440-row count above describes the default strict comparison. Selecting
+**Region matching → Allow different regions · flag candidates** combines 28
+additional unique House/NEP candidates (24 FAP, four local), producing 18,412
+rows. It retains every source amount, source ID, PDF page and full tree path.
+Both recorded regions remain visible; region/office filters can use either
+source's assignment. Duplicate identities and repeated House groups stay
+separate. This is an optional display join, not a rewrite of the retained match
+ledger or the reading-change classification.
+
+Share with `#compare?view=projects&region_match=ignore`; filter match status to
+`region_difference_candidate` to isolate these rows. See
+[shareable findings](shareable_findings.md#candidates-with-different-regions) and
+[the PDF dataset method](pdf_budget_dataset_method.md).

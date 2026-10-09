@@ -74,11 +74,11 @@ The Transparency tree has no established PDF mapping.
 | DPWH Transparency NEP | [API tree](data/dpwh_transparency_nep_tree.json) · [audit](data/dpwh_transparency_nep_tree_validation.json) | 11,372 projects; ₱445,378,063,000; 2,662 derived grouping checks; release coverage remains open |
 | House project detail and candidates | [Native I-C](data/hb_dpwh_native_ic_projects.json) · [audit](docs/hb_native_ic_rollup_checks.md) | MOOE+CO ₱639,179,718,000; 2,477 internal checks and 56 I-B checks pass. Operations comparison: 16,270 allocations, ₱586,941,661,000, 44/44 mapped local PAPs balance. v5 is historical. |
 
-The React PAP totals table contains **45 non-FAP controls**. A separate FAP
-section is deferred; the retained `#house-nep` view already shows local/FAP
-program totals. DBM has 25 FAP projects totaling ₱117.749011B; House has 29
+The React PAP totals table contains **45 non-FAP controls plus a separate FAP
+control**, alongside both House readings. The retained `#house-nep` view also
+shows local/FAP program totals. DBM has 25 FAP projects totaling ₱117.749011B; House has 29
 totaling ₱44.749011B. Transparency FAP coverage is unknown, not a verified zero.
-See [the deferred presentation gap](docs/react_vite_migration.md#deferred-fap-coverage-in-the-react-pap-table).
+See [the reading comparison checks](docs/house_reading_comparison_checks.md).
 
 Matching remains provisional. Unmatched rows do not establish insertions,
 removals, or policy changes. Expense columns, printed controls, project extracts,
@@ -152,6 +152,7 @@ separately; see [archive commands](archive/README.md).
 
 ## Documentation
 
+- [Budget PDFs to auditable datasets: general method and House/NEP examples](docs/pdf_budget_dataset_method.md)
 - [House 2nd/3rd reading differences and engineering office filters](docs/house_reading_comparison_checks.md)
 - [Native House migration — complete change report, 9 October 2026](docs/native_house_migration_change_report_2026-10-09.md)
 - [Frontend and PDF migration](docs/react_vite_migration.md)

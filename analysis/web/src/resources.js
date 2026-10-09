@@ -1,6 +1,27 @@
 /** Latest workable datasets and source PDFs for the Resources tab. */
 export const resourceGroups = [
   {
+    id: "methods",
+    title: "Methods and finding links",
+    blurb: "How PDF entries become audited datasets, and how to share comparison findings.",
+    items: [
+      {
+        label: "From budget PDFs to auditable datasets",
+        kind: "doc",
+        path: "analysis/docs/pdf_budget_dataset_method.md",
+        purpose: "General extraction and accounting approach, with House and NEP worked examples",
+        coverage: "Agency-to-project paths, funding partitions, edge cases, source evidence and rebuild commands. Distinguishes native House extraction from NEP OCR evidence.",
+      },
+      {
+        label: "Shareable searches and comparison findings",
+        kind: "doc",
+        path: "analysis/docs/shareable_findings.md",
+        purpose: "URL settings for searches, filters, expanded records and source paths",
+        coverage: "Includes optional region-independent candidates, with original source assignments flagged and strict matching as the default.",
+      },
+    ],
+  },
+  {
     id: "repos",
     title: "Referenced repositories",
     blurb:

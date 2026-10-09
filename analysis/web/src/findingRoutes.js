@@ -12,6 +12,7 @@ export function comparisonState(params) {
   const column=legacy && ['0','1'].includes(oldSort) ? String(Number(oldSort)+2) : oldSort;
   return {tab, query:params.get('q') || '', program:params.get('program') || '', region:params.get('region') || '', office:params.get('office') || '',
     trace:legacy ? '' : params.get('status') === 'all' ? '' : params.get('status') || '',
+    regionMatching:params.get('region_match') === 'ignore' ? 'ignore' : 'strict',
     readingStatus:legacy ? (params.get('status') === 'all' ? '' : params.get('status') || 'reading_changed') : params.get('change') || '',
     column:choice(column, tab === 'gaps' ? ['title','amount','region','pdf_page'] : ['title','0','1','2','3','reading_delta'], 'title'),
     mode:choice(params.get('metric'), ['total','delta','percent'], 'total'), direction:params.get('order') === 'desc' ? -1 : 1,
@@ -21,6 +22,7 @@ export function comparisonState(params) {
 export function comparisonParams(state) {
   const p = {view:state.tab};
   for (const [key,value] of Object.entries({q:state.query,program:state.program,region:state.region,office:state.office})) if (value) p[key]=value;
+  if (state.regionMatching === 'ignore') p.region_match='ignore';
   if (state.trace) p.status=state.trace;
   if (state.readingStatus) p.change=state.readingStatus;
   if (state.column !== 'title') p.sort=state.column;

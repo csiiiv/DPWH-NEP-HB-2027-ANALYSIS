@@ -197,19 +197,20 @@ These revisions are available through `npm run dev` and the production SPA packa
 
 ## Deferred FAP coverage in the React PAP table
 
-The React PAP totals table currently reads 45 non-FAP controls. It does not
-explain the entire operations total shown above it, which includes FAP. This is
-an outstanding presentation gap; retain the existing source data unchanged.
-The retained source-comparison viewer already presents local/FAP program totals.
+Status: **resolved, 9 October 2026**. The current table includes 45 non-FAP
+controls and one separate FAP control, with HGAB2 and HGAB3 columns. Together
+they reproduce operations totals. The earlier deferred scope described the
+initial migration, not the current app.
 
-Planned revision: separate non-FAP and Foreign-Assisted Projects sections,
-with program/project rollups and recorded PDF references. DBM NEP has
-25 FAP projects totaling PHP 117,749,011,000 (PDF pages 688–690). House has
-29 projects totaling PHP 44,749,011,000. The saved Transparency listing has no
-established FAP coverage: represent that as unknown coverage rather than zero,
-and do not infer individual project changes from these aggregate totals.
-See [NEP reconciliation](nep_2027_api_reconciliation.md) and
-[House rollups](hb_native_ib_rollup_checks.md). Implementation is deferred.
+DBM NEP has 25 FAP projects totaling PHP 117,749,011,000 (PDF pages 688–690).
+Both House readings have 29 totaling PHP 44,749,011,000. The Transparency FAP
+amount remains unavailable, rather than zero. Project records include FAP;
+strict region differences can leave separate rows. An optional region matching
+mode joins unique candidates and labels both source regions.
+
+See [reading comparison checks](house_reading_comparison_checks.md),
+[shareable findings](shareable_findings.md), and the
+[PDF dataset method](pdf_budget_dataset_method.md).
 
 ## Shared navigation and remaining SPA migration
 

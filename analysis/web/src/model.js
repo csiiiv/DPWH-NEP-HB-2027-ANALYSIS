@@ -1,5 +1,5 @@
 import { matchesSearch } from "./search.js";
-import { matchesOffice } from "../../viewers/project_offices.mjs";
+import { matchesOffice, officeAssignments } from "../../viewers/project_offices.mjs";
 export { officeOptions, officeLabels, NO_OFFICE } from "../../viewers/project_offices.mjs";
 
 export function amount(value) {
@@ -62,7 +62,7 @@ export function selectRows(
       (r) =>
         (!q || matchesSearch(JSON.stringify(r), q)) &&
         (!program || r.program === program) &&
-        (!region || r.region === region) &&
+        (!region || officeAssignments(r).some(a=>a.region===region)) &&
         matchesOffice(r, office, region) &&
         (!readingStatus || (readingStatus === 'reading_changed' ? r.reading_delta_php != null && r.reading_delta_php !== 0 || ['second_only','third_only'].includes(r.reading_status) : r.reading_status === readingStatus)) &&
         (!trace || (trace === "reading_changed" && tab === "readings"

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {comparisonState,comparisonParams,boundedInteger,mergeFindingParams} from './findingRoutes.js';
 import {routeHref,readRoute} from './routes.js';
 test('comparison findings round trip Unicode searches, scoped offices, sorting and pagination',()=>{
- const state={tab:'projects',query:'J.P. Rizal — Barangays 34–35 & drainage',program:'Flood Management',region:'National Capital Region',office:'NCR|Metro Manila 3rd District Engineering Office',trace:'',readingStatus:'third_only',column:'1',mode:'delta',direction:-1,page:3,record:'house-reading:2',pathSource:'third'};
+ const state={tab:'projects',query:'J.P. Rizal — Barangays 34–35 & drainage',program:'Flood Management',region:'National Capital Region',office:'NCR|Metro Manila 3rd District Engineering Office',trace:'',regionMatching:'strict',readingStatus:'third_only',column:'1',mode:'delta',direction:-1,page:3,record:'house-reading:2',pathSource:'third'};
  const route=readRoute(routeHref('compare',comparisonParams(state)));
  assert.deepEqual(comparisonState(route.params),state);
 });
@@ -18,4 +18,10 @@ test('reading defaults, explicit all status, malformed paging and unsupported so
 test('source state preserves reading and volume while clearing previous filters',()=>{
  const result=mergeFindingParams(new URLSearchParams('reading=second&view=projects&q=old&node=c1'),{q:'Caloocan',filter:'projects',node:null});
  assert.deepEqual(result,{reading:'second',view:'projects',q:'Caloocan',filter:'projects'});
+});
+test('optional region matching is shareable and unknown modes use strict matching',()=>{
+ const state=comparisonState(new URLSearchParams('view=projects&region_match=ignore&q=4432-PHI'));
+ assert.equal(state.regionMatching,'ignore');
+ assert.deepEqual(comparisonState(new URLSearchParams(comparisonParams(state))),state);
+ assert.equal(comparisonState(new URLSearchParams('region_match=unknown')).regionMatching,'strict');
 });

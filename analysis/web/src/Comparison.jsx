@@ -1,6 +1,8 @@
 import React, { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { loadData, sourceReference, siteUrl, repo } from "./data.js";
 import { amount, metric, selectRows, values, officeOptions, officeLabels } from "./model.js";
+import {regionCandidates} from "./regionCandidates.js";
+import {officeAssignments} from "../../viewers/project_offices.mjs";
 import {unifiedComparison} from "./unifiedComparison.js";
 import ShareLink from "./ShareLink.jsx";
 import {useComparisonFinding} from "./useComparisonFinding.js";
@@ -16,7 +18,7 @@ export default function Comparison({ route }) {
     [panel, setPanel] = useState("table"),
     [menu, setMenu] = useState(null);
   const [finding,setFinding] = useComparisonFinding(route);
-  const {tab,query,program,region,office,trace,readingStatus,column,mode,direction,page} = finding;
+  const {tab,query,program,region,office,trace,readingStatus,regionMatching,column,mode,direction,page} = finding;
   const setTab=v=>setFinding('tab',v), setQuery=v=>setFinding('query',v), setProgram=v=>setFinding('program',v),
     setRegion=v=>setFinding('region',v), setOffice=v=>setFinding('office',v), setTrace=v=>setFinding('trace',v), setReadingStatus=v=>setFinding('readingStatus',v),
     setColumn=v=>setFinding('column',v), setMode=v=>setFinding('mode',v), setDirection=v=>setFinding('direction',v), setPage=v=>setFinding('page',v);
@@ -38,7 +40,8 @@ export default function Comparison({ route }) {
     if (!data || !readings) return {paps:[],projects:[]};
     try {return unifiedComparison(data,readings);} catch(e){return {error:e.message,paps:[],projects:[]};}
   },[data,readings]);
-  const rows = data ? tab === 'paps' ? unified.paps : tab === 'gaps' ? data.transparency_gaps : unified.projects : [];
+  const projectRows=useMemo(()=>regionMatching==='ignore' ? regionCandidates(unified.projects) : unified.projects,[unified,regionMatching]);
+  const rows = data ? tab === 'paps' ? unified.paps : tab === 'gaps' ? data.transparency_gaps : projectRows : [];
   const filtered = useMemo(
     () =>
       selectRows(rows, {
@@ -253,7 +256,7 @@ export default function Comparison({ route }) {
           </table>
         </div>
       </section>}
-      {tab === "projects" && <p className="notice">HGAB3 is the latest House reading. NEP/API matches were established against HGAB2; HGAB3 uses the recorded reading comparison. Repeated House records appear as one grouped row. <a href="#house?view=projects&reading=third">Search the 3rd-reading House project tree</a> or <a href="#compare?view=projects&change=reading_changed">show changed House allocations</a>.</p>}
+      {tab === "projects" && <p className="notice">HGAB3 is the latest House reading. Retained NEP/API matches were established against HGAB2; HGAB3 uses the recorded reading comparison. Repeated House records appear as one grouped row. The optional region matching mode adds flagged candidates across different source regions. <a href="#house?view=projects&reading=third">Search the 3rd-reading House project tree</a> or <a href="#compare?view=projects&change=reading_changed">show changed House allocations</a>.</p>}
       {tab === "paps" && <p className="muted">PAP totals include the separate Foreign-assisted projects (FAP) control and reconcile to operations. FAP is outside the Transparency listing scope; its Transparency amount is unavailable.</p>}
       <div className="workspace-switch" aria-label="Workspace panels">
         <button
@@ -298,8 +301,8 @@ export default function Comparison({ route }) {
                 Engineering office / DEO
                 <select aria-label="Engineering office / DEO" value={office} onChange={(e) => setOffice(e.target.value)}>
                   <option value="">All offices</option>
-                  {office && !officeOptions(rows.filter(r => (!program || r.program === program) && (!region || r.region === region)), region).some(o=>o.value===office) && <option value={office}>Unavailable office: {office}</option>}
-                  {officeOptions(rows.filter(r => (!program || r.program === program) && (!region || r.region === region)), region).map(o => (
+                  {office && !officeOptions(rows.filter(r => (!program || r.program === program) && (!region || officeAssignments(r).some(a=>a.region===region))), region).some(o=>o.value===office) && <option value={office}>Unavailable office: {office}</option>}
+                  {officeOptions(rows.filter(r => (!program || r.program === program) && (!region || officeAssignments(r).some(a=>a.region===region))), region).map(o => (
                     <option key={o.value} value={o.value}>{o.label}</option>
                   ))}
                 </select>
@@ -308,6 +311,12 @@ export default function Comparison({ route }) {
             {tab !== 'gaps' && <label>House reading change
               <select aria-label="House reading change" value={readingStatus} onChange={e=>setReadingStatus(e.target.value)}>
                 {[["", "All records"], ["reading_changed", "Changed allocations"], ["third_only", "HGAB3 only"], ["second_only", "HGAB2 only"], ["amount_changed", "Paired amount changes"], ["repeated_key", "Repeated keys / grouped"], ["same_amount", "Same House amount"], ["no_house_record", "No House record"]].map(([value,text])=><option key={value} value={value}>{text}</option>)}
+              </select>
+            </label>}
+            {tab === "projects" && <label>Region matching
+              <select aria-label="Region matching" value={regionMatching} onChange={e=>setFinding('regionMatching',e.target.value)}>
+                <option value="strict">Require same region</option>
+                <option value="ignore">Allow different regions · flag candidates</option>
               </select>
             </label>}
             {tab === "projects" && (
@@ -321,6 +330,10 @@ export default function Comparison({ route }) {
             )}{" "}
           </div>
           {tab !== "paps" && <p className="muted">Office filters use recorded source assignments. Paired sources may list different offices; fuzzy suggestions are excluded.</p>}
+          {tab === "projects" && regionMatching === 'ignore' && <p className="notice">
+            {projectRows.filter(r=>r.region_difference).length.toLocaleString()} additional candidates join unique titles within the same program, PAP and funding scope across different regions.
+            Source regions and offices remain recorded separately. Duplicate titles stay separate; amounts do not determine identity. PAP totals are unchanged.
+          </p>}
           <p className="result-count" aria-live="polite">
             {filtered.length.toLocaleString()} of {rows.length.toLocaleString()}{" "}
             rows · Click a header to sort. Amounts in PHP · total / Δ / %.
@@ -368,6 +381,7 @@ export default function Comparison({ route }) {
                           {r.nep?.id ?? r.third?.id ?? r.second?.id ?? r.api?.id}
                         </small>
                       )}
+                      {r.region_difference && <small>Region differs · House: {r.region_difference.house} · NEP: {r.region_difference.nep} · candidate only</small>}
                       {tab !== "gaps" && <small>House: {label(r.reading_status)}{r.reading_status === "repeated_key" ? ` · ${r.match_basis}` : ""}</small>}
                       {tab !== "paps" && (officeLabels(r).length
                         ? officeLabels(r).map(text => <small key={text}>{text}</small>)
@@ -520,6 +534,7 @@ export default function Comparison({ route }) {
   );
 }
 function Filter({ label: caption, rows, field, value, set }) {
+  const options=[...new Set(rows.flatMap(r=>field==='region' ? officeAssignments(r).map(a=>a.region) : [r[field]]).filter(Boolean))].sort();
   return (
     <label>
       {caption}
@@ -529,9 +544,8 @@ function Filter({ label: caption, rows, field, value, set }) {
         onChange={(e) => set(e.target.value)}
       >
         <option value="">All</option>
-        {value && !rows.some(r=>r[field]===value) && <option value={value}>Unavailable: {label(value)}</option>}
-        {[...new Set(rows.map((r) => r[field]).filter(Boolean))]
-          .sort()
+        {value && !options.includes(value) && <option value={value}>Unavailable: {label(value)}</option>}
+        {options
           .map((v) => (
             <option key={v} value={v}>
               {label(v)}
