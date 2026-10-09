@@ -97,6 +97,9 @@ def build():
         paps.append({'label': name, 'program': programs[name],
                      'second_php': a['printed_php'] if a else None, 'third_php': b['printed_php'] if b else None,
                      'delta_php': (b['printed_php'] if b else 0) - (a['printed_php'] if a else 0)})
+    paps.append({'label': 'Foreign-assisted projects (FAP)', 'program': 'Foreign-assisted projects',
+                 'second_php': totals[0]['foreign_assisted_projects'], 'third_php': totals[1]['foreign_assisted_projects'],
+                 'delta_php': totals[1]['foreign_assisted_projects'] - totals[0]['foreign_assisted_projects']})
     summary = {'second': summaries[0], 'third': summaries[1],
                'control_deltas_php': {key: totals[1][key] - totals[0][key] for key in totals[0]},
                'status_counts': dict(Counter(r['trace'] for r in projects)),

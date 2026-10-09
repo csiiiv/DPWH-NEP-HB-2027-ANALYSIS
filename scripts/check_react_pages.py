@@ -74,8 +74,13 @@ with sync_playwright() as p:
         assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
         page.get_by_role("link", name="Open sortable comparison").click()
         page.locator("tbody tr").first.wait_for(timeout=60000)
-        assert page.locator("tbody tr").count() == 45
+        assert page.locator("tbody tr").count() == 46
         assert "native Volume I-C; v5 is retired" in page.locator("main").inner_text()
+        fap = page.locator(".comparison-table tbody tr").filter(has_text="Foreign-assisted projects (FAP)")
+        expect(fap).to_have_count(1)
+        expect(fap).to_contain_text("117.749B")
+        expect(fap).to_contain_text("44.749B")
+        assert fap.locator("td").first.inner_text() == "—"
         page.get_by_role("button", name="Missing from listing", exact=True).click()
         assert page.locator("tbody tr").count() == 23
         page.locator("tbody button.source-link").first.click()
@@ -151,7 +156,7 @@ with sync_playwright() as p:
         page.goto(base + "#compare", wait_until="networkidle")
         page.reload(wait_until="networkidle")
         page.locator("tbody tr").first.wait_for(timeout=60000)
-        assert page.locator("tbody tr").count() == 45
+        assert page.locator("tbody tr").count() == 46
         # All workspaces share the same shell and navigate without a document reload.
         page.evaluate("window.spaNavigationProbe = 42")
         nav = page.get_by_role("navigation", name="Workbench pages", exact=True)
@@ -232,6 +237,10 @@ with sync_playwright() as p:
         for filename in ("hb_dpwh_native_ic_projects.json", "hb_dpwh_native_ic_rollup_audit.json"):
             link = page.locator(f'a[download][href$="{filename}"]').first
             assert page.request.head(link.get_attribute("href")).status == 200
+        page.locator("#papProgram").select_option("Foreign-assisted projects")
+        expect(page.locator("#papCount")).to_contain_text("1 of 46")
+        expect(page.locator("#papRows")).to_contain_text("Foreign-assisted projects (FAP)")
+        page.locator("#papProgram").select_option("")
         office = "Albay 1st District Engineering Office"
         region = "Region V"
         detail = json.loads((ROOT / "analysis/data/source_comparison_2027.json").read_text())

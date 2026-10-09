@@ -54,6 +54,11 @@ class HouseReadingsTests(unittest.TestCase):
         self.assertEqual(sum(r['delta_php'] for r in third_only), 134_000_000)
         self.assertTrue(all(r['third']['office'] == 'Metro Manila 3rd District Engineering Office' for r in third_only))
         self.assertEqual(sum(r['delta_php'] for r in data['paps']), 134_000_000)
+        fap = next(r for r in data['paps'] if r['label'] == 'Foreign-assisted projects (FAP)')
+        self.assertEqual((fap['second_php'], fap['third_php'], fap['delta_php']),
+                         (44_749_011_000, 44_749_011_000, 0))
+        for side in ('second', 'third'):
+            self.assertEqual(sum(r[side + '_php'] or 0 for r in data['paps']), s[side]['operations_including_projects'])
         for side in ('second', 'third'):
             rows = [leaf for r in data['projects'] if r[side] for leaf in r[side]['records']]
             self.assertEqual(len(rows), s[side]['allocations'])

@@ -113,3 +113,17 @@ keys and presence-only differences. Frontend tests cover office filtering
 before pagination and distinct reading PDFs. Browser checks exercise office
 selection, region resets, empty results, the reading-change table, deep links
 and the third-reading PDF at mobile and desktop widths.
+
+## FAP in PAP totals
+
+The stage comparison and House/NEP PAP tables include a separate
+**Foreign-assisted projects (FAP)** control row. Local PAPs plus this row
+reconcile to each source's operations total. FAP uses printed control amounts
+and sums project totals once, without adding their funding children again.
+
+Official NEP FAP is ₱117,749,011,000; House second-reading FAP is
+₱44,749,011,000, a House − NEP difference of −₱73,000,000,000. House FAP is
+unchanged between second and third readings; the reading comparison's PAP
+controls include that zero-delta FAP row. FAP is outside the Transparency
+listing scope, so its API amount and API-to-NEP change are unavailable.
+The 44 balanced local House PAP count continues to describe local controls.

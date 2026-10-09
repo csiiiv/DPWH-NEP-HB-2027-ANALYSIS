@@ -50,6 +50,22 @@ class CurrentPageTests(unittest.TestCase):
         self.assertTrue(any(r['record_kind'] == 'allocation' for r in house))
         self.assertTrue(any(r['funding_php'].get('Loan Proceeds') == 0 for r in house if r['zone'] == 'fap'))
 
+    def test_pap_totals_include_fap_once_and_reconcile_to_operations(self):
+        data = json.loads((DATA / 'source_comparison_2027.json').read_text())
+        faps = [p for p in data['paps'] if p.get('zone') == 'fap']
+        self.assertEqual(len(faps), 1)
+        fap = faps[0]
+        self.assertEqual(fap['house_printed_php'], 44_749_011_000)
+        self.assertEqual(fap['nep_printed_php'], 117_749_011_000)
+        self.assertEqual(fap['delta_php'], -73_000_000_000)
+        self.assertIsNone(fap['api_coverage_php'])
+        self.assertIsNone(fap['source_api_gap_php'])
+        self.assertEqual(sum(p['house_printed_php'] or 0 for p in data['paps']), data['summary']['house_operations_printed_php'])
+        self.assertEqual(sum(p['nep_printed_php'] for p in data['paps']), data['summary']['nep_operations_printed_php'])
+        self.assertEqual(sum(p['api_coverage_php'] or 0 for p in data['paps']), data['summary']['api']['api_php'])
+        for side in ('house', 'nep'):
+            self.assertEqual(sum(r[f'{side}_' + ('extracted_php' if side == 'house' else 'source_php')] for r in fap['regions']), fap[f'{side}_printed_php'])
+
     def test_title_tampering_fails_even_when_every_amount_still_balances(self):
         from house_native import validate_native_detail, walk
         ic = json.loads((DATA / 'hb_dpwh_native_ic_projects.json').read_text())

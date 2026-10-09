@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "fiscal_year": 2027,
-  "built_at": "2026-10-09T13:24:05+08:00",
+  "built_at": "2026-10-09T13:51:21+08:00",
   "stages": {
     "nep": "Executive NEP proposal",
     "house": "HB 10858 supplied source documents; amendment completeness not certified"
@@ -14,7 +14,7 @@
   "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Amount does not determine identity. Duplicate keys remain ambiguous. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; suggestions do not consume NEP rows. No pair has been manually certified.",
   "generator": {
     "path": "analysis/builders/build_current_pages.py",
-    "sha256": "bb6922df33945d3c784a13541600663711889555b771ba6de4532e0b0a480c34"
+    "sha256": "408ab9efc3f96c7d3ed3204f1713416b09a130dc0751c308a470e0bc62dcd8b9"
   },
   "generator_dependencies": {
     "analysis/builders/house_native.py": "3db655b22360c73864aa73b35f7add63d626abc3d0870e8901b84b366b8d9975",

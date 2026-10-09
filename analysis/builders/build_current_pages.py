@@ -54,6 +54,30 @@ def normalized(value):
     return re.sub(r'[^a-z0-9]', '', value)
 
 
+def fap_control_row(ic, tree, house, nep):
+    """Keep the printed FAP control separate from local PAPs and funding parts."""
+    from house_native import walk
+    h = next(n for n in walk(ic['root']) if n['label'] == 'FOREIGN-ASSISTED PROJECTS')
+    n = next(n for n in tree['nodes'] if n['label'] == 'FOREIGN-ASSISTED PROJECTS')
+    hr = [r for r in house if r['zone'] == 'fap']
+    nr = [r for r in nep if r['zone'] == 'fap']
+    extracted = sum(r['amount_php'] for r in hr)
+    assert extracted == h['printed_amount_php']
+    assert sum(r['amount_php'] for r in nr) == n['amount_php']
+    return {'id': n['id'], 'label': 'Foreign-assisted projects (FAP)',
+            'program': 'Foreign-assisted projects', 'zone': 'fap',
+            'house_printed_php': h['printed_amount_php'], 'house_extracted_php': extracted,
+            'nep_printed_php': n['amount_php'], 'coverage_difference_php': 0,
+            'api_coverage_php': None, 'source_api_gap_php': None,
+            'delta_php': h['printed_amount_php'] - n['amount_php'],
+            'comparison_status': 'exact_controls' if h['printed_amount_php'] == n['amount_php'] else 'control_difference',
+            'house_pages': [h['source']['pdf_page']], 'nep_page': n['source']['pdf_page'],
+            'regions': [{'region': reg,
+                         'house_extracted_php': sum(r['amount_php'] for r in hr if r['region'] == reg),
+                         'nep_source_php': sum(r['amount_php'] for r in nr if r['region'] == reg)}
+                        for reg in sorted({r['region'] for r in hr + nr})]}
+
+
 def region(value):
     value = unicodedata.normalize('NFKC', value or '').strip()
     aliases = {'national capital region': 'NCR', 'ncr': 'NCR',
@@ -180,6 +204,9 @@ def build():
                      'delta_php': delta,
                      'comparison_status': 'unmapped_control' if h is None else 'exact_controls' if delta == 0 else 'within_tolerance' if abs(delta) <= .005 * max(h['printed_php'], control['amount_php']) else 'control_difference',
                      'house_pages': h['source_pages'] if h else [], 'nep_page': control['page'], 'regions': regions})
+    paps.append(fap_control_row(hb, tree, house, nep))
+    assert sum(p['house_printed_php'] or 0 for p in paps) == printed['operations_including_projects']
+    assert sum(p['nep_printed_php'] for p in paps) == sum(r['amount_php'] for r in nep)
     assert all(api_checks[name]['source_php'] == c['amount_php'] for name, c in controls.items())
     records = project_matches(house, nep)
     # Only the source/API coverage fields rendered by the current comparison.
@@ -200,7 +227,7 @@ def build():
                'house_fap_php': sum(h['amount_php'] for h in house if h['zone'] == 'fap'),
                'nep_fap_php': source['summary']['fap_php'],
                'house_operations_gap_php': printed['operations_including_projects'] - sum(h['amount_php'] for h in house),
-               'house_balanced_paps': sum(p['coverage_difference_php'] == 0 for p in paps),
+               'house_balanced_paps': sum(p['coverage_difference_php'] == 0 for p in paps if p.get('zone') != 'fap'),
                'house_checked_paps': len(hb_paps), 'house_fap_projects': sum(h['zone'] == 'fap' for h in house), 'nep_evidence': tree['summary']['native_amount_audit'],
                'match_counts': dict(Counter(r['status'] for r in records)),
                'reviewed_pairs': 0, 'api': api_coverage}

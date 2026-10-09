@@ -151,3 +151,7 @@ open. The detailed comparison exposes local/FAP totals with zero House extractio
 gap. PDF
 box overlays, an accessible PDF text layer, saved review decisions, and further
 declarative component conversion remain future work.
+
+PAP totals include a separate FAP control, so local PAPs plus FAP reconcile
+to operations. FAP has no Transparency comparison amount because it is
+outside that listing scope. Both House reading PAP controls retain FAP.

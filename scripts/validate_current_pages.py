@@ -49,7 +49,7 @@ def validate_current_pages():
     data, tree, house = read('source_comparison_2027.json'), read('nep_2027_tree.json'), read('hb_dpwh_native_ic_projects.json')
     sys.path.insert(0, str(ANALYSIS / 'builders'))
     from house_native import comparison_inputs, validate_native_detail
-    from build_current_pages import INPUTS, region
+    from build_current_pages import INPUTS, region, fap_control_row
     require(set(manifest['inputs']) == set(INPUTS), 'Incomplete comparison input manifest')
     require(set(manifest['generator_dependencies']) ==
             {'analysis/builders/house_native.py', 'scripts/hb_native_labels.py'},
@@ -97,9 +97,15 @@ def validate_current_pages():
         for c in checks), 'NEP rollup checks failed')
     nodes = {n['id']: n for n in tree['nodes']}
     api_checks = {r['pap3']: r for r in read('nep_2027_api_reconciliation.json')['pap_checks']}
-    require(sum(p['api_coverage_php'] for p in data['paps']) == s['api']['api_php'], 'PAP API coverage sum failed')
+    require(sum(p['api_coverage_php'] or 0 for p in data['paps']) == s['api']['api_php'], 'PAP API coverage sum failed')
     require(sum(p['api_coverage_php'] for p in data['programs']) == s['api']['api_php'], 'Program API coverage sum failed')
+    fap_rows = [p for p in data['paps'] if p.get('zone') == 'fap']
+    require(fap_rows == [fap_control_row(house, tree, house_records, source['projects'])], 'FAP controls differ from source detail')
+    require(sum(p['house_printed_php'] or 0 for p in data['paps']) == s['house_operations_printed_php'], 'PAPs including FAP do not reconcile to House operations')
+    require(sum(p['nep_printed_php'] for p in data['paps']) == s['nep_operations_printed_php'], 'PAPs including FAP do not reconcile to NEP operations')
     for p in data['paps']:
+        if p.get('zone') == 'fap':
+            continue
         require(p['api_coverage_php'] == api_checks[p['label']]['api_php'] and p['source_api_gap_php'] == p['nep_printed_php'] - p['api_coverage_php'],
                 'PAP API scope/coverage failed')
         require(nodes[p['id']]['amount_php'] == p['nep_printed_php'], f'PAP control stale: {p["id"]}')

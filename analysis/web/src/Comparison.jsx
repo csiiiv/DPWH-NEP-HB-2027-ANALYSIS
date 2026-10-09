@@ -255,6 +255,7 @@ export default function Comparison({ view }) {
           </table>
         </div>
       </section>}
+      {tab === "paps" && <p className="muted">PAP totals include the separate Foreign-assisted projects (FAP) control and reconcile to operations. FAP is outside the Transparency listing scope; its Transparency amount is unavailable.</p>}
       <div className="workspace-switch" aria-label="Workspace panels">
         <button
           aria-pressed={panel === "table"}
