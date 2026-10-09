@@ -90,13 +90,13 @@ export function kmeansClusters(amounts,k=5,iterations=60){
 
 // Exact repeated amounts are the direct "blanket fixed allocation" signal:
 // many line items in one program sharing a single peso value.
-export function exactConcentrations(rows,minRepeat=5){
+export function exactConcentrations(rows,minRepeat=5,field='program'){
   const byProgram=new Map();
   for(const row of rows){
     const value=row.amount_php;
     if(!Number.isFinite(value)||value<=0)continue;
-    const key=JSON.stringify([row.program,value]);
-    const entry=byProgram.get(key)||{program:row.program,amount_php:value,records:0,titles:new Set()};
+    const key=JSON.stringify([row[field],value]);
+    const entry=byProgram.get(key)||{program:row[field],amount_php:value,records:0,titles:new Set()};
     entry.records++;if(entry.titles.size<3)entry.titles.add(row.title);
     byProgram.set(key,entry);
   }
@@ -105,7 +105,7 @@ export function exactConcentrations(rows,minRepeat=5){
     .filter(e=>e.records>=minRepeat)
     .sort((a,b)=>b.records-a.records||b.amount_php-a.amount_php)
     .slice(0,15)
-    .map(({program,amount_php,records,titles})=>({program,amount_php,records,
+    .map(({program,amount_php,records,titles})=>({field,group:program,amount_php,records,
       share:total?records/total:0,examples:[...titles]}));
 }
 

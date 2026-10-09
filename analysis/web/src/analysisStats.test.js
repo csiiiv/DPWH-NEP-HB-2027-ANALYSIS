@@ -38,6 +38,8 @@ test('k-means and exact concentrations return stable, conserved summaries',()=>{
  const concentrations=exactConcentrations(flat,5);
  for(const entry of concentrations){
    assert.ok(entry.records>=5);
+   assert.equal(entry.field,'program');
+   assert.ok(entry.group);
    assert.equal(new Set(entry.examples).size,entry.examples.length);
  }
  const totals=groupTotals(flat,'program');

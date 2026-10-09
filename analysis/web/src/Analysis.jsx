@@ -9,8 +9,9 @@ const labels={'Bridge Program':'Bridges','Convergence and Special Support Progra
 const short=value=>labels[value]??value;
 const modes={no_suggestion:'House-only · no NEP suggestion',unresolved:'Unresolved NEP suggestions',third_only:'New 3rd-reading records'};
 const views=[['overview','Overview'],['insertions','Insertions'],['revisions','Revisions'],['statistics','Statistics']];
-const dimensions=[['overall','Overall'],['region','Region'],['office','District office'],['program','Category']];
+const dimensions=[['overall','Overall'],['region','Region'],['office','District office'],['program','Category'],['pap','PAP']];
 const pick=(params,key,allowed,fallback)=>allowed.includes(params.get(key))?params.get(key):fallback;
+const dimensionTitle=dim=>dim==='office'?'district office':dim==='pap'?'PAP':dim;
 export default function Analysis({route}){
  const [data,setData]=useState(null),[detail,setDetail]=useState(null),[error,setError]=useState('');
  const view=pick(route.params,'view',views.map(v=>v[0]),'overview');
@@ -71,7 +72,7 @@ function Insertions({headlines,reading,ranking,dim,change}){
   <DimensionChips dim={dim} change={change}/>
   <p className="muted">Ranked by {names[reading]} allocation · top 20 of {list.comparison_rows.toLocaleString()} comparison rows · {amount(list.amount_php)} across this group. Grouped allocations remain grouped.</p>
   <p className="notice">{ranking==='no_suggestion'?'House records with no attached NEP/Transparency source and no retained NEP suggestion. These are review candidates, not confirmed insertions.':ranking==='unresolved'?'House records with possible or ambiguous NEP counterparts are separated from the no-suggestion list. Review their suggestions before claiming an insertion.':'Records present only in HGAB3 under the retained reading key. This shows a reading difference, not confirmed absence from NEP.'} Unique different-region title candidates are linked for review and excluded from the House-only groups.</p>
-  {dim!=='overall'&&<AggregateTable title={`Totals by ${dim==='office'?'district office':dim}`} groups={list.by_dim[dim]}/>}
+  {dim!=='overall'&&<AggregateTable title={`Totals by ${dimensionTitle(dim)}`} groups={list.by_dim[dim]}/>}
   <div className="table-scroll" role="region" aria-label="Top insertion candidates" tabIndex={0}><table><thead><tr><th>Rank</th><th>Project / assignment</th><th>Allocation (PHP)</th><th>Records / status</th><th>Review</th></tr></thead><tbody>{list.top.map((r,i)=><tr key={r.id}><td>{i+1}</td><th scope="row">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {r.region} · {r.office||'No recorded office'}</small></th><td className="num" title={r.amount_php.toLocaleString('en-PH')+' PHP'}>{amount(r.amount_php)}</td><td>{r.allocation_records} source allocation {r.allocation_records===1?'record':'records'}<small>{r.trace.replaceAll('_',' ')}</small></td><td><a href={routeHref('compare',{view:'projects',region_match:'ignore',q:r.id,record:r.id})}>Review comparison</a><br/><a href={routeHref('house',{view:'projects',reading:reading==='third'?'third':'second',node:r.source_id})}>{r.allocation_records>1?'House source tree · first allocation':'House source tree'}</a></td></tr>)}</tbody></table></div>
   {!list.top.length && <p>No records in this group for the selected House reading.</p>}
  </section>;
@@ -86,7 +87,7 @@ function Revisions({detail,revisionSets,dim,direction,change}){
   .map(r=>({...r,gap:houseMinusNep(r)})).filter(r=>r.gap!==null),[detail]);
  const shown=useMemo(()=>[...cross].sort((a,b)=>direction==='increased'?b.gap-a.gap:a.gap-b.gap),[cross,direction]);
  const byDim=useMemo(()=>dim==='overall'?null:aggregate(cross.map(r=>{const house=r.third??r.second;
-  return {amount_php:Math.abs(r.gap),region:r.region,office:house?.office??r.nep?.office??'',program:r.program};}),dim),[cross,dim]);
+  return {amount_php:Math.abs(r.gap),region:r.region,office:house?.office??r.nep?.office??'',program:r.program,pap:r.pap};}),dim),[cross,dim]);
  return <>
   <section className="analysis-section"><h2>Reading revisions · HGAB3 vs HGAB2</h2>
    <p className="notice">Recorded 2nd→3rd reading differences under the retained matching key: {revisionSets.reading.length.toLocaleString()} rows · net {amount(revisionSets.delta_php)}. Repeated keys remain grouped.</p>
@@ -97,7 +98,7 @@ function Revisions({detail,revisionSets,dim,direction,change}){
    <div className="analysis-controls"><label>Direction<select aria-label="Revision direction" value={direction} onChange={e=>change('direction',e.target.value)}><option value="increased">Most increased (House above NEP)</option><option value="reduced">Most reduced (House below NEP)</option></select></label></div>
    <p className="muted">{cross.length.toLocaleString()} comparison rows · {amount(cross.reduce((sum,r)=>sum+Math.abs(r.gap),0))} aggregate absolute difference.</p>
    <p className="notice">These rows carry exact House/NEP candidate pairs with unequal amounts. Identity is proposed by title/scope matching and is not manually certified; the House−NEP gap often reflects GAA-like versus full-project-cost bases, especially for FAPs. This is a cross-document comparison, not a House reading change.</p>
-   {byDim&&<AggregateTable title={`Differences by ${dim==='office'?'district office':dim}`} groups={byDim}/>}
+   {byDim&&<AggregateTable title={`Differences by ${dimensionTitle(dim)}`} groups={byDim}/>}
    <div className="table-scroll" role="region" aria-label="Top House vs NEP differences" tabIndex={0}><table><thead><tr><th>Project</th><th>House</th><th>NEP</th><th>House − NEP</th></tr></thead><tbody>{shown.slice(0,20).map(r=>{const house=r.third??r.second;return <tr key={r.id}><th scope="row">{r.title}<small>{short(r.program)} · {r.region} · {r.trace.replaceAll('_',' ')}</small></th><td className="num">{house?amount(house.amount_php):'—'}</td><td className="num">{amount(r.nep.amount_php)}</td><td className="num">{amount(r.gap)}</td></tr>;})}</tbody></table></div>
   </section>
  </>;
@@ -106,7 +107,7 @@ function houseMinusNep(row){const house=row.third??row.second;return house!=null
 function aggregate(rows,dim){
  const groups=new Map();
  for(const row of rows){
-  const label=dim==='office'?(row.office||'No recorded office'):row[dim]||`No recorded ${dim}`;
+  const label=dim==='office'?(row.office||'No recorded office'):row[dim]||`No recorded ${dim==='pap'?'PAP':dim}`;
   const entry=groups.get(label)||{label,rows:0,amount_php:0};
   entry.rows++;entry.amount_php+=row.amount_php;groups.set(label,entry);
  }
@@ -119,7 +120,7 @@ function Statistics({detail,source,dim,change}){
    const s=row[source];if(!s)continue;
    for(const member of s.records??[s])rows.push({amount_php:member.amount_php,
     program:(member.zone??row.zone)==='fap'?'Foreign-assisted projects':member.program??row.program??'Other / unclassified',
-    region:member.region??row.region,office:member.office??row.office??'',title:member.title??row.title});
+    pap:member.pap??row.pap,region:member.region??row.region,office:member.office??row.office??'',title:member.title??row.title});
   }
   return rows;
  },[detail,source]);
@@ -131,7 +132,7 @@ function Statistics({detail,source,dim,change}){
  const bands=useMemo(()=>valueBands(amounts),[amounts]);
  const clusters=useMemo(()=>kmeansClusters(amounts,5),[amounts]);
  const deviants=useMemo(()=>deviantSubsets(records,dim),[records,dim]);
- const concentrations=useMemo(()=>exactConcentrations(records,5),[records]);
+ const concentrations=useMemo(()=>exactConcentrations(records,5,dim==='overall'?'program':dim),[records,dim]);
  if(!amounts.length)return <p className="muted">No allocation records for this source.</p>;
  return <>
   <DimensionChips dim={dim} change={change}/>
@@ -157,13 +158,13 @@ function Statistics({detail,source,dim,change}){
    <div className="analysis-columns"><div className="table-scroll" role="region" aria-label="Value bands" tabIndex={0}><table><thead><tr><th>Band</th><th>Records</th><th>Share</th><th>Amount</th></tr></thead><tbody>{bands.map(b=><tr key={b.label}><th scope="row">{b.label}</th><td className="num">{b.records.toLocaleString()}</td><td className="num">{(b.share*100).toFixed(1)}%</td><td className="num">{amount(b.amount_php)}</td></tr>)}</tbody></table></div>
    <div className="table-scroll" role="region" aria-label="K-means clusters" tabIndex={0}><table><thead><tr><th>Cluster center</th><th>Share of records</th></tr></thead><tbody>{clusters.map((c,i)=><tr key={i}><th scope="row">{amount(c.center_php)}</th><td className="num">{(c.share*100).toFixed(1)}%</td></tr>)}</tbody></table></div></div>
   </section>
-  {dim!=='overall'&&deviants&&<section className="analysis-section"><h2>Deviant subsets · by {dim==='office'?'district office':dim}</h2>
+  {dim!=='overall'&&deviants&&<section className="analysis-section"><h2>Deviant subsets · by {dimensionTitle(dim)}</h2>
    <p className="muted">Groups with at least 100 records, ranked by million-round share against the overall baseline ({(amounts.filter(v=>v%1e6===0).length/amounts.length*100).toFixed(1)}%).</p>
    <div className="table-scroll" role="region" aria-label="Deviant subsets" tabIndex={0}><table><thead><tr><th>Group</th><th>Records</th><th>Million-round share</th><th>vs overall</th></tr></thead><tbody>{deviants.map(d=><tr key={d.label}><th scope="row">{short(d.label)??d.label}</th><td className="num">{d.records.toLocaleString()}</td><td className="num">{(d.share*100).toFixed(1)}%</td><td className="num">{d.deviation>=0?'+':''}{(d.deviation*100).toFixed(1)} pts</td></tr>)}</tbody></table></div>
   </section>}
   <section className="analysis-section"><h2>Exact repeated amounts · blanket fixed allocations</h2>
-   <p className="muted">Programs where many line items share one exact peso value (≥5 repeats).</p>
-   {concentrations.length?<div className="table-scroll" role="region" aria-label="Exact repeated amounts" tabIndex={0}><table><thead><tr><th>Program</th><th>Exact amount</th><th>Line items</th><th>Examples</th></tr></thead><tbody>{concentrations.map((e,i)=><tr key={i}><th scope="row">{short(e.program)}</th><td className="num">{amount(e.amount_php)}</td><td className="num">{e.records}</td><td><small>{e.examples.join(' · ')}</small></td></tr>)}</tbody></table></div>:<p>No exact-value concentration at this threshold.</p>}
+   <p className="muted">Where many line items share one exact peso value (≥5 repeats), grouped by {dimensionTitle(dim==='overall'?'program':dim)}.</p>
+   {concentrations.length?<div className="table-scroll" role="region" aria-label="Exact repeated amounts" tabIndex={0}><table><thead><tr><th>Group</th><th>Exact amount</th><th>Line items</th><th>Examples</th></tr></thead><tbody>{concentrations.map((e,i)=><tr key={i}><th scope="row">{short(e.group)??e.group}</th><td className="num">{amount(e.amount_php)}</td><td className="num">{e.records}</td><td><small>{e.examples.join(' · ')}</small></td></tr>)}</tbody></table></div>:<p>No exact-value concentration at this threshold.</p>}
   </section>
  </>;
 }
@@ -172,7 +173,7 @@ function deviantSubsets(records,dim){
  if(dim==='overall')return null;
  const groups=new Map();
  for(const row of records){
-  const label=dim==='office'?(row.office||'No recorded office'):row[dim]||`No recorded ${dim}`;
+  const label=dim==='office'?(row.office||'No recorded office'):row[dim]||`No recorded ${dim==='pap'?'PAP':dim}`;
   const entry=groups.get(label)||{label,records:0,round:0};
   entry.records++;if(row.amount_php%1e6===0)entry.round++;groups.set(label,entry);
  }

@@ -9,7 +9,7 @@ export function officeKind(value){
  return 'Other recorded offices';
 }
 // Dimension fields carried on ranking entries for by-dimension aggregates.
-const DIMENSIONS=[['region','region'],['office','office_kind'],['program','program']];
+const DIMENSIONS=[['region','region'],['office','office_kind'],['program','program'],['pap','pap']];
 export function headlineStats(input){
  const rows=regionCandidates(input),sources={};
  for(const side of ['third','second','nep','api']){
@@ -40,7 +40,7 @@ export function headlineStats(input){
    if(row.reading_status==='third_only')classified.third_only.push(row);
   }
   rankings[side]=Object.fromEntries(Object.entries(classified).map(([key,list])=>{
-   const flat=list.map(r=>({id:r.id,title:r.title,program:r.program,zone:r.zone,region:r[side].region??r.region,
+   const flat=list.map(r=>({id:r.id,title:r.title,program:r.program,pap:r.pap,zone:r.zone,region:r[side].region??r.region,
      office:r[side].office??'',office_kind:officeKind(r[side].office),amount_php:r[side].amount_php,
      allocation_records:r[side].records?.length??1,trace:r.trace,reading_status:r.reading_status,
      reading_delta_php:r.reading_delta_php,source_id:r[side].native_node_id??r[side].records?.[0]?.native_node_id??r[side].records?.[0]?.id??r[side].id}))
@@ -57,7 +57,7 @@ function byDimension(flat){
  for(const [dim,field] of DIMENSIONS){
   const groups=new Map();
   for(const row of flat){
-   const label=dim==='office'?(row.office||'No recorded office'):row[field]||`No recorded ${dim}`;
+   const label=dim==='office'?(row.office||'No recorded office'):row[field]||`No recorded ${dim==='pap'?'PAP':dim}`;
    const entry=groups.get(label)||{label,rows:0,amount_php:0};
    entry.rows++;entry.amount_php+=row.amount_php;groups.set(label,entry);
   }
