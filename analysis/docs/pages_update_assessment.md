@@ -106,3 +106,8 @@ have been removed from the homepage. The retained detail/comparison pages and
 archive remain discoverable in the workbench README. Source data and the six
 packaged viewers are unchanged. Navigation regressions check that only the
 current stage comparison appears in the homepage comparison section.
+
+
+The stage comparison is now the homepage hero: “Compare budget stages” is the
+main heading, with the sortable comparison as the primary action and the
+provisional-results note alongside it. The three verification cards follow below.

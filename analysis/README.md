@@ -70,8 +70,8 @@ python scripts/build_pages.py
 python -m http.server 8000 --directory _site
 ```
 
-The homepage focuses on three source-verification cards and the sortable stage
-comparison. Other retained viewers are linked in this README.
+The homepage leads with the sortable stage comparison, followed by three
+source-verification cards. Other retained viewers are linked in this README.
 The package serves six retained viewers. Archived pages and outputs are available
 in the checkout and repository archive rather than the current published viewer list.
 
