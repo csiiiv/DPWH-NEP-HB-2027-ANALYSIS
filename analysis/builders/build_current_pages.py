@@ -30,11 +30,15 @@ INPUTS = ['nep_2027_tree.json', 'nep_2027_tree_validation.json',
           'hb_dpwh_native_ic_projects.json', 'hb_dpwh_native_ic_rollup_audit.json',
           'hb_dpwh_native_rollup.json', 'hb_native_ib_rollup_audit.json', 'nep_2027_api_reconciliation.json']
 METHOD = ('Unique normalized title + canonical region + canonical PAP node ID '
-          '(FAP uses program and zone), one-to-one exact candidates. Amount does '
-          'not determine identity. Duplicate keys remain ambiguous. Remaining '
+          '(FAP uses program and zone), one-to-one exact candidates. Titles are '
+          'normalized token-wise: common abbreviation variants (Brgy./Barangay) '
+          'expand before matching and consecutive repeated tokens collapse. '
+          'Amount does not determine identity. Duplicate keys remain ambiguous. Remaining '
           'House rows receive up to three fuzzy suggestions within the same '
           'region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; '
-          'suggestions do not consume NEP rows. No pair has been manually certified.')
+          'suggestions whose title differs only in digits are labeled chainage '
+          'candidates (possible re-segmentation or coverage amendments). '
+          'Suggestions do not consume NEP rows. No pair has been manually certified.')
 
 
 def read(name):
@@ -49,9 +53,27 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+# Common abbreviation variants between the House and NEP documents. Tokens are
+# split on non-alphanumeric boundaries first, so Brgy. is expanded inside
+# hyphenated compounds (e.g. "Estrella-Brgy. Pamosaingan") as well as alone,
+# and spacing variants like "K0001+000" / "K0001 + 000" normalize alike.
+ABBREVIATIONS = {'brgy': 'barangay'}
+# Repeated consecutive words are OCR/spacing doubling (e.g. "Sta. Sta. Maria"
+# for "Sta. Maria"); collapsing them prevents fused keys like "stasta".
 def normalized(value):
-    value = unicodedata.normalize('NFKC', value or '').casefold().replace('\\n', ' ')
-    return re.sub(r'[^a-z0-9]', '', value)
+    value = unicodedata.normalize('NFKC', value or '').casefold().replace('\n', ' ')
+    tokens = []
+    for token in re.split(r'[^a-z0-9]+', value):
+        token = ABBREVIATIONS.get(token, token)
+        if token and (not tokens or tokens[-1] != token):
+            tokens.append(token)
+    return ''.join(tokens)
+
+
+# Titles that differ only in digits describe the same road with different
+# chainage/station numbers; keep that pattern distinguishable from fuzzy noise.
+def digits_omitted(value):
+    return re.sub(r'\d+', '', normalized(value))
 
 
 def fap_control_row(ic, tree, house, nep):
@@ -135,8 +157,17 @@ def project_matches(house, source):
             if score >= .85:
                 suggestions.append({'nep': source[n], 'confidence': round(score, 4)})
         suggestions.sort(key=lambda r: (-r['confidence'], r['nep']['id']))
-        records.append({'status': 'fuzzy_candidate' if suggestions else 'house_unmatched',
-                        'house': h, 'candidates': suggestions[:3]})
+        # Same road with different chainage is a segment amendment candidate:
+        # digits are the only difference after normalization.
+        status = 'fuzzy_candidate' if suggestions else 'house_unmatched'
+        reason = None
+        if any(digits_omitted(h['title']) == digits_omitted(s['nep']['title']) for s in suggestions):
+            status = 'chainage_candidate'
+            reason = ('A suggested counterpart is the same title with only chainage '
+                      'or station numbers differing; possible re-segmentation or '
+                      'coverage amendment, not a new insertion.')
+        records.append({'status': status, 'house': h, 'candidates': suggestions[:3],
+                        'reason': reason})
     for i, n in enumerate(source):
         if i not in matched_n:
             records.append({'status': 'nep_unmatched', 'nep': n})

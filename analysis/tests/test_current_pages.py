@@ -104,12 +104,34 @@ class CurrentPageTests(unittest.TestCase):
         self.assertEqual(suggestions(ns), suggestions(list(reversed(ns))))
 
     def test_fuzzy_suggestions_do_not_consume_or_certify_source_rows(self):
-        rows = project_matches([allocation('h', title='Construction of Road at Barangay Mabini, Sample City Segment 2')],
-                               [allocation('n', title='Construction of Road at Barangay Mabini, Sample City Segment 1')])
+        rows = project_matches([allocation('h', title='Construction of Road at Barangay Mabini, Sample City Alpha Segment')],
+                               [allocation('n', title='Construction of Road at Barangay Mabini, Sample City Beta Segment')])
         self.assertEqual({r['status'] for r in rows}, {'fuzzy_candidate', 'nep_unmatched'})
         suggestion = next(r for r in rows if r['status'] == 'fuzzy_candidate')
         self.assertGreaterEqual(suggestion['candidates'][0]['confidence'], .85)
         self.assertNotIn('delta_php', suggestion)
+
+    def test_abbreviation_variants_and_repeated_tokens_match_exactly(self):
+        # Brgy./Barangay spellings and doubled "Sta. Sta." (OCR/spacing) normalize alike.
+        h = allocation('h', title='Reconstruction of Road, Brgy. Mabini, Sta. Sta. Maria')
+        n = allocation('n', title='Reconstruction of Road, Barangay Mabini, Sta. Maria')
+        rows = project_matches([h], [n])
+        self.assertEqual([r['status'] for r in rows], ['exact_candidate'])
+        self.assertEqual(normalized('Brgy. Mabini, Sta. Sta. Maria'), normalized('Barangay Mabini, Sta. Maria'))
+        self.assertNotEqual(normalized('Sta. 1+000 - Sta. 2+000'), '')
+
+    def test_same_road_with_different_chainage_is_an_amendment_candidate(self):
+        # Digit-only title differences are re-segmentation candidates, not insertions.
+        h = allocation('h', title='Manila-Batangas Rd - K0097 + 788 - K0098 + 000')
+        n = allocation('n', title='Manila-Batangas Rd - K0097 + 777 - K0098 + 000')
+        rows = project_matches([h], [n])
+        self.assertEqual(rows[0]['status'], 'chainage_candidate')
+        self.assertIn('amendment', rows[0]['reason'])
+        # Letter differences stay fuzzy; no-suggestion rows stay unmatched.
+        n2 = allocation('n2', title='Manila-Batangas Rd - K0097 + 788 - K0098 + 900 Segment B')
+        self.assertEqual(project_matches([h], [n2])[0]['status'], 'fuzzy_candidate')
+        self.assertEqual(project_matches([h], [allocation('n3', title='Unrelated seawall')])[0]['status'],
+                         'house_unmatched')
 
 
 if __name__ == '__main__':

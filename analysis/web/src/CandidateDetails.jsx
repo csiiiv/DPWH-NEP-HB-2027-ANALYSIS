@@ -2,12 +2,12 @@ import React from 'react';
 import {routeHref} from './routes.js';
 const money=value=>value==null?'Unavailable':`₱${value.toLocaleString('en-PH')}`;
 export default function CandidateDetails({row,onPreview}){
- const ambiguous=row.trace==='ambiguous';
+ const ambiguous=row.trace==='ambiguous',chainage=row.trace==='chainage_candidate';
  const sources=[...['second','third'].filter(side=>row[side]).map(side=>({key:side,label:side==='second'?'HGAB2 · 2nd reading':'HGAB3 · 3rd reading',record:row[side]})),...row.suggestions.map((suggestion,index)=>({key:`nep-${index}`,label:`NEP suggestion ${index+1}`,record:suggestion.nep,score:suggestion.confidence,suggested:true}))];
  return <section className="candidate-details" aria-label="Suggested NEP matches">
-  <h3>{ambiguous?'Ambiguous NEP candidates':'Fuzzy title candidates'}</h3>
-  <p>Suggestions remain unlinked and are excluded from this row’s NEP totals. Scores measure text similarity, not the probability of project identity.</p>
-  <details className="candidate-method"><summary>How suggestions and scores work</summary><p>{ambiguous?'Multiple records share an exact matching key; no unique pairing was established.':'Suggestions use the same region, PAP and funding scope. Up to 20 records are shortlisted by shared title tokens; the top three with normalized-title similarity ≥0.85 are retained.'} Normalized titles ignore case, punctuation and spaces; abbreviations remain distinct. Amounts and offices do not determine this score.</p></details>
+  <h3>{ambiguous?'Ambiguous NEP candidates':chainage?'Same road · different chainage':'Fuzzy title candidates'}</h3>
+  <p>{chainage?'A suggested counterpart has the same title with only chainage or station numbers differing — a possible re-segmentation or coverage amendment, not a new insertion. Still an unconfirmed candidate.':'Suggestions remain unlinked and are excluded from this row’s NEP totals. Scores measure text similarity, not the probability of project identity.'}</p>
+  <details className="candidate-method"><summary>How suggestions and scores work</summary><p>{ambiguous?'Multiple records share an exact matching key; no unique pairing was established.':'Suggestions use the same region, PAP and funding scope. Up to 20 records are shortlisted by shared title tokens; the top three with normalized-title similarity ≥0.85 are retained.'} Normalized titles ignore case, punctuation and spaces; abbreviation variants (Brgy./Barangay) expand before matching. When a suggestion differs only in digits, the row is labeled a chainage candidate. Amounts and offices do not determine this score.</p></details>
   <div className="candidate-table-scroll" role="region" aria-label="House and suggested NEP comparison" tabIndex={0}>
    <table className="candidate-table"><caption>Recorded House sources and suggested NEP counterparts</caption><thead><tr><th scope="col">Source / similarity</th><th scope="col">Full project title / assignment</th><th scope="col">Amount (PHP)</th><th scope="col">Suggested NEP − House</th><th scope="col">Source evidence</th></tr></thead>
     <tbody>{sources.map(source=>{

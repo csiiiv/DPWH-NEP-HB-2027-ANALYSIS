@@ -188,8 +188,9 @@ records and selected sources are included in shared URLs.
 
 Project records offer **Region matching → Allow different regions · flag
 candidates**. Strict region matching remains the default. The optional mode
-finds 28 unique candidates (24 FAP, four local), labels both source regions,
-and preserves duplicate records, source assignments, tree paths and totals.
+merges 29 unique-title pairs (25 FAP, four local) across differing source
+labels, labels both source assignments, and preserves duplicate records,
+source assignments, tree paths and totals.
 Use `#compare?view=projects&region_match=ignore&q=4432-PHI` to share a finding.
 
 Project records offer **Show analytics** for the entire applied search/filter
@@ -214,3 +215,12 @@ identities, assignments, page evidence and grouped records with the full ledger.
 After packaging, `python3 scripts/check_comparison_workspace.py` checks lazy
 loading, desktop/mobile layouts, preserved filters, exact filtered exports and
 the analytics modal under the GitHub Pages project prefix.
+
+The main **Analysis** route (`#analysis`) loads build-time headline summaries from
+`comparison_overview_2027.json`, without fetching the full project payload. It
+reports office categories and mutually exclusive program buckets per source,
+counting grouped allocation members once. FAP is a funding bucket across programs.
+House-only rankings separate records without NEP suggestions, unresolved
+suggestions and third-reading-only records; amounts and evidence links remain
+available in Compare stages and the source trees. Source and ranking selections
+are shareable as `#analysis?source=third&ranking=no_suggestion`.

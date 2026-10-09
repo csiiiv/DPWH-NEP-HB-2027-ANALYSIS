@@ -5,6 +5,7 @@ import "./styles.css";
 import WorkbenchHeader from "./WorkbenchHeader.jsx";
 import { routes, readRoute, routeHref, legacyRoutes } from "./routes.js";
 const SourceWorkspace = lazy(() => import("./SourceWorkspace.jsx"));
+const Analysis = lazy(()=>import("./Analysis.jsx"));
 const Comparison = lazy(() => import("./Comparison.jsx"));
 const Resources = lazy(() => import("./Resources.jsx"));
 function App() {
@@ -32,7 +33,7 @@ function App() {
       <WorkbenchHeader route={route.key} />
       <main id="main" tabIndex="-1" className="shell">
         <Suspense fallback={<p role="status">Loading workspace…</p>}>
-          {route.key === "compare" ? <Comparison route={route} /> : route.key === "home" ? <Home /> : route.key === "resources" ? <Resources /> : routes[route.key] ?
+          {route.key === "analysis" ? <Analysis route={route} /> : route.key === "compare" ? <Comparison route={route} /> : route.key === "home" ? <Home /> : route.key === "resources" ? <Resources /> : routes[route.key] ?
             <SourceWorkspace key={route.key} route={route} /> :
             <section><h1>Page not found</h1><p>This workbench route is unavailable.</p><a href="#home">Return home</a></section>}
         </Suspense>

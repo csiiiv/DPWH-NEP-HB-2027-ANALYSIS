@@ -83,6 +83,8 @@ def classify(row: dict) -> str:
         return base + 'candidate_decrease'
     if status == 'fuzzy_candidate':
         return 'fuzzy_candidate'
+    if status == 'chainage_candidate':
+        return 'chainage_candidate'
     if status == 'ambiguous':
         return 'ambiguous'
     if status == 'house_unmatched':

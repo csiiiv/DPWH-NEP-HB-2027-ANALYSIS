@@ -1,5 +1,5 @@
 import React,{useEffect,useId,useMemo,useRef,useState} from 'react';
-import {amount} from './model.js';
+import {amount,programLabel} from './model.js';
 import {analyticsSources,projectAnalytics,compareDistribution} from './projectAnalytics.js';
 import {readingInfo,matchInfo,flagInfo} from './analyticsStatusInfo.js';
 const sections=[['overview','Overview'],['distribution','Distribution'],['changes','Changes & matches'],['flags','Review flags']];
@@ -16,7 +16,7 @@ export default function ProjectAnalytics({rows,finding,onClose,returnFocus}) {
  },[]);
  const changed=rows.filter(r=>['third_only','second_only'].includes(r.reading_status) || r.reading_delta_php!=null && r.reading_delta_php!==0).length;
  const flagged=summary.flaggedRows;
- const filters=[finding.query && `Search: ${finding.query}`,finding.program && `Program: ${finding.program}`,finding.region && `Region: ${finding.region}`,finding.office && `Office: ${finding.office}`,finding.trace && `Match: ${matchInfo[finding.trace]?.[0] || human(finding.trace)}`,finding.readingStatus && `Reading: ${readingInfo[finding.readingStatus]?.[0] || human(finding.readingStatus)}`].filter(Boolean);
+ const filters=[finding.query && `Search: ${finding.query}`,finding.program && `Program: ${programLabel(finding.program)}`,finding.region && `Region: ${finding.region}`,finding.office && `Office: ${finding.office}`,finding.trace && `Match: ${matchInfo[finding.trace]?.[0] || human(finding.trace)}`,finding.readingStatus && `Reading: ${readingInfo[finding.readingStatus]?.[0] || human(finding.readingStatus)}`].filter(Boolean);
  function changeTab(next){setTab(next);dialog.current.querySelector('.analytics-content')?.scrollTo(0,0);}
  return <dialog ref={dialog} className="analytics-dialog" aria-labelledby="analytics-title" onCancel={e=>{e.preventDefault();onClose();}} onClick={e=>{
   if(e.target!==e.currentTarget)return;const b=e.currentTarget.getBoundingClientRect();if(e.clientX<b.left || e.clientX>b.right || e.clientY<b.top || e.clientY>b.bottom)onClose();

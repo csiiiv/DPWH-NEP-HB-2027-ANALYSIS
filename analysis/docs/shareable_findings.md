@@ -73,18 +73,21 @@ mode with `region_match=ignore`, for example:
 `#compare?view=projects&region_match=ignore&q=4432-PHI`
 
 This optional display join combines only previously unpaired, unique normalized
-House/NEP titles within the same program, canonical PAP and funding zone.
-Uniqueness is checked across all records, including existing matches. Repeated
-House groups and duplicate titles stay separate; amounts do not identify projects.
-Existing matches are retained. The join preserves NEP/API records, source pages,
-full tree paths and every amount; the retained JSON and PAP controls are unchanged.
-Each additional candidate labels the original House and NEP regions separately.
-Region and office filters use the recorded assignments of either source.
+House/NEP titles within the same funding zone. Recorded region, office, program
+and PAP labels may differ between the two sources; each is kept separately on
+the merged row. Uniqueness is checked across all records, including existing
+matches. Repeated House groups and duplicate titles stay separate; amounts do
+not identify projects. Existing matches are retained. The join preserves
+NEP/API records, source pages, full tree paths and every amount; the retained
+JSON and PAP controls are unchanged. Region and office filters use the recorded
+assignments of either source.
 
-The current data yields **28 additional candidates: 24 FAP and four local**.
+The current data yields **29 additional candidates: 25 FAP and four local**.
 BCIB (4432-PHI), LLRN Phase I (PHL-27) and Davao Bypass III (PH-P282) each join
-House Nationwide records to NEP NCR/Central Office records. These are candidates,
-not manually certified identities. Disable the mode to restore separate rows.
+House Nationwide records to NEP NCR/Central Office records. PSRRRP (9251-PH)
+joins despite a National Building Program versus Local Program label
+difference. These are candidates, not manually certified identities. Disable
+the mode to restore separate rows.
 
 
 ### Search responsiveness
@@ -157,7 +160,7 @@ dataset downloads remain in the source-context section.
 
 The build generates `comparison_overview_2027.json` and
 `comparison_projects_2027.json` from the retained stage trace and House reading
-comparison. The initial overview is about **44 KB**; Project records lazily loads
+comparison. The initial overview is about **82 KB** (including Analysis headlines); Project records lazily loads
 about **26 MB**, compared with about **86 MB** for both original inputs. Sizes are
 uncompressed. Compact sources preserve original amounts, identities, recorded
 assignments, evidence and page references; repeated fields are restored on load.
@@ -192,8 +195,14 @@ The expanded record is preserved in shared URLs.
 The score is a normalized-title similarity measure, not a calibrated probability.
 Fuzzy matching retains up to three suggestions above 0.85 from a token-overlap
 shortlist of at most 20 unmatched NEP records in the same region/PAP/funding scope.
-Abbreviations are not expanded; for example, Lopez Viaduct’s `Barangay` versus
-`Brgy.` wording yields 0.9529. Ambiguous candidates instead share a duplicate
+Common abbreviation variants (`Brgy.`/`Barangay`) and repeated-token doubling
+(`Sta. Sta.`) are normalized before matching. When a suggestion differs from the
+House title only in chainage or station numbers, the row is labeled a
+**Same road · different chainage** candidate instead: that pattern usually
+reflects re-segmentation or coverage amendments rather than a new insertion.
+For example, Muntinlupa-Insular
+Prison Rd’s differing chainage end (`146` vs `204`) yields 0.9636. Ambiguous
+candidates instead share a duplicate
 exact key. Suggestions do not attach NEP sources, consume counterpart records
 or contribute additional amounts to comparison or analytics totals.
 
@@ -211,3 +220,35 @@ HGAB3, NEP and Transparency, including grouped members. Do not sum those counts
 across stages to estimate unique projects. Match-status counts also count rows;
 a suggested pair must not be interpreted as both a confirmed insertion and
 a confirmed removal. JSON finding exports label the counting units explicitly.
+
+
+**Foreign-assisted projects (FAPs)** in the Project records program filter selects
+the recorded `zone: "fap"` funding category across all individual programs.
+It does not infer FAP status from loan numbers or titles. The selection is shared
+with `#compare?view=projects&program=fap` and applies to office options, analytics
+and exports. When carried to PAP totals it selects the FAP control. Region matching
+can change the number of comparison rows by joining optional candidates; source
+allocation totals remain independent of these row counts.
+
+### Main Analysis page
+
+**Analysis** (`#analysis`) defaults to HGAB3 and shows source allocation record
+counts and PHP totals by office category and program. Switch to HGAB2, NEP or
+Transparency to inspect that source independently. Central Office, DEOs, regional
+offices, other recorded offices and missing office assignments are separate;
+no office is inferred from geography. Grouped records contribute their individual
+member counts and amounts, without counting the parent again. These counts are
+not cross-stage unique projects.
+
+FAP records are counted exclusively in the FAP bucket using their funding zone,
+so they do not also appear under their individual programs. National Building is
+included to account for sources where that program occurs. Every office and
+program partition reconciles to its source count and allocation total.
+
+Top insertion candidates are ranked by House allocation amount, with separate
+lists for no attached NEP/Transparency source and no NEP suggestion, unresolved
+suggestions, and new third-reading records. Optional unique different-region
+matches are applied for review before classifying candidates. No list certifies
+policy insertions. Each top-20 row links to its comparison finding and House
+source tree; grouped entries link to the first allocation and their comparison
+retains all member paths. Shared routes preserve source and ranking selections.

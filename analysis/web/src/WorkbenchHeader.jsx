@@ -5,6 +5,7 @@ import "../../viewers/page_navigation.css";
 const pages = [
   ["home", "Home", "#home"],
   ["compare", "Compare stages", "#compare"],
+  ["analysis", "Analysis", "#analysis"],
   ["house", "House GAB", "#house"],
   ["nep", "DBM NEP", "#nep"],
   ["transparency", "DPWH Transparency NEP", "#transparency"],

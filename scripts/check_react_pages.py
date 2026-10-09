@@ -258,8 +258,13 @@ with sync_playwright() as p:
         assert "House native I-C operations extract" in page.locator("#cards").inner_text()
         assert "44/44" in page.locator("#coverageSummary").inner_text()
         assert "All mapped native I-C PAP controls balance" in page.locator("#unresolvedRows").inner_text()
+        expect(page.get_by_role("alert")).to_have_count(0)
+        page.locator("#projectStatus").select_option("chainage_candidate")
+        expect(page.locator("#projectRows")).to_contain_text("Same road · different chainage")
+        page.locator("#projectStatus").select_option("")
         for filename in ("hb_dpwh_native_ic_projects.json", "hb_dpwh_native_ic_rollup_audit.json"):
             link = page.locator(f'a[download][href$="{filename}"]').first
+            expect(link).to_have_attribute("href", re.compile(r"^https?://"), timeout=60000)
             assert page.request.head(link.get_attribute("href")).status == 200
         page.locator("#papProgram").select_option("Foreign-assisted projects")
         expect(page.locator("#papCount")).to_contain_text("1 of 46")

@@ -81,6 +81,7 @@ jobs:
           fi
           python3 scripts/check_react_pages.py
           python3 scripts/check_comparison_workspace.py
+          python3 scripts/check_analysis_page.py
       - name: Check root and historical route redirects under project base
         run: node --test analysis/tests/test_static_navigation.cjs
       - name: Configure Pages

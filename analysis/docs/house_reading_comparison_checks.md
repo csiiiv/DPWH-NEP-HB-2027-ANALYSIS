@@ -140,7 +140,7 @@ The adapter attaches the audited reading ledger through each second-reading
 record's retained `source_record_id`. It consumes every HGAB2 allocation once,
 keeps repeated keys grouped, and adds third-only records. Both House columns
 reconcile independently to their operations controls; NEP/API amounts are
-preserved. Project rows total 18,440, including one grouped repeated House key.
+preserved. Project rows total 18,159, including one grouped repeated House key.
 The 46 PAP/FAP rows likewise reconcile, with two changed PAP controls (+₱68M
 flood maintenance, +₱66M BIP access roads). Unmapped House controls remain
 unavailable. PAP PDF references now carry each reading's printed heading pages.
@@ -148,10 +148,13 @@ unavailable. PAP PDF references now carry each reading's printed heading pages.
 
 ## Optional candidates across different source regions
 
-The 18,440-row count above describes the default strict comparison. Selecting
-**Region matching → Allow different regions · flag candidates** combines 28
-additional unique House/NEP candidates (24 FAP, four local), producing 18,412
-rows. It retains every source amount, source ID, PDF page and full tree path.
+The 18,159-row count above describes the default strict comparison. Selecting
+**Region matching → Allow different regions · flag candidates** merges 29
+unique House/NEP candidate pairs (25 FAP, four local), producing 18,130 rows —
+one row carries both sources' amounts instead of two separate unmatched rows.
+Program and PAP labels may differ between the joined records (PSRRRP is
+National Building Program in I-C but Local Program in the NEP). It retains
+every source amount, source ID, PDF page and full tree path.
 Both recorded regions remain visible; region/office filters can use either
 source's assignment. Duplicate identities and repeated House groups stay
 separate. This is an optional display join, not a rewrite of the retained match

@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { loadData, sourceReference, siteUrl, repo } from "./data.js";
-import { amount, selectRows, values, officeOptions, warmSearchIndex } from "./model.js";
+import { amount, selectRows, values, officeOptions, warmSearchIndex, matchesProgram, programLabel } from "./model.js";
 import {suggestedCounterparts} from "./suggestedCounterparts.js";
 import {regionCandidates} from "./regionCandidates.js";
 import {officeAssignments} from "../../viewers/project_offices.mjs";
@@ -57,7 +57,7 @@ export default function Comparison({ route }) {
   const counterpartCounts=useMemo(()=>suggestedCounterparts(projectRows),[projectRows]);
   useEffect(()=>warmSearchIndex(projectRows),[projectRows]);
   const rows = data ? tab === 'paps' ? unified.paps : tab === 'gaps' ? data.transparency_gaps : projectRows : [];
-  const offices=useMemo(()=>officeOptions(rows.filter(r=>(!program || r.program===program) && (!region || officeAssignments(r).some(a=>a.region===region))),region),[rows,program,region]);
+  const offices=useMemo(()=>officeOptions(rows.filter(r=>matchesProgram(r,program) && (!region || officeAssignments(r).some(a=>a.region===region))),region),[rows,program,region]);
   const filtered = useMemo(
     () =>
       selectRows(rows, {
@@ -302,6 +302,7 @@ export default function Comparison({ route }) {
             </label>
             <Filter
               label="Program"
+              extraOptions={tab==='projects' || program==='fap' ? [{value:'fap',label:'Foreign-assisted projects (FAPs)'}] : []}
               rows={rows}
               field="program"
               value={program}
@@ -354,11 +355,11 @@ export default function Comparison({ route }) {
           </div>
           {tab !== "paps" && <p className="muted">Office filters use recorded source assignments. Paired sources may list different offices; fuzzy suggestions are excluded.</p>}
           {tab === "projects" && regionMatching === 'ignore' && <p className="notice">
-            {projectRows.filter(r=>r.region_difference).length.toLocaleString()} additional candidates join unique titles within the same program, PAP and funding scope across different regions.
-            Source regions and offices remain recorded separately. Duplicate titles stay separate; amounts do not determine identity. PAP totals are unchanged.
+            {projectRows.filter(r=>r.region_difference).length.toLocaleString()} unique-title pairs merged across differing source labels (region, office, program or PAP), so {projectRows.length.toLocaleString()} comparison rows now carry both House and NEP amounts instead of appearing as separate unmatched rows.
+            Source regions, offices and programs remain recorded separately on the merged row. Duplicate titles stay separate; amounts do not determine identity. PAP totals are unchanged.
           </p>}
           {hasFilters && <div className="active-filters" aria-label="Active filters">
-            {[['query',query],['program',program],...(tab==='paps'?[]:[['region',region],['office',office]]),...(tab==='gaps'?[]:[['readingStatus',readingStatus]]),...(tab==='projects'?[['trace',trace],...(regionMatching==='ignore'?[['regionMatching','Allow different regions']]:[])]:[])].filter(([,v])=>v).map(([key,v])=><button key={key} onClick={()=>{setFinding(key,key==='regionMatching'?'strict':'');if(key==='query')setSearchDraft('');}} aria-label={`Remove ${key} filter`}>{key==='readingStatus' && v==='house_records_only' ? 'House only · no NEP / Transparency' : label(v)} ×</button>)}
+            {[['query',query],['program',program],...(tab==='paps'?[]:[['region',region],['office',office]]),...(tab==='gaps'?[]:[['readingStatus',readingStatus]]),...(tab==='projects'?[['trace',trace],...(regionMatching==='ignore'?[['regionMatching','Allow different regions']]:[])]:[])].filter(([,v])=>v).map(([key,v])=><button key={key} onClick={()=>{setFinding(key,key==='regionMatching'?'strict':'');if(key==='query')setSearchDraft('');}} aria-label={`Remove ${key} filter`}>{key==='readingStatus' && v==='house_records_only' ? 'House only · no NEP / Transparency' : key==='program' ? programLabel(v) : label(v)} ×</button>)}
             <button onClick={()=>{for(const key of ['query','program','region','office','trace','readingStatus'])setFinding(key,'');setFinding('regionMatching','strict');setSearchDraft('');}}>Clear filters</button>
           </div>}
           {readingStatus==='house_records_only' && <p className="muted">Insertion candidates: HGAB2 or HGAB3 records with no attached NEP or Transparency source. Unmatched records can reflect title or assignment differences; this does not confirm absence from the NEP PDF.</p>}
@@ -552,7 +553,7 @@ export default function Comparison({ route }) {
     </>
   );
 }
-function Filter({ label: caption, rows, field, value, set }) {
+function Filter({ label: caption, rows, field, value, set, extraOptions=[] }) {
   const options=useMemo(()=>[...new Set(rows.flatMap(r=>field==='region' ? officeAssignments(r).map(a=>a.region) : [r[field]]).filter(Boolean))].sort(),[rows,field]);
   return (
     <label>
@@ -563,7 +564,8 @@ function Filter({ label: caption, rows, field, value, set }) {
         onChange={(e) => set(e.target.value)}
       >
         <option value="">All</option>
-        {value && !options.includes(value) && <option value={value}>Unavailable: {label(value)}</option>}
+        {extraOptions.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}
+        {value && !options.includes(value) && !extraOptions.some(o=>o.value===value) && <option value={value}>Unavailable: {label(value)}</option>}
         {options
           .map((v) => (
             <option key={v} value={v}>

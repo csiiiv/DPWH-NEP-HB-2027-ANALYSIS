@@ -152,3 +152,8 @@ test('House-only insertion candidates exclude any attached NEP or Transparency s
  const paps=[{title:'A',second_php:0,nep_php:0},{title:'B',third_php:2},{title:'C',nep_php:3},{title:'D',second_php:4,api_php:0}];
  assert.deepEqual(selectRows(paps,{tab:'paps',readingStatus:'house_records_only'}).map(r=>r.title),['B']);
 });
+test('FAP program selection uses the funding category across individual programs',()=>{
+ const rows=[{title:'A',program:'Bridge Program',zone:'fap'},{title:'B',program:'Network Development Program',zone:'fap'},{title:'C',program:'Bridge Program',zone:'local'},{title:'D',program:'Foreign-assisted projects',third_php:10}];
+ assert.deepEqual(selectRows(rows,{program:'fap'}).map(r=>r.title),['A','B','D']);
+ assert.deepEqual(selectRows(rows,{program:'Bridge Program'}).map(r=>r.title),['A','C']);
+});

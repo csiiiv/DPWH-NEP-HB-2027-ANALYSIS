@@ -619,8 +619,8 @@ It does not use amount equality to identify projects.
 **A region conflict does not establish source absence.** BCIB, LLRN Phase I
 and Davao Bypass III are NEP NCR/Central Office entries and House Nationwide
 comparison records. Strict matching keeps them separate; the optional mode
-joins unique candidates and flags the original regions. The current mode adds
-28 candidates (24 FAP and four local), without overwriting source assignments.
+joins unique candidates and flags the original labels. The current mode adds
+29 candidates (25 FAP and four local), without overwriting source assignments.
 
 **An API omission is not a PDF omission.** NEP FAP records and the 23 documented
 non-FAP allocations outside the retained listing are handled as source/listing

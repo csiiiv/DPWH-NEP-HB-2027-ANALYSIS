@@ -72,6 +72,11 @@ export function values(row, tab) {
         row.third?.amount_php ?? null,
       ];
 }
+export const FAP_PROGRAM='fap';
+export const programLabel=value=>value===FAP_PROGRAM?'Foreign-assisted projects (FAPs)':value;
+export function matchesProgram(row,program){
+ return !program || (program===FAP_PROGRAM ? row.zone==='fap' || row.program==='Foreign-assisted projects' : row.program===program);
+}
 export function selectRows(
   rows,
   {
@@ -92,7 +97,7 @@ export function selectRows(
     .filter(
       (r) =>
         (!tokens.length || tokens.every(token=>searchText(r).includes(token))) &&
-        (!program || r.program === program) &&
+        matchesProgram(r,program) &&
         (!region || officeAssignments(r).some(a=>a.region===region)) &&
         matchesOffice(r, office, region) &&
         (!readingStatus || (readingStatus === 'house_records_only' ? (tab==='paps' ? (r.second_php != null || r.third_php != null) && r.nep_php == null && r.api_php == null : Boolean(r.second || r.third) && !r.nep && !r.api) : readingStatus === 'reading_changed' ? r.reading_delta_php != null && r.reading_delta_php !== 0 || ['second_only','third_only'].includes(r.reading_status) : r.reading_status === readingStatus)) &&

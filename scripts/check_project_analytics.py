@@ -33,7 +33,7 @@ with tempfile.TemporaryDirectory() as folder:
                 button.click()
                 dialog = page.get_by_role('dialog', name='Project result analytics')
                 expect(dialog).to_be_visible()
-                expect(dialog).to_contain_text('18,440 filtered comparison rows')
+                expect(dialog).to_contain_text('18,159 filtered comparison rows')
                 expect(dialog).to_contain_text('₱134.000M')
                 expect(dialog).to_contain_text('₱587.076B')
                 assert dialog.evaluate('e=>e.scrollWidth<=e.clientWidth+1')

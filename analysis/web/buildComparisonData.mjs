@@ -1,6 +1,7 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
+import {headlineStats} from './src/headlineStats.js';
 import {unifiedComparison} from './src/unifiedComparison.js';
 const fields=['id','source_record_id','native_node_id','title','amount_php','program','pap','pap_id','zone','region','office','pdf_page','pdf_pages','record_kind','evidence','funding_php'];
 function compactSource(source){
@@ -23,7 +24,7 @@ export function comparisonPayloads(stages,readings){
  for(const side of ['second','third','nep','api']){
   if(projects.reduce((sum,r)=>sum+(r[side]?.amount_php || 0),0)!==unified.projects.reduce((sum,r)=>sum+(r[side]?.amount_php || 0),0))throw new Error('Compact comparison changed source totals');
  }
- return {overview:{schema_version:1,summary:stages.summary,readingSummary:readings.summary,paps:unified.paps,transparency_gaps:stages.transparency_gaps},detail:{schema_version:1,projects}};
+ return {overview:{schema_version:1,summary:stages.summary,readingSummary:readings.summary,headlines:headlineStats(unified.projects),paps:unified.paps,transparency_gaps:stages.transparency_gaps},detail:{schema_version:1,projects}};
 }
 export function buildComparisonData(){
  const data=new URL('../data/',import.meta.url),names=['stage_trace_2027.json','house_reading_changes_2027.json'];

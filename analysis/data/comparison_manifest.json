@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "fiscal_year": 2027,
-  "built_at": "2026-10-09T13:51:21+08:00",
+  "built_at": "2026-10-09T22:07:11+08:00",
   "stages": {
     "nep": "Executive NEP proposal",
     "house": "HB 10858 supplied source documents; amendment completeness not certified"
@@ -11,10 +11,10 @@
   "nep_version": 1,
   "scope": "New appropriations excluding automatic appropriations; operations project comparison; local and FAP separated",
   "units": "Integer Philippine pesos",
-  "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Amount does not determine identity. Duplicate keys remain ambiguous. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; suggestions do not consume NEP rows. No pair has been manually certified.",
+  "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Titles are normalized token-wise: common abbreviation variants (Brgy./Barangay) expand before matching and consecutive repeated tokens collapse. Amount does not determine identity. Duplicate keys remain ambiguous. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; suggestions whose title differs only in digits are labeled chainage candidates (possible re-segmentation or coverage amendments). Suggestions do not consume NEP rows. No pair has been manually certified.",
   "generator": {
     "path": "analysis/builders/build_current_pages.py",
-    "sha256": "408ab9efc3f96c7d3ed3204f1713416b09a130dc0751c308a470e0bc62dcd8b9"
+    "sha256": "a43120a4e93ce921ae8e6ef3cfeed41b63f8cdad25de0b581f451e22dbdb7f81"
   },
   "generator_dependencies": {
     "analysis/builders/house_native.py": "3db655b22360c73864aa73b35f7add63d626abc3d0870e8901b84b366b8d9975",

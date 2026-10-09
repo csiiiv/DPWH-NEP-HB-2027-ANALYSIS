@@ -6,8 +6,9 @@ stated otherwise.
 [Open the SPA](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/)
 · [Repository guide](../README.md)
 · [Frontend commands and routes](web/README.md)
+· [Analysis headlines](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#analysis)
 
-The current presentation is a React + Vite SPA with seven workspaces. Python
+The current presentation is a React + Vite SPA with nine workspaces. Python
 builders retain responsibility for extraction, repairs, audits, and candidate
 matching. All three sources retain `comparison_ready: false`: arithmetic
 passes, while DBM row evidence, House project identity and amendment completeness, and

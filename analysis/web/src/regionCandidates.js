@@ -1,7 +1,10 @@
 // An optional display join. Retained matches and source assignments stay intact.
 const normalized=value=>String(value ?? '').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g,'');
+// Program and PAP labels differ between documents for the same loan (e.g.
+// PSRRRP sits under National Building Program in I-C but Local Program in the
+// NEP), so the candidate key uses only funding zone plus normalized title.
 function key(record) {
-  return JSON.stringify([record.zone,record.program,record.zone==='fap' ? record.program : record.pap_id,normalized(record.title)]);
+  return JSON.stringify([record.zone,normalized(record.title)]);
 }
 export function regionCandidates(rows) {
   const houses=new Map(),neps=new Map();
@@ -25,7 +28,7 @@ export function regionCandidates(rows) {
       house_match:'region_difference_candidate',api_presence:n.api_presence,
       confidence:null,house_minus_nep_php:house.amount_php-n.nep.amount_php,
       region_difference:{house:house.region,nep:n.nep.region},
-      relaxed_match_basis:'Unique normalized title + program + PAP + zone; region ignored',
+      relaxed_match_basis:'Unique normalized title + funding zone; region, office, program and PAP labels ignored',
       reason:'Source regions differ. Optional candidate only; source assignments are unchanged.'});
     consumed.add(n.id);
   }

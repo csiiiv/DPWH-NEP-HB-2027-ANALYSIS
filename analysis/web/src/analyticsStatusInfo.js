@@ -13,13 +13,14 @@ export const matchInfo={
  house_only_candidate:['House without NEP anchor','The House record has no attached NEP candidate. Matching scope or source assignments can explain this; it is not a confirmed insertion.'],
  nep_only_candidate:['NEP without House anchor','The NEP record has no attached House candidate. This does not establish removal from House or cancellation.'],
  fuzzy_candidate:['Fuzzy title candidate','Similar titles within the retained matching scope generated suggestions. They are unconfirmed and do not consume or attach NEP records.'],
+ chainage_candidate:['Same road · different chainage','The closest suggestion is the same title with only chainage or station numbers differing. This pattern usually reflects re-segmentation or coverage amendments rather than a new insertion. Still an unconfirmed candidate; amounts are not compared.'],
  ambiguous:['Ambiguous identity','Duplicate exact matching keys prevent a unique one-to-one source pairing. No individual identity is assigned automatically.'],
  outside_api_nep_only:['NEP outside API scope','A NEP record is outside the Transparency listing scope and has no attached House anchor in this comparison row. FAP records are included here.'],
  transparency_gap_then_amount_same:['Listing gap · same candidate amount','A printed NEP allocation is missing from the retained Transparency listing and has an HGAB2 candidate with the same amount.'],
  transparency_gap_then_candidate_decrease:['Listing gap · candidate decrease','A printed NEP allocation is missing from the retained Transparency listing and its HGAB2 candidate has a smaller amount.'],
  transparency_gap_then_candidate_increase:['Listing gap · candidate increase','A printed NEP allocation is missing from the retained Transparency listing and its HGAB2 candidate has a larger amount.'],
  transparency_gap_nep_only:['Listing gap · no House anchor','A printed NEP allocation is missing from the retained Transparency listing and has no attached House candidate.'],
- region_difference_candidate:['Different-region candidate','The optional mode joins a unique normalized title within the same program, PAP and funding zone across different recorded regions. Original assignments are preserved; identity remains provisional.'],
+ region_difference_candidate:['Different-label candidate','The optional mode joins a unique normalized title within the same funding zone when recorded region, office, program or PAP labels differ between sources. Original assignments are preserved; identity remains provisional.'],
 };
 export const flagInfo={
  region_difference:['Different source regions','Two or more recorded sources assign different regions to this row. It can reflect document organization rather than the project’s physical location.'],
