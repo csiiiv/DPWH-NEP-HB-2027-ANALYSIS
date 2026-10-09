@@ -1,0 +1,10 @@
+/* Page navigation remains ordinary links, with the current destination marked. */
+nav.page-tabs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-top:10px;padding-bottom:10px;border-bottom:1px solid #dce4ec;background:transparent;font:13px/1.4 system-ui,sans-serif}
+.topnav.page-tabs{background:#fff}
+nav.page-tabs a,nav.page-tabs a:first-child{display:inline-flex;align-items:center;justify-content:center;min-height:40px;max-width:100%;width:auto;margin:0;padding:9px 13px;border:1px solid #d6e0eb;border-radius:8px;background:#fff;color:#52657b;text-decoration:none;font-size:13px;font-weight:600;line-height:1.4;overflow-wrap:anywhere;transition:background .15s,border-color .15s}
+nav.page-tabs a:hover{background:#edf3fa;border-color:#9fb9d6;color:#245fa8}
+nav.page-tabs a[aria-current="page"]{background:#245fa8;border-color:#245fa8;color:#fff}
+nav.page-tabs a:focus-visible{outline:3px solid #3377bb;outline-offset:3px}
+nav.page-tabs a.docs-tab{background:#f0f3f7;color:#52657b}
+@media(max-width:600px){nav.page-tabs{gap:6px}nav.page-tabs a,nav.page-tabs a:first-child{min-height:44px;padding:9px 11px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){nav.page-tabs a{transition:none}}

@@ -111,3 +111,18 @@ current stage comparison appears in the homepage comparison section.
 The stage comparison is now the homepage hero: “Compare budget stages” is the
 main heading, with the sortable comparison as the primary action and the
 provisional-results note alongside it. The three verification cards follow below.
+
+## Header navigation tabs — 9 October 2026
+
+All seven current pages use the shared `page_navigation.css` stylesheet for
+header navigation. Links have bordered tab styling, a filled active-page state,
+keyboard focus rings, and wrapping with 44px touch targets on mobile. README
+links use a quieter tab style. The homepage now has the same header navigation;
+its duplicate README footer links are removed. The comparison hero remains the
+primary action below the header.
+
+These are page-navigation links marked with `aria-current="page"`, preserving
+normal browser navigation, keyboard access, and open-in-new-tab behavior.
+Packaging includes the shared stylesheet, and the source-verification manifest
+tracks its hash. Existing section jump links on the earlier comparison page
+receive the same styling.

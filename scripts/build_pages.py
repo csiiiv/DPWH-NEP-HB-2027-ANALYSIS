@@ -30,7 +30,7 @@ DOWNLOADS = [
     'source_comparison_2027.json', 'stage_trace_2027.json', 'current_pap_controls.json',
     'comparison_manifest.json',
 ]
-SCRIPTS = ['nep_tree_viewer.js', 'budget_display.js', 'source_verification.js', 'source_verification.css']
+SCRIPTS = ['nep_tree_viewer.js', 'budget_display.js', 'source_verification.js', 'source_verification.css', 'page_navigation.css']
 def hosted_report_links(text, source):
     """Open repository Markdown as rendered GitHub documents at hosted URLs."""
     def report_link(match):

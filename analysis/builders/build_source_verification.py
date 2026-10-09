@@ -280,7 +280,7 @@ def payloads():
                 'presentation': {p: digest(ROOT / p) for p in
                                  ['analysis/builders/build_source_verification.py',
                                   'analysis/viewers/source_verification.template.html',
-                                  'analysis/viewers/source_verification.js', 'analysis/viewers/source_verification.css', 'site/index.template.html']}}
+                                  'analysis/viewers/source_verification.js', 'analysis/viewers/source_verification.css', 'analysis/viewers/page_navigation.css', 'site/index.template.html']}}
     return sources, overview, manifest
 
 

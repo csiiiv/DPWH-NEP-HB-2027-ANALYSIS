@@ -3210,10 +3210,11 @@
     "analysis/data/source_review_evidence/summary-page-8.webp": "e1ea25fbd9dd7a172f992b58aca03167be9279733a6dd022566afaf9a7c0163a"
   },
   "presentation": {
-    "analysis/builders/build_source_verification.py": "91207f25afc76d87f8560748f7db3e6dca2d27da4a1262820104e7d4474c734a",
-    "analysis/viewers/source_verification.template.html": "01721f7a555aa0c1f774c92be0cd877f98cadd807a45dc6db32a0b4a80b54f5a",
+    "analysis/builders/build_source_verification.py": "ef30334589593eb1999f944a963b279b4062466cdc2e0715e68c7fa107facc1a",
+    "analysis/viewers/source_verification.template.html": "27ce037666fcde55aa19ffedeb32131d9e43eb259aa43e2a9a72b58986d4e563",
     "analysis/viewers/source_verification.js": "600de32ab97faa8bcff05b32649f370ec978f3551d5a42059e9de036502d4470",
     "analysis/viewers/source_verification.css": "90513cede560f965cc49346be2a770ab32ab4b3e2be4f33b69bbfe0bb59e1e92",
-    "site/index.template.html": "34d0ebe08cafeef7b77ddd4535aced4f0a7b5485ed9db381bbe518bb41933c2f"
+    "analysis/viewers/page_navigation.css": "5c5dbcc11a30d661080a18363fa2c41208a6735cc59aee6114173bee21733cce",
+    "site/index.template.html": "ec186895803b0a3a6ab28eba55b199fd78edeb433f1bb6e837aff8918a87d639"
   }
 }
