@@ -4,47 +4,38 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const root = path.resolve(__dirname, '../../_site');
-const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-const base = new URL('https://example.test/DPWH-NEP-HB-2027-ANALYSIS/');
-
-function renderedSourceLinks(markup) {
-  const data = markup.match(/<script id="indexData" type="application\/json">([\s\S]*?)<\/script>/)[1];
-  const script = [...markup.matchAll(/<script>([\s\S]*?)<\/script>/g)].at(-1)[1];
-  const elements = {indexData: {textContent: data}, sources: {}, checks: {}};
-  vm.runInNewContext(script, {document: {getElementById: id => elements[id]}});
-  return [...elements.sources.innerHTML.matchAll(/href="([^"]+)"/g)].map(match => match[1]);
+const routes = {
+  'hb_native_verification.html': 'house', 'nep_source_verification.html': 'nep',
+  'dpwh_nep_api_verification.html': 'transparency', 'stage_trace_2027.html': 'compare',
+  'source_comparison_2027.html': 'house-nep', 'nep_2027_tree.html': 'nep-detail',
+};
+function redirected(file, hash) {
+  const html = fs.readFileSync(path.join(root, file), 'utf8');
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+  let destination;
+  vm.runInNewContext(script, {location: {hash, replace: value => destination = value}});
+  return new URL(destination, 'https://example.test/project/' + file);
 }
-function assertHostedTarget(href) {
-  const url = new URL(href, base);
-  assert.equal(url.origin, base.origin);
-  assert.ok(url.pathname.startsWith(base.pathname), `Lost project base: ${href}`);
-  assert.ok(!/\$\{|%24%7B/i.test(url.pathname), `Unexpanded URL: ${href}`);
-  const target = path.join(root, decodeURIComponent(url.pathname.slice(base.pathname.length)));
-  assert.ok(fs.existsSync(target), `Missing hosted target: ${href}`);
-}
-
-test('rendered source cards and review entry resolve under the GitHub project base', () => {
-  const links = renderedSourceLinks(html);
-  assert.deepEqual(links, [
-    'analysis/hb_native_verification.html',
-    'analysis/nep_source_verification.html',
-    'analysis/nep_source_verification.html#review',
-    'analysis/dpwh_nep_api_verification.html',
-  ]);
-  links.forEach(assertHostedTarget);
+test('root preserves SPA routes under the GitHub project prefix', () => {
+  assert.equal(redirected('index.html', '').href, 'https://example.test/project/app/#home');
+  assert.equal(redirected('index.html', '#nep?view=review').href,
+    'https://example.test/project/app/#nep?view=review');
+  assert.ok(fs.existsSync(path.join(root, 'app/index.html')));
 });
-
-test('encoded template regression is rejected after rendering', () => {
-  const corrupted = html.replaceAll('${s.page}', '%24%7Bs.page%7D');
-  assert.throws(() => renderedSourceLinks(corrupted).forEach(assertHostedTarget), /Unexpanded URL/);
+test('all six old viewer URLs resolve to the corresponding SPA route', () => {
+  for (const [name, route] of Object.entries(routes)) {
+    assert.equal(redirected('analysis/viewers/' + name, '').href, 'https://example.test/project/app/#' + route);
+    assert.equal(redirected('analysis/' + name, '').href, 'https://example.test/project/app/#' + route);
+    assert.equal(redirected('analysis/' + name, '#review').hash, '#' + route + '?view=review');
+    assert.equal(redirected('analysis/' + name, '#paps').hash, '#' + route + '?section=paps');
+  }
 });
-
-test('homepage focuses on current sources and the sortable stage comparison', () => {
-  const section = html.match(/<section id="comparisons"[^>]*>([\s\S]*?)<\/section>/)[1];
-  const links = [...section.matchAll(/href="([^"]+)"/g)].map(match => match[1]);
-  assert.deepEqual(links, ['analysis/stage_trace_2027.html']);
-  links.forEach(assertHostedTarget);
-  assert.match(section, /delta, or percent change/);
-  assert.doesNotMatch(html, /source_comparison_2027\.html|nep_2027_tree\.html|analysis\/archive|Verification checklist|Next work/);
-  assert.match(html, /differences remain provisional/);
+test('verification route payloads retain canonical audit results', () => {
+  for (const key of ['hb', 'nep', 'dpwh_nep_api']) {
+    const data = JSON.parse(fs.readFileSync(path.join(root, 'analysis/verification_' + key + '.json')));
+    assert.equal(data.key, key);
+    assert.deepEqual(data.audit.failures, []);
+    assert.ok(data.nodes.length > 0);
+    assert.ok(data.nodes.some(n => n.id === data.root));
+  }
 });

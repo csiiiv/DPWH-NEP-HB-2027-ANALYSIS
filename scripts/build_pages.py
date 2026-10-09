@@ -21,6 +21,24 @@ VIEWER_NAMES = [
     'hb_native_verification.html', 'nep_source_verification.html', 'dpwh_nep_api_verification.html',
     'nep_2027_tree.html', 'source_comparison_2027.html', 'stage_trace_2027.html',
 ]
+APP_ROUTES = {
+    'hb_native_verification.html': 'house', 'nep_source_verification.html': 'nep',
+    'dpwh_nep_api_verification.html': 'transparency', 'stage_trace_2027.html': 'compare',
+    'source_comparison_2027.html': 'house-nep', 'nep_2027_tree.html': 'nep-detail',
+}
+
+
+def app_redirect(destination, route, root=False):
+    """Keep historical entry points and fragments working on project hosting."""
+    return ('<!doctype html><html lang="en"><meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<title>DPWH workbench</title><p><a href="' + destination + '#' + route + '">Open workbench</a></p>'
+            '<a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/README.md">Repository README</a> '
+            '<a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/README.md">Workbench README</a>'
+            '<script>const fragment=location.hash.slice(1);location.replace(' + json.dumps(destination) +
+            '+"#"+' + ('(fragment || "home")' if root else json.dumps(route) +
+                         '+(fragment ? "?"+(fragment==="review" ? "view=review" : "section="+encodeURIComponent(fragment)) : "")') +
+            ');</script></html>')
 DOWNLOADS = [
     'source_verification_overview.json', 'source_verification_manifest.json',
     'source_review_evidence.json', 'nep_2027_amount_column_reassessment.json',
@@ -94,11 +112,13 @@ def validate_site():
             if url.scheme or url.netloc or not url.path:
                 continue
             path = (file.parent / unquote(url.path)).resolve()
+            if path.is_dir():
+                path = path / 'index.html'
             if not path.is_relative_to(OUTPUT.resolve()) or not path.is_file():
                 raise ValueError(f'Broken local link: {file.name}: {link}')
 
 
-def main(with_react=False):
+def main(with_react=True):
     validate_current_pages()
     OUTPUT.mkdir(exist_ok=True)
     for path in OUTPUT.iterdir():
@@ -143,6 +163,20 @@ def main(with_react=False):
         if not pdf.is_file() or hashlib.sha256(pdf.read_bytes()).hexdigest() != expected:
             raise ValueError('React PDF preview requires the exact retained NEP Volume II-B source PDF')
         shutil.copytree(frontend, OUTPUT / 'app')
+        for key, name in [('hb', 'hb_native_verification.html'), ('nep', 'nep_source_verification.html'),
+                          ('dpwh_nep_api', 'dpwh_nep_api_verification.html')]:
+            html = (VIEWERS / name).read_text()
+            payload = re.search(r'<script id="sourceData" type="application/json">([\s\S]*?)</script>', html).group(1)
+            (target / f'verification_{key}.json').write_text(payload)
+        for name, route in APP_ROUTES.items():
+            (target / name).write_text(app_redirect('../app/', route))
+        (OUTPUT / 'index.html').write_text(app_redirect('app/', 'home', root=True))
+        aliases = target / 'viewers'
+        aliases.mkdir()
+        for name, route in APP_ROUTES.items():
+            (aliases / name).write_text(app_redirect('../../app/', route))
+        (OUTPUT / 'site').mkdir()
+        (OUTPUT / 'site/index.html').write_text(app_redirect('../app/', 'home', root=True))
         (OUTPUT / 'pdfs').mkdir()
         shutil.copyfile(pdf, OUTPUT / 'pdfs' / pdf.name)
     validate_site()
@@ -151,5 +185,6 @@ def main(with_react=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--with-react', action='store_true', help='Include the built React migration preview and retained NEP PDF')
-    main(with_react=parser.parse_args().with_react)
+    parser.add_argument('--with-react', action='store_true', help='Compatibility flag; the SPA is included by default')
+    parser.add_argument('--static-only', action='store_true', help='Build historical standalone viewers for diagnostics')
+    main(with_react=not parser.parse_args().static_only)

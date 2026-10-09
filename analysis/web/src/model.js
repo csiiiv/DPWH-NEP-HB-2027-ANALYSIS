@@ -58,14 +58,17 @@ export function selectRows(
         (!trace || r.trace === trace),
     )
     .sort((a, b) => {
-      const key = (r) =>
-        column === "title"
-          ? (r.title ?? r.label)
-          : metric(
-              values(r, tab)[Number(column)],
-              values(r, tab)[Number(column) - 1],
-              mode,
-            );
+      const key = (r) => {
+        if (column === "title") return r.title ?? r.label;
+        if (["region", "pdf_page", "trace"].includes(column))
+          return r[column] ?? null;
+        if (tab === "gaps") return r.amount_php ?? null;
+        return metric(
+          values(r, tab)[Number(column)],
+          values(r, tab)[Number(column) - 1],
+          mode,
+        );
+      };
       return compare(key(a), key(b), direction);
     });
 }

@@ -37,3 +37,13 @@ A root cutover requires feature parity and compatibility checks for existing
 URLs. React alone does not make large datasets faster or source values correct.
 
 Implementation and acceptance stages: [migration plan](../react_vite_migration.md).
+
+
+## Local route cutover, 9 October 2026
+
+The user requested migration of all current pages into one SPA. All seven
+workspaces now share a React shell and hash routes. Verification and detail
+controllers retain their established rendering inside scoped React-owned views;
+no iframe or runtime script evaluation is used. Packaging defaults to the SPA
+and redirects root and historical viewer URLs, preserving review/section
+fragments. Data is still produced and checked by Python. Publication uses the Pages workflow.

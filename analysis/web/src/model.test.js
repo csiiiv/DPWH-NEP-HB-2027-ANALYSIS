@@ -59,3 +59,22 @@ test("display units and signed amounts preserve thousands convention", () => {
   assert.equal(amount(-1000000), "−₱1.000M");
   assert.equal(amount(null), "—");
 });
+
+test("listing gaps sort numerically by amount and page, or by region", () => {
+  const rows = [
+    { title: "A", amount_php: 200, pdf_page: 100, region: "NCR" },
+    { title: "B", amount_php: 100, pdf_page: 9, region: "CAR" },
+  ];
+  assert.equal(
+    selectRows(rows, { tab: "gaps", column: "amount", direction: -1 })[0].title,
+    "A",
+  );
+  assert.equal(
+    selectRows(rows, { tab: "gaps", column: "pdf_page" })[0].title,
+    "B",
+  );
+  assert.equal(
+    selectRows(rows, { tab: "gaps", column: "region" })[0].title,
+    "B",
+  );
+});

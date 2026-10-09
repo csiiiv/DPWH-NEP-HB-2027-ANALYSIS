@@ -219,55 +219,148 @@ small {
   background: #fff;
   z-index: 10;
 }
-.pdf-dialog {
-  width: min(1100px, 95vw);
-  max-height: 94vh;
-  padding: 22px;
-  border: 1px solid #cbd7e5;
-  border-radius: 12px;
-  color: #203147;
-}
-.pdf-dialog::backdrop {
-  background: #142b4666;
-}
-.pdf-head {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
+
+.comparison-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(360px, 0.9fr);
   gap: 20px;
+  align-items: start;
 }
-.pdf-head h2 {
+.comparison-table {
+  min-width: 0;
+}
+.comparison-table .filters {
   margin-top: 0;
 }
-.pdf-head p {
-  max-width: 720px;
-  font-size: 13px;
+.source-pane {
+  position: sticky;
+  top: 12px;
+  min-width: 0;
+  border: 1px solid #dce4ec;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  height: calc(100vh - 24px);
 }
-.pdf-controls {
+.pdf-pane {
+  height: 100%;
   display: flex;
-  align-items: end;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
 }
-.pdf-controls input {
-  width: 90px;
+.pdf-head {
+  padding: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: start;
+  justify-content: space-between;
+}
+.pdf-head h2 {
+  font-size: 17px;
+  margin: 0;
+}
+.pdf-head p {
+  font-size: 12px;
+  margin: 6px 0 0;
+  max-height: 58px;
+  overflow: auto;
+}
+.pdf-head button {
+  font-size: 12px;
+  white-space: nowrap;
+  padding: 7px;
+}
+.pdf-toolbar {
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #edf3fa;
+  border-top: 1px solid #dce4ec;
+  border-bottom: 1px solid #dce4ec;
+  font-size: 12px;
+}
+.pdf-toolbar .group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.pdf-toolbar button,
+.pdf-toolbar select,
+.pdf-toolbar input {
+  padding: 7px;
+  font-size: 12px;
+  min-height: 34px;
+}
+.pdf-toolbar select {
+  width: 70px;
+}
+.pdf-toolbar input {
+  width: 62px;
+}
+.pdf-original {
+  font-size: 12px;
+  margin: 8px 14px 0;
+}
+.pdf-pane [role="status"],
+.pdf-pane [role="alert"] {
+  margin: 8px 14px;
+  font-size: 12px;
+}
+.pdf-pane [role="alert"] {
+  color: #9d352f;
 }
 .pdf-canvas {
-  max-height: 65vh;
+  flex: 1;
+  min-height: 0;
   overflow: auto;
-  background: #eef1f5;
+  background: #dfe5ec;
   padding: 12px;
+  overscroll-behavior: contain;
 }
 .pdf-canvas canvas {
   display: block;
   margin: auto;
-  background: #fff;
+  background: white;
 }
-.pdf-dialog [role="status"] {
-  font-size: 13px;
+.pdf-empty {
+  padding: 24px;
+  color: #52657b;
 }
-.pdf-dialog [role="alert"] {
-  color: #9d352f;
+.pdf-empty h2 {
+  font-size: 19px;
+}
+.workspace-switch {
+  display: none;
+}
+.shell {
+  max-width: 1800px;
+}
+@media (max-width: 1000px) {
+  .comparison-workspace {
+    display: block;
+  }
+  .workspace-switch {
+    display: flex;
+    gap: 8px;
+    margin: 16px 0;
+  }
+  .comparison-workspace.table-active .source-pane {
+    display: none;
+  }
+  .comparison-workspace.pdf-active .comparison-table {
+    display: none;
+  }
+  .source-pane {
+    position: static;
+    height: 75vh;
+    min-height: 450px;
+  }
+  .pdf-toolbar button {
+    min-height: 44px;
+  }
 }
 @media (max-width: 800px) {
   .shell {
@@ -291,18 +384,256 @@ small {
   button {
     min-height: 44px;
   }
-  .pdf-dialog {
-    padding: 16px;
+}
+
+.comparison-table table {
+  min-width: 740px;
+  table-layout: fixed;
+}
+.comparison-table th:first-child {
+  width: 32%;
+  overflow-wrap: anywhere;
+}
+.comparison-table th:last-child {
+  width: 19%;
+}
+.comparison-table .num small {
+  white-space: normal;
+}
+.comparison-table td,
+.comparison-table th {
+  padding: 11px 9px;
+}
+
+/* Keep source totals compact so the table and PDF start higher in the viewport. */
+.comparison-heading {
+  margin-top: 10px;
+}
+.comparison-heading .eyebrow {
+  margin: 0;
+  color: #52657b;
+}
+.comparison-heading h1 {
+  font-size: 32px;
+  margin: 5px 0 12px;
+}
+.comparison-notice {
+  font-size: 13px;
+  padding: 10px 14px;
+  margin: 12px 0;
+}
+.stage-totals {
+  margin: 14px 0 18px;
+}
+.stage-totals article {
+  padding: 14px 18px;
+}
+.stage-totals h3 {
+  font-size: 13px;
+  margin: 0 0 7px;
+  color: #52657b;
+}
+.stage-totals strong {
+  font-size: 24px;
+}
+.stage-totals p {
+  font-size: 12px;
+  margin: 4px 0 0;
+}
+.view-tabs {
+  margin-bottom: 14px;
+}
+.view-tabs button {
+  padding: 9px 14px;
+}
+.comparison-table {
+  background: #fff;
+  border: 1px solid #dce4ec;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.comparison-table .filters {
+  padding: 14px;
+  margin: 0;
+  background: #f8fafd;
+  display: grid;
+  grid-template-columns: minmax(180px, 1.25fr) minmax(160px, 1fr);
+  gap: 10px;
+}
+.comparison-table .filters label {
+  min-width: 0;
+}
+.comparison-table .filters input,
+.comparison-table .filters select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.result-count {
+  font-size: 12px;
+  color: #52657b;
+  margin: 0;
+  padding: 10px 14px;
+  border-top: 1px solid #e3e9f1;
+}
+.comparison-table .table-scroll {
+  border: 0;
+  border-radius: 0;
+  max-height: calc(100vh - 225px);
+  min-height: 240px;
+  overscroll-behavior: contain;
+}
+.comparison-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.comparison-table thead th {
+  background: #edf3fa;
+}
+.comparison-table .pager {
+  padding: 12px 14px;
+  margin: 0;
+  border-top: 1px solid #dce4ec;
+  font-size: 12px;
+}
+.comparison-table tbody tr:hover {
+  background: #f6f9fe;
+}
+.sort-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  width: 100%;
+  border: 0;
+  padding: 3px 0;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  border-radius: 3px;
+}
+.sort-header:hover {
+  background: transparent;
+  color: #245fa8;
+}
+.sort-indicator {
+  white-space: nowrap;
+  color: #245fa8;
+}
+.sort-menu {
+  position: fixed;
+  z-index: 100;
+  width: 232px;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #cbd7e5;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px #142b4626;
+}
+.sort-menu strong,
+.sort-menu small {
+  display: block;
+  padding: 6px;
+  font-size: 12px;
+}
+.sort-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  font-size: 13px;
+}
+.sort-menu [aria-checked="true"] {
+  background: #edf3fa;
+  color: #245fa8;
+}
+.pdf-empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  background: #f8fafd;
+}
+.pdf-empty p {
+  max-width: 270px;
+  font-size: 14px;
+}
+.source-pane {
+  height: calc(100vh - 24px);
+}
+@media (max-width: 800px) {
+  .stage-totals {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
   }
-  .pdf-head {
-    flex-direction: column;
-    gap: 0;
+  .stage-totals article {
+    padding: 10px;
   }
-  .pdf-canvas {
-    max-height: 55vh;
+  .stage-totals h3 {
+    font-size: 11px;
   }
-  .pdf-dialog {
-    max-width: 100vw;
-    width: 96vw;
+  .stage-totals strong {
+    font-size: 17px;
+  }
+  .stage-totals p {
+    font-size: 11px;
+  }
+  .comparison-heading h1 {
+    font-size: 28px;
+  }
+  .comparison-table .filters {
+    grid-template-columns: 1fr;
+  }
+  .sort-header {
+    min-height: 44px;
+  }
+  .comparison-table .table-scroll {
+    max-height: 65vh;
+  }
+  .source-pane {
+    height: 75vh;
   }
 }
+
+/* Verification trees and evidence remain together beside the shared PDF pane. */
+.retained-view.with-tree-pdf #workspace {
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 1fr);
+}
+.retained-view.with-tree-pdf .tree-evidence-column {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.retained-view.with-tree-pdf .tree { max-height: 52vh; }
+.retained-view.with-tree-pdf #details { position: static; max-height: 48vh; }
+.retained-view.with-tree-pdf .tree-pdf-pane {
+  position: sticky;
+  top: 12px;
+  height: calc(100vh - 24px);
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #dce4ec;
+  border-radius: 10px;
+  background: #fff;
+}
+@media (max-width: 1200px) {
+  .retained-view.with-tree-pdf #workspace { grid-template-columns: minmax(0, 1fr); }
+  .retained-view.with-tree-pdf .tree-pdf-pane { position: static; height: 75vh; min-height: 480px; }
+}
+.retained-view .source-page-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 3px 7px;
+  font-size: 12px;
+  color: #245fa8;
+  border: 1px solid #cbd9e7;
+  border-radius: 6px;
+  background: #edf3fa;
+}
+.retained-view .source-page-button:hover { background: #dceafa; }
+@media(max-width:600px) { .retained-view .source-page-button { min-height: 40px; } }

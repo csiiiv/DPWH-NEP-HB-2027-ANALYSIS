@@ -66,13 +66,16 @@ python scripts/validate_current_pages.py
 python -m unittest discover -s analysis/tests -p test_current_pages.py -v
 python -m unittest discover -s analysis/tests -p test_stage_trace.py -v
 node --test analysis/tests/test_budget_display.cjs
+npm ci --prefix analysis/web
+npm run build --prefix analysis/web
 python scripts/build_pages.py
-python -m http.server 8000 --directory _site
+python scripts/serve_pages.py --port 8000
 ```
 
 The homepage leads with the sortable stage comparison, followed by three
 source-verification cards. Other retained viewers are linked in this README.
-The package serves six retained viewers. Archived pages and outputs are available
+The local package serves one SPA with seven workspaces and six compatibility
+entry points. Archived pages and outputs are available
 in the checkout and repository archive rather than the current published viewer list.
 
 Source rebuilds use `build_nep_tree.py`, `build_dpwh_nep_api_tree.py`, and the
@@ -111,7 +114,7 @@ README links are present on every published page.
 See [the current codebase reassessment](docs/codebase_reassessment.md) for implemented capabilities, dependency flow, concrete gaps, and verification priorities.
 
 
-The [React + Vite migration plan](docs/react_vite_migration.md) documents the new `/app/` preview,
-PDF evidence loading, rebuild commands, and parity requirements before root cutover.
-
-[Open the React migration preview](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/).
+The [React + Vite migration plan](docs/react_vite_migration.md) documents the local single-page
+workbench, all seven routes, PDF evidence loading, and compatibility redirects.
+Run `npm run dev --prefix analysis/web` from the repository root. The Pages workflow builds and publishes the SPA from committed sources. Build React before running
+`python scripts/build_pages.py`; the SPA is now the default package.

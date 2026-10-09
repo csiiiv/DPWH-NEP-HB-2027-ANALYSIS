@@ -3,35 +3,24 @@ import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
 import workerUrl from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 export default function PdfPreview({ source, onClose }) {
-  const dialog = useRef(null),
-    canvas = useRef(null),
+  const canvas = useRef(null),
     host = useRef(null);
   const [loaded, setLoaded] = useState(null),
     [page, setPage] = useState(source.page),
-    [zoom, setZoom] = useState(1),
-    [width, setWidth] = useState(600),
+    [zoom, setZoom] = useState({ mode: "width", percent: 100 }),
+    [size, setSize] = useState({ width: 600, height: 700 }),
+    [revision, setRevision] = useState(0),
     [status, setStatus] = useState("Loading document…"),
     [error, setError] = useState("");
   useEffect(() => {
-    dialog.current.showModal();
-    const el = dialog.current;
-    const cancel = (e) => {
-      e.preventDefault();
-      onClose();
-    };
-    el.addEventListener("cancel", cancel);
-    return () => {
-      el.removeEventListener("cancel", cancel);
-      el.close();
-    };
-  }, []);
-  useEffect(() => {
     setPage(source.page);
-    setZoom(1);
   }, [source]);
   useEffect(() => {
     const observer = new ResizeObserver(([entry]) =>
-      setWidth(entry.contentRect.width),
+      setSize({
+        width: entry.contentRect.width,
+        height: entry.contentRect.height,
+      }),
     );
     observer.observe(host.current);
     return () => observer.disconnect();
@@ -77,7 +66,12 @@ export default function PdfPreview({ source, onClose }) {
         if (!live) return;
         const base = pdfPage.getViewport({ scale: 1 });
         const viewport = pdfPage.getViewport({
-          scale: Math.max(0.1, (width - 24) / base.width) * zoom,
+          scale:
+            zoom.mode === "height"
+              ? Math.max(0.1, (size.height - 24) / base.height)
+              : zoom.mode === "width"
+                ? Math.max(0.1, (size.width - 24) / base.width)
+                : zoom.percent / 100,
         });
         const el = canvas.current;
         const density = Math.min(window.devicePixelRatio || 1, 2);
@@ -103,66 +97,114 @@ export default function PdfPreview({ source, onClose }) {
       live = false;
       renderTask?.cancel();
     };
-  }, [loaded, source.url, page, width, zoom]);
+  }, [loaded, source.url, page, size, zoom, revision]);
   return (
-    <dialog ref={dialog} className="pdf-dialog" aria-labelledby="pdf-title">
+    <section className="pdf-pane" aria-labelledby="pdf-title">
       <div className="pdf-head">
         <div>
           <h2 id="pdf-title">{source.document}</h2>
           <p>{source.title}</p>
         </div>
-        <button onClick={onClose} autoFocus>
-          Close preview
-        </button>
+        <button onClick={onClose}>Clear preview</button>
       </div>
-      <div className="pdf-controls">
-        <button
-          disabled={page <= 1 || !loaded}
-          onClick={() => setPage((p) => p - 1)}
-        >
-          Previous page
-        </button>
-        <label>
-          PDF page
-          <input
+      <div className="pdf-toolbar" role="toolbar" aria-label="PDF navigation">
+        <div className="group">
+          <span>Page</span>
+          <button
+            aria-label="Previous page"
+            disabled={page <= 1 || !loaded}
+            onClick={() => setPage((p) => p - 1)}
+          >
+            ←
+          </button>
+          <select
             aria-label="PDF page"
-            type="number"
-            min="1"
-            max={loaded?.doc.numPages}
             value={page}
+            disabled={!loaded}
+            onChange={(e) => setPage(Number(e.target.value))}
+          >
+            {loaded ? (
+              Array.from({ length: loaded.doc.numPages }, (_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}
+                </option>
+              ))
+            ) : (
+              <option value={page}>{page}</option>
+            )}
+          </select>
+          <button
+            aria-label="Next page"
+            disabled={!loaded || page >= loaded.doc.numPages}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            →
+          </button>
+          <button
+            aria-label="Refresh page"
+            disabled={!loaded}
+            onClick={() => setRevision((r) => r + 1)}
+          >
+            ↻
+          </button>
+        </div>
+        <div className="group">
+          <button
+            aria-pressed={zoom.mode === "width"}
+            onClick={() => setZoom({ mode: "width", percent: 100 })}
+          >
+            Fit W
+          </button>
+          <button
+            aria-pressed={zoom.mode === "height"}
+            onClick={() => setZoom({ mode: "height", percent: 100 })}
+          >
+            Fit H
+          </button>
+          <button
+            aria-label="Zoom out"
+            onClick={() =>
+              setZoom({
+                mode: "custom",
+                percent: Math.max(25, zoom.percent - 10),
+              })
+            }
+          >
+            −
+          </button>
+          <input
+            aria-label="Zoom percent"
+            type="number"
+            min="25"
+            max="400"
+            value={zoom.percent}
             onChange={(e) => {
               const n = Number(e.target.value);
-              if (
-                Number.isInteger(n) &&
-                n >= 1 &&
-                (!loaded || n <= loaded.doc.numPages)
-              )
-                setPage(n);
+              if (n >= 25 && n <= 400) setZoom({ mode: "custom", percent: n });
             }}
           />
-        </label>
-        <button
-          disabled={!loaded || page >= loaded.doc.numPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next page
-        </button>
-        <label>
-          Zoom
-          <select
-            aria-label="Zoom"
-            value={zoom}
-            onChange={(e) => setZoom(Number(e.target.value))}
+          <span>%</span>
+          <button
+            aria-label="Zoom in"
+            onClick={() =>
+              setZoom({
+                mode: "custom",
+                percent: Math.min(400, zoom.percent + 10),
+              })
+            }
           >
-            <option value="1">Fit width</option>
-            <option value="1.5">150%</option>
-            <option value="2">200%</option>
-          </select>
-        </label>
-        <a href={`${source.url}#page=${page}`} target="_blank" rel="noopener">
-          Open source PDF ↗
-        </a>
+            +
+          </button>
+        </div>
       </div>
+      <a
+        className="pdf-original"
+        href={`${source.url}#page=${page}`}
+        target="_blank"
+        rel="noopener"
+      >
+        Open source PDF ↗
+      </a>
       <p role="status">{status}</p>
       {error && (
         <p role="alert">
@@ -173,9 +215,9 @@ export default function PdfPreview({ source, onClose }) {
         <canvas
           ref={canvas}
           aria-label={`PDF page ${page}`}
-          hidden={!!error || !loaded}
+          hidden={!!error || !loaded || loaded.url !== source.url}
         />
       </div>
-    </dialog>
+    </section>
   );
 }

@@ -8,3 +8,7 @@ nav.page-tabs a:focus-visible{outline:3px solid #3377bb;outline-offset:3px}
 nav.page-tabs a.docs-tab{background:#f0f3f7;color:#52657b}
 @media(max-width:600px){nav.page-tabs{gap:6px}nav.page-tabs a,nav.page-tabs a:first-child{min-height:44px;padding:9px 11px;font-size:12px}}
 @media(prefers-reduced-motion:reduce){nav.page-tabs a{transition:none}}
+/* Page-specific destinations stay separate from the shared workbench tabs. */
+nav.page-tabs.section-tabs{border-bottom:0;padding-top:6px;padding-bottom:6px}
+nav.page-tabs.section-tabs a{min-height:34px;padding:6px 10px;font-size:12px;background:#f0f3f7}
+nav.page-tabs.section-tabs a[aria-current="page"]{background:#245fa8;color:#fff}

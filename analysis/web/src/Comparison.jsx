@@ -1,8 +1,8 @@
-import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
-import { loadData, sourceReference, siteUrl } from "./data.js";
+import React, { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { loadData, sourceReference, siteUrl, repo } from "./data.js";
 import { amount, metric, selectRows, values } from "./model.js";
 const PdfPreview = lazy(() => import("./PdfPreview.jsx"));
-const names = ["DPWH Transparency NEP", "Official NEP", "House"];
+const names = ["DPWH Transparency NEP", "DBM NEP", "House GAB"];
 const label = (value) => (value ?? "").replaceAll("_", " ");
 export default function Comparison() {
   const [data, setData] = useState(null),
@@ -16,7 +16,13 @@ export default function Comparison() {
     [mode, setMode] = useState("total"),
     [direction, setDirection] = useState(1),
     [page, setPage] = useState(0),
-    [source, setSource] = useState(null);
+    [source, setSource] = useState(null),
+    [panel, setPanel] = useState("table"),
+    [menu, setMenu] = useState(null);
+  const menuRef = useRef(null);
+  useLayoutEffect(() => {
+    if (menu) menuRef.current?.querySelector("button")?.focus({ preventScroll: true });
+  }, [menu]);
   useEffect(() => {
     const c = new AbortController();
     loadData("stage_trace_2027.json", c.signal)
@@ -35,36 +41,97 @@ export default function Comparison() {
     : [];
   const filtered = useMemo(
     () =>
-      tab === "gaps"
-        ? rows
-            .filter(
-              (r) =>
-                (!query ||
-                  JSON.stringify(r)
-                    .toLowerCase()
-                    .includes(query.toLowerCase())) &&
-                (!program || r.program === program) &&
-                (!region || r.region === region),
-            )
-            .sort((a, b) => a.title.localeCompare(b.title))
-        : selectRows(rows, {
-            query,
-            program,
-            region,
-            trace,
-            column,
-            mode,
-            direction,
-            tab,
-          }),
+      selectRows(rows, {
+        query,
+        program,
+        region,
+        trace,
+        column,
+        mode,
+        direction,
+        tab,
+      }),
     [rows, query, program, region, trace, column, mode, direction, tab],
   );
   useEffect(
     () => setPage(0),
     [query, program, region, trace, column, mode, direction, tab],
   );
+  useEffect(() => {
+    if (!menu) return;
+    const outside = (e) => {
+      if (!e.target.closest(".sort-menu,.sort-header")) setMenu(null);
+    };
+    const escape = (e) => {
+      if (e.key === "Escape") {
+        menu.button?.focus();
+        setMenu(null);
+      }
+    };
+    const scroll = () => setMenu(null);
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", escape);
+    window.addEventListener("wheel", scroll, { passive: true });
+    window.addEventListener("touchmove", scroll, { passive: true });
+    window.addEventListener("resize", scroll);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("keydown", escape);
+      window.removeEventListener("wheel", scroll);
+      window.removeEventListener("touchmove", scroll);
+      window.removeEventListener("resize", scroll);
+    };
+  }, [menu]);
+  const sort = (key, nextMode = "total") => {
+    setDirection(column === key && mode === nextMode ? -direction : 1);
+    setColumn(key);
+    setMode(nextMode);
+    menu?.button?.focus();
+    setMenu(null);
+  };
+  const header = (name, key, isAmount = false) => (
+    <th
+      scope="col"
+      aria-sort={
+        column === key ? (direction === 1 ? "ascending" : "descending") : "none"
+      }
+    >
+      <button
+        className="sort-header"
+        aria-label={`Sort by ${name}`}
+        aria-haspopup={isAmount ? "menu" : undefined}
+        aria-expanded={isAmount ? menu?.column === key : undefined}
+        onClick={(e) => {
+          if (!isAmount) {
+            sort(key);
+            return;
+          }
+          if (menu?.column === key) {
+            setMenu(null);
+            return;
+          }
+          const rect = e.currentTarget.getBoundingClientRect();
+          setMenu({
+            button: e.currentTarget,
+            column: key,
+            name,
+            left: Math.max(8, Math.min(innerWidth - 240, rect.left)),
+            top: Math.max(8, Math.min(innerHeight - 190, rect.bottom + 6)),
+          });
+        }}
+      >
+        {name}
+        <span className="sort-indicator" aria-hidden="true">
+          {column === key
+            ? `${mode !== "total" ? (mode === "delta" ? " Δ" : " %") : ""} ${direction === 1 ? "↑" : "↓"}`
+            : " ↕"}
+        </span>
+      </button>
+    </th>
+  );
   const changeTab = (t) => {
     setTab(t);
+    setMenu(null);
     setQuery("");
     setProgram("");
     setRegion("");
@@ -75,12 +142,20 @@ export default function Comparison() {
   };
   const open = (kind, p, title) => {
     const reference = sourceReference(kind, p, title);
-    if (reference) setSource(reference);
+    if (reference) {
+      setSource(reference);
+      setPanel("pdf");
+    }
   };
   const sourceButtons = (kind, pages, title) =>
     (pages ?? []).filter(Number.isInteger).map((p) => (
       <button
         className="source-link"
+        aria-pressed={
+          source?.page === p &&
+          source?.document ===
+            (kind === "house" ? "House GAB · Volume I-C" : "DBM NEP · Volume II-B")
+        }
         key={kind + p}
         onClick={() => open(kind, p, title)}
       >
@@ -91,8 +166,8 @@ export default function Comparison() {
     return (
       <p role="alert">
         {error}{" "}
-        <a href={siteUrl("analysis/stage_trace_2027.html")}>
-          Open retained comparison
+        <a href={repo + "analysis/data/stage_trace_2027.json"}>
+          Inspect retained comparison data
         </a>
       </p>
     );
@@ -100,13 +175,16 @@ export default function Comparison() {
   const stages = data.summary.stages;
   return (
     <>
-      <h1>Compare budget stages</h1>
-      <p className="notice">
+      <div className="comparison-heading">
+        <p className="eyebrow">DPWH · FY2027</p>
+        <h1>Compare budget stages</h1>
+      </div>
+      <p className="notice comparison-notice">
         Candidate matches do not certify additions, removals, or final
         amendments. Source totals and extraction coverage describe different
         scopes.
       </p>
-      <div className="cards">
+      <div className="cards stage-totals">
         <article>
           <h3>{names[0]}</h3>
           <strong>{amount(stages.transparency_nep.php)}</strong>
@@ -144,185 +222,234 @@ export default function Comparison() {
           </button>
         ))}
       </nav>
-      <div className="filters">
-        <label>
-          Search
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Title, source ID, or office"
-          />
-        </label>
-        <Filter
-          label="Program"
-          rows={rows}
-          field="program"
-          value={program}
-          set={setProgram}
-        />
-        {tab !== "paps" && (
-          <Filter
-            label="Region"
-            rows={rows}
-            field="region"
-            value={region}
-            set={setRegion}
-          />
-        )}{" "}
-        {tab === "projects" && (
-          <Filter
-            label="Match status"
-            rows={rows}
-            field="trace"
-            value={trace}
-            set={setTrace}
-          />
-        )}{" "}
-        {tab !== "gaps" && (
-          <>
-            <label>
-              Sort column
-              <select
-                aria-label="Sort column"
-                value={column}
-                onChange={(e) => {
-                  setColumn(e.target.value);
-                  if (e.target.value === "0") setMode("total");
-                }}
-              >
-                <option value="title">Title</option>
-                {names.map((n, i) => (
-                  <option key={n} value={i}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Sort amount by
-              <select
-                aria-label="Sort amount by"
-                value={mode}
-                disabled={column === "title" || column === "0"}
-                onChange={(e) => setMode(e.target.value)}
-              >
-                <option value="total">Total</option>
-                <option value="delta">Delta vs previous</option>
-                <option value="percent">Percent change</option>
-              </select>
-            </label>
-            <button onClick={() => setDirection((d) => -d)}>
-              {direction === 1 ? "Ascending ↑" : "Descending ↓"}
-            </button>
-          </>
-        )}
+      <div className="workspace-switch" aria-label="Workspace panels">
+        <button
+          aria-pressed={panel === "table"}
+          onClick={() => setPanel("table")}
+        >
+          Table
+        </button>
+        <button aria-pressed={panel === "pdf"} onClick={() => setPanel("pdf")}>
+          PDF source
+        </button>
       </div>
-      <p className="muted" aria-live="polite">
-        {filtered.length.toLocaleString()} of {rows.length.toLocaleString()}{" "}
-        rows. Unknown amounts and unpaired deltas stay last. Amounts: PHP; B
-        billion, M million, K thousands.
-      </p>
-      <div
-        className="table-scroll"
-        tabIndex="0"
-        role="region"
-        aria-label="Comparison results"
-      >
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">{tab === "paps" ? "PAP" : "Project"}</th>
-              {tab === "gaps" ? (
-                <>
-                  <th scope="col">Amount</th>
-                  <th scope="col">Region</th>
-                </>
-              ) : (
-                names.map((n) => (
-                  <th scope="col" key={n}>
-                    {n}
-                  </th>
-                ))
-              )}
-              <th scope="col">Source evidence</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.slice(page * 50, page * 50 + 50).map((r, i) => (
-              <tr key={r.id ?? r.source_id ?? `${page}-${i}`}>
-                <th scope="row">
-                  {r.label ?? r.title}
-                  <small>
-                    {r.program} · {r.region ?? ""}
-                  </small>
-                  {tab === "projects" && (
-                    <small>
-                      {label(r.trace)} · {r.nep?.id ?? r.house?.id ?? r.api?.id}
-                    </small>
-                  )}
-                </th>
-                {tab === "gaps" ? (
-                  <>
-                    <td className="num">{amount(r.amount_php)}</td>
-                    <td>{r.region}</td>
-                  </>
-                ) : (
-                  values(r, tab).map((value, index) => (
-                    <Money
-                      key={index}
-                      value={value}
-                      prior={values(r, tab)[index - 1]}
-                    />
-                  ))
-                )}
-                <td>
-                  {tab === "paps" ? (
+      <div className={`comparison-workspace ${panel}-active`}>
+        <section className="comparison-table" aria-label="Comparison table">
+          <div className="filters">
+            <label>
+              Search
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Title, source ID, or office"
+              />
+            </label>
+            <Filter
+              label="Program"
+              rows={rows}
+              field="program"
+              value={program}
+              set={setProgram}
+            />
+            {tab !== "paps" && (
+              <Filter
+                label="Region"
+                rows={rows}
+                field="region"
+                value={region}
+                set={setRegion}
+              />
+            )}{" "}
+            {tab === "projects" && (
+              <Filter
+                label="Match status"
+                rows={rows}
+                field="trace"
+                value={trace}
+                set={setTrace}
+              />
+            )}{" "}
+          </div>
+          <p className="result-count" aria-live="polite">
+            {filtered.length.toLocaleString()} of {rows.length.toLocaleString()}{" "}
+            rows · Click a header to sort. Amounts in PHP · total / Δ / %.
+          </p>
+          <div
+            className="table-scroll"
+            tabIndex="0"
+            role="region"
+            aria-label="Comparison results"
+          >
+            <table>
+              <thead>
+                <tr>
+                  {header(tab === "paps" ? "PAP" : "Project", "title")}
+                  {tab === "gaps" ? (
                     <>
-                      {sourceButtons("nep", [r.nep_page], r.label)}
-                      {sourceButtons("house", r.house_pages, r.label)}
+                      {header("Amount", "amount", true)}
+                      {header("Region", "region")}
+                      {header("PDF page", "pdf_page")}
                     </>
-                  ) : tab === "gaps" ? (
-                    sourceButtons("nep", [r.pdf_page], r.title)
                   ) : (
                     <>
-                      {sourceButtons("nep", [r.nep?.pdf_page], r.title)}
-                      {sourceButtons("house", [r.house?.pdf_page], r.title)}
-                      {!r.nep?.pdf_page && !r.house?.pdf_page && (
-                        <small>No PDF page recorded</small>
-                      )}
+                      {names.map((n, i) => (
+                        <React.Fragment key={n}>
+                          {header(n, String(i), true)}
+                        </React.Fragment>
+                      ))}
+                      <th scope="col">Source evidence</th>
                     </>
                   )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.slice(page * 50, page * 50 + 50).map((r, i) => (
+                  <tr key={r.id ?? r.source_id ?? `${page}-${i}`}>
+                    <th scope="row">
+                      {r.label ?? r.title}
+                      <small>
+                        {r.program} · {r.region ?? ""}
+                      </small>
+                      {tab === "projects" && (
+                        <small>
+                          {label(r.trace)} ·{" "}
+                          {r.nep?.id ?? r.house?.id ?? r.api?.id}
+                        </small>
+                      )}
+                    </th>
+                    {tab === "gaps" ? (
+                      <>
+                        <td className="num">{amount(r.amount_php)}</td>
+                        <td>{r.region}</td>
+                      </>
+                    ) : (
+                      values(r, tab).map((value, index) => (
+                        <Money
+                          key={index}
+                          value={value}
+                          prior={values(r, tab)[index - 1]}
+                        />
+                      ))
+                    )}
+                    <td>
+                      {tab === "paps" ? (
+                        <>
+                          {sourceButtons("nep", [r.nep_page], r.label)}
+                          {sourceButtons("house", r.house_pages, r.label)}
+                        </>
+                      ) : tab === "gaps" ? (
+                        sourceButtons("nep", [r.pdf_page], r.title)
+                      ) : (
+                        <>
+                          {sourceButtons("nep", [r.nep?.pdf_page], r.title)}
+                          {sourceButtons("house", [r.house?.pdf_page], r.title)}
+                          {!r.nep?.pdf_page && !r.house?.pdf_page && (
+                            <small>No PDF page recorded</small>
+                          )}
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {!filtered.length && <p>No rows match these filters.</p>}
+          <div className="pager">
+            <button disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
+              Previous
+            </button>
+            <span>
+              {filtered.length
+                ? `${page * 50 + 1}–${Math.min((page + 1) * 50, filtered.length)}`
+                : "0"}{" "}
+              / {filtered.length.toLocaleString()}
+            </span>
+            <button
+              disabled={(page + 1) * 50 >= filtered.length}
+              onClick={() => setPage((p) => p + 1)}
+            >
+              Next
+            </button>
+            <a href={siteUrl("analysis/stage_trace_2027.json")} download>
+              Download retained JSON
+            </a>
+          </div>
+        </section>
+        <aside className="source-pane" aria-label="PDF source pane">
+          {source ? (
+            <Suspense fallback={<p role="status">Loading PDF preview…</p>}>
+              <PdfPreview
+                source={source}
+                onClose={() => {
+                  setSource(null);
+                  setPanel("table");
+                }}
+              />
+            </Suspense>
+          ) : (
+            <div className="pdf-empty">
+              <h2>Source PDF</h2>
+              <p>Select a NEP or House page in the table to inspect it here.</p>
+            </div>
+          )}
+        </aside>
       </div>
-      {!filtered.length && <p>No rows match these filters.</p>}
-      <div className="pager">
-        <button disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
-          Previous
-        </button>
-        <span>
-          {filtered.length
-            ? `${page * 50 + 1}–${Math.min((page + 1) * 50, filtered.length)}`
-            : "0"}{" "}
-          / {filtered.length.toLocaleString()}
-        </span>
-        <button
-          disabled={(page + 1) * 50 >= filtered.length}
-          onClick={() => setPage((p) => p + 1)}
+      {menu && (
+        <div
+          className="sort-menu"
+          ref={menuRef}
+          role="menu"
+          onKeyDown={(event) => {
+            if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key))
+              return;
+            event.preventDefault();
+            const items = [...event.currentTarget.querySelectorAll("button")];
+            const index = items.indexOf(document.activeElement);
+            items[
+              event.key === "Home"
+                ? 0
+                : event.key === "End"
+                  ? items.length - 1
+                  : (index +
+                      (event.key === "ArrowDown" ? 1 : -1) +
+                      items.length) %
+                    items.length
+            ]?.focus();
+          }}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget))
+              setMenu(null);
+          }}
+          aria-label={`Sort ${menu.name}`}
+          style={{ left: menu.left, top: menu.top }}
         >
-          Next
-        </button>
-        <a href={siteUrl("analysis/stage_trace_2027.json")} download>
-          Download retained JSON
-        </a>
-      </div>
-      {source && (
-        <Suspense fallback={<p role="status">Loading PDF preview…</p>}>
-          <PdfPreview source={source} onClose={() => setSource(null)} />
-        </Suspense>
+          <strong>{menu.name}</strong>
+          {[
+            ["total", "Total value"],
+            ["delta", "Delta vs previous"],
+            ["percent", "Percent change"],
+          ]
+            .filter(
+              ([m]) => m === "total" || (menu.column !== "0" && tab !== "gaps"),
+            )
+            .map(([m, text]) => (
+              <button
+                key={m}
+                role="menuitemradio"
+                aria-checked={column === menu.column && mode === m}
+                onClick={() => sort(menu.column, m)}
+              >
+                {text}
+                {column === menu.column && mode === m
+                  ? direction === 1
+                    ? " ↑"
+                    : " ↓"
+                  : ""}
+              </button>
+            ))}
+          <small>Select again to reverse direction.</small>
+        </div>
       )}
     </>
   );

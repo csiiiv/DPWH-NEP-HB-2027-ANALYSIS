@@ -156,7 +156,8 @@ for three independent source-verification viewers. The
 and [candidate stage trace](analysis/viewers/stage_trace_2027.html) remain available for inspection.
 OCR-era House viewers, old crosschecks, exploratory scripts, and historical
 outputs now live in [the archive](analysis/archive/README.md), with a relocation manifest.
-The current site packages six retained viewers and links to the repository archive.
+The local package serves one SPA with seven workspaces and redirects six
+historical viewer URLs into it. The Pages workflow publishes this SPA package.
 `.github/workflows/pages.yml` builds and publishes the committed viewers on
 relevant pushes to `main` or manual dispatch. Pull requests validate the static
 build without deployment. This does not rerun source-PDF extraction.
@@ -164,8 +165,10 @@ build without deployment. This does not rerun source-PDF extraction.
 To preview the same deployment locally:
 
 ```sh
+npm ci --prefix analysis/web
+npm run build --prefix analysis/web
 python scripts/build_pages.py
-python -m http.server 8000 --directory _site
+python scripts/serve_pages.py --port 8000
 ```
 
 Open `http://localhost:8000`. Hosted viewers include the shared verification styles
@@ -282,7 +285,7 @@ README links are present on every published page.
 See [the current codebase reassessment](analysis/docs/codebase_reassessment.md) for implemented capabilities, dependency flow, concrete gaps, and verification priorities.
 
 
-The [React + Vite migration plan](analysis/docs/react_vite_migration.md) documents the new `/app/` preview,
-PDF evidence loading, rebuild commands, and parity requirements before root cutover.
-
-[Open the React migration preview](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/).
+The [React + Vite migration plan](analysis/docs/react_vite_migration.md) documents the local single-page
+workbench, all seven routes, PDF evidence loading, and compatibility redirects.
+Run `npm run dev --prefix analysis/web` from the repository root. The Pages workflow builds and publishes the SPA from committed sources. Build React before running
+`python scripts/build_pages.py`; the SPA is now the default package.

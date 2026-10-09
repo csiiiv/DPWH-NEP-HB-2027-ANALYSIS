@@ -1,18 +1,21 @@
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { loadData, repo, siteUrl } from "./data.js";
+import { loadData } from "./data.js";
 import "./styles.css";
+import WorkbenchHeader from "./WorkbenchHeader.jsx";
+import { routes, readRoute, routeHref, legacyRoutes } from "./routes.js";
+const SourceWorkspace = lazy(() => import("./SourceWorkspace.jsx"));
 const Comparison = lazy(() => import("./Comparison.jsx"));
 function App() {
-  const [route, setRoute] = useState(
-    location.hash === "#compare" ? "compare" : "home",
-  );
+  const [route, setRoute] = useState(readRoute);
   useEffect(() => {
-    const update = () =>
-      setRoute(location.hash === "#compare" ? "compare" : "home");
+    const update = () => setRoute(readRoute());
     window.addEventListener("hashchange", update);
     return () => window.removeEventListener("hashchange", update);
   }, []);
+  useEffect(() => {
+    document.title = `${routes[route.key]?.label ?? "Page not found"} · DPWH FY2027`;
+  }, [route.key]);
   return (
     <>
       <a
@@ -25,44 +28,13 @@ function App() {
       >
         Skip to content
       </a>
-      <header className="shell">
-        <nav aria-label="Workbench pages">
-          <a href="#home" aria-current={route === "home" ? "page" : undefined}>
-            Home
-          </a>
-          <a
-            href="#compare"
-            aria-current={route === "compare" ? "page" : undefined}
-          >
-            Compare stages
-          </a>
-          <a href={siteUrl("analysis/hb_native_verification.html")}>
-            House native
-          </a>
-          <a href={siteUrl("analysis/nep_source_verification.html")}>
-            Official NEP
-          </a>
-          <a href={siteUrl("analysis/dpwh_nep_api_verification.html")}>
-            DPWH Transparency NEP
-          </a>
-          <a href={repo + "README.md"}>Repository README</a>
-          <a href={repo + "analysis/README.md"}>Workbench README</a>
-        </nav>
-      </header>
+      <WorkbenchHeader route={route.key} />
       <main id="main" tabIndex="-1" className="shell">
-        <p className="preview">
-          React migration preview ·{" "}
-          <a href={siteUrl("index.html")}>Current static workbench</a>
-        </p>
-        {route === "compare" ? (
-          <Suspense
-            fallback={<p role="status">Loading comparison interface…</p>}
-          >
-            <Comparison />
-          </Suspense>
-        ) : (
-          <Home />
-        )}
+        <Suspense fallback={<p role="status">Loading workspace…</p>}>
+          {route.key === "compare" ? <Comparison /> : route.key === "home" ? <Home /> : routes[route.key] ?
+            <SourceWorkspace key={route.key} route={route} /> :
+            <section><h1>Page not found</h1><p>This workbench route is unavailable.</p><a href="#home">Return home</a></section>}
+        </Suspense>
       </main>
     </>
   );
@@ -85,7 +57,7 @@ function Home() {
         <p className="eyebrow">DPWH · FY2027</p>
         <h1>Compare budget stages</h1>
         <p>
-          DPWH Transparency NEP → Official NEP → House. Explore amounts, sort
+          DPWH Transparency NEP → DBM NEP → House GAB. Explore amounts, sort
           deltas, and preview the source PDF beside each recorded reference.
         </p>
         <a className="primary" href="#compare">
@@ -102,7 +74,7 @@ function Home() {
       <div className="cards">
         {data?.sources.map((s) => (
           <article key={s.key}>
-            <h3>{s.title}</h3>
+            <h3>{s.key === "hb" ? "House GAB" : s.key === "nep" ? "DBM NEP" : s.title}</h3>
             <strong>
               {new Intl.NumberFormat("en-PH", {
                 style: "currency",
@@ -114,9 +86,9 @@ function Home() {
               {s.audit.internal_checks.toLocaleString()} rollup checks ·{" "}
               {s.audit.failures.length} arithmetic failures
             </p>
-            <a href={siteUrl("analysis/" + s.page)}>Inspect hierarchy →</a>
+            <a href={routeHref(legacyRoutes[s.page])}>Inspect hierarchy →</a>
             {s.review_summary.needs_source_check > 0 && (
-              <a href={siteUrl("analysis/" + s.page + "#review")}>
+              <a href={routeHref(legacyRoutes[s.page], { view: "review" })}>
                 Review {s.review_summary.needs_source_check.toLocaleString()}{" "}
                 source checks →
               </a>

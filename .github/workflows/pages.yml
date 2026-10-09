@@ -52,13 +52,13 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: analysis/web/package-lock.json
-      - name: Build and check React migration preview
+      - name: Build and check React workbench
         working-directory: analysis/web
         run: |
           npm ci
           npm test
           npm run build
-      - name: Prepare static viewers and React preview
+      - name: Package SPA, source data and compatibility routes
         run: python3 scripts/build_pages.py --with-react
       - name: Check React navigation, sorting and real PDF range rendering
         run: |
@@ -67,7 +67,7 @@ jobs:
             python3 -m playwright install --with-deps chromium
           fi
           python3 scripts/check_react_pages.py
-      - name: Check rendered homepage navigation under project base
+      - name: Check root and historical route redirects under project base
         run: node --test analysis/tests/test_static_navigation.cjs
       - name: Configure Pages
         if: github.event_name != 'pull_request'

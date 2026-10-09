@@ -24,7 +24,7 @@ homepage. No server application or persisted review-decision store is implemente
 | Static publication | Homepage plus six viewers, shared assets, JSON downloads, House PDFs, source crops, README links; CI and GitHub Pages workflow | External NEP extraction inputs and ignored raw API downloads are not reproduced by Pages CI |
 | Archive | 104 relocations by role; 102 versioned files and two ignored local caches; original paths/hashes retained | Active v5 repairs still explicitly import two archived helpers; historical JSON paths retain their original provenance |
 
-The stage trace is an existing feature. Its Official NEP comparison layer has
+The stage trace is an existing feature. Its DBM NEP comparison layer has
 11,420 operations allocations; that count differs from the complete NEP tree's
 14,190 atomic units because the units and coverage differ. Its 19,001 rows include
 unmatched/candidate records, not 19,001 certified projects. API↔NEP pairs are
@@ -146,11 +146,15 @@ and project delta/percent controls. This complements the stage-data freshness
 and accounting checks; no source amount changes are involved in this fix.
 
 
-## React migration started
+## React workbench route migration
 
-A first React + Vite presentation slice now lives under `analysis/web`, with
-its own lockfile and build/test commands. It is packaged at `/app/` alongside
-the retained static site. It provides the homepage, candidate stage comparison,
-and lazy PDF.js source-page preview. Python artifacts and audit gates remain
-authoritative. Verification viewers remain in their current implementation;
-this is not a completed rewrite. See the [migration plan](react_vite_migration.md).
+All seven current workspaces now run locally under one React + Vite shell:
+overview, stage comparison, three source verifiers, House/NEP detail, and NEP
+detail. A shared tab header and hash routes support refresh and browser history.
+Packaging redirects the root and historical viewer URLs into these routes.
+The established verification and detail controllers render in scoped React-owned
+views; their internals have not all been rewritten as React components. Source
+JSON, accounting gates, review counts, and evidence remain authoritative.
+The comparison retains sorting and its lazy PDF side pane. FAP presentation in
+the React PAP table remains a documented deferred gap. Publication uses the Pages workflow.
+See the [migration plan](react_vite_migration.md).
