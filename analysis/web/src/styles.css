@@ -706,3 +706,6 @@ small {
 }
 .retained-view .source-page-button:hover { background: #dceafa; }
 @media(max-width:600px) { .retained-view .source-page-button { min-height: 40px; } }
+
+.finding-share { display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; margin:1rem 0; }
+.finding-share [role=status] { color:var(--muted); font-size:.9rem; }

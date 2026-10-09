@@ -173,3 +173,8 @@ opens second-reading I-B controls. The reading controls preserve the selected
 I-B/I-C view; the view controls preserve the selected reading. Both I-B views
 include PS, MOOE and CO, while I-C project totals exclude PS. The changes link
 opens the existing second-to-third-reading comparison.
+
+Searches, filters, sort order and pagination now have shareable hash URLs.
+Use **Copy link** on comparison and source workspaces. Opening a link restores
+its settings after loading the retained data. See
+[shareable findings](../docs/shareable_findings.md) for route parameters and examples.

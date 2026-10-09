@@ -1,6 +1,7 @@
 import { matchesSearch } from "../search.js";
+import {boundedInteger,restoreControl} from "../findingRoutes.js";
 /* Independent hierarchy exploration; no cross-source matching or budget deltas. */
-export function mountVerification(document, { onSourceSelection, initialNode, initialQuery, projectsOnly, reviewMode, matchMedia, downloadUrl }, D) {
+export function mountVerification(document, { onSourceSelection, initialNode, initialQuery, initialState, onFindingChange, projectsOnly, reviewMode, matchMedia, downloadUrl }, D) {
   const nodes = new Map(D.nodes.map(n => [n.id, n]));
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -11,7 +12,15 @@ export function mountVerification(document, { onSourceSelection, initialNode, in
   };
   const statusLabel = n => ({balanced:'Balanced',derived:'Derived',leaf:'Source leaf',reference:'Reference',mismatch:'Mismatch'}[n.status]);
   const expanded = new Set([D.root]);
-  let selected = D.root, limit = 150, reviewBranch = null;
+  let selected = D.root, limit = 150, reviewBranch = null, sharingReady = false, activePanel = 'tree';
+  function shareFinding() {
+    if (!sharingReady) return;
+    onFindingChange?.({q:$('search').value,filter:$('filter').value,
+      viewer:$('mode').value,
+      expense:expenseRoot === D.root ? '' : expenseRoot, branch:reviewBranch,
+      node:selected === D.root ? '' : selected, exact:$('exactAmounts').checked ? '1' : '',
+      limit:limit === 150 ? '' : limit, panel:activePanel === 'tree' ? '' : activePanel});
+  }
   const review = n => ['native_text_review','nearby_alignment_candidate','native_row_ambiguity','not_checked'].includes(n.evidence);
   const reviewLabels = {row_identity:'Check row identity',amount_disagreement:'Amount text differs',alignment:'Check row alignment',summary_check:'Check summary control',derived_context:'No printed control'};
   function evidenceLabel(n) {
@@ -121,6 +130,7 @@ export function mountVerification(document, { onSourceSelection, initialNode, in
     const scoped = D.nodes.filter(n=>pathOf(n).some(p=>p.id === expenseRoot) && (!reviewBranch || pathOf(n).some(p=>p.id === reviewBranch)));
     const counts = {};
     scoped.forEach(n=>{if(n.review_actionable)counts[n.review_kind]=(counts[n.review_kind]||0)+1;});
+    shareFinding();
     $('reviewChips').innerHTML = Object.entries(counts).map(([kind,count])=>`<button type="button" data-review-kind="${esc(kind)}" aria-pressed="${$('mode').value === 'queue' && $('filter').value === kind}">${esc(reviewLabels[kind])} · ${count.toLocaleString()}</button>`).join('');
   }
   function pathOf(n) {
@@ -186,6 +196,7 @@ export function mountVerification(document, { onSourceSelection, initialNode, in
   }
 
   function showPanel(panel, scroll=false) {
+    activePanel=panel;shareFinding();
     $('workspace').className = 'workspace '+(panel === 'evidence' ? 'evidence-active' : 'tree-active');
     $('treeView').ariaPressed = String(panel !== 'evidence');
     $('evidenceView').ariaPressed = String(panel === 'evidence');
@@ -289,4 +300,15 @@ export function mountVerification(document, { onSourceSelection, initialNode, in
   details(D.root);render();
   if (reviewMode) startQueue();
   if (initialNode && nodes.has(initialNode)) navigateTo(initialNode);
+  if (initialState) {
+    for (const [id,param] of [['search','q'],['filter','filter'],['mode','viewer'],['expenseScope','expense'],['exactAmounts','exact']]) restoreControl($(id),initialState.get(param));
+    if (D.key === 'nep' && $('expenseScope').value !== 'all') expenseRoot=$('expenseScope').value;
+    if (initialState.get('branch') && nodes.has(initialState.get('branch'))) reviewBranch=initialState.get('branch');
+    limit=boundedInteger(initialState.get('limit'),150,150,10000);
+    $('clearReviewBranch').hidden=!reviewBranch;
+    expanded.add(expenseRoot);
+    if (!initialNode && expenseRoot !== D.root) details(expenseRoot);
+    showPanel(initialState.get('panel') === 'evidence' ? 'evidence' : 'tree');
+  }
+  sharingReady=true;render();
 }

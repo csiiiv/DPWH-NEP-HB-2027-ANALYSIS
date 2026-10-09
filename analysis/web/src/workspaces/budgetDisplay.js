@@ -102,6 +102,12 @@ export function mountBudgetDisplay(document) {
   function clear(table) {
     const state = states.get(table);if (!state) return;state.column = null;state.direction = 1;updateHeaders(table, state);
   }
+  function setSort(table,column,direction=1) {
+    enhanceTables();const state=states.get(table);
+    if (!state || !Number.isInteger(column) || column < 0 || column >= table.tHead.rows[0].cells.length) return;
+    state.column=column;state.direction=direction===-1?-1:1;updateHeaders(table,state);
+    if(state.handler)state.handler(column,state.direction);else apply(table,state);
+  }
   function sortState(table) {return states.get(table) || {column: null, direction: 1};}
   let observer;
   function start() {
@@ -114,5 +120,5 @@ export function mountBudgetDisplay(document) {
     observer.observe(document.body, {childList: true, subtree: true});
   }
   start();
-  return {api: {amount, peso: amount, delta, deltaClass, cell, compare, enhanceTables, register, clear, sortState}, destroy: () => { observer?.disconnect(); }};
+  return {api: {amount, peso: amount, delta, deltaClass, cell, compare, enhanceTables, register, clear, sortState, setSort}, destroy: () => { observer?.disconnect(); }};
 }

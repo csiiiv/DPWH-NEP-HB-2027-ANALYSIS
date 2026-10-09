@@ -11,6 +11,8 @@ import { mountHouseComparison } from "./workspaces/houseComparison.js";
 import { mountBudgetDisplay } from "./workspaces/budgetDisplay.js";
 import { loadData, repo, siteUrl, treeSourceReference, retainedAssetUrl, sourceDocument } from "./data.js";
 import { legacyRoutes, routeHref, routes, readRoute } from "./routes.js";
+import ShareLink from "./ShareLink.jsx";
+import {mergeFindingParams,writeFindingRoute} from "./findingRoutes.js";
 const PdfPreview = lazy(() => import("./PdfPreview.jsx"));
 
 // Keep the established review controllers in a scoped React-owned workspace.
@@ -73,11 +75,19 @@ function mount(root, template, route, payloads, onSourceSelection, onPdfSlot) {
     matchMedia: window.matchMedia.bind(window),
     onSourceSelection,
   };
+  const findingBase=new URLSearchParams(route.params);
+  if (route.key === 'house') {
+    findingBase.set('reading',route.params.get('reading') === 'second' ? 'second' : 'third');
+    if (!findingBase.has('view')) findingBase.set('view','controls');
+  }
+  const onFindingChange=patch=>writeFindingRoute(route.key,mergeFindingParams(findingBase,patch));
+  localWindow.findingParams=route.params;
+  localWindow.onFindingChange=onFindingChange;
   let budget, destroyController;
   if (['house', 'nep', 'transparency'].includes(route.key)) {
     root.querySelector("h1").textContent = (payloads[0].native_ic || payloads[0].native_ib) ? payloads[0].title : route.key === "house" ? "House GAB — source hierarchy" : route.key === "nep" ? "DBM NEP — source hierarchy" : payloads[0].title;
     mountVerification(localDocument, {
-      onSourceSelection, initialNode: route.params.get("node"), initialQuery: route.params.get("q"),
+      initialState:route.params, onFindingChange, onSourceSelection, initialNode: route.params.get("node"), initialQuery: route.params.get("q"),
       projectsOnly: route.key === "nep" && route.params.get("view") === "projects",
       reviewMode: route.params.get("view") === "review", matchMedia: window.matchMedia.bind(window),
       downloadUrl: retainedAssetUrl,
@@ -139,7 +149,7 @@ export default function SourceWorkspace({ route }) {
       setLoading(false);
     }).catch(e => { if (e.name !== "AbortError") { setError(e.message); setLoading(false); } });
     return () => { controller.abort(); dispose?.(); };
-  }, [route.key, route.params.toString()]);
+  }, [route]);
   const reading = route.params.get('reading') === 'second' ? 'second' : 'third';
   const view = route.params.get('view') === 'projects' ? 'projects' : 'controls';
   return <>{route.key === "house" && <>
@@ -154,7 +164,7 @@ export default function SourceWorkspace({ route }) {
     </nav>
   </>}{route.key === "nep" && <nav className="page-tabs section-tabs" aria-label="NEP data views">
     <a href="#nep">Full hierarchy</a><a href="#nep?view=projects">Project line items</a>
-  </nav>}{loading && <p role="status">Loading source workspace…</p>}{error && <p role="alert">{error}</p>}
+  </nav>}<ShareLink />{loading && <p role="status">Loading source workspace…</p>}{error && <p role="alert">{error}</p>}
     <div className={`retained-view ${["house", "nep"].includes(route.key) ? "with-tree-pdf" : ""}`} ref={host} />
     {pdfSlot && createPortal(source ? <Suspense fallback={<p role="status">Loading PDF preview…</p>}>
       <PdfPreview source={source} onClose={() => setSource(null)} />

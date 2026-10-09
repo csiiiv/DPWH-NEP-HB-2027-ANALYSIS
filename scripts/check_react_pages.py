@@ -219,6 +219,16 @@ with sync_playwright() as p:
         assert all("+₱" in text for text in page.locator(".comparison-table tbody tr").all_inner_texts())
         page.get_by_label("Engineering office / DEO", exact=True).select_option("Metro Manila 3rd District Engineering Office")
         expect(page.locator(".comparison-table tbody tr")).to_have_count(5)
+        finding_url=page.url
+        assert "status=third_only" in finding_url and "office=" in finding_url
+        page.reload(wait_until="networkidle")
+        expect(page.get_by_label("Match status", exact=True)).to_have_value("third_only", timeout=60000)
+        expect(page.get_by_label("Engineering office / DEO", exact=True)).to_have_value("Metro Manila 3rd District Engineering Office")
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(5)
+        page.context.grant_permissions(["clipboard-read", "clipboard-write"])
+        page.get_by_role("button",name="Copy link",exact=True).click()
+        expect(page.locator(".finding-share")).to_contain_text("Link copied")
+        assert page.evaluate("navigator.clipboard.readText()") == page.url
         expect(page.locator(".comparison-table tbody button.source-link").filter(has_text="House 3rd · I-C").first).to_be_visible()
         page.locator(".comparison-table tbody button.source-link").filter(has_text="House 3rd").first.click()
         page.get_by_role("status").filter(has_text=re.compile(r"^Page \d+ of \d+$")).wait_for(timeout=60000)
@@ -250,6 +260,12 @@ with sync_playwright() as p:
         page.locator("#projectRegion").select_option(region)
         page.locator("#projectOffice").select_option(office)
         expect(page.locator("#projectCount")).to_contain_text(f"of {office_count:,} matching records")
+        candidate_url=page.url
+        assert "office=" in candidate_url and "region=" in candidate_url
+        page.reload(wait_until="networkidle")
+        expect(page.locator("#projectOffice")).to_have_value(office, timeout=60000)
+        expect(page.locator("#projectRegion")).to_have_value(region)
+        expect(page.locator("#projectCount")).to_contain_text(f"of {office_count:,} matching records")
         for text in page.locator("#projectRows tr").all_inner_texts():
             assert office in text
         page.locator("#projectSearch").fill("no such project 9f87x")
@@ -262,6 +278,7 @@ with sync_playwright() as p:
         page.locator("#budget table th button").first.wait_for()
         page.locator("#budget table th button").first.click()
         assert page.locator("#budget table th").first.get_attribute("aria-sort") in ("ascending", "descending")
+        page.evaluate("window.spaNavigationProbe = 42")
         page.get_by_role("navigation", name="Detail workspaces").get_by_role("link", name="NEP detail", exact=True).click()
         page.locator(".retained-view #tree [data-node]").first.wait_for(timeout=60000)
         page.get_by_label("Tree view", exact=True).select_option("program")
@@ -298,6 +315,13 @@ with sync_playwright() as p:
         expect(page.locator("#details")).to_contain_text("Metro Manila 3rd District Engineering Office")
         expect(page.locator(".tree-pdf-pane")).to_contain_text("House 3rd reading · Volume I-C")
         expect(page.locator(".tree-pdf-pane").get_by_role("status").filter(has_text="Page 323 of 942")).to_be_visible(timeout=60000)
+        project_url=page.url
+        assert "node=c5246" in project_url and "q=" in project_url
+        page.reload(wait_until="networkidle")
+        expect(page.get_by_label("Search hierarchy labels or source IDs")).to_have_value("J.P. Rizal box culvert, Barangays 34–35, Caloocan", timeout=60000)
+        expect(page.locator("#tree [data-node]")).to_have_count(1)
+        expect(page.locator("#details")).to_contain_text("32,000,000")
+        expect(page.locator(".tree-pdf-pane").get_by_role("status").filter(has_text=re.compile(r"^Page 323 of 942$"))).to_be_visible(timeout=60000)
         page.goto(base + "#house?view=projects&reading=second", wait_until="networkidle")
         page.get_by_label("Search hierarchy labels or source IDs").fill("J.P. Rizal box culvert, Barangays 34–35, Caloocan")
         expect(page.locator("#searchStatus")).to_contain_text("0 matching nodes")
@@ -309,6 +333,46 @@ with sync_playwright() as p:
         page.locator("#tree button[data-select]").first.click()
         expect(page.locator(".tree-pdf-pane")).to_contain_text("DBM NEP · Volume II-B")
         expect(page.locator(".tree-pdf-pane").get_by_role("status").filter(has_text=re.compile(r"^Page \d+ of \d+$"))).to_be_visible(timeout=60000)
+        # An explicit all-items filter overrides NEP's project-view default.
+        page.get_by_label("Verification filter").select_option("all")
+        page.reload(wait_until="networkidle")
+        expect(page.get_by_label("Verification filter")).to_have_value("all",timeout=60000)
+        expect(page.get_by_label("Search hierarchy labels or source IDs")).to_have_value("Maharlika Highway")
+        expect(page.locator(".tree-pdf-pane").get_by_role("status").filter(has_text=re.compile(r"^Page \d+ of \d+$"))).to_be_visible(timeout=60000)
+        page.goto(base+"#nep-detail?q=Maharlika&refs=1",wait_until="networkidle")
+        expect(page.get_by_label("Search tree")).to_have_value("Maharlika",timeout=60000)
+        expect(page.locator("#refs")).to_be_checked()
+        expect(page.locator("#searchStatus")).to_contain_text("matching nodes")
+        legacy_url=page.url
+        page.reload(wait_until="networkidle")
+        expect(page.get_by_label("Search tree")).to_have_value("Maharlika",timeout=60000)
+        expect(page.locator("#refs")).to_be_checked()
+        # Sort and pagination survive opening a comparison finding; browser
+        # history restores a filtered finding after navigating to another page.
+        page.goto(base + "#compare?view=projects&page=2&sort=1&metric=delta&order=desc",wait_until="networkidle")
+        expect(page.locator(".pager")).to_contain_text("51–100",timeout=60000)
+        expect(page.locator('.comparison-table th[aria-sort="descending"]')).to_have_count(1)
+        first_result=page.locator(".comparison-table tbody tr").first.inner_text()
+        sorted_url=page.url
+        page.reload(wait_until="networkidle")
+        expect(page.locator(".pager")).to_contain_text("51–100",timeout=60000)
+        expect(page.locator(".comparison-table tbody tr").first).to_have_text(first_result, use_inner_text=True)
+        page.get_by_label("Search",exact=True).fill("no such project 9f87x")
+        expect(page.locator(".result-count")).to_contain_text("0 of")
+        expect(page.locator(".pager")).to_contain_text("0 / 0")
+        filtered_url=page.url
+        assert "page=" not in filtered_url and "q=" in filtered_url
+        page.goto(sorted_url,wait_until="networkidle")
+        expect(page.locator(".pager")).to_contain_text("51–100",timeout=60000)
+        expect(page.get_by_label("Search",exact=True)).to_have_value("")
+        page.get_by_label("Search",exact=True).fill("no such project 9f87x")
+        expect(page.locator(".result-count")).to_contain_text("0 of")
+        page.goto(base+"#home",wait_until="networkidle")
+        page.go_back(wait_until="networkidle")
+        expect(page.get_by_label("Search",exact=True)).to_have_value("no such project 9f87x",timeout=60000)
+        expect(page.locator(".result-count")).to_contain_text("0 of")
+        page.goto(sorted_url,wait_until="networkidle")
+        expect(page.locator(".pager")).to_contain_text("51–100",timeout=60000)
         page.close()
     assert not errors, errors
     assert not bad, bad

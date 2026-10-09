@@ -1,26 +1,24 @@
 import React, { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { loadData, sourceReference, siteUrl, repo } from "./data.js";
 import { amount, metric, selectRows, values, officeOptions, officeLabels } from "./model.js";
+import ShareLink from "./ShareLink.jsx";
+import {useComparisonFinding} from "./useComparisonFinding.js";
 const PdfPreview = lazy(() => import("./PdfPreview.jsx"));
 const names = ["DPWH Transparency NEP", "DBM NEP", "House GAB"];
 const label = (value) => (value ?? "").replaceAll("_", " ");
-export default function Comparison({ view }) {
+export default function Comparison({ route }) {
   const [data, setData] = useState(null),
     [readings, setReadings] = useState(null),
     [error, setError] = useState(""),
-    [tab, setTab] = useState(view === "readings" ? "readings" : "paps"),
-    [query, setQuery] = useState(""),
-    [program, setProgram] = useState(""),
-    [region, setRegion] = useState(""),
-    [office, setOffice] = useState(""),
-    [trace, setTrace] = useState(view === "readings" ? "reading_changed" : ""),
-    [column, setColumn] = useState("title"),
-    [mode, setMode] = useState("total"),
-    [direction, setDirection] = useState(1),
-    [page, setPage] = useState(0),
     [source, setSource] = useState(null),
     [panel, setPanel] = useState("table"),
     [menu, setMenu] = useState(null);
+  const [finding,setFinding] = useComparisonFinding(route);
+  const {tab,query,program,region,office,trace,column,mode,direction,page} = finding;
+  const setTab=v=>setFinding('tab',v), setQuery=v=>setFinding('query',v), setProgram=v=>setFinding('program',v),
+    setRegion=v=>setFinding('region',v), setOffice=v=>setFinding('office',v), setTrace=v=>setFinding('trace',v),
+    setColumn=v=>setFinding('column',v), setMode=v=>setFinding('mode',v), setDirection=v=>setFinding('direction',v), setPage=v=>setFinding('page',v);
+  useEffect(()=>{setSource(null);setPanel('table');setMenu(null);},[route]);
   const menuRef = useRef(null);
   useLayoutEffect(() => {
     if (menu) menuRef.current?.querySelector("button")?.focus({ preventScroll: true });
@@ -56,10 +54,9 @@ export default function Comparison({ view }) {
       }),
     [rows, query, program, region, office, trace, column, mode, direction, tab],
   );
-  useEffect(
-    () => setPage(0),
-    [query, program, region, office, trace, column, mode, direction, tab],
-  );
+  useEffect(()=>{
+    if (data && readings && page > Math.max(0,Math.ceil(filtered.length/50)-1)) setPage(Math.max(0,Math.ceil(filtered.length/50)-1));
+  },[data,readings,filtered.length,page]);
   useEffect(() => {
     if (!menu) return;
     const outside = (e) => {
@@ -144,9 +141,6 @@ export default function Comparison({ view }) {
     setMode("total");
     setPage(0);
   };
-  useEffect(() => {
-    if (view === "readings") changeTab("readings");
-  }, [view]);
   const open = (kind, p, title) => {
     const reference = sourceReference(kind, p, title);
     if (reference) {
@@ -178,6 +172,8 @@ export default function Comparison({ view }) {
       </p>
     );
   if (!data) return <p role="status">Loading retained comparison data…</p>;
+  const maxPage=Math.max(0,Math.ceil(filtered.length/50)-1);
+  const visiblePage=Math.min(page,maxPage);
   const stages = data.summary.stages;
   const tableNames = tab === "readings" ? ["House 2nd reading", "House 3rd reading"] : names;
   return (
@@ -223,6 +219,7 @@ export default function Comparison({ view }) {
           <p>3rd − 2nd operations: {readings.summary.allocation_delta_php > 0 ? "+" : ""}{amount(readings.summary.allocation_delta_php)}</p>
         </article>
       </div>
+      <ShareLink />
       <nav className="view-tabs" aria-label="Comparison tables">
         {[
           ["paps", "PAP totals"],
@@ -300,6 +297,7 @@ export default function Comparison({ view }) {
                 Engineering office / DEO
                 <select aria-label="Engineering office / DEO" value={office} onChange={(e) => setOffice(e.target.value)}>
                   <option value="">All offices</option>
+                  {office && !officeOptions(rows.filter(r => (!program || r.program === program) && (!region || r.region === region)), region).some(o=>o.value===office) && <option value={office}>Unavailable office: {office}</option>}
                   {officeOptions(rows.filter(r => (!program || r.program === program) && (!region || r.region === region)), region).map(o => (
                     <option key={o.value} value={o.value}>{o.label}</option>
                   ))}
@@ -355,7 +353,7 @@ export default function Comparison({ view }) {
                 </tr>
               </thead>
               <tbody>
-                {filtered.slice(page * 50, page * 50 + 50).map((r, i) => (
+                {filtered.slice(visiblePage * 50, visiblePage * 50 + 50).map((r, i) => (
                   <tr key={r.id ?? r.source_id ?? `${page}-${i}`}>
                     <th scope="row">
                       {r.label ?? r.title}
@@ -419,18 +417,18 @@ export default function Comparison({ view }) {
           </div>
           {!filtered.length && <p>No rows match these filters.</p>}
           <div className="pager">
-            <button disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
+            <button disabled={visiblePage === 0} onClick={() => setPage(visiblePage - 1)}>
               Previous
             </button>
             <span>
               {filtered.length
-                ? `${page * 50 + 1}–${Math.min((page + 1) * 50, filtered.length)}`
+                ? `${visiblePage * 50 + 1}–${Math.min((visiblePage + 1) * 50, filtered.length)}`
                 : "0"}{" "}
               / {filtered.length.toLocaleString()}
             </span>
             <button
-              disabled={(page + 1) * 50 >= filtered.length}
-              onClick={() => setPage((p) => p + 1)}
+              disabled={(visiblePage + 1) * 50 >= filtered.length}
+              onClick={() => setPage(visiblePage + 1)}
             >
               Next
             </button>
@@ -527,6 +525,7 @@ function Filter({ label: caption, rows, field, value, set }) {
         onChange={(e) => set(e.target.value)}
       >
         <option value="">All</option>
+        {value && !rows.some(r=>r[field]===value) && <option value={value}>Unavailable: {label(value)}</option>}
         {[...new Set(rows.map((r) => r[field]).filter(Boolean))]
           .sort()
           .map((v) => (
