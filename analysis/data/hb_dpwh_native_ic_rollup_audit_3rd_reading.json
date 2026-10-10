@@ -2,99 +2,1338 @@
   "scope": "DPWH VOL I-C project details pp9–942 (native text layer)",
   "units": "PHP",
   "summary": {
-    "nodes": 21294,
+    "nodes": 21505,
     "leaves": 18817,
-    "internal_nodes": 2477,
-    "recursive_checks": 2477,
+    "internal_nodes": 2679,
+    "recursive_checks": 2678,
     "failed_nodes": 0,
     "closing_control_checks": 3,
     "failed_closing_controls": 0,
     "unexplained_amount_rows": 0,
     "unexplained_title_rows": 0,
-    "rollup_echoes": 211,
+    "retained_second_observations": 196,
+    "retained_reference_nodes": 10,
     "additive_leaf_total_php": 639179718000,
     "named_project_leaves": 15977,
     "fap_projects": 29,
     "zero_funding_observations": 9,
-    "region_nodes": 1471,
-    "office_nodes": 3380,
-    "funding_leaves": 49,
+    "region_nodes": 1490,
+    "office_nodes": 3570,
+    "funding_leaves": 51,
     "shared_controls_with_ib": 56,
     "crossvolume_disagreements": 0,
     "repair_counts": {
+      "retain_second_observation": 196,
       "fold_family_container": 7,
       "null_glyph_cleanup": 4,
-      "recover_artifact_title": 1
+      "recover_artifact_title": 1,
+      "retain_reference": 10
     }
   },
   "repairs": [
     {
-      "kind": "fold_family_container",
-      "node_id": "c0981",
-      "label": "Preventive Maintenance",
-      "pdf_page": 110
+      "kind": "retain_second_observation",
+      "node_id": "c0189",
+      "label": "Isabela 3rd District Engineering Office",
+      "pdf_page": 119
     },
     {
-      "kind": "fold_family_container",
-      "node_id": "c1583",
-      "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads",
+      "kind": "retain_second_observation",
+      "node_id": "c0295",
+      "label": "Davao City 2nd District Engineering Office",
+      "pdf_page": 122
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c0305",
+      "label": "Surigao del Sur 2nd District Engineering Office",
+      "pdf_page": 123
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c0708",
+      "label": "Davao del Norte District Engineering Office",
+      "pdf_page": 138
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c0830",
+      "label": "La Union 1st District Engineering Office",
+      "pdf_page": 142
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c0834",
+      "label": "Lower Kalinga District Engineering Office",
+      "pdf_page": 143
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c0967",
+      "label": "Misamis Oriental 1st District Engineering Office",
+      "pdf_page": 147
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c0986",
+      "label": "Dinagat Islands District Engineering Office",
       "pdf_page": 148
     },
     {
       "kind": "fold_family_container",
-      "node_id": "c1927",
-      "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, an",
+      "node_id": "c0989",
+      "label": "Preventive Maintenance",
+      "pdf_page": 110
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1085",
+      "label": "Isabela 2nd District Engineering Office",
+      "pdf_page": 153
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1111",
+      "label": "Ilolilo 2nd District Engineering Office",
+      "pdf_page": 153
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1143",
+      "label": "Cebu 2nd District Engineering Office",
+      "pdf_page": 154
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1148",
+      "label": "Leyte 2nd District Engineering Office",
+      "pdf_page": 155
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1160",
+      "label": "Misamis Oriental 1st District Engineering Office",
+      "pdf_page": 155
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1164",
+      "label": "Cotabato 1st District Engineering Office",
+      "pdf_page": 155
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1248",
+      "label": "Nueva Ecija 1st District Engineering Office",
+      "pdf_page": 159
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1416",
+      "label": "Cotabato 2nd District Engineering Office",
+      "pdf_page": 166
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1586",
+      "label": "Samar 1st District Engineering Office",
+      "pdf_page": 172
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1594",
+      "label": "Lanao del Norte 2nd District Engineering Office",
+      "pdf_page": 172
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1597",
+      "label": "Sarangani District Engineering Office",
+      "pdf_page": 172
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1600",
+      "label": "Dinagat Islands District Engineering Office",
       "pdf_page": 172
     },
     {
       "kind": "fold_family_container",
-      "node_id": "c2174",
-      "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roa",
+      "node_id": "c1603",
+      "label": "Rehabilitation/ Reconstruction/ Upgrading of Damaged Paved Roads",
+      "pdf_page": 148
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1628",
+      "label": "Central Office",
+      "pdf_page": 172
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1641",
+      "label": "Cagayan de Oro City 2nd District Engineering Office",
+      "pdf_page": 174
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1647",
+      "label": "Davao City 2nd District Engineering Office",
+      "pdf_page": 174
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1650",
+      "label": "Surigao del Sur 2nd District Engineering Office",
+      "pdf_page": 174
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1707",
+      "label": "Central Office",
+      "pdf_page": 174
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1781",
+      "label": "Masbate 2nd District Engineering Office",
+      "pdf_page": 180
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1785",
+      "label": "Iloilo 2nd District Engineering Office",
+      "pdf_page": 180
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1792",
+      "label": "Cebu City District Engineering Office",
+      "pdf_page": 180
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1808",
+      "label": "Zamboanga City 1st District Engineering Office",
+      "pdf_page": 181
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1813",
+      "label": "Bukidnon 1st District Engineering Office",
+      "pdf_page": 181
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1830",
+      "label": "Sultan Kudarat 2nd District Engineering Office",
+      "pdf_page": 181
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1834",
+      "label": "Surigao del Sur 2nd District Engineering Office",
+      "pdf_page": 182
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1867",
+      "label": "Central Office",
+      "pdf_page": 182
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1874",
+      "label": "La Union 1st District Engineering Office",
+      "pdf_page": 183
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1926",
+      "label": "Cagayan 2nd District Engineering Office",
+      "pdf_page": 186
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1929",
+      "label": "Camarines Sur 4th District Engineering Office",
+      "pdf_page": 186
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1933",
+      "label": "Iloilo 2nd District Engineering Office",
+      "pdf_page": 186
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1957",
+      "label": "Davao de Oro 1st District Engineering Office",
+      "pdf_page": 187
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1960",
+      "label": "Sarangani District Engineering Office",
+      "pdf_page": 187
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c1964",
+      "label": "Butuan City District Engineering Office",
       "pdf_page": 187
     },
     {
       "kind": "fold_family_container",
-      "node_id": "c2617",
+      "node_id": "c1967",
+      "label": "Rehabilitation/ Reconstruction of Roads with Slips, Slope Collapse, an",
+      "pdf_page": 172
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2002",
+      "label": "Central Office",
+      "pdf_page": 187
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2023",
+      "label": "Iloilo City District Engineering Office",
+      "pdf_page": 190
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2026",
+      "label": "Cebu 5th District Engineering Office",
+      "pdf_page": 190
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2029",
+      "label": "Leyte 4th District Engineering Office",
+      "pdf_page": 190
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2070",
+      "label": "Central Office",
+      "pdf_page": 190
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2101",
+      "label": "Isabela 1st District Engineering Office",
+      "pdf_page": 192
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2119",
+      "label": "Batangas 2nd District Engineering Office",
+      "pdf_page": 193
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2134",
+      "label": "Masbate 2nd District Engineering Office",
+      "pdf_page": 193
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2153",
+      "label": "Cebu 5th District Engineering Office",
+      "pdf_page": 194
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2167",
+      "label": "Zamboanga del Norte 4th District Engineering Office",
+      "pdf_page": 194
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2171",
+      "label": "Davao del Norte District Engineering Office",
+      "pdf_page": 194
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2178",
+      "label": "Sultan Kudarat 2nd District Engineering Office",
+      "pdf_page": 195
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2191",
+      "label": "Central Office",
+      "pdf_page": 195
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2199",
+      "label": "Ifugao 1st District Engineering Office",
+      "pdf_page": 195
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2215",
+      "label": "Camarines Sur 3rd District Engineering Office",
+      "pdf_page": 196
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2219",
+      "label": "Iloilo 2nd District Engineering Office",
+      "pdf_page": 196
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2222",
+      "label": "Negros Occidental 1st District Engineering Office",
+      "pdf_page": 196
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2226",
+      "label": "Northern Samar 1st District Engineering Office",
+      "pdf_page": 196
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2230",
+      "label": "Lanao del Norte 2nd District Engineering Office",
+      "pdf_page": 196
+    },
+    {
+      "kind": "fold_family_container",
+      "node_id": "c2233",
+      "label": "Construction/ Upgrading/ Rehabilitation of Drainage along National Roa",
+      "pdf_page": 187
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2294",
+      "label": "Central Office",
+      "pdf_page": 197
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2297",
+      "label": "Tarlac 2nd District Engineering Office",
+      "pdf_page": 200
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2301",
+      "label": "Laguna 1st District Engineering Office",
+      "pdf_page": 200
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2305",
+      "label": "Capiz 2nd District Engineering Office",
+      "pdf_page": 200
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2310",
+      "label": "Negros Oriental 3rd District Engineering Office",
+      "pdf_page": 200
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2313",
+      "label": "Cebu 1st District Engineering Office",
+      "pdf_page": 200
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2324",
+      "label": "Zamboanga del Sur 1st District Engineering Office",
+      "pdf_page": 200
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2328",
+      "label": "Davao del Sur District Engineering Office",
+      "pdf_page": 200
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2450",
+      "label": "Central Office",
+      "pdf_page": 201
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2561",
+      "label": "Negros Occidental 3rd District Engineering Office",
+      "pdf_page": 209
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2591",
+      "label": "Zamboanga del Norte 4th District Engineering Office",
+      "pdf_page": 210
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2620",
+      "label": "Surigao del Norte 1st District Engineering Office",
+      "pdf_page": 211
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2651",
+      "label": "Central Office",
+      "pdf_page": 211
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2663",
+      "label": "Palawan 1st District Engineering Office",
+      "pdf_page": 212
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2677",
+      "label": "Leyte 4th District Engineering Office",
+      "pdf_page": 213
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c2689",
+      "label": "Surigao del Norte 1st District Engineering Office",
+      "pdf_page": 213
+    },
+    {
+      "kind": "fold_family_container",
+      "node_id": "c2692",
       "label": "Road Widening",
       "pdf_page": 197
     },
     {
+      "kind": "retain_second_observation",
+      "node_id": "c3017",
+      "label": "Central Office",
+      "pdf_page": 213
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3032",
+      "label": "Cagayan 2nd District Engineering Office",
+      "pdf_page": 230
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3080",
+      "label": "Cebu 3rd District Engineering Office",
+      "pdf_page": 231
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3112",
+      "label": "Misamis Oriental 1st District Engineering Office",
+      "pdf_page": 233
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3123",
+      "label": "Butuan City District Engineering Office",
+      "pdf_page": 233
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3283",
+      "label": "Central Office",
+      "pdf_page": 233
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3317",
+      "label": "Leyte 4th District Engineering Office",
+      "pdf_page": 242
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3320",
+      "label": "Zamboanga Sibugay 1st District Engineering Office",
+      "pdf_page": 242
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3325",
+      "label": "Sultan Kudarat 1st District Engineering Office",
+      "pdf_page": 242
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3332",
+      "label": "Central Office",
+      "pdf_page": 243
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3333",
+      "label": "National Capital Region",
+      "pdf_page": 243
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3360",
+      "label": "Lower Kalinga District Engineering Office",
+      "pdf_page": 244
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3368",
+      "label": "Nueva Ecija 1st District Engineering Office",
+      "pdf_page": 244
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3422",
+      "label": "Cotabato 1st District Engineering Office",
+      "pdf_page": 246
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3461",
+      "label": "Central Office",
+      "pdf_page": 247
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3464",
+      "label": "Pangasinan 3rd District Engineering Office",
+      "pdf_page": 248
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3468",
+      "label": "Cagayan 2nd District Engineering Office",
+      "pdf_page": 248
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3471",
+      "label": "Nueva Ecija 1st District Engineering Office",
+      "pdf_page": 249
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3482",
+      "label": "Palawan 3rd District Engineering Office",
+      "pdf_page": 249
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3486",
+      "label": "Masbate 3rd District Engineering Office",
+      "pdf_page": 249
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3494",
+      "label": "Iloilo 1st District Engineering Office",
+      "pdf_page": 249
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3506",
+      "label": "Cebu 4th District Engineering Office",
+      "pdf_page": 250
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3511",
+      "label": "Zamboanga City 1st District Engineering Office",
+      "pdf_page": 250
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3563",
+      "label": "Central Office",
+      "pdf_page": 252
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3571",
+      "label": "Batanes District Engineering Office",
+      "pdf_page": 253
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3587",
+      "label": "Laguna 3rd District Engineering Office",
+      "pdf_page": 253
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3590",
+      "label": "Palawan 3rd District Engineering Office",
+      "pdf_page": 253
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3605",
+      "label": "Iloilo 1st District Engineering Office",
+      "pdf_page": 254
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3620",
+      "label": "Zamboanga City 1st District Engineering Office",
+      "pdf_page": 254
+    },
+    {
       "kind": "fold_family_container",
-      "node_id": "c3524",
+      "node_id": "c3628",
       "label": "Off-Carriageway Improvement",
       "pdf_page": 243
     },
     {
+      "kind": "retain_second_observation",
+      "node_id": "c3630",
+      "label": "Region IX",
+      "pdf_page": 255
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3631",
+      "label": "Central Office",
+      "pdf_page": 255
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3632",
+      "label": "National Capital Region",
+      "pdf_page": 255
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3636",
+      "label": "Zamboanga City 1st District Engineering Office",
+      "pdf_page": 255
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3639",
+      "label": "Davao Occidental District Engineering Office",
+      "pdf_page": 255
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3650",
+      "label": "Central Office",
+      "pdf_page": 255
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3653",
+      "label": "Mountain Province 1st District Engineering Office",
+      "pdf_page": 256
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3658",
+      "label": "Zamboanga del Sur 2nd District Engineering Office",
+      "pdf_page": 256
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3664",
+      "label": "Lanao del Norte 2nd District Engineering Office",
+      "pdf_page": 256
+    },
+    {
       "kind": "fold_family_container",
-      "node_id": "c3554",
+      "node_id": "c3667",
       "label": "Paving of Unpaved Roads",
       "pdf_page": 255
     },
     {
+      "kind": "retain_second_observation",
+      "node_id": "c3806",
+      "label": "Ilocos Norte 1st District Engineering Office",
+      "pdf_page": 261
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3820",
+      "label": "Cagayan 1st District Engineering Office",
+      "pdf_page": 262
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3839",
+      "label": "Laguna 3rd District Engineering Office",
+      "pdf_page": 262
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3856",
+      "label": "Siquijor District Engineering Office",
+      "pdf_page": 263
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3911",
+      "label": "Sultan Kudarat 2nd District Engineering Office",
+      "pdf_page": 264
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3914",
+      "label": "Surigao del Norte 2nd District Engineering Office",
+      "pdf_page": 265
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3988",
+      "label": "Apayao 2nd District Engineering Office",
+      "pdf_page": 267
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3993",
+      "label": "Isabela 2nd District Engineering Office",
+      "pdf_page": 267
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c3996",
+      "label": "Zambales 2nd District Engineering Office",
+      "pdf_page": 267
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4043",
+      "label": "Capiz 2nd District Engineering Office",
+      "pdf_page": 269
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4055",
+      "label": "Cebu 1st District Engineering Office",
+      "pdf_page": 269
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4067",
+      "label": "Zamboanga City 1st District Engineering Office",
+      "pdf_page": 269
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4083",
+      "label": "Davao de Oro 1st District Engineering Office",
+      "pdf_page": 270
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4097",
+      "label": "Butuan City District Engineering Office",
+      "pdf_page": 270
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4202",
+      "label": "Ilocos Norte 1st District Engineering Office",
+      "pdf_page": 274
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4400",
+      "label": "Zamboanga Sibugay 2nd District Engineering Office",
+      "pdf_page": 280
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4605",
+      "label": "Central Office",
+      "pdf_page": 283
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4637",
+      "label": "Nueva Ecija 1st District Engineering Office",
+      "pdf_page": 289
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4804",
+      "label": "Central Office",
+      "pdf_page": 294
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4813",
+      "label": "Batanes District Engineering Office",
+      "pdf_page": 294
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4826",
+      "label": "Cebu 2nd District Engineering Office",
+      "pdf_page": 295
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4829",
+      "label": "Eastern Samar District Engineering Office",
+      "pdf_page": 295
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4835",
+      "label": "Zamboanga del Sur 2nd District Engineering Office",
+      "pdf_page": 295
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4839",
+      "label": "Camiguin District Engineering Office",
+      "pdf_page": 295
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c4842",
+      "label": "South Cotabato 2nd District Engineering Office",
+      "pdf_page": 295
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c6457",
+      "label": "La Union 1st District Engineering Office",
+      "pdf_page": 372
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c6460",
+      "label": "Apayao 2nd District Engineering Office",
+      "pdf_page": 372
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c6477",
+      "label": "Cavite 1st District Engineering Office",
+      "pdf_page": 372
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c6481",
+      "label": "Albay 1st District Engineering Office",
+      "pdf_page": 372
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c6493",
+      "label": "Cebu City District Engineering Office",
+      "pdf_page": 373
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c6496",
+      "label": "Negros Occidental 2nd District Engineering Office",
+      "pdf_page": 373
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c6499",
+      "label": "Leyte 1st District Engineering Office",
+      "pdf_page": 373
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c6503",
+      "label": "Zamboanga Sibugay 2nd District Engineering Office",
+      "pdf_page": 373
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c6506",
+      "label": "Davao del Norte District Engineering Office",
+      "pdf_page": 373
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c6509",
+      "label": "Cotabato 3rd District Engineering Office",
+      "pdf_page": 373
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c6559",
+      "label": "Central Office",
+      "pdf_page": 374
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7159",
+      "label": "National Capital Region",
+      "pdf_page": 401
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7160",
+      "label": "Central Office",
+      "pdf_page": 401
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7161",
+      "label": "National Capital Region",
+      "pdf_page": 401
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7396",
+      "label": "BARMM",
+      "pdf_page": 409
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7398",
+      "label": "Central Office",
+      "pdf_page": 401
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7399",
+      "label": "National Capital Region",
+      "pdf_page": 401
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7403",
+      "label": "Central Office",
+      "pdf_page": 409
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7404",
+      "label": "National Capital Region",
+      "pdf_page": 409
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7423",
+      "label": "Central Office",
+      "pdf_page": 410
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7424",
+      "label": "National Capital Region",
+      "pdf_page": 410
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7443",
+      "label": "Central Office",
+      "pdf_page": 410
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7444",
+      "label": "National Capital Region",
+      "pdf_page": 410
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7463",
+      "label": "Central Office",
+      "pdf_page": 411
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c7464",
+      "label": "National Capital Region",
+      "pdf_page": 411
+    },
+    {
       "kind": "null_glyph_cleanup",
-      "node_id": "c8933",
+      "node_id": "c9096",
       "pdf_page": 490
     },
     {
       "kind": "recover_artifact_title",
-      "node_id": "c8933",
+      "node_id": "c9096",
       "label": "Construction of Concrete Road (Section 1: Sta. 0+000 - Sta. 0+292, Sec",
       "pdf_page": 490
     },
     {
       "kind": "null_glyph_cleanup",
-      "node_id": "c10533",
+      "node_id": "c10696",
       "pdf_page": 561
     },
     {
+      "kind": "retain_second_observation",
+      "node_id": "c12225",
+      "label": "Central Office",
+      "pdf_page": 629
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c12228",
+      "label": "Ilocos Norte 1st District Engineering Office",
+      "pdf_page": 629
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c12239",
+      "label": "Cebu 6th District Engineering Office",
+      "pdf_page": 630
+    },
+    {
       "kind": "null_glyph_cleanup",
-      "node_id": "c15540",
+      "node_id": "c15706",
       "pdf_page": 800
     },
     {
       "kind": "null_glyph_cleanup",
-      "node_id": "c15541",
+      "node_id": "c15707",
       "pdf_page": 800
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c18227",
+      "label": "Central Office",
+      "pdf_page": 924
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c18234",
+      "label": "Pangasinan 1st District Engineering Office",
+      "pdf_page": 925
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c18251",
+      "label": "Masbate 3rd District Engineering Office",
+      "pdf_page": 925
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c18254",
+      "label": "Bohol 2nd District Engineering Office",
+      "pdf_page": 926
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c18259",
+      "label": "Misamis Occidental 1st District Engineering Office",
+      "pdf_page": 926
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c18262",
+      "label": "Sarangani District Engineering Office",
+      "pdf_page": 926
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c18276",
+      "label": "Central Office",
+      "pdf_page": 926
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c18277",
+      "label": "National Capital Region",
+      "pdf_page": 926
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c18410",
+      "label": "Upper Kalinga District Engineering Office",
+      "pdf_page": 933
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c18556",
+      "label": "Butuan City District Engineering Office",
+      "pdf_page": 939
+    },
+    {
+      "kind": "retain_reference",
+      "node_id": "c18562",
+      "label": "National Capital Region",
+      "pdf_page": 939
+    },
+    {
+      "kind": "retain_reference",
+      "node_id": "c18563",
+      "label": "GOP",
+      "pdf_page": 939
+    },
+    {
+      "kind": "retain_reference",
+      "node_id": "c18564",
+      "label": "Loan Proceeds",
+      "pdf_page": 939
+    },
+    {
+      "kind": "retain_reference",
+      "node_id": "c18565",
+      "label": "Central Office",
+      "pdf_page": 939
+    },
+    {
+      "kind": "retain_reference",
+      "node_id": "c18662",
+      "label": "National Capital Region",
+      "pdf_page": 45
+    },
+    {
+      "kind": "retain_reference",
+      "node_id": "c18663",
+      "label": "Central Office",
+      "pdf_page": 45
+    },
+    {
+      "kind": "retain_reference",
+      "node_id": "c18747",
+      "label": "National Capital Region",
+      "pdf_page": 49
+    },
+    {
+      "kind": "retain_reference",
+      "node_id": "c18748",
+      "label": "Central Office",
+      "pdf_page": 49
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c20463",
+      "label": "Central Office",
+      "pdf_page": 109
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c20464",
+      "label": "National Capital Region",
+      "pdf_page": 109
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c20467",
+      "label": "Central Office",
+      "pdf_page": 110
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c20468",
+      "label": "National Capital Region",
+      "pdf_page": 110
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c20472",
+      "label": "Central Office",
+      "pdf_page": 9
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c20473",
+      "label": "National Capital Region",
+      "pdf_page": 9
+    },
+    {
+      "kind": "retain_reference",
+      "node_id": "c20475",
+      "label": "National Capital Region",
+      "pdf_page": 9
+    },
+    {
+      "kind": "retain_reference",
+      "node_id": "c20476",
+      "label": "Central Office",
+      "pdf_page": 9
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21175",
+      "label": "a. CAR Regional Office",
+      "pdf_page": 33
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21178",
+      "label": "a. Regional Office I",
+      "pdf_page": 34
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21182",
+      "label": "a. Regional Office II",
+      "pdf_page": 34
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21197",
+      "label": "a. Laguna 2nd District Engineering Office",
+      "pdf_page": 34
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21202",
+      "label": "a. Regional Office V",
+      "pdf_page": 34
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21206",
+      "label": "a. Regional Office VI",
+      "pdf_page": 35
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21210",
+      "label": "a. Regional Office NIR",
+      "pdf_page": 35
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21213",
+      "label": "a. Regional Office VII",
+      "pdf_page": 35
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21217",
+      "label": "a. Regional Office VIII",
+      "pdf_page": 35
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21220",
+      "label": "a. Regional Office IX",
+      "pdf_page": 35
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21223",
+      "label": "a. Regional Office X",
+      "pdf_page": 35
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21228",
+      "label": "a. Regional Office XI",
+      "pdf_page": 35
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21231",
+      "label": "a. Regional Office XII",
+      "pdf_page": 35
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21235",
+      "label": "a. Regional Office XIII",
+      "pdf_page": 36
     }
   ],
   "failures": [],
@@ -121,1483 +1360,1450 @@
       "difference_php": 0
     }
   ],
-  "rollup_echoes": [
+  "retained_second_observations": [
     {
-      "pdf_page": 9,
-      "text": "National Capital Region",
-      "amounts": [
-        1505758000
-      ]
-    },
-    {
-      "pdf_page": 9,
-      "text": "Central Office",
-      "amounts": [
-        1505758000
-      ]
-    },
-    {
-      "pdf_page": 9,
-      "text": "National Capital Region",
-      "amounts": [
-        23179988000
-      ]
-    },
-    {
-      "pdf_page": 9,
-      "text": "Central Office",
-      "amounts": [
-        23179988000
-      ]
-    },
-    {
-      "pdf_page": 33,
-      "text": "a. CAR Regional Office",
-      "amounts": [
-        11867000
-      ]
-    },
-    {
-      "pdf_page": 34,
-      "text": "a. Regional Office I",
-      "amounts": [
-        5656000
-      ]
-    },
-    {
-      "pdf_page": 34,
-      "text": "a. Regional Office II",
-      "amounts": [
-        17695000
-      ]
-    },
-    {
-      "pdf_page": 34,
-      "text": "a. Laguna 2nd District Engineering Office",
-      "amounts": [
-        6333000
-      ]
-    },
-    {
-      "pdf_page": 34,
-      "text": "a. Regional Office V",
-      "amounts": [
-        20581000
-      ]
-    },
-    {
-      "pdf_page": 35,
-      "text": "a. Regional Office VI",
-      "amounts": [
-        12197000
-      ]
-    },
-    {
-      "pdf_page": 35,
-      "text": "a. Regional Office NIR",
-      "amounts": [
-        12762000
-      ]
-    },
-    {
-      "pdf_page": 35,
-      "text": "a. Regional Office VII",
-      "amounts": [
-        5836000
-      ]
-    },
-    {
-      "pdf_page": 35,
-      "text": "a. Regional Office VIII",
-      "amounts": [
-        12715000
-      ]
-    },
-    {
-      "pdf_page": 35,
-      "text": "a. Regional Office IX",
-      "amounts": [
-        6310000
-      ]
-    },
-    {
-      "pdf_page": 35,
-      "text": "a. Regional Office X",
-      "amounts": [
-        6016000
-      ]
-    },
-    {
-      "pdf_page": 35,
-      "text": "a. Regional Office XI",
-      "amounts": [
-        24738000
-      ]
-    },
-    {
-      "pdf_page": 35,
-      "text": "a. Regional Office XII",
-      "amounts": [
-        6822000
-      ]
-    },
-    {
-      "pdf_page": 36,
-      "text": "a. Regional Office XIII",
-      "amounts": [
-        11470000
-      ]
-    },
-    {
-      "pdf_page": 45,
-      "text": "National Capital Region",
-      "amounts": [
-        2777545000
-      ]
-    },
-    {
-      "pdf_page": 45,
-      "text": "Central Office",
-      "amounts": [
-        2777545000
-      ]
-    },
-    {
-      "pdf_page": 49,
-      "text": "National Capital Region",
-      "amounts": [
-        10533243000
-      ]
-    },
-    {
-      "pdf_page": 49,
-      "text": "Central Office",
-      "amounts": [
-        10533243000
-      ]
-    },
-    {
-      "pdf_page": 109,
-      "text": "National Capital Region",
-      "amounts": [
-        13107523000
-      ]
-    },
-    {
-      "pdf_page": 109,
-      "text": "Central Office",
-      "amounts": [
-        13107523000
-      ]
-    },
-    {
-      "pdf_page": 110,
-      "text": "National Capital Region",
-      "amounts": [
-        1000000000
-      ]
-    },
-    {
-      "pdf_page": 110,
-      "text": "Central Office",
-      "amounts": [
-        1000000000
-      ]
-    },
-    {
+      "node_id": "c0189",
+      "label": "Isabela 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 119,
-      "text": "Isabela 3rd District Engineering Office",
-      "amounts": [
-        117296000
-      ]
+      "printed_php": 117296000
     },
     {
+      "node_id": "c0295",
+      "label": "Davao City 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 122,
-      "text": "Davao City 2nd District Engineering Office",
-      "amounts": [
-        13367000
-      ]
+      "printed_php": 13367000
     },
     {
+      "node_id": "c0305",
+      "label": "Surigao del Sur 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 123,
-      "text": "Surigao del Sur 2nd District Engineering Office",
-      "amounts": [
-        47506000
-      ]
+      "printed_php": 47506000
     },
     {
+      "node_id": "c0708",
+      "label": "Davao del Norte District Engineering Office",
+      "kind": "office",
       "pdf_page": 138,
-      "text": "Davao del Norte District Engineering Office",
-      "amounts": [
-        200000000
-      ]
+      "printed_php": 200000000
     },
     {
+      "node_id": "c0830",
+      "label": "La Union 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 142,
-      "text": "La Union 1st District Engineering Office",
-      "amounts": [
-        143911000
-      ]
+      "printed_php": 143911000
     },
     {
+      "node_id": "c0834",
+      "label": "Lower Kalinga District Engineering Office",
+      "kind": "office",
       "pdf_page": 143,
-      "text": "Lower Kalinga District Engineering Office",
-      "amounts": [
-        85029000
-      ]
+      "printed_php": 85029000
     },
     {
+      "node_id": "c0967",
+      "label": "Misamis Oriental 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 147,
-      "text": "Misamis Oriental 1st District Engineering Office",
-      "amounts": [
-        29500000
-      ]
+      "printed_php": 29500000
     },
     {
+      "node_id": "c0986",
+      "label": "Dinagat Islands District Engineering Office",
+      "kind": "office",
       "pdf_page": 148,
-      "text": "Dinagat Islands District Engineering Office",
-      "amounts": [
-        1618000
-      ]
+      "printed_php": 1618000
     },
     {
+      "node_id": "c1085",
+      "label": "Isabela 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 153,
-      "text": "Isabela 2nd District Engineering Office",
-      "amounts": [
-        9130000
-      ]
+      "printed_php": 9130000
     },
     {
+      "node_id": "c1111",
+      "label": "Ilolilo 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 153,
-      "text": "Ilolilo 2nd District Engineering Office",
-      "amounts": [
-        10800000
-      ]
+      "printed_php": 10800000
     },
     {
+      "node_id": "c1143",
+      "label": "Cebu 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 154,
-      "text": "Cebu 2nd District Engineering Office",
-      "amounts": [
-        149955000
-      ]
+      "printed_php": 149955000
     },
     {
+      "node_id": "c1148",
+      "label": "Leyte 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 155,
-      "text": "Leyte 2nd District Engineering Office",
-      "amounts": [
-        66127000
-      ]
+      "printed_php": 66127000
     },
     {
+      "node_id": "c1160",
+      "label": "Misamis Oriental 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 155,
-      "text": "Misamis Oriental 1st District Engineering Office",
-      "amounts": [
-        33048000
-      ]
+      "printed_php": 33048000
     },
     {
+      "node_id": "c1164",
+      "label": "Cotabato 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 155,
-      "text": "Cotabato 1st District Engineering Office",
-      "amounts": [
-        49110000
-      ]
+      "printed_php": 49110000
     },
     {
+      "node_id": "c1248",
+      "label": "Nueva Ecija 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 159,
-      "text": "Nueva Ecija 1st District Engineering Office",
-      "amounts": [
-        11500000
-      ]
+      "printed_php": 11500000
     },
     {
+      "node_id": "c1416",
+      "label": "Cotabato 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 166,
-      "text": "Cotabato 2nd District Engineering Office",
-      "amounts": [
-        41011000
-      ]
+      "printed_php": 41011000
     },
     {
+      "node_id": "c1586",
+      "label": "Samar 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 172,
-      "text": "Samar 1st District Engineering Office",
-      "amounts": [
-        19209000
-      ]
+      "printed_php": 19209000
     },
     {
+      "node_id": "c1594",
+      "label": "Lanao del Norte 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 172,
-      "text": "Lanao del Norte 2nd District Engineering Office",
-      "amounts": [
-        26800000
-      ]
+      "printed_php": 26800000
     },
     {
+      "node_id": "c1597",
+      "label": "Sarangani District Engineering Office",
+      "kind": "office",
       "pdf_page": 172,
-      "text": "Sarangani District Engineering Office",
-      "amounts": [
-        5878000
-      ]
+      "printed_php": 5878000
     },
     {
+      "node_id": "c1600",
+      "label": "Dinagat Islands District Engineering Office",
+      "kind": "office",
       "pdf_page": 172,
-      "text": "Dinagat Islands District Engineering Office",
-      "amounts": [
-        45806000
-      ]
+      "printed_php": 45806000
     },
     {
+      "node_id": "c1628",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 172,
-      "text": "Central Office",
-      "amounts": [
-        1383780000
-      ]
+      "printed_php": 1383780000
     },
     {
+      "node_id": "c1641",
+      "label": "Cagayan de Oro City 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 174,
-      "text": "Cagayan de Oro City 2nd District Engineering Office",
-      "amounts": [
-        33250000
-      ]
+      "printed_php": 33250000
     },
     {
+      "node_id": "c1647",
+      "label": "Davao City 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 174,
-      "text": "Davao City 2nd District Engineering Office",
-      "amounts": [
-        70890000
-      ]
+      "printed_php": 70890000
     },
     {
+      "node_id": "c1650",
+      "label": "Surigao del Sur 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 174,
-      "text": "Surigao del Sur 2nd District Engineering Office",
-      "amounts": [
-        40000000
-      ]
+      "printed_php": 40000000
     },
     {
+      "node_id": "c1707",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 174,
-      "text": "Central Office",
-      "amounts": [
-        3661641000
-      ]
+      "printed_php": 3661641000
     },
     {
+      "node_id": "c1781",
+      "label": "Masbate 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 180,
-      "text": "Masbate 2nd District Engineering Office",
-      "amounts": [
-        100000000
-      ]
+      "printed_php": 100000000
     },
     {
+      "node_id": "c1785",
+      "label": "Iloilo 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 180,
-      "text": "Iloilo 2nd District Engineering Office",
-      "amounts": [
-        17500000
-      ]
+      "printed_php": 17500000
     },
     {
+      "node_id": "c1792",
+      "label": "Cebu City District Engineering Office",
+      "kind": "office",
       "pdf_page": 180,
-      "text": "Cebu City District Engineering Office",
-      "amounts": [
-        150000000
-      ]
+      "printed_php": 150000000
     },
     {
+      "node_id": "c1808",
+      "label": "Zamboanga City 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 181,
-      "text": "Zamboanga City 1st District Engineering Office",
-      "amounts": [
-        110836000
-      ]
+      "printed_php": 110836000
     },
     {
+      "node_id": "c1813",
+      "label": "Bukidnon 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 181,
-      "text": "Bukidnon 1st District Engineering Office",
-      "amounts": [
-        49000000
-      ]
+      "printed_php": 49000000
     },
     {
+      "node_id": "c1830",
+      "label": "Sultan Kudarat 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 181,
-      "text": "Sultan Kudarat 2nd District Engineering Office",
-      "amounts": [
-        127436000
-      ]
+      "printed_php": 127436000
     },
     {
+      "node_id": "c1834",
+      "label": "Surigao del Sur 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 182,
-      "text": "Surigao del Sur 2nd District Engineering Office",
-      "amounts": [
-        90500000
-      ]
+      "printed_php": 90500000
     },
     {
+      "node_id": "c1867",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 182,
-      "text": "Central Office",
-      "amounts": [
-        1873900000
-      ]
+      "printed_php": 1873900000
     },
     {
+      "node_id": "c1874",
+      "label": "La Union 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 183,
-      "text": "La Union 1st District Engineering Office",
-      "amounts": [
-        88750000
-      ]
+      "printed_php": 88750000
     },
     {
+      "node_id": "c1926",
+      "label": "Cagayan 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 186,
-      "text": "Cagayan 2nd District Engineering Office",
-      "amounts": [
-        210000000
-      ]
+      "printed_php": 210000000
     },
     {
+      "node_id": "c1929",
+      "label": "Camarines Sur 4th District Engineering Office",
+      "kind": "office",
       "pdf_page": 186,
-      "text": "Camarines Sur 4th District Engineering Office",
-      "amounts": [
-        44000000
-      ]
+      "printed_php": 44000000
     },
     {
+      "node_id": "c1933",
+      "label": "Iloilo 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 186,
-      "text": "Iloilo 2nd District Engineering Office",
-      "amounts": [
-        47566000
-      ]
+      "printed_php": 47566000
     },
     {
+      "node_id": "c1957",
+      "label": "Davao de Oro 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 187,
-      "text": "Davao de Oro 1st District Engineering Office",
-      "amounts": [
-        10000000
-      ]
+      "printed_php": 10000000
     },
     {
+      "node_id": "c1960",
+      "label": "Sarangani District Engineering Office",
+      "kind": "office",
       "pdf_page": 187,
-      "text": "Sarangani District Engineering Office",
-      "amounts": [
-        23000000
-      ]
+      "printed_php": 23000000
     },
     {
+      "node_id": "c1964",
+      "label": "Butuan City District Engineering Office",
+      "kind": "office",
       "pdf_page": 187,
-      "text": "Butuan City District Engineering Office",
-      "amounts": [
-        85000000
-      ]
+      "printed_php": 85000000
     },
     {
+      "node_id": "c2002",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 187,
-      "text": "Central Office",
-      "amounts": [
-        1182646000
-      ]
+      "printed_php": 1182646000
     },
     {
+      "node_id": "c2023",
+      "label": "Iloilo City District Engineering Office",
+      "kind": "office",
       "pdf_page": 190,
-      "text": "Iloilo City District Engineering Office",
-      "amounts": [
-        7000000
-      ]
+      "printed_php": 7000000
     },
     {
+      "node_id": "c2026",
+      "label": "Cebu 5th District Engineering Office",
+      "kind": "office",
       "pdf_page": 190,
-      "text": "Cebu 5th District Engineering Office",
-      "amounts": [
-        10000000
-      ]
+      "printed_php": 10000000
     },
     {
+      "node_id": "c2029",
+      "label": "Leyte 4th District Engineering Office",
+      "kind": "office",
       "pdf_page": 190,
-      "text": "Leyte 4th District Engineering Office",
-      "amounts": [
-        8000000
-      ]
+      "printed_php": 8000000
     },
     {
+      "node_id": "c2070",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 190,
-      "text": "Central Office",
-      "amounts": [
-        1193954000
-      ]
+      "printed_php": 1193954000
     },
     {
+      "node_id": "c2101",
+      "label": "Isabela 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 192,
-      "text": "Isabela 1st District Engineering Office",
-      "amounts": [
-        11000000
-      ]
+      "printed_php": 11000000
     },
     {
+      "node_id": "c2119",
+      "label": "Batangas 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 193,
-      "text": "Batangas 2nd District Engineering Office",
-      "amounts": [
-        88500000
-      ]
+      "printed_php": 88500000
     },
     {
+      "node_id": "c2134",
+      "label": "Masbate 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 193,
-      "text": "Masbate 2nd District Engineering Office",
-      "amounts": [
-        25000000
-      ]
+      "printed_php": 25000000
     },
     {
+      "node_id": "c2153",
+      "label": "Cebu 5th District Engineering Office",
+      "kind": "office",
       "pdf_page": 194,
-      "text": "Cebu 5th District Engineering Office",
-      "amounts": [
-        20000000
-      ]
+      "printed_php": 20000000
     },
     {
+      "node_id": "c2167",
+      "label": "Zamboanga del Norte 4th District Engineering Office",
+      "kind": "office",
       "pdf_page": 194,
-      "text": "Zamboanga del Norte 4th District Engineering Office",
-      "amounts": [
-        43025000
-      ]
+      "printed_php": 43025000
     },
     {
+      "node_id": "c2171",
+      "label": "Davao del Norte District Engineering Office",
+      "kind": "office",
       "pdf_page": 194,
-      "text": "Davao del Norte District Engineering Office",
-      "amounts": [
-        20000000
-      ]
+      "printed_php": 20000000
     },
     {
+      "node_id": "c2178",
+      "label": "Sultan Kudarat 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 195,
-      "text": "Sultan Kudarat 2nd District Engineering Office",
-      "amounts": [
-        41748000
-      ]
+      "printed_php": 41748000
     },
     {
+      "node_id": "c2191",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 195,
-      "text": "Central Office",
-      "amounts": [
-        517624000
-      ]
+      "printed_php": 517624000
     },
     {
+      "node_id": "c2199",
+      "label": "Ifugao 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 195,
-      "text": "Ifugao 1st District Engineering Office",
-      "amounts": [
-        19970000
-      ]
+      "printed_php": 19970000
     },
     {
+      "node_id": "c2215",
+      "label": "Camarines Sur 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 196,
-      "text": "Camarines Sur 3rd District Engineering Office",
-      "amounts": [
-        50000000
-      ]
+      "printed_php": 50000000
     },
     {
+      "node_id": "c2219",
+      "label": "Iloilo 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 196,
-      "text": "Iloilo 2nd District Engineering Office",
-      "amounts": [
-        24894000
-      ]
+      "printed_php": 24894000
     },
     {
+      "node_id": "c2222",
+      "label": "Negros Occidental 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 196,
-      "text": "Negros Occidental 1st District Engineering Office",
-      "amounts": [
-        5060000
-      ]
+      "printed_php": 5060000
     },
     {
+      "node_id": "c2226",
+      "label": "Northern Samar 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 196,
-      "text": "Northern Samar 1st District Engineering Office",
-      "amounts": [
-        8768000
-      ]
+      "printed_php": 8768000
     },
     {
+      "node_id": "c2230",
+      "label": "Lanao del Norte 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 196,
-      "text": "Lanao del Norte 2nd District Engineering Office",
-      "amounts": [
-        10345000
-      ]
+      "printed_php": 10345000
     },
     {
+      "node_id": "c2294",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 197,
-      "text": "Central Office",
-      "amounts": [
-        4308848000
-      ]
+      "printed_php": 4308848000
     },
     {
+      "node_id": "c2297",
+      "label": "Tarlac 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 200,
-      "text": "Tarlac 2nd District Engineering Office",
-      "amounts": [
-        23000000
-      ]
+      "printed_php": 23000000
     },
     {
+      "node_id": "c2301",
+      "label": "Laguna 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 200,
-      "text": "Laguna 1st District Engineering Office",
-      "amounts": [
-        59489000
-      ]
+      "printed_php": 59489000
     },
     {
+      "node_id": "c2305",
+      "label": "Capiz 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 200,
-      "text": "Capiz 2nd District Engineering Office",
-      "amounts": [
-        16365000
-      ]
+      "printed_php": 16365000
     },
     {
+      "node_id": "c2310",
+      "label": "Negros Oriental 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 200,
-      "text": "Negros Oriental 3rd District Engineering Office",
-      "amounts": [
-        83061000
-      ]
+      "printed_php": 83061000
     },
     {
+      "node_id": "c2313",
+      "label": "Cebu 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 200,
-      "text": "Cebu 1st District Engineering Office",
-      "amounts": [
-        48020000
-      ]
+      "printed_php": 48020000
     },
     {
+      "node_id": "c2324",
+      "label": "Zamboanga del Sur 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 200,
-      "text": "Zamboanga del Sur 1st District Engineering Office",
-      "amounts": [
-        103283000
-      ]
+      "printed_php": 103283000
     },
     {
+      "node_id": "c2328",
+      "label": "Davao del Sur District Engineering Office",
+      "kind": "office",
       "pdf_page": 200,
-      "text": "Davao del Sur District Engineering Office",
-      "amounts": [
-        62500000
-      ]
+      "printed_php": 62500000
     },
     {
+      "node_id": "c2450",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 201,
-      "text": "Central Office",
-      "amounts": [
-        7701011000
-      ]
+      "printed_php": 7701011000
     },
     {
+      "node_id": "c2561",
+      "label": "Negros Occidental 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 209,
-      "text": "Negros Occidental 3rd District Engineering Office",
-      "amounts": [
-        88290000
-      ]
+      "printed_php": 88290000
     },
     {
+      "node_id": "c2591",
+      "label": "Zamboanga del Norte 4th District Engineering Office",
+      "kind": "office",
       "pdf_page": 210,
-      "text": "Zamboanga del Norte 4th District Engineering Office",
-      "amounts": [
-        250558000
-      ]
+      "printed_php": 250558000
     },
     {
+      "node_id": "c2620",
+      "label": "Surigao del Norte 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 211,
-      "text": "Surigao del Norte 1st District Engineering Office",
-      "amounts": [
-        40087000
-      ]
+      "printed_php": 40087000
     },
     {
+      "node_id": "c2651",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 211,
-      "text": "Central Office",
-      "amounts": [
-        1912393000
-      ]
+      "printed_php": 1912393000
     },
     {
+      "node_id": "c2663",
+      "label": "Palawan 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 212,
-      "text": "Palawan 1st District Engineering Office",
-      "amounts": [
-        12006000
-      ]
+      "printed_php": 12006000
     },
     {
+      "node_id": "c2677",
+      "label": "Leyte 4th District Engineering Office",
+      "kind": "office",
       "pdf_page": 213,
-      "text": "Leyte 4th District Engineering Office",
-      "amounts": [
-        41042000
-      ]
+      "printed_php": 41042000
     },
     {
+      "node_id": "c2689",
+      "label": "Surigao del Norte 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 213,
-      "text": "Surigao del Norte 1st District Engineering Office",
-      "amounts": [
-        36746000
-      ]
+      "printed_php": 36746000
     },
     {
+      "node_id": "c3017",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 213,
-      "text": "Central Office",
-      "amounts": [
-        42857840000
-      ]
+      "printed_php": 42857840000
     },
     {
+      "node_id": "c3032",
+      "label": "Cagayan 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 230,
-      "text": "Cagayan 2nd District Engineering Office",
-      "amounts": [
-        19500000
-      ]
+      "printed_php": 19500000
     },
     {
+      "node_id": "c3080",
+      "label": "Cebu 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 231,
-      "text": "Cebu 3rd District Engineering Office",
-      "amounts": [
-        88000000
-      ]
+      "printed_php": 88000000
     },
     {
+      "node_id": "c3112",
+      "label": "Misamis Oriental 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 233,
-      "text": "Misamis Oriental 1st District Engineering Office",
-      "amounts": [
-        20000000
-      ]
+      "printed_php": 20000000
     },
     {
+      "node_id": "c3123",
+      "label": "Butuan City District Engineering Office",
+      "kind": "office",
       "pdf_page": 233,
-      "text": "Butuan City District Engineering Office",
-      "amounts": [
-        95000000
-      ]
+      "printed_php": 95000000
     },
     {
+      "node_id": "c3283",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 233,
-      "text": "Central Office",
-      "amounts": [
-        21993233000
-      ]
+      "printed_php": 21993233000
     },
     {
+      "node_id": "c3317",
+      "label": "Leyte 4th District Engineering Office",
+      "kind": "office",
       "pdf_page": 242,
-      "text": "Leyte 4th District Engineering Office",
-      "amounts": [
-        30000000
-      ]
+      "printed_php": 30000000
     },
     {
+      "node_id": "c3320",
+      "label": "Zamboanga Sibugay 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 242,
-      "text": "Zamboanga Sibugay 1st District Engineering Office",
-      "amounts": [
-        35000000
-      ]
+      "printed_php": 35000000
     },
     {
+      "node_id": "c3325",
+      "label": "Sultan Kudarat 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 242,
-      "text": "Sultan Kudarat 1st District Engineering Office",
-      "amounts": [
-        84937000
-      ]
+      "printed_php": 84937000
     },
     {
+      "node_id": "c3332",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 243,
-      "text": "National Capital Region",
-      "amounts": [
-        515000000
-      ]
+      "printed_php": 515000000
     },
     {
+      "node_id": "c3333",
+      "label": "National Capital Region",
+      "kind": "region",
       "pdf_page": 243,
-      "text": "Central Office",
-      "amounts": [
-        515000000
-      ]
+      "printed_php": 515000000
     },
     {
+      "node_id": "c3360",
+      "label": "Lower Kalinga District Engineering Office",
+      "kind": "office",
       "pdf_page": 244,
-      "text": "Lower Kalinga District Engineering Office",
-      "amounts": [
-        15000000
-      ]
+      "printed_php": 15000000
     },
     {
+      "node_id": "c3368",
+      "label": "Nueva Ecija 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 244,
-      "text": "Nueva Ecija 1st District Engineering Office",
-      "amounts": [
-        16500000
-      ]
+      "printed_php": 16500000
     },
     {
+      "node_id": "c3422",
+      "label": "Cotabato 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 246,
-      "text": "Cotabato 1st District Engineering Office",
-      "amounts": [
-        14076000
-      ]
+      "printed_php": 14076000
     },
     {
+      "node_id": "c3461",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 247,
-      "text": "Central Office",
-      "amounts": [
-        1557100000
-      ]
+      "printed_php": 1557100000
     },
     {
+      "node_id": "c3464",
+      "label": "Pangasinan 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 248,
-      "text": "Pangasinan 3rd District Engineering Office",
-      "amounts": [
-        10000000
-      ]
+      "printed_php": 10000000
     },
     {
+      "node_id": "c3468",
+      "label": "Cagayan 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 248,
-      "text": "Cagayan 2nd District Engineering Office",
-      "amounts": [
-        18500000
-      ]
+      "printed_php": 18500000
     },
     {
+      "node_id": "c3471",
+      "label": "Nueva Ecija 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 249,
-      "text": "Nueva Ecija 1st District Engineering Office",
-      "amounts": [
-        44000000
-      ]
+      "printed_php": 44000000
     },
     {
+      "node_id": "c3482",
+      "label": "Palawan 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 249,
-      "text": "Palawan 3rd District Engineering Office",
-      "amounts": [
-        65000000
-      ]
+      "printed_php": 65000000
     },
     {
+      "node_id": "c3486",
+      "label": "Masbate 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 249,
-      "text": "Masbate 3rd District Engineering Office",
-      "amounts": [
-        30000000
-      ]
+      "printed_php": 30000000
     },
     {
+      "node_id": "c3494",
+      "label": "Iloilo 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 249,
-      "text": "Iloilo 1st District Engineering Office",
-      "amounts": [
-        150000000
-      ]
+      "printed_php": 150000000
     },
     {
+      "node_id": "c3506",
+      "label": "Cebu 4th District Engineering Office",
+      "kind": "office",
       "pdf_page": 250,
-      "text": "Cebu 4th District Engineering Office",
-      "amounts": [
-        2040000
-      ]
+      "printed_php": 2040000
     },
     {
+      "node_id": "c3511",
+      "label": "Zamboanga City 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 250,
-      "text": "Zamboanga City 1st District Engineering Office",
-      "amounts": [
-        76000000
-      ]
+      "printed_php": 76000000
     },
     {
+      "node_id": "c3563",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 252,
-      "text": "Central Office",
-      "amounts": [
-        356590000
-      ]
+      "printed_php": 356590000
     },
     {
+      "node_id": "c3571",
+      "label": "Batanes District Engineering Office",
+      "kind": "office",
       "pdf_page": 253,
-      "text": "Batanes District Engineering Office",
-      "amounts": [
-        10912000
-      ]
+      "printed_php": 10912000
     },
     {
+      "node_id": "c3587",
+      "label": "Laguna 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 253,
-      "text": "Laguna 3rd District Engineering Office",
-      "amounts": [
-        4781000
-      ]
+      "printed_php": 4781000
     },
     {
+      "node_id": "c3590",
+      "label": "Palawan 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 253,
-      "text": "Palawan 3rd District Engineering Office",
-      "amounts": [
-        2500000
-      ]
+      "printed_php": 2500000
     },
     {
+      "node_id": "c3605",
+      "label": "Iloilo 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 254,
-      "text": "Iloilo 1st District Engineering Office",
-      "amounts": [
-        150000000
-      ]
+      "printed_php": 150000000
     },
     {
+      "node_id": "c3620",
+      "label": "Zamboanga City 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 254,
-      "text": "Zamboanga City 1st District Engineering Office",
-      "amounts": [
-        28500000
-      ]
+      "printed_php": 28500000
     },
     {
+      "node_id": "c3630",
+      "label": "Region IX",
+      "kind": "region",
       "pdf_page": 255,
-      "text": "National Capital Region",
-      "amounts": [
-        5000000
-      ]
+      "printed_php": 5000000
     },
     {
+      "node_id": "c3631",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 255,
-      "text": "Central Office",
-      "amounts": [
-        5000000
-      ]
+      "printed_php": 5000000
     },
     {
+      "node_id": "c3632",
+      "label": "National Capital Region",
+      "kind": "region",
       "pdf_page": 255,
-      "text": "Region IX",
-      "amounts": [
-        5000000
-      ]
+      "printed_php": 5000000
     },
     {
+      "node_id": "c3636",
+      "label": "Zamboanga City 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 255,
-      "text": "Zamboanga City 1st District Engineering Office",
-      "amounts": [
-        12074000
-      ]
+      "printed_php": 12074000
     },
     {
+      "node_id": "c3639",
+      "label": "Davao Occidental District Engineering Office",
+      "kind": "office",
       "pdf_page": 255,
-      "text": "Davao Occidental District Engineering Office",
-      "amounts": [
-        9918000
-      ]
+      "printed_php": 9918000
     },
     {
+      "node_id": "c3650",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 255,
-      "text": "Central Office",
-      "amounts": [
-        396627000
-      ]
+      "printed_php": 396627000
     },
     {
+      "node_id": "c3653",
+      "label": "Mountain Province 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 256,
-      "text": "Mountain Province 1st District Engineering Office",
-      "amounts": [
-        10000000
-      ]
+      "printed_php": 10000000
     },
     {
+      "node_id": "c3658",
+      "label": "Zamboanga del Sur 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 256,
-      "text": "Zamboanga del Sur 2nd District Engineering Office",
-      "amounts": [
-        26628000
-      ]
+      "printed_php": 26628000
     },
     {
+      "node_id": "c3664",
+      "label": "Lanao del Norte 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 256,
-      "text": "Lanao del Norte 2nd District Engineering Office",
-      "amounts": [
-        135774000
-      ]
+      "printed_php": 135774000
     },
     {
+      "node_id": "c3806",
+      "label": "Ilocos Norte 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 261,
-      "text": "Ilocos Norte 1st District Engineering Office",
-      "amounts": [
-        20000000
-      ]
+      "printed_php": 20000000
     },
     {
+      "node_id": "c3820",
+      "label": "Cagayan 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 262,
-      "text": "Cagayan 1st District Engineering Office",
-      "amounts": [
-        31200000
-      ]
+      "printed_php": 31200000
     },
     {
+      "node_id": "c3839",
+      "label": "Laguna 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 262,
-      "text": "Laguna 3rd District Engineering Office",
-      "amounts": [
-        18000000
-      ]
+      "printed_php": 18000000
     },
     {
+      "node_id": "c3856",
+      "label": "Siquijor District Engineering Office",
+      "kind": "office",
       "pdf_page": 263,
-      "text": "Siquijor District Engineering Office",
-      "amounts": [
-        20000000
-      ]
+      "printed_php": 20000000
     },
     {
+      "node_id": "c3911",
+      "label": "Sultan Kudarat 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 264,
-      "text": "Sultan Kudarat 2nd District Engineering Office",
-      "amounts": [
-        80022000
-      ]
+      "printed_php": 80022000
     },
     {
+      "node_id": "c3914",
+      "label": "Surigao del Norte 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 265,
-      "text": "Surigao del Norte 2nd District Engineering Office",
-      "amounts": [
-        48000000
-      ]
+      "printed_php": 48000000
     },
     {
+      "node_id": "c3988",
+      "label": "Apayao 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 267,
-      "text": "Apayao 2nd District Engineering Office",
-      "amounts": [
-        10000000
-      ]
+      "printed_php": 10000000
     },
     {
+      "node_id": "c3993",
+      "label": "Isabela 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 267,
-      "text": "Isabela 2nd District Engineering Office",
-      "amounts": [
-        76000000
-      ]
+      "printed_php": 76000000
     },
     {
+      "node_id": "c3996",
+      "label": "Zambales 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 267,
-      "text": "Zambales 2nd District Engineering Office",
-      "amounts": [
-        40000000
-      ]
+      "printed_php": 40000000
     },
     {
+      "node_id": "c4043",
+      "label": "Capiz 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 269,
-      "text": "Capiz 2nd District Engineering Office",
-      "amounts": [
-        16800000
-      ]
+      "printed_php": 16800000
     },
     {
+      "node_id": "c4055",
+      "label": "Cebu 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 269,
-      "text": "Cebu 1st District Engineering Office",
-      "amounts": [
-        10000000
-      ]
+      "printed_php": 10000000
     },
     {
+      "node_id": "c4067",
+      "label": "Zamboanga City 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 269,
-      "text": "Zamboanga City 1st District Engineering Office",
-      "amounts": [
-        3000000
-      ]
+      "printed_php": 3000000
     },
     {
+      "node_id": "c4083",
+      "label": "Davao de Oro 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 270,
-      "text": "Davao de Oro 1st District Engineering Office",
-      "amounts": [
-        17000000
-      ]
+      "printed_php": 17000000
     },
     {
+      "node_id": "c4097",
+      "label": "Butuan City District Engineering Office",
+      "kind": "office",
       "pdf_page": 270,
-      "text": "Butuan City District Engineering Office",
-      "amounts": [
-        30000000
-      ]
+      "printed_php": 30000000
     },
     {
+      "node_id": "c4202",
+      "label": "Ilocos Norte 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 274,
-      "text": "Ilocos Norte 1st District Engineering Office",
-      "amounts": [
-        42000000
-      ]
+      "printed_php": 42000000
     },
     {
+      "node_id": "c4400",
+      "label": "Zamboanga Sibugay 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 280,
-      "text": "Zamboanga Sibugay 2nd District Engineering Office",
-      "amounts": [
-        6200000
-      ]
+      "printed_php": 6200000
     },
     {
+      "node_id": "c4605",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 283,
-      "text": "Central Office",
-      "amounts": [
-        10226564000
-      ]
+      "printed_php": 10226564000
     },
     {
+      "node_id": "c4637",
+      "label": "Nueva Ecija 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 289,
-      "text": "Nueva Ecija 1st District Engineering Office",
-      "amounts": [
-        39900000
-      ]
+      "printed_php": 39900000
     },
     {
+      "node_id": "c4804",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 294,
-      "text": "Central Office",
-      "amounts": [
-        5244933000
-      ]
+      "printed_php": 5244933000
     },
     {
+      "node_id": "c4813",
+      "label": "Batanes District Engineering Office",
+      "kind": "office",
       "pdf_page": 294,
-      "text": "Batanes District Engineering Office",
-      "amounts": [
-        20000000
-      ]
+      "printed_php": 20000000
     },
     {
+      "node_id": "c4826",
+      "label": "Cebu 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 295,
-      "text": "Cebu 2nd District Engineering Office",
-      "amounts": [
-        20000000
-      ]
+      "printed_php": 20000000
     },
     {
+      "node_id": "c4829",
+      "label": "Eastern Samar District Engineering Office",
+      "kind": "office",
       "pdf_page": 295,
-      "text": "Eastern Samar District Engineering Office",
-      "amounts": [
-        50000000
-      ]
+      "printed_php": 50000000
     },
     {
+      "node_id": "c4835",
+      "label": "Zamboanga del Sur 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 295,
-      "text": "Zamboanga del Sur 2nd District Engineering Office",
-      "amounts": [
-        105360000
-      ]
+      "printed_php": 105360000
     },
     {
+      "node_id": "c4839",
+      "label": "Camiguin District Engineering Office",
+      "kind": "office",
       "pdf_page": 295,
-      "text": "Camiguin District Engineering Office",
-      "amounts": [
-        45000000
-      ]
+      "printed_php": 45000000
     },
     {
+      "node_id": "c4842",
+      "label": "South Cotabato 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 295,
-      "text": "South Cotabato 2nd District Engineering Office",
-      "amounts": [
-        30000000
-      ]
+      "printed_php": 30000000
     },
     {
+      "node_id": "c6457",
+      "label": "La Union 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 372,
-      "text": "La Union 1st District Engineering Office",
-      "amounts": [
-        15000000
-      ]
+      "printed_php": 15000000
     },
     {
+      "node_id": "c6460",
+      "label": "Apayao 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 372,
-      "text": "Apayao 2nd District Engineering Office",
-      "amounts": [
-        25000000
-      ]
+      "printed_php": 25000000
     },
     {
+      "node_id": "c6477",
+      "label": "Cavite 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 372,
-      "text": "Cavite 1st District Engineering Office",
-      "amounts": [
-        15000000
-      ]
+      "printed_php": 15000000
     },
     {
+      "node_id": "c6481",
+      "label": "Albay 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 372,
-      "text": "Albay 1st District Engineering Office",
-      "amounts": [
-        80000000
-      ]
+      "printed_php": 80000000
     },
     {
+      "node_id": "c6493",
+      "label": "Cebu City District Engineering Office",
+      "kind": "office",
       "pdf_page": 373,
-      "text": "Cebu City District Engineering Office",
-      "amounts": [
-        50000000
-      ]
+      "printed_php": 50000000
     },
     {
+      "node_id": "c6496",
+      "label": "Negros Occidental 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 373,
-      "text": "Negros Occidental 2nd District Engineering Office",
-      "amounts": [
-        5812000
-      ]
+      "printed_php": 5812000
     },
     {
+      "node_id": "c6499",
+      "label": "Leyte 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 373,
-      "text": "Leyte 1st District Engineering Office",
-      "amounts": [
-        4780000
-      ]
+      "printed_php": 4780000
     },
     {
+      "node_id": "c6503",
+      "label": "Zamboanga Sibugay 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 373,
-      "text": "Zamboanga Sibugay 2nd District Engineering Office",
-      "amounts": [
-        100000000
-      ]
+      "printed_php": 100000000
     },
     {
+      "node_id": "c6506",
+      "label": "Davao del Norte District Engineering Office",
+      "kind": "office",
       "pdf_page": 373,
-      "text": "Davao del Norte District Engineering Office",
-      "amounts": [
-        50000000
-      ]
+      "printed_php": 50000000
     },
     {
+      "node_id": "c6509",
+      "label": "Cotabato 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 373,
-      "text": "Cotabato 3rd District Engineering Office",
-      "amounts": [
-        50000000
-      ]
+      "printed_php": 50000000
     },
     {
+      "node_id": "c6559",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 374,
-      "text": "Central Office",
-      "amounts": [
-        3243000000
-      ]
+      "printed_php": 3243000000
     },
     {
+      "node_id": "c7159",
+      "label": "National Capital Region",
+      "kind": "region",
       "pdf_page": 401,
-      "text": "National Capital Region",
-      "amounts": [
-        100000000
-      ]
+      "printed_php": 100000000
     },
     {
+      "node_id": "c7160",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 401,
-      "text": "Central Office",
-      "amounts": [
-        100000000
-      ]
+      "printed_php": 100000000
     },
     {
+      "node_id": "c7161",
+      "label": "National Capital Region",
+      "kind": "region",
       "pdf_page": 401,
-      "text": "National Capital Region",
-      "amounts": [
-        100000000
-      ]
+      "printed_php": 100000000
     },
     {
-      "pdf_page": 401,
-      "text": "National Capital Region",
-      "amounts": [
-        1027200000
-      ]
-    },
-    {
-      "pdf_page": 401,
-      "text": "Central Office",
-      "amounts": [
-        1027200000
-      ]
-    },
-    {
+      "node_id": "c7396",
+      "label": "BARMM",
+      "kind": "region",
       "pdf_page": 409,
-      "text": "BARMM",
-      "amounts": [
-        38400000
-      ]
+      "printed_php": 38400000
     },
     {
+      "node_id": "c7398",
+      "label": "Central Office",
+      "kind": "office",
+      "pdf_page": 401,
+      "printed_php": 1027200000
+    },
+    {
+      "node_id": "c7399",
+      "label": "National Capital Region",
+      "kind": "region",
+      "pdf_page": 401,
+      "printed_php": 1027200000
+    },
+    {
+      "node_id": "c7403",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 409,
-      "text": "National Capital Region",
-      "amounts": [
-        1000000000
-      ]
+      "printed_php": 1000000000
     },
     {
+      "node_id": "c7404",
+      "label": "National Capital Region",
+      "kind": "region",
       "pdf_page": 409,
-      "text": "Central Office",
-      "amounts": [
-        1000000000
-      ]
+      "printed_php": 1000000000
     },
     {
+      "node_id": "c7423",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 410,
-      "text": "National Capital Region",
-      "amounts": [
-        85000000
-      ]
+      "printed_php": 85000000
     },
     {
+      "node_id": "c7424",
+      "label": "National Capital Region",
+      "kind": "region",
       "pdf_page": 410,
-      "text": "Central Office",
-      "amounts": [
-        85000000
-      ]
+      "printed_php": 85000000
     },
     {
+      "node_id": "c7443",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 410,
-      "text": "National Capital Region",
-      "amounts": [
-        340000000
-      ]
+      "printed_php": 340000000
     },
     {
+      "node_id": "c7444",
+      "label": "National Capital Region",
+      "kind": "region",
       "pdf_page": 410,
-      "text": "Central Office",
-      "amounts": [
-        340000000
-      ]
+      "printed_php": 340000000
     },
     {
+      "node_id": "c7463",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 411,
-      "text": "National Capital Region",
-      "amounts": [
-        85000000
-      ]
+      "printed_php": 85000000
     },
     {
+      "node_id": "c7464",
+      "label": "National Capital Region",
+      "kind": "region",
       "pdf_page": 411,
-      "text": "Central Office",
-      "amounts": [
-        85000000
-      ]
+      "printed_php": 85000000
     },
     {
+      "node_id": "c12225",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 629,
-      "text": "Central Office",
-      "amounts": [
-        1540000000
-      ]
+      "printed_php": 1540000000
     },
     {
+      "node_id": "c12228",
+      "label": "Ilocos Norte 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 629,
-      "text": "Ilocos Norte 1st District Engineering Office",
-      "amounts": [
-        25000000
-      ]
+      "printed_php": 25000000
     },
     {
+      "node_id": "c12239",
+      "label": "Cebu 6th District Engineering Office",
+      "kind": "office",
       "pdf_page": 630,
-      "text": "Cebu 6th District Engineering Office",
-      "amounts": [
-        75000000
-      ]
+      "printed_php": 75000000
     },
     {
+      "node_id": "c18227",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 924,
-      "text": "Central Office",
-      "amounts": [
-        311000000
-      ]
+      "printed_php": 311000000
     },
     {
+      "node_id": "c18234",
+      "label": "Pangasinan 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 925,
-      "text": "Pangasinan 1st District Engineering Office",
-      "amounts": [
-        30000000
-      ]
+      "printed_php": 30000000
     },
     {
+      "node_id": "c18251",
+      "label": "Masbate 3rd District Engineering Office",
+      "kind": "office",
       "pdf_page": 925,
-      "text": "Masbate 3rd District Engineering Office",
-      "amounts": [
-        30000000
-      ]
+      "printed_php": 30000000
     },
     {
+      "node_id": "c18254",
+      "label": "Bohol 2nd District Engineering Office",
+      "kind": "office",
       "pdf_page": 926,
-      "text": "Bohol 2nd District Engineering Office",
-      "amounts": [
-        50000000
-      ]
+      "printed_php": 50000000
     },
     {
+      "node_id": "c18259",
+      "label": "Misamis Occidental 1st District Engineering Office",
+      "kind": "office",
       "pdf_page": 926,
-      "text": "Misamis Occidental 1st District Engineering Office",
-      "amounts": [
-        25000000
-      ]
+      "printed_php": 25000000
     },
     {
+      "node_id": "c18262",
+      "label": "Sarangani District Engineering Office",
+      "kind": "office",
       "pdf_page": 926,
-      "text": "Sarangani District Engineering Office",
-      "amounts": [
-        15000000
-      ]
+      "printed_php": 15000000
     },
     {
+      "node_id": "c18276",
+      "label": "Central Office",
+      "kind": "office",
       "pdf_page": 926,
-      "text": "National Capital Region",
-      "amounts": [
-        1000000000
-      ]
+      "printed_php": 1000000000
     },
     {
+      "node_id": "c18277",
+      "label": "National Capital Region",
+      "kind": "region",
       "pdf_page": 926,
-      "text": "Central Office",
-      "amounts": [
-        1000000000
-      ]
+      "printed_php": 1000000000
     },
     {
+      "node_id": "c18410",
+      "label": "Upper Kalinga District Engineering Office",
+      "kind": "office",
       "pdf_page": 933,
-      "text": "Upper Kalinga District Engineering Office",
-      "amounts": [
-        17000000
-      ]
+      "printed_php": 17000000
     },
     {
-      "pdf_page": 934,
-      "text": "Construction (Completion) of DPWH Isabela 1st District Engineering Office, Baran",
-      "amounts": [
-        30000000
-      ]
-    },
-    {
-      "pdf_page": 937,
-      "text": "Rehabilitation of DPWH Building, Iloilo 2nd District Engineering Office, Baranga",
-      "amounts": [
-        25075000
-      ]
-    },
-    {
-      "pdf_page": 937,
-      "text": "Construction (Completion) of Three Storey DPWH Regional Office VI Building, Fort",
-      "amounts": [
-        20000000
-      ]
-    },
-    {
-      "pdf_page": 937,
-      "text": "Construction of DPWH Leyte 1st District Engineering Office (DEO) Multi-Purpose",
-      "amounts": [
-        6900000
-      ]
-    },
-    {
-      "pdf_page": 938,
-      "text": "Construction of DPWH Lanao del Norte 2nd District Engineering Office (DEO) Build",
-      "amounts": [
-        50000000
-      ]
-    },
-    {
+      "node_id": "c18556",
+      "label": "Butuan City District Engineering Office",
+      "kind": "office",
       "pdf_page": 939,
-      "text": "Butuan City District Engineering Office",
-      "amounts": [
-        92000000
-      ]
+      "printed_php": 92000000
     },
     {
-      "pdf_page": 939,
-      "text": "National Capital Region",
-      "amounts": [
-        44749011000
-      ]
+      "node_id": "c20463",
+      "label": "Central Office",
+      "kind": "office",
+      "pdf_page": 109,
+      "printed_php": 13107523000
     },
     {
-      "pdf_page": 939,
-      "text": "Central Office",
-      "amounts": [
-        44749011000
-      ]
+      "node_id": "c20464",
+      "label": "National Capital Region",
+      "kind": "region",
+      "pdf_page": 109,
+      "printed_php": 13107523000
     },
     {
-      "pdf_page": 939,
-      "text": "GOP",
-      "amounts": [
-        25190650000
-      ]
+      "node_id": "c20467",
+      "label": "Central Office",
+      "kind": "office",
+      "pdf_page": 110,
+      "printed_php": 1000000000
     },
     {
+      "node_id": "c20468",
+      "label": "National Capital Region",
+      "kind": "region",
+      "pdf_page": 110,
+      "printed_php": 1000000000
+    },
+    {
+      "node_id": "c20472",
+      "label": "Central Office",
+      "kind": "office",
+      "pdf_page": 9,
+      "printed_php": 1505758000
+    },
+    {
+      "node_id": "c20473",
+      "label": "National Capital Region",
+      "kind": "region",
+      "pdf_page": 9,
+      "printed_php": 1505758000
+    },
+    {
+      "node_id": "c21175",
+      "label": "a. CAR Regional Office",
+      "kind": "office",
+      "pdf_page": 33,
+      "printed_php": 11867000
+    },
+    {
+      "node_id": "c21178",
+      "label": "a. Regional Office I",
+      "kind": "office",
+      "pdf_page": 34,
+      "printed_php": 5656000
+    },
+    {
+      "node_id": "c21182",
+      "label": "a. Regional Office II",
+      "kind": "office",
+      "pdf_page": 34,
+      "printed_php": 17695000
+    },
+    {
+      "node_id": "c21197",
+      "label": "a. Laguna 2nd District Engineering Office",
+      "kind": "office",
+      "pdf_page": 34,
+      "printed_php": 6333000
+    },
+    {
+      "node_id": "c21202",
+      "label": "a. Regional Office V",
+      "kind": "office",
+      "pdf_page": 34,
+      "printed_php": 20581000
+    },
+    {
+      "node_id": "c21206",
+      "label": "a. Regional Office VI",
+      "kind": "office",
+      "pdf_page": 35,
+      "printed_php": 12197000
+    },
+    {
+      "node_id": "c21210",
+      "label": "a. Regional Office NIR",
+      "kind": "office",
+      "pdf_page": 35,
+      "printed_php": 12762000
+    },
+    {
+      "node_id": "c21213",
+      "label": "a. Regional Office VII",
+      "kind": "office",
+      "pdf_page": 35,
+      "printed_php": 5836000
+    },
+    {
+      "node_id": "c21217",
+      "label": "a. Regional Office VIII",
+      "kind": "office",
+      "pdf_page": 35,
+      "printed_php": 12715000
+    },
+    {
+      "node_id": "c21220",
+      "label": "a. Regional Office IX",
+      "kind": "office",
+      "pdf_page": 35,
+      "printed_php": 6310000
+    },
+    {
+      "node_id": "c21223",
+      "label": "a. Regional Office X",
+      "kind": "office",
+      "pdf_page": 35,
+      "printed_php": 6016000
+    },
+    {
+      "node_id": "c21228",
+      "label": "a. Regional Office XI",
+      "kind": "office",
+      "pdf_page": 35,
+      "printed_php": 24738000
+    },
+    {
+      "node_id": "c21231",
+      "label": "a. Regional Office XII",
+      "kind": "office",
+      "pdf_page": 35,
+      "printed_php": 6822000
+    },
+    {
+      "node_id": "c21235",
+      "label": "a. Regional Office XIII",
+      "kind": "office",
+      "pdf_page": 36,
+      "printed_php": 11470000
+    }
+  ],
+  "retained_reference_nodes": [
+    {
+      "node_id": "c18562",
+      "label": "National Capital Region",
+      "kind": "region",
       "pdf_page": 939,
-      "text": "Loan Proceeds",
-      "amounts": [
-        19558361000
-      ]
+      "printed_php": 44749011000
+    },
+    {
+      "node_id": "c18563",
+      "label": "GOP",
+      "kind": "funding",
+      "pdf_page": 939,
+      "printed_php": 25190650000
+    },
+    {
+      "node_id": "c18564",
+      "label": "Loan Proceeds",
+      "kind": "funding",
+      "pdf_page": 939,
+      "printed_php": 19558361000
+    },
+    {
+      "node_id": "c18565",
+      "label": "Central Office",
+      "kind": "office",
+      "pdf_page": 939,
+      "printed_php": 44749011000
+    },
+    {
+      "node_id": "c18662",
+      "label": "National Capital Region",
+      "kind": "region",
+      "pdf_page": 45,
+      "printed_php": 2777545000
+    },
+    {
+      "node_id": "c18663",
+      "label": "Central Office",
+      "kind": "office",
+      "pdf_page": 45,
+      "printed_php": 2777545000
+    },
+    {
+      "node_id": "c18747",
+      "label": "National Capital Region",
+      "kind": "region",
+      "pdf_page": 49,
+      "printed_php": 10533243000
+    },
+    {
+      "node_id": "c18748",
+      "label": "Central Office",
+      "kind": "office",
+      "pdf_page": 49,
+      "printed_php": 10533243000
+    },
+    {
+      "node_id": "c20475",
+      "label": "National Capital Region",
+      "kind": "region",
+      "pdf_page": 9,
+      "printed_php": 23179988000
+    },
+    {
+      "node_id": "c20476",
+      "label": "Central Office",
+      "kind": "office",
+      "pdf_page": 9,
+      "printed_php": 23179988000
     }
   ],
   "crossvolume_controls": [
@@ -1956,8 +3162,8 @@
   "provenance_sha256": {
     "HB_BUDGET_3rd_reading/3- HB 10858 FOR 3RD READING VOL I-C .pdf": "48cb7a11e391bd4da89d4f47cf39a2eba8fe9bfe636dba101c8284b224ac1b1b",
     "analysis/data/hb_dpwh_native_rollup_3rd_reading.json": "79d825795071577d02a55665280b9d1e0dd741b8fcb1bbb7908e3a20bc013635",
-    "scripts/hb_native_ic_rollup.py": "14bf023b9fd98292ee22f0ff77e26703bc8150ae3be8b91786f32fc6a52fcb3c",
-    "scripts/hb_native_ic_extract.py": "5531057b8c5477af93e3aba552effca08303e9a7294213c7a9194b2364b71724",
+    "scripts/hb_native_ic_rollup.py": "2d8a1da0fff9ac3f15b46ceba6977e8055eaca11e5be93f99642c76e1c69d8eb",
+    "scripts/hb_native_ic_extract.py": "9f82649b772fdd244cfcdbcec9b89a78505e55b758a6f801a42ab2b7116bd8e4",
     "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
   }
 }

@@ -10,7 +10,10 @@ test('optional region join preserves every amount and source, flags unique candi
  const snapshot=JSON.stringify(strict),relaxed=regionCandidates(strict);
  assert.equal(JSON.stringify(strict),snapshot);
  const candidates=relaxed.filter(r=>r.region_difference);
- assert.equal(candidates.length,29);assert.equal(candidates.filter(r=>r.zone==='fap').length,25);
+ // 25 FAP pairs merge (House prints Nationwide funding summaries; NEP lists
+ // NCR); the 4 former local candidates now match directly because the
+ // retained Central Office/region wrappers give House rows real attribution.
+ assert.equal(candidates.length,25);assert.equal(candidates.filter(r=>r.zone==='fap').length,25);
  // Every House-only and NEP-only FAP pair except genuinely absent NEP records merges.
  assert.equal(relaxed.filter(r=>r.zone==='fap' && (r.second||r.third) && !r.nep).length,4);
  assert.equal(relaxed.filter(r=>r.zone==='fap' && r.nep && !(r.second||r.third)).length,0);

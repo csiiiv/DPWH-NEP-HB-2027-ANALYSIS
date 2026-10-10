@@ -2,8 +2,10 @@
 """Arithmetic and source-coverage regressions for the Native I-C rollup.
 
 Runs against analysis/data/hb_dpwh_native_ic_projects.json and the live
-extractor; guards the four artifact-title recoveries, the 2,477 internal
-control checks, the 15,972 named-project leaves plus 29 FAP projects, and the cross-volume
+extractor; guards the four artifact-title recoveries, the 2,686 internal
+control checks, the 15,972 named-project leaves plus 29 FAP projects, the
+209 retained second-observation echo wrappers plus 2 non-additive FAP
+funding-summary references, and the cross-volume
 agreement with the Native I-B baseline. Tampering tests mutate extracted
 rows before the outline is built and assert the audit catches it.
 """
@@ -44,12 +46,14 @@ class NativeICRollupTests(unittest.TestCase):
 
     def test_complete_additive_budget(self):
         self.assertEqual(self.summary['additive_leaf_total_php'], 639_179_718_000)
-        self.assertEqual(self.summary['recursive_checks'], 2_477)
+        self.assertEqual(self.summary['recursive_checks'], 2_678)
         self.assertEqual(self.summary['failed_nodes'], 0)
         self.assertEqual(self.summary['unexplained_amount_rows'], 0)
         self.assertEqual(self.summary['unexplained_title_rows'], 0)
         self.assertEqual(self.summary['failed_closing_controls'], 0)
-        self.assertEqual(self.summary['rollup_echoes'], 211)
+        # formerly suppressed rollup echoes: now retained in the hierarchy
+        self.assertEqual(self.summary['retained_second_observations'], 196)
+        self.assertEqual(self.summary['retained_reference_nodes'], 10)
 
     def test_cross_volume_agreement_with_ib(self):
         self.assertEqual(self.summary['shared_controls_with_ib'], 56)
@@ -63,9 +67,9 @@ class NativeICRollupTests(unittest.TestCase):
 
     def test_named_project_leaves(self):
         self.assertEqual(self.summary['named_project_leaves'], 15_972)
-        self.assertEqual(self.summary['region_nodes'], 1_471)
-        self.assertEqual(self.summary['office_nodes'], 3_380)
-        self.assertEqual(self.summary['funding_leaves'], 49)
+        self.assertEqual(self.summary['region_nodes'], 1_490)
+        self.assertEqual(self.summary['office_nodes'], 3_570)
+        self.assertEqual(self.summary['funding_leaves'], 51)
 
     def test_artifact_title_recovery(self):
         """The \\x00 first-line row on p490 recovers the full Paliueg title
@@ -98,12 +102,23 @@ class NativeICRollupTests(unittest.TestCase):
         self.assertIn('Sta. 1+214.10', bridges[1]['label'])
 
     def test_page_break_continuation_keeps_source_pages_and_amount(self):
-        project = next(n for n in self._walk() if n['label'] ==
-                       'Iloilo 2nd District Engineering Office Balabag, Dumangas, Iloilo (10.844063, 122.657222)')
+        """p936–937 regression: 'Rehabilitation of DPWH Building, Iloilo 2nd
+        District Engineering Office, …' is a PROJECT whose title contains the
+        office designation — it must never be mistaken for an office echo.
+        The office heading keeps its own row; the project keeps its
+        page-breaking continuation line."""
+        office = next(n for n in self._walk() if n['label'] == 'Iloilo 2nd District Engineering Office'
+                      and n['source']['pdf_page'] == 936)
+        self.assertEqual(office['kind'], 'office')
+        self.assertEqual(office['printed_amount_php'], 25_075_000)
+        self.assertEqual(len(office['children']), 1)
+        project = office['children'][0]
         self.assertEqual(project['kind'], 'project')
+        self.assertTrue(project['label'].startswith('Rehabilitation of DPWH Building'))
+        self.assertTrue(project['label'].endswith('(10.844063, 122.657222)'))
         self.assertEqual(project['printed_amount_php'], 25_075_000)
-        self.assertEqual(project['source']['pdf_page'], 936)
-        self.assertEqual({r['pdf_page'] for r in project['source']['title_rows']}, {936, 937})
+        self.assertEqual(project['source']['pdf_page'], 937)
+        self.assertEqual([r['pdf_page'] for r in project['source']['title_rows']], [937, 937])
 
     def test_school_and_coordinate_tails_do_not_cross_project_boundaries(self):
         page = [n for n in self._walk() if n['source']['pdf_page'] == 800]

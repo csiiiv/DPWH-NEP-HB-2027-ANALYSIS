@@ -144,6 +144,16 @@ def build(pdf=PDF, ib_rollup=IB_ROLLUP):
             repairs.append({'kind': 'fold_family_container', 'node_id': n['id'],
                             'label': n['label'][:70],
                             'pdf_page': n['source']['pdf_page']})
+        if raw_node.get('second_observation'):
+            n['second_observation'] = True
+            repairs.append({'kind': 'retain_second_observation', 'node_id': n['id'],
+                            'label': n['label'][:70],
+                            'pdf_page': n['source']['pdf_page']})
+        if raw_node.get('reference'):
+            n['additive'] = False
+            repairs.append({'kind': 'retain_reference', 'node_id': n['id'],
+                            'label': n['label'][:70],
+                            'pdf_page': n['source']['pdf_page']})
         return n
 
     # group the extractor's top-level nodes by text
@@ -222,12 +232,12 @@ def build(pdf=PDF, ib_rollup=IB_ROLLUP):
 
     unexplained = [r for r in rows if r['amounts'] and r['source_row'] not in used]
 
-    # rows the outline deliberately suppressed as second printed observations
-    # (rollup echoes: NCR/CO repeating a childless parent's amount, FAP head
-    # funding summary) are accounted here, distinct from unexplained rows.
-    suppressed_sources = {s['source_row'] for s in suppressed}
-    echoes = [r for r in rows if r['source_row'] in suppressed_sources]
-    unexplained = [r for r in unexplained if r['source_row'] not in suppressed_sources]
+    # rows the outline retained as second-observation wrappers (previously
+    # suppressed rollup echoes) are now nodes; the suppressed list only still
+    # receives rows that failed to attach. FAP funding-summary references are
+    # imported as non-additive nodes and excluded from allocation accounting.
+    echo_nodes = [n for n in nodes if n.get('second_observation')]
+    reference_nodes = [n for n in nodes if n.get('additive') is False]
 
     # ---- recursive rollup --------------------------------------------------------
     checks, leaf_rows, seen, allocation_sources = [], [], set(), set()
@@ -238,14 +248,24 @@ def build(pdf=PDF, ib_rollup=IB_ROLLUP):
         seen.add(n['id'])
         path = path + [n['id']]
         printed = n['printed_amount_php']
+        if n.get('additive') is False:
+            # Non-additive printed reference (FAP funding summary echo).
+            n['recursive_leaf_sum_php'] = None
+            n['difference_php'] = None
+            return 0
         child_sums = [rollup(c, path) for c in n['children']]
-        leaf_sum = sum(child_sums) if child_sums else printed
+        # children that are all non-additive references carry no detail:
+        # the node is its own allocation (banner trio pattern).
+        leaf_sum = sum(child_sums) if any(c.get('additive') is not False
+                                          for c in n['children']) else printed
         n['recursive_leaf_sum_php'] = leaf_sum
         n['difference_php'] = leaf_sum - printed
-        if n['children']:
+        if any(c.get('additive') is not False for c in n['children']):
             n['progressive_rollup'] = []
             running = 0
             for c in n['children']:
+                if c.get('additive') is False:
+                    continue
                 running += c['recursive_leaf_sum_php']
                 n['progressive_rollup'].append({'child_id': c['id'], 'cumulative_php': running,
                                                 'remaining_php': printed - running})
@@ -347,7 +367,8 @@ def build(pdf=PDF, ib_rollup=IB_ROLLUP):
             'closing_control_checks': len(closing), 'failed_closing_controls': len(closing_failures),
             'unexplained_amount_rows': len(unexplained),
             'unexplained_title_rows': len(unexplained_titles),
-            'rollup_echoes': len(echoes),
+            'retained_second_observations': len(echo_nodes),
+            'retained_reference_nodes': len(reference_nodes),
             'additive_leaf_total_php': total,
             'named_project_leaves': sum(n['kind'] == 'project' and not n['children'] for n in nodes),
             'fap_projects': kinds.get('fap_project', 0),
@@ -359,8 +380,14 @@ def build(pdf=PDF, ib_rollup=IB_ROLLUP):
             'repair_counts': dict(Counter(r['kind'] for r in repairs)),
         },
         'repairs': repairs, 'failures': failures, 'closing_checks': closing,
-        'rollup_echoes': [{'pdf_page': r['page'], 'text': r['text'][:80],
-                           'amounts': r['amounts']} for r in echoes],
+        'retained_second_observations': [
+            {'node_id': n['id'], 'label': n['label'][:80], 'kind': n['kind'],
+             'pdf_page': n['source']['pdf_page'], 'printed_php': n['printed_amount_php']}
+            for n in echo_nodes],
+        'retained_reference_nodes': [
+            {'node_id': n['id'], 'label': n['label'][:80], 'kind': n['kind'],
+             'pdf_page': n['source']['pdf_page'], 'printed_php': n['printed_amount_php']}
+            for n in reference_nodes],
         'crossvolume_controls': shared, 'crossvolume_failures': crossvolume_failures,
         'implied_personnel_services_php': ps_implied,
         'unexplained_amount_rows': [
