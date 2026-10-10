@@ -72,19 +72,42 @@ class NormalizeLabelsTests(unittest.TestCase):
         self.assertEqual(title_tokens('Tagbac-Lubang-Looc Rd')[-2:], ['looc', 'rd'])
         self.assertNotEqual(raw_normalized('Bo0008LB'), raw_normalized('B00008LB'))
 
-    def test_pending_bldg_not_live_until_merged(self):
-        # Pending abbrevs must not change matching until explicitly promoted.
-        self.assertIn('bldg', PENDING_TITLE_ABBREVIATIONS)
-        self.assertNotEqual(
+    def test_promoted_abbrev_and_ocr_slips_are_live(self):
+        self.assertEqual(LIVE_TITLE_ABBREVIATIONS['bldg'], 'building')
+        self.assertEqual(LIVE_TITLE_ABBREVIATIONS['bidg'], 'building')
+        self.assertEqual(
             title_tokens('Multi-Purpose Bldg.'),
             title_tokens('Multi-Purpose Building'))
         self.assertEqual(
-            title_tokens('Multi-Purpose Bldg.', abbreviations=PENDING_TITLE_ABBREVIATIONS),
-            title_tokens('Multi-Purpose Building', abbreviations=PENDING_TITLE_ABBREVIATIONS))
+            title_match_key('Dipolog-Oroguieta National Rd'),
+            title_match_key('Dipolog-Oroquieta National Rd'))
+        self.assertEqual(
+            title_match_key('Coverd Court, Barangay San Enrigue'),
+            title_match_key('Covered Court, Barangay San Enrique'))
+        self.assertEqual(PENDING_TITLE_ABBREVIATIONS, {})
+
+    def test_spaced_n_tilde_and_optional_barangay_in_titles(self):
+        self.assertEqual(
+            title_match_key('Las Pi ñ as City'),
+            title_match_key('Las Piñas City'))
+        self.assertEqual(
+            title_tokens('Las Pi ñ as City'),
+            title_tokens('Las Piñas City'))
+        self.assertEqual(
+            title_match_key(
+                'Rehabilitation of Road and Drainage, Aratan Blvd. Brgy Pulo '
+                'Santa Cruz, City of Santa Rosa, Laguna'),
+            title_match_key(
+                'Rehabilitation of Road and Drainage, Aratan Blvd. Pulo '
+                'Santa Cruz, City of Santa Rosa, Laguna'))
+        # Tokens still surface the expanded label for mining/alignment.
+        self.assertIn('barangay', title_tokens('Brgy Pulo Santa Cruz'))
+        self.assertNotIn('barangay', title_match_key('Brgy Pulo Santa Cruz'))
 
     def test_substitution_triage(self):
         self.assertEqual(classify_title_substitution(('building',), ('bldg',)), 'promote')
         self.assertEqual(classify_title_substitution(('buidling',), ('building',)), 'promote')
+        self.assertEqual(classify_title_substitution(('oroquieta',), ('oroguieta',)), 'promote')
         self.assertEqual(
             classify_title_substitution(('rehabilitation',), ('construction',)), 'reject')
         self.assertEqual(classify_title_substitution(('k0097',), ('k0098',)), 'reject')

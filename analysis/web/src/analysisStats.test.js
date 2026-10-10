@@ -8,7 +8,7 @@ const read=name=>JSON.parse(readFileSync(new URL(`../../data/${name}.json`,impor
 test('digit statistics conserve record counts and match reference patterns',()=>{
  const rows=unifiedComparison(read('stage_trace_2027'),read('house_reading_changes_2027')).projects;
  const amounts=rows.filter(r=>r.third).map(r=>r.third.amount_php);
- assert.equal(amounts.length,16274);
+ assert.equal(amounts.length,16272);
  const b=benford(amounts);
  assert.equal(b.total,amounts.filter(v=>v>0).length);
  assert.ok(Math.abs(b.digits.reduce((sum,d)=>sum+d.observed,0)-1)<1e-9);
@@ -20,7 +20,7 @@ test('digit statistics conserve record counts and match reference patterns',()=>
  const ladder=roundingLadder(amounts);
  assert.equal(ladder.length,6);
  const million=ladder.find(e=>e.step===1e6);
- assert.equal(million.records,12702);assert.equal(million.share,12702/16274);
+ assert.equal(million.records,12700);assert.equal(million.share,12700/16272);
  const bands=valueBands(amounts);
  assert.equal(bands.reduce((sum,e)=>sum+e.records,0),amounts.length);
  assert.equal(bands.reduce((sum,e)=>sum+e.amount_php,0),amounts.reduce((sum,v)=>sum+v,0));

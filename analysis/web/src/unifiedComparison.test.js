@@ -7,14 +7,14 @@ const read=name=>JSON.parse(readFileSync(new URL(`../../data/${name}.json`,impor
 test('combined columns conserve both House ledgers, NEP/API amounts and PAP controls',()=>{
  const stages=read('stage_trace_2027'),readings=read('house_reading_changes_2027');
  const combined=unifiedComparison(stages,readings);
- assert.equal(combined.projects.length,17825);
+ assert.equal(combined.projects.length,17772);
  assert.equal(combined.paps.length,46);
  const additions=selectRows(combined.projects,{readingStatus:'third_only'});
  assert.equal(additions.length,5);
  assert.equal(additions.reduce((sum,r)=>sum+r.reading_delta_php,0),134000000);
  assert(additions.every(r=>!r.second && r.third && !r.nep && !r.api));
  const grouped=combined.projects.filter(r=>r.reading_status==='repeated_key');
- assert.equal(grouped.length,1);assert.equal(grouped[0].second.amount_php,24000000);assert.equal(grouped[0].third.amount_php,24000000);
+ assert.equal(grouped.length,3);
  const fap=combined.paps.find(r=>r.program==='Foreign-assisted projects');
  assert.deepEqual(values(fap,'paps'),[null,117749011000,44749011000,44749011000]);
  assert.equal(fap.reading_delta_php,0);assert.deepEqual(fap.third_pages,[939]);
@@ -24,6 +24,7 @@ test('combined columns conserve both House ledgers, NEP/API amounts and PAP cont
  assert.deepEqual(values(absent,'paps'),[200000000,200000000,null,null]);
  assert.equal(absent.reading_delta_php,null);
  const tampered=structuredClone(readings);
- tampered.projects[0].second.records[0].amount_php++;
+ const t0=tampered.projects[0].second;
+ (t0.records ?? [t0])[0].amount_php++;
  assert.throws(()=>unifiedComparison(stages,tampered),/anchor/);
 });

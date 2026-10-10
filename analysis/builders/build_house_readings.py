@@ -33,13 +33,21 @@ def grouped_side(records, reading):
     if not records:
         return None
     keep = ('title', 'title_match_key', 'title_base', 'title_base_match_key',
-            'chainages', 'chainage_incomplete', 'amount_php', 'program', 'pap',
+            'chainages', 'chainage_incomplete', 'chainage_length_review',
+            'amount_php', 'program', 'pap',
             'pap_id', 'zone', 'region', 'office', 'office_canonical', 'pdf_page',
             'record_kind', 'native_node_id')
     leaves = [{**{k: r[k] for k in keep if k in r}, 'id': f'hb:{reading}:' + r['native_node_id'],
                'source_record_id': r['id']} for r in records]
-    return {**leaves[0], 'amount_php': sum(r['amount_php'] for r in leaves),
-            'pdf_pages': sorted({r['pdf_page'] for r in leaves}), 'records': leaves}
+    side = {**leaves[0], 'amount_php': sum(r['amount_php'] for r in leaves),
+            'pdf_pages': sorted({r['pdf_page'] for r in leaves})}
+    # Single-leaf sides already carry every field above; only genuinely grouped
+    # keys keep the per-leaf ledger, slimmed to identity + amounts + pages.
+    if len(leaves) > 1:
+        side['records'] = [{k: leaf[k] for k in
+                            ('id', 'source_record_id', 'native_node_id', 'amount_php', 'pdf_page')
+                            if k in leaf} for leaf in leaves]
+    return side
 
 
 def compare_readings(second, third):
@@ -52,7 +60,7 @@ def compare_readings(second, third):
         left = grouped_side(groups[0].get(key, []), 'second')
         right = grouped_side(groups[1].get(key, []), 'third')
         delta = (right['amount_php'] if right else 0) - (left['amount_php'] if left else 0)
-        repeated = any(side and len(side['records']) > 1 for side in (left, right))
+        repeated = any(side and len(side.get('records') or []) > 1 for side in (left, right))
         status = ('repeated_key' if repeated else 'third_only' if not left else
                   'second_only' if not right else 'amount_changed' if delta else 'same_amount')
         primary = right or left
@@ -64,7 +72,8 @@ def compare_readings(second, third):
                            else 'Unique normalized title + PAP + region + office + allocation kind + zone'})
     # Every source record is present once, even where individual identity is ambiguous.
     for side, rows in [('second', second), ('third', third)]:
-        consumed = [r['source_record_id'] for pair in result if pair[side] for r in pair[side]['records']]
+        consumed = [r['source_record_id'] for pair in result if pair[side]
+                    for r in (pair[side].get('records') or [pair[side]])]
         if len(consumed) != len(set(consumed)) or set(consumed) != {r['id'] for r in rows}:
             raise ValueError(f'{side}: duplicate or missing reading allocations')
     if sum(r['delta_php'] for r in result) != sum(r['amount_php'] for r in third) - sum(r['amount_php'] for r in second):
@@ -139,5 +148,8 @@ def build():
 
 if __name__ == '__main__':
     data = build()
-    (DATA / 'house_reading_changes_2027.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+    # Compact JSON: this ledger is a builder input and download artifact, not a
+    # hand-edited document; dropping pretty-print keeps it far under the 100MB
+    # git ceiling as chainage evidence accumulates.
+    (DATA / 'house_reading_changes_2027.json').write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')) + '\n')
     print(json.dumps(data['summary'], indent=2))

@@ -6,7 +6,7 @@ export function unifiedComparison(stages, readings) {
   });
   const consumed=new Set(), projects=[];
   for(const pair of readings.projects){
-    const anchors=(pair.second?.records || []).map(record=>{
+    const anchors=(pair.second?.records || (pair.second ? [pair.second] : [])).map(record=>{
       const anchor=stageByHouse.get(record.source_record_id);
       if(!anchor || anchor.row.house.amount_php !== record.amount_php || consumed.has(anchor.index))throw new Error('Missing or reused HGAB2 anchor');
       consumed.add(anchor.index);return anchor.row;

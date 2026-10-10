@@ -39,9 +39,33 @@ test('chainage spans and lengths format for NEP → HGAB review', () => {
   const nepPoint = {chainages: [{point: true, from: 'K0096+090', to: 'K0096+090', meters_from: 96090, length_m: null}]};
   const housePoint = {chainages: [{point: true, from: 'K0095+075', to: 'K0095+075', meters_from: 95075, length_m: null}]};
   assert.equal(formatChainageSpans(nepPoint.chainages), 'K0096+090');
-  const shift = chainageSideDetail(housePoint, nepPoint, {withDelta: true});
-  assert.equal(shift.deltaKind, 'station');
-  assert.equal(shift.deltaKm, '−1.01 km');
-  assert.equal(shift.deltaPct, null);
-  assert.equal(shift.lengthKm, null);
+  const pointCell = chainageSideDetail(housePoint, nepPoint, {withDelta: true});
+  assert.equal(pointCell.spans, 'K0095+075');
+  assert.equal(pointCell.deltaKm, null);
+  assert.equal(pointCell.deltaKind, null);
+  assert.equal(pointCell.lengthKm, null);
+});
+
+test('absurd km OCR repair is flagged in spans and length review', () => {
+  const house = {chainages: [
+    {from: 'K0003+230', to: 'K0003+275', length_m: 45},
+    {from: 'K0017+670', to: 'K0017+800', length_m: 130},
+    {
+      from: 'K0220+328', to: 'K0020+513', length_m: 185,
+      length_review: 'repaired_km_ocr',
+      length_from: 'K0020+328', length_to: 'K0020+513',
+      meters_from: 20328, meters_to: 20513,
+    },
+  ]};
+  const nep = {chainages: [
+    {from: 'K0020+328', to: 'K0020+582', length_m: 254},
+  ]};
+  assert.match(
+    formatChainageSpans(house.chainages),
+    /K0020\+328 – K0020\+513 \(printed K0220\+328 – K0020\+513\)/);
+  assert.equal(totalLengthM(house.chainages), 360);
+  const cell = chainageSideDetail(house, nep, {withDelta: true});
+  assert.equal(cell.lengthReview, 'repaired_km_ocr');
+  assert.equal(cell.lengthReviewLabel, 'length uses repaired km OCR');
+  assert.equal(cell.lengthKm, '0.36 km');
 });

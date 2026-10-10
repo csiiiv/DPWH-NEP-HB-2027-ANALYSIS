@@ -49,7 +49,8 @@ def slim(side: dict | None) -> dict | None:
     if not side:
         return None
     keep = ('id', 'title', 'title_match_key', 'title_base', 'title_base_match_key',
-            'chainages', 'chainage_incomplete', 'amount_php', 'program', 'pap',
+            'chainages', 'chainage_incomplete', 'chainage_length_review',
+            'amount_php', 'program', 'pap',
             'pap_id', 'zone', 'region', 'office', 'office_canonical', 'pdf_page',
             'evidence')
     return {k: side[k] for k in keep if k in side}

@@ -849,6 +849,7 @@ small {
 .chainage-in-cell .chainage-length-delta{font-weight:700;font-size:.72rem}
 .chainage-length-delta.up{color:#0b6b3a}
 .chainage-length-delta.down{color:#a12020}
+.chainage-in-cell .chainage-length-review{font-weight:600;color:#8a5a00}
 
 .candidate-project-title{font-weight:600}.candidate-assignment{border-top:1px solid #dce4ec;margin-top:.5rem;padding-top:.35rem}.candidate-assignment small{color:#52657b}
 .analysis-controls{display:flex;align-items:end;gap:1rem;flex-wrap:wrap}.analysis-controls label,.headline-analysis .analysis-section>label{display:flex;flex-direction:column;max-width:380px}.analysis-controls .finding-share{margin:0}.analysis-distributions{display:grid;grid-template-columns:1fr 1.35fr;gap:1rem}.analysis-section{background:#fff;border:1px solid #dce4ec;border-radius:10px;padding:1rem;margin:1rem 0;min-width:0}.analysis-section table{min-width:500px;width:100%;font-size:.85rem}.analysis-section table small{display:block;font-weight:400}.analysis-section td,.analysis-section th{vertical-align:top}.analysis-section .table-scroll{max-width:100%}.analysis-section>label select{max-width:100%}.analysis-headlines strong{font-size:1.5rem}.analysis-headlines h3{font-size:.85rem}.analysis-section [aria-label="Top insertion candidates"] table{min-width:850px}.analysis-section [aria-label="Top insertion candidates"] th:nth-child(2){width:45%}@media(max-width:900px){.analysis-distributions{grid-template-columns:1fr}.analysis-headlines{grid-template-columns:1fr}.analysis-section{padding:.75rem}}
@@ -889,6 +890,24 @@ th.num .th-sort{justify-content:flex-end}
 .sortable-table .cell-main{display:block;font-weight:600}
 .sortable-table .cell-main small{font-weight:400;color:#52657b;margin-top:.15rem}
 .sortable-table .cell-inline{white-space:normal}
+/* Chainage Analysis cells stack spans + length + Δ like Compare money cells. */
+.chainage-cell{display:flex;flex-direction:column;gap:.12rem;text-align:right;max-width:340px}
+.chainage-cell small{display:block;font-size:.7rem;font-weight:400;color:#3d5166;line-height:1.3;white-space:normal}
+.chainage-cell .chainage-length-delta{font-weight:700;font-size:.72rem}
+.chainage-cell .chainage-length-review{font-weight:600;color:#8a5a00}
+.chainage-cell .delta{font-weight:600;font-size:.72rem}
+.chainage-cell .delta.up{color:#0b6b3a}
+.chainage-cell .delta.down{color:#a12020}
+/* Chainage hero red-flag card and distribution pill. */
+.cards article.red-flag{border-color:#c98a8a;background:#fdf6f6}
+.cards article.red-flag h3{color:#8a2a2a}
+.red-flag-pill{display:inline-block;margin-left:.4rem;padding:.05rem .4rem;border-radius:999px;background:#a12020;color:#fff;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+/* Per-record amendment modus pill in the Project column. */
+.modus-pill{display:inline-block;margin-left:.4rem;padding:.05rem .4rem;border-radius:999px;background:#e7edf4;color:#31506f;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;vertical-align:middle}
+/* Rate-marked-up archetypes read red; rate-cut read blue; neutral stay slate. */
+.modus-pill[data-modus$="_concentration"],.modus-pill[data-modus="gain_short_scope"],.modus-pill[data-modus="gain_scope_hold"],.modus-pill[data-modus="gain_longer_cheap"],.modus-pill[data-modus="hold_concentrate"],.modus-pill[data-modus="hold_rate_creep"]{background:#fdeaea;color:#8a2a2a}
+.modus-pill[data-modus="cut_to_the_bone"],.modus-pill[data-modus="cut_but_longer"],.modus-pill[data-modus="hold_stretch"],.modus-pill[data-modus="gain_rate_cut"],.modus-pill[data-modus="gain_shorter_cheap"],.modus-pill[data-modus="hold_rate_ebb"]{background:#eaf2fd;color:#1d4f8a}
+.modus-pill[data-modus="hold_hold"],.modus-pill[data-modus="hold_the_rate"],.modus-pill[data-modus="gain_scope_up"],.modus-pill[data-modus="cut_scope_up"],.modus-pill[data-modus="hold_short_scope"],.modus-pill[data-modus="hold_scope_drift"],.modus-pill[data-modus="gain_compound"]{background:#e7edf4;color:#31506f}
 .analysis-section h2{font-size:1.05rem;margin:.2rem 0 .5rem}
 .aggregate-table{margin:.75rem 0}.aggregate-table h3{font-size:.85rem;margin:.5rem 0 .35rem}
 .analysis-crosslinks{display:grid;gap:.5rem}

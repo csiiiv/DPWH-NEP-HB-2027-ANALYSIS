@@ -6,6 +6,9 @@ import {routeHref} from './routes.js';
 import ShareLink from './ShareLink.jsx';
 import SortableTable from './SortableTable.jsx';
 import {benford,trailingZeros,lastDigits,roundingLadder,valueBands,kmeansClusters,exactConcentrations} from './analysisStats.js';
+import {CHAINAGE_FOCUS,CHAINAGE_MODUS,MODUS_DEADBAND,amountChangeBins,chainageAmendmentRows,filterChainageRows,modusSummary,perKmChangeBins,redFlagPerKm,summarizeChainage} from './chainageAnalysis.js';
+import {BENCHMARK_SOURCES,outlierUnits,peerCohorts,unitPerKm} from './chainageBenchmark.js';
+import {formatLengthKm,formatSignedKm} from './chainageDisplay.js';
 import {officeName,regionName} from './regionNames.js';
 const GroupProjectsModal=lazy(()=>import('./GroupProjectsModal.jsx'));
 const names={third:'HGAB3 · 3rd reading',second:'HGAB2 · 2nd reading',nep:'DBM NEP',api:'DPWH Transparency NEP'};
@@ -13,12 +16,16 @@ const labels={'Bridge Program':'Bridges','Convergence and Special Support Progra
 const short=value=>labels[value]??value;
 const modes={no_suggestion:'House-only · no NEP suggestion',unresolved:'Unresolved NEP suggestions',third_only:'New 3rd-reading records'};
 const deletionModes={no_suggestion:'No House record · no suggestion',suggested:'Possible replacements · House rows suggest this NEP item',second_only:'HGAB2 only · dropped in HGAB3'};
-const views=[['overview','Overview'],['insertions','Insertions'],['deletions','Deletions'],['adjustments','Adjustments'],['statistics','Statistics']];
+const views=[['overview','Overview'],['insertions','Insertions'],['deletions','Deletions'],['adjustments','Adjustments'],['chainage','Chainage'],['statistics','Statistics']];
 const dimensions=[['overall','Overall'],['region','Region'],['office','District office'],['program','Category'],['pap','PAP']];
 const pick=(params,key,allowed,fallback)=>allowed.includes(params.get(key))?params.get(key):fallback;
 const dimensionTitle=dim=>dim==='office'?'district office':dim==='pap'?'PAP':dim;
 const groupLabel=(dim,label)=>dim==='region'?regionName(label):dim==='office'?officeName(label):label;
 const amountCell=(value,title)=><span title={(title??(value?.toLocaleString('en-PH')??''))+' PHP'}>{amount(value)}</span>;
+const smallOf=text=><small className="cell-sub">{text}</small>;
+const pctCell=v=>v==null?<span>—</span>:<span className={v>0?'up':v<0?'down':''}>{v>0?'+':''}{v.toFixed(1)}%</span>;
+const fmtSignedPctLabel=v=>v===0?'0':v>0?`+${v}`:`−${Math.abs(v)}`;
+const fmtPctBinEdge=edge=>edge===200?'> +200%':edge===-100?'−100%':`${fmtSignedPctLabel(edge)}% to ${fmtSignedPctLabel(edge+25)}%`;
 // Signed amounts color green when positive, red when negative.
 const signedCell=value=><span className={value>0?'up':value<0?'down':''} title={(value?.toLocaleString('en-PH')??'')+' PHP'}>{value>0?'+':''}{amount(value)}</span>;
 const signedCount=value=><span className={value>0?'up':value<0?'down':''}>{value>0?'+':''}{(value??0).toLocaleString()}</span>;
@@ -29,29 +36,38 @@ function percentChange(current,prior){
  return (current-prior)/Math.abs(prior)*100;
 }
 export default function Analysis({route}){
- const [data,setData]=useState(null),[detail,setDetail]=useState(null),[error,setError]=useState(''),[group,setGroup]=useState(null);
+ const [data,setData]=useState(null),[detail,setDetail]=useState(null),[error,setError]=useState(''),[group,setGroup]=useState(null),[benchmark,setBenchmark]=useState(null);
  const view=pick(route.params,'view',views.map(v=>v[0]),'overview');
  const source=pick(route.params,'source',Object.keys(names),'third');
  const ranking=pick(route.params,'ranking',Object.keys(modes),'no_suggestion');
  const dim=pick(route.params,'dim',dimensions.map(d=>d[0]),'overall');
  const direction=pick(route.params,'direction',['increased','reduced'],'increased');
+ const chainageFocus=pick(route.params,'focus',Object.keys(CHAINAGE_FOCUS),'all');
  const deletionRanking=pick(route.params,'ranking',Object.keys(deletionModes),'no_suggestion');
  // Overview defaults to region so the NEP vs House change table is immediately useful.
  const overviewDim=view==='overview'&&!route.params.get('dim')?'region':dim;
  useEffect(()=>{const c=new AbortController();loadData('comparison_overview_2027.json',c.signal).then(setData).catch(e=>{if(e.name!=='AbortError')setError(e.message);});return()=>c.abort();},[]);
- // Detail rows load lazily for deletions/adjustments/statistics, or when a group modal opens.
+ // Detail rows load lazily for deletions/adjustments/chainage/statistics, or when a group modal opens.
  useEffect(()=>{
-  if((!['deletions','adjustments','statistics'].includes(view)&&!group)||!data||detail)return;
+  if((!['deletions','adjustments','chainage','statistics'].includes(view)&&!group)||!data||detail)return;
   const c=new AbortController();loadData('comparison_projects_2027.json',c.signal)
    .then(payload=>setDetail(hydrateProjects(payload))).catch(e=>{if(e.name!=='AbortError')setError(e.message);});
   return()=>c.abort();
  },[view,data,detail,group]);
+ // Chainage benchmark sidecar: every chainage-bearing unit, all sources —
+ // independent of the matched-pair amendments above.
+ useEffect(()=>{
+  if(view!=='chainage'||benchmark)return;
+  const c=new AbortController();loadData('chainage_units_2027.json',c.signal)
+   .then(payload=>setBenchmark(payload.units)).catch(e=>{if(e.name!=='AbortError')setError(e.message);});
+  return()=>c.abort();
+ },[view,benchmark]);
  function change(key,value){const params=Object.fromEntries(route.params);params[key]=value;window.location.hash=routeHref('analysis',params);}
  function openGroup(next){setGroup(next);}
  if(error)return <p role="alert">{error}</p>;
  if(!data)return <p role="status">Loading analysis…</p>;
  const stats=data.headlines.sources[source];
- const needsDetail=(['deletions','adjustments','statistics'].includes(view)||group)&&!detail;
+ const needsDetail=(['deletions','adjustments','chainage','statistics'].includes(view)||group)&&!detail;
  return <div className="headline-analysis">
   <p className="eyebrow">DPWH · FY2027</p><h1>Analysis</h1>
   <p>Office assignments, program allocations and review candidates from the retained budget records.</p>
@@ -64,6 +80,7 @@ export default function Analysis({route}){
   {view==='insertions'&&<Insertions headlines={data.headlines} reading={reading(source)} ranking={ranking} dim={dim} change={change} onOpenGroup={openGroup}/>}
   {view==='deletions'&&<Deletions headlines={data.headlines} ranking={deletionRanking} dim={dim} change={change} onOpenGroup={openGroup}/>}
   {view==='adjustments'&&detail&&<Adjustments detail={detail} revisionSets={data.headlines.revisionSets} dim={dim} direction={direction} change={change} onOpenGroup={openGroup}/>}
+  {view==='chainage'&&<Chainage detail={detail} focus={chainageFocus} change={change} benchmark={benchmark} setBenchmark={setBenchmark}/>}
   {view==='statistics'&&detail&&<Statistics detail={detail} source={source} dim={dim} change={change}/>}
   {group&&detail&&<Suspense fallback={null}><GroupProjectsModal projects={detail} group={group} onClose={()=>setGroup(null)}/></Suspense>}
  </div>;
@@ -104,6 +121,7 @@ function Overview({stats,source,headlines,dim,change}){
    <a href={routeHref('analysis',{view:'insertions'})}>Insertion candidates by region, office, category and PAP →</a>
    <a href={routeHref('analysis',{view:'deletions'})}>Deletion candidates · NEP items without House records, with possible replacements →</a>
    <a href={routeHref('analysis',{view:'adjustments'})}>Reading adjustments and cross-document differences →</a>
+   <a href={routeHref('analysis',{view:'chainage'})}>Chainage amendments · length Δ and OCR length review →</a>
    <a href={routeHref('analysis',{view:'statistics'})}>Rounding, Benford and value clustering →</a>
   </div></section>
  </>;
@@ -202,6 +220,129 @@ function Adjustments({detail,revisionSets,dim,direction,change,onOpenGroup}){
    ]}/>
   </section>
  </>;
+}
+const CHAINAGE_SORTS=[
+ ['per_km_delta','Δ price/km'],
+ ['per_km_pct','% Δ price/km'],
+ ['length_delta_m','Δ chainage length'],
+ ['length_delta_pct','% Δ chainage length'],
+ ['budget_gap_php','Δ amount'],
+ ['budget_gap_pct','% Δ amount'],
+ ['modus','Modus'],
+ ['nep_per_km','NEP price/km'],
+ ['house_per_km','HGAB price/km'],
+ ['nep_length_m','NEP length'],
+ ['house_length_m','HGAB length'],
+ ['title','Project'],
+];
+function Chainage({detail,focus,change,benchmark,setBenchmark}){
+ const [sort,setSort]=useState('per_km_delta');
+ const [benchSource,setBenchSource]=useState('all');
+ const rows=useMemo(()=>chainageAmendmentRows(detail),[detail]);
+ const summary=useMemo(()=>summarizeChainage(rows),[rows]);
+ const shown=useMemo(()=>filterChainageRows(rows,focus),[rows,focus]);
+ const sorted=useMemo(()=>{
+  const copy=[...shown];
+  if(sort==='title'){
+   copy.sort((a,b)=>String(a.title).localeCompare(String(b.title),'en',{numeric:true,sensitivity:'base'}));
+   return copy;
+  }
+  copy.sort((a,b)=>{
+   const x=a[sort],y=b[sort];
+   if(sort==='modus')return String(x??'').localeCompare(String(y??''),'en');
+   if(x==null&&y==null)return 0;
+   if(x==null)return 1;
+   if(y==null)return -1;
+   return Math.abs(y)-Math.abs(x);
+  });
+  return copy;
+ },[shown,sort]);
+ const redFlags=useMemo(()=>redFlagPerKm(rows),[rows]);
+ const bins=useMemo(()=>perKmChangeBins(rows),[rows]);
+ const amountBins=useMemo(()=>amountChangeBins(rows),[rows]);
+ const modus=useMemo(()=>modusSummary(rows),[rows]);
+ const cohorts=useMemo(()=>benchmark?peerCohorts(benchmark,{source:benchSource,minPeers:5}):[],[benchmark,benchSource]);
+ const outliers=useMemo(()=>benchmark?outlierUnits(benchmark,{source:benchSource,minPeers:5}).slice(0,100):[],[benchmark,benchSource]);
+ return <section className="analysis-section"><h2>Chainage amendments</h2>
+  <p className="notice">Rows attached after chainage check: same road <code>title_base</code>, different station spans. Length Δ is HGAB minus NEP (sum of repaired span lengths). Price per km divides each source’s allocation by its listed chainage length; both bases differ between readings, so treat Δ price/km as a review lens, not a unit-cost finding. Point stations have no length. OCR km repairs and absurd unresolved spans are flagged.</p>
+  <div className="cards analysis-headlines">
+   <article><h3>Chainage matches</h3><strong>{summary.rows.toLocaleString()}</strong><p>Attached House↔NEP pairs</p></article>
+   <article><h3>Length up / down</h3><strong>{summary.length_up.toLocaleString()} / {summary.length_down.toLocaleString()}</strong><p>Same length {summary.length_same.toLocaleString()} · points {summary.point_only.toLocaleString()}</p></article>
+   <article><h3>Length review</h3><strong>{summary.review.toLocaleString()}</strong><p>Repaired OCR {summary.repaired_km_ocr.toLocaleString()} · absurd {summary.absurd_unresolved.toLocaleString()}</p></article>
+   <article><h3>Net length Δ</h3><strong>{formatSignedKm(summary.length_delta_m_net)??'—'}</strong><p>Budget net {signedCell(summary.budget_gap_php_net)}</p></article>
+   <article className="red-flag"><h3>Price/km red flags</h3><strong>{redFlags.length.toLocaleString()}</strong><p>|Δ| &gt; 10% · {amount(redFlags.reduce((s,r)=>s+(r.house_php??0),0))} HGAB</p></article>
+  </div>
+   <section className="analysis-section"><h3>Amendment modus · {modus.measurable.toLocaleString()} measurable rows</h3>
+   <p className="muted">Every measurable row classified on budget Δ × scope Δ × unit-rate Δ (±{MODUS_DEADBAND}% deadband each) and named for the archetype that trio implies. Directions use HGAB vs NEP. Median Δ columns show the group’s middle record — half the rows above, half below — robust to OCR outliers. Per record the identity (1+budget)=(1+scope)(1+rate) holds exactly, so a flat budget with scope −45% ⇒ rate ≈ +82%.</p>
+   <SortableTable ariaLabel="Amendment modus" initialSort={{key:'records',direction:'desc'}} rows={modus.groups} columns={[
+    {key:'records',label:'Records',align:'num',render:r=><span>{r.records.toLocaleString()}<small> · {modus.measurable?((r.records/modus.measurable)*100).toFixed(1):'0.0'}%</small></span>},
+    {key:'modus',label:'Modus',scope:'row',render:r=><span>{CHAINAGE_MODUS[r.modus].label}{smallOf(CHAINAGE_MODUS[r.modus].hint)}</span>},
+    {key:'median_budget_pct',label:'Median budget Δ',align:'num',render:r=>pctCell(r.median_budget_pct)},
+    {key:'median_scope_pct',label:'Median scope Δ',align:'num',render:r=>pctCell(r.median_scope_pct)},
+    {key:'median_rate_pct',label:'Median rate Δ',align:'num',render:r=>pctCell(r.median_rate_pct)},
+    {key:'house_php',label:'HGAB allocation',align:'num',render:r=>amountCell(r.house_php)},
+    {key:'gap_php',label:'Net gap',align:'num',render:r=>signedCell(r.gap_php)},
+   ]} empty="No measurable chainage rows."/>
+  </section>
+  <section className="analysis-section"><h3>Δ price/km distribution · {bins.measurable.toLocaleString()} measurable rows</h3>
+   <p className="muted">Bins of |%Δ price per km| in 25-point steps. Records without a measurable length on either side ({bins.noLength.toLocaleString()}) are excluded. House allocations per bin; the first bin contains the &gt;10% red-flag slice.</p>
+   <SortableTable ariaLabel="Price per km change bins" initialSort={{key:'edge',direction:'asc'}} rows={bins.bins} columns={[
+    {key:'edge',label:'|%Δ price/km|',scope:'row',render:r=><span>{r.edge===200?'200%+':`${r.edge}–${r.edge+25}%`}{r.red_flag&&<span className="red-flag-pill">red flag</span>}</span>},
+    {key:'records',label:'Records',align:'num',render:r=><span>{r.records.toLocaleString()}<small> · {bins.measurable?((r.records/bins.measurable)*100).toFixed(1):'0.0'}%</small></span>},
+    {key:'nep_php',label:'NEP allocation',align:'num',render:r=>amountCell(r.nep_php)},
+    {key:'house_php',label:'HGAB allocation',align:'num',render:r=>amountCell(r.house_php)},
+   ]} empty="No measurable chainage rows."/>
+  </section>
+  <section className="analysis-section"><h3>Δ allocation amount distribution · {amountBins.measurable.toLocaleString()} measurable rows</h3>
+   <p className="muted">Signed 25-point bins of %Δ allocation amount (HGAB − NEP over |NEP|); decreases bottom out at −100%. Point-only rows without an NEP amount or length are excluded. Amounts are HGAB allocations of the records in each bin.</p>
+   <SortableTable ariaLabel="Allocation amount change bins" initialSort={{key:'edge',direction:'asc'}} rows={amountBins.bins} columns={[
+    {key:'edge',label:'%Δ amount',scope:'row',render:r=><span>{fmtPctBinEdge(r.edge)}{r.edge===200&&<span className="red-flag-pill">red flag</span>}</span>},
+    {key:'records',label:'Records',align:'num',render:r=><span>{r.records.toLocaleString()}<small> · {amountBins.measurable?((r.records/amountBins.measurable)*100).toFixed(1):'0.0'}%</small></span>},
+    {key:'nep_php',label:'NEP allocation',align:'num',render:r=>amountCell(r.nep_php)},
+    {key:'house_php',label:'HGAB allocation',align:'num',render:r=>amountCell(r.house_php)},
+   ]} empty="No rows with an amount change."/>
+  </section>
+  <section className="analysis-section"><h3>Price-per-km peer benchmark · all chainage records</h3>
+   <p className="muted">Every chainage-bearing allocation — matched or not — from DBM NEP, HGAB2 and HGAB3, grouped into program × region × zone cohorts (min 5 peers with measurable length; {benchmark?`${benchmark.filter(u=>!u.point_only&&u.amount_php).length.toLocaleString()} measurable units`:''}). Each cohort shows the median ₱/km with its interquartile band; the outlier table ranks units by robust z (deviation from the cohort median in MADs). Use this to ask whether a ₱/km is plausible for similar PAPs in the same region — not whether a pair changed.</p>
+   <div className="analysis-controls">
+    <label>Benchmark source<select aria-label="Benchmark source" value={benchSource} onChange={e=>setBenchSource(e.target.value)}>{Object.entries(BENCHMARK_SOURCES).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
+   </div>
+   <SortableTable ariaLabel="Price per km peer cohorts" initialSort={{key:'units',direction:'desc'}} rows={cohorts} columns={[
+    {key:'program',label:'Cohort',scope:'row',render:r=><span className="cell-main">{r.program}<small>{r.region}{r.zone?` · ${r.zone}`:''}</small></span>},
+    {key:'units',label:'Units',align:'num',render:r=>r.units.toLocaleString()},
+    {key:'length_m',label:'Total length',align:'num',render:r=>formatLengthKm(r.length_m)},
+    {key:'amount_php',label:'Allocation',align:'num',render:r=>amountCell(r.amount_php)},
+    {key:'median_per_km',label:'Median ₱/km',align:'num',render:r=>amountCell(r.median_per_km)},
+    {key:'p25_per_km',label:'P25 ₱/km',align:'num',render:r=>amountCell(r.p25_per_km)},
+    {key:'p75_per_km',label:'P75 ₱/km',align:'num',render:r=>amountCell(r.p75_per_km)},
+    {key:'min_per_km',label:'Min ₱/km',align:'num',render:r=>amountCell(r.min_per_km)},
+    {key:'max_per_km',label:'Max ₱/km',align:'num',render:r=>amountCell(r.max_per_km)},
+   ]} empty={benchmark?'No cohorts with enough measurable peers.':'Loading chainage units…'}/>
+   {benchmark&&<details className="benchmark-outliers"><summary>Top 100 per-km outliers by robust z</summary>
+    <SortableTable ariaLabel="Price per km outliers" initialSort={{key:'z',direction:'desc'}} rows={outliers.map(r=>({...r.unit,z:r.z,cohort_median:r.cohort.median_per_km,cohort_units:r.cohort.units}))} columns={[
+     {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{BENCHMARK_SOURCES[r.source]||r.source} · {r.program} · {r.region}</small></span>},
+     {key:'per_km',label:'₱/km',align:'num',render:r=>amountCell(unitPerKm(r))},
+     {key:'cohort_median',label:'Cohort median ₱/km',align:'num',render:r=>amountCell(r.cohort_median)},
+     {key:'cohort_units',label:'Cohort units',align:'num',render:r=>r.cohort_units.toLocaleString()},
+     {key:'z',label:'Robust z',align:'num',render:r=><span className={Math.abs(r.z)>=3?'red-flag-pill':Math.abs(r.z)>=2?'up':''}>{r.z>0?'+':''}{r.z.toFixed(1)} MADs</span>},
+    ]} empty="No measurable outliers."/>
+   </details>}
+  </section>
+  <div className="analysis-controls">
+   <label>Focus<select aria-label="Chainage focus" value={focus} onChange={e=>change('focus',e.target.value)}>{Object.entries(CHAINAGE_FOCUS).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
+   <label>Sort<select aria-label="Chainage sort" value={sort} onChange={e=>setSort(e.target.value)}>{CHAINAGE_SORTS.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
+   <a href={routeHref('compare',{view:'projects',match:'matched_chainage'})}>Open all in Compare →</a></div>
+  <p className="muted">{shown.length.toLocaleString()} of {rows.length.toLocaleString()} chainage rows · sorted by {CHAINAGE_SORTS.find(([k])=>k===sort)?.[1].toLowerCase()}. Each source column carries its allocation, station spans, length and price/km; the Δ columns hold the HGAB−NEP deltas with percent change.</p>
+  <SortableTable key={focus+sort} ariaLabel="Chainage amendments" initialSort={{key:sort,direction:'desc'}} rows={sorted} columns={[
+   {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}{r.modus&&<span className="modus-pill" data-modus={r.modus}>{CHAINAGE_MODUS[r.modus].label}</span>}<small>{short(r.program)} · {regionName(r.region)} · {officeName(r.office)||'No recorded office'}{r.reason?` · ${r.reason}`:''}</small></span>},
+   {key:'nep_php',label:'NEP',band:'nep',bandLabel:'DBM NEP',align:'num',render:r=><span className="chainage-cell"><strong>{amount(r.nep_php)}</strong><small>{r.nep_spans}</small>{r.nep_length_m!=null&&<small>{formatLengthKm(r.nep_length_m)} · {amount(r.nep_per_km)}/km</small>}</span>},
+   {key:'house_php',label:'HGAB',band:'house',bandLabel:'House reading',divider:true,align:'num',render:r=><span className="chainage-cell"><strong>{amount(r.house_php)}</strong><small>{r.house_spans}</small>{r.length_review&&<small className="chainage-length-review">{r.length_review_label}</small>}{r.house_length_m!=null&&<small>{formatLengthKm(r.house_length_m)} · {amount(r.house_per_km)}/km</small>}</span>},
+   {key:'per_km_delta',label:'Δ price/km',align:'num',render:r=>r.per_km_delta==null?<span>—</span>:<span className="chainage-cell"><span className={r.per_km_delta>0?'up':r.per_km_delta<0?'down':''}>{r.per_km_delta>0?'+':''}{amount(r.per_km_delta)}</span>{r.per_km_pct!=null&&<small className={`delta ${r.per_km_delta>0?'up':r.per_km_delta<0?'down':''}`}>{r.per_km_pct>0?'+':''}{r.per_km_pct.toFixed(1)}%</small>}</span>},
+   {key:'length_delta_m',label:'Δ length',align:'num',render:r=>r.length_delta_m==null?<span>—</span>:<span className="chainage-cell"><span className={r.length_direction==='up'?'up':r.length_direction==='down'?'down':''}>{formatSignedKm(r.length_delta_m)}</span>{r.length_delta_pct&&<small className={`delta ${r.length_direction==='up'?'up':r.length_direction==='down'?'down':''}`}>{r.length_delta_pct}</small>}</span>},
+   {key:'budget_gap_php',label:'Δ amount',align:'num',render:r=>r.budget_gap_php==null?<span>—</span>:<span className="chainage-cell"><span className={r.budget_gap_php>0?'up':r.budget_gap_php<0?'down':''}>{r.budget_gap_php>0?'+':''}{amount(r.budget_gap_php)}</span>{r.budget_gap_pct!=null&&<small className={`delta ${r.budget_gap_php>0?'up':r.budget_gap_php<0?'down':''}`}>{r.budget_gap_pct>0?'+':''}{r.budget_gap_pct.toFixed(1)}%</small>}</span>},
+   {key:'review',label:'Open',sortable:false,render:r=><a href={routeHref('compare',{view:'projects',match:'matched_chainage',q:r.id,record:r.id})}>Compare</a>},
+  ]} empty="No chainage matches in this focus."/>
+ </section>;
 }
 function houseMinusNep(row){const house=row.third??row.second;return house!=null&&row.nep!=null?house.amount_php-row.nep.amount_php:null;}
 function signedTotals(rows){

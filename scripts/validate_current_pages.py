@@ -161,6 +161,17 @@ def validate_house_readings():
     expected = build()
     require(read('house_reading_changes_2027.json') == expected,
             'Stale House reading comparisons; rebuild build_house_readings.py')
+    validate_chainage_units()
+    return expected
+
+
+def validate_chainage_units():
+    """Recompute the chainage sidecar so packaging rejects stale benchmarks."""
+    sys.path.insert(0, str(ANALYSIS / 'builders'))
+    from build_chainage_units import build
+    expected = build()
+    require(read('chainage_units_2027.json') == expected,
+            'Stale chainage units; rebuild build_chainage_units.py')
     return expected
 
 

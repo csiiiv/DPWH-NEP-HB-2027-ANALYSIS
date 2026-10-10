@@ -29,7 +29,7 @@ live Transparency data or regenerate source outputs.
 |---|---|
 | `#home` | Workbench map, review-candidate headlines, and source status |
 | `#compare` | Stage comparison |
-| `#analysis` | Headlines, insertions, deletions, adjustments, statistics |
+| `#analysis` | Headlines, insertions, deletions, adjustments, chainage amendments, statistics |
 | `#house` | Third-reading native I-B totals and controls; reading and project-view toggles |
 | `#nep` | DBM NEP verification |
 | `#transparency` | Transparency NEP verification |

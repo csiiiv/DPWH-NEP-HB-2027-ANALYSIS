@@ -26,7 +26,7 @@ with tempfile.TemporaryDirectory() as folder:
                 page.goto(base+'#analysis',wait_until='networkidle')
                 expect(page.get_by_role('heading',name='Analysis',exact=True)).to_be_visible()
                 expect(page.get_by_role('link',name='Analysis',exact=True)).to_have_attribute('aria-current','page')
-                for tab in ['Overview','Insertions','Deletions','Adjustments','Statistics']:
+                for tab in ['Overview','Insertions','Deletions','Adjustments','Chainage','Statistics']:
                     expect(page.get_by_role('tab',name=tab,exact=True)).to_be_visible()
                 office=page.get_by_role('region',name='Central Office vs DEOs',exact=True)
                 expect(office).to_contain_text(f"{data['sources']['third']['offices']['Central Office']['records']:,}")
@@ -157,6 +157,29 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(dialog).to_have_count(0)
                 assert any('comparison_projects_2027.json' in url for url in requests)
                 page.screenshot(path=f'/tmp/analysis-adjustments-{width}.png')
+                # Chainage subtab: compact NEP/HGAB columns, Δ columns, red flags, distribution bins.
+                page.get_by_role('tab',name='Chainage',exact=True).click()
+                expect(page.get_by_role('heading',name='Chainage amendments',exact=True)).to_be_visible(timeout=60000)
+                chainage_region=page.get_by_role('region',name='Chainage amendments',exact=True)
+                expect(chainage_region.get_by_role('columnheader',name='NEP',exact=True)).to_be_visible()
+                expect(chainage_region.get_by_role('columnheader',name='HGAB',exact=True)).to_be_visible()
+                expect(chainage_region.get_by_role('columnheader',name='Δ price/km',exact=True)).to_be_visible()
+                expect(chainage_region.get_by_role('columnheader',name='Δ length',exact=True)).to_be_visible()
+                expect(chainage_region.get_by_role('columnheader',name='Δ amount',exact=True)).to_be_visible()
+                expect(chainage_region).to_contain_text('km')
+                # Hero red-flag card and 25-point distribution bins carry allocations.
+                expect(page.get_by_role('heading',name='Price/km red flags',exact=True)).to_be_visible()
+                expect(page.locator('h3').filter(has_text='price/km distribution')).to_be_visible()
+                distribution=page.get_by_role('region',name='Price per km change bins',exact=True)
+                expect(distribution.get_by_role('columnheader',name='Records',exact=True)).to_be_visible()
+                expect(distribution.get_by_role('columnheader',name='NEP allocation',exact=True)).to_be_visible()
+                expect(distribution.get_by_role('columnheader',name='HGAB allocation',exact=True)).to_be_visible()
+                expect(distribution.locator('tbody tr')).to_have_count(9)
+                expect(distribution).to_contain_text('200%+')
+                expect(page.get_by_label('Chainage focus',exact=True)).to_be_visible()
+                page.get_by_label('Chainage focus',exact=True).select_option('review')
+                page.screenshot(path=f'/tmp/analysis-chainage-{width}.png')
+                page.get_by_label('Chainage focus',exact=True).select_option('all')
                 # Statistics subtab: descriptive lenses render from the same lazy payload.
                 page.get_by_role('tab',name='Statistics',exact=True).click()
                 expect(page.get_by_role('heading',name='Benford first-digit',exact=True)).to_be_visible(timeout=60000)
@@ -175,5 +198,5 @@ with tempfile.TemporaryDirectory() as folder:
                 page.close()
             browser.close()
         assert not errors,errors
-        print(json.dumps({'widths':[390,1440],'subtabs':['overview','insertions','deletions','adjustments','statistics'],'source_counts':True,'candidate_groups':True,'deletion_groups':True,'share_and_evidence_links':True,'lazy_detail':True,'statistics':True,'errors':errors}))
+        print(json.dumps({'widths':[390,1440],'subtabs':['overview','insertions','deletions','adjustments','chainage','statistics'],'source_counts':True,'candidate_groups':True,'deletion_groups':True,'share_and_evidence_links':True,'lazy_detail':True,'chainage':True,'statistics':True,'errors':errors}))
     finally:server.shutdown()

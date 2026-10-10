@@ -47,7 +47,7 @@ is preserved; two archived helpers still support active House repairs. See the
 |---|---|
 | `#home` | Workbench map, review-candidate headlines, and independent source status |
 | `#compare` | Sortable PAP/project/listing-gap comparison and source PDF pane |
-| `#analysis` | Office/program headlines, ranked insertions, NEP-only deletions with possible replacements, adjustments, and statistics |
+| `#analysis` | Office/program headlines, ranked insertions, NEP-only deletions with possible replacements, adjustments, chainage amendments, and statistics |
 | `#house` | House GAB I-B hierarchy, rollups, and embedded I-B PDF |
 | `#nep` | DBM NEP hierarchy, expenditure classes, source review, and embedded II-B PDF |
 | `#transparency` | DPWH Transparency NEP snapshot hierarchy |
@@ -130,14 +130,16 @@ python scripts/validate_current_pages.py
 Label normalization is additive: `build_current_pages` and
 `build_house_readings` call `annotate_source_labels` so each source record keeps
 printed `title` / `office` and gains `title_match_key` / `office_canonical`.
-Matching uses the title key (live Brgy./repeat, place-name OCR slips, and
-structure/road ID ``O``→``0`` in digit runs such as ``Bo0008LB``/``B00008LB``).
+Matching uses the title key (live Brgy./repeat with optional ``barangay``
+label omitted so ``Brgy Pulo``/``Pulo`` align, spaced-ñ collapse such as
+``Las Pi ñ as City``, place-name OCR slips, and structure/road ID ``O``→``0``
+in digit runs such as ``Bo0008LB``/``B00008LB``).
 Titles also parse into `title_base` + `chainages` (see `builders/chainage.py`);
 same-base station diffs become chainage amendment candidates with reasons
 (station-marker adjustment, length change, re-segmentation). Overview/Compare
 office filters prefer `office_canonical`. House reading keys still use raw
-`office` so HGAB2↔HGAB3 pairing stays stable. Pending abbrevs (`bldg`/`bidg`)
-stay out of live matching until explicitly promoted.
+`office` so HGAB2↔HGAB3 pairing stays stable. Pending abbrevs stay empty until the next mine
+batch is reviewed; promoted OCR/abbrev slips live in `LIVE_TITLE_ABBREVIATIONS`.
 
 To mine further office twins and title OCR slips (read-only report). The mine
 starts from fuzzy/chainage House↔NEP suggestions — similar titles on both sides
@@ -178,6 +180,7 @@ separately; see [archive commands](archive/README.md).
 
 ## Documentation
 
+- [Data pipeline: sources, builders, and dependency order](docs/data_pipeline.md)
 - [Budget PDFs to auditable datasets: general method and House/NEP examples](docs/pdf_budget_dataset_method.md)
 - [House 2nd/3rd reading differences and engineering office filters](docs/house_reading_comparison_checks.md)
 - [Native House migration — complete change report, 9 October 2026](docs/native_house_migration_change_report_2026-10-09.md)

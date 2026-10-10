@@ -5,7 +5,7 @@ Raw extracted titles/offices stay on source records. Builders call
 
 - ``title_match_key`` / ``normalized`` — live title keys (Brgy./repeat/places)
 - ``office_canonical`` / ``canonical_office`` — DEO / place / punctuation twins
-- ``PENDING_TITLE_ABBREVIATIONS`` — mined rules not yet wired into matching
+- ``PENDING_TITLE_ABBREVIATIONS`` — mined rules awaiting an explicit promote
 """
 
 from __future__ import annotations
@@ -15,11 +15,39 @@ import unicodedata
 from difflib import SequenceMatcher
 
 # Already applied by project matching and House reading keys.
+# Keys are OCR / abbrev slips; values are House / gazetteer spellings.
 LIVE_TITLE_ABBREVIATIONS = {
     'brgy': 'barangay',
-    # Place-name OCR slips (NEP) → House / gazetteer spelling.
+    # Place-name OCR slips.
     'marindugue': 'marinduque',
     'siguijor': 'siquijor',
+    'oroguieta': 'oroquieta',
+    'antigue': 'antique',
+    'cauavan': 'cauayan',
+    'aborian': 'aborlan',
+    'joaguin': 'joaquin',
+    'kitoy': 'kiotoy',
+    'pasuguin': 'pasuquin',
+    'buacan': 'bulacan',
+    'galerang': 'gelerang',
+    'calabasa': 'kalabasa',
+    'franciso': 'francisco',
+    'manuyod': 'manjuyod',
+    'macauwayan': 'macawayan',
+    'purkay': 'purikay',
+    'kabitangahan': 'kabitanganan',
+    'enrigue': 'enrique',
+    # Common word OCR / abbrev slips.
+    'bldg': 'building',
+    'bidg': 'building',
+    'buildingg': 'building',
+    'buidling': 'building',
+    'coverd': 'covered',
+    'constuction': 'construction',
+    'chainaga': 'chainage',
+    'inicuding': 'including',
+    'komuniudad': 'komunidad',
+    'pupose': 'purpose',
 }
 
 # Surface forms for offices (and any non-tokenized label). Keys are the OCR
@@ -30,21 +58,39 @@ PLACE_NAME_SPELLINGS = (
 )
 
 # Mined / reviewed candidates — not used by matching until explicitly merged
-# into LIVE_TITLE_ABBREVIATIONS after a rebuild.
-PENDING_TITLE_ABBREVIATIONS = {
-    'bldg': 'building',
-    'bidg': 'building',  # OCR slip for Bldg.
-}
+# into LIVE_TITLE_ABBREVIATIONS after a rebuild. Emptied after 2026-10-10 promote.
+PENDING_TITLE_ABBREVIATIONS: dict[str, str] = {}
 
 # Closed-class substitutions for mining triage (spelling/abbrev only).
 PROMOTE_TITLE_PAIRS = {
     frozenset({'building', 'bldg'}),
     frozenset({'building', 'bidg'}),
+    frozenset({'building', 'buildingg'}),
     frozenset({'buidling', 'building'}),
     frozenset({'constuction', 'construction'}),
     frozenset({'coverd', 'covered'}),
     frozenset({'marindugue', 'marinduque'}),
     frozenset({'siguijor', 'siquijor'}),
+    frozenset({'oroguieta', 'oroquieta'}),
+    frozenset({'antigue', 'antique'}),
+    frozenset({'cauavan', 'cauayan'}),
+    frozenset({'aborian', 'aborlan'}),
+    frozenset({'joaguin', 'joaquin'}),
+    frozenset({'kitoy', 'kiotoy'}),
+    frozenset({'pasuguin', 'pasuquin'}),
+    frozenset({'buacan', 'bulacan'}),
+    frozenset({'galerang', 'gelerang'}),
+    frozenset({'calabasa', 'kalabasa'}),
+    frozenset({'franciso', 'francisco'}),
+    frozenset({'manuyod', 'manjuyod'}),
+    frozenset({'macauwayan', 'macawayan'}),
+    frozenset({'purkay', 'purikay'}),
+    frozenset({'kabitangahan', 'kabitanganan'}),
+    frozenset({'enrigue', 'enrique'}),
+    frozenset({'chainaga', 'chainage'}),
+    frozenset({'inicuding', 'including'}),
+    frozenset({'komuniudad', 'komunidad'}),
+    frozenset({'pupose', 'purpose'}),
 }
 
 REJECT_TITLE_PAIRS = {
@@ -113,14 +159,16 @@ def normalize_structure_id_token(token: str) -> str:
 def title_tokens(value: str, *, expand: bool = True, abbreviations: dict[str, str] | None = None) -> list[str]:
     """Tokenize a title; expand abbreviations and collapse consecutive repeats.
 
-    Tokens are split on non-alphanumeric boundaries first, so Brgy. expands
-    inside hyphenated compounds (e.g. Estrella-Brgy. Pamosaingan). Spacing
-    variants like K0001+000 / K0001 + 000 normalize alike. Repeated consecutive
-    words (Sta. Sta. Maria) collapse so keys do not fuse to stasta. Structure
-    IDs also rewrite OCR ``O`` in digit runs (``Bo0008LB`` → ``b00008lb``).
+    Spaced-ñ OCR (``Las Pi ñ as City``, ``Pe ñ abatan``) collapses before
+    split, same as offices. Tokens are split on non-alphanumeric boundaries,
+    so Brgy. expands inside hyphenated compounds (e.g. Estrella-Brgy.
+    Pamosaingan). Spacing variants like K0001+000 / K0001 + 000 normalize
+    alike. Repeated consecutive words (Sta. Sta. Maria) collapse so keys do
+    not fuse to stasta. Structure IDs also rewrite OCR ``O`` in digit runs
+    (``Bo0008LB`` → ``b00008lb``).
     """
     abbrev = abbreviations if abbreviations is not None else LIVE_TITLE_ABBREVIATIONS
-    value = _nfkc(value).casefold().replace('\n', ' ')
+    value = collapse_spaced_n_tilde(value).casefold().replace('\n', ' ')
     tokens: list[str] = []
     for token in re.split(r'[^a-z0-9]+', value):
         if expand:
@@ -132,8 +180,16 @@ def title_tokens(value: str, *, expand: bool = True, abbreviations: dict[str, st
 
 
 def title_match_key(value: str, *, abbreviations: dict[str, str] | None = None) -> str:
-    """Derived match key — do not replace the printed title."""
-    return ''.join(title_tokens(value, expand=True, abbreviations=abbreviations))
+    """Derived match key — do not replace the printed title.
+
+    Optional ``barangay`` / ``brgy`` label tokens are omitted so
+    ``… Blvd. Brgy Pulo …`` and ``… Blvd. Pulo …`` share a key after
+    abbreviation expansion.
+    """
+    return ''.join(
+        t for t in title_tokens(value, expand=True, abbreviations=abbreviations)
+        if t != 'barangay'
+    )
 
 
 # Back-compat alias used throughout builders/tests.
@@ -144,10 +200,15 @@ def annotate_source_labels(row: dict) -> dict:
     """Attach derived label fields; keep printed title/office.
 
     Adds ``title_match_key``, ``office_canonical``, and when chainage parses:
-    ``title_base``, ``title_base_match_key``, ``chainages``, ``chainage_incomplete``.
+    ``title_base``, ``title_base_match_key``, ``chainages``,
+    ``chainage_incomplete``, ``chainage_length_review`` (worst span flag).
     House reading keys still use raw ``office`` + full ``title_match_key``.
     """
-    from chainage import parse_chainage
+    from chainage import (
+        LENGTH_REVIEW_ABSURD,
+        LENGTH_REVIEW_REPAIRED,
+        parse_chainage,
+    )
 
     title = row.get('title') or ''
     office = row.get('office') or ''
@@ -157,6 +218,13 @@ def annotate_source_labels(row: dict) -> dict:
     row['title_base'] = parsed['title_base'] or title
     row['chainages'] = parsed['chainages']
     row['chainage_incomplete'] = parsed['incomplete']
+    reviews = {c.get('length_review') for c in parsed['chainages'] if c.get('length_review')}
+    if LENGTH_REVIEW_ABSURD in reviews:
+        row['chainage_length_review'] = LENGTH_REVIEW_ABSURD
+    elif LENGTH_REVIEW_REPAIRED in reviews:
+        row['chainage_length_review'] = LENGTH_REVIEW_REPAIRED
+    else:
+        row['chainage_length_review'] = None
     row['title_base_match_key'] = title_match_key(row['title_base'])
     return row
 

@@ -93,6 +93,37 @@ class ChainageParseTests(unittest.TestCase):
         self.assertFalse(ranged['chainages'][0]['point'])
         self.assertEqual(ranged['chainages'][0]['length_m'], 100)
 
+    def test_absurd_km_ocr_is_repaired_and_flagged(self):
+        # Printed K0220+328 vs K0020+513 → ~200 km abs; NEP peer is K0020+328.
+        parsed = parse_chainage(
+            'Quezon-Alabat-Perez Rd - K0003 + 230 - K0003 + 275, '
+            'K0017 + 670 - K0017 + 800, K0220 + 328 - K0020 + 513')
+        self.assertEqual(len(parsed['chainages']), 3)
+        bad = parsed['chainages'][2]
+        self.assertEqual(bad['from'], 'K0220+328')
+        self.assertEqual(bad['to'], 'K0020+513')
+        self.assertEqual(bad['length_review'], 'repaired_km_ocr')
+        self.assertEqual(bad['length_from'], 'K0020+328')
+        self.assertEqual(bad['length_to'], 'K0020+513')
+        self.assertEqual(bad['length_m'], 185)
+        self.assertTrue(parsed['incomplete'])
+        row = {
+            'title': (
+                'Quezon-Alabat-Perez Rd - K0003 + 230 - K0003 + 275, '
+                'K0017 + 670 - K0017 + 800, K0220 + 328 - K0020 + 513'),
+            'office': 'Quezon 2nd District Engineering Office',
+        }
+        annotate_source_labels(row)
+        self.assertEqual(row['chainage_length_review'], 'repaired_km_ocr')
+        self.assertTrue(row['chainage_incomplete'])
+
+    def test_plausible_reverse_span_keeps_abs_length_unflagged(self):
+        parsed = parse_chainage(
+            'Flood Control along Talisay River Sta. 4 + 700 - Sta. 4 + 264')
+        ch = parsed['chainages'][0]
+        self.assertEqual(ch['length_m'], 436)
+        self.assertIsNone(ch['length_review'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -65,15 +65,23 @@ def _digitize_shadow(compact: str) -> str:
     )
 
 
-def _station_meters(kind: str, token: str) -> int | None:
-    """Convert a compact station token to approximate meters along the road."""
+# Single listed patch longer than this is almost always OCR (extra km digit,
+# mangled offset). Reverse-direction flood-control spans stay under the cap.
+_MAX_SPAN_M = 20_000
+
+# Per-span length_review values (None = trusted as printed).
+LENGTH_REVIEW_REPAIRED = 'repaired_km_ocr'
+LENGTH_REVIEW_ABSURD = 'absurd_unresolved'
+
+
+def _station_parts(kind: str, token: str) -> tuple[int, float] | None:
+    """Return (km, offset_m) for a compact station token."""
     token = token.strip()
     if kind == 'Chainage':
         body = re.sub(r'^chainage', '', token, flags=re.I)
         if re.fullmatch(r'\d+(?:\.\d+)?', body):
-            return int(round(float(body)))
+            return 0, float(body)
         token = body
-    # K0564+150 / C0+000 / 17+340 / (-337.40)
     m = re.fullmatch(
         r'(?:KM|K|C[O0]?|STA\.?)?'
         r'(\d+)\+'
@@ -85,7 +93,128 @@ def _station_meters(kind: str, token: str) -> int | None:
         return None
     km = int(m.group(1))
     offset = float(m.group(2) if m.group(2) is not None else m.group(3))
+    return km, offset
+
+
+def _station_meters(kind: str, token: str) -> int | None:
+    """Convert a compact station token to approximate meters along the road."""
+    parts = _station_parts(kind, token)
+    if parts is None:
+        return None
+    km, offset = parts
     return int(round(km * 1000 + offset))
+
+
+def _rebuild_endpoint(kind: str, token: str, km: int, offset: float) -> str:
+    """Rewrite a normalized endpoint with a repaired km (display / audit)."""
+    if offset < 0:
+        offset_s = f'({offset:g})'
+    elif offset != int(offset):
+        offset_s = f'{offset:g}'
+    else:
+        offset_s = f'{int(offset):03d}'
+    if kind == 'K':
+        width = 4
+        m = re.match(r'K(\d+)\+', token, flags=re.I)
+        if m:
+            width = max(4, len(m.group(1)))
+        return f'K{km:0{width}d}+{offset_s}'
+    if kind == 'KM':
+        return f'KM{km}+{offset_s}'
+    if kind == 'Sta':
+        return f'{km}+{offset_s}'
+    if kind == 'C':
+        if token.upper().startswith('C0'):
+            return f'C0+{offset_s}'
+        return f'C{km}+{offset_s}'
+    return token
+
+
+def _resolve_span_length(
+    kind: str,
+    frm: str,
+    to: str,
+    meters_from: int | None,
+    meters_to: int | None,
+) -> dict[str, Any]:
+    """Compute length; repair absurd OCR km digits and always flag edits.
+
+    Printed ``from`` / ``to`` stay as parsed. When kilometer digits are
+    rewritten for a plausible length, ``length_from`` / ``length_to`` hold
+    the interpretation and ``length_review`` is ``repaired_km_ocr``. When no
+    repair fits, ``length_m`` is null and ``length_review`` is
+    ``absurd_unresolved``.
+    """
+    out: dict[str, Any] = {
+        'meters_from': meters_from,
+        'meters_to': meters_to,
+        'length_m': None,
+        'length_review': None,
+        'length_from': None,
+        'length_to': None,
+    }
+    if meters_from is None or meters_to is None:
+        return out
+
+    raw_length = abs(meters_to - meters_from)
+    parts_from = _station_parts(kind, frm)
+    parts_to = _station_parts(kind, to)
+    if parts_from is None or parts_to is None:
+        out['length_m'] = raw_length
+        return out
+
+    km_a, off_a = parts_from
+    km_b, off_b = parts_to
+    if raw_length <= _MAX_SPAN_M:
+        out['length_m'] = raw_length
+        return out
+
+    candidates: list[tuple[int, str, str, int, int]] = []
+
+    def consider(new_frm: str, new_to: str) -> None:
+        mf = _station_meters(kind, new_frm)
+        mt = _station_meters(kind, new_to)
+        if mf is None or mt is None:
+            return
+        span = abs(mt - mf)
+        if span == 0 or span > _MAX_SPAN_M:
+            return
+        # Prefer repairs that change an endpoint (not the raw absurd pair).
+        if new_frm == frm and new_to == to:
+            return
+        candidates.append((span, new_frm, new_to, mf, mt))
+
+    consider(_rebuild_endpoint(kind, frm, km_b, off_a), to)
+    consider(frm, _rebuild_endpoint(kind, to, km_a, off_b))
+    for km_big, km_small, which in ((km_a, km_b, 'from'), (km_b, km_a, 'to')):
+        s_big, s_small = str(km_big), str(km_small)
+        if len(s_big) <= len(s_small):
+            continue
+        for i in range(len(s_big)):
+            trial = s_big[:i] + s_big[i + 1:]
+            if trial.lstrip('0') != s_small.lstrip('0') and trial != s_small:
+                continue
+            new_km = int(trial or '0')
+            if which == 'from':
+                consider(_rebuild_endpoint(kind, frm, new_km, off_a), to)
+            else:
+                consider(frm, _rebuild_endpoint(kind, to, new_km, off_b))
+
+    if candidates:
+        candidates.sort(key=lambda t: (t[0], t[3], t[4]))
+        span, length_from, length_to, mf, mt = candidates[0]
+        out.update({
+            'meters_from': mf,
+            'meters_to': mt,
+            'length_m': span,
+            'length_review': LENGTH_REVIEW_REPAIRED,
+            'length_from': length_from,
+            'length_to': length_to,
+        })
+        return out
+
+    out['length_review'] = LENGTH_REVIEW_ABSURD
+    return out
 
 
 def _norm_endpoint(kind: str, raw: str) -> str:
@@ -228,16 +357,19 @@ def parse_chainage(title: str) -> dict[str, Any]:
                 to = re.sub(r'^sta\.?', '', to, flags=re.I)
             meters_from = _station_meters(kind, frm)
             meters_to = _station_meters(kind, to)
-            length = None
-            if meters_from is not None and meters_to is not None:
-                length = abs(meters_to - meters_from)
+            resolved = _resolve_span_length(kind, frm, to, meters_from, meters_to)
+            if resolved.get('length_review'):
+                incomplete = True
             entry = {
                 'kind': kind,
                 'from': frm,
                 'to': to,
-                'meters_from': meters_from,
-                'meters_to': meters_to,
-                'length_m': length,
+                'meters_from': resolved['meters_from'],
+                'meters_to': resolved['meters_to'],
+                'length_m': resolved['length_m'],
+                'length_review': resolved['length_review'],
+                'length_from': resolved['length_from'],
+                'length_to': resolved['length_to'],
                 'point': False,
             }
             spans.append((m.start(), m.end(), entry))
@@ -260,6 +392,9 @@ def parse_chainage(title: str) -> dict[str, Any]:
                 'meters_from': meters,
                 'meters_to': meters,
                 'length_m': None,
+                'length_review': None,
+                'length_from': None,
+                'length_to': None,
                 'point': True,
             }
             spans.append((start, end, entry))

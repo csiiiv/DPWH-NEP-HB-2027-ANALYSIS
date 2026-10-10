@@ -60,7 +60,9 @@ class HouseReadingsTests(unittest.TestCase):
         for side in ('second', 'third'):
             self.assertEqual(sum(r[side + '_php'] or 0 for r in data['paps']), s[side]['operations_including_projects'])
         for side in ('second', 'third'):
-            rows = [leaf for r in data['projects'] if r[side] for leaf in r[side]['records']]
+            # Single-leaf sides carry no records[]; the merged side is the leaf.
+            rows = [leaf for r in data['projects'] if r[side]
+                    for leaf in (r[side].get('records') or [r[side]])]
             self.assertEqual(len(rows), s[side]['allocations'])
             self.assertEqual(sum(r['amount_php'] for r in rows), s[side]['operations_including_projects'])
 

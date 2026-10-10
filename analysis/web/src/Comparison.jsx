@@ -613,7 +613,8 @@ function Money({value,prior,caption,chainage=null}) {
   {chainage && <div className="chainage-in-cell">
    <small>Chainage: {chainage.spans}</small>
    {chainage.lengthKm && <small>Chainage length: {chainage.lengthKm}</small>}
-   {chainage.deltaKm && <small className={`chainage-length-delta ${lengthClass}`}>{chainage.deltaKind==='station'?'Δ Chainage':'Δ Chainage length'}: {chainage.deltaKm}{chainage.deltaPct?` (${chainage.deltaPct})`:''}</small>}
+   {chainage.deltaKm && <small className={`chainage-length-delta ${lengthClass}`}>Δ Chainage length: {chainage.deltaKm}{chainage.deltaPct?` (${chainage.deltaPct})`:''}</small>}
+   {chainage.lengthReviewLabel && <small className="chainage-length-review">Chainage review: {chainage.lengthReviewLabel}</small>}
   </div>}
  </td>;
 }

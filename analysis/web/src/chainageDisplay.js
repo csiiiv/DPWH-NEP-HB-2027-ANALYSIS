@@ -1,10 +1,16 @@
 /** Format attached NEP↔House chainage spans for Compare review. */
 
+const LENGTH_REVIEW_LABELS = {
+  repaired_km_ocr: 'length uses repaired km OCR',
+  absurd_unresolved: 'absurd span — length omitted',
+};
+
 export function totalLengthM(chainages) {
   if (!Array.isArray(chainages) || !chainages.length) return null;
   let sum = 0, any = false;
   for (const c of chainages) {
     if (c?.length_m == null || !Number.isFinite(c.length_m)) continue;
+    if (c?.length_review === 'absurd_unresolved') continue;
     sum += c.length_m;
     any = true;
   }
@@ -16,19 +22,32 @@ export function formatChainageSpans(chainages) {
   return chainages.map(c => {
     const from = c?.from || '';
     const to = c?.to || '';
-    if (c?.point || (from && to && from === to)) return from || to;
-    if (from && to) return `${from} – ${to}`;
-    return from || to || c?.kind || '';
+    let span;
+    if (c?.point || (from && to && from === to)) span = from || to;
+    else if (from && to) span = `${from} – ${to}`;
+    else span = from || to || c?.kind || '';
+    if (!span) return '';
+    if (c?.length_review === 'repaired_km_ocr' && c.length_from && c.length_to) {
+      // Show the length interpretation first; keep printed OCR for audit.
+      return `${c.length_from} – ${c.length_to} (printed ${span})`;
+    }
+    if (c?.length_review === 'absurd_unresolved') {
+      return `${span} (length omitted)`;
+    }
+    return span;
   }).filter(Boolean).join(', ');
 }
 
-/** First station position in meters (for point markers / station shifts). */
-export function stationPositionM(chainages) {
+export function chainageLengthReview(chainages) {
   if (!Array.isArray(chainages) || !chainages.length) return null;
-  for (const c of chainages) {
-    if (c?.meters_from != null && Number.isFinite(c.meters_from)) return c.meters_from;
-  }
+  const flags = new Set(chainages.map(c => c?.length_review).filter(Boolean));
+  if (flags.has('absurd_unresolved')) return 'absurd_unresolved';
+  if (flags.has('repaired_km_ocr')) return 'repaired_km_ocr';
   return null;
+}
+
+export function chainageLengthReviewLabel(flag) {
+  return LENGTH_REVIEW_LABELS[flag] || null;
 }
 
 /** Signed km string for a meter delta, e.g. "+1.20 km" / "−0.06 km". */
@@ -60,30 +79,29 @@ export function formatSignedPct(pct) {
   return `${sign}${Math.abs(pct).toFixed(1)}%`;
 }
 
-/** Per-source chainage cell payload (null if that side has no spans). */
+/** Per-source chainage cell payload (null if that side has no spans).
+
+  Δ is length-only. Single point stations still show the marker; they do not
+  get a station-shift Δ Chainage line.
+*/
 export function chainageSideDetail(side, nepSide = null, {withDelta = false} = {}) {
   const spans = formatChainageSpans(side?.chainages);
   if (!spans) return null;
   const lengthM = totalLengthM(side.chainages);
   const nepM = nepSide ? totalLengthM(nepSide.chainages) : null;
-  const sidePos = stationPositionM(side.chainages);
-  const nepPos = nepSide ? stationPositionM(nepSide.chainages) : null;
+  const lengthReview = chainageLengthReview(side.chainages);
   let deltaM = null;
-  let deltaKind = null; // 'length' | 'station'
-  if (withDelta) {
-    if (lengthM != null && nepM != null) {
-      deltaM = lengthM - nepM;
-      deltaKind = 'length';
-    } else if (sidePos != null && nepPos != null) {
-      deltaM = sidePos - nepPos;
-      deltaKind = 'station';
-    }
+  let deltaKind = null;
+  if (withDelta && lengthM != null && nepM != null) {
+    deltaM = lengthM - nepM;
+    deltaKind = 'length';
   }
-  const pctBase = deltaKind === 'length' ? nepM : null;
-  const pct = withDelta ? chainageLengthPct(deltaM, pctBase) : null;
+  const pct = withDelta ? chainageLengthPct(deltaM, nepM) : null;
   return {
     spans,
     lengthKm: formatLengthKm(lengthM),
+    lengthReview,
+    lengthReviewLabel: chainageLengthReviewLabel(lengthReview),
     deltaM,
     deltaKind,
     deltaKm: withDelta ? formatSignedKm(deltaM) : null,
@@ -109,6 +127,7 @@ export function chainageAmendment(row) {
     deltaKm: houseDetail.deltaKm,
     deltaPct: houseDetail.deltaPct,
     direction: houseDetail.direction,
+    lengthReview: houseDetail.lengthReview || nepDetail.lengthReview,
     nep: nepDetail,
     house: houseDetail,
   };
