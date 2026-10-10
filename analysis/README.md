@@ -73,7 +73,7 @@ The Transparency tree has no established PDF mapping.
 | House GAB, native I-B | [Additive tree](data/hb_dpwh_native_rollup.json) · [rollup audit](docs/hb_native_ib_rollup_checks.md) | ₱654,102,015,000; 660 direct/recursive checks across PS/MOOE/CO/Total; local allocations are at office grain |
 | DBM NEP | [Canonical tree](data/nep_2027_tree.json) · [validation](viewers/nep_2027_tree.md) | ₱642,612,015,000; 2,552 additive checks; 3,193 actionable source checks pending |
 | DPWH Transparency NEP | [API tree](data/dpwh_transparency_nep_tree.json) · [audit](data/dpwh_transparency_nep_tree_validation.json) | 11,372 projects; ₱445,378,063,000; 2,662 derived grouping checks; release coverage remains open |
-| House project detail and candidates | [Native I-C](data/hb_dpwh_native_ic_projects.json) · [audit](docs/hb_native_ic_rollup_checks.md) | MOOE+CO ₱639,179,718,000; 2,477 internal checks and 56 I-B checks pass. Operations comparison: 16,270 allocations, ₱586,941,661,000, 44/44 mapped local PAPs balance. v5 is historical. |
+| House project detail and candidates | [Native I-C](data/hb_dpwh_native_ic_projects.json) · [audit](docs/hb_native_ic_rollup_checks.md) | MOOE+CO ₱639,179,718,000; 2,686 internal checks and 56 I-B checks pass. Operations comparison: 16,270 allocations, ₱586,941,661,000, 44/44 mapped local PAPs balance. Printed echoes retained as nested second observations. v5 is historical. |
 
 The React PAP totals table contains **45 non-FAP controls plus a separate FAP
 control**, alongside both House readings. The retained `#house-nep` view also

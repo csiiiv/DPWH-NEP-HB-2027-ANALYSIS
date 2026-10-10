@@ -335,7 +335,7 @@ with sync_playwright() as p:
         expect(page.locator(".tree-pdf-pane")).to_contain_text("House 3rd reading · Volume I-C")
         expect(page.locator(".tree-pdf-pane").get_by_role("status").filter(has_text="Page 323 of 942")).to_be_visible(timeout=60000)
         project_url=page.url
-        assert "node=c5246" in project_url and "q=" in project_url
+        assert "node=c5384" in project_url and "q=" in project_url
         page.reload(wait_until="networkidle")
         expect(page.get_by_label("Search hierarchy labels or source IDs")).to_have_value("J.P. Rizal box culvert, Barangays 34–35, Caloocan", timeout=60000)
         expect(page.locator("#tree [data-node]")).to_have_count(1)

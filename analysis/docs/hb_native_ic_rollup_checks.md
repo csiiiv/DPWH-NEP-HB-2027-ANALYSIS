@@ -8,7 +8,7 @@ The additive [Native I-C JSON](../data/hb_dpwh_native_ic_projects.json)
 sums to **₱639,179,718,000** (MOOE + Capital Outlays), with **15,972 named
 project leaves plus 29 FAP project totals**, 3,380 office-node occurrences
 and 1,471 region-node occurrences. Office/region counts are repeated hierarchy
-positions, not distinct offices or regions. **2,477/2,477 internal nodes balance to the peso**, zero
+positions, not distinct offices or regions. **2,686/2,686 internal nodes balance to the peso**, zero
 amount or continuation rows are unexplained, and all closing controls agree.
 
 ## Cross-volume agreement with Native I-B
@@ -47,7 +47,7 @@ not mis-split.
 | One standalone title glyph (U+0000) on p490; three trailing nulls on pp561/800 | One title recovered from following lines (`title_recovered_from_wraps`); all four carry `null_glyph_cleanup` | p490 = "Construction of Concrete Road (Section 1: Sta. 0+000 – Sta. 0+292, Section 2: Sta. 0+114 – Sta. 0+497, Section 3: Sta. 0+000 – Sta. 0+132) at Barangay Paliueg, City of Ilagan, Isabela", ₱10,000,000 |
 | Amounts printed up to 6pt off the title baseline (pp685, 751, 762) | Second-chance merge of a lone-amount cluster into a lone-label cluster within 6pt | Batangas 2nd DEO closes to ₱889,000,000 after the ₱50,000,000 "Rehabilitation of Multi-Purpose Building" row merges |
 | Family containers printed at the same indent as their parts ("Preventive Maintenance" vs "- Primary/- Secondary/- Tertiary Roads") | Fold the following same-band bold sibling prefix whose sum reaches the container exactly | 7 family containers folded (APP, NDP, Bridge, Water Supply, …) |
-| Rollup echoes: NCR/Central Office rows repeating a childless parent's amount (pp9, 45, 49, 939) | Suppress as second printed observations; recorded in the audit (211 rows) | GAS/S2O/FAP heads print banner → NCR → CO trios repeating the same amount before the real detail |
+| Rollup echoes: NCR/Central Office rows repeating a childless parent's amount (pp9, 45, 49, 939) | Retained as second printed observations (`second_observation`); exact-amount chains nest (banner → NCR → CO → detail) when the following detail closes the amount, even across indent bands | GAS/S2O/FAP heads print banner → NCR → CO trios repeating the same amount before the real detail; provenance keeps every printed title on the tree |
 | Two-digit enumerators print ~4–5pt left ("10. Region" vs "9. Region") | Widen by enumerator width, but only when the raw x matches no band | Region sequences 9–17 share one level; "14. Region X" drift (x=100.3 vs siblings 95–96) snaps to its sequence level |
 | MOOE/CO print separate GAS/S2O allocations | Both expense-class branches retain their own allocations once; closing banners are checked separately | MOOE = GAS₉+S2O₉ and CO = GAS+S2O+OPERATIONS both close exactly |
 
@@ -83,13 +83,14 @@ The [machine audit](../data/hb_dpwh_native_ic_rollup_audit.json) contains
 every recursive check, closing control, cross-volume control, echo list,
 repairs, and source/code SHA-256 hashes.
 
-- **2,477 recursive checks:** every internal node's leaf sum equals its
+- **2,686 recursive checks:** every internal node's leaf sum equals its
   printed control; `difference_php` is zero everywhere.
 - **3 closing controls:** OPERATIONS = outcomes sum; CAPITAL OUTLAYS =
   GAS+S2O+OPERATIONS; MOOE = GAS₉+S2O₉.
 - **56 independent cross-volume checks**, including 45 shared PAP/program controls.
-- **211 rollup echoes** accounted as second printed observations — none
-  silently dropped; **zero unexplained amount or continuation rows**.
+- **204 retained second observations** (nested echo wrappers carrying their
+  detail) plus **2 non-additive references** (FAP GOP/Loan funding summary)
+  — none silently dropped; **zero unexplained amount or continuation rows**.
 - Every node reachable exactly once from the root; each source leaf
   consumed once (`rollup` raises on double consumption).
 - Regression tests tamper with rows before outline construction (amount

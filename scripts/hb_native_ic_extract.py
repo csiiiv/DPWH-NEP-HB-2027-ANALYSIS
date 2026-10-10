@@ -382,23 +382,46 @@ def _promote_reference_wrappers(top):
     """Post-pass: settle reference echoes into the additive hierarchy.
 
     Reference nodes (formerly suppressed rollup echoes) are second printed
-    observations. Three settlements, in order:
+    observations. Settlements, in order:
 
     (a) wrapper chain — consecutive references whose LAST member's amount is
-        closed exactly by the following non-reference siblings become nested
-        additive wrappers (NCR → Central Office → activities; Region XII →
-        Cotabato 3rd DEO → project). Sums hold because each wrapper's amount
-        equals its children's sum by construction.
+        closed exactly by the following non-reference siblings (same or deeper
+        outline level) become nested additive wrappers
+        (NCR → Central Office → activities; Region XII → Cotabato 3rd DEO →
+        project). Same-level detail is allowed: office headings and their
+        first activity lines often share an indent band.
+    (a2) parent-equal banner — the echo chain reprints the parent total
+        (node.amount == last.amount) and the following non-reference siblings
+        close that amount even when printed shallower than the office
+        (MOOE S2O: NCR → CO at deeper indent, then a/b/c at NCR indent).
+        Detail still nests under the last echo so provenance is
+        parent → NCR → Central Office → a/b/c.
     (b) leaf echo — a reference that is its parent's ONLY content and repeats
         the parent's amount is the printed allocation itself (PAP → DEO row
         with no deeper detail); it becomes an additive leaf.
-    (c) otherwise the reference stays non-additive (banner trio echoes whose
-        detail closes the parent without them; FAP GOP/Loan funding summary).
+    (c) exact-amount echo chain — consecutive references that share one amount
+        nest as parent→child for provenance when they still cannot absorb
+        detail (rare after a/a2).
+    (d) differing-amount consecutive refs stay siblings (FAP GOP / Loan
+        Proceeds funding summary under Central Office).
     """
     def settle_chain(chain):
         for c in chain:
             c.pop("reference", None)
             c["second_observation"] = True
+
+    def nest_chain(chain):
+        for a, b in zip(chain[:-1], chain[1:]):
+            a["children"].append(b)
+
+    def absorb(node, kids, i, j, chain, m):
+        last = chain[-1]
+        last["children"].extend(kids[j:m])
+        nest_chain(chain)
+        settle_chain(chain)
+        node["children"] = kids[:i] + [chain[0]] + kids[m:]
+        for c in chain:
+            walk(c)
 
     def walk(node):
         kids = node["children"]
@@ -417,26 +440,47 @@ def _promote_reference_wrappers(top):
             run, m = 0, j
             while m < len(kids) and run < last["amount"] \
                     and not kids[m].get("reference") \
-                    and kids[m]["level"] > last["level"]:
+                    and kids[m]["level"] >= last["level"]:
                 run += kids[m]["amount"]
                 m += 1
             if run == last["amount"] and m > j:
-                # (a) nested wrapper chain over the closing detail
-                chain[-1]["children"].extend(kids[j:m])
-                for a, b in zip(chain[:-1], chain[1:]):
-                    a["children"].append(b)
-                settle_chain(chain)
-                node["children"] = kids = kids[:i] + [chain[0]] + kids[m:]
-                for c in chain:
-                    walk(c)
+                # (a) nested wrapper chain over same/deeper closing detail
+                absorb(node, kids, i, j, chain, m)
+                kids = node["children"]
                 continue
-            if node["amount"] == last["amount"] and len(kids) == len(chain):
-                # (b) leaf echo: the chain is the parent's whole content
-                for a, b in zip(chain[:-1], chain[1:]):
-                    a["children"].append(b)
-                settle_chain(chain)
-                node["children"] = [chain[0]]
-                return
+            if node["amount"] == last["amount"]:
+                run, m = 0, j
+                while m < len(kids) and run < last["amount"] \
+                        and not kids[m].get("reference"):
+                    run += kids[m]["amount"]
+                    m += 1
+                if run == last["amount"] and m > j:
+                    # (a2) parent-equal banner owns the closing siblings
+                    absorb(node, kids, i, j, chain, m)
+                    kids = node["children"]
+                    continue
+                if len(kids) == len(chain):
+                    # (b) leaf echo: the chain is the parent's whole content
+                    nest_chain(chain)
+                    settle_chain(chain)
+                    node["children"] = [chain[0]]
+                    return
+            # (c) nest exact-amount runs for provenance; keep non-additive
+            if len(chain) > 1:
+                heads = []
+                k = 0
+                while k < len(chain):
+                    start = k
+                    k += 1
+                    while k < len(chain) and chain[k]["amount"] == chain[start]["amount"]:
+                        k += 1
+                    run = chain[start:k]
+                    if len(run) > 1:
+                        nest_chain(run)
+                    heads.append(run[0])
+                node["children"] = kids = kids[:i] + heads + kids[j:]
+                i += len(heads)
+                continue
             i = j
     walk(top)
 

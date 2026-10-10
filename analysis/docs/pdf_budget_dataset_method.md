@@ -341,7 +341,7 @@ The current retained artifacts report:
 |---|---:|---:|
 | I-B internal controls | 660 | 660 |
 | I-B terminal allocation/funding nodes | 1,746 | 1,746 |
-| I-C internal controls | 2,477 | 2,477 |
+| I-C internal controls | 2,686 | 2,686 |
 | I-C named-project leaves | 15,972 | 15,977 |
 | I-C named FAP project parents | 29 | 29 |
 | I-C positive-amount funding leaves | 49 | 49 |

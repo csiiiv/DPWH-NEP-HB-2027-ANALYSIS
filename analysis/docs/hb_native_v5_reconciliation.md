@@ -91,7 +91,7 @@ remaining defect; the bill itself balances everywhere.
 | Is Convergence ever printed? | **Yes** — I-C p373 (and I-B p80 zone arithmetic). The "derived residual" framing was an OCR artifact. |
 | Current House control baseline | [Additive Native I-B](../data/hb_dpwh_native_rollup.json): 660/660 internal checks pass across PS/MOOE/CO/Total. The raw tree below is its historical predecessor. |
 | v5 still needed? | No for current processing. Native I-C replaces its project-title layer; v5 remains a historical reproduction artifact. |
-| Native I-C extraction | Complete: 15,972 named-project leaves, 29 FAP totals, 2,477 balanced internal controls, and 56 independent I-B checks. Current comparisons balance 44/44 mapped non-FAP PAPs; one NEP PAP remains unmapped. |
+| Native I-C extraction | Complete: 15,972 named-project leaves, 29 FAP totals, 2,686 balanced internal controls, and 56 independent I-B checks. Current comparisons balance 44/44 mapped non-FAP PAPs; one NEP PAP remains unmapped. |
 
 ## 5. Reproduce
 

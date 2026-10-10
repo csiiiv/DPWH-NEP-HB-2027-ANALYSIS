@@ -10,7 +10,7 @@ are reviewed.
 
 | View | Current data and checks | Remaining work |
 |---|---|---|
-| Home / House verification | Native I-B: ₱654,102,015,000 across PS/MOOE/CO, 660 balanced internal controls, 1,746 terminal leaves. Native I-C summary: ₱639,179,718,000 MOOE+CO, 15,972 named-project leaves, 29 FAP totals, 2,477 internal checks and 56 independent I-B checks | Project identity and amendment completeness |
+| Home / House verification | Native I-B: ₱654,102,015,000 across PS/MOOE/CO, 660 balanced internal controls, 1,746 terminal leaves. Native I-C summary: ₱639,179,718,000 MOOE+CO, 15,972 named-project leaves, 29 FAP totals, 2,686 internal checks and 56 independent I-B checks | Project identity and amendment completeness |
 | House / NEP comparison | Native I-C operations: 16,270 allocation records, ₱586,941,661,000 including FAP; 44/44 mapped non-FAP PAP controls balance; zero extraction gap | One NEP PAP unmapped; candidate identity review |
 | Stage comparison | Current native I-C / DBM NEP / retained Transparency NEP candidates, with full-result total, delta and percent sorting | Matches do not establish insertions, removals or final amendments |
 | DBM NEP verification / detail | 2,552 additive branch checks; 14,190 atomic units reproduce ₱642,612,015,000 | 3,193 actionable source checks |

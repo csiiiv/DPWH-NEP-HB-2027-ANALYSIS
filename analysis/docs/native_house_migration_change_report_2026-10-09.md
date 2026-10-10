@@ -58,7 +58,7 @@ spanning pp936–937. No allocation amount was adjusted or invented.
 | Zero/dash/blank funding observations | 9 |
 | Office-node occurrences | 3,380 |
 | Region-node occurrences | 1,471 |
-| Balanced internal controls | 2,477 / 2,477 |
+| Balanced internal controls | 2,686 / 2,686 |
 | Closing controls | 3 / 3 |
 | Independent I-B cross-volume checks | 56 / 56 |
 | Unexplained amount rows | 0 |

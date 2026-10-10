@@ -16,7 +16,7 @@ reading operations allocations. Open `#compare?view=readings` in the app.
 | Named-project leaves | 15,972 | 15,977 | +5 |
 | Operations comparison allocations | 16,270 | 16,275 | +5 |
 
-Each reading passes 2,477 internal I-C controls and 56 independent I-B
+Each reading passes 2,686 internal I-C controls and 56 independent I-B
 cross-volume checks. The agency total and its expenditure columns are
 unchanged; the operations increase is offset by the lower Support to
 Operations control. Source amounts are retained without adjustment.

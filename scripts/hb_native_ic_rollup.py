@@ -249,7 +249,11 @@ def build(pdf=PDF, ib_rollup=IB_ROLLUP):
         path = path + [n['id']]
         printed = n['printed_amount_php']
         if n.get('additive') is False:
-            # Non-additive printed reference (FAP funding summary echo).
+            # Non-additive printed reference (banner echo / FAP funding
+            # summary). Still walk nested echo children so every provenance
+            # node is visited; they contribute nothing to parent sums.
+            for c in n['children']:
+                rollup(c, path)
             n['recursive_leaf_sum_php'] = None
             n['difference_php'] = None
             return 0

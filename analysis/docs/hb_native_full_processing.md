@@ -12,7 +12,7 @@ and the [machine audit](../data/hb_native_ib_rollup_audit.json).
 The [verification viewer](../viewers/hb_native_verification.html) exposes source pages, progressive sums, and navigable paths. See [current source verification](source_hierarchy_verification.md) for the remaining scope before comparisons.
 
 **9 October 2026 follow-up:** native I-C detail now retains 15,972 named-project
-leaves plus 29 FAP totals, with 2,477 balancing internal controls and 56
+leaves plus 29 FAP totals, with 2,686 balancing internal controls and 56
 independent I-B checks. Current comparisons use native I-C instead of v5;
 44/44 mapped local PAP controls balance. Continuation ownership and classification
 repairs are documented in [the I-C checks](hb_native_ic_rollup_checks.md).

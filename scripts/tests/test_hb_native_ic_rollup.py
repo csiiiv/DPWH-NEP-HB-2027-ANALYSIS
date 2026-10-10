@@ -2,12 +2,12 @@
 """Arithmetic and source-coverage regressions for the Native I-C rollup.
 
 Runs against analysis/data/hb_dpwh_native_ic_projects.json and the live
-extractor; guards the four artifact-title recoveries, the 2,686 internal
+extractor; guards the four artifact-title recoveries, the 2,686 recursive
 control checks, the 15,972 named-project leaves plus 29 FAP projects, the
-209 retained second-observation echo wrappers plus 2 non-additive FAP
-funding-summary references, and the cross-volume
-agreement with the Native I-B baseline. Tampering tests mutate extracted
-rows before the outline is built and assert the audit catches it.
+204 retained second-observation echo wrappers plus 2 non-additive FAP
+GOP/Loan funding-summary references, and the cross-volume agreement with
+the Native I-B baseline. Tampering tests mutate extracted rows before the
+outline is built and assert the audit catches it.
 """
 import copy
 import json
@@ -46,14 +46,14 @@ class NativeICRollupTests(unittest.TestCase):
 
     def test_complete_additive_budget(self):
         self.assertEqual(self.summary['additive_leaf_total_php'], 639_179_718_000)
-        self.assertEqual(self.summary['recursive_checks'], 2_678)
+        self.assertEqual(self.summary['recursive_checks'], 2_686)
         self.assertEqual(self.summary['failed_nodes'], 0)
         self.assertEqual(self.summary['unexplained_amount_rows'], 0)
         self.assertEqual(self.summary['unexplained_title_rows'], 0)
         self.assertEqual(self.summary['failed_closing_controls'], 0)
         # formerly suppressed rollup echoes: now retained in the hierarchy
-        self.assertEqual(self.summary['retained_second_observations'], 196)
-        self.assertEqual(self.summary['retained_reference_nodes'], 10)
+        self.assertEqual(self.summary['retained_second_observations'], 204)
+        self.assertEqual(self.summary['retained_reference_nodes'], 2)
 
     def test_cross_volume_agreement_with_ib(self):
         self.assertEqual(self.summary['shared_controls_with_ib'], 56)
@@ -100,6 +100,46 @@ class NativeICRollupTests(unittest.TestCase):
         self.assertIn('San Antonio Bridge 1', bridges[0]['label'])
         self.assertNotIn('San Antonio Bridge 1', bridges[1]['label'])
         self.assertIn('Sta. 1+214.10', bridges[1]['label'])
+
+    def test_exact_echo_chain_nests_under_parent_with_same_level_detail(self):
+        """Pre-Feasibility reprints NCR → Central Office at the same indent as
+        its numbered activities. The echo chain must nest and own that detail
+        so Regionwide traces Pre-Feasibility → NCR → CO → Regionwide."""
+        pf = next(n for n in self._walk()
+                  if n['label'].startswith('a. Pre-Feasibility Study / Feasibility Study'))
+        self.assertEqual(len(pf['children']), 1)
+        ncr = pf['children'][0]
+        self.assertEqual(ncr['label'], 'National Capital Region')
+        self.assertTrue(ncr.get('second_observation'))
+        self.assertEqual(len(ncr['children']), 1)
+        co = ncr['children'][0]
+        self.assertEqual(co['label'], 'Central Office')
+        self.assertTrue(co.get('second_observation'))
+        labels = [c['label'] for c in co['children']]
+        self.assertTrue(any(l.startswith('7. Regionwide / Nationwide') for l in labels))
+        regionwide = next(c for c in co['children'] if c['label'].startswith('7. Regionwide'))
+        self.assertEqual(regionwide['printed_amount_php'], 6_742_243_000)
+
+    def test_mooe_s2o_banner_echo_owns_abc_under_central_office(self):
+        """MOOE S2O reprints NCR → CO at a deeper indent than a/b/c; the
+        parent-equal banner rule still nests a/b/c under Central Office."""
+        mooe = next(n for n in self.artifact['root']['children']
+                    if n['label'].startswith('MAINTENANCE'))
+        s2o = next(n for n in mooe['children'] if n['label'] == 'SUPPORT TO OPERATIONS')
+        self.assertEqual(len(s2o['children']), 1)
+        ncr = s2o['children'][0]
+        self.assertEqual(ncr['label'], 'National Capital Region')
+        self.assertTrue(ncr.get('second_observation'))
+        co = ncr['children'][0]
+        self.assertEqual(co['label'], 'Central Office')
+        self.assertTrue(co.get('second_observation'))
+        labels = [c['label'] for c in co['children']]
+        self.assertEqual(len(labels), 3)
+        self.assertTrue(labels[0].startswith('a. Infrastructure Planning'))
+        self.assertTrue(labels[1].startswith('b. Regional Support'))
+        self.assertTrue(labels[2].startswith('c. Testing Materials'))
+        self.assertEqual(sum(c['printed_amount_php'] for c in co['children']),
+                         s2o['printed_amount_php'])
 
     def test_page_break_continuation_keeps_source_pages_and_amount(self):
         """p936–937 regression: 'Rehabilitation of DPWH Building, Iloilo 2nd

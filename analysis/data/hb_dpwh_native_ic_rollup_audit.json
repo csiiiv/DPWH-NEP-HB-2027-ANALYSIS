@@ -4,15 +4,15 @@
   "summary": {
     "nodes": 21500,
     "leaves": 18812,
-    "internal_nodes": 2679,
-    "recursive_checks": 2678,
+    "internal_nodes": 2686,
+    "recursive_checks": 2686,
     "failed_nodes": 0,
     "closing_control_checks": 3,
     "failed_closing_controls": 0,
     "unexplained_amount_rows": 0,
     "unexplained_title_rows": 0,
-    "retained_second_observations": 196,
-    "retained_reference_nodes": 10,
+    "retained_second_observations": 204,
+    "retained_reference_nodes": 2,
     "additive_leaf_total_php": 639179718000,
     "named_project_leaves": 15972,
     "fap_projects": 29,
@@ -23,11 +23,11 @@
     "shared_controls_with_ib": 56,
     "crossvolume_disagreements": 0,
     "repair_counts": {
-      "retain_second_observation": 196,
+      "retain_second_observation": 204,
       "fold_family_container": 7,
       "null_glyph_cleanup": 4,
       "recover_artifact_title": 1,
-      "retain_reference": 10
+      "retain_reference": 2
     }
   },
   "repairs": [
@@ -1158,49 +1158,49 @@
     {
       "kind": "retain_reference",
       "node_id": "c18557",
-      "label": "National Capital Region",
-      "pdf_page": 939
-    },
-    {
-      "kind": "retain_reference",
-      "node_id": "c18558",
       "label": "GOP",
       "pdf_page": 939
     },
     {
       "kind": "retain_reference",
-      "node_id": "c18559",
+      "node_id": "c18558",
       "label": "Loan Proceeds",
       "pdf_page": 939
     },
     {
-      "kind": "retain_reference",
-      "node_id": "c18560",
+      "kind": "retain_second_observation",
+      "node_id": "c18653",
       "label": "Central Office",
       "pdf_page": 939
     },
     {
-      "kind": "retain_reference",
-      "node_id": "c18657",
+      "kind": "retain_second_observation",
+      "node_id": "c18654",
       "label": "National Capital Region",
-      "pdf_page": 45
+      "pdf_page": 939
     },
     {
-      "kind": "retain_reference",
-      "node_id": "c18658",
+      "kind": "retain_second_observation",
+      "node_id": "c18738",
       "label": "Central Office",
       "pdf_page": 45
     },
     {
-      "kind": "retain_reference",
-      "node_id": "c18742",
+      "kind": "retain_second_observation",
+      "node_id": "c18739",
       "label": "National Capital Region",
+      "pdf_page": 45
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c20449",
+      "label": "Central Office",
       "pdf_page": 49
     },
     {
-      "kind": "retain_reference",
-      "node_id": "c18743",
-      "label": "Central Office",
+      "kind": "retain_second_observation",
+      "node_id": "c20450",
+      "label": "National Capital Region",
       "pdf_page": 49
     },
     {
@@ -1240,100 +1240,100 @@
       "pdf_page": 9
     },
     {
-      "kind": "retain_reference",
-      "node_id": "c20470",
-      "label": "National Capital Region",
-      "pdf_page": 9
-    },
-    {
-      "kind": "retain_reference",
-      "node_id": "c20471",
-      "label": "Central Office",
-      "pdf_page": 9
-    },
-    {
       "kind": "retain_second_observation",
-      "node_id": "c21170",
+      "node_id": "c21168",
       "label": "a. CAR Regional Office",
       "pdf_page": 33
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21173",
+      "node_id": "c21171",
       "label": "a. Regional Office I",
       "pdf_page": 34
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21177",
+      "node_id": "c21175",
       "label": "a. Regional Office II",
       "pdf_page": 34
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21192",
+      "node_id": "c21190",
       "label": "a. Laguna 2nd District Engineering Office",
       "pdf_page": 34
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21197",
+      "node_id": "c21195",
       "label": "a. Regional Office V",
       "pdf_page": 34
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21201",
+      "node_id": "c21199",
       "label": "a. Regional Office VI",
       "pdf_page": 35
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21205",
+      "node_id": "c21203",
       "label": "a. Regional Office NIR",
       "pdf_page": 35
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21208",
+      "node_id": "c21206",
       "label": "a. Regional Office VII",
       "pdf_page": 35
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21212",
+      "node_id": "c21210",
       "label": "a. Regional Office VIII",
       "pdf_page": 35
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21215",
+      "node_id": "c21213",
       "label": "a. Regional Office IX",
       "pdf_page": 35
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21218",
+      "node_id": "c21216",
       "label": "a. Regional Office X",
       "pdf_page": 35
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21223",
+      "node_id": "c21221",
       "label": "a. Regional Office XI",
       "pdf_page": 35
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21226",
+      "node_id": "c21224",
       "label": "a. Regional Office XII",
       "pdf_page": 35
     },
     {
       "kind": "retain_second_observation",
-      "node_id": "c21230",
+      "node_id": "c21228",
       "label": "a. Regional Office XIII",
       "pdf_page": 36
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21495",
+      "label": "Central Office",
+      "pdf_page": 9
+    },
+    {
+      "kind": "retain_second_observation",
+      "node_id": "c21496",
+      "label": "National Capital Region",
+      "pdf_page": 9
     }
   ],
   "failures": [],
@@ -2594,6 +2594,48 @@
       "printed_php": 92000000
     },
     {
+      "node_id": "c18653",
+      "label": "Central Office",
+      "kind": "office",
+      "pdf_page": 939,
+      "printed_php": 44749011000
+    },
+    {
+      "node_id": "c18654",
+      "label": "National Capital Region",
+      "kind": "region",
+      "pdf_page": 939,
+      "printed_php": 44749011000
+    },
+    {
+      "node_id": "c18738",
+      "label": "Central Office",
+      "kind": "office",
+      "pdf_page": 45,
+      "printed_php": 2777545000
+    },
+    {
+      "node_id": "c18739",
+      "label": "National Capital Region",
+      "kind": "region",
+      "pdf_page": 45,
+      "printed_php": 2777545000
+    },
+    {
+      "node_id": "c20449",
+      "label": "Central Office",
+      "kind": "office",
+      "pdf_page": 49,
+      "printed_php": 10533243000
+    },
+    {
+      "node_id": "c20450",
+      "label": "National Capital Region",
+      "kind": "region",
+      "pdf_page": 49,
+      "printed_php": 10533243000
+    },
+    {
       "node_id": "c20458",
       "label": "Central Office",
       "kind": "office",
@@ -2636,174 +2678,132 @@
       "printed_php": 1505758000
     },
     {
-      "node_id": "c21170",
+      "node_id": "c21168",
       "label": "a. CAR Regional Office",
       "kind": "office",
       "pdf_page": 33,
       "printed_php": 11867000
     },
     {
-      "node_id": "c21173",
+      "node_id": "c21171",
       "label": "a. Regional Office I",
       "kind": "office",
       "pdf_page": 34,
       "printed_php": 5656000
     },
     {
-      "node_id": "c21177",
+      "node_id": "c21175",
       "label": "a. Regional Office II",
       "kind": "office",
       "pdf_page": 34,
       "printed_php": 17695000
     },
     {
-      "node_id": "c21192",
+      "node_id": "c21190",
       "label": "a. Laguna 2nd District Engineering Office",
       "kind": "office",
       "pdf_page": 34,
       "printed_php": 6333000
     },
     {
-      "node_id": "c21197",
+      "node_id": "c21195",
       "label": "a. Regional Office V",
       "kind": "office",
       "pdf_page": 34,
       "printed_php": 20581000
     },
     {
-      "node_id": "c21201",
+      "node_id": "c21199",
       "label": "a. Regional Office VI",
       "kind": "office",
       "pdf_page": 35,
       "printed_php": 12197000
     },
     {
-      "node_id": "c21205",
+      "node_id": "c21203",
       "label": "a. Regional Office NIR",
       "kind": "office",
       "pdf_page": 35,
       "printed_php": 12762000
     },
     {
-      "node_id": "c21208",
+      "node_id": "c21206",
       "label": "a. Regional Office VII",
       "kind": "office",
       "pdf_page": 35,
       "printed_php": 5836000
     },
     {
-      "node_id": "c21212",
+      "node_id": "c21210",
       "label": "a. Regional Office VIII",
       "kind": "office",
       "pdf_page": 35,
       "printed_php": 12715000
     },
     {
-      "node_id": "c21215",
+      "node_id": "c21213",
       "label": "a. Regional Office IX",
       "kind": "office",
       "pdf_page": 35,
       "printed_php": 6310000
     },
     {
-      "node_id": "c21218",
+      "node_id": "c21216",
       "label": "a. Regional Office X",
       "kind": "office",
       "pdf_page": 35,
       "printed_php": 6016000
     },
     {
-      "node_id": "c21223",
+      "node_id": "c21221",
       "label": "a. Regional Office XI",
       "kind": "office",
       "pdf_page": 35,
       "printed_php": 24738000
     },
     {
-      "node_id": "c21226",
+      "node_id": "c21224",
       "label": "a. Regional Office XII",
       "kind": "office",
       "pdf_page": 35,
       "printed_php": 6822000
     },
     {
-      "node_id": "c21230",
+      "node_id": "c21228",
       "label": "a. Regional Office XIII",
       "kind": "office",
       "pdf_page": 36,
       "printed_php": 11470000
+    },
+    {
+      "node_id": "c21495",
+      "label": "Central Office",
+      "kind": "office",
+      "pdf_page": 9,
+      "printed_php": 23179988000
+    },
+    {
+      "node_id": "c21496",
+      "label": "National Capital Region",
+      "kind": "region",
+      "pdf_page": 9,
+      "printed_php": 23179988000
     }
   ],
   "retained_reference_nodes": [
     {
       "node_id": "c18557",
-      "label": "National Capital Region",
-      "kind": "region",
-      "pdf_page": 939,
-      "printed_php": 44749011000
-    },
-    {
-      "node_id": "c18558",
       "label": "GOP",
       "kind": "funding",
       "pdf_page": 939,
       "printed_php": 25190650000
     },
     {
-      "node_id": "c18559",
+      "node_id": "c18558",
       "label": "Loan Proceeds",
       "kind": "funding",
       "pdf_page": 939,
       "printed_php": 19558361000
-    },
-    {
-      "node_id": "c18560",
-      "label": "Central Office",
-      "kind": "office",
-      "pdf_page": 939,
-      "printed_php": 44749011000
-    },
-    {
-      "node_id": "c18657",
-      "label": "National Capital Region",
-      "kind": "region",
-      "pdf_page": 45,
-      "printed_php": 2777545000
-    },
-    {
-      "node_id": "c18658",
-      "label": "Central Office",
-      "kind": "office",
-      "pdf_page": 45,
-      "printed_php": 2777545000
-    },
-    {
-      "node_id": "c18742",
-      "label": "National Capital Region",
-      "kind": "region",
-      "pdf_page": 49,
-      "printed_php": 10533243000
-    },
-    {
-      "node_id": "c18743",
-      "label": "Central Office",
-      "kind": "office",
-      "pdf_page": 49,
-      "printed_php": 10533243000
-    },
-    {
-      "node_id": "c20470",
-      "label": "National Capital Region",
-      "kind": "region",
-      "pdf_page": 9,
-      "printed_php": 23179988000
-    },
-    {
-      "node_id": "c20471",
-      "label": "Central Office",
-      "kind": "office",
-      "pdf_page": 9,
-      "printed_php": 23179988000
     }
   ],
   "crossvolume_controls": [
@@ -3162,8 +3162,8 @@
   "provenance_sha256": {
     "HB_BUDGET/3 - HB 10858 VOL IC.pdf": "0b790d6018db59abab648486c5068108a42ff20a33facc8e21ace0bbedf2d15f",
     "analysis/data/hb_dpwh_native_rollup.json": "b3b12f43867a96600f803702f193f622e176ab7659325290d22410e4f8cf6c0c",
-    "scripts/hb_native_ic_rollup.py": "2d8a1da0fff9ac3f15b46ceba6977e8055eaca11e5be93f99642c76e1c69d8eb",
-    "scripts/hb_native_ic_extract.py": "9f82649b772fdd244cfcdbcec9b89a78505e55b758a6f801a42ab2b7116bd8e4",
+    "scripts/hb_native_ic_rollup.py": "eb68f78b10e29be837a7bb8c9368c70b3ded0016f4812633eb07bcf785ead19e",
+    "scripts/hb_native_ic_extract.py": "089dc4f9b164c0346f803cdbdcc1ada9ef78568ab4f8766e6c1e78ed4b61f282",
     "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
   }
 }
