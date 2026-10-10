@@ -57,6 +57,20 @@ REGION_RE = re.compile(
     r"|MIMAROPA Region\b|Nationwide\b|BARMM\b)")
 DEO_RE = re.compile(r"(District Engineering Office|Central Office\b"
                     r"|Regional Office\b|District Office\b|Bureau Proper\b)")
+# anchored office-heading shape used for echo detection: the row must END
+# with the office designation (optionally after a short comma-free prefix
+# and enumerator), so project titles that merely CONTAIN office words
+# ("Rehabilitation of DPWH Building, Iloilo 2nd District Engineering
+# Office, Barangay …" — has commas and continues past the designation)
+# never match. Mirrors hb_native_ic_rollup.classify's office test.
+OFFICE_HEADING_RE = re.compile(
+    r"^(?:[a-k]\. |\d{1,3}\. |\d{1,2}\) )?"
+    r"(?!Construction\b|Rehabilitation\b|Repair\b|Improvement\b|Completion\b"
+    r"|Upgrading\b|Procurement\b)"
+    r"(?:[A-Z][A-Za-z0-9’' -]* )?"
+    r"(?:District Engineering Office(?: \d+)?|District Office|Bureau Proper"
+    r"|Central Office|Regional Office(?: [A-Z0-9][A-Z0-9 -]*)?"
+    r"(?: \([^)]*\))?)$")
 FUNDING_RE = re.compile(r"^(GOP|Loan Proceeds|Grant Proceeds|GOP Counterpart"
                         r"|GOP Equity|Counterpart Funding)\b", re.I)
 # bold headings that define the fixed semantic levels
@@ -353,6 +367,80 @@ def _renorm_retyped_x(rows, bands):
             r["x"] = bands[band]
 
 
+def _make_node(r, lvl):
+    """Shared amount-row → outline node constructor (used by echo retention)."""
+    text = r["text"].replace(ARTIFACT, " ").strip()
+    return {"page": r["page"], "level": lvl, "text": text,
+            "title_recovered_from_wraps": not text,
+            "null_glyph_cleanup": ARTIFACT in r["text"],
+            "source_row": r["source_row"], "label_x": r["x"],
+            "title_rows": [r["source_row"]], "bold": r["bold"],
+            "amount": r["amounts"][-1], "amounts": r["amounts"], "children": []}
+
+
+def _promote_reference_wrappers(top):
+    """Post-pass: settle reference echoes into the additive hierarchy.
+
+    Reference nodes (formerly suppressed rollup echoes) are second printed
+    observations. Three settlements, in order:
+
+    (a) wrapper chain — consecutive references whose LAST member's amount is
+        closed exactly by the following non-reference siblings become nested
+        additive wrappers (NCR → Central Office → activities; Region XII →
+        Cotabato 3rd DEO → project). Sums hold because each wrapper's amount
+        equals its children's sum by construction.
+    (b) leaf echo — a reference that is its parent's ONLY content and repeats
+        the parent's amount is the printed allocation itself (PAP → DEO row
+        with no deeper detail); it becomes an additive leaf.
+    (c) otherwise the reference stays non-additive (banner trio echoes whose
+        detail closes the parent without them; FAP GOP/Loan funding summary).
+    """
+    def settle_chain(chain):
+        for c in chain:
+            c.pop("reference", None)
+            c["second_observation"] = True
+
+    def walk(node):
+        kids = node["children"]
+        for child in kids:
+            walk(child)
+        i = 0
+        while i < len(kids):
+            if not kids[i].get("reference"):
+                i += 1
+                continue
+            j = i
+            while j < len(kids) and kids[j].get("reference"):
+                j += 1
+            chain = kids[i:j]
+            last = chain[-1]
+            run, m = 0, j
+            while m < len(kids) and run < last["amount"] \
+                    and not kids[m].get("reference") \
+                    and kids[m]["level"] > last["level"]:
+                run += kids[m]["amount"]
+                m += 1
+            if run == last["amount"] and m > j:
+                # (a) nested wrapper chain over the closing detail
+                chain[-1]["children"].extend(kids[j:m])
+                for a, b in zip(chain[:-1], chain[1:]):
+                    a["children"].append(b)
+                settle_chain(chain)
+                node["children"] = kids = kids[:i] + [chain[0]] + kids[m:]
+                for c in chain:
+                    walk(c)
+                continue
+            if node["amount"] == last["amount"] and len(kids) == len(chain):
+                # (b) leaf echo: the chain is the parent's whole content
+                for a, b in zip(chain[:-1], chain[1:]):
+                    a["children"].append(b)
+                settle_chain(chain)
+                node["children"] = [chain[0]]
+                return
+            i = j
+    walk(top)
+
+
 def build_outline(rows, bands):
     """Outline from amount rows. Wrap fragments (no amount, same band) attach
     to the amount row ABOVE them (post-wrap). Consecutive duplicate-printed
@@ -402,21 +490,42 @@ def build_outline(rows, bands):
             # FAP head funding summary: GOP/Loan totals printed directly under
             # the FOREIGN-ASSISTED PROJECTS banner summarize the per-project
             # funding splits below — a second decomposition, not allocations.
+            # Retained as non-additive reference nodes for provenance; they
+            # attach under a preceding CO/region reference banner when present.
             if stack and FUNDING_RE.match(r["text"]) \
                     and stack[-1].get("level") == LEVEL_SECTION \
                     and "FOREIGN-ASSISTED" in stack[-1]["text"]:
-                suppressed.append(r)
+                host = None
+                for child in reversed(stack[-1]["children"]):
+                    if child.get("reference") and (REGION_RE.match(child["text"])
+                                                   or OFFICE_HEADING_RE.fullmatch(child["text"])):
+                        host = child
+                    break
+                host = host if host is not None else stack[-1]
+                node = _make_node(r, lvl)
+                node["reference"] = True
+                host["children"].append(node)
                 continue
             # rollup echo: a REGION/OFFICE heading that would become the FIRST
             # CHILD of a childless parent while repeating the parent's amount —
             # a second printed observation of the same control (p9/45/49
             # NCR/CO pattern; FAP head prints the same trio in bold).
             # Equal-amount SIBLINGS (lvl == parent level) are legitimate.
-            if stack and not stack[-1]["children"] \
+            # Echoes are never dropped: they attach as non-additive reference
+            # nodes (provenance preserved, excluded from sums), and a later
+            # post-pass promotes one to an additive wrapper when the detail
+            # that follows nests under it and closes its amount exactly.
+            # The office test is anchored to the heading's END so project
+            # titles that merely CONTAIN office words ("Rehabilitation of
+            # DPWH Building, Iloilo 2nd District Engineering Office, …")
+            # never qualify as echoes.
+            if stack and not [c for c in stack[-1]["children"] if not c.get("reference")] \
                     and lvl > stack[-1]["level"] \
                     and r["amounts"][-1] == stack[-1]["amount"] \
-                    and (REGION_RE.match(r["text"]) or DEO_RE.search(r["text"])):
-                suppressed.append(r)
+                    and (REGION_RE.match(r["text"]) or OFFICE_HEADING_RE.fullmatch(r["text"])):
+                node = _make_node(r, lvl)
+                node["reference"] = True
+                stack[-1]["children"].append(node)
                 continue
             # enumerated-region drift: "14. Region X" prints ~5pt right of its
             # sequence siblings; the enumerator continues the sequence, so it
@@ -451,6 +560,7 @@ def build_outline(rows, bands):
             last_node = node
     for top in nodes:
         _fold_family_containers(top)
+        _promote_reference_wrappers(top)
     return nodes, skipped, suppressed
 
 
@@ -466,13 +576,13 @@ def _fold_family_containers(node):
     i = 0
     while i < len(kids):
         k = kids[i]
-        if not k["children"] and k.get("bold"):
+        if not k["children"] and k.get("bold") and not k.get("reference"):
             run, j = 0, i + 1
             while j < len(kids) and run < k["amount"]:
                 part = kids[j]
-                if part["level"] < k["level"] or \
+                if part.get("reference") or part["level"] < k["level"] or \
                         (part["level"] == k["level"] and not part.get("bold")):
-                    break  # a shallower or non-bold sibling ends the family
+                    break  # a reference, shallower or non-bold sibling ends the family
                 run += part["amount"]
                 j += 1
             if run == k["amount"] and j > i + 2:
@@ -501,13 +611,19 @@ def attach_post_wraps(nodes, rows, bands):
 
 
 def sum_leaf(node):
-    if not node["children"]:
+    if node.get("reference"):
+        return 0
+    kids = [c for c in node["children"] if not c.get("reference")]
+    if not kids:
         return node["amount"]
-    return sum(sum_leaf(c) for c in node["children"])
+    return sum(sum_leaf(c) for c in kids)
 
 
 def validate(node, rep, depth=0):
-    if node["children"]:
+    if node.get("reference"):
+        return
+    kids = [c for c in node["children"] if not c.get("reference")]
+    if kids:
         s = sum_leaf(node)
         if node["amount"]:
             rep["checked"] += 1

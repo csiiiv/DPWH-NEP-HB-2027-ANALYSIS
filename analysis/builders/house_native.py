@@ -67,10 +67,17 @@ def validate_native_detail(ic, audit, repo):
         if audit['summary'][key]:
             raise ValueError(f'Native House audit failure: {key}')
     seen, allocations, title_rows = set(), set(), set()
+    seen_all = set()
     def check(n):
         if n['id'] in seen:
             raise ValueError('Repeated native House node')
         seen.add(n['id'])
+        if n.get('additive') is False:
+            # Non-additive printed reference: provenance only, carries no
+            # allocation and participates in no rollup.
+            if n['recursive_leaf_sum_php'] is not None or n['difference_php'] is not None:
+                raise ValueError(f'Native House reference marked additive: {n["id"]}')
+            return 0
         lines = n['source'].get('title_rows', [])
         if lines:
             label = re.sub(r'\s+', ' ', ' '.join(r['text'] for r in lines).replace('\x00', ' ')).strip()
@@ -80,8 +87,9 @@ def validate_native_detail(ic, audit, repo):
                 if row['source_row'] in title_rows:
                     raise ValueError('Native House continuation consumed twice')
                 title_rows.add(row['source_row'])
-        total = sum(check(c) for c in n['children']) if n['children'] else n['printed_amount_php']
-        if not n['children']:
+        additive_kids = [c for c in n['children'] if c.get('additive') is not False]
+        total = sum(check(c) for c in additive_kids) if additive_kids else n['printed_amount_php']
+        if not additive_kids:
             sr = n['source']['source_row']
             if sr in allocations:
                 raise ValueError('Native House allocation consumed twice')
@@ -89,8 +97,19 @@ def validate_native_detail(ic, audit, repo):
         if total != n['printed_amount_php'] or total != n['recursive_leaf_sum_php'] or n['difference_php']:
             raise ValueError(f'Native House rollup failed: {n["id"]}')
         return total
+    def check_all(n):
+        # every node (including non-additive references) must be reachable
+        # exactly once from the root, matching the audit's node count
+        if n['id'] in seen_all:
+            raise ValueError('Repeated native House node')
+        seen_all.add(n['id'])
+        for c in n['children']:
+            check_all(c)
+    check_all(ic['root'])
+    if len(seen_all) != audit['summary']['nodes']:
+        raise ValueError('Native House node count differs from hierarchy')
     total = check(ic['root'])
-    if total != audit['summary']['additive_leaf_total_php'] or len(seen) != audit['summary']['nodes']:
+    if total != audit['summary']['additive_leaf_total_php']:
         raise ValueError('Native House summary differs from hierarchy')
 
 
@@ -122,6 +141,10 @@ def comparison_inputs(ic, ib, controls, pap_programs, canonical_region):
 
     def visit(n, ancestors=(), pap=None, reg='', office='', zone='local', program=None,
               central_context=False):
+        if n.get('additive') is False:
+            # Non-additive printed reference (FAP head funding summary echo):
+            # provenance only, never a record or allocation.
+            return
         text = unenumerated(n['label'])
         if text == 'FOREIGN-ASSISTED PROJECTS':
             zone = 'fap'

@@ -7,7 +7,7 @@ const read=name=>JSON.parse(readFileSync(new URL(`../../data/${name}.json`,impor
 test('combined columns conserve both House ledgers, NEP/API amounts and PAP controls',()=>{
  const stages=read('stage_trace_2027'),readings=read('house_reading_changes_2027');
  const combined=unifiedComparison(stages,readings);
- assert.equal(combined.projects.length,18159);
+ assert.equal(combined.projects.length,18149);
  assert.equal(combined.paps.length,46);
  const additions=selectRows(combined.projects,{readingStatus:'third_only'});
  assert.equal(additions.length,5);

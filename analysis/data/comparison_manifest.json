@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "fiscal_year": 2027,
-  "built_at": "2026-10-10T13:32:12+08:00",
+  "built_at": "2026-10-10T14:43:59+08:00",
   "stages": {
     "nep": "Executive NEP proposal",
     "house": "HB 10858 supplied source documents; amendment completeness not certified"
@@ -17,7 +17,7 @@
     "sha256": "af17df3e6768bcf2240fcf2c49f0ba9c1bf0982a1842a651b7094650b21b2bfe"
   },
   "generator_dependencies": {
-    "analysis/builders/house_native.py": "01f22cb902e76e02079f080afa726c849ccc346790f052302c615cf9f3397122",
+    "analysis/builders/house_native.py": "67405d3561660c7e7c75e1073fc7381e5524dabd562b1a81054004867f9b161b",
     "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
   },
   "inputs": {
@@ -27,8 +27,8 @@
     "nep_2027_budget_units.json": "a3d3aa17095d4bdf7531b180e73504f6dbc8808b86495e843ae9fb56021250de",
     "nep_2027_native_amount_audit.json": "362621533024a1e478981fbaf4d4e6a10aa04c6f7658a7228f82a87eaab4db5b",
     "nep_2027_native_amount_review.json": "9e4826c4541f272811de1b6e55df871825ddcca3cb59a4162667f13f65a95832",
-    "hb_dpwh_native_ic_projects.json": "3dc3500ecc3a28b681d308dc14416cf7e7c1cebd7de1530bc135c58526b02f65",
-    "hb_dpwh_native_ic_rollup_audit.json": "03ecc3ead12cf576e565613bd2b2c971e8ac0e317dbaf7b7888d7c1844037575",
+    "hb_dpwh_native_ic_projects.json": "ca24b24ddefe7ca014263bacfcbee9b517c64cce464e564cadcb88332bfc777f",
+    "hb_dpwh_native_ic_rollup_audit.json": "8c278aba8f698a79f593818b25be1c397b5c3e49364e7372fe72d5e61779c9f0",
     "hb_dpwh_native_rollup.json": "b3b12f43867a96600f803702f193f622e176ab7659325290d22410e4f8cf6c0c",
     "hb_native_ib_rollup_audit.json": "b594e08040e96d35805d2841a71aaa2009957342a74125f75b5f146e41663c01",
     "nep_2027_api_reconciliation.json": "fd8dfef9ba34062f81818b3510311678b774bdbc758abfe341d28b9302196a0f"
