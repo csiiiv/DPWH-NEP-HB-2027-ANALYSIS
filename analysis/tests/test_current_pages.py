@@ -29,7 +29,12 @@ class CurrentPageTests(unittest.TestCase):
         for row in data['projects']:
             if row['status'] == 'exact_candidate':
                 self.assertEqual(normalized(row['house']['title']), normalized(row['nep']['title']))
-                self.assertEqual(scope_key(row['house']), scope_key(row['nep']))
+                # FAP loans may sit under different program sections in I-C
+                # and the NEP; the audited cross-program pass pairs them by
+                # unique title + region + funding zone instead of program.
+                if not (row['house']['zone'] == 'fap' and row.get('reason')
+                        and 'different program sections' in row['reason']):
+                    self.assertEqual(scope_key(row['house']), scope_key(row['nep']))
             for suggestion in row.get('candidates', []):
                 self.assertEqual(scope_key(row['house']), scope_key(suggestion['nep']))
 

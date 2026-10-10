@@ -10,23 +10,18 @@ test('optional region join preserves every amount and source, flags unique candi
  const snapshot=JSON.stringify(strict),relaxed=regionCandidates(strict);
  assert.equal(JSON.stringify(strict),snapshot);
  const candidates=relaxed.filter(r=>r.region_difference);
- // 25 FAP pairs merge (House prints Nationwide funding summaries; NEP lists
- // NCR); the 4 former local candidates now match directly because the
- // retained Central Office/region wrappers give House rows real attribution.
- assert.equal(candidates.length,25);assert.equal(candidates.filter(r=>r.zone==='fap').length,25);
- // Every House-only and NEP-only FAP pair except genuinely absent NEP records merges.
+ // Retained Central Office/region echo wrappers give House FAP rows real
+ // attribution, so every FAP loan now matches strictly: no region-difference
+ // candidates remain, and NEP FAP coverage is complete.
+ assert.equal(candidates.length,0);
+ // The remaining unmatched House FAP rows are genuinely absent NEP records.
  assert.equal(relaxed.filter(r=>r.zone==='fap' && (r.second||r.third) && !r.nep).length,4);
  assert.equal(relaxed.filter(r=>r.zone==='fap' && r.nep && !(r.second||r.third)).length,0);
  for(const side of ['api','nep','second','third']){
   const records=rows=>rows.filter(r=>r[side]).map(r=>[r[side].id,r[side].amount_php]).sort();
   assert.deepEqual(records(relaxed),records(strict));
  }
- for(const loan of ['4432-PHI','PHL-27','PH-P282','9251-PH']){
-  const row=candidates.find(r=>r.title.includes(loan));assert(row?.nep && row.second && row.third);
-  assert.deepEqual(row.region_difference,{house:'Nationwide',nep:'NCR'});
-  assert(selectRows(relaxed,{query:loan,region:'NCR',office:'Central Office'}).includes(row));
-  assert(selectRows(relaxed,{query:loan,region:'Nationwide'}).includes(row));
- }
+ // The join itself still works for genuinely differing regions (unit case below).
  assert.deepEqual(regionCandidates(relaxed),relaxed);
 });
 test('region join refuses duplicates, already anchored records, same regions and groups',()=>{

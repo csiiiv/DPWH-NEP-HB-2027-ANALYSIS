@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "fiscal_year": 2027,
-  "built_at": "2026-10-10T17:01:34+08:00",
+  "built_at": "2026-10-10T17:19:06+08:00",
   "stages": {
     "nep": "Executive NEP proposal",
     "house": "HB 10858 supplied source documents; amendment completeness not certified"
@@ -14,7 +14,7 @@
   "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Titles are normalized token-wise: common abbreviation variants (Brgy./Barangay) expand before matching and consecutive repeated tokens collapse. Amount does not determine identity. Duplicate keys remain ambiguous. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; suggestions whose title differs only in digits are labeled chainage candidates (possible re-segmentation or coverage amendments). Suggestions do not consume NEP rows. No pair has been manually certified.",
   "generator": {
     "path": "analysis/builders/build_current_pages.py",
-    "sha256": "af17df3e6768bcf2240fcf2c49f0ba9c1bf0982a1842a651b7094650b21b2bfe"
+    "sha256": "08b53188127850bcdfd9c2d81f099dde7433ec7a98c84348edcd99d69d582084"
   },
   "generator_dependencies": {
     "analysis/builders/house_native.py": "67405d3561660c7e7c75e1073fc7381e5524dabd562b1a81054004867f9b161b",

@@ -148,6 +148,32 @@ def project_matches(house, source):
                                       'normalization; raw spellings differ.'})
             matched_h.add(h)
             matched_n.add(n)
+    # FAP loan titles are unique documents-wide. When House and NEP list the
+    # same loan under different program sections (I-C "National Building
+    # Program" vs NEP "Local Program"), pair a unique normalized title in the
+    # same region and funding zone across programs.
+    for zone in ('fap',):
+        remaining_h = [i for i, r in enumerate(house)
+                       if i not in matched_h and r['zone'] == zone]
+        remaining_n = [i for i, r in enumerate(source)
+                       if i not in matched_n and r['zone'] == zone]
+        by_title_n = defaultdict(list)
+        for i in remaining_n:
+            by_title_n[(zone, source[i]['region'], normalized(source[i]['title']))].append(i)
+        by_title_h = defaultdict(list)
+        for i in remaining_h:
+            by_title_h[(zone, house[i]['region'], normalized(house[i]['title']))].append(i)
+        for k in sorted(by_title_h):
+            if len(by_title_h[k]) == len(by_title_n.get(k, [])) == 1:
+                h, n = by_title_h[k][0], by_title_n[k][0]
+                records.append({'status': 'exact_candidate', 'confidence': 1,
+                                'house': house[h], 'nep': source[n],
+                                'delta_php': house[h]['amount_php'] - source[n]['amount_php'],
+                                'reason': 'FAP loan listed under different program sections in '
+                                          'House I-C and the NEP; unique normalized title + '
+                                          'region + funding zone pairs the loan documents.'})
+                matched_h.add(h)
+                matched_n.add(n)
     # Token index narrows suggestions without ranking by amount or claiming identity.
     tokens = defaultdict(set)
     for i, r in enumerate(source):

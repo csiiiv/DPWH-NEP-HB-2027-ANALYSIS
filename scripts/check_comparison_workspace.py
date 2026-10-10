@@ -48,7 +48,7 @@ with tempfile.TemporaryDirectory() as folder:
                 assert 'q=Bridge' in page.url
                 assert any('comparison_projects_2027.json' in url for url in requests)
                 page.get_by_role('button',name='Clear filters',exact=True).click()
-                expect(page.locator('.result-count')).to_contain_text('18,149 of',timeout=60000)
+                expect(page.locator('.result-count')).to_contain_text('18,124 of',timeout=60000)
                 page.get_by_role('button',name='More filters',exact=True).click()
                 page.get_by_label('House reading change',exact=True).select_option('house_records_only')
                 house_count=sum(bool(row.get('second') or row.get('third')) and not row.get('nep') and not row.get('api') for row in json.loads((ROOT/'analysis/data/comparison_projects_2027.json').read_text())['projects'])
@@ -65,7 +65,7 @@ with tempfile.TemporaryDirectory() as folder:
                 # The filename describes the active filters at export time.
                 assert download.value.suggested_filename=='dpwh-view-projects_reading-third_only.json',download.value.suggested_filename
                 page.get_by_role('button',name='Remove readingStatus filter',exact=True).click()
-                expect(page.locator('.result-count')).to_contain_text('18,149 of')
+                expect(page.locator('.result-count')).to_contain_text('18,124 of')
                 if width==390:
                     page.get_by_label('Sort results',exact=True).select_option('reading_delta')
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
@@ -102,7 +102,7 @@ with tempfile.TemporaryDirectory() as folder:
                 candidates.scroll_into_view_if_needed()
                 page.screenshot(path=f'/tmp/multiple-nep-suggestions-{width}.png')
                 page.goto(base+'#compare?view=projects&q=B00091PW',wait_until='networkidle')
-                expect(page.locator('.result-count')).to_contain_text('2 of 18,149 comparison rows',timeout=60000)
+                expect(page.locator('.result-count')).to_contain_text('2 of 18,124 comparison rows',timeout=60000)
                 expect(page.locator('.count-explanation')).to_contain_text('not unique projects')
                 expect(page.locator('.counterpart-badge')).to_contain_text('Suggested NEP counterpart · unresolved (1 House comparison row)')
                 page.goto(base+'#compare?view=projects&page=2',wait_until='networkidle')
@@ -111,7 +111,7 @@ with tempfile.TemporaryDirectory() as folder:
                 button.click()
                 dialog = page.get_by_role('dialog', name='Project result analytics')
                 expect(dialog).to_be_visible()
-                expect(dialog).to_contain_text('18,149 filtered comparison rows')
+                expect(dialog).to_contain_text('18,124 filtered comparison rows')
                 expect(dialog).to_contain_text('₱134.000M')
                 expect(dialog).to_contain_text('₱587.076B')
                 assert dialog.evaluate('e=>e.scrollWidth<=e.clientWidth+1')
