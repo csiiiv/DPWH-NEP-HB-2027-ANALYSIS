@@ -1,6 +1,6 @@
 # Native I-C DPWH named-project extraction and rollup checks
 
-Date: 9 October 2026. Scope: the peso-denominated project detail of DPWH on
+Date: 10 October 2026. Scope: the peso-denominated project detail of DPWH on
 pages 9–942 of `HB_BUDGET/3 - HB 10858 VOL IC.pdf` (Volume I-C, House Bill
 10858, FY 2027), extracted from the native InDesign text layer without OCR.
 

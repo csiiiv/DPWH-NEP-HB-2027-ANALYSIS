@@ -1,6 +1,6 @@
 # From budget PDFs to auditable datasets
 
-Updated: 9 October 2026. This guide explains a general approach to turning
+Updated: 10 October 2026. This guide explains a general approach to turning
 printed budget tables into structured data, from an agency root to allocation,
 project and funding entries. The worked examples describe our current FY2027
 DPWH House and DBM NEP pipelines. Their page ranges, coordinates and repair
@@ -509,11 +509,14 @@ DPWH NEP root → Capital Outlays → Operations → Foreign-Assisted Projects
 ```
 
 [Open the NEP entry](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#nep?node=p688%3Ar17).
-NEP explicitly prints NCR/Central Office above this FAP detail; the House FAP
-branch lacks those region/office nodes. The House comparison adapter therefore
-uses Nationwide as its fallback region, which explains why strict region
-matching leaves these records separate. Neither source's region assignment
-should be overwritten merely to make the comparison join.
+Both sources print NCR/Central Office above this FAP detail: the NEP explicitly,
+and the House I-C through its retained banner → NCR → Central Office echo chain,
+which now attributes the FAP rows in the comparison adapter. Strict matching
+therefore pairs the loan records directly, including loans listed under
+different program sections in the two documents (the audited cross-program
+FAP pass pairs PSRRRP's National Building Program versus Local Program
+listings). Neither source's region assignment is overwritten; both reflect
+their printed hierarchies.
 
 The NEP project-reference layer includes **25 FAP projects totaling
 ₱117,749,011,000**. Their existence is established by the PDF source and retained
@@ -574,7 +577,7 @@ spot-checking; arithmetic agreement alone does not certify its wording.
 | A PAP appears as both banner and detail control | Collapse an immediately following same-page I-B copy only when its label and all four amounts agree. | The audit records 37 collapsed reprints and their source rows. |
 | A section marker has no amount on its heading row | Use its corresponding printed summary control, rather than treating the marker as a zero allocation. | I-B local/FAP markers are linked to page-9 controls and independently checked against closing subtotals. |
 | Parent and child headings share the same indent | Fold the evidenced consecutive same-band bold component headings under their family control. | Seven I-C family containers are folded only when the component sum reaches the control exactly; surrounding structure restricts the candidates. |
-| NCR/Central Office rows repeat a control amount before the real detail | Account for qualifying rollup echoes as second printed observations. | I-C records 211 echoes in the audit; they do not become additional allocations or disappear without accounting. |
+| NCR/Central Office rows repeat a control amount before the real detail | Retain qualifying rollup echoes as nested second printed observations (`second_observation`); exact-amount chains nest banner → NCR → CO → detail. | I-C retains 204 second observations and 2 FAP funding-summary references; every printed title stays on the tree and none becomes an additional allocation. |
 | GAS and S2O appear in both MOOE and CO | Keep the distinct allocations under each expense class. | Each expense-class closing control and the matching I-B expense column reconcile. A repeated label across classes is not by itself a duplicate. |
 | An object-of-expenditures table changes units | Stop the I-B peso-detail parse at the table boundary. | The later thousands-of-pesos table is outside this additive hierarchy. |
 | A branch ends at an office or region instead of a named project | Retain a coarser allocation record and its kind. | No project title or finer allocation is invented beneath it. |
@@ -616,11 +619,13 @@ NEP/House display join checks uniqueness across all anchors, including already
 matched records, and refuses duplicate candidates or grouped House records.
 It does not use amount equality to identify projects.
 
-**A region conflict does not establish source absence.** BCIB, LLRN Phase I
-and Davao Bypass III are NEP NCR/Central Office entries and House Nationwide
-comparison records. Strict matching keeps them separate; the optional mode
-joins unique candidates and flags the original labels. The current mode adds
-29 candidates (25 FAP and four local), without overwriting source assignments.
+**A region conflict does not establish source absence.** When House and NEP
+listings genuinely carry different regions for the same loan, strict matching
+keeps them separate and the optional display join merges unique candidates and
+flags the original labels without overwriting source assignments. With the
+retained echo attribution the current data has no such conflicts: BCIB, LLRN
+Phase I and Davao Bypass III are NEP NCR/Central Office entries that now pair
+directly with their attributed House records.
 
 **An API omission is not a PDF omission.** NEP FAP records and the 23 documented
 non-FAP allocations outside the retained listing are handled as source/listing

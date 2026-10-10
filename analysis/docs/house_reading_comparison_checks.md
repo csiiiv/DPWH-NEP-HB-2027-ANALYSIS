@@ -1,6 +1,6 @@
 # House 2nd → 3rd reading comparison and office filters
 
-Date: **9 October 2026**. Both native House baselines remain retained. The
+Date: **10 October 2026**. Both native House baselines remain retained. The
 House/NEP candidate view continues to use the second reading; the stage
 comparison now includes a **House readings** tab comparing second and third
 reading operations allocations. Open `#compare?view=readings` in the app.
@@ -162,7 +162,8 @@ identities and repeated House groups stay separate. This is an optional
 display join, not a rewrite of the retained match ledger or the
 reading-change classification.
 
-Share with `#compare?view=projects&region_match=ignore`; filter match status to
-`region_difference_candidate` to isolate these rows. See
+Share with `#compare?view=projects&region_match=ignore` when the join does
+apply; on current data every FAP loan matches strictly, so there are no
+`region_difference_candidate` rows to isolate. See
 [shareable findings](shareable_findings.md#candidates-with-different-regions) and
 [the PDF dataset method](pdf_budget_dataset_method.md).

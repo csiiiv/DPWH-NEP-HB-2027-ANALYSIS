@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "fiscal_year": 2027,
-  "built_at": "2026-10-10T17:19:06+08:00",
+  "built_at": "2026-10-10T18:26:07+08:00",
   "stages": {
     "nep": "Executive NEP proposal",
     "house": "HB 10858 supplied source documents; amendment completeness not certified"
@@ -11,10 +11,10 @@
   "nep_version": 1,
   "scope": "New appropriations excluding automatic appropriations; operations project comparison; local and FAP separated",
   "units": "Integer Philippine pesos",
-  "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Titles are normalized token-wise: common abbreviation variants (Brgy./Barangay) expand before matching and consecutive repeated tokens collapse. Amount does not determine identity. Duplicate keys remain ambiguous. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; suggestions whose title differs only in digits are labeled chainage candidates (possible re-segmentation or coverage amendments). Suggestions do not consume NEP rows. No pair has been manually certified.",
+  "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Titles are normalized token-wise: common abbreviation variants (Brgy./Barangay) expand before matching and consecutive repeated tokens collapse. Amount does not determine identity. Duplicate keys remain ambiguous. FAP loans additionally pair across differing program sections (I-C National Building Program vs NEP Local Program) when the normalized title, region and funding zone are each unique. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; suggestions whose title differs only in digits are labeled chainage candidates (possible re-segmentation or coverage amendments). Suggestions do not consume NEP rows. No pair has been manually certified.",
   "generator": {
     "path": "analysis/builders/build_current_pages.py",
-    "sha256": "08b53188127850bcdfd9c2d81f099dde7433ec7a98c84348edcd99d69d582084"
+    "sha256": "185d47253942945a6d5b39a57ad61dc53d79e87c5df1f96a4e019f60f5c2bdf3"
   },
   "generator_dependencies": {
     "analysis/builders/house_native.py": "67405d3561660c7e7c75e1073fc7381e5524dabd562b1a81054004867f9b161b",

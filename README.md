@@ -59,7 +59,7 @@ Inside `analysis/`, current code and datasets are split by role — see
 
 ## Latest usable datasets
 
-Status as of **9 October 2026**. Monetary values in the generated datasets are
+Status as of **10 October 2026**. Monetary values in the generated datasets are
 integer Philippine pesos after converting API values from thousands of pesos. The complete NEP baseline covers **new appropriations**;
 automatic appropriations are excluded.
 

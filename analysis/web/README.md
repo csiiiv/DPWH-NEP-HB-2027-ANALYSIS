@@ -187,11 +187,13 @@ hierarchy node. Repeated House records retain separate member paths. Expanded
 records and selected sources are included in shared URLs.
 
 Project records offer **Region matching → Allow different regions · flag
-candidates**. Strict region matching remains the default. The optional mode
-merges 29 unique-title pairs (25 FAP, four local) across differing source
-labels, labels both source assignments, and preserves duplicate records,
-source assignments, tree paths and totals.
-Use `#compare?view=projects&region_match=ignore&q=4432-PHI` to share a finding.
+candidates**. Strict region matching remains the default. Since the retained
+Central Office/region echo wrappers attribute every FAP loan, the optional
+mode currently merges nothing — all former region-difference pairs now match
+strictly — but it remains available for future documents whose listings
+genuinely carry different regions; it labels both source assignments and
+preserves duplicate records, source assignments, tree paths and totals.
+Use `#compare?view=projects&q=4432-PHI` to share a strict-matched finding.
 
 Project records offer **Show analytics** for the entire applied search/filter
 result, including all pages. The modal leads with HGAB3 and NEP source totals,

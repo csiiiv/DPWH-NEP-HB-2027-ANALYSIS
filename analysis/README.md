@@ -1,6 +1,6 @@
 # FY2027 DPWH analysis workbench
 
-Updated: **9 October 2026**. Generated monetary values are integer PHP unless
+Updated: **10 October 2026**. Generated monetary values are integer PHP unless
 stated otherwise.
 
 [Open the SPA](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/)

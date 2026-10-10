@@ -36,8 +36,9 @@ is required for current extraction.
 The extraction handles mirrored page margins, indentation and enumerator
 drift, trailing amount tokens, amount/title baseline offsets, family
 containers, repeated controls, title wraps and null glyphs. Seven family
-containers are folded; 211 rollup echoes remain recorded as second printed
-observations. The p490 title is recovered from its continuation lines; three
+containers are folded; rollup echoes are retained as 204 nested second
+printed observations (plus 2 FAP funding-summary references). The p490
+title is recovered from its continuation lines; three
 other titles receive trailing-null cleanup. Funding dash/blank observations
 remain explicit instead of becoming title text.
 

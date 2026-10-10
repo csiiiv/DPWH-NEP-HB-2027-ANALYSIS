@@ -1,6 +1,6 @@
 # Current budget webpages and remaining work
 
-Updated: **9 October 2026**. The [React workbench](../web/README.md) is the
+Updated: **10 October 2026**. The [React workbench](../web/README.md) is the
 published presentation. Retained HTML viewers are reproducible diagnostic
 outputs; their published URLs redirect to the corresponding app routes.
 Comparisons remain provisional while source evidence and project identities
