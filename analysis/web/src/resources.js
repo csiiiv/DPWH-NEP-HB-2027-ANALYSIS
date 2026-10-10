@@ -334,7 +334,7 @@ export const resourceGroups = [
         path: "analysis/hb_dpwh_native_ic_projects.json",
         purpose: "Named-project layer from Volume I-C",
         coverage:
-          "15,972 named project leaves + 29 FAP totals · 3,380 office-node occurrences · 2,477/2,477 internals balance · MOOE+CO ₱639,179,718,000 · passes 56 independent I-B cross-volume checks.",
+          "15,972 named project leaves + 29 FAP totals · 3,380 office-node occurrences · 2,686/2,686 internals balance · MOOE+CO ₱639,179,718,000 · passes 56 independent I-B cross-volume checks.",
       },
       {
         label: "Native I-C audit",

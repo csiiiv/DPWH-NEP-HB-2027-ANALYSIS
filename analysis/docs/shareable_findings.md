@@ -82,12 +82,11 @@ NEP/API records, source pages, full tree paths and every amount; the retained
 JSON and PAP controls are unchanged. Region and office filters use the recorded
 assignments of either source.
 
-The current data yields **29 additional candidates: 25 FAP and four local**.
-BCIB (4432-PHI), LLRN Phase I (PHL-27) and Davao Bypass III (PH-P282) each join
-House Nationwide records to NEP NCR/Central Office records. PSRRRP (9251-PH)
-joins despite a National Building Program versus Local Program label
-difference. These are candidates, not manually certified identities. Disable
-the mode to restore separate rows.
+Since the retained Central Office/region echo wrappers attribute every FAP
+loan (BCIB 4432-PHI, LLRN PHL-27, Davao Bypass PH-P282, PSRRRP 9251-PH, …),
+those pairs now match in the default strict mode and the optional join has
+**no additional candidates on current data**. It remains available for future
+documents whose listings genuinely carry different regions.
 
 
 ### Search responsiveness

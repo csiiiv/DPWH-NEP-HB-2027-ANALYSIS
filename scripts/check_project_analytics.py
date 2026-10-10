@@ -33,7 +33,7 @@ with tempfile.TemporaryDirectory() as folder:
                 button.click()
                 dialog = page.get_by_role('dialog', name='Project result analytics')
                 expect(dialog).to_be_visible()
-                expect(dialog).to_contain_text('18,159 filtered comparison rows')
+                expect(dialog).to_contain_text('18,124 filtered comparison rows')
                 expect(dialog).to_contain_text('₱134.000M')
                 expect(dialog).to_contain_text('₱587.076B')
                 assert dialog.evaluate('e=>e.scrollWidth<=e.clientWidth+1')
@@ -57,7 +57,7 @@ with tempfile.TemporaryDirectory() as folder:
                 page.keyboard.press('Escape')
                 expect(dialog).to_have_count(0)
                 expect(button).to_be_focused()
-                page.goto(base + '#compare?view=projects&region_match=ignore&q=4432-PHI', wait_until='networkidle')
+                page.goto(base + '#compare?view=projects&q=4432-PHI', wait_until='networkidle')
                 expect(page.locator('.comparison-table tbody tr')).to_have_count(1, timeout=60000)
                 button.click()
                 expect(dialog).to_contain_text('1 filtered comparison rows')
@@ -67,12 +67,11 @@ with tempfile.TemporaryDirectory() as folder:
                 region = dialog.locator('section').filter(has=page.get_by_role('heading', name='Region distribution', exact=True))
                 expect(region).to_contain_text('House · HGAB3')
                 expect(region).to_contain_text('DBM NEP')
+                # Retained Central Office echo attribution puts both amounts in
+                # NCR on the single strict-matched row.
                 ncr = region.locator('li').filter(has_text='NCR').first
-                expect(ncr).to_contain_text('HB ₱0')
+                expect(ncr).to_contain_text('HB ₱8.494B')
                 expect(ncr).to_contain_text('NEP ₱22.494B')
-                nationwide = region.locator('li').filter(has_text='Nationwide').first
-                expect(nationwide).to_contain_text('HB ₱8.494B')
-                expect(nationwide).to_contain_text('NEP ₱0')
                 page.get_by_role('button', name='Close analytics').click()
                 expect(dialog).to_have_count(0)
                 page.get_by_label('Search', exact=True).fill('nonexistent project 9f87xyz')

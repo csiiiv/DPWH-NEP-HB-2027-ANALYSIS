@@ -102,7 +102,7 @@ Native I-C supplies MOOE+CO detail (₱639,179,718,000), including 15,972 named
 project leaves and 29 FAP totals. The operations comparison consumes 16,270
 allocation records totaling ₱586,941,661,000; office/region allocations and FAP
 project totals retain their own grain. These counts are not interchangeable.
-The [I-C audit](../docs/hb_native_ic_rollup_checks.md) records 2,477 balanced
+The [I-C audit](../docs/hb_native_ic_rollup_checks.md) records 2,686 balanced
 internal controls and 56 independent I-B checks. v5 is historical and is not
 loaded or packaged by the current app.
 

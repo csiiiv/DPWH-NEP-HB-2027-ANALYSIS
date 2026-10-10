@@ -400,7 +400,7 @@ with sync_playwright() as p:
         search.press_sequentially("4432-PHI",delay=20)
         expect(search).to_have_value("4432-PHI")
         assert "q=" not in page.url
-        expect(page.locator(".comparison-table tbody tr")).to_have_count(2,timeout=60000)
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(1,timeout=60000)
         page.wait_for_function("location.hash.includes('q=4432-PHI')")
         assert "q=4432-PHI" in page.url
         search.fill("pending text should not survive tab switch")
@@ -411,18 +411,13 @@ with sync_playwright() as p:
         expect(page.locator(".comparison-table tbody tr")).to_have_count(46)
         page.get_by_role("button",name="Project records",exact=True).click()
         expect(page.locator(".comparison-table tbody tr")).to_have_count(50)
-        # Optional region candidates restore FAP comparisons without rewriting
-        # source assignments, and their mode/path choices survive shared URLs.
+        # The retained Central Office/region echo wrappers attribute the BCIB
+        # FAP loan, so it matches strictly and both amounts appear on one row.
         page.goto(base+"#compare?view=projects&q=4432-PHI",wait_until="networkidle")
-        expect(page.locator(".comparison-table tbody tr")).to_have_count(2,timeout=60000)
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(1,timeout=60000)
         expect(page.get_by_label("Region matching",exact=True)).to_have_value("strict")
-        if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
-        page.get_by_label("Region matching",exact=True).select_option("ignore")
-        expect(page.locator(".comparison-table tbody tr")).to_have_count(1)
-        expect(page.locator(".comparison-table tbody")).to_contain_text("Region differs · House: Nationwide · NEP: NCR")
         expect(page.locator(".comparison-table tbody")).to_contain_text("22.494B")
         expect(page.locator(".comparison-table tbody")).to_contain_text("8.494B")
-        assert "region_match=ignore" in page.url
         page.get_by_label("Region",exact=True).select_option("NCR")
         if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
         page.get_by_label("Engineering office / DEO",exact=True).select_option("Central Office")
@@ -433,15 +428,11 @@ with sync_playwright() as p:
         expect(paths).to_contain_text("Central Office",timeout=60000)
         expect(paths.get_by_role("link",name="Open this entry in the source tree",exact=False)).to_have_attribute("href","#nep?node=p688%3Ar17")
         page.reload(wait_until="networkidle")
-        expect(page.get_by_label("Region matching",exact=True)).to_have_value("ignore",timeout=60000)
         expect(page.get_by_role("region",name="Project tree paths",exact=True)).to_contain_text("Central Office",timeout=60000)
         page.get_by_label("Region",exact=True).select_option("")
         if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
         page.get_by_label("Engineering office / DEO",exact=True).select_option("")
-        if page.get_by_role("button",name="More filters",exact=True).get_attribute("aria-expanded")=="false": page.get_by_role("button",name="More filters",exact=True).click()
-        page.get_by_label("Region matching",exact=True).select_option("strict")
-        expect(page.locator(".comparison-table tbody tr")).to_have_count(2)
-        assert "region_match=" not in page.url
+        expect(page.locator(".comparison-table tbody tr")).to_have_count(1)
         assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
         # Clicking project records expands the complete retained source path;
         # selected record and path source are themselves shareable.

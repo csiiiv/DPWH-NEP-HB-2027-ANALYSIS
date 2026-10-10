@@ -32,7 +32,7 @@ Chosen option: **3 — dual baseline**.
 |---|---|
 | Additive control baseline | `analysis/data/hb_dpwh_native_rollup.json` (660 direct/recursive checks across four columns) |
 | Raw outline for existing consumers | `analysis/data/hb_dpwh_native_tree.json` (647 structural checks) |
-| Named-project layer | `analysis/data/hb_dpwh_native_ic_projects.json` (native I-C, 15,972 named project leaves plus 29 FAP totals, 2,477 balancing controls) — since 2026-10-09 |
+| Named-project layer | `analysis/data/hb_dpwh_native_ic_projects.json` (native I-C, 15,972 named project leaves plus 29 FAP totals, 2,686 balancing controls) — since 2026-10-09 |
 | Historical project-title candidate | `analysis/data/hb_dpwh_leaves_corrected_v5.json` (OCR lineage, retired) |
 | Rollup / document views | `hb_2027_tree.json`, `hb_2027_source_tree.json` under printed controls |
 

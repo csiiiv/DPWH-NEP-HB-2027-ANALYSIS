@@ -47,7 +47,15 @@ with tempfile.TemporaryDirectory() as folder:
                 descending=office.locator('tbody th').all_text_contents()
                 office.get_by_role('button',name='Allocation (PHP)',exact=True).click()
                 expect(office.locator('thead th').last).to_have_attribute('aria-sort','ascending')
-                assert office.locator('tbody th').all_text_contents()==list(reversed(descending))
+                # Echo attribution gives every House record an office, so the
+                # two residual buckets tie at PHP 0; the stable sort keeps tied
+                # rows in input order in BOTH directions, so ascending is the
+                # reverse of descending only outside the tied group.
+                amounts={k:v['amount_php'] for k,v in data['sources']['third']['offices'].items()}
+                descending_amounts=[amounts[name] for name in descending]
+                ascending=office.locator('tbody th').all_text_contents()
+                assert [amounts[name] for name in ascending]==list(reversed(descending_amounts))
+                assert sorted(ascending)==sorted(descending)
                 office.get_by_role('button',name='Allocation (PHP)',exact=True).click()
                 expect(office.locator('thead th').last).to_have_attribute('aria-sort','none')
                 expect(page.get_by_role('region',name='Records by program',exact=True)).to_contain_text('FAPs')
