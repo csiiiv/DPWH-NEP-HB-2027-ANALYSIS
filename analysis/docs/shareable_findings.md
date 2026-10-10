@@ -175,8 +175,17 @@ source. This includes paired, single-reading and grouped House records. They are
 missing anchors, so this does not establish absence from the printed NEP. Optional
 region matching can resolve some candidates and remove them from this selection.
 On PAP totals the same rule applies to recorded source controls. Share this
-selection with `#compare?view=projects&change=house_records_only`; analytics and
-exports use the same filtered result set.
+selection with `#compare?view=projects&flag=house_only`; analytics and
+exports use the same filtered result set. Legacy `change=house_records_only`
+still maps to that flag.
+
+**NEP only candidate** (`flag=nep_only`) and **NEP only · possible replacement**
+(`flag=nep_only_suggested`) partition NEP line items with no attached House
+record. The suggested half are named as fuzzy counterparts by at least one
+unmatched House row — review for a re-titled or re-scoped replacement rather
+than a pure deletion. Classification matches the Analysis **Deletions** subtab.
+Share with `#compare?view=projects&flag=nep_only_suggested`. Identity quality
+uses `#compare?view=projects&match=fuzzy` (OCR triage queue).
 
 
 ### Inspecting suggested NEP matches
@@ -239,6 +248,11 @@ no office is inferred from geography. Grouped records contribute their individua
 member counts and amounts, without counting the parent again. These counts are
 not cross-stage unique projects.
 
+Overview includes a **NEP → HGAB by region / district office / category / PAP**
+table: each source’s allocation rolled up on its own assignment labels, with
+House−NEP change (amount and percent). NEP and House columns sum to the source
+ledgers for every breakdown.
+
 FAP records are counted exclusively in the FAP bucket using their funding zone,
 so they do not also appear under their individual programs. National Building is
 included to account for sources where that program occurs. Every office and
@@ -248,6 +262,12 @@ Top insertion candidates are ranked by House allocation amount, with separate
 lists for no attached NEP/Transparency source and no NEP suggestion, unresolved
 suggestions, and new third-reading records. Optional unique different-region
 matches are applied for review before classifying candidates. No list certifies
-policy insertions. Each top-20 row links to its comparison finding and House
+policy insertions. Each top row links to its comparison finding and House
 source tree; grouped entries link to the first allocation and their comparison
-retains all member paths. Shared routes preserve source and ranking selections.
+retains all member paths.
+
+**Deletions** (`#analysis?view=deletions`) ranks NEP-only line items the same
+way: no House suggestion, possible replacements (with referring House-row
+counts), and HGAB2-only. Dimension aggregates and group modals deep-link into
+Compare with `flag=nep_only` or `flag=nep_only_suggested`. Shared routes
+preserve source and ranking selections.

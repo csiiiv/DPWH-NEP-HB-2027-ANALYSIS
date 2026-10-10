@@ -45,8 +45,9 @@ is preserved; two archived helpers still support active House repairs. See the
 
 | Route | Workspace |
 |---|---|
-| `#home` | Comparison hero and independent source status |
+| `#home` | Workbench map, review-candidate headlines, and independent source status |
 | `#compare` | Sortable PAP/project/listing-gap comparison and source PDF pane |
+| `#analysis` | Office/program headlines, ranked insertions, NEP-only deletions with possible replacements, adjustments, and statistics |
 | `#house` | House GAB I-B hierarchy, rollups, and embedded I-B PDF |
 | `#nep` | DBM NEP hierarchy, expenditure classes, source review, and embedded II-B PDF |
 | `#transparency` | DPWH Transparency NEP snapshot hierarchy |
@@ -125,6 +126,30 @@ python analysis/builders/build_current_pages.py
 python analysis/builders/build_stage_trace.py
 python scripts/validate_current_pages.py
 ```
+
+Label normalization is additive: `build_current_pages` and
+`build_house_readings` call `annotate_source_labels` so each source record keeps
+printed `title` / `office` and gains `title_match_key` / `office_canonical`.
+Matching uses the title key (live Brgy./repeat, place-name OCR slips, and
+structure/road ID ``O``→``0`` in digit runs such as ``Bo0008LB``/``B00008LB``).
+Titles also parse into `title_base` + `chainages` (see `builders/chainage.py`);
+same-base station diffs become chainage amendment candidates with reasons
+(station-marker adjustment, length change, re-segmentation). Overview/Compare
+office filters prefer `office_canonical`. House reading keys still use raw
+`office` so HGAB2↔HGAB3 pairing stays stable. Pending abbrevs (`bldg`/`bidg`)
+stay out of live matching until explicitly promoted.
+
+To mine further office twins and title OCR slips (read-only report). The mine
+starts from fuzzy/chainage House↔NEP suggestions — similar titles on both sides
+are the strongest lead for new normalize rules:
+
+```sh
+python analysis/builders/mine_normalization_candidates.py
+```
+
+Review [normalization_candidates.md](docs/normalization_candidates.md) and
+`data/normalization_candidates.json`. All label rules live in
+`builders/normalize_labels.py`.
 
 These commands generate retained inputs used by SPA packaging. Frontend-only
 changes need a Vite rebuild, not source extraction. Verification packaging

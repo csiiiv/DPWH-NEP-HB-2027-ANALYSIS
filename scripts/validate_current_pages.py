@@ -50,15 +50,21 @@ def validate_current_pages():
     sys.path.insert(0, str(ANALYSIS / 'builders'))
     from house_native import comparison_inputs, validate_native_detail
     from build_current_pages import INPUTS, region, fap_control_row
+    from normalize_labels import annotate_source_labels
     require(set(manifest['inputs']) == set(INPUTS), 'Incomplete comparison input manifest')
     require(set(manifest['generator_dependencies']) ==
-            {'analysis/builders/house_native.py', 'scripts/hb_native_labels.py'},
+            {'analysis/builders/house_native.py',
+             'analysis/builders/normalize_labels.py',
+             'analysis/builders/chainage.py',
+             'scripts/hb_native_labels.py'},
             'Incomplete comparison dependency manifest')
     source = read('nep_2027_source_projects.json')
     pap_programs = {r['pap3']: r['program'] for r in source['projects'] if r['zone'] == 'non_fap'}
     validate_native_detail(house, read('hb_dpwh_native_ic_rollup_audit.json'), ROOT)
     house_records, house_controls, printed = comparison_inputs(
         house, read('hb_dpwh_native_rollup.json'), source['pap_controls'], pap_programs, region)
+    for row in house_records:
+        annotate_source_labels(row)
     expected_house = {r['id']: r for r in house_records}
     require(data['manifest'] == manifest, 'Manifest/payload mismatch')
     require(embedded('source_comparison_2027.html', 'comparisonData') == data, 'Stale embedded comparison payload')
@@ -125,12 +131,17 @@ def validate_current_pages():
         if r.get('house'):
             hids.append(r['house']['id'])
             require(r['house'] == expected_house.get(r['house']['id']), 'House project title/source mismatch')
+            require(r['house'].get('office_canonical') is not None
+                    and r['house'].get('title_match_key') is not None,
+                    'House source missing label annotations')
             if r['house']['zone'] == 'fap':
                 require(sum(r['house']['funding_php'].values()) == r['house']['amount_php'], 'House FAP funding split failed')
         if r.get('nep'):
             n = r['nep']
             nids.append(n['id'])
             require(n['amount_php'] == nodes[n['id']]['amount_php'] and nodes[n['id']]['additive'], 'NEP project amount/source mismatch')
+            require(n.get('office_canonical') is not None and n.get('title_match_key') is not None,
+                    'NEP source missing label annotations')
         if r['status'] == 'exact_candidate':
             require(r['delta_php'] == r['house']['amount_php'] - r['nep']['amount_php'], 'Paired delta failed')
         for c in r.get('candidates', []):

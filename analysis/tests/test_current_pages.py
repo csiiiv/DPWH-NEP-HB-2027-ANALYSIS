@@ -126,13 +126,16 @@ class CurrentPageTests(unittest.TestCase):
         self.assertEqual(normalized('Brgy. Mabini, Sta. Sta. Maria'), normalized('Barangay Mabini, Sta. Maria'))
         self.assertNotEqual(normalized('Sta. 1+000 - Sta. 2+000'), '')
 
-    def test_same_road_with_different_chainage_is_an_amendment_candidate(self):
-        # Digit-only title differences are re-segmentation candidates, not insertions.
-        h = allocation('h', title='Manila-Batangas Rd - K0097 + 788 - K0098 + 000')
-        n = allocation('n', title='Manila-Batangas Rd - K0097 + 777 - K0098 + 000')
+    def test_same_road_with_different_chainage_attaches_as_a_match(self):
+        # Digit-only title differences attach as coverage amendments, not insertions.
+        h = allocation('h', title='Manila-Batangas Rd - K0097 + 788 - K0098 + 000', amount=10)
+        n = allocation('n', title='Manila-Batangas Rd - K0097 + 777 - K0098 + 000', amount=8)
         rows = project_matches([h], [n])
-        self.assertEqual(rows[0]['status'], 'chainage_candidate')
+        self.assertEqual([r['status'] for r in rows], ['chainage_candidate'])
+        self.assertEqual(rows[0]['nep']['id'], 'n')
+        self.assertEqual(rows[0]['delta_php'], 2)
         self.assertIn('amendment', rows[0]['reason'])
+        self.assertNotIn('candidates', rows[0])
         # Letter differences stay fuzzy; no-suggestion rows stay unmatched.
         n2 = allocation('n2', title='Manila-Batangas Rd - K0097 + 788 - K0098 + 900 Segment B')
         self.assertEqual(project_matches([h], [n2])[0]['status'], 'fuzzy_candidate')

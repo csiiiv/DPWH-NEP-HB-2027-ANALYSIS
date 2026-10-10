@@ -19,6 +19,7 @@ from zoneinfo import ZoneInfo
 sys.path[:0] = [str(Path(__file__).resolve().parents[1]),
                 str(Path(__file__).resolve().parents[1] / 'builders')]
 from paths import DATA, REPO, VIEWERS  # noqa: E402
+from normalize_labels import annotate_source_labels  # noqa: E402
 
 INPUTS = [
     'source_comparison_2027.json',
@@ -47,13 +48,15 @@ def digest(path: Path) -> str:
 def slim(side: dict | None) -> dict | None:
     if not side:
         return None
-    keep = ('id', 'title', 'amount_php', 'program', 'pap', 'pap_id', 'zone',
-            'region', 'office', 'pdf_page', 'evidence')
-    return {k: side.get(k) for k in keep}
+    keep = ('id', 'title', 'title_match_key', 'title_base', 'title_base_match_key',
+            'chainages', 'chainage_incomplete', 'amount_php', 'program', 'pap',
+            'pap_id', 'zone', 'region', 'office', 'office_canonical', 'pdf_page',
+            'evidence')
+    return {k: side[k] for k in keep if k in side}
 
 
 def api_side(pair: dict) -> dict:
-    return {
+    return annotate_source_labels({
         'id': pair['api_code'],
         'title': pair['api_title'],
         'amount_php': pair['amount_php'],
@@ -62,13 +65,14 @@ def api_side(pair: dict) -> dict:
         'office': pair['api_office'],
         'pair_kind': pair['kind'],
         'score': pair.get('score'),
-    }
+    })
 
 
 def classify(row: dict) -> str:
     status = row['house_match']
     api_presence = row['api_presence']
-    if status == 'exact_candidate':
+    if status in ('exact_candidate', 'chainage_candidate'):
+        # Chainage pairs attach like exact matches; amount flags apply the same way.
         delta = row['house_minus_nep_php']
         if api_presence == 'nep_not_in_transparency':
             base = 'transparency_gap_then_'
@@ -83,8 +87,6 @@ def classify(row: dict) -> str:
         return base + 'candidate_decrease'
     if status == 'fuzzy_candidate':
         return 'fuzzy_candidate'
-    if status == 'chainage_candidate':
-        return 'chainage_candidate'
     if status == 'ambiguous':
         return 'ambiguous'
     if status == 'house_unmatched':
@@ -118,7 +120,7 @@ def build_rows(comparison: dict, reconciliation: dict) -> list[dict]:
             else:
                 api_presence = 'unexpected_missing_api'
         house_minus_nep = None
-        if record['status'] == 'exact_candidate' and house and nep:
+        if record['status'] in ('exact_candidate', 'chainage_candidate') and house and nep:
             house_minus_nep = house['amount_php'] - nep['amount_php']
         primary = house or nep
         row = {

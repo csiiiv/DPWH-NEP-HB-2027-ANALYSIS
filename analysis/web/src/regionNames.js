@@ -1,3 +1,6 @@
+import {canonicalOffice} from '../../viewers/project_offices.mjs';
+export {canonicalOffice};
+
 // Canonical display names for DPWH region codes. Keys are the exact codes
 // found in the source ledgers; sorting and grouping still use the codes.
 const REGION_NAMES={
@@ -34,7 +37,8 @@ function regionCodeForOffice(office){
 }
 export function officeName(office){
  if(!office)return office??'';
- const named=REGION_NAMES[regionCodeForOffice(office)];
- if(!named||!named.includes(' · '))return office;
- return `${office} · ${named.split(' · ')[1]}`;
+ const canonical=canonicalOffice(office);
+ const named=REGION_NAMES[regionCodeForOffice(canonical)];
+ if(!named||!named.includes(' · '))return canonical;
+ return `${canonical} · ${named.split(' · ')[1]}`;
 }

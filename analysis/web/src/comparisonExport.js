@@ -12,7 +12,8 @@ function slug(value,max=40){
 }
 const FILTER_KEYS=[
  ['tab','view',null],['query','q',''],['program','program',''],
- ['region','region',''],['office','deo',''],['trace','match',''],
+ ['region','region',''],['office','deo',''],
+ ['matchStatus','match',''],['flag','flag',''],['trace','trace',''],
  ['readingStatus','reading',''],['regionMatching','regionmatch','strict'],
  ['column','sort','title'],['direction','dir','1'],
 ];

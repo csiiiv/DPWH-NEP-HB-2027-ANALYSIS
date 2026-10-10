@@ -5,12 +5,21 @@ import {suggestedCounterparts} from "./suggestedCounterparts.js";
 import {regionCandidates} from "./regionCandidates.js";
 import {officeAssignments} from "../../viewers/project_offices.mjs";
 import {readingInfo,matchInfo} from "./analyticsStatusInfo.js";
+import {
+  FLAG_OPTIONS,
+  MATCH_STATUS_INFO,
+  MATCH_STATUS_OPTIONS,
+  flagLabel,
+  identityMatchStatus,
+  matchStatusLabel,
+} from "./matchFilters.js";
 import {hydrateProjects} from "./comparisonData.js";
 import {downloadResults} from "./comparisonExport.js";
 import {useDebouncedSearch} from "./useDebouncedSearch.js";
 import ShareLink from "./ShareLink.jsx";
 import {useComparisonFinding} from "./useComparisonFinding.js";
 import {officeName,regionName} from "./regionNames.js";
+import {chainageSideDetail} from "./chainageDisplay.js";
 const ProjectAnalytics = lazy(()=>import("./ProjectAnalytics.jsx"));
 const ProjectPaths = lazy(()=>import("./ProjectPaths.jsx"));
 const PdfPreview = lazy(() => import("./PdfPreview.jsx"));
@@ -27,9 +36,11 @@ export default function Comparison({ route }) {
     [menu, setMenu] = useState(null),
     [analytics,setAnalytics]=useState(null), [projects,setProjects]=useState(null), [moreFilters,setMoreFilters]=useState(false);
   const [finding,setFinding] = useComparisonFinding(route);
-  const {tab,query,program,region,office,trace,readingStatus,regionMatching,column,mode,direction,page} = finding;
+  const {tab,query,program,region,office,trace,matchStatus,flag,readingStatus,regionMatching,column,mode,direction,page} = finding;
   const setQuery=v=>setFinding('query',v), setProgram=v=>setFinding('program',v),
-    setRegion=v=>setFinding('region',v), setOffice=v=>setFinding('office',v), setTrace=v=>setFinding('trace',v), setReadingStatus=v=>setFinding('readingStatus',v),
+    setRegion=v=>setFinding('region',v), setOffice=v=>setFinding('office',v),
+    setMatchStatus=v=>setFinding('matchStatus',v), setFlag=v=>setFinding('flag',v),
+    setReadingStatus=v=>setFinding('readingStatus',v),
     setColumn=v=>setFinding('column',v), setMode=v=>setFinding('mode',v), setDirection=v=>setFinding('direction',v), setPage=v=>setFinding('page',v);
   const [searchDraft,setSearchDraft]=useDebouncedSearch(query,setQuery,route,tab);
   useEffect(()=>{setSource(null);setPanel('table');setMenu(null);setAnalytics(null);},[route]);
@@ -69,13 +80,16 @@ export default function Comparison({ route }) {
         region:tab==='paps' ? '' : region,
         office:tab==='paps' ? '' : office,
         trace:tab==='projects' ? trace : '',
+        matchStatus:tab==='projects' ? matchStatus : '',
+        flag:tab==='projects' ? flag : '',
         readingStatus:tab==='gaps' ? '' : readingStatus,
         column,
         mode,
         direction,
         tab,
+        counterparts:tab==='projects' ? counterpartCounts : null,
       }),
-    [rows, query, program, region, office, trace, readingStatus, column, mode, direction, tab],
+    [rows, query, program, region, office, trace, matchStatus, flag, readingStatus, column, mode, direction, tab, counterpartCounts],
   );
   useEffect(()=>{
     if (data && readings && (tab!=='projects' || projects) && page > Math.max(0,Math.ceil(filtered.length/50)-1)) setPage(Math.max(0,Math.ceil(filtered.length/50)-1));
@@ -192,7 +206,7 @@ export default function Comparison({ route }) {
   if (!data) return <p role="status">Loading retained comparison data…</p>;
   const maxPage=Math.max(0,Math.ceil(filtered.length/50)-1);
   const visiblePage=Math.min(page,maxPage);
-  const hasFilters=Boolean(query || program || region || office || trace || readingStatus || regionMatching==='ignore');
+  const hasFilters=Boolean(query || program || region || office || matchStatus || flag || trace || readingStatus || regionMatching==='ignore');
   const stages = data.summary.stages;
   const tableNames = names;
   return (
@@ -338,7 +352,7 @@ export default function Comparison({ route }) {
             )}
             {tab !== 'gaps' && <label>House reading change
               <select aria-label="House reading change" value={readingStatus} onChange={e=>setReadingStatus(e.target.value)}>
-                {[["", "All records"], ["house_records_only", "House only · no NEP / Transparency"], ["reading_changed", "Changed allocations"], ["third_only", "HGAB3 only"], ["second_only", "HGAB2 only"], ["amount_changed", "Paired amount changes"], ["repeated_key", "Repeated keys / grouped"], ["same_amount", "Same House amount"], ["no_house_record", "No House record"]].map(([value,text])=><option key={value} value={value}>{text}</option>)}
+                {[["", "All records"], ["reading_changed", "Changed allocations"], ["third_only", "HGAB3 only"], ["second_only", "HGAB2 only"], ["amount_changed", "Paired amount changes"], ["repeated_key", "Repeated keys / grouped"], ["same_amount", "Same House amount"]].map(([value,text])=><option key={value} value={value}>{text}</option>)}
               </select>
             </label>}
             {tab === "projects" && <label>Region matching
@@ -347,26 +361,32 @@ export default function Comparison({ route }) {
                 <option value="ignore">Allow different regions · flag candidates</option>
               </select>
             </label>}
-            {tab === "projects" && (
-              <Filter
-                label="Match status"
-                rows={rows}
-                field="trace"
-                value={trace}
-                set={setTrace}
-              />
-            )}{" "}
+            {tab === "projects" && <label>Match status
+              <select aria-label="Match status" value={matchStatus} onChange={e=>setMatchStatus(e.target.value)}>
+                <option value="">All identity statuses</option>
+                {MATCH_STATUS_OPTIONS.map(([value,text])=><option key={value} value={value}>{text}</option>)}
+              </select>
+            </label>}
+            {tab === "projects" && <label>Flags
+              <select aria-label="Review flags" value={flag} onChange={e=>setFlag(e.target.value)}>
+                <option value="">All flags</option>
+                {FLAG_OPTIONS.map(([value,text])=><option key={value} value={value}>{text}</option>)}
+              </select>
+            </label>}
           </div>
-          {tab !== "paps" && <p className="muted">Office filters use recorded source assignments. Paired sources may list different offices; fuzzy suggestions are excluded.</p>}
+          {tab !== "paps" && <p className="muted">Office filters use recorded source assignments. Paired sources may list different offices; fuzzy suggestions are excluded. Match status is identity quality; flags are presence, amount change, and Transparency coverage.</p>}
+          {matchStatus==='matched_chainage' && <p className="muted">Matched after chainage check: same road title_base with differing station spans. NEP and HGAB amount cells show that source’s chainage spans and length; HGAB also shows Δ chainage length vs NEP (km and %). Compare those with the budget Δ in the same columns.</p>}
           {tab === "projects" && regionMatching === 'ignore' && <p className="notice">
             {projectRows.filter(r=>r.region_difference).length.toLocaleString()} unique-title pairs merged across differing source labels (region, office, program or PAP), so {projectRows.length.toLocaleString()} comparison rows now carry both House and NEP amounts instead of appearing as separate unmatched rows.
             Source regions, offices and programs remain recorded separately on the merged row. Duplicate titles stay separate; amounts do not determine identity. PAP totals are unchanged.
           </p>}
           {hasFilters && <div className="active-filters" aria-label="Active filters">
-            {[['query',query],['program',program],...(tab==='paps'?[]:[['region',region],['office',office]]),...(tab==='gaps'?[]:[['readingStatus',readingStatus]]),...(tab==='projects'?[['trace',trace],...(regionMatching==='ignore'?[['regionMatching','Allow different regions']]:[])]:[])].filter(([,v])=>v).map(([key,v])=><button key={key} onClick={()=>{setFinding(key,key==='regionMatching'?'strict':'');if(key==='query')setSearchDraft('');}} aria-label={`Remove ${key} filter`}>{key==='readingStatus' && v==='house_records_only' ? 'House only · no NEP / Transparency' : key==='program' ? programLabel(v) : key==='region' ? displayRegion(v) : key==='office' ? displayOffice(v) : label(v)} ×</button>)}
-            <button onClick={()=>{for(const key of ['query','program','region','office','trace','readingStatus'])setFinding(key,'');setFinding('regionMatching','strict');setSearchDraft('');}}>Clear filters</button>
+            {[['query',query],['program',program],...(tab==='paps'?[]:[['region',region],['office',office]]),...(tab==='gaps'?[]:[['readingStatus',readingStatus]]),...(tab==='projects'?[['matchStatus',matchStatus],['flag',flag],['trace',trace],...(regionMatching==='ignore'?[['regionMatching','Allow different regions']]:[])]:[])].filter(([,v])=>v).map(([key,v])=><button key={key} onClick={()=>{setFinding(key,key==='regionMatching'?'strict':'');if(key==='query')setSearchDraft('');}} aria-label={`Remove ${key} filter`}>{key==='matchStatus' ? matchStatusLabel(v) : key==='flag' ? flagLabel(v) : key==='program' ? programLabel(v) : key==='region' ? displayRegion(v) : key==='office' ? displayOffice(v) : label(v)} ×</button>)}
+            <button onClick={()=>{for(const key of ['query','program','region','office','matchStatus','flag','trace','readingStatus'])setFinding(key,'');setFinding('regionMatching','strict');setSearchDraft('');}}>Clear filters</button>
           </div>}
-          {readingStatus==='house_records_only' && <p className="muted">Insertion candidates: HGAB2 or HGAB3 records with no attached NEP or Transparency source. Unmatched records can reflect title or assignment differences; this does not confirm absence from the NEP PDF.</p>}
+          {flag==='house_only' && <p className="muted">Insertion candidates: HGAB2 or HGAB3 records with no attached NEP or Transparency source. Unmatched records can reflect title or assignment differences; this does not confirm absence from the NEP PDF.</p>}
+          {(flag==='nep_only'||flag==='nep_only_suggested') && <p className="muted">Deletion candidates: NEP line items with no attached House record. {flag==='nep_only_suggested'?'At least one unmatched House row names this NEP item as a fuzzy counterpart — review for a re-titled or re-scoped replacement. Suggestions refer to House rows, not certified identities.':'No unmatched House row suggests a counterpart. Title or assignment differences can prevent pairing; this does not confirm removal.'}</p>}
+          {matchStatus==='fuzzy' && <p className="muted">Fuzzy matches are the OCR triage queue: similar House and NEP titles in the same scope, with residual spelling to promote into normalize rules.</p>}
           <div className="mobile-sort">
             <label>Sort results<select aria-label="Sort results" value={column} onChange={e=>{setColumn(e.target.value);setMode('total');}}>
               {(tab==='gaps'?[['title','Project'],['amount','Amount'],['region','Region'],['pdf_page','PDF page']]:[['title',tab==='paps'?'PAP':'Project'],...tableNames.map((n,i)=>[String(i),n]),['reading_delta','HGAB3 − HGAB2']]).map(([v,n])=><option key={v} value={v}>{n}</option>)}
@@ -417,11 +437,12 @@ export default function Comparison({ route }) {
                       <small>
                         {r.program} · {r.region ?? ""}
                       </small>
-                      {tab==='projects' && <StatusInfo info={matchInfo[r.trace]} fallback={label(r.trace)} />}
+                      {tab==='projects' && <StatusInfo info={MATCH_STATUS_INFO[identityMatchStatus(r)] || matchInfo[r.trace]} fallback={matchStatusLabel(identityMatchStatus(r)) || label(r.trace)} />}
                       {counterpartCounts.has(r.id) && <small className="counterpart-badge">Suggested NEP counterpart · unresolved ({counterpartCounts.get(r.id)} House comparison {counterpartCounts.get(r.id)===1?'row':'rows'}). Kept separately pending review.</small>}
                       {r.suggestions?.length>0 && <button className="candidate-review-button" aria-expanded={finding.record===r.id} onClick={()=>setFinding('record',finding.record===r.id?'':r.id)}>Review {r.suggestions.length} NEP {r.suggestions.length===1?'suggestion':'suggestions'}</button>}
                       {r.region_difference && <small>Region differs · House: {r.region_difference.house} · NEP: {r.region_difference.nep} · candidate only</small>}
-                      {r.reason && <small className="normalized-match-badge">Matched after title normalization ({r.reason})</small>}
+                      {r.reason && identityMatchStatus(r)!=='matched_chainage' && <small className="normalized-match-badge">Matched after title normalization ({r.reason})</small>}
+                      {tab==='projects' && identityMatchStatus(r)==='matched_chainage' && <small className="normalized-match-badge">Matched after chainage check{r.reason?` · ${r.reason}`:''}</small>}
                       {tab !== "gaps" && <StatusInfo info={readingInfo[r.reading_status]} fallback={label(r.reading_status)} />}
                       {tab !== 'paps' && <small>{compactOffices(r)}</small>}
 
@@ -438,6 +459,7 @@ export default function Comparison({ route }) {
                           value={value}
                           prior={values(r, tab)[index - 1]}
                           caption={tableNames[index]}
+                          chainage={tab==='projects' && identityMatchStatus(r)==='matched_chainage' ? chainageForColumn(r, index) : null}
                         />
                       ))
                     )}
@@ -582,17 +604,30 @@ function Filter({ label: caption, rows, field, value, set, extraOptions=[] }) {
     </label>
   );
 }
-function Money({value,prior,caption}) {
+function Money({value,prior,caption,chainage=null}) {
  const delta=metric(value,prior,'delta'),percent=metric(value,prior,'percent');
+ const lengthClass=chainage?.direction==='up'?'up':chainage?.direction==='down'?'down':'';
  return <td className="num" data-label={caption} title={value==null?'No amount recorded':`${value.toLocaleString('en-PH')} PHP`}>
   <strong>{amount(value)}</strong>
   {delta!=null && <small className={`delta ${delta>0?'up':delta<0?'down':''}`}>Δ {delta>0?'+':''}{amount(delta)} ({percent==null?'n/a':`${percent>0?'+':''}${percent.toFixed(1)}%`})</small>}
+  {chainage && <div className="chainage-in-cell">
+   <small>Chainage: {chainage.spans}</small>
+   {chainage.lengthKm && <small>Chainage length: {chainage.lengthKm}</small>}
+   {chainage.deltaKm && <small className={`chainage-length-delta ${lengthClass}`}>{chainage.deltaKind==='station'?'Δ Chainage':'Δ Chainage length'}: {chainage.deltaKm}{chainage.deltaPct?` (${chainage.deltaPct})`:''}</small>}
+  </div>}
  </td>;
 }
 
 function StatusInfo({info,fallback}) {
  if(!info)return <small>{fallback}</small>;
  return <details className="status-info"><summary>{info[0]} <span aria-label="Status information">ⓘ</span></summary><p>{info[1]}</p></details>;
+}
+/** Project columns: API, NEP, HGAB2, HGAB3 — chainage only on NEP/HGAB. */
+function chainageForColumn(row, index) {
+ if(index===1)return chainageSideDetail(row.nep);
+ if(index===2)return chainageSideDetail(row.second || row.house, row.nep, {withDelta:true});
+ if(index===3)return chainageSideDetail(row.third, row.nep, {withDelta:true});
+ return null;
 }
 function compactOffices(row){
  const groups=new Map();

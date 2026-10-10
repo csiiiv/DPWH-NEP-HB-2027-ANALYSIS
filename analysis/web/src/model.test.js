@@ -175,3 +175,24 @@ test('FAP program selection uses the funding category across individual programs
  assert.deepEqual(selectRows(rows,{program:'fap'}).map(r=>r.title),['A','B','D']);
  assert.deepEqual(selectRows(rows,{program:'Bridge Program'}).map(r=>r.title),['A','C']);
 });
+test("NEP-only split filters partition deletion candidates by suggestion presence", () => {
+  const rows = [
+    {id: "h1", title: "House row naming NEP n1", second: {amount_php: 10}, nep: null, api: null, suggestions: [{nep: {id: "n1"}}]},
+    {id: "n1", title: "NEP item with referring House row", nep: {amount_php: 20}, second: null, third: null, reading_status: "no_house_record"},
+    {id: "n2", title: "NEP item nobody suggests", nep: {amount_php: 30}, second: null, third: null, reading_status: "no_house_record"},
+    {id: "m", title: "Matched pair", third: {amount_php: 40}, nep: {amount_php: 40}},
+  ];
+  const counterparts = new Map([["n1", 1]]);
+  const suggested = selectRows(rows, {readingStatus: "nep_only_suggested", counterparts});
+  const unresolved = selectRows(rows, {readingStatus: "nep_only_unresolved", counterparts});
+  assert.deepEqual(suggested.map(r => r.id), ["n1"]);
+  assert.deepEqual(unresolved.map(r => r.id), ["n2"]);
+  // The split is exact: together they are every NEP-only row.
+  assert.equal(suggested.length + unresolved.length,
+    rows.filter(r => r.nep && !r.second && !r.third).length);
+  // Without a counterparts index the split degrades to nothing rather than
+  // misclassifying.
+  assert.equal(selectRows(rows, {readingStatus: "nep_only_suggested"}).length, 0);
+  assert.equal(selectRows(rows, {readingStatus: "nep_only_unresolved"}).length,
+    rows.filter(r => r.nep && !r.second && !r.third).length);
+});

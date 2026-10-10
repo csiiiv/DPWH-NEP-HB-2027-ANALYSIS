@@ -58,7 +58,13 @@ with sync_playwright() as p:
         page.on("request", lambda r: requests.append(r.url))
         before = len(requests)
         page.goto(base, wait_until="networkidle")
-        page.locator(".cards article").first.wait_for()
+        expect(page.get_by_role("heading", name="Budget stage workbench", exact=True)).to_be_visible()
+        expect(page.get_by_role("link", name="Open analysis", exact=False)).to_have_attribute("href", "#analysis")
+        candidates=page.get_by_role("region", name="Review candidate groups", exact=True)
+        expect(candidates.locator("article")).to_have_count(5)
+        expect(candidates).to_contain_text("Deletions · possible replacements")
+        expect(page.get_by_role("list", name="Workbench workspaces", exact=True)).to_contain_text("Deletions")
+        page.locator(".native-project-summary").wait_for()
         native_summary = page.locator(".native-project-summary").inner_text()
         assert "15,972 named-project leaves" in native_summary
         assert "29 FAP totals" in native_summary
@@ -67,6 +73,7 @@ with sync_playwright() as p:
 
         assert not any(
             "stage_trace_2027.json" in url
+            or "comparison_projects_2027.json" in url
             or "PdfPreview-" in url
             or "pdf.worker" in url
             for url in requests[before:]
@@ -260,7 +267,7 @@ with sync_playwright() as p:
         assert "All mapped native I-C PAP controls balance" in page.locator("#unresolvedRows").inner_text()
         expect(page.get_by_role("alert")).to_have_count(0)
         page.locator("#projectStatus").select_option("chainage_candidate")
-        expect(page.locator("#projectRows")).to_contain_text("Same road · different chainage")
+        expect(page.locator("#projectRows")).to_contain_text("Matched after chainage check")
         page.locator("#projectStatus").select_option("")
         for filename in ("hb_dpwh_native_ic_projects.json", "hb_dpwh_native_ic_rollup_audit.json"):
             link = page.locator(f'a[download][href$="{filename}"]').first

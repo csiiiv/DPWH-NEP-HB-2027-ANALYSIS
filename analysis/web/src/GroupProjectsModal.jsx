@@ -19,6 +19,7 @@ export default function GroupProjectsModal({projects,group,onClose,returnFocus})
  },[]);
  const title=group.displayLabel||group.label;
  const houseKey=group.reading||'third';
+ const isDeletions=group.scope==='deletions';
  return <dialog ref={dialog} className="analytics-dialog group-projects-dialog" aria-labelledby="group-projects-title" onCancel={e=>{e.preventDefault();onClose();}} onClick={e=>{
   if(e.target!==e.currentTarget)return;const b=e.currentTarget.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)onClose();
  }}>
@@ -29,6 +30,7 @@ export default function GroupProjectsModal({projects,group,onClose,returnFocus})
    <div className="analytics-filter-tags" aria-label="Group filters">
     {group.scope==='insertions'&&<span>{group.ranking?.replaceAll('_',' ')}</span>}
     {group.scope==='differences'&&<span>House vs NEP differences</span>}
+    {group.scope==='deletions'&&<span>{group.ranking==='suggested'?'Possible replacements':group.ranking==='second_only'?'HGAB2 only · dropped in HGAB3':'No House record · no suggestion'}</span>}
     {group.dim&&<span>{group.dim}: {title}</span>}
     <span>Region differences allowed and flagged</span>
    </div>
@@ -36,11 +38,11 @@ export default function GroupProjectsModal({projects,group,onClose,returnFocus})
   </header>
   <div className="analytics-content group-projects-content">
    <SortableTable ariaLabel="Group project records" initialSort={{key:'amount_php',direction:'desc'}} rows={rows} empty="No comparison rows in this group." columns={[
-    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.program} · {regionName(r.region)} · {officeName((r[houseKey]||r.third||r.second)?.office)||'No recorded office'} · {(r.trace||'').replaceAll('_',' ')}</small></span>},
-    {key:'amount_php',label:'House',align:'num',value:r=>(r[houseKey]||r.third||r.second)?.amount_php,render:r=>{const v=(r[houseKey]||r.third||r.second)?.amount_php;return v!=null?amountCell(v):<span>—</span>;}},
+    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.program} · {regionName(r.region)} · {officeName((isDeletions?(r.nep??r.second):(r[houseKey]||r.third||r.second))?.office)||'No recorded office'} · {(r.trace||'').replaceAll('_',' ')}</small></span>},
+    ...(isDeletions?[]:[{key:'amount_php',label:'House',align:'num',value:r=>(r[houseKey]||r.third||r.second)?.amount_php,render:r=>{const v=(r[houseKey]||r.third||r.second)?.amount_php;return v!=null?amountCell(v):<span>—</span>;}}]),
     {key:'nep_php',label:'NEP',align:'num',value:r=>r.nep?.amount_php,render:r=>r.nep?amountCell(r.nep.amount_php):<span>—</span>},
-    {key:'gap',label:'House − NEP',align:'num',value:r=>{const h=(r[houseKey]||r.third||r.second)?.amount_php;return h!=null&&r.nep!=null?h-r.nep.amount_php:null;},
-     render:r=>{const h=(r[houseKey]||r.third||r.second)?.amount_php;return h!=null&&r.nep!=null?signedCell(h-r.nep.amount_php):<span>—</span>;}},
+    {key:'gap',label:'House − NEP',align:'num',value:r=>{const h=isDeletions?null:(r[houseKey]||r.third||r.second)?.amount_php;return h!=null&&r.nep!=null?h-r.nep.amount_php:null;},
+     render:r=>{const h=isDeletions?null:(r[houseKey]||r.third||r.second)?.amount_php;return h!=null&&r.nep!=null?signedCell(h-r.nep.amount_php):<span>—</span>;}},
     {key:'review',label:'Review',sortable:false,render:r=><a href={routeHref('compare',{view:'projects',region_match:'ignore',q:r.id,record:r.id})}>Review comparison</a>},
    ]}/>
   </div>

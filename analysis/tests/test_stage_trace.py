@@ -85,6 +85,17 @@ class StageTraceTests(unittest.TestCase):
             'api_presence': 'nep_not_in_transparency',
             'house_minus_nep_php': 0,
         }), 'transparency_gap_then_amount_same')
+        # Attached chainage pairs use the same amount-trace vocabulary as exact.
+        self.assertEqual(classify({
+            'house_match': 'chainage_candidate',
+            'api_presence': 'paired',
+            'house_minus_nep_php': 2_000_000,
+        }), 'candidate_increase')
+        self.assertEqual(classify({
+            'house_match': 'chainage_candidate',
+            'api_presence': 'paired',
+            'house_minus_nep_php': 0,
+        }), 'amount_same')
         self.assertEqual(classify({
             'house_match': 'house_unmatched',
             'api_presence': 'no_nep_anchor',

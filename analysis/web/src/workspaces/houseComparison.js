@@ -30,7 +30,7 @@ function renderPaps(){shareFinding();let rows=D.paps.filter(p=>(!$('papSearch').
 $('papRows').addEventListener('click',e=>{const b=e.target.closest('button[data-pap]');if(!b)return;const detail=$('detail-'+b.dataset.pap);detail.hidden=!detail.hidden;b.setAttribute('aria-expanded',String(!detail.hidden));});
 $('papSort').addEventListener('change',()=>BudgetDisplay.clear($('papRows').closest('table')));
 ['papSearch','papProgram','papStatus','papSort'].forEach(id=>$(id).addEventListener(id==='papSearch'?'input':'change',renderPaps));renderPaps();
-const statuses={exact_candidate:'Exact title candidate',fuzzy_candidate:'Fuzzy suggestions',chainage_candidate:'Same road · different chainage',ambiguous:'Ambiguous exact key',house_unmatched:'House unmatched',nep_unmatched:'NEP without unique exact pair'};
+const statuses={exact_candidate:'Exact title candidate',fuzzy_candidate:'Fuzzy suggestions',chainage_candidate:'Matched after chainage check',ambiguous:'Ambiguous exact key',house_unmatched:'House unmatched',nep_unmatched:'NEP without unique exact pair'};
 $('matchSummary').textContent=Object.entries(S.match_counts).map(([k,n])=>`${n.toLocaleString()} ${(statuses[k]||k).toLowerCase()}`).join(' · ')+` · ${S.reviewed_pairs} manually certified pairs. Funding partitions are retained inside project totals.`;
 const records=D.projects.map((r,i)=>({...r,index:i,search:JSON.stringify([r.house,r.nep,r.candidates]).toLowerCase()}));let pageNumber=0,filtered=records;const pageSize=100;
 [...new Set(records.map(r=>(r.house||r.nep).region).filter(Boolean))].sort().forEach(region=>$('projectRegion').add(new Option(region,region)));

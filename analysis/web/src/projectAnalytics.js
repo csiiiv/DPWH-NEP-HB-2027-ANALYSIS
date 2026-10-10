@@ -17,7 +17,7 @@ export function projectAnalytics(rows) {
     if(new Set(assignments.map(a=>a.office).filter(Boolean)).size>1)flags.office_difference++;
     if(assignments.every(a=>!a.office))flags.no_office++;
     if(row.reading_status==='repeated_key')flags.repeated_key++;
-    if(['ambiguous','fuzzy_candidate','chainage_candidate','region_difference_candidate'].includes(row.trace))flags.uncertain_match++;
+    if(['ambiguous','fuzzy_candidate','region_difference_candidate'].includes(row.trace))flags.uncertain_match++;
     if(['native_row_ambiguity','nearby_alignment_candidate','native_text_review','not_checked'].includes(row.nep?.evidence))flags.nep_evidence_review++;
     if(Object.values(flags).reduce((sum,count)=>sum+count,0)>flagTotal)flaggedRows++;
   }

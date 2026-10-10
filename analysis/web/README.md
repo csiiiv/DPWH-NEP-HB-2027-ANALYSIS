@@ -27,8 +27,9 @@ live Transparency data or regenerate source outputs.
 
 | Hash route | Workspace |
 |---|---|
-| `#home` | Overview |
+| `#home` | Workbench map, review-candidate headlines, and source status |
 | `#compare` | Stage comparison |
+| `#analysis` | Headlines, insertions, deletions, adjustments, statistics |
 | `#house` | Third-reading native I-B totals and controls; reading and project-view toggles |
 | `#nep` | DBM NEP verification |
 | `#transparency` | Transparency NEP verification |
@@ -119,9 +120,12 @@ python scripts/validate_current_pages.py
 
 Both **PAP totals** and **Project records** show HGAB2 (second reading), HGAB3
 (third reading), and HGAB3-minus-HGAB2 beside Transparency and NEP. HGAB3 is the
-latest House reading; the former generic House column was HGAB2. All records
-are shown by default. The House reading change filter can select changes,
-unchanged amounts, and third-only records without leaving either table.
+latest House reading; the former generic House column was HGAB2. All records are shown by default. **Match status** filters identity quality
+(`matched`, `matched_normalized`, `fuzzy`, `chainage`, `ambiguous`, `no_match`).
+**Flags** cover presence and coverage (`house_only`, `nep_only`,
+`nep_only_suggested`, amount up/down, Transparency gap / outside scope). House
+reading change stays on HGAB2↔HGAB3 ledger differences. Share with
+`#compare?view=projects&match=fuzzy` or `&flag=house_only`.
 The operations increase is ₱134,000,000, offset by Support to Operations.
 Agency total is unchanged. Repeated House keys remain grouped; NEP/API candidate
 anchors retain their second-reading provenance. See
@@ -219,10 +223,15 @@ loading, desktop/mobile layouts, preserved filters, exact filtered exports and
 the analytics modal under the GitHub Pages project prefix.
 
 The main **Analysis** route (`#analysis`) loads build-time headline summaries from
-`comparison_overview_2027.json`, without fetching the full project payload. It
-reports office categories and mutually exclusive program buckets per source,
-counting grouped allocation members once. FAP is a funding bucket across programs.
-House-only rankings separate records without NEP suggestions, unresolved
-suggestions and third-reading-only records; amounts and evidence links remain
-available in Compare stages and the source trees. Source and ranking selections
-are shareable as `#analysis?source=third&ranking=no_suggestion`.
+`comparison_overview_2027.json`, without fetching the full project payload on
+Overview/Insertions. It reports office categories and mutually exclusive program
+buckets per source, counting grouped allocation members once. FAP is a funding
+bucket across programs. Overview includes a **NEP → HGAB by region / office / category / PAP**
+table (House−NEP amount and percent). House-only rankings separate records without NEP suggestions, unresolved
+suggestions and third-reading-only records. The **Deletions** subtab mirrors that
+layout for NEP-only rows (no House record), split into no suggestion, possible
+replacements (House rows name this NEP item as a counterpart), and HGAB2-only.
+Group drill-downs deep-link into Compare with the matching `change=` filter.
+Source and ranking selections are shareable as
+`#analysis?source=third&ranking=no_suggestion` and
+`#analysis?view=deletions&ranking=suggested`.

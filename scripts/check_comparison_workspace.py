@@ -20,6 +20,28 @@ with tempfile.TemporaryDirectory() as folder:
     server = ThreadingHTTPServer(('127.0.0.1', 0), partial(Quiet, directory=folder))
     threading.Thread(target=server.serve_forever, daemon=True).start()
     errors = []
+    projects = json.loads((ROOT / 'analysis/data/comparison_projects_2027.json').read_text())['projects']
+    total = len(projects)
+    total_label = f'{total:,}'
+    # NEP-only split: plain vs House-referred (same rules as suggestedCounterparts.js).
+    by_nep = {}
+    for row in projects:
+        for suggestion in row.get('suggestions') or []:
+            nep = suggestion.get('nep') or {}
+            nep_id = nep.get('native_node_id') or nep.get('id')
+            if not nep_id:
+                continue
+            by_nep.setdefault(nep_id, set()).add(row['id'])
+    nep_only = nep_suggested = 0
+    for row in projects:
+        if not row.get('nep') or row.get('second') or row.get('third') or row.get('house'):
+            continue
+        nep_id = row['nep'].get('native_node_id') or row['nep'].get('id')
+        if nep_id in by_nep:
+            nep_suggested += 1
+        else:
+            nep_only += 1
+    assert nep_only + nep_suggested == sum(1 for row in projects if row.get('nep') and not row.get('second') and not row.get('third') and not row.get('house'))
     base = f'http://127.0.0.1:{server.server_port}/{prefix}/app/'
     try:
         with sync_playwright() as p:
@@ -48,12 +70,24 @@ with tempfile.TemporaryDirectory() as folder:
                 assert 'q=Bridge' in page.url
                 assert any('comparison_projects_2027.json' in url for url in requests)
                 page.get_by_role('button',name='Clear filters',exact=True).click()
-                expect(page.locator('.result-count')).to_contain_text('18,124 of',timeout=60000)
+                expect(page.locator('.result-count')).to_contain_text(f'{total_label} of',timeout=60000)
                 page.get_by_role('button',name='More filters',exact=True).click()
-                page.get_by_label('House reading change',exact=True).select_option('house_records_only')
-                house_count=sum(bool(row.get('second') or row.get('third')) and not row.get('nep') and not row.get('api') for row in json.loads((ROOT/'analysis/data/comparison_projects_2027.json').read_text())['projects'])
+                page.get_by_label('Review flags',exact=True).select_option('house_only')
+                house_count=sum(bool(row.get('second') or row.get('third')) and not row.get('nep') and not row.get('api') for row in projects)
                 expect(page.locator('.result-count')).to_contain_text(f'{house_count:,} of')
-                page.wait_for_function("location.hash.includes('change=house_records_only')")
+                page.wait_for_function("location.hash.includes('flag=house_only')")
+                page.get_by_label('Review flags',exact=True).select_option('')
+                page.get_by_label('House reading change',exact=True).select_option('third_only')
+                expect(page.locator('.result-count')).to_contain_text('5 of')
+                # NEP-only split flags partition the no-house-record set.
+                page.get_by_label('House reading change',exact=True).select_option('')
+                page.get_by_label('Review flags',exact=True).select_option('nep_only')
+                expect(page.locator('.result-count')).to_contain_text(f'{nep_only:,} of')
+                expect(page.locator('.active-filters')).to_contain_text('NEP only candidate')
+                page.get_by_label('Review flags',exact=True).select_option('nep_only_suggested')
+                expect(page.locator('.result-count')).to_contain_text(f'{nep_suggested:,} of')
+                expect(page.locator('.active-filters')).to_contain_text('NEP only · possible replacement')
+                page.get_by_label('Review flags',exact=True).select_option('')
                 page.get_by_label('House reading change',exact=True).select_option('third_only')
                 expect(page.locator('.result-count')).to_contain_text('5 of')
                 with page.expect_download() as download:
@@ -65,44 +99,51 @@ with tempfile.TemporaryDirectory() as folder:
                 # The filename describes the active filters at export time.
                 assert download.value.suggested_filename=='dpwh-view-projects_reading-third_only.json',download.value.suggested_filename
                 page.get_by_role('button',name='Remove readingStatus filter',exact=True).click()
-                expect(page.locator('.result-count')).to_contain_text('18,124 of')
+                expect(page.locator('.result-count')).to_contain_text(f'{total_label} of')
                 if width==390:
                     page.get_by_label('Sort results',exact=True).select_option('reading_delta')
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 page.screenshot(path=f'/tmp/compare-projects-{width}.png')
-                page.goto(base+'#compare?view=projects&status=fuzzy_candidate&q=B00091PW',wait_until='networkidle')
+                # Fuzzy OCR triage: place-name spelling slip still unattached.
+                page.goto(base+'#compare?view=projects&match=fuzzy&q=B03135LZ',wait_until='networkidle')
                 page.get_by_role('button',name='Review 1 NEP suggestion',exact=True).click(timeout=60000)
                 candidates=page.get_by_role('region',name='Suggested NEP matches',exact=True)
                 expect(candidates.locator('.candidate-table tbody tr')).to_have_count(3)
                 expect(candidates.locator('.candidate-table')).to_be_visible()
                 expect(candidates.locator('.candidate-table thead th')).to_have_count(5)
-                expect(candidates.locator('.candidate-table tbody tr').last.locator('.candidate-project')).to_contain_text('(Bo0091PW) along Puerto Princesa North Rd')
-                expect(candidates.locator('.candidate-table tbody tr').last.locator('.candidate-assignment')).to_contain_text('MIMAROPA')
-                expect(candidates).to_contain_text('0.9773 · 97.73% text similarity')
-                expect(candidates).to_contain_text('Tandayag Br. (B00091PW)')
-                expect(candidates).to_contain_text('(Bo0091PW)')
-                expect(candidates).to_contain_text('₱85,000,000')
-                expect(candidates.get_by_role('link',name='Open suggested NEP entry in source tree',exact=False)).to_have_attribute('href','#nep?node=p313%3Ar3')
+                expect(candidates.locator('.candidate-table tbody tr').last.locator('.candidate-project')).to_contain_text('(B03135LZ) along Talaba-Summit-Panaon Rd')
+                expect(candidates.locator('.candidate-table tbody tr').last.locator('.candidate-assignment')).to_contain_text('Region IV-A')
+                expect(candidates).to_contain_text('0.9787 · 97.87% text similarity')
+                expect(candidates).to_contain_text('Kabitanganan Br. (B03135LZ)')
+                expect(candidates).to_contain_text('Kabitangahan Br')
+                expect(candidates).to_contain_text('₱10,080,000')
+                expect(candidates.get_by_role('link',name='Open suggested NEP entry in source tree',exact=False)).to_have_attribute('href','#nep?node=p329%3Ar3')
                 expect(page.locator('.comparison-table tbody tr').first.locator('td').nth(1)).to_have_text('—')
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 page.screenshot(path=f'/tmp/fuzzy-candidate-{width}.png')
                 page.reload(wait_until='networkidle')
-                expect(candidates).to_contain_text('97.73% text similarity',timeout=60000)
-                candidates.get_by_role('button',name='Preview suggested NEP PDF p.313',exact=True).click()
+                expect(candidates).to_contain_text('97.87% text similarity',timeout=60000)
+                candidates.get_by_role('button',name='Preview suggested NEP PDF p.329',exact=True).click()
                 expect(page.locator('.pdf-pane')).to_be_visible(timeout=60000)
-                expect(page.get_by_label('PDF page',exact=True)).to_have_value('313',timeout=60000)
+                expect(page.get_by_label('PDF page',exact=True)).to_have_value('329',timeout=60000)
                 page.get_by_role('button',name='Clear preview',exact=True).click()
                 expect(page.locator('.source-pane')).to_have_count(0)
                 expect(candidates).to_be_visible()
-                page.goto(base+'#compare?view=projects&status=fuzzy_candidate&q=B00774LZ',wait_until='networkidle')
-                page.get_by_role('button',name='Bol-og Br. (B00774LZ) along Laoag-Sarrat-Piddig-Solsona Rd',exact=True).click(timeout=60000)
-                expect(candidates.locator('.candidate-table tbody tr')).to_have_count(4)
+                page.goto(base+'#compare?view=projects&match=fuzzy&q=house-reading:5146',wait_until='networkidle')
+                page.get_by_role('button',name='Construction of Water Supply System at Barangay San Juan, Tingloy, Batangas',exact=True).click(timeout=60000)
+                expect(candidates.locator('.candidate-table tbody tr')).to_have_count(5)
                 expect(candidates).to_contain_text('NEP suggestion 2')
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 candidates.scroll_into_view_if_needed()
                 page.screenshot(path=f'/tmp/multiple-nep-suggestions-{width}.png')
-                page.goto(base+'#compare?view=projects&q=B00091PW',wait_until='networkidle')
-                expect(page.locator('.result-count')).to_contain_text('2 of 18,124 comparison rows',timeout=60000)
+                # Point/range chainage attach: NEP is on the same row (not a suggestion).
+                page.goto(base+'#compare?view=projects&match=matched_chainage&q=S00825MN',wait_until='networkidle')
+                expect(page.locator('.result-count')).to_contain_text(f'1 of {total_label} comparison rows',timeout=60000)
+                expect(page.locator('.normalized-match-badge')).to_contain_text('Matched after chainage check')
+                expect(page.locator('.chainage-in-cell').first).to_contain_text('Chainage:')
+                # Unresolved fuzzy referral still keeps House and NEP on separate rows.
+                page.goto(base+'#compare?view=projects&q=K1553',wait_until='networkidle')
+                expect(page.locator('.result-count')).to_contain_text(f'2 of {total_label} comparison rows',timeout=60000)
                 expect(page.locator('.count-explanation')).to_contain_text('not unique projects')
                 expect(page.locator('.counterpart-badge')).to_contain_text('Suggested NEP counterpart · unresolved (1 House comparison row)')
                 page.goto(base+'#compare?view=projects&page=2',wait_until='networkidle')
@@ -111,7 +152,7 @@ with tempfile.TemporaryDirectory() as folder:
                 button.click()
                 dialog = page.get_by_role('dialog', name='Project result analytics')
                 expect(dialog).to_be_visible()
-                expect(dialog).to_contain_text('18,124 filtered comparison rows')
+                expect(dialog).to_contain_text(f'{total_label} filtered comparison rows')
                 expect(dialog).to_contain_text('₱134.000M')
                 expect(dialog).to_contain_text('₱587.076B')
                 assert dialog.evaluate('e=>e.scrollWidth<=e.clientWidth+1')

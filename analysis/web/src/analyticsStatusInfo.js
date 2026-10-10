@@ -13,7 +13,7 @@ export const matchInfo={
  house_only_candidate:['House without NEP anchor','The House record has no attached NEP candidate. Matching scope or source assignments can explain this; it is not a confirmed insertion.'],
  nep_only_candidate:['NEP without House anchor','The NEP record has no attached House candidate. This does not establish removal from House or cancellation.'],
  fuzzy_candidate:['Fuzzy title candidate','Similar titles within the retained matching scope generated suggestions. They are unconfirmed and do not consume or attach NEP records.'],
- chainage_candidate:['Same road · different chainage','The closest suggestion is the same title with only chainage or station numbers differing. This pattern usually reflects re-segmentation or coverage amendments rather than a new insertion. Still an unconfirmed candidate; amounts are not compared.'],
+ chainage_candidate:['Matched after chainage check','Attached pair: same road title_base with differing station spans. Matched after chainage check; amount deltas apply. Review as a coverage amendment, not a new insertion.'],
  ambiguous:['Ambiguous identity','Duplicate exact matching keys prevent a unique one-to-one source pairing. No individual identity is assigned automatically.'],
  outside_api_nep_only:['NEP outside API scope','A NEP record is outside the Transparency listing scope and has no attached House anchor in this comparison row. FAP records are included here.'],
  outside_api_then_amount_same:['Outside API · same candidate amount','A NEP record outside the Transparency listing scope (e.g. FAP) has an attached House candidate with the same amount.'],

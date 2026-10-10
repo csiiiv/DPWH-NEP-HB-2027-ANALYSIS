@@ -10,6 +10,8 @@ from pathlib import Path as _Path
 sys.path[:0] = [str(_Path(__file__).resolve().parents[1]), str(_Path(__file__).resolve().parents[1] / 'builders')]
 from paths import ANALYSIS, REPO, DATA, VIEWERS, DOCS, ARCHIVE, EVIDENCE
 from house_native import comparison_inputs, office_from_region_parent, validate_native_detail
+from chainage import chainage_signature, classify_chainage_amendment
+from normalize_labels import annotate_source_labels, digits_omitted, normalized, raw_normalized
 
 import hashlib
 import json
@@ -32,15 +34,21 @@ INPUTS = ['nep_2027_tree.json', 'nep_2027_tree_validation.json',
 METHOD = ('Unique normalized title + canonical region + canonical PAP node ID '
           '(FAP uses program and zone), one-to-one exact candidates. Titles are '
           'normalized token-wise: common abbreviation variants (Brgy./Barangay) '
-          'expand before matching and consecutive repeated tokens collapse. '
+          'and place-name OCR slips (Marindugue/Marinduque, Siguijor/Siquijor) '
+          'expand before matching; structure/road IDs rewrite OCR letter O in '
+          'digit runs (Bo0008LB/B00008LB); consecutive repeated tokens collapse. '
+          'Titles also parse into title_base + chainage spans (K/Sta/C/Chainage); '
+          'unique same-base differing stations attach as chainage matches with '
+          'reasons (station-marker adjustment, length change, re-segmentation) '
+          'and amount deltas like exact pairs. '
           'Amount does not determine identity. Duplicate keys remain ambiguous. '
           'FAP loans additionally pair across differing program sections '
           '(I-C National Building Program vs NEP Local Program) when the '
           'normalized title, region and funding zone are each unique. Remaining '
           'House rows receive up to three fuzzy suggestions within the same '
           'region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; '
-          'suggestions whose title differs only in digits are labeled chainage '
-          'candidates (possible re-segmentation or coverage amendments). '
+          'unique same title_base with different chainage spans (or digit-only title diffs) '
+          'attach as chainage matches (consume NEP). '
           'Suggestions do not consume NEP rows. No pair has been manually certified.')
 
 
@@ -56,35 +64,8 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-# Common abbreviation variants between the House and NEP documents. Tokens are
-# split on non-alphanumeric boundaries first, so Brgy. is expanded inside
-# hyphenated compounds (e.g. "Estrella-Brgy. Pamosaingan") as well as alone,
-# and spacing variants like "K0001+000" / "K0001 + 000" normalize alike.
-ABBREVIATIONS = {'brgy': 'barangay'}
-# Repeated consecutive words are OCR/spacing doubling (e.g. "Sta. Sta. Maria"
-# for "Sta. Maria"); collapsing them prevents fused keys like "stasta".
-def normalized(value):
-    value = unicodedata.normalize('NFKC', value or '').casefold().replace('\n', ' ')
-    tokens = []
-    for token in re.split(r'[^a-z0-9]+', value):
-        token = ABBREVIATIONS.get(token, token)
-        if token and (not tokens or tokens[-1] != token):
-            tokens.append(token)
-    return ''.join(tokens)
-
-
-# Titles that differ only in digits describe the same road with different
-# chainage/station numbers; keep that pattern distinguishable from fuzzy noise.
-def digits_omitted(value):
-    return re.sub(r'\d+', '', normalized(value))
-
-
-# Pre-normalization baseline (no abbreviation expansion or repeat collapse).
-# Exact pairs whose raw titles differ under this baseline matched only because
-# of the normalization rules; they carry a review reason.
-def raw_normalized(value):
-    value = unicodedata.normalize('NFKC', value or '').casefold().replace('\n', ' ')
-    return re.sub(r'[^a-z0-9]', '', value)
+# Title match keys (Brgy./repeat), office_canonical, and digits_omitted live in
+# normalize_labels so matching, mining, and annotate_source_labels share one home.
 
 
 def fap_control_row(ic, tree, house, nep):
@@ -128,12 +109,59 @@ def scope_key(row):
     return row['zone'], row['pap_id'] if row['zone'] == 'local' else row['program'], row['region']
 
 
+def _title_key(row):
+    return row.get('title_match_key') or normalized(row['title'])
+
+
+def _base_key(row):
+    return row.get('title_base_match_key') or _title_key(row)
+
+
+def _chainage_amendment_reason(house_row, nep_row):
+    """Classify same-base chainage diffs; fall back to legacy digits_omitted."""
+    h_ch = house_row.get('chainages') or []
+    n_ch = nep_row.get('chainages') or []
+    if h_ch and n_ch:
+        detail = classify_chainage_amendment(h_ch, n_ch)
+        return (
+            f'Same road title_base with differing chainage ({detail}). '
+            'Possible coverage amendment, not a new insertion.'
+        )
+    if digits_omitted(house_row['title']) == digits_omitted(nep_row['title']):
+        return (
+            'Same title with only chainage or station numbers differing; '
+            'possible re-segmentation or coverage amendment, not a new insertion.'
+        )
+    return None
+
+
+def _is_chainage_pair(house_row, nep_row):
+    """True when titles share a road base but differ only in chainage/stations."""
+    h_ch = house_row.get('chainages') or []
+    n_ch = nep_row.get('chainages') or []
+    if _base_key(house_row) == _base_key(nep_row) and h_ch and n_ch:
+        return chainage_signature(h_ch) != chainage_signature(n_ch)
+    h_digits = digits_omitted(house_row['title'])
+    return bool(h_digits) and h_digits == digits_omitted(nep_row['title'])
+
+
+def _attach_chainage(house_row, nep_row, confidence=1.0):
+    return {
+        'status': 'chainage_candidate',
+        'confidence': confidence,
+        'house': house_row,
+        'nep': nep_row,
+        'delta_php': house_row['amount_php'] - nep_row['amount_php'],
+        'reason': _chainage_amendment_reason(house_row, nep_row),
+    }
+
+
 def project_matches(house, source):
     hi, ni = defaultdict(list), defaultdict(list)
     for i, r in enumerate(house):
-        hi[(*scope_key(r), normalized(r['title']))].append(i)
+        hi[(*scope_key(r), _title_key(r))].append(i)
     for i, r in enumerate(source):
-        ni[(*scope_key(r), normalized(r['title']))].append(i)
+        ni[(*scope_key(r), _title_key(r))].append(i)
     matched_h, matched_n, records = set(), set(), []
     for k in sorted(hi):
         if len(hi[k]) == len(ni.get(k, [])) == 1:
@@ -162,10 +190,10 @@ def project_matches(house, source):
                        if i not in matched_n and r['zone'] == zone]
         by_title_n = defaultdict(list)
         for i in remaining_n:
-            by_title_n[(zone, source[i]['region'], normalized(source[i]['title']))].append(i)
+            by_title_n[(zone, source[i]['region'], _title_key(source[i]))].append(i)
         by_title_h = defaultdict(list)
         for i in remaining_h:
-            by_title_h[(zone, house[i]['region'], normalized(house[i]['title']))].append(i)
+            by_title_h[(zone, house[i]['region'], _title_key(house[i]))].append(i)
         for k in sorted(by_title_h):
             if len(by_title_h[k]) == len(by_title_n.get(k, [])) == 1:
                 h, n = by_title_h[k][0], by_title_n[k][0]
@@ -186,7 +214,7 @@ def project_matches(house, source):
     for i, h in enumerate(house):
         if i in matched_h:
             continue
-        k = (*scope_key(h), normalized(h['title']))
+        k = (*scope_key(h), _title_key(h))
         duplicates = ni.get(k, [])
         if duplicates:
             records.append({'status': 'ambiguous', 'house': h,
@@ -198,21 +226,54 @@ def project_matches(house, source):
             counts.update(tokens.get((*scope_key(h), tok), ()))
         suggestions = []
         for n, _ in sorted(counts.items(), key=lambda pair: (-pair[1], source[pair[0]]['id']))[:20]:
-            score = SequenceMatcher(None, normalized(h['title']), normalized(source[n]['title']), autojunk=False).ratio()
+            score = SequenceMatcher(None, _title_key(h), _title_key(source[n]), autojunk=False).ratio()
             if score >= .85:
                 suggestions.append({'nep': source[n], 'confidence': round(score, 4)})
         suggestions.sort(key=lambda r: (-r['confidence'], r['nep']['id']))
-        # Same road with different chainage is a segment amendment candidate:
-        # digits are the only difference after normalization.
-        status = 'fuzzy_candidate' if suggestions else 'house_unmatched'
-        reason = None
-        if any(digits_omitted(h['title']) == digits_omitted(s['nep']['title']) for s in suggestions):
-            status = 'chainage_candidate'
-            reason = ('A suggested counterpart is the same title with only chainage '
-                      'or station numbers differing; possible re-segmentation or '
-                      'coverage amendment, not a new insertion.')
-        records.append({'status': status, 'house': h, 'candidates': suggestions[:3],
-                        'reason': reason})
+        # Unique same-base chainage hit → attach (matched); else fuzzy suggestions.
+        chainage_hits = [s for s in suggestions if _is_chainage_pair(h, s['nep'])]
+        if len(chainage_hits) == 1:
+            nep_row = chainage_hits[0]['nep']
+            n_idx = next(j for j, r in enumerate(source) if r is nep_row)
+            if n_idx not in matched_n:
+                records.append(_attach_chainage(h, source[n_idx], chainage_hits[0]['confidence']))
+                matched_h.add(i)
+                matched_n.add(n_idx)
+                continue
+        if suggestions:
+            records.append({'status': 'fuzzy_candidate', 'house': h,
+                            'candidates': suggestions[:3]})
+        else:
+            records.append({'status': 'house_unmatched', 'house': h})
+    # Unique title_base among still-unmatched chainage rows (fuzzy shortlist miss).
+    house_by_id = {r.get('id'): i for i, r in enumerate(house)}
+    unmatched_house = []
+    for rec in records:
+        if rec.get('status') != 'house_unmatched':
+            continue
+        idx = house_by_id.get(rec['house'].get('id'))
+        if idx is not None and (house[idx].get('chainages') or []):
+            unmatched_house.append((idx, rec))
+    base_n = defaultdict(list)
+    for i, r in enumerate(source):
+        if i in matched_n or not (r.get('chainages') or []):
+            continue
+        base_n[(*scope_key(r), _base_key(r))].append(i)
+    for idx, rec in unmatched_house:
+        if idx in matched_h:
+            continue
+        key = (*scope_key(house[idx]), _base_key(house[idx]))
+        ns = [i for i in base_n.get(key, []) if i not in matched_n]
+        if len(ns) != 1:
+            continue
+        n = ns[0]
+        if not _is_chainage_pair(house[idx], source[n]):
+            continue
+        attached = _attach_chainage(house[idx], source[n])
+        rec.clear()
+        rec.update(attached)
+        matched_h.add(idx)
+        matched_n.add(n)
     for i, n in enumerate(source):
         if i not in matched_n:
             records.append({'status': 'nep_unmatched', 'nep': n})
@@ -261,6 +322,10 @@ def build():
                     'evidence': n.get('native_amount_status', 'not_checked'),
                     'funding_php': {nodes[c]['label']: nodes[c]['amount_php'] for c in n['children'] if nodes[c]['kind'] == 'funding'}})
     house, hb_paps, printed = comparison_inputs(hb, ib, controls, pap_programs, region)
+    for row in house:
+        annotate_source_labels(row)
+    for row in nep:
+        annotate_source_labels(row)
     api_checks = {r['pap3']: r for r in read('nep_2027_api_reconciliation.json')['pap_checks']}
     programs = []
     for p in sorted(set(pap_programs.values()) | {n['program'] for n in nep if n['zone'] == 'fap'}):
@@ -335,7 +400,10 @@ def build():
                 'units': 'Integer Philippine pesos', 'matching_method': METHOD,
                 'generator': {'path': 'analysis/builders/build_current_pages.py', 'sha256': digest(Path(__file__))},
                 'generator_dependencies': {name: digest(ROOT / name) for name in
-                    ('analysis/builders/house_native.py', 'scripts/hb_native_labels.py')},
+                    ('analysis/builders/house_native.py',
+                     'analysis/builders/normalize_labels.py',
+                     'analysis/builders/chainage.py',
+                     'scripts/hb_native_labels.py')},
                 'inputs': {n: digest(OUT / n) for n in INPUTS},
                 'api_snapshot': {'path': 'dpwh-transparency-nep-data/json/fy2027-combined.json', 'sha256': digest(ROOT / 'dpwh-transparency-nep-data/json/fy2027-combined.json')},
                 'source_documents': {key: {'path': str(path.relative_to(ROOT)), 'sha256': digest(path)} for key, path in [('house_summary', ROOT / 'HB_BUDGET/2 - HB 10858 VOL IB.pdf'), ('house_details', ROOT / 'HB_BUDGET/3 - HB 10858 VOL IC.pdf')]},

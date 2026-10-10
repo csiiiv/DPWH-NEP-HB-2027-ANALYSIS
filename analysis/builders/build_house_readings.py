@@ -10,6 +10,7 @@ sys.path[:0] = [str(Path(__file__).resolve().parents[1]), str(Path(__file__).res
 from paths import DATA, REPO
 from house_native import comparison_inputs, validate_native_detail
 from build_current_pages import normalized, region
+from normalize_labels import annotate_source_labels
 
 INPUTS = ['nep_2027_source_projects.json'] + [name + suffix + '.json'
     for suffix in ('', '_3rd_reading') for name in (
@@ -22,16 +23,20 @@ def digest(path):
 
 
 def reading_key(row):
+    # Keep raw office in the key so HGAB2↔HGAB3 pairing stays stable; derived
+    # office_canonical is carried on records for filters/overview only.
     return (row['zone'], row['pap_id'], row['region'], row['office'],
-            row['record_kind'], normalized(row['title']))
+            row['record_kind'], row.get('title_match_key') or normalized(row['title']))
 
 
 def grouped_side(records, reading):
     if not records:
         return None
-    keep = ('title', 'amount_php', 'program', 'pap', 'pap_id', 'zone', 'region',
-            'office', 'pdf_page', 'record_kind', 'native_node_id')
-    leaves = [{**{k: r[k] for k in keep}, 'id': f'hb:{reading}:' + r['native_node_id'],
+    keep = ('title', 'title_match_key', 'title_base', 'title_base_match_key',
+            'chainages', 'chainage_incomplete', 'amount_php', 'program', 'pap',
+            'pap_id', 'zone', 'region', 'office', 'office_canonical', 'pdf_page',
+            'record_kind', 'native_node_id')
+    leaves = [{**{k: r[k] for k in keep if k in r}, 'id': f'hb:{reading}:' + r['native_node_id'],
                'source_record_id': r['id']} for r in records]
     return {**leaves[0], 'amount_php': sum(r['amount_php'] for r in leaves),
             'pdf_pages': sorted({r['pdf_page'] for r in leaves}), 'records': leaves}
@@ -90,6 +95,8 @@ def build():
         if len(headings) != 1: raise ValueError('Expected one native I-C FAP control heading')
         fap_pages.append(headings)
         rows, paps, printed = comparison_inputs(ic, ib, source['pap_controls'], programs, region)
+        for row in rows:
+            annotate_source_labels(row)
         allocations.append(rows); controls.append(paps); totals.append(printed)
         summaries.append({'allocations': len(rows), 'named_projects': ic['audit_summary']['named_project_leaves'],
                           'mooe_co_php': ic['audit_summary']['additive_leaf_total_php'], **printed})
@@ -120,7 +127,12 @@ def build():
                 'method': 'Unique normalized title, PAP, region, office, allocation kind and local/FAP scope. Repeated keys are grouped without individual pairing. Absence is zero only for the reading-ledger difference; presence alone does not certify a new or removed project.',
                 'inputs': {name: digest(DATA / name) for name in INPUTS},
                 'generator': {'path': str(Path(__file__).relative_to(REPO)), 'sha256': digest(Path(__file__))},
-                'dependencies': {name: digest(REPO / name) for name in ('analysis/builders/house_native.py', 'analysis/builders/build_current_pages.py', 'scripts/hb_native_labels.py')},
+                'dependencies': {name: digest(REPO / name) for name in (
+                    'analysis/builders/house_native.py',
+                    'analysis/builders/build_current_pages.py',
+                    'analysis/builders/normalize_labels.py',
+                    'analysis/builders/chainage.py',
+                    'scripts/hb_native_labels.py')},
                 'source_documents': documents}
     return {'manifest': manifest, 'summary': summary, 'paps': paps, 'projects': projects}
 

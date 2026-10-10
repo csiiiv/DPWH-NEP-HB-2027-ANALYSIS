@@ -1,5 +1,6 @@
 import { searchTokens } from "./search.js";
 import { matchesOffice, officeAssignments } from "../../viewers/project_offices.mjs";
+import {matchesFlag, matchesMatchStatus} from './matchFilters.js';
 export { officeOptions, officeLabels, NO_OFFICE } from "../../viewers/project_offices.mjs";
 
 const textOrder=new Intl.Collator(undefined,{numeric:true});
@@ -85,11 +86,14 @@ export function selectRows(
     region = "",
     office = "",
     trace = "",
+    matchStatus = "",
+    flag = "",
     readingStatus = "",
     column = "title",
     mode = "total",
     direction = 1,
     tab = "projects",
+    counterparts = null,
   },
 ) {
   // Review deep links use q=<comparison row id>. Token search would split
@@ -98,6 +102,11 @@ export function selectRows(
   if (exactId && rows.some((r) => r.id === exactId)) {
     return sortedRows(rows, tab, column, mode, direction).filter((r) => r.id === exactId);
   }
+  // Legacy readingStatus presence splits (Analysis deep links) plus new flag=.
+  const nepOnlySplit = readingStatus === 'nep_only_unresolved' || readingStatus === 'nep_only_suggested'
+    ? (r) => Boolean(r.nep) && !r.second && !r.third
+       && (readingStatus === 'nep_only_suggested' ? counterparts?.has(r.id) : !counterparts?.has(r.id))
+    : null;
   const tokens=searchTokens(query);
   return sortedRows(rows,tab,column,mode,direction)
     .filter(
@@ -106,7 +115,10 @@ export function selectRows(
         matchesProgram(r,program) &&
         (!region || officeAssignments(r).some(a=>a.region===region)) &&
         matchesOffice(r, office, region) &&
-        (!readingStatus || (readingStatus === 'house_records_only' ? (tab==='paps' ? (r.second_php != null || r.third_php != null) && r.nep_php == null && r.api_php == null : Boolean(r.second || r.third) && !r.nep && !r.api) : readingStatus === 'reading_changed' ? r.reading_delta_php != null && r.reading_delta_php !== 0 || ['second_only','third_only'].includes(r.reading_status) : r.reading_status === readingStatus)) &&
+        (!nepOnlySplit || nepOnlySplit(r)) &&
+        (!readingStatus || nepOnlySplit || (readingStatus === 'house_records_only' ? (tab==='paps' ? (r.second_php != null || r.third_php != null) && r.nep_php == null && r.api_php == null : Boolean(r.second || r.third) && !r.nep && !r.api) : readingStatus === 'reading_changed' ? r.reading_delta_php != null && r.reading_delta_php !== 0 || ['second_only','third_only'].includes(r.reading_status) : r.reading_status === readingStatus)) &&
+        matchesMatchStatus(r, tab === 'projects' ? matchStatus : '') &&
+        matchesFlag(r, tab === 'projects' ? flag : '', counterparts) &&
         (!trace || (trace === "reading_changed" && tab === "readings"
           ? r.delta_php !== 0 || ["second_only", "third_only"].includes(r.trace)
           : r.trace === trace)),

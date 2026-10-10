@@ -3,7 +3,7 @@ import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {headlineStats} from './src/headlineStats.js';
 import {unifiedComparison} from './src/unifiedComparison.js';
-const fields=['id','source_record_id','native_node_id','title','amount_php','program','pap','pap_id','zone','region','office','pdf_page','pdf_pages','record_kind','evidence','funding_php'];
+const fields=['id','source_record_id','native_node_id','title','title_match_key','title_base','title_base_match_key','chainages','chainage_incomplete','amount_php','program','pap','pap_id','zone','region','office','office_canonical','pdf_page','pdf_pages','record_kind','evidence','funding_php'];
 function compactSource(source){
  if(!source)return null;
  const result=Object.fromEntries(fields.filter(key=>source[key]!==undefined).map(key=>[key,source[key]]));

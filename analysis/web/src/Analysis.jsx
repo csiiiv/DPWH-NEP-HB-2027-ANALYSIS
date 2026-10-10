@@ -12,7 +12,8 @@ const names={third:'HGAB3 · 3rd reading',second:'HGAB2 · 2nd reading',nep:'DBM
 const labels={'Bridge Program':'Bridges','Convergence and Special Support Program':'CSSP','Foreign-assisted projects':'FAPs'};
 const short=value=>labels[value]??value;
 const modes={no_suggestion:'House-only · no NEP suggestion',unresolved:'Unresolved NEP suggestions',third_only:'New 3rd-reading records'};
-const views=[['overview','Overview'],['insertions','Insertions'],['adjustments','Adjustments'],['statistics','Statistics']];
+const deletionModes={no_suggestion:'No House record · no suggestion',suggested:'Possible replacements · House rows suggest this NEP item',second_only:'HGAB2 only · dropped in HGAB3'};
+const views=[['overview','Overview'],['insertions','Insertions'],['deletions','Deletions'],['adjustments','Adjustments'],['statistics','Statistics']];
 const dimensions=[['overall','Overall'],['region','Region'],['office','District office'],['program','Category'],['pap','PAP']];
 const pick=(params,key,allowed,fallback)=>allowed.includes(params.get(key))?params.get(key):fallback;
 const dimensionTitle=dim=>dim==='office'?'district office':dim==='pap'?'PAP':dim;
@@ -20,6 +21,7 @@ const groupLabel=(dim,label)=>dim==='region'?regionName(label):dim==='office'?of
 const amountCell=(value,title)=><span title={(title??(value?.toLocaleString('en-PH')??''))+' PHP'}>{amount(value)}</span>;
 // Signed amounts color green when positive, red when negative.
 const signedCell=value=><span className={value>0?'up':value<0?'down':''} title={(value?.toLocaleString('en-PH')??'')+' PHP'}>{value>0?'+':''}{amount(value)}</span>;
+const signedCount=value=><span className={value>0?'up':value<0?'down':''}>{value>0?'+':''}{(value??0).toLocaleString()}</span>;
 const signedPercent=value=>value==null?<span>n/a</span>
  :<span className={value>0?'up':value<0?'down':''}>{value>0?'+':''}{value.toFixed(1)}%</span>;
 function percentChange(current,prior){
@@ -33,10 +35,13 @@ export default function Analysis({route}){
  const ranking=pick(route.params,'ranking',Object.keys(modes),'no_suggestion');
  const dim=pick(route.params,'dim',dimensions.map(d=>d[0]),'overall');
  const direction=pick(route.params,'direction',['increased','reduced'],'increased');
+ const deletionRanking=pick(route.params,'ranking',Object.keys(deletionModes),'no_suggestion');
+ // Overview defaults to region so the NEP vs House change table is immediately useful.
+ const overviewDim=view==='overview'&&!route.params.get('dim')?'region':dim;
  useEffect(()=>{const c=new AbortController();loadData('comparison_overview_2027.json',c.signal).then(setData).catch(e=>{if(e.name!=='AbortError')setError(e.message);});return()=>c.abort();},[]);
- // Detail rows load lazily for adjustments/statistics, or when a group modal opens.
+ // Detail rows load lazily for deletions/adjustments/statistics, or when a group modal opens.
  useEffect(()=>{
-  if((!['adjustments','statistics'].includes(view)&&!group)||!data||detail)return;
+  if((!['deletions','adjustments','statistics'].includes(view)&&!group)||!data||detail)return;
   const c=new AbortController();loadData('comparison_projects_2027.json',c.signal)
    .then(payload=>setDetail(hydrateProjects(payload))).catch(e=>{if(e.name!=='AbortError')setError(e.message);});
   return()=>c.abort();
@@ -46,7 +51,7 @@ export default function Analysis({route}){
  if(error)return <p role="alert">{error}</p>;
  if(!data)return <p role="status">Loading analysis…</p>;
  const stats=data.headlines.sources[source];
- const needsDetail=(['adjustments','statistics'].includes(view)||group)&&!detail;
+ const needsDetail=(['deletions','adjustments','statistics'].includes(view)||group)&&!detail;
  return <div className="headline-analysis">
   <p className="eyebrow">DPWH · FY2027</p><h1>Analysis</h1>
   <p>Office assignments, program allocations and review candidates from the retained budget records.</p>
@@ -55,8 +60,9 @@ export default function Analysis({route}){
    <button key={key} role="tab" aria-selected={view===key} onClick={()=>change('view',key)}>{title}</button>)}</nav>
   <p className="notice">Counts refer to source allocation records, including grouped members, rather than unique projects across stages. Office assignments come from the selected source; missing assignments are shown separately. Scope: operations, including local and foreign-assisted projects. Transparency reflects its retained listing. Tables sort on any column. Click a group name to list its comparison rows.</p>
   {needsDetail&&<p role="status">Loading per-record data…</p>}
-  {view==='overview'&&<Overview stats={stats} source={source}/>}
+  {view==='overview'&&<Overview stats={stats} source={source} headlines={data.headlines} dim={overviewDim} change={change}/>}
   {view==='insertions'&&<Insertions headlines={data.headlines} reading={reading(source)} ranking={ranking} dim={dim} change={change} onOpenGroup={openGroup}/>}
+  {view==='deletions'&&<Deletions headlines={data.headlines} ranking={deletionRanking} dim={dim} change={change} onOpenGroup={openGroup}/>}
   {view==='adjustments'&&detail&&<Adjustments detail={detail} revisionSets={data.headlines.revisionSets} dim={dim} direction={direction} change={change} onOpenGroup={openGroup}/>}
   {view==='statistics'&&detail&&<Statistics detail={detail} source={source} dim={dim} change={change}/>}
   {group&&detail&&<Suspense fallback={null}><GroupProjectsModal projects={detail} group={group} onClose={()=>setGroup(null)}/></Suspense>}
@@ -67,12 +73,36 @@ function DimensionChips({dim,change}){
  return <div className="dimension-chips" role="group" aria-label="Break down by">{dimensions.map(([key,title])=>
   <button key={key} className={dim===key?'active':''} aria-pressed={dim===key} onClick={()=>change('dim',key)}>{title}</button>)}</div>;
 }
-function Overview({stats,source}){
+function Overview({stats,source,headlines,dim,change}){
+ const houseSide=reading(source);
+ const houseLabel=houseSide==='third'?'HGAB3':'HGAB2';
+ const compare=headlines.sourceCompare[houseSide];
+ const rows=compare.by_dim[dim]??compare.by_dim.region;
+ const dimLabel=dim==='overall'?'Group':dim==='office'?'District office':dim==='pap'?'PAP':dim==='program'?'Category':'Region';
  return <>
   <div className="cards analysis-headlines"><article><h3>Source allocation records</h3><strong>{stats.records.toLocaleString()}</strong><p>{names[source]}</p></article><article><h3>Allocated amount</h3><strong>{amount(stats.amount_php)}</strong><p>PHP · selected source only</p></article><article><h3>Central Office / DEOs</h3><strong>{stats.offices['Central Office'].records.toLocaleString()} / {stats.offices['District engineering offices (DEOs)'].records.toLocaleString()}</strong><p>Allocation records · regional and missing offices separate</p></article></div>
+  <section className="analysis-section"><h2>NEP → {houseLabel}{dim==='overall'?'':' by '+dimensionTitle(dim)}</h2>
+   <DimensionChips dim={dim} change={change}/>
+   <p className="muted">Operations comparison grain. Totals: NEP {amount(compare.nep_php)} ({headlines.sources.nep.records.toLocaleString()} records) · {houseLabel} {amount(compare.house_php)} ({headlines.sources[houseSide].records.toLocaleString()} records) · records change {signedCount(headlines.sources[houseSide].records-headlines.sources.nep.records)} · allocation change {signedCell(compare.delta_php)}. Each source uses its own assignment for the selected breakdown; a paired row can land in different groups when labels differ.</p>
+   <SortableTable ariaLabel={`NEP to ${houseLabel} by ${dimLabel}`} initialSort={{key:'delta_php',direction:'desc'}} rows={rows.map(r=>{
+    const nepRecords=r.nep_records??0,houseRecords=r.house_records??0;
+    return {...r,delta_records:houseRecords-nepRecords,pct_records:percentChange(houseRecords,nepRecords),pct_alloc:percentChange(r.house_php,r.nep_php)};
+   })} columns={[
+    {key:'label',label:dimLabel,scope:'row',render:r=><span>{dim==='overall'?r.label:dim==='program'?short(r.label):groupLabel(dim,r.label)}</span>},
+    {key:'nep_records',label:'NEP records',align:'num',band:'records',bandLabel:'Records',render:r=><span>{(r.nep_records??0).toLocaleString()}</span>},
+    {key:'house_records',label:`${houseLabel} records`,align:'num',band:'records',render:r=><span>{(r.house_records??0).toLocaleString()}</span>},
+    {key:'delta_records',label:'Records change',align:'num',band:'records',render:r=>signedCount(r.delta_records)},
+    {key:'pct_records',label:'% records change',align:'num',band:'records',render:r=>signedPercent(r.pct_records)},
+    {key:'nep_php',label:'NEP allocation',align:'num',band:'allocations',bandLabel:'Allocations',divider:true,render:r=>amountCell(r.nep_php)},
+    {key:'house_php',label:`${houseLabel} allocation`,align:'num',band:'allocations',render:r=>amountCell(r.house_php)},
+    {key:'delta_php',label:'Allocation change',align:'num',band:'allocations',render:r=>signedCell(r.delta_php)},
+    {key:'pct_alloc',label:'% allocation change',align:'num',band:'allocations',render:r=>signedPercent(r.pct_alloc)},
+   ]}/>
+  </section>
   <div className="analysis-distributions"><Distribution title="Central Office vs DEOs" buckets={stats.offices} total={stats.records}/><Distribution title="Records by program" buckets={stats.programs} total={stats.records}/></div>
   <section className="analysis-section"><h2>Explore further</h2><div className="analysis-crosslinks">
    <a href={routeHref('analysis',{view:'insertions'})}>Insertion candidates by region, office, category and PAP →</a>
+   <a href={routeHref('analysis',{view:'deletions'})}>Deletion candidates · NEP items without House records, with possible replacements →</a>
    <a href={routeHref('analysis',{view:'adjustments'})}>Reading adjustments and cross-document differences →</a>
    <a href={routeHref('analysis',{view:'statistics'})}>Rounding, Benford and value clustering →</a>
   </div></section>
@@ -105,6 +135,25 @@ function Insertions({headlines,reading,ranking,dim,change,onOpenGroup}){
    {key:'allocation_records',label:'Records / status',align:'num',render:r=><span>{r.allocation_records} source allocation {r.allocation_records===1?'record':'records'}<small>{r.trace.replaceAll('_',' ')}</small></span>},
    {key:'review',label:'Review',sortable:false,render:r=><span><a href={routeHref('compare',{view:'projects',region_match:'ignore',q:r.id,record:r.id})}>Review comparison</a><br/><a href={routeHref('house',{view:'projects',reading:reading==='third'?'third':'second',node:r.source_id})}>{r.allocation_records>1?'House source tree · first allocation':'House source tree'}</a></span>},
   ]} empty="No records in this group for the selected House reading."/>
+ </section>;
+}
+function Deletions({headlines,ranking,dim,change,onOpenGroup}){
+ const list=headlines.deletions[ranking];
+ return <section className="analysis-section"><h2>Top deletion candidates</h2>
+  <div className="analysis-controls"><label>Candidate group<select aria-label="Analysis deletion group" value={ranking} onChange={e=>change('ranking',e.target.value)}>{Object.entries(deletionModes).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></div>
+  <DimensionChips dim={dim} change={change}/>
+  <p className="muted">Ranked by NEP allocation · top {Math.min(100,list.comparison_rows).toLocaleString()} of {list.comparison_rows.toLocaleString()} comparison rows · {amount(list.amount_php)} across this group. Grouped allocations remain grouped.</p>
+  <p className="notice">{ranking==='no_suggestion'?'NEP line items with no attached House record and no House row suggesting them as a counterpart. These are review candidates, not confirmed deletions — title or assignment differences can prevent pairing.':ranking==='suggested'?'NEP-only items that unmatched House rows name as possible counterparts. Review the referring House rows: a re-titled or re-scoped line item can look like a deletion plus an insertion when it is a replacement. Suggestion counts refer to House rows, not certified identities.':'Records present only in HGAB2 under the retained reading key — dropped between readings. Currently none; the group guards future readings data.'}</p>
+  {dim!=='overall'&&<AggregateTable title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
+   onOpenGroup={g=>onOpenGroup({scope:'deletions',ranking,dim,label:g.label,displayLabel:groupLabel(dim,g.label)})}/>}
+  <SortableTable ariaLabel="Top deletion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
+   {key:'rank',label:'#',sortable:false,render:(r,i)=><span>{i+1}</span>},
+   {key:'title',label:'Project / assignment',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {regionName(r.region)} · {officeName(r.office)||'No recorded office'}</small></span>},
+   {key:'amount_php',label:'NEP allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
+   {key:'allocation_records',label:'Records / status',align:'num',render:r=><span>{r.allocation_records} NEP allocation {r.allocation_records===1?'record':'records'}<small>{r.trace.replaceAll('_',' ')}</small></span>},
+   {key:'referring_house_rows',label:'Referring House rows',align:'num',render:r=><span>{ranking==='suggested'?`${r.referring_house_rows.toLocaleString()} referring House ${r.referring_house_rows===1?'row':'rows'}`:'—'}</span>},
+   {key:'review',label:'Review',sortable:false,render:r=><span><a href={routeHref('compare',{view:'projects',q:r.id,record:r.id})}>Review comparison</a>{r.source_kind==='nep'&&r.source_id&&<><br/><a href={routeHref('nep',{node:r.source_id})}>NEP source tree</a></>}</span>},
+  ]} empty="No records in this group."/>
  </section>;
 }
 function AggregateTable({title,groups,dim,onOpenGroup}){

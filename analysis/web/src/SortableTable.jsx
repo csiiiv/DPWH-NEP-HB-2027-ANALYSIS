@@ -34,21 +34,39 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty}
   setSort(current=>!current||current.key!==key?{key,direction:initial}
    :current.direction===initial?{key,direction:initial==='asc'?'desc':'asc'}:null);
  }
- return <div className="sortable-table" role="region" aria-label={ariaLabel} tabIndex={0}>
+ const bandHeader=useMemo(()=>{
+  if(!columns.some(c=>c.bandLabel))return null;
+  const groups=[];
+  for(const column of columns){
+   const last=groups[groups.length-1];
+   if(last && last.band===column.band){last.span++;continue;}
+   groups.push({band:column.band||'',label:column.bandLabel||'',span:1,divider:Boolean(column.divider)});
+  }
+  return groups;
+ },[columns]);
+ const cellClass=column=>[column.align||'',column.band?`band-${column.band}`:'',column.divider?'col-divider':''].filter(Boolean).join(' ');
+ return <div className={`sortable-table${bandHeader?' has-bands':''}`} role="region" aria-label={ariaLabel} tabIndex={0}>
   <table>
-   <thead><tr>{columns.map(column=><th key={column.key} scope="col"
+   <thead>
+    {bandHeader&&<tr className="band-row">{bandHeader.map((group,i)=>
+     <th key={`${group.band||'g'}-${i}`} colSpan={group.span} scope="col"
+      className={[group.band?`band-${group.band}`:'',group.divider?'col-divider':'',group.label?'':'band-spacer'].filter(Boolean).join(' ')}>
+      {group.label||'\u00a0'}
+     </th>)}</tr>}
+    <tr>{columns.map(column=><th key={column.key} scope="col" className={cellClass(column)}
      aria-sort={sort?.key===column.key?(sort.direction==='asc'?'ascending':'descending'):'none'}>
      {column.sortable===false?<span className="th-label">{column.label}</span>
       :<button type="button" className="th-sort" onClick={()=>toggle(column.key)} title={column.title||`Sort by ${column.label}`}>
        <span className="th-label">{column.label}</span>
        <span className="sort-arrow" aria-hidden="true">{sort?.key===column.key?(sort.direction==='asc'?'▲':'▼'):''}</span>
       </button>}
-    </th>)}</tr></thead>
+    </th>)}</tr>
+   </thead>
    <tbody>{sorted.map((row,i)=><tr key={row.id??i}>{columns.map(column=>{
      const Tag=column.scope==='row'?'th':'td';
      return column.render
-      ?<Tag key={column.key} className={column.align||''}>{column.render(row,i)}</Tag>
-      :<Tag key={column.key} className={column.align||''}>{formatCell(column.value?column.value(row):row[column.key])}</Tag>;
+      ?<Tag key={column.key} className={cellClass(column)}>{column.render(row,i)}</Tag>
+      :<Tag key={column.key} className={cellClass(column)}>{formatCell(column.value?column.value(row):row[column.key])}</Tag>;
    })}</tr>)}
     {!rows.length&&<tr><td colSpan={columns.length}>{empty||'No rows.'}</td></tr>}
    </tbody>

@@ -2,7 +2,7 @@
   "manifest": {
     "schema_version": 2,
     "fiscal_year": 2027,
-    "built_at": "2026-10-10T18:26:07+08:00",
+    "built_at": "2026-10-10T23:40:25+08:00",
     "stages": {
       "nep": "Executive NEP proposal",
       "house": "HB 10858 supplied source documents; amendment completeness not certified"
@@ -12,13 +12,15 @@
     "nep_version": 1,
     "scope": "New appropriations excluding automatic appropriations; operations project comparison; local and FAP separated",
     "units": "Integer Philippine pesos",
-    "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Titles are normalized token-wise: common abbreviation variants (Brgy./Barangay) expand before matching and consecutive repeated tokens collapse. Amount does not determine identity. Duplicate keys remain ambiguous. FAP loans additionally pair across differing program sections (I-C National Building Program vs NEP Local Program) when the normalized title, region and funding zone are each unique. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; suggestions whose title differs only in digits are labeled chainage candidates (possible re-segmentation or coverage amendments). Suggestions do not consume NEP rows. No pair has been manually certified.",
+    "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Titles are normalized token-wise: common abbreviation variants (Brgy./Barangay) and place-name OCR slips (Marindugue/Marinduque, Siguijor/Siquijor) expand before matching; structure/road IDs rewrite OCR letter O in digit runs (Bo0008LB/B00008LB); consecutive repeated tokens collapse. Titles also parse into title_base + chainage spans (K/Sta/C/Chainage); unique same-base differing stations attach as chainage matches with reasons (station-marker adjustment, length change, re-segmentation) and amount deltas like exact pairs. Amount does not determine identity. Duplicate keys remain ambiguous. FAP loans additionally pair across differing program sections (I-C National Building Program vs NEP Local Program) when the normalized title, region and funding zone are each unique. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; unique same title_base with different chainage spans (or digit-only title diffs) attach as chainage matches (consume NEP). Suggestions do not consume NEP rows. No pair has been manually certified.",
     "generator": {
       "path": "analysis/builders/build_current_pages.py",
-      "sha256": "185d47253942945a6d5b39a57ad61dc53d79e87c5df1f96a4e019f60f5c2bdf3"
+      "sha256": "07cdd67296a4b1803c58717f89c29748e68fc0eaf63c0d10c8534f3859069e28"
     },
     "generator_dependencies": {
       "analysis/builders/house_native.py": "67405d3561660c7e7c75e1073fc7381e5524dabd562b1a81054004867f9b161b",
+      "analysis/builders/normalize_labels.py": "8aded35cced605809e340957361972dc56f7b0e8088fba10b420c8e2b97ac6e7",
+      "analysis/builders/chainage.py": "b58aee618111334c9429f8650522bb8574a11109839617c65abcf4f3c87c61c5",
       "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
     },
     "inputs": {
@@ -82,12 +84,12 @@
       "review_candidates": 3191
     },
     "match_counts": {
-      "exact_candidate": 9570,
-      "house_unmatched": 5788,
-      "chainage_candidate": 243,
-      "fuzzy_candidate": 666,
+      "exact_candidate": 9594,
+      "house_unmatched": 5743,
+      "chainage_candidate": 275,
+      "fuzzy_candidate": 655,
       "ambiguous": 3,
-      "nep_unmatched": 1850
+      "nep_unmatched": 1551
     },
     "reviewed_pairs": 0,
     "api": {
