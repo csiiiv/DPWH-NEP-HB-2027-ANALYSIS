@@ -2,7 +2,7 @@ import React,{useEffect,useMemo,useRef} from 'react';
 import {amount} from './model.js';
 import {routeHref} from './routes.js';
 import SortableTable from './SortableTable.jsx';
-import {regionName} from './regionNames.js';
+import {officeName,regionName} from './regionNames.js';
 import {filterGroupProjects,compareHrefForGroup} from './groupProjects.js';
 
 const amountCell=value=><span title={(value?.toLocaleString('en-PH')??'')+' PHP'}>{amount(value)}</span>;
@@ -36,7 +36,7 @@ export default function GroupProjectsModal({projects,group,onClose,returnFocus})
   </header>
   <div className="analytics-content group-projects-content">
    <SortableTable ariaLabel="Group project records" initialSort={{key:'amount_php',direction:'desc'}} rows={rows} empty="No comparison rows in this group." columns={[
-    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.program} · {regionName(r.region)} · {(r[houseKey]||r.third||r.second)?.office||'No recorded office'} · {(r.trace||'').replaceAll('_',' ')}</small></span>},
+    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.program} · {regionName(r.region)} · {officeName((r[houseKey]||r.third||r.second)?.office)||'No recorded office'} · {(r.trace||'').replaceAll('_',' ')}</small></span>},
     {key:'amount_php',label:'House',align:'num',value:r=>(r[houseKey]||r.third||r.second)?.amount_php,render:r=>{const v=(r[houseKey]||r.third||r.second)?.amount_php;return v!=null?amountCell(v):<span>—</span>;}},
     {key:'nep_php',label:'NEP',align:'num',value:r=>r.nep?.amount_php,render:r=>r.nep?amountCell(r.nep.amount_php):<span>—</span>},
     {key:'gap',label:'House − NEP',align:'num',value:r=>{const h=(r[houseKey]||r.third||r.second)?.amount_php;return h!=null&&r.nep!=null?h-r.nep.amount_php:null;},

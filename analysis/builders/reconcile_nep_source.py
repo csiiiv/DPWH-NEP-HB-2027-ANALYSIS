@@ -23,6 +23,8 @@ from pathlib import Path
 
 import pymupdf
 
+from house_native import office_from_region_parent
+
 ROOT = REPO
 DEFAULT_SOURCE = Path('/mnt/6E9A84429A8408B3/WORK/BetterGovPH/Budget-NEP/NEP_PDF_DATA/paddle_pdf_ocr_v2')
 DISASTER = 'Rehabilitation of Disaster-Related Infrastructure and Other Facilities'
@@ -94,8 +96,11 @@ def extract(base, api):
         if not atomic or n.get('excluded'):
             continue
         assert pap is not None, n['id']
-        # Stop office inference at the closest region: outer Central Office
-        # nodes also contain region-direct project branches in the source tree.
+        # Prefer the nearest DEO/office under a region. Stop collecting DEOs at
+        # the region so a nearer district office wins over outer headings.
+        # Region-direct leaves with no DEO: if Central Office is still on the
+        # path above, that is the implementing office; otherwise inherit the
+        # regional office from the region parent.
         r, office, current = '', '', n
         is_region = region(n['label']) in ('Nationwide', 'NCR', 'CAR', 'NIR', 'MIMAROPA') or bool(re.fullmatch(r'Region [IVX]+(?:-[AB])?', region(n['label'])))
         if is_region:
@@ -107,6 +112,21 @@ def extract(base, api):
             if current['kind'] == 'region':
                 r = r or region(current['label'])
                 break
+        if not office:
+            central = False
+            probe = current
+            while probe.get('parent'):
+                probe = lookup[probe['parent']]
+                if probe['kind'] == 'office' and probe['label'] == 'Central Office':
+                    central = True
+                    break
+                # Outer NCR above a different region also marks Central Office
+                # context when the CO node is absent from the printed tree.
+                if (probe['kind'] == 'region' and region(probe['label']) == 'NCR'
+                        and r and r != 'NCR'):
+                    central = True
+                    break
+            office = office_from_region_parent('', r, central_office=central)
         title = ' '.join((n.get('label_raw') or n['label']).split())
         allocation = 'project'
         is_office = (n['label'].startswith('Regional Office ') or n['label'].endswith(' Regional Office') or n['label'] == 'BARMM'
@@ -327,7 +347,7 @@ def main():
     report += ['', '## Source extraction repairs and validation', '',
                '- PDF page 494: split the final two merged OCR project titles. Bentigan is ₱20M; Bertese is ₱5M. The added ₱5M makes BIP Access Roads and its Nueva Ecija 1st DEO subtotal balance. Both printed titles and amounts were checked against the PDF image and native text.',
                '- PDF page 286: restore four CDO diversion-road titles whose common first line drifted across OCR row boundaries. Amounts and row count are unchanged; repairs use the PDF text independently of API titles.',
-               '- Preserve `label_raw` chainages rather than using the shortened road-name label. Normalize standalone regional/office allocations into comparable titles. Stop office inference at the nearest region to avoid assigning outer Central Office headings to every regional project.',
+               '- Preserve `label_raw` chainages rather than using the shortened road-name label. Normalize standalone regional/office allocations into comparable titles. Prefer the nearest DEO under a region; region-direct leaves with a Central Office ancestor inherit Central Office, otherwise the regional office from the region parent.',
                f"- API comparison pairs all {len(api):,} rows by equal PAP and amount: **{summary['api_pair_kinds'].get('exact_title_amount',0):,} normalized exact titles** plus **{summary['api_pair_kinds'].get('ocr_title_candidate',0)} OCR-title candidates**. The latter remain review candidates. Aggregate and PAP arithmetic balances independently of whether every candidate identity is correct.",
                '- No API, House leaf dataset, or external OCR repository was overwritten.', '',
                '## Reassessment of previously House-only items', '',

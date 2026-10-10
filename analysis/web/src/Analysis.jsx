@@ -6,7 +6,7 @@ import {routeHref} from './routes.js';
 import ShareLink from './ShareLink.jsx';
 import SortableTable from './SortableTable.jsx';
 import {benford,trailingZeros,lastDigits,roundingLadder,valueBands,kmeansClusters,exactConcentrations} from './analysisStats.js';
-import {regionName} from './regionNames.js';
+import {officeName,regionName} from './regionNames.js';
 const GroupProjectsModal=lazy(()=>import('./GroupProjectsModal.jsx'));
 const names={third:'HGAB3 · 3rd reading',second:'HGAB2 · 2nd reading',nep:'DBM NEP',api:'DPWH Transparency NEP'};
 const labels={'Bridge Program':'Bridges','Convergence and Special Support Program':'CSSP','Foreign-assisted projects':'FAPs'};
@@ -16,7 +16,7 @@ const views=[['overview','Overview'],['insertions','Insertions'],['adjustments',
 const dimensions=[['overall','Overall'],['region','Region'],['office','District office'],['program','Category'],['pap','PAP']];
 const pick=(params,key,allowed,fallback)=>allowed.includes(params.get(key))?params.get(key):fallback;
 const dimensionTitle=dim=>dim==='office'?'district office':dim==='pap'?'PAP':dim;
-const groupLabel=(dim,label)=>dim==='region'?regionName(label):label;
+const groupLabel=(dim,label)=>dim==='region'?regionName(label):dim==='office'?officeName(label):label;
 const amountCell=(value,title)=><span title={(title??(value?.toLocaleString('en-PH')??''))+' PHP'}>{amount(value)}</span>;
 // Signed amounts color green when positive, red when negative.
 const signedCell=value=><span className={value>0?'up':value<0?'down':''} title={(value?.toLocaleString('en-PH')??'')+' PHP'}>{value>0?'+':''}{amount(value)}</span>;
@@ -95,12 +95,12 @@ function Insertions({headlines,reading,ranking,dim,change,onOpenGroup}){
   <div className="analysis-controls"><label>Candidate group<select aria-label="Analysis candidate group" value={ranking} onChange={e=>change('ranking',e.target.value)}>{Object.entries(modes).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></div>
   <DimensionChips dim={dim} change={change}/>
   <p className="muted">Ranked by {names[reading]} allocation · top {Math.min(100,list.comparison_rows).toLocaleString()} of {list.comparison_rows.toLocaleString()} comparison rows · {amount(list.amount_php)} across this group. Grouped allocations remain grouped.</p>
-  <p className="notice">{ranking==='no_suggestion'?'House records with no attached NEP/Transparency source and no retained NEP suggestion. These are review candidates, not confirmed insertions.':ranking==='unresolved'?'House records with possible or ambiguous NEP counterparts are separated from the no-suggestion list. Review their suggestions before claiming an insertion.':'Records present only in HGAB3 under the retained reading key. This shows a reading difference, not confirmed absence from NEP.'} Unique different-region title candidates are linked for review and excluded from the House-only groups.</p>
+   <p className="notice">{ranking==='no_suggestion'?'House records with no attached NEP/Transparency source and no retained NEP suggestion. These are review candidates, not confirmed insertions.':ranking==='unresolved'?'House records with possible or ambiguous NEP counterparts are separated from the no-suggestion list. Review their suggestions before claiming an insertion.':'Records present only in HGAB3 under the retained reading key. This shows a reading difference, not confirmed absence from NEP.'} Unique different-region title candidates are linked for review and excluded from the House-only groups.</p>
   {dim!=='overall'&&<AggregateTable title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
    onOpenGroup={g=>onOpenGroup({scope:'insertions',reading,ranking,dim,label:g.label,displayLabel:groupLabel(dim,g.label)})}/>}
   <SortableTable ariaLabel="Top insertion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
    {key:'rank',label:'#',sortable:false,render:(r,i)=><span>{i+1}</span>},
-   {key:'title',label:'Project / assignment',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {regionName(r.region)} · {r.office||'No recorded office'}</small></span>},
+   {key:'title',label:'Project / assignment',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {regionName(r.region)} · {officeName(r.office)||'No recorded office'}</small></span>},
    {key:'amount_php',label:'Allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
    {key:'allocation_records',label:'Records / status',align:'num',render:r=><span>{r.allocation_records} source allocation {r.allocation_records===1?'record':'records'}<small>{r.trace.replaceAll('_',' ')}</small></span>},
    {key:'review',label:'Review',sortable:false,render:r=><span><a href={routeHref('compare',{view:'projects',region_match:'ignore',q:r.id,record:r.id})}>Review comparison</a><br/><a href={routeHref('house',{view:'projects',reading:reading==='third'?'third':'second',node:r.source_id})}>{r.allocation_records>1?'House source tree · first allocation':'House source tree'}</a></span>},

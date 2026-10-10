@@ -2,8 +2,10 @@ import React,{useEffect,useId,useMemo,useRef,useState} from 'react';
 import {amount,programLabel} from './model.js';
 import {analyticsSources,projectAnalytics,compareDistribution} from './projectAnalytics.js';
 import {readingInfo,matchInfo,flagInfo} from './analyticsStatusInfo.js';
+import {officeName,regionName} from './regionNames.js';
 const sections=[['overview','Overview'],['distribution','Distribution'],['changes','Changes & matches'],['flags','Review flags']];
 const human=value=>String(value ?? 'Unavailable').replaceAll('_',' ');
+const distributionLabel=(field,label)=>field==='region'?regionName(label):field==='office'?officeName(label):label;
 export default function ProjectAnalytics({rows,finding,onClose,returnFocus}) {
  const dialog=useRef(null),summary=useMemo(()=>projectAnalytics(rows),[rows]);
  const [tab,setTab]=useState('overview');
@@ -16,7 +18,7 @@ export default function ProjectAnalytics({rows,finding,onClose,returnFocus}) {
  },[]);
  const changed=rows.filter(r=>['third_only','second_only'].includes(r.reading_status) || r.reading_delta_php!=null && r.reading_delta_php!==0).length;
  const flagged=summary.flaggedRows;
- const filters=[finding.query && `Search: ${finding.query}`,finding.program && `Program: ${programLabel(finding.program)}`,finding.region && `Region: ${finding.region}`,finding.office && `Office: ${finding.office}`,finding.trace && `Match: ${matchInfo[finding.trace]?.[0] || human(finding.trace)}`,finding.readingStatus && `Reading: ${readingInfo[finding.readingStatus]?.[0] || human(finding.readingStatus)}`].filter(Boolean);
+ const filters=[finding.query && `Search: ${finding.query}`,finding.program && `Program: ${programLabel(finding.program)}`,finding.region && `Region: ${regionName(finding.region)}`,finding.office && `Office: ${officeName(finding.office)}`,finding.trace && `Match: ${matchInfo[finding.trace]?.[0] || human(finding.trace)}`,finding.readingStatus && `Reading: ${readingInfo[finding.readingStatus]?.[0] || human(finding.readingStatus)}`].filter(Boolean);
  function changeTab(next){setTab(next);dialog.current.querySelector('.analytics-content')?.scrollTo(0,0);}
  return <dialog ref={dialog} className="analytics-dialog" aria-labelledby="analytics-title" onCancel={e=>{e.preventDefault();onClose();}} onClick={e=>{
   if(e.target!==e.currentTarget)return;const b=e.currentTarget.getBoundingClientRect();if(e.clientX<b.left || e.clientX>b.right || e.clientY<b.top || e.clientY>b.bottom)onClose();
@@ -41,7 +43,7 @@ export default function ProjectAnalytics({rows,finding,onClose,returnFocus}) {
    </>}
    {tab==='distribution' && <>
     <p className="analytics-section-intro">House (HGAB3) and DBM NEP allocations shown side by side per group. Bars share one scale within a chart; each source is grouped by its own recorded region or office, so a source with a different recorded label for the same project is charted under its own label. Shares use each source’s own filtered total.</p>
-    <div className="analytics-columns"><Distribution title="Region distribution" data={regions}/><Distribution title="Engineering office distribution" data={offices}/></div>
+    <div className="analytics-columns"><Distribution title="Region distribution" data={regions} field="region"/><Distribution title="Engineering office distribution" data={offices} field="office"/></div>
    </>}
    {tab==='changes' && <><p className="analytics-section-intro">House reading statuses compare HGAB2 with HGAB3. Cross-source statuses describe retained HGAB2/NEP candidate matches and any optional different-region joins. Select an info tag for its definition.</p><div className="analytics-columns"><Counts title="House reading status" entries={summary.changes} definitions={readingInfo}/><Counts title="Cross-source match status" entries={summary.matches} definitions={matchInfo}/></div></>}
    {tab==='flags' && <><p className="analytics-section-intro">{flagged.toLocaleString()} rows have at least one review flag. Categories can overlap, so their counts do not add up to a unique project total. These flags identify review needs.</p><Counts title="Review flags" entries={summary.flags} definitions={flagInfo} /></>}
@@ -49,9 +51,9 @@ export default function ProjectAnalytics({rows,finding,onClose,returnFocus}) {
  </dialog>;
 }
 function Metric({title,value,note}){return <article><h3>{title}</h3><strong>{value}</strong><p>{note}</p></article>;}
-function Distribution({title,data}) {
+function Distribution({title,data,field}) {
  const [expanded,setExpanded]=useState(false),limit=expanded?Infinity:8,shown=data.entries.slice(0,limit),max=data.entries.reduce((peak,group)=>Math.max(peak,group.hb,group.nep),0) || 1;
- return <section className="analytics-card"><h3>{title}</h3><p className="muted">{data.entries.length} recorded groups · ordered by larger of the two sources</p>{shown.length?<><div className="analytics-legend" aria-hidden="true"><span className="analytics-key analytics-key-hb"></span>House · HGAB3<span className="analytics-key analytics-key-nep"></span>DBM NEP</div><ul className="analytics-bars">{shown.map(group=><li key={group.label}><div className="analytics-bar-head"><span>{group.label}</span></div><div className="analytics-pair">
+ return <section className="analytics-card"><h3>{title}</h3><p className="muted">{data.entries.length} recorded groups · ordered by larger of the two sources</p>{shown.length?<><div className="analytics-legend" aria-hidden="true"><span className="analytics-key analytics-key-hb"></span>House · HGAB3<span className="analytics-key analytics-key-nep"></span>DBM NEP</div><ul className="analytics-bars">{shown.map(group=><li key={group.label}><div className="analytics-bar-head"><span>{distributionLabel(field,group.label)}</span></div><div className="analytics-pair">
   <div className="analytics-pair-track"><span className="hb" style={{width:`${group.hb/max*100}%`}}/><small>HB {amount(group.hb)}</small></div>
   <div className="analytics-pair-track"><span className="nep" style={{width:`${group.nep/max*100}%`}}/><small>NEP {amount(group.nep)}</small></div>
  </div><small>{group.rows.toLocaleString()} rows with either source · HB {data.totals.hb?(group.hb/data.totals.hb*100).toFixed(1):'0.0'}% · NEP {data.totals.nep?(group.nep/data.totals.nep*100).toFixed(1):'0.0'}%</small></li>)}</ul></>:<p>No recorded allocations for these sources.</p>}{data.entries.length>8 && <button className="analytics-show-more" aria-expanded={expanded} onClick={()=>setExpanded(!expanded)}>{expanded?'Show top 8':`Show all ${data.entries.length} groups`}</button>}</section>;

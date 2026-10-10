@@ -21,3 +21,20 @@ const REGION_NAMES={
  'Nationwide':'Nationwide',
 };
 export function regionName(code){return REGION_NAMES[code]??code;}
+
+// Printed regional-office labels → same place-name suffix as regionName.
+// DEOs, Central Office, and unknown labels pass through unchanged.
+function regionCodeForOffice(office){
+ if(office==='NCR Regional Office')return 'NCR';
+ if(office==='CAR Regional Office')return 'CAR';
+ if(office==='NIR Regional Office')return 'NIR';
+ if(office==='Regional Office MIMAROPA Region')return 'MIMAROPA';
+ const match=/^Regional Office ([IVX]+(?:-[AB])?)$/.exec(office||'');
+ return match?`Region ${match[1]}`:'';
+}
+export function officeName(office){
+ if(!office)return office??'';
+ const named=REGION_NAMES[regionCodeForOffice(office)];
+ if(!named||!named.includes(' · '))return office;
+ return `${office} · ${named.split(' · ')[1]}`;
+}

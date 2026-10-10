@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 from build_current_pages import project_matches, region, normalized, scope_key
+from house_native import office_from_region_parent, regional_office_label
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scripts'))
 from validate_current_pages import validate_current_pages
@@ -142,6 +143,21 @@ class CurrentPageTests(unittest.TestCase):
             [allocation('n', title='Reconstruction of Road, Barangay Mabini, Sample City')])
         self.assertEqual(flagged[0]['status'], 'exact_candidate')
         self.assertIn('normalization', flagged[0]['reason'])
+
+    def test_region_direct_leaves_inherit_regional_or_central_office(self):
+        self.assertEqual(regional_office_label('Region I'), 'Regional Office I')
+        self.assertEqual(regional_office_label('Region IV-A'), 'Regional Office IV-A')
+        self.assertEqual(regional_office_label('NCR'), 'NCR Regional Office')
+        self.assertEqual(regional_office_label('MIMAROPA'), 'Regional Office MIMAROPA Region')
+        self.assertEqual(regional_office_label('Nationwide'), '')
+        self.assertEqual(office_from_region_parent('', 'Region X'), 'Regional Office X')
+        self.assertEqual(office_from_region_parent('', 'Region X', central_office=True), 'Central Office')
+        self.assertEqual(office_from_region_parent('', 'Nationwide', central_office=True), 'Central Office')
+        # Outer NCR wrapping Region I (House path without a CO node) → CO.
+        self.assertEqual(office_from_region_parent('', 'Region I', central_office=True), 'Central Office')
+        self.assertEqual(office_from_region_parent('La Union 1st District Engineering Office', 'Region I',
+                                                   central_office=True),
+                         'La Union 1st District Engineering Office')
 
 
 if __name__ == '__main__':

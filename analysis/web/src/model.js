@@ -92,6 +92,12 @@ export function selectRows(
     tab = "projects",
   },
 ) {
+  // Review deep links use q=<comparison row id>. Token search would split
+  // "house-reading:848" into house/reading/848 and match many rows.
+  const exactId = String(query ?? "").trim();
+  if (exactId && rows.some((r) => r.id === exactId)) {
+    return sortedRows(rows, tab, column, mode, direction).filter((r) => r.id === exactId);
+  }
   const tokens=searchTokens(query);
   return sortedRows(rows,tab,column,mode,direction)
     .filter(

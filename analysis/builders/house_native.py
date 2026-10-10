@@ -18,6 +18,41 @@ def walk(node):
         yield from walk(child)
 
 
+def regional_office_label(reg):
+    """Map a canonical region to the printed Regional Office label.
+
+    Region-direct project leaves have no DEO node; the region parent implies
+    the regional office when Central Office is not also on the path.
+    Nationwide has no regional office label.
+    """
+    special = {
+        'NCR': 'NCR Regional Office',
+        'CAR': 'CAR Regional Office',
+        'NIR': 'NIR Regional Office',
+        'MIMAROPA': 'Regional Office MIMAROPA Region',
+        'Nationwide': '',
+    }
+    if reg in special:
+        return special[reg]
+    if re.fullmatch(r'Region [IVX]+(?:-[AB])?', reg or ''):
+        return 'Regional Office ' + reg[len('Region '):]
+    return ''
+
+
+def office_from_region_parent(office, reg, *, central_office=False):
+    """Fill empty office from hierarchy for region-direct allocations.
+
+    Central Office context means the implementing office is Central Office:
+    an explicit Central Office ancestor, or an outer National Capital Region
+    heading that wraps a different region (House trees often omit the CO node).
+    Otherwise inherit the regional office from the region parent.
+    """
+    if office:
+        return office
+    if central_office:
+        return 'Central Office'
+    return regional_office_label(reg or '')
+
 def validate_native_detail(ic, audit, repo):
     """Check retained source hashes, title ownership, and every additive node."""
     if ic['schema_version'] != 2 or ic['audit_summary'] != audit['summary']:
@@ -85,14 +120,22 @@ def comparison_inputs(ic, ib, controls, pap_programs, canonical_region):
     records, paps = [], {}
     ops = next(n for n in walk(ic['root']) if n['label'] == 'OPERATIONS')
 
-    def visit(n, ancestors=(), pap=None, reg='', office='', zone='local', program=None):
+    def visit(n, ancestors=(), pap=None, reg='', office='', zone='local', program=None,
+              central_context=False):
         text = unenumerated(n['label'])
         if text == 'FOREIGN-ASSISTED PROJECTS':
             zone = 'fap'
         if n['kind'] == 'region':
-            reg = canonical_region(text)
+            next_reg = canonical_region(text)
+            # Outer NCR wrapping another region is the House stand-in for the
+            # Central Office block when the CO heading itself is omitted.
+            if reg == 'NCR' and next_reg != 'NCR':
+                central_context = True
+            reg = next_reg
         if n['kind'] == 'office':
             office = text
+            if text == 'Central Office':
+                central_context = True
         if zone == 'fap' and n['kind'] == 'program':
             program = text.title()
             # Keep the existing NEP program spelling.
@@ -122,20 +165,24 @@ def comparison_inputs(ic, ib, controls, pap_programs, canonical_region):
                     funding[observation['label']] = 0
                 if sum(funding.values()) != n['printed_amount_php']:
                     raise ValueError(f'Unbalanced FAP project: {n["label"]}')
+            impl_region = reg or 'Nationwide'
             records.append({'id': 'hb:ic:' + n['id'], 'native_node_id': n['id'],
                             'title': text if zone == 'fap' else n['label'],
                             'amount_php': n['printed_amount_php'],
                             'pap': pap if zone == 'local' else 'Foreign-assisted projects',
                             'pap_id': controls[pap]['id'] if zone == 'local' else 'fap:' + program,
                             'program': pap_programs[pap] if zone == 'local' else program,
-                            'zone': zone, 'region': reg or 'Nationwide', 'office': office,
+                            'zone': zone, 'region': impl_region,
+                            'office': office_from_region_parent(office, impl_region,
+                                                               central_office=central_context),
                             'record_kind': n['kind'], 'pdf_page': n['source']['pdf_page'],
                             'source': n['source'],
                             'evidence': 'native_text_title_recovered' if n.get('title_recovered_from_wraps')
                                         else 'native_text', 'funding_php': funding})
             return
         for child in n['children']:
-            visit(child, ancestors + (n['label'],), pap, reg, office, zone, program)
+            visit(child, ancestors + (n['label'],), pap, reg, office, zone, program,
+                  central_context)
 
     visit(ops)
     for name, control in paps.items():

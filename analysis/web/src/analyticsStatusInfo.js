@@ -25,7 +25,7 @@ export const matchInfo={
 export const flagInfo={
  region_difference:['Different source regions','Two or more recorded sources assign different regions to this row. It can reflect document organization rather than the project’s physical location.'],
  office_difference:['Different source offices','Two or more nonblank recorded office names differ. This is an assignment discrepancy to inspect, not evidence of wrongdoing.'],
- no_office:['No recorded office','None of the sources attached to this comparison row provides an office name. We do not infer an office from the project title.'],
+ no_office:['No recorded office','None of the sources attached to this comparison row provides an office name after walking the printed hierarchy for a region or Central Office parent. We do not invent an office from the project title alone.'],
  repeated_key:['Grouped House records','Repeated House reading keys require grouping. Inspect each member’s source-tree path before making individual identity claims.'],
  uncertain_match:['Provisional matching','The cross-source status is ambiguous, fuzzy, or an optional different-region candidate. These are suggestions or candidates, not certified identities.'],
  nep_evidence_review:['NEP amount evidence review','The attached NEP record has a retained ambiguous-row, nearby-alignment, text-review or unchecked amount-evidence status. Inspect its source PDF; the amount is not automatically changed.'],

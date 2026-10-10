@@ -9,7 +9,7 @@ import sys
 from pathlib import Path as _Path
 sys.path[:0] = [str(_Path(__file__).resolve().parents[1]), str(_Path(__file__).resolve().parents[1] / 'builders')]
 from paths import ANALYSIS, REPO, DATA, VIEWERS, DOCS, ARCHIVE, EVIDENCE
-from house_native import comparison_inputs, validate_native_detail
+from house_native import comparison_inputs, office_from_region_parent, validate_native_detail
 
 import hashlib
 import json
@@ -208,11 +208,26 @@ def build():
         n = nodes[r['source_id']]
         assert r['amount_php'] == n['amount_php'] and n['additive'], r['source_id']
         # Project total stays a single record; GOP/loan children are not projects.
+        reg = region(r['region'])
+        office = r.get('office', '')
+        if not office:
+            current, nearest_office, central = n, '', False
+            while current.get('parent'):
+                current = nodes[current['parent']]
+                if current['kind'] == 'office':
+                    if current['label'] == 'Central Office':
+                        central = True
+                    elif not nearest_office:
+                        nearest_office = current['label']
+                elif (current['kind'] == 'region' and region(current['label']) == 'NCR'
+                      and reg and reg != 'NCR'):
+                    central = True
+            office = nearest_office or office_from_region_parent('', reg, central_office=central)
         nep.append({'id': r['source_id'], 'title': n['label'], 'amount_php': n['amount_php'],
                     'program': r['program'], 'pap': r['pap3'],
                     'pap_id': controls[r['pap3']]['id'] if r['zone'] == 'non_fap' else 'fap:' + r['program'],
                     'zone': 'local' if r['zone'] == 'non_fap' else 'fap',
-                    'region': region(r['region']), 'office': r.get('office', ''),
+                    'region': reg, 'office': office,
                     'pdf_page': r['pdf_page'], 'bbox': n['source'].get('bbox'),
                     'evidence': n.get('native_amount_status', 'not_checked'),
                     'funding_php': {nodes[c]['label']: nodes[c]['amount_php'] for c in n['children'] if nodes[c]['kind'] == 'funding'}})

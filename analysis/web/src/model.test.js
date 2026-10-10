@@ -34,6 +34,24 @@ test("filter and sort full result before pagination, preserving exact pesos", ()
   assert.equal(sorted[49].title, "Road 21");
   assert.equal(rows[0].title, "Road 0");
 });
+test("exact comparison-row id query pins one Review deep link", () => {
+  const rows = [
+    {id: "house-reading:8", title: "Road 848 spur", second: {office: "DEO A"}},
+    {id: "house-reading:848", title: "Target road", second: {office: "DEO A"}},
+    {id: "house-reading:8480", title: "Other road", second: {office: "DEO A"}},
+    {id: "stage:1", title: "NEP only 848 bridge", nep: {title: "848 bridge"}},
+  ];
+  // Token search would match every house-reading id plus any title containing 848.
+  assert.deepEqual(
+    selectRows(rows, {query: "house-reading:848"}).map((r) => r.id),
+    ["house-reading:848"],
+  );
+  // Partial / non-id queries still use token search (substring includes).
+  assert.deepEqual(
+    selectRows(rows, {query: "848"}).map((r) => r.id).sort(),
+    ["house-reading:8", "house-reading:848", "house-reading:8480", "stage:1"],
+  );
+});
 test("House PAP printed controls take precedence over extracted coverage", () => {
   const rows = [
     {

@@ -10,11 +10,14 @@ import {downloadResults} from "./comparisonExport.js";
 import {useDebouncedSearch} from "./useDebouncedSearch.js";
 import ShareLink from "./ShareLink.jsx";
 import {useComparisonFinding} from "./useComparisonFinding.js";
+import {officeName,regionName} from "./regionNames.js";
 const ProjectAnalytics = lazy(()=>import("./ProjectAnalytics.jsx"));
 const ProjectPaths = lazy(()=>import("./ProjectPaths.jsx"));
 const PdfPreview = lazy(() => import("./PdfPreview.jsx"));
 const names = ["DPWH Transparency NEP", "DBM NEP", "HGAB2 · 2nd reading", "HGAB3 · 3rd reading"];
 const label = (value) => (value ?? "").replaceAll("_", " ");
+const displayRegion = (value) => regionName(value) || label(value);
+const displayOffice = (value) => officeName(value) || label(value);
 export default function Comparison({ route }) {
   const [data, setData] = useState(null),
     [readings, setReadings] = useState(null),
@@ -326,9 +329,9 @@ export default function Comparison({ route }) {
                 Engineering office / DEO
                 <select aria-label="Engineering office / DEO" value={office} onChange={(e) => setOffice(e.target.value)}>
                   <option value="">All offices</option>
-                  {office && !offices.some(o=>o.value===office) && <option value={office}>Unavailable office: {office}</option>}
+                  {office && !offices.some(o=>o.value===office) && <option value={office}>Unavailable office: {displayOffice(office)}</option>}
                   {offices.map(o => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
+                    <option key={o.value} value={o.value}>{displayOffice(o.label)}</option>
                   ))}
                 </select>
               </label>
@@ -360,7 +363,7 @@ export default function Comparison({ route }) {
             Source regions, offices and programs remain recorded separately on the merged row. Duplicate titles stay separate; amounts do not determine identity. PAP totals are unchanged.
           </p>}
           {hasFilters && <div className="active-filters" aria-label="Active filters">
-            {[['query',query],['program',program],...(tab==='paps'?[]:[['region',region],['office',office]]),...(tab==='gaps'?[]:[['readingStatus',readingStatus]]),...(tab==='projects'?[['trace',trace],...(regionMatching==='ignore'?[['regionMatching','Allow different regions']]:[])]:[])].filter(([,v])=>v).map(([key,v])=><button key={key} onClick={()=>{setFinding(key,key==='regionMatching'?'strict':'');if(key==='query')setSearchDraft('');}} aria-label={`Remove ${key} filter`}>{key==='readingStatus' && v==='house_records_only' ? 'House only · no NEP / Transparency' : key==='program' ? programLabel(v) : label(v)} ×</button>)}
+            {[['query',query],['program',program],...(tab==='paps'?[]:[['region',region],['office',office]]),...(tab==='gaps'?[]:[['readingStatus',readingStatus]]),...(tab==='projects'?[['trace',trace],...(regionMatching==='ignore'?[['regionMatching','Allow different regions']]:[])]:[])].filter(([,v])=>v).map(([key,v])=><button key={key} onClick={()=>{setFinding(key,key==='regionMatching'?'strict':'');if(key==='query')setSearchDraft('');}} aria-label={`Remove ${key} filter`}>{key==='readingStatus' && v==='house_records_only' ? 'House only · no NEP / Transparency' : key==='program' ? programLabel(v) : key==='region' ? displayRegion(v) : key==='office' ? displayOffice(v) : label(v)} ×</button>)}
             <button onClick={()=>{for(const key of ['query','program','region','office','trace','readingStatus'])setFinding(key,'');setFinding('regionMatching','strict');setSearchDraft('');}}>Clear filters</button>
           </div>}
           {readingStatus==='house_records_only' && <p className="muted">Insertion candidates: HGAB2 or HGAB3 records with no attached NEP or Transparency source. Unmatched records can reflect title or assignment differences; this does not confirm absence from the NEP PDF.</p>}
@@ -568,11 +571,11 @@ function Filter({ label: caption, rows, field, value, set, extraOptions=[] }) {
       >
         <option value="">All</option>
         {extraOptions.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}
-        {value && !options.includes(value) && !extraOptions.some(o=>o.value===value) && <option value={value}>Unavailable: {label(value)}</option>}
+        {value && !options.includes(value) && !extraOptions.some(o=>o.value===value) && <option value={value}>Unavailable: {field==='region'?displayRegion(value):label(value)}</option>}
         {options
           .map((v) => (
             <option key={v} value={v}>
-              {label(v)}
+              {field==='region'?displayRegion(v):label(v)}
             </option>
           ))}
       </select>
@@ -594,5 +597,5 @@ function StatusInfo({info,fallback}) {
 function compactOffices(row){
  const groups=new Map();
  for(const a of officeAssignments(row))if(a.office)groups.set(a.office,[...(groups.get(a.office)??[]),a.source]);
- return groups.size ? [...groups].map(([office,sources])=>`${office} (${sources.join(', ')})`).join(' · ') : 'No recorded office';
+ return groups.size ? [...groups].map(([office,sources])=>`${displayOffice(office)} (${sources.join(', ')})`).join(' · ') : 'No recorded office';
 }

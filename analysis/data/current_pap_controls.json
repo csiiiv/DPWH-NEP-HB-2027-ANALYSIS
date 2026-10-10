@@ -2,7 +2,7 @@
   "manifest": {
     "schema_version": 2,
     "fiscal_year": 2027,
-    "built_at": "2026-10-09T22:34:15+08:00",
+    "built_at": "2026-10-10T13:32:12+08:00",
     "stages": {
       "nep": "Executive NEP proposal",
       "house": "HB 10858 supplied source documents; amendment completeness not certified"
@@ -15,16 +15,16 @@
     "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Titles are normalized token-wise: common abbreviation variants (Brgy./Barangay) expand before matching and consecutive repeated tokens collapse. Amount does not determine identity. Duplicate keys remain ambiguous. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; suggestions whose title differs only in digits are labeled chainage candidates (possible re-segmentation or coverage amendments). Suggestions do not consume NEP rows. No pair has been manually certified.",
     "generator": {
       "path": "analysis/builders/build_current_pages.py",
-      "sha256": "d1abfe3f5e5be3e1db12bae10c458e9207847011107220b33a3f37f1090e4049"
+      "sha256": "af17df3e6768bcf2240fcf2c49f0ba9c1bf0982a1842a651b7094650b21b2bfe"
     },
     "generator_dependencies": {
-      "analysis/builders/house_native.py": "3db655b22360c73864aa73b35f7add63d626abc3d0870e8901b84b366b8d9975",
+      "analysis/builders/house_native.py": "01f22cb902e76e02079f080afa726c849ccc346790f052302c615cf9f3397122",
       "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
     },
     "inputs": {
       "nep_2027_tree.json": "ca064af3f8cdb6c73e074ef8347f9e65d5cfe66c25024e332a4438ebfae3766d",
       "nep_2027_tree_validation.json": "8461f3c18746988bd1f61528bff5281be9fe852b23291b018261ed8df8494580",
-      "nep_2027_source_projects.json": "3426fc0ee6e8ba6591aaaa76529279335ac1c718f14cb321e8a0e0c278c3bcea",
+      "nep_2027_source_projects.json": "2d58683888ae697c4506544b48d30ed4b6f6cfa9e796f7328ca4e4b9075423cf",
       "nep_2027_budget_units.json": "a3d3aa17095d4bdf7531b180e73504f6dbc8808b86495e843ae9fb56021250de",
       "nep_2027_native_amount_audit.json": "362621533024a1e478981fbaf4d4e6a10aa04c6f7658a7228f82a87eaab4db5b",
       "nep_2027_native_amount_review.json": "9e4826c4541f272811de1b6e55df871825ddcca3cb59a4162667f13f65a95832",
