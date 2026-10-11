@@ -2,8 +2,9 @@ import {regionCandidates} from './regionCandidates.js';
 import {officeKind} from './headlineStats.js';
 import {recordedOffice} from '../../viewers/project_offices.mjs';
 import {formatChainageSpans} from './chainageDisplay.js';
+import {rainwaterSummary} from './rainwaterData.js';
 
-export const HIGHLIGHT_IDS=['funding-shift','multi-purpose','caloocan','flood-priorities','house-only','groupings','regional-gains','office-capacity','shorter-works'];
+export const HIGHLIGHT_IDS=['funding-shift','multi-purpose','caloocan','flood-priorities','house-only','groupings','regional-gains','office-capacity','shorter-works','rainwater'];
 const fields=['id','title','amount_php','region','office','program','pap','zone','pdf_page','pdf_pages','evidence'];
 function source(record,row){
  if(!record)return null;
@@ -51,6 +52,14 @@ export function highlightDetails({rows,headlines,paps,stages,readings,roadGroups
  const floods=candidates.filter(row=>is(row,s=>s.program==='Flood Management Program'));
  const inserted=candidates.filter(row=>row.third&&!row.nep);
  const added=candidates.filter(row=>row.reading_status==='third_only');
+ const rainwater=candidates.filter(row=>is(row,s=>s.pap==='Rainwater Collector System'));
+ const rainwaterStats=rainwaterSummary(candidates);
+ const rainwaterBands=[...new Set(Object.values(rainwaterStats).flatMap(s=>s.bands.map(b=>b.amount_php)))].map(amount_php=>({
+  id:String(amount_php),amount_php,...Object.fromEntries(['nep','second','third'].flatMap(side=>{
+   const band=rainwaterStats[side].bands.find(b=>b.amount_php===amount_php);
+   return [[`${side}_records`,band?.records??0],[`${side}_php`,band?.total_php??0]];
+  })),
+ })).sort((a,b)=>b.third_records-a.third_records);
  const units=new Map((chainage?.units??[]).map(unit=>[unit.id,unit]));
  const shorter=[];
  for(const row of candidates){
@@ -97,5 +106,7 @@ export function highlightDetails({rows,headlines,paps,stages,readings,roadGroups
   'regional-gains':{regions,regional_paps:regionalPaps,record_ids:refs(nonFap)},
   'office-capacity':{kinds:officeKinds,offices:allocationBreakdown(candidates,'office',{deoOnly:true})},
   'shorter-works':{rows:shorter},
+  rainwater:{bands:rainwaterBands,regions:allocationBreakdown(rainwater,'region'),offices:allocationBreakdown(rainwater,'office'),
+   controls:paps.filter(p=>p.label==='Rainwater Collector System').map(p=>({...p,delta_php:p.third_php-p.nep_php})),record_ids:refs(rainwater)},
  }};
 }

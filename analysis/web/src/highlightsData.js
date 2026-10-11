@@ -1,4 +1,5 @@
 import {regionCandidates} from './regionCandidates.js';
+import {rainwaterSummary} from './rainwaterData.js';
 
 const count = source => source?.records?.length ?? (source ? 1 : 0);
 const bucket = () => ({comparison_rows:0,records:0,amount_php:0});
@@ -53,6 +54,7 @@ export function highlightsData({rows,headlines,paps,stages,readings,roadGroups,c
   paps,regions,offices:{nep:headlines.sources.nep.offices,third:headlines.sources.third.offices},
   grouping,laoag:laoag?{records:laoag.leftover_house_rows,amount_php:laoag.leftover_amount_php}:null,
   chainage:{shorter_same_amount:shorter.length,example},
+  rainwater:rainwaterSummary(candidates),
   reading:{added:headlines.rankings.third.third_only,delta_php:readings.summary.allocation_delta_php,
    agency_delta_php:readings.summary.third.new_appropriations-(readings.summary.second?.new_appropriations??readings.summary.third.new_appropriations)},
   transparency:stages.summary.transparency_to_official,

@@ -162,6 +162,7 @@ def main(with_react=True):
     pdfs = OUTPUT / 'HB_BUDGET'
     pdfs.mkdir()
     for name in [
+        '1 - HB 10858 VOL IA.pdf',
         '2 - HB 10858 VOL IB.pdf',
         '3 - HB 10858 VOL IC.pdf',
         '4 - HB 10858 VOL II.pdf',

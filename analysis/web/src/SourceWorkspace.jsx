@@ -100,6 +100,10 @@ function mount(root, template, route, payloads, onSourceSelection, onPdfSlot) {
   const rewrite = () => {
     root.querySelectorAll("a[href], img[src]").forEach(element => {
       const attr = element.tagName === "IMG" ? "src" : "href", value = element.getAttribute(attr);
+      if (attr === 'href' && /\.pdf(?:[?#]|$)/i.test(value ?? '')) {
+        element.removeAttribute('target');
+        element.setAttribute('aria-haspopup', 'dialog');
+      }
       if (!value || /^(?:https?:|blob:|data:)/.test(value)) return;
       if (value.startsWith("#") && routes[readRoute(value).key]) return;
       const [path, fragment] = value.split("#"), filename = path.split("/").pop();

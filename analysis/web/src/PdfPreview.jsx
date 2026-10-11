@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
 import workerUrl from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
-export default function PdfPreview({ source, onClose }) {
+export default function PdfPreview({ source, onClose, closeLabel = "Clear preview", downloadOriginal = false }) {
+  const titleId = useId();
   const canvas = useRef(null),
     host = useRef(null);
   const [loaded, setLoaded] = useState(null),
@@ -99,13 +100,13 @@ export default function PdfPreview({ source, onClose }) {
     };
   }, [loaded, source.url, page, size, zoom, revision]);
   return (
-    <section className="pdf-pane" aria-labelledby="pdf-title">
+    <section className="pdf-pane" aria-labelledby={titleId}>
       <div className="pdf-head">
         <div>
-          <h2 id="pdf-title">{source.document}</h2>
+          <h2 id={titleId}>{source.document}</h2>
           <p>{source.title}</p>
         </div>
-        <button onClick={onClose}>Clear preview</button>
+        <button onClick={onClose} autoFocus={downloadOriginal}>{closeLabel}</button>
       </div>
       <div className="pdf-toolbar" role="toolbar" aria-label="PDF navigation">
         <div className="group">
@@ -199,16 +200,16 @@ export default function PdfPreview({ source, onClose }) {
       </div>
       <a
         className="pdf-original"
-        href={`${source.url}#page=${page}`}
-        target="_blank"
-        rel="noopener"
+        href={downloadOriginal ? source.url : `${source.url}#page=${page}`}
+        download={downloadOriginal ? source.url.split('/').pop() : undefined}
+        aria-haspopup={downloadOriginal ? undefined : 'dialog'}
       >
-        Open source PDF ↗
+        {downloadOriginal ? 'Download source PDF' : 'Open source PDF'}
       </a>
       <p role="status">{status}</p>
       {error && (
         <p role="alert">
-          Could not preview this page: {error}. Use the source PDF link above.
+          Could not preview this page: {error}. {downloadOriginal ? 'The source host may be unavailable or may restrict browser access. The download link above retains the original document URL.' : 'Use the source PDF link above.'}
         </p>
       )}
       <div className="pdf-canvas" ref={host}>

@@ -4,6 +4,7 @@ import { loadData } from "./data.js";
 import { amount } from "./model.js";
 import "./styles.css";
 import WorkbenchHeader from "./WorkbenchHeader.jsx";
+import PdfSourceModal from "./PdfSourceModal.jsx";
 import { routes, readRoute, routeHref, legacyRoutes } from "./routes.js";
 // PDF.js aborts its initial full response after discovering range support and
 // again on teardown; Chromium surfaces those as "signal is aborted without
@@ -56,6 +57,7 @@ function App() {
             <section><h1>Page not found</h1><p>This workbench route is unavailable.</p><a href="#home">Return home</a></section>}
         </Suspense>
       </main>
+      <PdfSourceModal />
     </>
   );
 }
@@ -67,7 +69,7 @@ const php = (value) =>
   }).format(value);
 
 const workspaces = [
-  {href: "#highlights", title: "Highlights", body: "Nine media angles with dedicated evidence dialogs, DPWH coverage, and third-reading change tables."},
+  {href: "#highlights", title: "Highlights", body: "Ten media angles with dedicated evidence dialogs, DPWH coverage, and third-reading change tables."},
   {href: "#compare", title: "Compare stages", body: "PAP totals, project comparison rows, House-reading filters, NEP-only splits, fuzzy suggestions, analytics, and CSV/JSON exports."},
   {href: "#analysis", title: "Analysis", body: "Office/program headlines, ranked insertions and deletions, adjustments, and descriptive statistics with group drill-downs into Compare."},
   {href: "#analysis?view=insertions", title: "Insertions", body: "House-only allocation records ranked by amount — no suggestion, unresolved NEP suggestions, and HGAB3-only."},

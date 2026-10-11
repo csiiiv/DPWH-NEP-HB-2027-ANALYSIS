@@ -48,6 +48,14 @@ test('custom highlight evidence preserves full allocation membership, controls a
  for(const row of shorter){assert.ok(row.house_length_m<row.nep_length_m);assert.ok(row.house_per_km>row.nep_per_km);assert.ok(row.nep_page&&row.house_page);}
  const example=shorter.find(r=>r.title.includes('Panitan'));
  assert.equal(example.amount_php,50000000);assert.equal(example.nep_length_m,477);assert.equal(example.house_length_m,132);
+ const rainwater=data.stories.rainwater;
+ assert.equal(rainwater.controls[0].delta_php,0);
+ for(const side of ['nep','second','third']){
+  assert.equal(sum(selected('rainwater'),side),1027200000);
+  assert.equal(rainwater.bands.reduce((sum,band)=>sum+band[side+'_records'],0),217);
+  assert.equal(rainwater.bands.reduce((sum,band)=>sum+band[side+'_php'],0),1027200000);
+ }
+ assert.equal(rainwater.regions.reduce((sum,region)=>sum+region.third_php,0),1027200000);
  const original=new Map(regionCandidates(unified.projects).map(row=>[row.id,row]));
  const preserved=['id','title','amount_php','region','office','program','pap','zone','pdf_page','pdf_pages','evidence'];
  function verifySource(actual,expected){

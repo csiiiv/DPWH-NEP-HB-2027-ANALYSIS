@@ -36,6 +36,22 @@ function documentReference(key, page, title) {
 export function sourceReference(kind, page, title = "Source evidence") {
   return documentReference(["house", "house-second"].includes(kind) ? "house-projects" : kind, page, title);
 }
+// Resolve source anchors centrally, including links emitted by retained views.
+// GitHub blob pages are HTML; PDF.js needs the raw document with CORS support.
+export function pdfSourceFromUrl(value, title = "Source evidence") {
+  let url;
+  try { url = new URL(value, window.location.href); } catch { return null; }
+  if (!['http:', 'https:'].includes(url.protocol) || !/\.pdf$/i.test(url.pathname)) return null;
+  const requested = Number(new URLSearchParams(url.hash.slice(1)).get('page'));
+  const page = Number.isInteger(requested) && requested > 0 ? requested : 1;
+  url.hash = '';
+  const known = Object.keys(documents).map(sourceDocument).find(document => document.url === url.href);
+  if (url.hostname === 'github.com' && /^\/[^/]+\/[^/]+\/blob\//.test(url.pathname)) {
+    url.hostname = 'raw.githubusercontent.com';
+    url.pathname = url.pathname.replace('/blob/', '/');
+  }
+  return {url: url.href, page, title, document: known?.document ?? decodeURIComponent(url.pathname.split('/').pop())};
+}
 export function treeSourceReference(route, node) {
   return documentReference(node.source?.document_key || (route === "house" ? "house-tree" : route === "nep" ? "nep" : null),
     node.source?.pdf_page, node.label);

@@ -12,6 +12,7 @@ import {BENCHMARK_DIMENSIONS,BENCHMARK_SOURCES,outlierUnits,peerCohorts,perKmBan
 import ChainageGuide,{Term,GUIDE_CONCEPTS} from './ChainageGuide.jsx';
 import {formatLengthKm,formatSignedKm} from './chainageDisplay.js';
 import {officeName,regionName} from './regionNames.js';
+import {openModalDialog} from './modalLifecycle.js';
 const GroupProjectsModal=lazy(()=>import('./GroupProjectsModal.jsx'));
 const names={third:'HGAB3 · 3rd reading',second:'HGAB2 · 2nd reading',nep:'DBM NEP',api:'DPWH Transparency NEP'};
 const labels={'Bridge Program':'Bridges','Convergence and Special Support Program':'CSSP','Foreign-assisted projects':'FAPs'};
@@ -120,9 +121,15 @@ export default function Analysis({route}){
  const stats=data.headlines.sources[source];
  const needsDetail=(['deletions','adjustments','chainage','statistics'].includes(view)||group)&&!detail;
  return <div className="headline-analysis">
-  <p className="eyebrow">DPWH · FY2027</p><h1>Analysis</h1>
-  <p>Office assignments, program allocations and review candidates from the retained budget records.</p>
-  <div className="analysis-controls"><label>Budget source<select aria-label="Analysis budget source" value={source} onChange={e=>change('source',e.target.value)}>{Object.entries(names).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label><ShareLink /></div>
+  <section className="hero">
+   <p className="eyebrow">DPWH · FY2027</p>
+   <h1>Analysis</h1>
+   <p>Office assignments, program allocations and review candidates from the retained budget records.</p>
+   <div className="hero-actions">
+    <label className="hero-source">Budget source<select aria-label="Analysis budget source" value={source} onChange={e=>change('source',e.target.value)}>{Object.entries(names).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
+    <ShareLink />
+   </div>
+  </section>
   <nav className="analysis-subtabs" role="tablist" aria-label="Analysis views">{views.map(([key,title])=>
    <button key={key} role="tab" aria-selected={view===key} onClick={()=>change('view',key)}>{title}</button>)}</nav>
   <p className="notice">Counts refer to source allocation records, including grouped members, rather than unique projects across stages. Office assignments come from the selected source; missing assignments are shown separately. Scope: operations, including local and foreign-assisted projects. Transparency reflects its retained listing. Tables sort on any column. Click a group name to list its comparison rows.</p>
@@ -204,11 +211,7 @@ function Overview({stats,source,headlines,dim,change,onOpenGroup,drill,onOpenDri
 }
 function DrilldownModal({drill,dim,compare,houseLabel,onClose}){
  const dialog=useRef(null);
- useEffect(()=>{
-  const element=dialog.current,previous=document.body.style.overflow;
-  element.showModal();document.body.style.overflow='hidden';
-  return ()=>{element.close();document.body.style.overflow=previous;};
- },[]);
+ useEffect(()=>openModalDialog(dialog.current),[]);
  const drillParent=(compare.by_dim[dim]??[]).find(g=>g.label===drill.label);
  const drillRows=(drillParent?.[drill.axis==='region'?'by_region':drill.axis==='office'?'by_office':'by_pap'])||[];
  const drillAxis=drill.axis;
@@ -254,11 +257,16 @@ function Distribution({title,buckets,total}){
 }
 function Insertions({headlines,reading,ranking,dim,change,onOpenGroup}){
  const list=headlines.rankings[reading][ranking];
+ const shown=Math.min(100,list.comparison_rows);
  return <section className="analysis-section"><h2>Top insertion candidates</h2>
   <div className="analysis-controls"><label>Candidate group<select aria-label="Analysis candidate group" value={ranking} onChange={e=>change('ranking',e.target.value)}>{Object.entries(modes).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></div>
   <DimensionChips dim={dim} change={change}/>
-  <p className="muted">Ranked by {names[reading]} allocation · top {Math.min(100,list.comparison_rows).toLocaleString()} of {list.comparison_rows.toLocaleString()} comparison rows · {amount(list.amount_php)} across this group. Grouped allocations remain grouped.</p>
-   <p className="notice">{ranking==='no_suggestion'?'House records with no attached NEP/Transparency source and no retained NEP suggestion. These are review candidates, not confirmed insertions.':ranking==='unresolved'?'House records with possible or ambiguous NEP counterparts are separated from the no-suggestion list. Review their suggestions before claiming an insertion.':'Records present only in HGAB3 under the retained reading key. This shows a reading difference, not confirmed absence from NEP.'} Unique different-region title candidates are linked for review and excluded from the House-only groups.</p>
+  <div className="cards analysis-headlines">
+   <article><h3>Comparison rows</h3><strong>{list.comparison_rows.toLocaleString()}</strong><p>{modes[ranking]}</p></article>
+   <article><h3>Group allocation</h3><strong>{amount(list.amount_php)}</strong><p>{names[reading]} · ranked by amount</p></article>
+   <article><h3>Showing</h3><strong>Top {shown.toLocaleString()}</strong><p>of {list.comparison_rows.toLocaleString()} rows · grouped allocations remain grouped</p></article>
+  </div>
+  <p className="notice">{ranking==='no_suggestion'?'House records with no attached NEP/Transparency source and no retained NEP suggestion. These are review candidates, not confirmed insertions.':ranking==='unresolved'?'House records with possible or ambiguous NEP counterparts are separated from the no-suggestion list. Review their suggestions before claiming an insertion.':'Records present only in HGAB3 under the retained reading key. This shows a reading difference, not confirmed absence from NEP.'} Unique different-region title candidates are linked for review and excluded from the House-only groups.</p>
   {dim!=='overall'&&<AggregateTable tableId={`insertions-by-${dim}`} title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
    onOpenGroup={g=>onOpenGroup({scope:'insertions',reading,ranking,dim,label:g.label,displayLabel:groupLabel(dim,g.label)})}/>}
   <SortableTable tableId="insertions-top" ariaLabel="Top insertion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
@@ -272,10 +280,15 @@ function Insertions({headlines,reading,ranking,dim,change,onOpenGroup}){
 }
 function Deletions({headlines,ranking,dim,change,onOpenGroup}){
  const list=headlines.deletions[ranking];
+ const shown=Math.min(100,list.comparison_rows);
  return <section className="analysis-section"><h2>Top deletion candidates</h2>
   <div className="analysis-controls"><label>Candidate group<select aria-label="Analysis deletion group" value={ranking} onChange={e=>change('ranking',e.target.value)}>{Object.entries(deletionModes).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></div>
   <DimensionChips dim={dim} change={change}/>
-  <p className="muted">Ranked by NEP allocation · top {Math.min(100,list.comparison_rows).toLocaleString()} of {list.comparison_rows.toLocaleString()} comparison rows · {amount(list.amount_php)} across this group. Grouped allocations remain grouped.</p>
+  <div className="cards analysis-headlines">
+   <article><h3>Comparison rows</h3><strong>{list.comparison_rows.toLocaleString()}</strong><p>{deletionModes[ranking]}</p></article>
+   <article><h3>NEP allocation</h3><strong>{amount(list.amount_php)}</strong><p>Ranked by NEP amount · grouped allocations remain grouped</p></article>
+   <article><h3>Showing</h3><strong>Top {shown.toLocaleString()}</strong><p>of {list.comparison_rows.toLocaleString()} rows</p></article>
+  </div>
   <p className="notice">{ranking==='no_suggestion'?'NEP line items with no attached House record and no House row suggesting them as a counterpart. These are review candidates, not confirmed deletions — title or assignment differences can prevent pairing.':ranking==='suggested'?'NEP-only items that unmatched House rows name as possible counterparts. Review the referring House rows: a re-titled or re-scoped line item can look like a deletion plus an insertion when it is a replacement. Suggestion counts refer to House rows, not certified identities.':'Records present only in HGAB2 under the retained reading key — dropped between readings. Currently none; the group guards future readings data.'}</p>
   {dim!=='overall'&&<AggregateTable tableId={`deletions-by-${dim}`} title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
    onOpenGroup={g=>onOpenGroup({scope:'deletions',ranking,dim,label:g.label,displayLabel:groupLabel(dim,g.label)})}/>}
@@ -309,6 +322,12 @@ function Adjustments({detail,revisionSets,dim,direction,change,onOpenGroup}){
  const totals=useMemo(()=>signedTotals(cross),[cross]);
  const byDim=useMemo(()=>dim==='overall'?null:differenceByDimension(cross,dim),[cross,dim]);
  return <>
+  <div className="cards analysis-headlines">
+   <article><h3>Reading adjustments</h3><strong>{revisionSets.reading.length.toLocaleString()}</strong><p>HGAB3 vs HGAB2 · retained matching key</p></article>
+   <article><h3>Reading net Δ</h3><strong>{signedCell(revisionSets.delta_php)}</strong><p>2nd → 3rd · repeated keys remain grouped</p></article>
+   <article><h3>House vs NEP pairs</h3><strong>{cross.length.toLocaleString()}</strong><p>Unequal-amount candidate pairs</p></article>
+   <article><h3>Cross-doc net</h3><strong>{signedCell(totals.net)}</strong><p>Increased {signedCell(totals.increased)} · decreased {signedCell(-totals.decreased)}</p></article>
+  </div>
   <section className="analysis-section"><h2>Reading adjustments · HGAB3 vs HGAB2</h2>
    <p className="notice">Recorded 2nd→3rd reading differences under the retained matching key: {revisionSets.reading.length.toLocaleString()} rows · net {amount(revisionSets.delta_php)}. Repeated keys remain grouped.</p>
    <SortableTable tableId="adjustments-reading" ariaLabel="Reading adjustments" initialSort={{key:'reading_delta_php',direction:'desc'}} rows={revisionSets.reading} columns={[
@@ -511,6 +530,12 @@ function Chainage({detail,focus,change,benchmark,setBenchmark,stage,scope}){
   </section>
   </>}
   {activeStage==='benchmark'&&<>
+  <div className="cards analysis-headlines">
+   <article><h3>Measurable units</h3><strong>{measurableUnits.length.toLocaleString()}</strong><p>All sources · min length for ₱/km</p></article>
+   <article><h3>Peer cohorts</h3><strong>{cohorts.length.toLocaleString()}</strong><p>{cohortAxis} axis · min 5 peers</p></article>
+   <article className="red-flag"><h3>Outliers · |z| ≥ 3</h3><strong>{outlierCount==null?'…':outlierCount.toLocaleString()}</strong><p>Robust z vs cohort median</p></article>
+   <article><h3>Showing outliers</h3><strong>{Math.min(100,outliers.length).toLocaleString()}</strong><p>Top table rows · source filter applies</p></article>
+  </div>
   <section className="analysis-section"><h3>Price-per-km peer benchmark · all chainage records</h3>
    <p className="muted">Every chainage-bearing allocation — matched or not — from DBM NEP, HGAB2 and HGAB3, grouped into program × <Term k="cohort">{cohortAxis}</Term> × zone <Term k="cohort">cohorts</Term> (min 5 peers with measurable length; {measurableUnits.length.toLocaleString()} measurable units). Each cohort shows the <Term k="median">median ₱/km</Term> with its interquartile band; the outlier table ranks units by <Term k="robustZ">robust z</Term> (deviation from the cohort median in <Term k="mad">MADs</Term>). Use this to ask whether a ₱/km is plausible for similar PAPs in the same {cohortAxis} — not whether a pair changed.</p>
    <div className="analysis-controls">
@@ -546,6 +571,12 @@ function Chainage({detail,focus,change,benchmark,setBenchmark,stage,scope}){
    <label>Focus<select aria-label="Chainage focus" value={focus} onChange={e=>change('focus',e.target.value)}>{chainageFocusGroups().map(([group,entries])=><optgroup key={group} label={group}>{entries.map(([key,label])=><option key={key} value={key}>{label}</option>)}</optgroup>)}</select></label>
    <label>Sort<select aria-label="Chainage sort" value={sort} onChange={e=>setSort(e.target.value)}>{CHAINAGE_SORTS.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
    <a href={routeHref('compare',{view:'projects',match:'matched_chainage'})}>Open all in Compare →</a></div>
+  <div className="cards analysis-headlines">
+   <article><h3>Focus rows</h3><strong>{shown.length.toLocaleString()}</strong><p>{CHAINAGE_FOCUS[focus]||focus}</p></article>
+   <article><h3>All chainage pairs</h3><strong>{rows.length.toLocaleString()}</strong><p>Attached House↔NEP matches</p></article>
+   <article className="red-flag"><h3>Price/km red flags</h3><strong>{redFlags.length.toLocaleString()}</strong><p>|Δ| &gt; 10% in full set</p></article>
+   <article><h3>Sort</h3><strong>{CHAINAGE_SORTS.find(([k])=>k===sort)?.[1]??sort}</strong><p>HGAB − NEP deltas in the Δ columns</p></article>
+  </div>
   <p className="muted">{shown.length.toLocaleString()} of {rows.length.toLocaleString()} chainage rows · sorted by {CHAINAGE_SORTS.find(([k])=>k===sort)?.[1].toLowerCase()}. Each source column carries its allocation, station spans, length and price/km; the Δ columns hold the HGAB−NEP deltas with percent change.</p>
   <SortableTable key={focus+sort} ariaLabel="Chainage amendments" initialSort={{key:sort,direction:'desc'}} rows={sorted} columns={[
    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}{r.modus&&<span className="modus-pill" data-modus={r.modus}>{CHAINAGE_MODUS[r.modus].label}</span>}<small>{short(r.program)} · {regionName(r.region)} · {officeName(r.office)||'No recorded office'}{r.reason?` · ${r.reason}`:''}</small></span>},
@@ -654,11 +685,7 @@ function resolveGroup(open,{groups,nepGroups}){
 
 function GroupingMembersModal({g,isNep,onClose}){
  const dialog=useRef(null);
- useEffect(()=>{
-  const element=dialog.current,previous=document.body.style.overflow;
-  element.showModal();document.body.style.overflow='hidden';
-  return ()=>{element.close();document.body.style.overflow=previous;};
- },[]);
+ useEffect(()=>openModalDialog(dialog.current),[]);
  const fmtKm=m=>m==null?'—':`${(m/1000).toLocaleString('en-PH',{maximumFractionDigits:3})} km`;
  const perKm=v=>v==null?'—':`${amount(v)}/km`;
  if(!g)return <dialog ref={dialog} className="analytics-dialog grouping-members-dialog" open><header className="analytics-header"><div className="analytics-heading"><div><p className="eyebrow">SHELL GROUPING</p><h2 id="grouping-members-title">Grouping not found</h2></div><button onClick={onClose} autoFocus aria-label="Close">Close</button></div><p className="muted">No group matches this link — the shell key may have changed after a rebuild. Close and pick a group from the table.</p></header></dialog>;
@@ -738,9 +765,16 @@ function Statistics({detail,source,dim,change}){
  const clusters=useMemo(()=>kmeansClusters(amounts,5),[amounts]);
  const deviants=useMemo(()=>deviantSubsets(records,dim),[records,dim]);
  const concentrations=useMemo(()=>exactConcentrations(records,5,dim==='overall'?'program':dim),[records,dim]);
+ const millionRound=useMemo(()=>amounts.length?amounts.filter(v=>v%1e6===0).length/amounts.length:0,[amounts]);
  if(!amounts.length)return <p className="muted">No allocation records for this source.</p>;
  return <>
   <DimensionChips dim={dim} change={change}/>
+  <div className="cards analysis-headlines">
+   <article><h3>Allocation records</h3><strong>{amounts.length.toLocaleString()}</strong><p>{names[source]} · descriptive lenses only</p></article>
+   <article><h3>Million-round share</h3><strong>{(millionRound*100).toFixed(1)}%</strong><p>Exact multiples of ₱1,000,000</p></article>
+   <article><h3>Benford MAD</h3><strong>{ben.mad.toFixed(4)}</strong><p>Mean absolute deviation · first digit</p></article>
+   <article><h3>Exact concentrations</h3><strong>{concentrations.length.toLocaleString()}</strong><p>Repeated amounts (≥5) by {dimensionTitle(dim==='overall'?'program':dim)}</p></article>
+  </div>
   <p className="notice">These are descriptive lenses for targeting review, not fraud tests. Appropriations are policy numbers: round values are expected, and print conventions (thousands, memo amounts) can drive digit patterns. Benford conformity is not evidence of correctness, and deviation is not evidence of wrongdoing.</p>
   <section className="analysis-section"><h2>Rounding pattern</h2>
    <p className="muted">Share of {amounts.length.toLocaleString()} allocation records at each rounding granularity.</p>

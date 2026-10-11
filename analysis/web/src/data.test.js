@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { sourceReference, treeSourceReference, retainedAssetUrl } from './data.js';
+import { sourceReference, treeSourceReference, retainedAssetUrl, pdfSourceFromUrl } from './data.js';
 
 test('tree and project references preserve different House volumes under project hosting', () => {
   globalThis.window = {location: {href: 'https://example.test/project/app/#house'}};
@@ -41,4 +41,21 @@ test('page labels identify the volume and reading without renumbering file pages
   assert.equal(treeSourceReference('house', {source: {pdf_page: 25}}).pageLabel, 'House 2nd · I-B');
   assert.equal(sourceReference('nep', 688).pageLabel, 'NEP · II-B (retained OCR)');
   assert.equal(sourceReference('house-third', 373).page, 373);
+});
+
+test('PDF anchors preserve document, stage and file page for the shared modal', () => {
+  globalThis.window = {location: {href: 'https://example.test/project/app/#highlights'}};
+  const reference = sourceReference('house-third-controls', 9);
+  const source = pdfSourceFromUrl(reference.url + '#page=9', 'Agency control');
+  assert.equal(source.page, 9);
+  assert.equal(source.document, reference.document);
+  assert.equal(source.url, reference.url);
+  assert.equal(source.title, 'Agency control');
+  assert.equal(pdfSourceFromUrl('../pdfs/NEP-2027-VOLUME-2B_OCR.pdf#page=424').page, 424);
+  for (const suffix of ['', '#page=0', '#page=-1', '#page=1.5', '#page=no'])
+    assert.equal(pdfSourceFromUrl(reference.url + suffix).page, 1);
+  assert.equal(pdfSourceFromUrl('https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf').url,
+    'https://raw.githubusercontent.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/main/dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf');
+  for (const value of ['#highlights', 'https://example.test/a.json', 'javascript:alert(1)', 'data:application/pdf;base64,AAA'])
+    assert.equal(pdfSourceFromUrl(value), null);
 });

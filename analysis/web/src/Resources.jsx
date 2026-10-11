@@ -10,6 +10,7 @@ function itemHref(item) {
 }
 
 function itemProps(item) {
+  if (item.path.split('#')[0].endsWith('.pdf')) return { 'aria-haspopup': 'dialog' };
   if (item.kind === "data") {
     return { download: item.path.split("/").pop() };
   }
@@ -25,7 +26,7 @@ export default function Resources() {
         <p>
           Direct links to the latest workable datasets and the source PDFs they
           were built from. JSON downloads from the packaged site; Markdown
-          audits open on GitHub; PDFs open in a new tab.
+          audits open on GitHub; PDFs open in the web viewer modal.
         </p>
         <p className="muted">
           Status mirrors the repository README · 9 October 2026 · integer

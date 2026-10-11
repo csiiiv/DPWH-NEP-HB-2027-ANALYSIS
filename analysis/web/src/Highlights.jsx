@@ -4,6 +4,7 @@ import {amount} from './model.js';
 import {routeHref} from './routes.js';
 import {regionName} from './regionNames.js';
 import ShareLink from './ShareLink.jsx';
+import {PdfSourceLink} from './PdfSourceModal.jsx';
 import './Highlights.css';
 import {hydrateHighlightDetails} from './highlightDetails.js';
 const HighlightModal=lazy(()=>import('./HighlightModal.jsx'));
@@ -99,6 +100,9 @@ function stories(data){
   {id:'shorter-works',label:'Provisional identity and parsed lengths',title:'Same budget, shorter listed works warrant engineering review',
    evidence:`${number(data.chainage.shorter_same_amount)} chainage candidate pairs have shorter parsed HGAB3 lengths with unchanged amounts, excluding flagged length anomalies.${example?` ${example.title}: ${amount(example.amount_php)} in both sources, ${number(example.nep_length_m)}m → ${number(example.house_length_m)}m.`:''}`,
    prompt:'Does the revised design involve more expensive works, a relocated segment or corrected stationing? Compare drawings and quantities before treating the implied cost increase as overpricing.',href:compare({match:'matched_chainage',...(example?{q:example.id,record:example.id}:{})}),example},
+  {id:'rainwater',label:'Repeated office allocations',title:`₱${(data.rainwater.third.amount_php/1e9).toFixed(4)}B for rainwater collectors follows a repeated allocation pattern`,
+   evidence:`Unchanged across NEP, HGAB2 and HGAB3: ${data.rainwater.third.bands.map(b=>`${number(b.records)} allocations of ${amount(b.amount_php)}`).join('; ')}. These are office-level allocations, not a count of individual collector systems.`,
+   prompt:'How were the standard amounts set? Request the sites, number of systems, storage capacities, beneficiaries and unit-cost assumptions for each office. Do allocations reflect water scarcity, demand and available maintenance funding?',href:compare({q:'Rainwater Collector System'})},
  ];
 }
 
@@ -124,15 +128,20 @@ export default function Highlights({route}){
  if(error)return <p role="alert">{error}</p>;
  if(!data)return <p role="status">Loading highlights…</p>;
  return <div className="headline-analysis highlights-workspace">
-  <section className="highlights-intro"><div><p className="eyebrow">DPWH · FY2027</p><h1>Highlights</h1><p>Nine media angles and investigative prompts, grounded in the retained budget records.</p></div><ShareLink/></section>
-  <p className="notice">These are budget proposals, not enacted spending. Printed controls and source distributions describe recorded amounts; project identities remain provisional. {number(data.provenance.reviewed_pairs)} cross-document pairs are manually certified. The tables compare operations; the first headline also uses full agency new appropriations.</p>
+  <section className="hero">
+   <p className="eyebrow">DPWH · FY2027</p>
+   <h1>Highlights</h1>
+   <p>Ten media angles and investigative prompts, grounded in the retained budget records.</p>
+   <div className="hero-actions"><ShareLink/></div>
+   <p className="muted">These are budget proposals, not enacted spending. Printed controls and source distributions describe recorded amounts; project identities remain provisional. {number(data.provenance.reviewed_pairs)} cross-document pairs are manually certified. The tables compare operations; the first headline also uses full agency new appropriations.</p>
+  </section>
   <CoverageTable data={data}/><ChangesTable data={data}/>
-  <section aria-labelledby="story-heading"><h2 id="story-heading">Nine story angles</h2><p className="muted">Ranked by news value and strength of the retained evidence. Open a highlight for its figures, relevant records, and source references.</p>
+  <section aria-labelledby="story-heading"><h2 id="story-heading">Ten story angles</h2><p className="muted">Ranked by news value and strength of the retained evidence. Open a highlight for its figures, relevant records, and source references.</p>
    <ol className="highlights-stories">{stories(data).map(story=><li id={`highlight-${story.id}`} key={story.id} className={selected===story.id?'highlight-selected':''}>
     <article><p className="eyebrow">{story.label}</p><h3>{story.title}</h3><p>{story.evidence}</p><div className="highlight-prompt"><strong>Investigate</strong><p>{story.prompt}</p></div>
      <div className="highlight-links"><button className="highlight-open" aria-haspopup="dialog" onClick={()=>{window.location.hash=routeHref('highlights',{story:story.id});}}>Explore this highlight →</button><a href={routeHref('highlights',{story:story.id})}>Link to this highlight</a>
       {story.example&&[['nep',story.example.nep_page,'NEP'],['house-third',story.example.house_page,'HGAB3']].map(([key,page,label])=>{
-       const ref=sourceReference(key,page);return ref?<a key={key} href={`${ref.url}#page=${page}`} target="_blank" rel="noopener noreferrer">{label} PDF p.{page}</a>:null;
+       const ref=sourceReference(key,page,story.example.title);return <PdfSourceLink key={key} source={ref}>{label} PDF p.{page}</PdfSourceLink>;
       })}
      </div>
     </article>

@@ -30,7 +30,7 @@ live Transparency data or regenerate source outputs.
 | `#home` | Workbench map, review-candidate headlines, and source status |
 | `#compare` | Stage comparison |
 | `#analysis` | Headlines, insertions, deletions, adjustments, chainage amendments (all-data overview · peer ₱/km benchmark · revised-pair patterns + records), statistics |
-| `#highlights` | Nine media angles with dedicated evidence dialogs, DPWH coverage, and HGAB3-versus-NEP candidate change tables |
+| `#highlights` | Ten media angles with dedicated evidence dialogs, DPWH coverage, and HGAB3-versus-NEP candidate change tables |
 | `#house` | Third-reading native I-B totals and controls; reading and project-view toggles |
 | `#nep` | DBM NEP verification |
 | `#transparency` | Transparency NEP verification |
@@ -53,7 +53,13 @@ House trees reference Volume I-B; House project comparisons reference I-C;
 DBM references use Volume II-B. Source page buttons open the pane. Nodes without
 page references clear it. The Transparency tree has no PDF mapping. Crop links
 and images are absent from the two migrated verification views; audit artifacts
-remain retained separately. The viewer keeps an explicit original-PDF link.
+remain retained separately. PDF source anchors throughout the app open the
+shared PDF.js modal at their recorded file page, including Resources and links
+emitted by retained controllers. The modal keeps an explicit original-document
+download. Closing a PDF restores the underlying evidence dialog and focus;
+stacked dialogs share the page scroll lock. GitHub blob PDF references resolve
+to raw documents; external publishers can restrict browser access, which the
+viewer reports without substituting a different document.
 
 ## Production package
 
@@ -241,7 +247,7 @@ Source and ranking selections are shareable as
 `#analysis?view=deletions&ranking=suggested`.
 ## Highlights workspace
 
-The **Highlights** navigation tab (`#highlights`) presents nine media angles
+The **Highlights** navigation tab (`#highlights`) presents ten media angles
 with investigative prompts and two tables: DPWH operations coverage across
 NEP/HGAB2/HGAB3, and HGAB3-versus-NEP candidate changes. The supplied
 multi-agency layout is retained; DA, NIA and DOH display **Not covered**, and
@@ -261,9 +267,20 @@ Each story opens a dedicated evidence dialog through its shareable
 `#highlights?story=…` URL. The dialogs have subject-specific hero figures,
 source controls, distributions, full allocation lists where relevant,
 search/sorting before pagination, exact-peso CSV exports and PDF references.
-Groups expand to member allocations; regions drill into PAP changes.
+Groups open member allocations in a separate modal; regions open their PAP
+changes in a separate modal. Neither view preselects a row or adds details
+below the parent table. Each detail modal has its own title and hero figures,
+and Back to highlight or Escape returns to the original row with focus restored.
+PDF references can open a viewer above the detail modal.
 Escape, Close and browser Back dismiss dialogs, restoring page scrolling.
 The removed Transparency listing-gap story remains available in Compare.
+The tenth story covers Rainwater Collector System office allocations:
+₱1,027,200,000 unchanged across all three stages, with 199 allocations of
+₱4.2M, 17 of ₱9M and one BARMM allocation of ₱38.4M. The modal shows printed
+PAP controls, repeated amount bands, regional distribution and all 217 office
+records with references for every stage. These are allocations, not counts of
+systems; site lists, capacities and cost assumptions remain investigative
+questions rather than inferred project facts.
 
 The page initially loads only the overview payload. Opening a dialog lazily
 loads `highlights_details_2027.json`, a compact shared evidence pool generated

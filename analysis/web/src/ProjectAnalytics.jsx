@@ -4,6 +4,7 @@ import {analyticsSources,projectAnalytics,compareDistribution} from './projectAn
 import {readingInfo,matchInfo,flagInfo} from './analyticsStatusInfo.js';
 import {officeName,regionName} from './regionNames.js';
 import {DIFF_TAG_INFO} from './diffTags.js';
+import {openModalDialog} from './modalLifecycle.js';
 const sections=[['overview','Overview'],['distribution','Distribution'],['changes','Changes & matches'],['flags','Review flags']];
 const human=value=>String(value ?? 'Unavailable').replaceAll('_',' ');
 const distributionLabel=(field,label)=>field==='region'?regionName(label):field==='office'?officeName(label):label;
@@ -12,11 +13,7 @@ export default function ProjectAnalytics({rows,finding,onClose,returnFocus}) {
  const [tab,setTab]=useState('overview');
  const regions=useMemo(()=>compareDistribution(rows,'region'),[rows]);
  const offices=useMemo(()=>compareDistribution(rows,'office'),[rows]);
- useEffect(()=>{
-  const element=dialog.current,previous=document.body.style.overflow;
-  element.showModal();document.body.style.overflow='hidden';
-  return ()=>{element.close();document.body.style.overflow=previous;if(returnFocus?.isConnected)returnFocus.focus({preventScroll:true});};
- },[]);
+ useEffect(()=>openModalDialog(dialog.current,returnFocus),[]);
  const changed=rows.filter(r=>['third_only','second_only'].includes(r.reading_status) || r.reading_delta_php!=null && r.reading_delta_php!==0).length;
  const flagged=summary.flaggedRows;
  const filters=[finding.query && `Search: ${finding.query}`,finding.program && `Program: ${programLabel(finding.program)}`,finding.region && `Region: ${regionName(finding.region)}`,finding.office && `Office: ${officeName(finding.office)}`,finding.matchStatus && `Match: ${finding.matchStatus}`,finding.flag && `Flag: ${finding.flag}`,finding.trace && `Trace: ${matchInfo[finding.trace]?.[0] || human(finding.trace)}`,finding.readingStatus && `Reading: ${readingInfo[finding.readingStatus]?.[0] || human(finding.readingStatus)}`].filter(Boolean);

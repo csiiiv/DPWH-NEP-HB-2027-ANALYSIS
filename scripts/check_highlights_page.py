@@ -33,6 +33,7 @@ def check(base):
         'regional-gains': 'Regional allocations outside FAP',
         'office-capacity': 'Central Office, DEOs and other office categories',
         'shorter-works': 'Unchanged-amount candidates with shorter listed coverage',
+        'rainwater': 'Repeated rainwater allocation amounts',
     }
     errors = []
     with sync_playwright() as p:
@@ -55,7 +56,7 @@ def check(base):
                 expect(changes.locator('tbody tr').first.locator('td').nth(index)).to_contain_text(f"{data['changes'][key]['records']:,} allocation records")
             expect(coverage.locator('.highlights-unavailable')).to_have_count(9)
             expect(changes.locator('.highlights-unavailable')).to_have_count(15)
-            expect(page.locator('.highlights-stories > li')).to_have_count(9)
+            expect(page.locator('.highlights-stories > li')).to_have_count(10)
             expect(page.locator('#highlight-transparency-gaps')).to_have_count(0)
             expect(page.get_by_text('Total · DPWH coverage only', exact=True)).to_have_count(2)
             assert not any('comparison_projects_2027.json' in url for url in requests)
@@ -69,7 +70,7 @@ def check(base):
             for story, table in subjects.items():
                 trigger = page.locator(f'#highlight-{story}').get_by_role('button', name='Explore this highlight')
                 trigger.click()
-                dialog = page.get_by_role('dialog')
+                dialog = page.locator('dialog.highlight-dialog').filter(has=page.locator('#highlight-dialog-title'))
                 expect(dialog).to_be_visible()
                 expect(dialog.locator('.hi-hero-metrics article')).to_have_count(3)
                 expect(dialog.get_by_role('region', name=table, exact=True)).to_be_visible(timeout=30000)
@@ -77,15 +78,73 @@ def check(base):
                 assert page.evaluate('document.body.style.overflow') == 'hidden'
                 if story == 'funding-shift':
                     expect(dialog).to_contain_text('₱73.000B')
+                    source = dialog.get_by_role('link', name='NEP p.8', exact=True)
+                    expect(source).to_have_attribute('aria-haspopup', 'dialog')
+                    source.click()
+                    pdf = page.get_by_role('dialog', name=re.compile('^PDF source:'))
+                    expect(pdf).to_be_visible()
+                    expect(pdf.locator('canvas')).to_be_visible(timeout=60000)
+                    expect(pdf.get_by_role('status')).to_contain_text('Page 8 of 722', timeout=60000)
+                    assert len(browser.contexts[0].pages) == 1, 'Source opened a new tab'
+                    pdf.get_by_role('combobox', name='PDF page').select_option('9')
+                    expect(pdf.get_by_role('status')).to_contain_text('Page 9 of 722', timeout=30000)
+                    pdf.get_by_role('button', name='Zoom in', exact=True).click()
+                    expect(pdf.get_by_role('spinbutton', name='Zoom percent')).to_have_value('110')
+                    page.screenshot(path=f'/tmp/pdf-source-modal-{width}.png')
+                    page.keyboard.press('Escape')
+                    expect(pdf).to_have_count(0)
+                    expect(dialog).to_be_visible()
+                    expect(source).to_be_focused()
+                    assert page.evaluate('document.body.style.overflow') == 'hidden'
                 if story == 'caloocan':
                     expect(dialog.get_by_role('region', name='The third-reading additions')).to_contain_text('Caloocan')
                     expect(dialog.locator('.hi-hero-metrics article').last).to_contain_text('₱0')
                 if story == 'groupings':
-                    dialog.get_by_role('region', name=table, exact=True).locator('tbody button').first.click()
-                    expect(dialog.get_by_role('heading', name=re.compile('^Group members: Metro Cebu'))).to_be_visible()
+                    expect(page.locator('.hi-detail-dialog')).to_have_count(0)
+                    expect(dialog.locator('.hi-drill[aria-pressed]')).to_have_count(0)
+                    expect(dialog.get_by_role('heading', name=re.compile('^Group members:'))).to_have_count(0)
+                    group_trigger = dialog.get_by_role('region', name=table, exact=True).locator('tbody button').first
+                    expect(group_trigger).to_have_attribute('aria-haspopup', 'dialog')
+                    group_trigger.click()
+                    child = page.get_by_role('dialog', name=re.compile('^Group members: Metro Cebu'))
+                    expect(child).to_be_visible()
+                    expect(child.locator('.hi-hero-metrics article')).to_have_count(3)
+                    expect(child.locator('.hi-hero')).to_contain_text('620.000M')
+                    expect(child.get_by_role('region', name='Allocation members', exact=True).locator('tbody tr')).to_have_count(3)
+                    if width == 1440:
+                        source = child.get_by_role('link', name=re.compile('^HGAB2 p\\.')).first
+                        source.click()
+                        pdf = page.get_by_role('dialog', name=re.compile('^PDF source:'))
+                        expect(pdf.get_by_role('status')).to_contain_text('Page ', timeout=60000)
+                        expect(pdf.locator('canvas')).to_be_visible()
+                        expect(page.locator('dialog[open]')).to_have_count(3)
+                        page.keyboard.press('Escape')
+                        expect(pdf).to_have_count(0)
+                        expect(child).to_be_visible()
+                        expect(source).to_be_focused()
+                    page.screenshot(path=f'/tmp/highlight-group-detail-{width}.png')
+                    page.keyboard.press('Escape')
+                    expect(child).to_have_count(0)
+                    expect(dialog).to_be_visible()
+                    expect(group_trigger).to_be_focused()
+                    assert page.evaluate('document.body.style.overflow') == 'hidden'
                 if story == 'regional-gains':
-                    dialog.get_by_role('region', name=table, exact=True).get_by_role('button', name='Region IV-A · CALABARZON', exact=True).click()
-                    expect(dialog.get_by_role('heading', name='PAP changes: Region IV-A · CALABARZON', exact=True)).to_be_visible()
+                    expect(page.locator('.hi-detail-dialog')).to_have_count(0)
+                    expect(dialog.locator('.hi-drill[aria-pressed]')).to_have_count(0)
+                    expect(dialog.get_by_role('heading', name=re.compile('^PAP changes:'))).to_have_count(0)
+                    region_trigger = dialog.get_by_role('region', name=table, exact=True).get_by_role('button', name='Region IV-A · CALABARZON', exact=False)
+                    expect(region_trigger).to_have_attribute('aria-haspopup', 'dialog')
+                    region_trigger.click()
+                    child = page.get_by_role('dialog', name='PAP changes: Region IV-A · CALABARZON', exact=True)
+                    expect(child).to_be_visible()
+                    expect(child.locator('.hi-hero-metrics article')).to_have_count(3)
+                    expect(child.get_by_role('region', name='PAP allocation changes', exact=True)).to_contain_text('BIP - Multi-Purpose')
+                    page.screenshot(path=f'/tmp/highlight-region-detail-{width}.png')
+                    child.get_by_role('button', name='Close detail', exact=True).click()
+                    expect(child).to_have_count(0)
+                    expect(dialog).to_be_visible()
+                    expect(region_trigger).to_be_focused()
+                    assert page.evaluate('document.body.style.overflow') == 'hidden'
                 if story == 'shorter-works':
                     panel = dialog.locator('section.hi-panel').filter(has=page.get_by_role('heading', name=table, exact=True))
                     expect(panel.locator('.hi-pagination')).to_contain_text(f"of {len(details['stories'][story]['rows']):,} rows")
@@ -97,6 +156,25 @@ def check(base):
                     text = Path(path).read_text()
                     assert '50000000' in text and '477' in text and '132' in text
                     assert len(text.splitlines()) == 2
+                if story == 'rainwater':
+                    expect(dialog.locator('.hi-hero')).to_contain_text('₱1.0272B')
+                    expect(dialog.get_by_role('region', name='Rainwater Collector System across budget stages', exact=True).locator('tbody td').last).to_contain_text('₱0')
+                    bands = dialog.get_by_role('region', name=table, exact=True)
+                    expect(bands).to_contain_text('199')
+                    expect(bands).to_contain_text('17')
+                    expect(bands).to_contain_text('₱38.400M')
+                    records = dialog.locator('section.hi-panel').filter(has=page.get_by_role('heading', name='All rainwater office allocation records', exact=True))
+                    expect(records.locator('.hi-pagination')).to_contain_text('of 217 rows')
+                    records.get_by_role('textbox', name='Search these records').fill('BARMM')
+                    expect(records.locator('.hi-pagination')).to_contain_text('of 1 rows')
+                    if width == 1440:
+                        source = dialog.get_by_role('link', name='HGAB3 p.401', exact=True).first
+                        source.click()
+                        pdf = page.get_by_role('dialog', name=re.compile('^PDF source:'))
+                        expect(pdf.get_by_role('status')).to_contain_text('Page 401 of', timeout=60000)
+                        expect(pdf.locator('canvas')).to_be_visible()
+                        pdf.get_by_role('button', name='Close PDF viewer').click()
+                        expect(source).to_be_focused()
                 page.screenshot(path=f'/tmp/highlight-modal-{story}-{width}.png')
                 # Back closes some dialogs; Escape closes the rest and restores focus.
                 if story == 'funding-shift':
@@ -117,6 +195,26 @@ def check(base):
             expect(page.get_by_role('dialog').get_by_role('link', name='NEP p.291').first).to_have_attribute('href', re.compile(r'#page=291$'))
             page.get_by_role('button', name='Close highlight').click()
             expect(page.get_by_role('dialog')).to_have_count(0)
+            # Standalone sources and retained controller anchors share the same viewer.
+            page.get_by_role('link', name='Resources', exact=True).click()
+            page.get_by_role('link', name='House GAB 2nd reading · Volume I-B', exact=True).click()
+            pdf = page.get_by_role('dialog', name=re.compile('^PDF source:'))
+            expect(pdf.get_by_role('status')).to_contain_text('Page 1 of', timeout=60000)
+            expect(pdf.locator('canvas')).to_be_visible()
+            page.keyboard.press('Escape')
+            assert page.evaluate('document.body.style.overflow') == ''
+            page.goto(base + '#house-nep', wait_until='networkidle')
+            page.get_by_role('link', name='House summary PDF, page 9', exact=True).click()
+            pdf = page.get_by_role('dialog', name=re.compile('^PDF source:'))
+            expect(pdf.get_by_role('status')).to_contain_text('Page 9 of', timeout=60000)
+            page.keyboard.press('Escape')
+            # Hash navigation closes both stacked dialogs and restores scrolling.
+            page.goto(base + '#highlights?story=funding-shift', wait_until='networkidle')
+            page.get_by_role('dialog').get_by_role('link', name='NEP p.8', exact=True).click()
+            expect(page.get_by_role('dialog')).to_have_count(2)
+            page.evaluate("window.location.hash = '#highlights'")
+            expect(page.get_by_role('dialog')).to_have_count(0)
+            assert page.evaluate('document.body.style.overflow') == ''
             # Candidate tables open the exact filters, including suggested deletions and FAP deltas.
             page.goto(base + '#highlights', wait_until='networkidle')
             for index, query in [(1, 'flag=nep_only_all'), (3, 'flag=amount_decrease')]:
@@ -134,7 +232,7 @@ def check(base):
             page.close()
         browser.close()
     assert not errors, errors
-    print(json.dumps({'widths': [390, 1440], 'stories': 9, 'custom_dialogs': 9, 'tables': 2, 'lazy_cached_evidence': True, 'csv': True, 'sharing_and_navigation': True, 'errors': errors}))
+    print(json.dumps({'widths': [390, 1440], 'stories': 10, 'custom_dialogs': 10, 'tables': 2, 'lazy_cached_evidence': True, 'csv': True, 'pdf_modals': True, 'sharing_and_navigation': True, 'errors': errors}))
 
 
 if __name__ == '__main__':

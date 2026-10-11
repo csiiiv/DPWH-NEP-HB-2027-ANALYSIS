@@ -109,6 +109,17 @@ with sync_playwright() as p:
         ).wait_for(timeout=60000)
         assert page.locator("canvas").evaluate("e=>e.width>0 && e.height>0")
         assert page.get_by_role("dialog").count() == 0
+        original = page.get_by_role('link', name='Open source PDF', exact=True)
+        original.click()
+        pdf_dialog = page.get_by_role('dialog', name=re.compile('^PDF source:'))
+        expect(pdf_dialog.get_by_role('status')).to_contain_text('Page ', timeout=60000)
+        expect(pdf_dialog.locator('canvas')).to_be_visible(timeout=60000)
+        assert pdf_dialog.locator('canvas').evaluate('e => e.width > 0 && e.height > 0')
+        page.keyboard.press('Escape')
+        expect(pdf_dialog).to_have_count(0)
+        expect(original).to_be_focused()
+        assert page.locator('.pdf-pane').count() == 1
+        assert page.evaluate('document.body.style.overflow') == ''
         if width == 1440:
             table_box = page.locator(".comparison-table").bounding_box()
             pdf_box = page.locator(".source-pane").bounding_box()

@@ -58,6 +58,15 @@ test('retained DPWH data reproduces both House readings and the full operations 
  assert.equal(data.grouping.leftover_amount_php,stages.road_group_summary.leftover_amount_php);
  assert.ok(data.chainage.shorter_same_amount>0);
  assert.ok(data.chainage.example.title.includes('Panitan'));
+ assert.equal(data.rainwater.third.amount_php,1027200000);
+ assert.equal(data.rainwater.third.records,217);
+ assert.deepEqual(data.rainwater.nep,data.rainwater.third);
+ assert.deepEqual(data.rainwater.second,data.rainwater.third);
+ assert.deepEqual(data.rainwater.third.bands,[
+  {amount_php:4200000,records:199,total_php:835800000},
+  {amount_php:9000000,records:17,total_php:153000000},
+  {amount_php:38400000,records:1,total_php:38400000},
+ ]);
  const deletionRows=unified.projects.filter(row=>matchesFlag(row,'nep_only_all'));
  assert.equal(deletionRows.reduce((sum,row)=>sum+row.nep.amount_php,0),data.changes.deletions.amount_php);
  assert.equal(deletionRows.length,data.changes.deletions.comparison_rows);
