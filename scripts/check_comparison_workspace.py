@@ -124,7 +124,7 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(candidates.locator('.candidate-table thead th')).to_have_count(5)
                 expect(candidates.locator('.candidate-table tbody tr').nth(2).locator('.candidate-project')).to_contain_text('Palico – Balayan-Batangas Rd - K0147 + 520 - K0148 + 671')
                 expect(candidates.locator('.candidate-table tbody tr').nth(2).locator('.candidate-assignment')).to_contain_text('Region IV-A')
-                expect(candidates).to_contain_text('0.9487 · 94.87% text similarity')
+                expect(candidates).to_contain_text('identity 90% · 95% text')
                 # Difference tags classify the residual title diff per suggestion.
                 expect(candidates.locator('.diff-tag').first).to_be_visible()
                 expect(candidates.locator('.diff-tag-row').first).to_be_visible()
@@ -136,7 +136,7 @@ with tempfile.TemporaryDirectory() as folder:
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 page.screenshot(path=f'/tmp/fuzzy-candidate-{width}.png')
                 page.reload(wait_until='networkidle')
-                expect(candidates).to_contain_text('94.87% text similarity',timeout=60000)
+                expect(candidates).to_contain_text('identity 90% · 95% text',timeout=60000)
                 candidates.get_by_role('button',name='Preview suggested NEP PDF p.206',exact=True).click()
                 expect(page.locator('.pdf-pane')).to_be_visible(timeout=60000)
                 expect(page.get_by_label('PDF page',exact=True)).to_have_value('206',timeout=60000)
