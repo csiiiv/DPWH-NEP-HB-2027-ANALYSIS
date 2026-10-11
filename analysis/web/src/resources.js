@@ -460,6 +460,13 @@ export const resourceGroups = [
           "Includes the ₱134M Caloocan reallocation visible under Compare → House readings.",
       },
       {
+        label: "Grouping candidates",
+        kind: "data",
+        path: "analysis/road_group_candidates_2027.json",
+        purpose: "Same-shell groupings: unpaired HGAB rows (insertions) and unpaired NEP rows (deletions)",
+        coverage: "₱23.4B insertion candidates · ₱12.2B deletion candidates across 627 shells. Powers Analysis → Groupings.",
+      },
+      {
         label: "Source verification overview",
         kind: "data",
         path: "analysis/source_verification_overview.json",

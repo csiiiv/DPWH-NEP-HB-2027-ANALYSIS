@@ -6,6 +6,7 @@ const pages = [
   ["home", "Home", "#home"],
   ["compare", "Compare stages", "#compare"],
   ["analysis", "Analysis", "#analysis"],
+  ["highlights", "Highlights", "#highlights"],
   ["house", "House GAB", "#house"],
   ["nep", "DBM NEP", "#nep"],
   ["transparency", "DPWH Transparency NEP", "#transparency"],

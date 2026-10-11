@@ -150,6 +150,33 @@ class StageTraceTests(unittest.TestCase):
         paired = next(r for r in rows if r['api_presence'] == 'paired' and r['nep'])
         self.assertEqual(paired['api']['amount_php'], paired['nep']['amount_php'])
 
+    def test_road_group_flags_match_sidecar(self):
+        sidecar = json.loads((DATA / 'road_group_candidates_2027.json').read_text())
+        flagged = [r for r in self.payload['projects'] if r.get('road_group')]
+        leftover_ids = {i for g in sidecar['groups'] for i in g['leftover_ids']}
+        nep_leftover_ids = {i for g in sidecar['nep_leftover_groups']
+                            for i in g['leftover_nep_ids']}
+        hgab = [r for r in flagged
+                if r['road_group']['flag'] == 'insertion_candidate_group_exhausted']
+        nep = [r for r in flagged
+               if r['road_group']['flag'] == 'deletion_candidate_group_house_paired']
+        self.assertEqual({r['house']['id'] for r in hgab}, leftover_ids)
+        self.assertEqual({r['nep']['id'] for r in nep}, nep_leftover_ids)
+        for row in hgab:
+            rg = row['road_group']
+            # Status/identity untouched: leftovers keep their matched or
+            # unmatched status — the flag is additive review context only.
+            self.assertRegex(row.get('reason') or '', r'Same-(road corridor|project shell \(work)')
+            self.assertIn(rg['pattern'],
+                          ('split_like', 'unsupplied_cluster', 'micro_supplied'))
+        for row in nep:
+            self.assertRegex(row.get('reason') or '', r'Dropped or re-titled candidate')
+            self.assertEqual(len(flagged), len(leftover_ids) + len(nep_leftover_ids))
+        self.assertEqual(self.payload['road_group_summary']['exhausted_groups'],
+                         len(sidecar['groups']))
+        self.assertEqual(self.payload['road_group_summary']['nep_leftover_groups'],
+                         len(sidecar['nep_leftover_groups']))
+
 
 if __name__ == '__main__':
     unittest.main()

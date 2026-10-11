@@ -23,6 +23,7 @@ window.addEventListener("error", (event) => {
 });
 const SourceWorkspace = lazy(() => import("./SourceWorkspace.jsx"));
 const Analysis = lazy(()=>import("./Analysis.jsx"));
+const Highlights = lazy(()=>import("./Highlights.jsx"));
 const Comparison = lazy(() => import("./Comparison.jsx"));
 const Resources = lazy(() => import("./Resources.jsx"));
 function App() {
@@ -50,7 +51,7 @@ function App() {
       <WorkbenchHeader route={route.key} />
       <main id="main" tabIndex="-1" className="shell">
         <Suspense fallback={<p role="status">Loading workspace…</p>}>
-          {route.key === "analysis" ? <Analysis route={route} /> : route.key === "compare" ? <Comparison route={route} /> : route.key === "home" ? <Home /> : route.key === "resources" ? <Resources /> : routes[route.key] ?
+          {route.key === "highlights" ? <Highlights route={route} /> : route.key === "analysis" ? <Analysis route={route} /> : route.key === "compare" ? <Comparison route={route} /> : route.key === "home" ? <Home /> : route.key === "resources" ? <Resources /> : routes[route.key] ?
             <SourceWorkspace key={route.key} route={route} /> :
             <section><h1>Page not found</h1><p>This workbench route is unavailable.</p><a href="#home">Return home</a></section>}
         </Suspense>
@@ -66,6 +67,7 @@ const php = (value) =>
   }).format(value);
 
 const workspaces = [
+  {href: "#highlights", title: "Highlights", body: "Ten media angles and investigative prompts, with DPWH coverage and third-reading change tables."},
   {href: "#compare", title: "Compare stages", body: "PAP totals, project comparison rows, House-reading filters, NEP-only splits, fuzzy suggestions, analytics, and CSV/JSON exports."},
   {href: "#analysis", title: "Analysis", body: "Office/program headlines, ranked insertions and deletions, adjustments, and descriptive statistics with group drill-downs into Compare."},
   {href: "#analysis?view=insertions", title: "Insertions", body: "House-only allocation records ranked by amount — no suggestion, unresolved NEP suggestions, and HGAB3-only."},

@@ -116,6 +116,31 @@ def scope_key(row):
     return row['zone'], row['pap_id'] if row['zone'] == 'local' else row['program'], row['region']
 
 
+def _span_center(ch: dict) -> float | None:
+    if ch.get('meters_from') is not None and ch.get('meters_to') is not None:
+        return (ch['meters_from'] + ch['meters_to']) / 2
+    return None
+
+
+def _chainage_proximity(house_row, nep_row) -> tuple[int, int]:
+    """Rank candidates by chainage-span proximity, then amount closeness.
+
+    Returns (span_distance_m, amount_distance_php) — smaller sorts first.
+    Span distance is the minimum center-to-center distance between the two
+    rows' station spans; falls back to a large constant when meters are
+    missing so chainage-bearing candidates rank ahead of span-less ones.
+    """
+    h_centers = [c for c in (_span_center(x) for x in house_row.get('chainages') or []) if c is not None]
+    n_centers = [c for c in (_span_center(x) for x in nep_row.get('chainages') or []) if c is not None]
+    if h_centers and n_centers:
+        span_distance = int(min(abs(a - b) for a in h_centers for b in n_centers))
+    else:
+        span_distance = 10**9
+    ha, na = house_row.get('amount_php'), nep_row.get('amount_php')
+    amount_distance = abs((ha or 0) - (na or 0)) if ha is not None and na is not None else 10**15
+    return span_distance, amount_distance
+
+
 def _title_key(row):
     return row.get('title_match_key') or normalized(row['title'])
 
@@ -161,6 +186,224 @@ def _attach_chainage(house_row, nep_row, confidence=1.0):
         'delta_php': house_row['amount_php'] - nep_row['amount_php'],
         'reason': _chainage_amendment_reason(house_row, nep_row),
     }
+
+
+_LOCATION_AMENDMENT_TAGS = frozenset({
+    'location_reassignment', 'point_to_point_barangay',
+})
+
+
+def _location_amendment_tags(suggestion):
+    return [t for t in (suggestion.get('diff_tags') or []) if t in _LOCATION_AMENDMENT_TAGS]
+
+
+def _location_amendment_reason(house_row, nep_row, tags):
+    if 'point_to_point_barangay' in tags:
+        return (
+            'Same road project shell with a point-to-point barangay corridor '
+            'change (endpoint added, dropped, or reassigned). Treat as a '
+            'location amendment, not a new insertion.'
+        )
+    if 'location_reassignment' in tags:
+        detail = diff_tags(house_row['title'], nep_row['title'])
+        moved = [t for t in detail if t.startswith('different_')]
+        which = ', '.join(moved) if moved else 'place slot'
+        return (
+            f'Same project shell with a relocated {which.replace("different_", "")}. '
+            'Possible location reassignment amendment, not a new insertion.'
+        )
+    return (
+        'Same project shell with a relocated place slot. Possible location '
+        'amendment, not a new insertion.'
+    )
+
+
+def _attach_location_amendment(house_row, nep_row, suggestion):
+    tags = _location_amendment_tags(suggestion)
+    return {
+        'status': 'location_amendment_candidate',
+        'confidence': suggestion.get('confidence', 1.0),
+        'house': house_row,
+        'nep': nep_row,
+        'delta_php': house_row['amount_php'] - nep_row['amount_php'],
+        'diff_tags': suggestion.get('diff_tags') or [],
+        'identity_score': suggestion.get('identity_score'),
+        'reason': _location_amendment_reason(house_row, nep_row, tags),
+    }
+
+
+def _is_soft_attach(suggestion):
+    """Tier-1 OCR/punct or Tier-2 facility-only pairs eligible for soft attach.
+
+    Requires equal amounts. Provenance stays on the attached record via
+    ``diff_tags``, ``identity_score``, and a typed ``reason`` — never a
+    silent exact match.
+    """
+    tags = set(suggestion.get('diff_tags') or []) - {'identical'}
+    score = suggestion.get('identity_score') or 0
+    ar = suggestion.get('amount_ratio')
+    if ar != 1.0:
+        return False
+    if tags <= {'spelling_ocr'} and score >= 0.95:
+        return True
+    if tags == {'facility_qualifier'} and score >= 0.94:
+        return True
+    # Empty tags: punctuation / LD suffix / sub-barangay detail that the slot
+    # model does not hard-flag (e.g. Purok 4-A added, Sitio Cumbahan added).
+    if not tags and score >= 0.95:
+        return True
+    return False
+
+
+def _soft_match_reason(suggestion):
+    tags = [t for t in (suggestion.get('diff_tags') or []) if t != 'identical']
+    score = suggestion.get('identity_score')
+    score_bit = f' identity_score={score:.2f}.' if score is not None else ''
+    if tags == ['facility_qualifier']:
+        return (
+            'Same project shell; titles differ only by a facility qualifier '
+            '(Gym / Gymnasium / Covered Court). Soft-attached after review; '
+            f'tag=facility_qualifier.{score_bit}'
+        )
+    if tags == ['spelling_ocr']:
+        return (
+            'Same project shell; residual difference is a spelling/OCR slip. '
+            'Soft-attached after review; tag=spelling_ocr. Printed titles stay '
+            f'as extracted.{score_bit}'
+        )
+    if not tags:
+        return (
+            'Same project shell; titles agree after normalize/identity scoring '
+            'with no hard place mismatch (punctuation, legislative-district '
+            'suffix, or sub-barangay detail). Soft-attached after review; '
+            f'tags=[].{score_bit}'
+        )
+    return (
+        f'Same project shell soft-attached after review; tags={tags}.{score_bit}'
+    )
+
+
+def _attach_soft_match(house_row, nep_row, suggestion):
+    return {
+        'status': 'soft_match_candidate',
+        'confidence': suggestion.get('confidence', 1.0),
+        'house': house_row,
+        'nep': nep_row,
+        'delta_php': house_row['amount_php'] - nep_row['amount_php'],
+        'diff_tags': suggestion.get('diff_tags') or [],
+        'identity_score': suggestion.get('identity_score'),
+        'reason': _soft_match_reason(suggestion),
+    }
+
+
+# Soft scope tags eligible for Tier-3 scope-amendment attachment. Hard place
+# mismatches (different_* / other_place_or_word / work_type_change /
+# different_gps) never attach here.
+_SCOPE_SOFT_TAGS = frozenset({
+    'spelling_ocr', 'same_gps_coordinates', 'chainage_digit',
+    'structure_id_digit', 'unit_count', 'facility_qualifier',
+    'parenthetical_modifier', 'work_descriptor_change',
+    'work_phrase_modifier', 'connector_word', 'city_suffix',
+    'stage_qualifier',
+})
+
+
+def _is_scope_amendment(suggestion):
+    """Tier-3 scope-amendment pairs: high identity, soft tags, any amount.
+
+    Amount deltas are allowed (unit-count splits, re-scoped chainage) and stay
+    visible on the attached row. Provenance is always carried via
+    ``diff_tags``/``identity_score`` and a typed ``reason``.
+    """
+    tags = set(suggestion.get('diff_tags') or []) - {'identical'}
+    if not tags <= _SCOPE_SOFT_TAGS:
+        return False
+    score = suggestion.get('identity_score') or 0
+    if score < 0.90:
+        return False
+    return suggestion.get('amount_ratio') is not None
+
+
+def _scope_amendment_reason(suggestion, house_row, nep_row):
+    tags = [t for t in (suggestion.get('diff_tags') or []) if t != 'identical']
+    score = suggestion.get('identity_score')
+    score_bit = f' identity_score={score:.2f}.' if score is not None else ''
+    delta = house_row.get('amount_php', 0) - (nep_row.get('amount_php') or 0)
+    delta_bit = ''
+    if delta:
+        delta_bit = (f' Amount delta ₱{delta:+,} applies and is flagged for '
+                     'review, not silently absorbed.')
+    detail = {
+        'same_gps_coordinates':
+            'same site confirmed by matching GPS coordinates despite wording '
+            'differences',
+        'chainage_digit':
+            'same road with re-surveyed or re-segmented station digits',
+        'structure_id_digit':
+            'same structure with differing ID/coordinate digits',
+        'unit_count':
+            'scope unit/phase count changed (e.g. 2 units ↔ 1 unit)',
+        'facility_qualifier':
+            'facility qualifier differs (Gym / Gymnasium / Covered Court)',
+        'parenthetical_modifier':
+            'scope parenthetical added or changed',
+        'work_descriptor_change':
+            'work-scope wording changed (Solar, Bridge ↔ Footbridge, '
+            'and Utilities…)',
+        'spelling_ocr':
+            'residual spelling/OCR drift',
+    }
+    which = '; '.join(detail[t] for t in tags if t in detail) or \
+        'soft scope differences only'
+    return (
+        f'Same project shell attached as a scope amendment after Tier-3 '
+        f'review: {which}.{score_bit}{delta_bit}'
+    )
+
+
+def _attach_scope_amendment(house_row, nep_row, suggestion):
+    return {
+        'status': 'scope_amendment_candidate',
+        'confidence': suggestion.get('confidence', 1.0),
+        'house': house_row,
+        'nep': nep_row,
+        'delta_php': house_row['amount_php'] - nep_row['amount_php'],
+        'diff_tags': suggestion.get('diff_tags') or [],
+        'identity_score': suggestion.get('identity_score'),
+        'reason': _scope_amendment_reason(suggestion, house_row, nep_row),
+    }
+
+
+def _pick_unique_unused_suggestion(suggestions, source, matched_n, house_row,
+                                   predicate):
+    """Pick one unused NEP suggestion matching ``predicate``, or None.
+
+    Prefers equal-amount, else a single unused hit, else an identity leader
+    ≥0.15 ahead of the next unused hit.
+    """
+    hits = [s for s in suggestions if predicate(s)]
+    if not hits:
+        return None
+
+    def nep_idx(suggestion):
+        return next(j for j, r in enumerate(source) if r is suggestion['nep'])
+
+    unused = [s for s in hits if nep_idx(s) not in matched_n]
+    if len(unused) == 1:
+        return unused[0], nep_idx(unused[0])
+    if len(unused) > 1:
+        equal = [s for s in unused
+                 if house_row.get('amount_php') is not None
+                 and s['nep'].get('amount_php') == house_row.get('amount_php')]
+        if len(equal) == 1:
+            return equal[0], nep_idx(equal[0])
+        ranked = sorted(unused, key=lambda s: (
+            -s.get('identity_score', 0), -s.get('confidence', 0),
+            s['nep']['id']))
+        if (ranked[0].get('identity_score') or 0) - (
+                ranked[1].get('identity_score') or 0) >= 0.15:
+            return ranked[0], nep_idx(ranked[0])
+    return None
 
 
 def project_matches(house, source):
@@ -276,16 +519,52 @@ def project_matches(house, source):
                 })
         # Rank by identity score (place-aware), then text similarity, then id.
         suggestions.sort(key=lambda r: (-r['identity_score'], -r['confidence'], r['nep']['id']))
-        # Unique same-base chainage hit → attach (matched); else fuzzy suggestions.
+        # Unique same-base chainage hit → attach (matched); else location
+        # reassignment / point-to-point barangay amendment; else fuzzy suggestions.
         chainage_hits = [s for s in suggestions if _is_chainage_pair(h, s['nep'])]
-        if len(chainage_hits) == 1:
-            nep_row = chainage_hits[0]['nep']
+        # Closest-first: nearest chainage span, then nearest amount, then id.
+        chainage_hits.sort(key=lambda s: (*_chainage_proximity(h, s['nep']), s['nep']['id']))
+        unused_chainage = [s for s in chainage_hits
+                           if next(j for j, r in enumerate(source) if r is s['nep']) not in matched_n]
+        if len(unused_chainage) >= 1:
+            nep_row = unused_chainage[0]['nep']
             n_idx = next(j for j, r in enumerate(source) if r is nep_row)
-            if n_idx not in matched_n:
-                records.append(_attach_chainage(h, source[n_idx], chainage_hits[0]['confidence']))
-                matched_h.add(i)
-                matched_n.add(n_idx)
-                continue
+            records.append(_attach_chainage(h, source[n_idx], unused_chainage[0]['confidence']))
+            matched_h.add(i)
+            matched_n.add(n_idx)
+            continue
+        # Location reassignment / point-to-point corridor amendments.
+        picked = _pick_unique_unused_suggestion(
+            suggestions, source, matched_n, h,
+            lambda s: bool(_location_amendment_tags(s)))
+        if picked is not None:
+            chosen, n_idx = picked
+            records.append(_attach_location_amendment(h, source[n_idx], chosen))
+            matched_h.add(i)
+            matched_n.add(n_idx)
+            continue
+        # Tier-1 OCR/punct and Tier-2 facility soft attaches (equal amount,
+        # high identity). Always carry reason + diff_tags + identity_score.
+        picked = _pick_unique_unused_suggestion(
+            suggestions, source, matched_n, h, _is_soft_attach)
+        if picked is not None:
+            chosen, n_idx = picked
+            records.append(_attach_soft_match(h, source[n_idx], chosen))
+            matched_h.add(i)
+            matched_n.add(n_idx)
+            continue
+        # Tier-3 scope amendments (identity ≥ 0.90, soft tags, any amount):
+        # GPS-confirmed scope change, chainage/unit re-scope, facility or
+        # parenthetical scope, Solar/Footbridge wording. Amount deltas apply
+        # and stay visible; provenance is always carried.
+        picked = _pick_unique_unused_suggestion(
+            suggestions, source, matched_n, h, _is_scope_amendment)
+        if picked is not None:
+            chosen, n_idx = picked
+            records.append(_attach_scope_amendment(h, source[n_idx], chosen))
+            matched_h.add(i)
+            matched_n.add(n_idx)
+            continue
         if suggestions:
             records.append({'status': 'fuzzy_candidate', 'house': h,
                             'candidates': suggestions[:3]})
@@ -310,8 +589,10 @@ def project_matches(house, source):
             continue
         key = (*scope_key(house[idx]), _base_key(house[idx]))
         ns = [i for i in base_n.get(key, []) if i not in matched_n]
-        if len(ns) != 1:
+        if not ns:
             continue
+        # Closest-first fallback as well: nearest span, then nearest amount.
+        ns.sort(key=lambda j: (*_chainage_proximity(house[idx], source[j]), source[j]['id']))
         n = ns[0]
         if not _is_chainage_pair(house[idx], source[n]):
             continue

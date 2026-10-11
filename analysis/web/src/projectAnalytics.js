@@ -21,11 +21,12 @@ export function projectAnalytics(rows) {
     if(['ambiguous','fuzzy_candidate','region_difference_candidate'].includes(row.trace))flags.uncertain_match++;
     if(['native_row_ambiguity','nearby_alignment_candidate','native_text_review','not_checked'].includes(row.nep?.evidence))flags.nep_evidence_review++;
     if(Object.values(flags).reduce((sum,count)=>sum+count,0)>flagTotal)flaggedRows++;
-    // Title-difference tags across this row's fuzzy suggestions. Rows can
-    // carry several suggestions with different tags, so counts overlap and
-    // do not sum to the fuzzy-row total.
+    // Title-difference tags across fuzzy suggestions and attached location
+    // amendments. Rows can carry several suggestions with different tags, so
+    // counts overlap and do not sum to the fuzzy-row total.
     const seenTags=new Set();
     for(const suggestion of row.suggestions ?? [])for(const tag of suggestion.diff_tags ?? [])if(tag!=='identical' && !seenTags.has(tag)){seenTags.add(tag);diffTags[tag]=(diffTags[tag] || 0)+1;}
+    for(const tag of row.diff_tags ?? [])if(tag!=='identical' && !seenTags.has(tag)){seenTags.add(tag);diffTags[tag]=(diffTags[tag] || 0)+1;}
   }
   return {count:rows.length,totals,changes,matches,flags,diffTags,readingDelta,flaggedRows};
 }

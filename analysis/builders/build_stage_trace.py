@@ -26,6 +26,7 @@ INPUTS = [
     'comparison_manifest.json',
     'nep_2027_api_reconciliation.json',
     'dpwh_transparency_nep_tree.json',
+    'road_group_candidates_2027.json',
 ]
 METHOD = (
     'Stage 1: retained API↔Official NEP pairs from nep_2027_api_reconciliation '
@@ -72,8 +73,10 @@ def api_side(pair: dict) -> dict:
 def classify(row: dict) -> str:
     status = row['house_match']
     api_presence = row['api_presence']
-    if status in ('exact_candidate', 'chainage_candidate'):
-        # Chainage pairs attach like exact matches; amount flags apply the same way.
+    if status in ('exact_candidate', 'chainage_candidate',
+                  'location_amendment_candidate', 'soft_match_candidate',
+                  'scope_amendment_candidate'):
+        # Attached pairs (exact / chainage / location / soft / scope) share amount flags.
         delta = row['house_minus_nep_php']
         if api_presence == 'nep_not_in_transparency':
             base = 'transparency_gap_then_'
@@ -121,7 +124,10 @@ def build_rows(comparison: dict, reconciliation: dict) -> list[dict]:
             else:
                 api_presence = 'unexpected_missing_api'
         house_minus_nep = None
-        if record['status'] in ('exact_candidate', 'chainage_candidate') and house and nep:
+        if record['status'] in ('exact_candidate', 'chainage_candidate',
+                                'location_amendment_candidate',
+                                'soft_match_candidate',
+                                'scope_amendment_candidate') and house and nep:
             house_minus_nep = house['amount_php'] - nep['amount_php']
         primary = house or nep
         row = {
@@ -151,6 +157,16 @@ def build_rows(comparison: dict, reconciliation: dict) -> list[dict]:
             ],
             'reason': record.get('reason'),
         }
+        # Provenance for soft / location / scope attaches: keep tags +
+        # identity on the paired row so filters and analytics do not lose
+        # the review trail.
+        if record['status'] in ('location_amendment_candidate',
+                                'soft_match_candidate',
+                                'scope_amendment_candidate'):
+            if record.get('diff_tags') is not None:
+                row['diff_tags'] = record['diff_tags']
+            if record.get('identity_score') is not None:
+                row['identity_score'] = record['identity_score']
         if api_presence == 'nep_not_in_transparency' and nep:
             gap = unpaired[nep['id']]
             row['transparency_gap'] = {
@@ -158,6 +174,82 @@ def build_rows(comparison: dict, reconciliation: dict) -> list[dict]:
                 'native_pdf_evidence': bool(gap.get('native_pdf_evidence')),
             }
         rows.append(row)
+    # Road-group context: House rows on a same-road group whose NEP supply is
+    # exhausted get a review flag + group summary — candidate insertions with
+    # context, never certified. Row identity/status is untouched.
+    try:
+        road_groups = read('road_group_candidates_2027.json')
+    except FileNotFoundError:
+        road_groups = {}
+    group_by_id = {}
+    for g in road_groups.get('groups', []):
+        for leftover_id in g.get('leftover_ids', []):
+            group_by_id[leftover_id] = g
+    # NEP rows on shells whose House side is fully paired while NEP supply
+    # remains — dropped / re-titled candidates with group context.
+    nep_group_by_id = {}
+    for g in road_groups.get('nep_leftover_groups', []):
+        for leftover_id in g.get('leftover_nep_ids', []):
+            nep_group_by_id[leftover_id] = g
+    for row in rows:
+        house_id = (row.get('house') or {}).get('id')
+        g = group_by_id.get(house_id)
+        if not g:
+            # NEP-leftover context rides on NEP-only rows.
+            nep_id = (row.get('nep') or {}).get('id')
+            ng = nep_group_by_id.get(nep_id)
+            if not ng:
+                continue
+            row['road_group'] = {
+                'flag': 'deletion_candidate_group_house_paired',
+                'kind': ng['kind'],
+                'pattern': None,
+                'house_rows': ng['house_rows'],
+                'nep_rows': ng['nep_rows'],
+                'nep_attached': ng['paired_rows'],
+                'leftover_nep_rows': ng['leftover_nep_rows'],
+                'title_base': ng.get('title') or ng['shell'],
+            }
+            shell_noun = ('road corridor' if ng['kind'] == 'road'
+                          else 'project shell (work + municipality + province)')
+            row['reason'] = (
+                (row.get('reason') or '') +
+                (' ' if row.get('reason') else '') +
+                'Same-%s group has %d paired NEP items but %d NEP rows remain '
+                'unmatched while every House row in the group is paired. '
+                'Dropped or re-titled candidate — group context only, identity '
+                'never certified.' % (shell_noun, ng['paired_rows'],
+                                      ng['leftover_nep_rows'])
+            ).strip()
+            continue
+        row['road_group'] = {
+            'flag': 'insertion_candidate_group_exhausted',
+            'kind': g['kind'],
+            'pattern': g['pattern'],
+            'house_rows': g['house_rows'],
+            'nep_rows': g['nep_rows'],
+            'nep_attached': g['nep_rows'],  # exhausted: all attached
+            'leftover_house_rows': g['leftover_house_rows'],
+            'title_base': g.get('title') or g['shell'],
+        }
+        shell_noun = ('road corridor' if g['kind'] == 'road'
+                      else 'project shell (work + municipality + province)')
+        if g['pattern'] == 'unsupplied_cluster':
+            pattern_note = ('The paired NEP item is far larger than these leftovers — '
+                            'different work sharing the shell, not their supply.')
+        elif g['pattern'] == 'micro_supplied':
+            pattern_note = ('The paired NEP item is far smaller than these leftovers.')
+        else:
+            pattern_note = ''
+        row['reason'] = (
+            (row.get('reason') or '') +
+            (' ' if row.get('reason') else '') +
+            'Same-%s group exhausted: all %d NEP rows on this PAP/region group '
+            'are attached to other House rows; no NEP supply remains for this '
+            'allocation. Split / insertion or scope-expansion candidate.'
+            % (shell_noun, g['nep_rows']) +
+            ((' ' + pattern_note) if pattern_note else '')
+        ).strip()
     return rows
 
 
@@ -186,6 +278,7 @@ def build() -> dict:
     comparison = read('source_comparison_2027.json')
     reconciliation = read('nep_2027_api_reconciliation.json')
     api_tree = read('dpwh_transparency_nep_tree.json')
+    road_groups = read('road_group_candidates_2027.json')
     rows = build_rows(comparison, reconciliation)
     paps = pap_stage_rows(comparison)
     s = comparison['summary']
@@ -276,6 +369,7 @@ def build() -> dict:
         'unresolved_paps': comparison['unresolved_paps'],
         'transparency_gaps': reconciliation['unpaired_source'],
         'projects': rows,
+        'road_group_summary': road_groups.get('summary', {}),
     }
     (DATA / 'stage_trace_2027.json').write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + '\n')

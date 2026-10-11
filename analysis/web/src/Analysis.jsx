@@ -1,4 +1,4 @@
-import React,{lazy,Suspense,useEffect,useMemo,useState} from 'react';
+import React,{lazy,Suspense,useEffect,useMemo,useRef,useState} from 'react';
 import {loadData} from './data.js';
 import {hydrateProjects} from './comparisonData.js';
 import {amount} from './model.js';
@@ -7,6 +7,7 @@ import ShareLink from './ShareLink.jsx';
 import SortableTable from './SortableTable.jsx';
 import {benford,trailingZeros,lastDigits,roundingLadder,valueBands,kmeansClusters,exactConcentrations} from './analysisStats.js';
 import {CHAINAGE_FOCUS,CHAINAGE_MODUS,MODUS_DEADBAND,amountChangeBins,chainageAmendmentRows,filterChainageRows,modusSummary,perKmChangeBins,redFlagPerKm,summarizeChainage} from './chainageAnalysis.js';
+import {roadGroupStats} from './roadGroups.js';
 import {BENCHMARK_DIMENSIONS,BENCHMARK_SOURCES,outlierUnits,peerCohorts,perKmBands,summarizeUnits,unitPerKm} from './chainageBenchmark.js';
 import ChainageGuide,{Term,GUIDE_CONCEPTS} from './ChainageGuide.jsx';
 import {formatLengthKm,formatSignedKm} from './chainageDisplay.js';
@@ -17,7 +18,7 @@ const labels={'Bridge Program':'Bridges','Convergence and Special Support Progra
 const short=value=>labels[value]??value;
 const modes={no_suggestion:'House-only · no NEP suggestion',unresolved:'Unresolved NEP suggestions',third_only:'New 3rd-reading records'};
 const deletionModes={no_suggestion:'No House record · no suggestion',suggested:'Possible replacements · House rows suggest this NEP item',second_only:'HGAB2 only · dropped in HGAB3'};
-const views=[['overview','Overview'],['insertions','Insertions'],['deletions','Deletions'],['adjustments','Adjustments'],['chainage','Chainage'],['statistics','Statistics']];
+const views=[['overview','Overview'],['insertions','Insertions'],['deletions','Deletions'],['adjustments','Adjustments'],['chainage','Chainage'],['roadgroups','Groupings'],['statistics','Statistics']];
 const dimensions=[['overall','Overall'],['region','Region'],['office','District office'],['program','Category'],['pap','PAP']];
 const pick=(params,key,allowed,fallback)=>allowed.includes(params.get(key))?params.get(key):fallback;
 const dimensionTitle=dim=>dim==='office'?'district office':dim==='pap'?'PAP':dim;
@@ -37,7 +38,7 @@ function percentChange(current,prior){
  return (current-prior)/Math.abs(prior)*100;
 }
 export default function Analysis({route}){
- const [data,setData]=useState(null),[detail,setDetail]=useState(null),[error,setError]=useState(''),[group,setGroup]=useState(null),[benchmark,setBenchmark]=useState(null);
+ const [data,setData]=useState(null),[detail,setDetail]=useState(null),[error,setError]=useState(''),[benchmark,setBenchmark]=useState(null);
  const view=pick(route.params,'view',views.map(v=>v[0]),'overview');
  const source=pick(route.params,'source',Object.keys(names),'third');
  const ranking=pick(route.params,'ranking',Object.keys(modes),'no_suggestion');
@@ -49,6 +50,22 @@ export default function Analysis({route}){
  const deletionRanking=pick(route.params,'ranking',Object.keys(deletionModes),'no_suggestion');
  // Overview defaults to region so the NEP vs House change table is immediately useful.
  const overviewDim=view==='overview'&&!route.params.get('dim')?'region':dim;
+ // Modal state rides the URL so drill-downs are shareable and the back
+ // button closes them: `group`+`g` for aggregate group records, `shell`+
+ // `side`+`zone`+`pap`+`region` for grouping members, `drill`+`axis` for
+ // the overview nested breakdown. Everything else (source, ranking, dim)
+ // is already in the URL and re-derived on load.
+ const groupScope=pick(route.params,'group',['insertions','deletions','differences'],null);
+ const groupLabelRaw=route.params.get('g');
+ const group=useMemo(()=>groupScope&&groupLabelRaw!=null?{scope:groupScope,label:groupLabelRaw,
+  reading:groupScope==='insertions'?reading(source):'third',
+  ranking:groupScope==='deletions'?deletionRanking:ranking,
+  dim,displayLabel:groupLabel(dim,groupLabelRaw)}:null,
+  [groupScope,groupLabelRaw,source,ranking,deletionRanking,dim]);
+ const shellOpen=route.params.get('shell')&&route.params.get('side')?{
+  shell:route.params.get('shell'),side:pick(route.params,'side',['hgab','nep'],'hgab'),
+  zone:route.params.get('zone')||'',pap:route.params.get('pap')||'',region:route.params.get('region')||''}:null;
+ const drill=route.params.get('drill')?{label:route.params.get('drill'),axis:pick(route.params,'axis',['region','office','pap'],'region')}:null;
  useEffect(()=>{const c=new AbortController();loadData('comparison_overview_2027.json',c.signal).then(setData).catch(e=>{if(e.name!=='AbortError')setError(e.message);});return()=>c.abort();},[]);
  // Detail rows load lazily for deletions/adjustments/chainage/statistics, or when a group modal opens.
  useEffect(()=>{
@@ -65,8 +82,39 @@ export default function Analysis({route}){
    .then(payload=>setBenchmark(payload.units)).catch(e=>{if(e.name!=='AbortError')setError(e.message);});
   return()=>c.abort();
  },[view,benchmark]);
+ // Road-group sidecar: same-road House/NEP groups with exhausted-supply
+ // insertion candidates.
+ const [roadGroups,setRoadGroups]=useState(null);
+ useEffect(()=>{
+  if(view!=='roadgroups'||roadGroups)return;
+  const c=new AbortController();loadData('road_group_candidates_2027.json',c.signal)
+   .then(payload=>setRoadGroups(payload)).catch(e=>{if(e.name!=='AbortError')setError(e.message);});
+  return()=>c.abort();
+ },[view,roadGroups]);
+ // Table deep link: scroll the targeted table into view when the table=
+ // param arrives (initial open or link navigation) and flash its highlight.
+ // Re-runs as lazy payloads (detail rows, groupings sidecar) land because
+ // the target table may not exist on first paint.
+ const tableTarget=route.params.get('table');
+ useEffect(()=>{
+  if(!tableTarget||!data)return;
+  const id=`table-${tableTarget}`;
+  const t=setTimeout(()=>{
+   const element=document.getElementById(id);
+   if(!element)return;
+   element.scrollIntoView({behavior:'smooth',block:'start'});
+   element.focus({preventScroll:true});
+  },80);
+  return ()=>clearTimeout(t);
+ },[tableTarget,data,detail,roadGroups]);
  function change(key,value){const params=Object.fromEntries(route.params);params[key]=value;window.location.hash=routeHref('analysis',params);}
- function openGroup(next){setGroup(next);}
+ // Modal open/close writes the modal params into the hash — shareable links,
+ // and the browser back button closes the dialog.
+ function openModal(params){const next=Object.fromEntries(route.params);Object.assign(next,params);window.location.hash=routeHref('analysis',next);}
+ function closeModal(){const next=Object.fromEntries(route.params);
+  for(const key of ['group','g','shell','side','zone','pap','region','drill','axis'])delete next[key];
+  window.location.hash=routeHref('analysis',next);}
+ function openGroup(next){openModal({group:next.scope,g:next.label});}
  if(error)return <p role="alert">{error}</p>;
  if(!data)return <p role="status">Loading analysis…</p>;
  const stats=data.headlines.sources[source];
@@ -79,13 +127,14 @@ export default function Analysis({route}){
    <button key={key} role="tab" aria-selected={view===key} onClick={()=>change('view',key)}>{title}</button>)}</nav>
   <p className="notice">Counts refer to source allocation records, including grouped members, rather than unique projects across stages. Office assignments come from the selected source; missing assignments are shown separately. Scope: operations, including local and foreign-assisted projects. Transparency reflects its retained listing. Tables sort on any column. Click a group name to list its comparison rows.</p>
   {needsDetail&&<p role="status">Loading per-record data…</p>}
-  {view==='overview'&&<Overview stats={stats} source={source} headlines={data.headlines} dim={overviewDim} change={change}/>}
+  {view==='overview'&&<Overview stats={stats} source={source} headlines={data.headlines} dim={overviewDim} change={change} onOpenGroup={openGroup} drill={drill} onOpenDrill={d=>openModal({drill:d.label,axis:d.axis})} onCloseDrill={closeModal}/>}
   {view==='insertions'&&<Insertions headlines={data.headlines} reading={reading(source)} ranking={ranking} dim={dim} change={change} onOpenGroup={openGroup}/>}
   {view==='deletions'&&<Deletions headlines={data.headlines} ranking={deletionRanking} dim={dim} change={change} onOpenGroup={openGroup}/>}
   {view==='adjustments'&&detail&&<Adjustments detail={detail} revisionSets={data.headlines.revisionSets} dim={dim} direction={direction} change={change} onOpenGroup={openGroup}/>}
   {view==='chainage'&&<Chainage detail={detail} focus={chainageFocus} change={change} benchmark={benchmark} setBenchmark={setBenchmark} stage={chainageStage} scope={chainageScope}/>}
+  {view==='roadgroups'&&<RoadGroups payload={roadGroups} open={shellOpen} onOpenShell={g=>openModal({shell:g.shell,side:g.state==='nep_leftover'?'nep':'hgab',zone:g.zone||'',pap:g.pap||'',region:g.region||''})} onClose={closeModal}/>}
   {view==='statistics'&&detail&&<Statistics detail={detail} source={source} dim={dim} change={change}/>}
-  {group&&detail&&<Suspense fallback={null}><GroupProjectsModal projects={detail} group={group} onClose={()=>setGroup(null)}/></Suspense>}
+  {group&&detail&&<Suspense fallback={null}><GroupProjectsModal projects={detail} group={group} onClose={closeModal}/></Suspense>}
  </div>;
 }
 const reading=source=>['second','third'].includes(source)?source:'third';
@@ -93,19 +142,15 @@ function DimensionChips({dim,change}){
  return <div className="dimension-chips" role="group" aria-label="Break down by">{dimensions.map(([key,title])=>
   <button key={key} className={dim===key?'active':''} aria-pressed={dim===key} onClick={()=>change('dim',key)}>{title}</button>)}</div>;
 }
-function Overview({stats,source,headlines,dim,change}){
+function Overview({stats,source,headlines,dim,change,onOpenGroup,drill,onOpenDrill,onCloseDrill}){
  const houseSide=reading(source);
  const houseLabel=houseSide==='third'?'HGAB3':'HGAB2';
  const compare=headlines.sourceCompare[houseSide];
  const rows=compare.by_dim[dim]??compare.by_dim.region;
  const dimLabel=dim==='overall'?'Group':dim==='office'?'District office':dim==='pap'?'PAP':dim==='program'?'Category':'Region';
- // Drill-down: which parent group's nested breakdown is expanded. PAP
- // parents break down by region or office; region/office parents by PAP.
- const [drill,setDrill]=useState(null);
- const drillParent=drill?(compare.by_dim[dim]??[]).find(g=>g.label===drill.label):null;
- const drillRows=drillParent&&drill?(drillParent[drill.axis==='region'?'by_region':drill.axis==='office'?'by_office':'by_pap']||[]):null;
- const drillAxis=drill?.axis;
- const drillDimLabel=drillAxis==='region'?'Region':drillAxis==='office'?'District office':'PAP';
+ // Drill-down state lives in the URL (drill+axis): shareable links and the
+ // back button closes the modal. PAP parents break down by region or
+ // office; region/office parents by PAP.
  const drillAxisNoun=axis=>axis==='region'?'region':axis==='office'?'office':'PAP';
  const drillButton=(row,axis)=>{
   const list=row[axis==='region'?'by_region':axis==='office'?'by_office':'by_pap'];
@@ -113,9 +158,9 @@ function Overview({stats,source,headlines,dim,change}){
   const open=drill?.label===row.label&&drill.axis===axis;
   const noun=drillAxisNoun(axis);
   const countLabel=`${list.length.toLocaleString()} ${noun}${list.length===1?'':'s'}`;
-  const action=open?`Hide ${noun} breakdown`:`Show by ${noun}`;
-  return <button type="button" className={`overview-drill-btn${open?' open':''}`} aria-expanded={open} aria-controls="overview-pap-drilldown" aria-label={`${action} · ${countLabel}`} onClick={()=>setDrill(open?null:{label:row.label,axis})}>
-   <span className="overview-drill-chevron" aria-hidden="true">{open?'▾':'▸'}</span>
+  const action=`Show by ${noun}`;
+  return <button type="button" className={`overview-drill-btn${open?' open':''}`} aria-expanded={open} aria-label={`${action} · ${countLabel}`} onClick={e=>onOpenDrill({label:row.label,axis})}>
+   <span className="overview-drill-chevron" aria-hidden="true">▸</span>
    <span className="overview-drill-label" aria-hidden="true">{action}</span>
    <span className="overview-drill-count" aria-hidden="true">{countLabel}</span>
   </button>;
@@ -126,7 +171,7 @@ function Overview({stats,source,headlines,dim,change}){
   <section className="analysis-section"><h2>NEP → {houseLabel}{dim==='overall'?'':' by '+dimensionTitle(dim)}</h2>
    <DimensionChips dim={dim} change={change}/>
    <p className="muted">Operations comparison grain. Totals: NEP {amount(compare.nep_php)} ({headlines.sources.nep.records.toLocaleString()} records) · {houseLabel} {amount(compare.house_php)} ({headlines.sources[houseSide].records.toLocaleString()} records) · records change {signedCount(headlines.sources[houseSide].records-headlines.sources.nep.records)} · allocation change {signedCell(compare.delta_php)}. Each source uses its own assignment for the selected breakdown; a paired row can land in different groups when labels differ.{dim!=='overall'&&' Use the Show by … buttons under a group name to open its nested breakdown (regions/offices → PAPs; PAPs → regions or offices).'}</p>
-   <SortableTable ariaLabel={`NEP to ${houseLabel} by ${dimLabel}`} initialSort={{key:'delta_php',direction:'desc'}} rows={rows.map(r=>{
+   <SortableTable tableId={`overview-${dim}`} ariaLabel={`NEP to ${houseLabel} by ${dimLabel}`} initialSort={{key:'delta_php',direction:'desc'}} rows={rows.map(r=>{
     const nepRecords=r.nep_records??0,houseRecords=r.house_records??0;
     return {...r,delta_records:houseRecords-nepRecords,pct_records:percentChange(houseRecords,nepRecords),pct_alloc:percentChange(r.house_php,r.nep_php)};
    })} columns={[
@@ -145,34 +190,7 @@ function Overview({stats,source,headlines,dim,change}){
     {key:'delta_php',label:'Allocation change',align:'num',band:'allocations',render:r=>signedCell(r.delta_php)},
     {key:'pct_alloc',label:'% allocation change',align:'num',band:'allocations',render:r=>signedPercent(r.pct_alloc)},
    ]}/>
-   {drillRows&&<div id="overview-pap-drilldown" className="pap-drilldown">
-    <div className="pap-drilldown-head">
-     <div>
-      <p className="pap-drilldown-kicker">Drill-down</p>
-      <h3>{drillDimLabel} breakdown · {parentTitle}</h3>
-     </div>
-     <button type="button" className="overview-drill-btn open" onClick={()=>setDrill(null)}>
-      <span className="overview-drill-chevron" aria-hidden="true">▴</span>
-      <span className="overview-drill-label">Close breakdown</span>
-     </button>
-    </div>
-    <p className="muted">Records and allocations per {drillDimLabel.toLowerCase()} inside {parentTitle} — each source counts under its own recorded {drillDimLabel.toLowerCase()}, so a pair split across labels appears in both. Sorted by allocation change.</p>
-    <SortableTable ariaLabel={`${drillDimLabel} breakdown for ${drill.label}`} initialSort={{key:'delta_php',direction:'desc'}} rows={drillRows.map(r=>{
-     const nepRecords=r.nep_records??0,houseRecords=r.house_records??0;
-     return {...r,delta_records:houseRecords-nepRecords,pct_records:percentChange(houseRecords,nepRecords),pct_alloc:percentChange(r.house_php,r.nep_php)};
-    })} columns={[
-     {key:'label',label:drillDimLabel,scope:'row',render:r=><span>{drillAxis==='region'?groupLabel('region',r.label):drillAxis==='office'?groupLabel('office',r.label):r.label}</span>},
-     {key:'nep_records',label:'NEP records',align:'num',band:'records',bandLabel:'Records',render:r=><span>{(r.nep_records??0).toLocaleString()}</span>},
-     {key:'house_records',label:`${houseLabel} records`,align:'num',band:'records',render:r=><span>{(r.house_records??0).toLocaleString()}</span>},
-     {key:'delta_records',label:'Records change',align:'num',band:'records',render:r=>signedCount(r.delta_records)},
-     {key:'pct_records',label:'% records change',align:'num',band:'records',render:r=>signedPercent(r.pct_records)},
-     {key:'nep_php',label:'NEP allocation',align:'num',band:'allocations',bandLabel:'Allocations',divider:true,render:r=>amountCell(r.nep_php)},
-     {key:'house_php',label:`${houseLabel} allocation`,align:'num',band:'allocations',render:r=>amountCell(r.house_php)},
-     {key:'delta_php',label:'Allocation change',align:'num',band:'allocations',render:r=>signedCell(r.delta_php)},
-     {key:'pct_alloc',label:'% allocation change',align:'num',band:'allocations',render:r=>signedPercent(r.pct_alloc)},
-    ]} empty={`No ${drillDimLabel.toLowerCase()} rows in this group.`}/>
-    <p className="muted">Total {drillRows.length.toLocaleString()} {drillAxis==='region'?'region':drillAxis==='office'?'office':'PAP'}{drillRows.length===1?'':'s'} · records {drillRows.reduce((s,p)=>s+(p.nep_records??0),0).toLocaleString()} NEP → {drillRows.reduce((s,p)=>s+(p.house_records??0),0).toLocaleString()} {houseLabel} · allocation {amount(drillRows.reduce((s,p)=>s+(p.nep_php??0),0))} → {amount(drillRows.reduce((s,p)=>s+(p.house_php??0),0))}.</p>
-   </div>}
+   {drill&&<DrilldownModal drill={drill} dim={dim} compare={compare} houseLabel={houseLabel} onClose={onCloseDrill}/>}
   </section>
   <div className="analysis-distributions"><Distribution title="Central Office vs DEOs" buckets={stats.offices} total={stats.records}/><Distribution title="Records by program" buckets={stats.programs} total={stats.records}/></div>
   <section className="analysis-section"><h2>Explore further</h2><div className="analysis-crosslinks">
@@ -184,10 +202,49 @@ function Overview({stats,source,headlines,dim,change}){
   </div></section>
  </>;
 }
+function DrilldownModal({drill,dim,compare,houseLabel,onClose}){
+ const dialog=useRef(null);
+ useEffect(()=>{
+  const element=dialog.current,previous=document.body.style.overflow;
+  element.showModal();document.body.style.overflow='hidden';
+  return ()=>{element.close();document.body.style.overflow=previous;};
+ },[]);
+ const drillParent=(compare.by_dim[dim]??[]).find(g=>g.label===drill.label);
+ const drillRows=(drillParent?.[drill.axis==='region'?'by_region':drill.axis==='office'?'by_office':'by_pap'])||[];
+ const drillAxis=drill.axis;
+ const drillDimLabel=drillAxis==='region'?'Region':drillAxis==='office'?'District office':'PAP';
+ const parentTitle=dim==='program'?short(drill.label):groupLabel(dim,drill.label);
+ return <dialog ref={dialog} className="analytics-dialog grouping-members-dialog" aria-labelledby="drilldown-title" onCancel={e=>{e.preventDefault();onClose();}} onClick={e=>{
+  if(e.target!==e.currentTarget)return;const b=e.currentTarget.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)onClose();
+ }}>
+  <header className="analytics-header">
+   <div className="analytics-heading"><div><p className="eyebrow">DRILL-DOWN</p><h2 id="drilldown-title">{drillDimLabel} breakdown · {parentTitle}</h2></div>
+    <button onClick={onClose} autoFocus aria-label="Close breakdown">Close</button></div>
+   <p>Records and allocations per {drillDimLabel.toLowerCase()} inside {parentTitle} — each source counts under its own recorded {drillDimLabel.toLowerCase()}, so a pair split across labels appears in both. Sorted by allocation change.</p>
+  </header>
+  <div className="analytics-content group-projects-content">
+   <SortableTable tableId="overview-drill" ariaLabel={`${drillDimLabel} breakdown for ${drill.label}`} initialSort={{key:'delta_php',direction:'desc'}} rows={drillRows.map(r=>{
+    const nepRecords=r.nep_records??0,houseRecords=r.house_records??0;
+    return {...r,delta_records:houseRecords-nepRecords,pct_records:percentChange(houseRecords,nepRecords),pct_alloc:percentChange(r.house_php,r.nep_php)};
+   })} columns={[
+    {key:'label',label:drillDimLabel,scope:'row',render:r=><span>{drillAxis==='region'?groupLabel('region',r.label):drillAxis==='office'?groupLabel('office',r.label):r.label}</span>},
+    {key:'nep_records',label:'NEP records',align:'num',band:'records',bandLabel:'Records',render:r=><span>{(r.nep_records??0).toLocaleString()}</span>},
+    {key:'house_records',label:`${houseLabel} records`,align:'num',band:'records',render:r=><span>{(r.house_records??0).toLocaleString()}</span>},
+    {key:'delta_records',label:'Records change',align:'num',band:'records',render:r=>signedCount(r.delta_records)},
+    {key:'pct_records',label:'% records change',align:'num',band:'records',render:r=>signedPercent(r.pct_records)},
+    {key:'nep_php',label:'NEP allocation',align:'num',band:'allocations',bandLabel:'Allocations',divider:true,render:r=>amountCell(r.nep_php)},
+    {key:'house_php',label:`${houseLabel} allocation`,align:'num',band:'allocations',render:r=>amountCell(r.house_php)},
+    {key:'delta_php',label:'Allocation change',align:'num',band:'allocations',render:r=>signedCell(r.delta_php)},
+    {key:'pct_alloc',label:'% allocation change',align:'num',band:'allocations',render:r=>signedPercent(r.pct_alloc)},
+   ]} empty={`No ${drillDimLabel.toLowerCase()} rows in this group.`}/>
+   <p className="muted">Total {drillRows.length.toLocaleString()} {drillAxis==='region'?'region':drillAxis==='office'?'office':'PAP'}{drillRows.length===1?'':'s'} · records {drillRows.reduce((s,p)=>s+(p.nep_records??0),0).toLocaleString()} NEP → {drillRows.reduce((s,p)=>s+(p.house_records??0),0).toLocaleString()} {houseLabel} · allocation {amount(drillRows.reduce((s,p)=>s+(p.nep_php??0),0))} → {amount(drillRows.reduce((s,p)=>s+(p.house_php??0),0))}.</p>
+  </div>
+ </dialog>;
+}
 function Distribution({title,buckets,total}){
  const rows=Object.entries(buckets).map(([key,b])=>({id:key,label:short(key),records:b.records,share:b.records/(total||1),amount_php:b.amount_php}));
  return <section className="analysis-section"><h2>{title}</h2>
-  <SortableTable ariaLabel={title} initialSort={{key:'amount_php',direction:'desc'}} rows={rows} columns={[
+  <SortableTable tableId={`overview-distribution-${title.includes('program')?'programs':'offices'}`} ariaLabel={title} initialSort={{key:'amount_php',direction:'desc'}} rows={rows} columns={[
    {key:'label',label:'Category',scope:'row'},
    {key:'records',label:'Allocation records',align:'num'},
    {key:'share',label:'Share of records',align:'num',render:r=><span>{(r.share*100).toFixed(1)}%</span>},
@@ -202,9 +259,9 @@ function Insertions({headlines,reading,ranking,dim,change,onOpenGroup}){
   <DimensionChips dim={dim} change={change}/>
   <p className="muted">Ranked by {names[reading]} allocation · top {Math.min(100,list.comparison_rows).toLocaleString()} of {list.comparison_rows.toLocaleString()} comparison rows · {amount(list.amount_php)} across this group. Grouped allocations remain grouped.</p>
    <p className="notice">{ranking==='no_suggestion'?'House records with no attached NEP/Transparency source and no retained NEP suggestion. These are review candidates, not confirmed insertions.':ranking==='unresolved'?'House records with possible or ambiguous NEP counterparts are separated from the no-suggestion list. Review their suggestions before claiming an insertion.':'Records present only in HGAB3 under the retained reading key. This shows a reading difference, not confirmed absence from NEP.'} Unique different-region title candidates are linked for review and excluded from the House-only groups.</p>
-  {dim!=='overall'&&<AggregateTable title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
+  {dim!=='overall'&&<AggregateTable tableId={`insertions-by-${dim}`} title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
    onOpenGroup={g=>onOpenGroup({scope:'insertions',reading,ranking,dim,label:g.label,displayLabel:groupLabel(dim,g.label)})}/>}
-  <SortableTable ariaLabel="Top insertion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
+  <SortableTable tableId="insertions-top" ariaLabel="Top insertion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
    {key:'rank',label:'#',sortable:false,render:(r,i)=><span>{i+1}</span>},
    {key:'title',label:'Project / assignment',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {regionName(r.region)} · {officeName(r.office)||'No recorded office'}</small></span>},
    {key:'amount_php',label:'Allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
@@ -220,9 +277,9 @@ function Deletions({headlines,ranking,dim,change,onOpenGroup}){
   <DimensionChips dim={dim} change={change}/>
   <p className="muted">Ranked by NEP allocation · top {Math.min(100,list.comparison_rows).toLocaleString()} of {list.comparison_rows.toLocaleString()} comparison rows · {amount(list.amount_php)} across this group. Grouped allocations remain grouped.</p>
   <p className="notice">{ranking==='no_suggestion'?'NEP line items with no attached House record and no House row suggesting them as a counterpart. These are review candidates, not confirmed deletions — title or assignment differences can prevent pairing.':ranking==='suggested'?'NEP-only items that unmatched House rows name as possible counterparts. Review the referring House rows: a re-titled or re-scoped line item can look like a deletion plus an insertion when it is a replacement. Suggestion counts refer to House rows, not certified identities.':'Records present only in HGAB2 under the retained reading key — dropped between readings. Currently none; the group guards future readings data.'}</p>
-  {dim!=='overall'&&<AggregateTable title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
+  {dim!=='overall'&&<AggregateTable tableId={`deletions-by-${dim}`} title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
    onOpenGroup={g=>onOpenGroup({scope:'deletions',ranking,dim,label:g.label,displayLabel:groupLabel(dim,g.label)})}/>}
-  <SortableTable ariaLabel="Top deletion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
+  <SortableTable tableId="deletions-top" ariaLabel="Top deletion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
    {key:'rank',label:'#',sortable:false,render:(r,i)=><span>{i+1}</span>},
    {key:'title',label:'Project / assignment',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {regionName(r.region)} · {officeName(r.office)||'No recorded office'}</small></span>},
    {key:'amount_php',label:'NEP allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
@@ -232,10 +289,10 @@ function Deletions({headlines,ranking,dim,change,onOpenGroup}){
   ]} empty="No records in this group."/>
  </section>;
 }
-function AggregateTable({title,groups,dim,onOpenGroup}){
+function AggregateTable({title,groups,dim,onOpenGroup,tableId}){
  if(!groups?.length)return null;
  return <div className="aggregate-table"><h3>{title} · {groups.length.toLocaleString()} group{groups.length===1?'':'s'}</h3>
-  <SortableTable ariaLabel={title} initialSort={{key:'amount_php',direction:'desc'}} rows={groups.map(g=>({...g,id:g.label}))} columns={[
+  <SortableTable tableId={tableId} ariaLabel={title} initialSort={{key:'amount_php',direction:'desc'}} rows={groups.map(g=>({...g,id:g.label}))} columns={[
    {key:'label',label:'Group',scope:'row',render:r=><button type="button" className="group-open" onClick={()=>onOpenGroup?.(r)}>{groupLabel(dim,r.label)}</button>},
    {key:'rows',label:'Rows',align:'num'},
    {key:'amount_php',label:'Allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
@@ -254,7 +311,7 @@ function Adjustments({detail,revisionSets,dim,direction,change,onOpenGroup}){
  return <>
   <section className="analysis-section"><h2>Reading adjustments · HGAB3 vs HGAB2</h2>
    <p className="notice">Recorded 2nd→3rd reading differences under the retained matching key: {revisionSets.reading.length.toLocaleString()} rows · net {amount(revisionSets.delta_php)}. Repeated keys remain grouped.</p>
-   <SortableTable ariaLabel="Reading adjustments" initialSort={{key:'reading_delta_php',direction:'desc'}} rows={revisionSets.reading} columns={[
+   <SortableTable tableId="adjustments-reading" ariaLabel="Reading adjustments" initialSort={{key:'reading_delta_php',direction:'desc'}} rows={revisionSets.reading} columns={[
     {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {regionName(r.region)}</small></span>},
     {key:'second_php',label:'HGAB2',align:'num',render:r=>r.second_php!=null?amountCell(r.second_php):<span>—</span>},
     {key:'third_php',label:'HGAB3',align:'num',render:r=>r.third_php!=null?amountCell(r.third_php):<span>—</span>},
@@ -267,9 +324,9 @@ function Adjustments({detail,revisionSets,dim,direction,change,onOpenGroup}){
    <div className="analysis-controls"><label>Direction<select aria-label="Revision direction" value={direction} onChange={e=>change('direction',e.target.value)}><option value="increased">Most increased (House above NEP)</option><option value="reduced">Most reduced (House below NEP)</option></select></label></div>
    <p className="muted">{cross.length.toLocaleString()} comparison rows · increased {signedCell(totals.increased)} · decreased {signedCell(-totals.decreased)} · net {signedCell(totals.net)}. Direction presets the sort; click any column to re-sort.</p>
    <p className="notice">These rows carry exact House/NEP candidate pairs with unequal amounts. Identity is proposed by title/scope matching and is not manually certified; the House−NEP gap often reflects GAA-like versus full-project-cost bases, especially for FAPs. This is a cross-document comparison, not a House reading change. % change is House relative to NEP.</p>
-   {byDim&&<DifferenceAggregate title={`Differences by ${dimensionTitle(dim)}`} dim={dim} groups={byDim}
+   {byDim&&<DifferenceAggregate tableId={`differences-by-${dim}`} title={`Differences by ${dimensionTitle(dim)}`} dim={dim} groups={byDim}
     onOpenGroup={g=>onOpenGroup({scope:'differences',reading:'third',dim,label:g.raw||g.label,displayLabel:g.label})}/>}
-   <SortableTable key={direction} ariaLabel="Top House vs NEP differences" initialSort={{key:'gap',direction:direction==='increased'?'desc':'asc'}} rows={shown.slice(0,100)} columns={[
+   <SortableTable key={direction} tableId="differences-top" ariaLabel="Top House vs NEP differences" initialSort={{key:'gap',direction:direction==='increased'?'desc':'asc'}} rows={shown.slice(0,100)} columns={[
     {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {regionName(r.region)} · {r.trace.replaceAll('_',' ')}</small></span>},
     {key:'house_php',label:'House',align:'num',render:r=>r.house_php!=null?amountCell(r.house_php):<span>—</span>},
     {key:'nep_php',label:'NEP',align:'num',render:r=>r.nep_php!=null?amountCell(r.nep_php):<span>—</span>},
@@ -388,7 +445,7 @@ function Chainage({detail,focus,change,benchmark,setBenchmark,stage,scope}){
   </div>
   <section className="analysis-section"><h3>Population by source</h3>
    <p className="muted">Every chainage-bearing unit per source: total units, how many carry a measurable length (vs single point stations and review flags), and the length and allocation they represent. House sides largely shadow each other; the NEP side is the pre-House baseline.</p>
-   <SortableTable ariaLabel="Chainage population by source" initialSort={{key:'order',direction:'asc'}} rows={unitTotals.map((t,i)=>({...t,order:i}))} columns={[
+   <SortableTable tableId="chainage-population" ariaLabel="Chainage population by source" initialSort={{key:'order',direction:'asc'}} rows={unitTotals.map((t,i)=>({...t,order:i}))} columns={[
     {key:'order',label:'#',align:'num',sortable:false,render:(r,i)=><span>{i+1}</span>},
     {key:'source',label:'Source',scope:'row',render:r=><span>{BENCHMARK_SOURCES[r.source]||r.source}</span>},
     {key:'units',label:'Units',align:'num',render:r=>r.units.toLocaleString()},
@@ -403,7 +460,7 @@ function Chainage({detail,focus,change,benchmark,setBenchmark,stage,scope}){
   <section className="analysis-section"><h3>Price-per-km bands · {unitBands?unitBands.measurable.toLocaleString():'…'} measurable units</h3>
    <HowToRead conceptKey="perKm"/>
    <p className="muted">Fixed peso bands of <Term k="perKm">price per km</Term> across the whole population — the FY2027 landscape is right-skewed (median ≈ ₱41M/km), so band counts show where the bulk sits before any cohort reasoning. Units without measurable length ({unitBands?unitBands.unmeasurable.toLocaleString():''}) are excluded. <span className="band-bars">{unitBands&&unitBands.bands.map(b=>{const max=Math.max(...unitBands.bands.map(x=>x.units))||1;return <span key={b.label} className="band-bar"><i style={{height:`${Math.max(4,b.units/max*46)}px`}}/></span>;})}</span></p>
-   <SortableTable ariaLabel="Price per km bands" initialSort={{key:'min',direction:'asc'}} rows={unitBands?unitBands.bands:[]} columns={[
+   <SortableTable tableId="chainage-perkm-bands" ariaLabel="Price per km bands" initialSort={{key:'min',direction:'asc'}} rows={unitBands?unitBands.bands:[]} columns={[
     {key:'label',label:'₱/km band',scope:'row'},
     {key:'units',label:'Units',align:'num',render:r=><span>{r.units.toLocaleString()}<small> · {unitBands&&unitBands.measurable?((r.units/unitBands.measurable)*100).toFixed(1):'0.0'}%</small></span>},
     {key:'length_m',label:'Chainage length',align:'num',render:r=>formatLengthKm(r.length_m)},
@@ -424,7 +481,7 @@ function Chainage({detail,focus,change,benchmark,setBenchmark,stage,scope}){
   <section className="analysis-section"><h3>Amendment modus · {modus.measurable.toLocaleString()} measurable rows</h3>
    <HowToRead conceptKey="modus"/>
    <p className="muted">Every measurable row classified on <Term k="modus">budget Δ × scope Δ × unit-rate Δ</Term> (±{MODUS_DEADBAND}% <Term k="deadband">deadband</Term> each) and named for the archetype that trio implies. Directions use HGAB vs NEP. <Term k="median">Median Δ</Term> columns show the group’s middle record — half the rows above, half below — robust to OCR outliers. Per record the identity (1+budget)=(1+scope)(1+rate) holds exactly, so a flat budget with scope −45% ⇒ rate ≈ +82%.</p>
-   <SortableTable ariaLabel="Amendment modus" initialSort={{key:'records',direction:'desc'}} rows={modus.groups} columns={[
+   <SortableTable tableId="chainage-modus" ariaLabel="Amendment modus" initialSort={{key:'records',direction:'desc'}} rows={modus.groups} columns={[
     {key:'records',label:'Records',align:'num',render:r=><span>{r.records.toLocaleString()}<small> · {modus.measurable?((r.records/modus.measurable)*100).toFixed(1):'0.0'}%</small></span>},
     {key:'modus',label:'Modus',scope:'row',render:r=><span>{CHAINAGE_MODUS[r.modus].label}{smallOf(CHAINAGE_MODUS[r.modus].hint)}</span>},
     {key:'median_budget_pct',label:'Median budget Δ',align:'num',render:r=>pctCell(r.median_budget_pct)},
@@ -436,7 +493,7 @@ function Chainage({detail,focus,change,benchmark,setBenchmark,stage,scope}){
   </section>
   <section className="analysis-section"><h3>Δ price/km distribution · {bins.measurable.toLocaleString()} measurable rows</h3>
    <p className="muted">Bins of |%Δ price per km| in 25-point steps. Records without a measurable length on either side ({bins.noLength.toLocaleString()}) are excluded. House allocations per bin; the first bin contains the &gt;10% red-flag slice.</p>
-   <SortableTable ariaLabel="Price per km change bins" initialSort={{key:'edge',direction:'asc'}} rows={bins.bins} columns={[
+   <SortableTable tableId="chainage-perkm-change" ariaLabel="Price per km change bins" initialSort={{key:'edge',direction:'asc'}} rows={bins.bins} columns={[
     {key:'edge',label:'|%Δ price/km|',scope:'row',render:r=><span>{r.edge===200?'200%+':`${r.edge}–${r.edge+25}%`}{r.red_flag&&<span className="red-flag-pill">red flag</span>}</span>},
     {key:'records',label:'Records',align:'num',render:r=><span>{r.records.toLocaleString()}<small> · {bins.measurable?((r.records/bins.measurable)*100).toFixed(1):'0.0'}%</small></span>},
     {key:'nep_php',label:'NEP allocation',align:'num',render:r=>amountCell(r.nep_php)},
@@ -445,7 +502,7 @@ function Chainage({detail,focus,change,benchmark,setBenchmark,stage,scope}){
   </section>
   <section className="analysis-section"><h3>Δ allocation amount distribution · {amountBins.measurable.toLocaleString()} measurable rows</h3>
    <p className="muted">Signed 25-point bins of %Δ allocation amount (HGAB − NEP over |NEP|); decreases bottom out at −100%. Point-only rows without an NEP amount or length are excluded. Amounts are HGAB allocations of the records in each bin.</p>
-   <SortableTable ariaLabel="Allocation amount change bins" initialSort={{key:'edge',direction:'asc'}} rows={amountBins.bins} columns={[
+   <SortableTable tableId="chainage-amount-change" ariaLabel="Allocation amount change bins" initialSort={{key:'edge',direction:'asc'}} rows={amountBins.bins} columns={[
     {key:'edge',label:'%Δ amount',scope:'row',render:r=><span>{fmtPctBinEdge(r.edge)}{r.edge===200&&<span className="red-flag-pill">red flag</span>}</span>},
     {key:'records',label:'Records',align:'num',render:r=><span>{r.records.toLocaleString()}<small> · {amountBins.measurable?((r.records/amountBins.measurable)*100).toFixed(1):'0.0'}%</small></span>},
     {key:'nep_php',label:'NEP allocation',align:'num',render:r=>amountCell(r.nep_php)},
@@ -461,7 +518,7 @@ function Chainage({detail,focus,change,benchmark,setBenchmark,stage,scope}){
     <label>Benchmark source<select aria-label="Benchmark source" value={benchSource} onChange={e=>setBenchSource(e.target.value)}>{Object.entries(BENCHMARK_SOURCES).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
    </div>
    <HowToRead conceptKey={benchDimension==='deo'?'deo':'cohort'} label={benchDimension==='deo'?'Region vs DEO cohorts — how to choose':'How to read peer cohorts'}/>
-   <SortableTable ariaLabel="Price per km peer cohorts" initialSort={{key:'units',direction:'desc'}} rows={cohorts} columns={[
+   <SortableTable tableId="chainage-cohorts" ariaLabel="Price per km peer cohorts" initialSort={{key:'units',direction:'desc'}} rows={cohorts} columns={[
     {key:'program',label:'Cohort',scope:'row',render:r=><span className="cell-main">{r.program}<small>{benchDimension==='deo'?officeName(r.office):r.region}{r.zone?` · ${r.zone}`:''}</small></span>},
     {key:'units',label:'Units',align:'num',render:r=>r.units.toLocaleString()},
     {key:'length_m',label:'Total length',align:'num',render:r=>formatLengthKm(r.length_m)},
@@ -474,7 +531,7 @@ function Chainage({detail,focus,change,benchmark,setBenchmark,stage,scope}){
    ]} empty={benchmark?'No cohorts with enough measurable peers.':'Loading chainage units…'}/>
    {benchmark&&<details className="benchmark-outliers" open={outliersOpen} onToggle={e=>setOutliersOpen(e.currentTarget.open)}>
     <summary>Top 100 per-km outliers by robust z</summary>
-    <SortableTable ariaLabel="Price per km outliers" initialSort={{key:'z',direction:'desc'}} rows={outliers.map(r=>({...r.unit,z:r.z,cohort_median:r.cohort.median_per_km,cohort_units:r.cohort.units}))} columns={[
+    <SortableTable tableId="chainage-outliers" ariaLabel="Price per km outliers" initialSort={{key:'z',direction:'desc'}} rows={outliers.map(r=>({...r.unit,z:r.z,cohort_median:r.cohort.median_per_km,cohort_units:r.cohort.units}))} columns={[
      {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{BENCHMARK_SOURCES[r.source]||r.source} · {r.program} · {benchDimension==='deo'?officeName(r.office):r.region}</small></span>},
      {key:'per_km',label:'₱/km',align:'num',render:r=>amountCell(unitPerKm(r))},
      {key:'cohort_median',label:'Cohort median ₱/km',align:'num',render:r=>amountCell(r.cohort_median)},
@@ -504,6 +561,129 @@ function Chainage({detail,focus,change,benchmark,setBenchmark,stage,scope}){
  </section>;
 }
 function houseMinusNep(row){const house=row.third??row.second;return house!=null&&row.nep!=null?house.amount_php-row.nep.amount_php:null;}
+// Groupings tab: same-shell House/NEP allocations grouped by zone+PAP+region —
+// road corridors by chainage-stripped base, everything else by place shell
+// (work + municipality + province; barangay/street dropped — the split axis).
+// Exhausted groups (NEP supply fully attached, House leftovers) are split /
+// insertion candidates. All data — not just fuzzy rows.
+function RoadGroups({payload,open,onOpenShell,onClose}){
+ const summary=payload?.summary;
+ const groups=payload?.groups??[];
+ const nepGroups=payload?.nep_leftover_groups??[];
+ const regions=payload?.region_summary??[];
+ const stats=roadGroupStats(groups);
+ const [kind,setKind]=useState('all');
+ const [pattern,setPattern]=useState('all');
+ const kindFilter=v=>kind==='all'||v===kind;
+ const patternFilter=v=>pattern==='all'||v===pattern;
+ const shown=groups.filter(g=>kindFilter(g.kind)&&patternFilter(g.pattern));
+ const nepShown=nepGroups.filter(g=>kindFilter(g.kind));
+ const PATTERN_LABELS={split_like:'Split-like',unsupplied_cluster:'Unsupplied cluster',micro_supplied:'Micro-supplied'};
+ if(!payload)return <p role="status">Loading groupings…</p>;
+ const fmtKm=m=>m==null?'—':`${(m/1000).toLocaleString('en-PH',{maximumFractionDigits:3})} km`;
+ const perKm=v=>v==null?'—':`${amount(v)}/km`;
+ return <section className="analysis-section road-groups">
+  <h2>Groupings · same-project-shell crosschecking</h2>
+  <p className="muted">Every House (HGAB) and NEP allocation grouped by funding zone + PAP + region. Roads group by chainage-stripped title base; other projects group by <strong>place shell</strong> — work phrase + municipality + province, dropping barangay/street, the axis a single allocation gets salami-sliced along. Matched pairs collapse into one final-sheet record (NEP side kept as provenance). Whatever remains <strong>unpaired</strong> is the signal: <strong>{summary.leftover_house_rows.toLocaleString()} HGAB rows worth {amount(summary.leftover_amount_php)}</strong> are on the House sheet with no NEP counterpart in their shell — <em>insertion candidates</em>. <strong>{summary.leftover_nep_rows.toLocaleString()} NEP rows worth {amount(summary.leftover_nep_amount_php)}</strong> never received House funding in their shell — <em>deletion candidates</em> (dropped or re-titled). Shell context only — identity never certified.</p>
+  <dl className="stat-strip">
+   <div><dt>Insertion candidates (HGAB)</dt><dd>{summary.leftover_house_rows.toLocaleString()} rows</dd></div>
+   <div><dt>Insertion amount</dt><dd>{amount(summary.leftover_amount_php)}</dd></div>
+   <div><dt>in {summary.exhausted_groups.toLocaleString()} shells</dt><dd>{stats.roads.toLocaleString()} roads · {stats.shells.toLocaleString()} project shells</dd></div>
+   <div><dt>Deletion candidates (NEP)</dt><dd>{summary.leftover_nep_rows.toLocaleString()} rows</dd></div>
+   <div><dt>Deletion amount</dt><dd>{amount(summary.leftover_nep_amount_php)}</dd></div>
+   <div><dt>in {summary.nep_leftover_groups.toLocaleString()} shells</dt><dd>{summary.groups_with_nep_supply.toLocaleString()} shells carry any NEP supply</dd></div>
+  </dl>
+  <div className="analysis-controls">
+   <label>Group kind<select aria-label="Grouping kind" value={kind} onChange={e=>setKind(e.target.value)}>
+    <option value="all">All groups</option>
+    <option value="road">Road corridors</option>
+    <option value="place_shell">Project shells (non-road)</option>
+   </select></label>
+   <label>Insertion pattern<select aria-label="Insertion pattern" value={pattern} onChange={e=>setPattern(e.target.value)}>
+    <option value="all">All patterns</option>
+    <option value="split_like">Split-like · NEP scale matches leftovers</option>
+    <option value="unsupplied_cluster">Unsupplied cluster · paired NEP is different work</option>
+    <option value="micro_supplied">Micro-supplied · tiny NEP beside large leftovers</option>
+   </select></label>
+  </div>
+  <h3>Insertion candidates · HGAB rows with no NEP counterpart in the shell</h3>
+  <SortableTable tableId="groupings-region-rollup" ariaLabel="Insertion region rollup" initialSort={{key:'leftover_amount_php',direction:'desc'}} rows={regions} columns={[
+   {key:'region',label:'Region',scope:'row'},
+   {key:'exhausted_groups',label:'Shells with insertions',align:'num',render:r=><span>{r.exhausted_groups}<small> {r.road_groups} road · {r.place_shell_groups} shell</small></span>},
+   {key:'leftover_house_rows',label:'Insertion rows (unpaired HGAB)',align:'num'},
+   {key:'leftover_amount_php',label:'Insertion amount',align:'num',render:r=>amountCell(r.leftover_amount_php)},
+   {key:'nep_leftover_groups',label:'Shells with deletions',align:'num'},
+   {key:'leftover_nep_rows',label:'Deletion rows (unpaired NEP)',align:'num'},
+   {key:'leftover_nep_amount_php',label:'Deletion amount',align:'num',render:r=>amountCell(r.leftover_nep_amount_php)},
+  ]} empty="No candidate shells."/>
+  <SortableTable tableId="groupings-insertions" ariaLabel="Insertion candidate groups" initialSort={{key:'leftover_amount_php',direction:'desc'}} rows={shown} columns={[
+   {key:'title',label:'Group',scope:'row',render:r=><span className="cell-main">{r.title}<small>{regionName(r.region)} · {short(r.pap||r.program||'')} · {r.kind==='road'?'road corridor':'place shell'} · {PATTERN_LABELS[r.pattern]||r.pattern}</small></span>},
+   {key:'house_rows',label:'Final-sheet rows',align:'num'},
+   {key:'paired_rows',label:'Paired with NEP',align:'num',render:r=><span>{r.paired_rows}<small> collapsed pairs</small></span>},
+   {key:'split_ratio',label:'Final ÷ paired',align:'num',sortable:false,render:r=>`${(r.house_rows/r.paired_rows).toFixed(1)}×`},
+   {key:'leftover_house_rows',label:'Insertion rows',align:'num'},
+   {key:'leftover_amount_php',label:'Insertion amount',align:'num',render:r=>amountCell(r.leftover_amount_php)},
+   {key:'house_amount_php',label:'Final-sheet total',align:'num',render:r=>amountCell(r.house_amount_php)},
+   {key:'nep_amount_php',label:'NEP paired total',align:'num',render:r=>amountCell(r.nep_amount_php)},
+   {key:'members',label:'Members',sortable:false,render:r=><button type="button" className="group-open" onClick={e=>onOpenShell(r)}>{(r.house_rows).toLocaleString()} rows</button>},
+  ]} empty="No insertion-candidate groups."/>
+  <h3>Deletion candidates · NEP rows never funded by this shell at HGAB</h3>
+  <p className="muted">Mirror direction: the House side of the shell is fully paired, but these NEP items remain unmatched. Overlaps the global deletion queues — here they gain shell context (roads with segments left unclaimed, shells where a lookalike was funded instead).</p>
+  <SortableTable tableId="groupings-deletions" ariaLabel="Deletion candidate groups" initialSort={{key:'leftover_nep_amount_php',direction:'desc'}} rows={nepShown} columns={[
+   {key:'title',label:'Group',scope:'row',render:r=><span className="cell-main">{r.title}<small>{regionName(r.region)} · {short(r.pap||r.program||'')} · {r.kind==='road'?'road corridor':'place shell'}</small></span>},
+   {key:'paired_rows',label:'Paired with HGAB',align:'num'},
+   {key:'leftover_nep_rows',label:'Deletion rows',align:'num'},
+   {key:'leftover_nep_amount_php',label:'Deletion amount',align:'num',render:r=>amountCell(r.leftover_nep_amount_php)},
+   {key:'nep_amount_php',label:'NEP paired total',align:'num',render:r=>amountCell(r.nep_amount_php)},
+   {key:'members',label:'Members',sortable:false,render:r=><button type="button" className="group-open" onClick={e=>onOpenShell(r)}>{(r.paired_rows+r.leftover_nep_rows).toLocaleString()} rows</button>},
+  ]} empty="No deletion-candidate groups."/>
+  {open&&<GroupingMembersModal g={resolveGroup(open,{groups,nepGroups})} isNep={open.side==='nep'} onClose={onClose}/>}
+  </section>;
+}
+
+// The URL carries the full group key (shell+side+zone+pap+region) because the
+// same shell can appear under different PAPs. Resolves against the full
+// sidecar lists so shared links open regardless of active filters; falls back
+// through progressively looser key matches.
+function resolveGroup(open,{groups,nepGroups}){
+ const all=[...groups,...nepGroups];
+ return all.find(g=>g.shell===open.shell&&g.zone===open.zone&&g.pap===open.pap&&g.region===open.region)
+  ||all.find(g=>g.shell===open.shell&&g.zone===open.zone&&g.pap===open.pap)
+  ||all.find(g=>g.shell===open.shell);
+}
+
+function GroupingMembersModal({g,isNep,onClose}){
+ const dialog=useRef(null);
+ useEffect(()=>{
+  const element=dialog.current,previous=document.body.style.overflow;
+  element.showModal();document.body.style.overflow='hidden';
+  return ()=>{element.close();document.body.style.overflow=previous;};
+ },[]);
+ const fmtKm=m=>m==null?'—':`${(m/1000).toLocaleString('en-PH',{maximumFractionDigits:3})} km`;
+ const perKm=v=>v==null?'—':`${amount(v)}/km`;
+ if(!g)return <dialog ref={dialog} className="analytics-dialog grouping-members-dialog" open><header className="analytics-header"><div className="analytics-heading"><div><p className="eyebrow">SHELL GROUPING</p><h2 id="grouping-members-title">Grouping not found</h2></div><button onClick={onClose} autoFocus aria-label="Close">Close</button></div><p className="muted">No group matches this link — the shell key may have changed after a rebuild. Close and pick a group from the table.</p></header></dialog>;
+ return <dialog ref={dialog} className="analytics-dialog grouping-members-dialog" aria-labelledby="grouping-members-title" onCancel={e=>{e.preventDefault();onClose();}} onClick={e=>{
+  if(e.target!==e.currentTarget)return;const b=e.currentTarget.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)onClose();
+ }}>
+  <header className="analytics-header">
+   <div className="analytics-heading"><div><p className="eyebrow">{isNep?'DELETION CANDIDATES · SHELL GROUPING':'INSERTION CANDIDATES · SHELL GROUPING'}</p><h2 id="grouping-members-title">{g.title}</h2></div>
+    <button onClick={onClose} autoFocus aria-label="Close group members">Close</button></div>
+   <p>{g.paired_rows.toLocaleString()} paired with {isNep?'HGAB':'NEP'} · {(g.leftover_house_rows||0).toLocaleString()} unpaired HGAB rows worth {amount(g.leftover_amount_php||0)} · {(g.leftover_nep_rows||0).toLocaleString()} unpaired NEP rows worth {amount(g.leftover_nep_amount_php||0)} · {g.kind==='road'?'road corridor':'place shell'}</p>
+   <p className="muted">Member rows reflect the final budget sheet: matched pairs collapsed to one HGAB-anchored record, unpaired rows carry their shell context. Shell context only — identity never certified.</p>
+  </header>
+  <div className="analytics-content group-projects-content">
+   <SortableTable tableId="groupings-members" ariaLabel="Group member allocations" initialSort={{key:'amount_php',direction:'desc'}} rows={g.members} columns={[
+     {key:'title',label:'Allocation',scope:'row',render:r=><span className="cell-main">{r.title}<small>{isNep?(r.attached?'paired with HGAB':'UNPAIRED NEP — deletion candidate'):(r.attached?`paired with NEP${r.delta_php!=null?` · Δ ${r.delta_php>0?'+':''}${amount(r.delta_php)}`:''}`:'UNPAIRED HGAB — insertion candidate')}</small></span>},
+     {key:'amount_php',label:isNep?'NEP amount':'Final-sheet amount',align:'num',render:r=>amountCell(r.amount_php)},
+     {key:'nep_amount_php',label:'Paired NEP amount',align:'num',render:r=>r.attached?amountCell(r.nep_amount_php??r.amount_php):<span>—</span>},
+     {key:'length_m',label:'Length',align:'num',render:r=>fmtKm(r.length_m)},
+     {key:'amount_per_km_php',label:'₱/km',align:'num',render:r=>perKm(r.amount_per_km_php)},
+     {key:'chainages',label:'Spans',sortable:false,render:r=>(r.chainages||[]).map((c,i)=><small key={i}>{c.from}–{c.to}</small>)},
+     {key:'open',label:'Open',sortable:false,render:r=><a href={routeHref('compare',{view:'projects',flag:isNep?'group_nep_leftover':'group_exhausted',q:r.id,record:r.id})}>Compare</a>},
+    ]} empty="No members."/>
+  </div>
+ </dialog>;
+}
 function signedTotals(rows){
  let increased=0,decreased=0;
  for(const row of rows){if(row.gap>0)increased+=row.gap;else if(row.gap<0)decreased+=-row.gap;}
@@ -525,10 +705,10 @@ function differenceByDimension(rows,dim){
  return [...groups.values()].sort((a,b)=>Math.abs(b.net)-Math.abs(a.net)||a.label.localeCompare(b.label)).slice(0,100)
   .map(g=>({...g,raw:g.label,label:groupLabel(dim,g.label)}));
 }
-function DifferenceAggregate({title,groups,onOpenGroup}){
+function DifferenceAggregate({title,groups,onOpenGroup,tableId}){
  if(!groups?.length)return null;
  return <div className="aggregate-table"><h3>{title} · {groups.length.toLocaleString()} group{groups.length===1?'':'s'}</h3>
-  <SortableTable ariaLabel={title} initialSort={{key:'net',direction:'desc'}} rows={groups.map(g=>({...g,id:g.raw||g.label}))} columns={[
+  <SortableTable tableId={tableId} ariaLabel={title} initialSort={{key:'net',direction:'desc'}} rows={groups.map(g=>({...g,id:g.raw||g.label}))} columns={[
    {key:'label',label:'Group',scope:'row',render:r=><button type="button" className="group-open" onClick={()=>onOpenGroup?.(r)}>{r.label}</button>},
    {key:'rows',label:'Rows',align:'num'},
    {key:'increased',label:'Total increased',align:'num',render:r=>signedCell(r.increased)},
@@ -564,7 +744,7 @@ function Statistics({detail,source,dim,change}){
   <p className="notice">These are descriptive lenses for targeting review, not fraud tests. Appropriations are policy numbers: round values are expected, and print conventions (thousands, memo amounts) can drive digit patterns. Benford conformity is not evidence of correctness, and deviation is not evidence of wrongdoing.</p>
   <section className="analysis-section"><h2>Rounding pattern</h2>
    <p className="muted">Share of {amounts.length.toLocaleString()} allocation records at each rounding granularity.</p>
-   <SortableTable ariaLabel="Rounding pattern" initialSort={{key:'step',direction:'asc'}} rows={ladder} columns={[
+   <SortableTable tableId="statistics-rounding" ariaLabel="Rounding pattern" initialSort={{key:'step',direction:'asc'}} rows={ladder} columns={[
     {key:'step',label:'Granularity',scope:'row',value:r=>r.step,render:r=><span>{amount(r.step)}</span>},
     {key:'records',label:'Records',align:'num'},
     {key:'share',label:'Share',align:'num',render:r=><span>{(r.share*100).toFixed(1)}%</span>},
@@ -585,14 +765,14 @@ function Statistics({detail,source,dim,change}){
   <section className="analysis-section"><h2>Value bands and clusters</h2>
    <p className="muted">Fixed peso bands and deterministic k-means clusters on log amounts.</p>
    <div className="analysis-columns"><div>
-   <SortableTable ariaLabel="Value bands" initialSort={{key:'order',direction:'asc'}} rows={bands.map((b,i)=>({...b,id:`band-${i}`,order:i}))} columns={[
+   <SortableTable tableId="statistics-bands" ariaLabel="Value bands" initialSort={{key:'order',direction:'asc'}} rows={bands.map((b,i)=>({...b,id:`band-${i}`,order:i}))} columns={[
     {key:'label',label:'Band',scope:'row'},
     {key:'records',label:'Records',align:'num'},
     {key:'share',label:'Share',align:'num',render:r=><span>{(r.share*100).toFixed(1)}%</span>},
     {key:'amount_php',label:'Amount',align:'num',render:r=>amountCell(r.amount_php)},
    ]}/>
    </div><div>
-   <SortableTable ariaLabel="K-means clusters" initialSort={{key:'share',direction:'desc'}} rows={clusters.map((c,i)=>({...c,id:`cluster-${i}`}))} columns={[
+   <SortableTable tableId="statistics-clusters" ariaLabel="K-means clusters" initialSort={{key:'share',direction:'desc'}} rows={clusters.map((c,i)=>({...c,id:`cluster-${i}`}))} columns={[
     {key:'center_php',label:'Cluster center',scope:'row',render:r=><span>{amount(r.center_php)}</span>},
     {key:'share',label:'Share of records',align:'num',render:r=><span>{(r.share*100).toFixed(1)}%</span>},
    ]}/>
@@ -600,7 +780,7 @@ function Statistics({detail,source,dim,change}){
   </section>
   {dim!=='overall'&&deviants&&<section className="analysis-section"><h2>Deviant subsets · by {dimensionTitle(dim)}</h2>
    <p className="muted">Groups with at least 100 records, ranked by million-round share against the overall baseline ({(amounts.filter(v=>v%1e6===0).length/amounts.length*100).toFixed(1)}%).</p>
-   <SortableTable ariaLabel="Deviant subsets" initialSort={{key:'deviation',direction:'desc'}} rows={deviants} columns={[
+   <SortableTable tableId="statistics-deviants" ariaLabel="Deviant subsets" initialSort={{key:'deviation',direction:'desc'}} rows={deviants} columns={[
     {key:'label',label:'Group',scope:'row'},
     {key:'records',label:'Records',align:'num'},
     {key:'share',label:'Million-round share',align:'num',render:r=><span>{(r.share*100).toFixed(1)}%</span>},
@@ -609,7 +789,7 @@ function Statistics({detail,source,dim,change}){
   </section>}
   <section className="analysis-section"><h2>Exact repeated amounts · blanket fixed allocations</h2>
    <p className="muted">Where many line items share one exact peso value (≥5 repeats), grouped by {dimensionTitle(dim==='overall'?'program':dim)}.</p>
-   {concentrations.length?<SortableTable ariaLabel="Exact repeated amounts" initialSort={{key:'total_php',direction:'desc'}} rows={concentrations.map((e,i)=>({...e,id:`conc-${i}`}))} columns={[
+   {concentrations.length?<SortableTable tableId="statistics-concentrations" ariaLabel="Exact repeated amounts" initialSort={{key:'total_php',direction:'desc'}} rows={concentrations.map((e,i)=>({...e,id:`conc-${i}`}))} columns={[
     {key:'group',label:'Group',scope:'row'},
     {key:'amount_php',label:'Exact amount',align:'num',render:r=>amountCell(r.amount_php)},
     {key:'records',label:'Line items',align:'num'},

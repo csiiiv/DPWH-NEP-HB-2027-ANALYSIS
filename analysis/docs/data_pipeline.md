@@ -230,6 +230,34 @@ benchmark** (per-km cohorts by program × zone and a switchable region or DEO
 axis, MAD-based outlier z-scores); the matched-pair amendment view derives from
 the web payload instead.
 
+## Stage 6b · Shell-grouping sidecar
+
+```text
+build_road_groups.py
+  in:  source_comparison_2027.json
+  out: road_group_candidates_2027.json (~1.1M)
+```
+
+Groups the **final budget sheet** by funding zone + PAP + region and shell
+kind. Road rows (parsed chainage) group by chainage-stripped
+`title_base_match_key`; everything else groups by **place shell** — work
+phrase + municipality + province from the address-slot parser, dropping
+barangay/sitio/street, the axis along which a single allocation gets
+salami-sliced into lookalike projects at HGAB time. Attached NEP↔HGAB pairs
+collapse to one HGAB-anchored record (NEP amount + Δ as provenance), so
+each member is exactly one budget line on the final sheet; NEP-only rows
+surface only where a relocation placed them in a different shell. 10,815
+groups total. Unpaired rows are the signal: 1,244 HGAB rows worth ₱23.4B
+(**insertion candidates** — NEP supply fully paired, House rows remain),
+classified by scale pattern (`split_like` 447 · `unsupplied_cluster` 21 ·
+`micro_supplied` 19), and 242 NEP rows worth ₱12.2B (**deletion candidates**
+— House side fully paired, NEP items never funded). Flagged
+`insertion_candidate_group_exhausted` / `deletion_candidate_group_house_paired`
+on the stage-trace rows and rendered in the Analysis · **Groupings** tab with a
+region rollup, final-sheet/paired counts, House÷NEP ratios, spans and
+per-member ₱/km. Candidate vocabulary only: split / insertion / deletion
+review context, never certified identity.
+
 ## Stage 7 · Web payloads
 
 ```mermaid
@@ -240,12 +268,14 @@ flowchart LR
     UC --> HS["headlineStats()"]
     HS --> OV["comparison_overview_2027.json<br/>~0.6M · eager"]
     CHU["chainage_units_2027.json"] -.->|"benchmark only"| SPA
+    RDG["road_group_candidates_2027.json"] -.->|"groupings tab"| SPA
     OV --> SPA["SPA #analysis"]
     FULL --> SPA
     subgraph LAZY["lazy subtabs"]
         DEL["deletions · adjustments"]
         CHA["chainage (scope × stage: all-data overview/benchmark · revised patterns/records)"]
         STA["statistics"]
+        RDG2["groupings (unpaired HGAB insertions · unpaired NEP deletions)"]
     end
     SPA --> LAZY
 ```

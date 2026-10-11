@@ -150,6 +150,144 @@ class CurrentPageTests(unittest.TestCase):
         self.assertEqual(project_matches([h], [allocation('n3', title='Unrelated seawall')])[0]['status'],
                          'house_unmatched')
 
+    def test_location_reassignment_attaches_as_an_amendment(self):
+        h = allocation(
+            'h',
+            title='Construction of Multi-Purpose Building (Covered Court), Barangay Poblacion, Carmen, Agusan del Norte',
+            amount=8_000_000)
+        n = allocation(
+            'n',
+            title='Construction of Multi-Purpose Building (Covered Court ), Barangay Poblacion, Carmen, Lanao del Norte',
+            amount=8_000_000)
+        rows = project_matches([h], [n])
+        self.assertEqual([r['status'] for r in rows], ['location_amendment_candidate'])
+        self.assertEqual(rows[0]['delta_php'], 0)
+        self.assertIn('location reassignment', rows[0]['reason'])
+        self.assertIn('location_reassignment', rows[0]['diff_tags'])
+        self.assertNotIn('candidates', rows[0])
+
+    def test_point_to_point_barangay_attaches_as_an_amendment(self):
+        h = allocation(
+            'h',
+            title='Construction of Road, Barangay Singay to Barangay Mina East, Mina, Iloilo',
+            amount=10_000_000)
+        n = allocation(
+            'n',
+            title='Construction of Road, Barangay Singay, Mina, Iloilo',
+            amount=10_000_000)
+        rows = project_matches([h], [n])
+        self.assertEqual([r['status'] for r in rows], ['location_amendment_candidate'])
+        self.assertIn('point-to-point', rows[0]['reason'])
+        self.assertIn('point_to_point_barangay', rows[0]['diff_tags'])
+
+    def test_point_to_point_prefers_equal_amount_among_corridor_hits(self):
+        # House corridor can shortlist both the reassigned endpoint and a
+        # shorter single-barangay NEP; equal amount selects the amendment.
+        h = allocation(
+            'h',
+            title='Construction of Road, Barangay Agmanaphao to Barangay Singay, Mina, Iloilo',
+            amount=20_000_000)
+        n_end = allocation(
+            'n_end',
+            title='Construction of Road, Barangay Agmanaphao to Barangay Badiangan, Mina, Iloilo',
+            amount=20_000_000)
+        n_short = allocation(
+            'n_short',
+            title='Construction of Road, Barangay Singay, Mina, Iloilo',
+            amount=10_000_000)
+        rows = project_matches([h], [n_end, n_short])
+        attached = [r for r in rows if r['status'] == 'location_amendment_candidate']
+        self.assertEqual(len(attached), 1)
+        self.assertEqual(attached[0]['nep']['id'], 'n_end')
+        self.assertIn('point_to_point_barangay', attached[0]['diff_tags'])
+
+    def test_soft_ocr_attach_keeps_provenance(self):
+        h = allocation(
+            'h',
+            title='Construction of Drainage System, Barangay San Roque, San Jacinto, Pangasinan',
+            amount=5_000_000)
+        n = allocation(
+            'n',
+            title='Construction of Drainage System, Barangay San Rogue, San Jacinto, Pangasinan',
+            amount=5_000_000)
+        rows = project_matches([h], [n])
+        # LIVE abbrev may fold Roque/Rogue into exact; soft attach is the
+        # fallback when residual OCR remains after normalize.
+        status = rows[0]['status']
+        self.assertIn(status, ('exact_candidate', 'soft_match_candidate'))
+        if status == 'soft_match_candidate':
+            self.assertIn('spelling_ocr', rows[0]['diff_tags'])
+            self.assertIn('soft-attached after review', rows[0]['reason'])
+            self.assertIsNotNone(rows[0].get('identity_score'))
+        else:
+            self.assertIn('normalization', rows[0]['reason'] or '')
+
+    def test_facility_qualifier_soft_attach_keeps_provenance(self):
+        h = allocation(
+            'h',
+            title='Construction of Multi-Purpose Building, Barangay Poblacion East, Calasiao, Pangasinan',
+            amount=5_000_000)
+        n = allocation(
+            'n',
+            title='Construction of Multi-Purpose Building (Gym), Barangay Poblacion East, Calasiao, Pangasinan',
+            amount=5_000_000)
+        rows = project_matches([h], [n])
+        self.assertEqual([r['status'] for r in rows], ['soft_match_candidate'])
+        self.assertEqual(rows[0]['diff_tags'], ['facility_qualifier'])
+        self.assertIn('facility_qualifier', rows[0]['reason'])
+        self.assertIn('Soft-attached after review', rows[0]['reason'])
+        self.assertIsNotNone(rows[0].get('identity_score'))
+        self.assertNotIn('candidates', rows[0])
+
+    def test_scope_amendment_gps_pair_attaches_with_amount_delta(self):
+        # Tier-3: same GPS coordinates, unit-count scope change, unequal
+        # amounts — attaches as a scope amendment with flagged delta.
+        h = allocation(
+            'h',
+            title='Construction (Completion) of 2 units Multi-Purpose Building, Barangay Buenaflor Embarkadero, Dumangas, Iloilo, 10.819806, 122.712086',
+            amount=40_000_000)
+        n = allocation(
+            'n',
+            title='Construction (Completion) of Multi-Purpose Building, Barangay Buenaflor Embarkadero, Dumangas, Iloilo, 10.819806, 122.712086',
+            amount=11_000_000)
+        rows = project_matches([h], [n])
+        self.assertEqual([r['status'] for r in rows], ['scope_amendment_candidate'])
+        self.assertEqual(rows[0]['delta_php'], 29_000_000)
+        self.assertIn('scope amendment', rows[0]['reason'])
+        self.assertIn('Amount delta', rows[0]['reason'])
+        self.assertIn('same_gps_coordinates', rows[0]['diff_tags'])
+        self.assertIsNotNone(rows[0].get('identity_score'))
+        self.assertNotIn('candidates', rows[0])
+
+    def test_scope_amendment_work_scope_wording_attaches(self):
+        # Tier-3: Water Supply → Solar Water Supply with equal amounts.
+        h = allocation(
+            'h',
+            title='Construction of Water Supply System at Sitio Banalo, Barangay San Isidro, Tingloy, Batangas',
+            amount=10_000_000)
+        n = allocation(
+            'n',
+            title='Construction of Solar Water Supply System at Sitio Banalo, Barangay San Isidro, Tingloy, Batangas',
+            amount=10_000_000)
+        rows = project_matches([h], [n])
+        self.assertEqual([r['status'] for r in rows], ['scope_amendment_candidate'])
+        self.assertIn('work_descriptor_change', rows[0]['diff_tags'])
+        self.assertIn('scope amendment', rows[0]['reason'])
+
+    def test_hard_place_mismatch_never_scope_attaches(self):
+        # Unrelated barangays (hard mismatch) must stay fuzzy even at high
+        # text similarity — Tier-3 only attaches soft tags.
+        h = allocation(
+            'h',
+            title='Construction (Completion) of Multi-Purpose Building (Covered Court), Barangay Natunuan South, San Pascual, Batangas',
+            amount=5_000_000)
+        n = allocation(
+            'n',
+            title='Construction of Multi-Purpose Building (Covered Court), Barangay Banaba, San Pascual, Batangas',
+            amount=5_000_000)
+        rows = project_matches([h], [n])
+        self.assertEqual(rows[0]['status'], 'fuzzy_candidate')
+
     def test_normalization_dependent_exact_matches_carry_an_audit_reason(self):
         # Identical raw titles stay unflagged; abbreviation-only matches are flagged.
         plain = project_matches([allocation('h')], [allocation('n')])

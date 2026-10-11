@@ -30,6 +30,7 @@ live Transparency data or regenerate source outputs.
 | `#home` | Workbench map, review-candidate headlines, and source status |
 | `#compare` | Stage comparison |
 | `#analysis` | Headlines, insertions, deletions, adjustments, chainage amendments (all-data overview · peer ₱/km benchmark · revised-pair patterns + records), statistics |
+| `#highlights` | Ten media angles and investigative prompts, DPWH coverage, and HGAB3-versus-NEP candidate change tables |
 | `#house` | Third-reading native I-B totals and controls; reading and project-view toggles |
 | `#nep` | DBM NEP verification |
 | `#transparency` | Transparency NEP verification |
@@ -238,3 +239,25 @@ Ranked group drill-downs deep-link into Compare with the matching `change=` filt
 Source and ranking selections are shareable as
 `#analysis?source=third&ranking=no_suggestion` and
 `#analysis?view=deletions&ranking=suggested`.
+## Highlights workspace
+
+The **Highlights** navigation tab (`#highlights`) presents ten media angles
+with investigative prompts and two tables: DPWH operations coverage across
+NEP/HGAB2/HGAB3, and HGAB3-versus-NEP candidate changes. The supplied
+multi-agency layout is retained; DA, NIA and DOH display **Not covered**, and
+the total row explicitly covers DPWH only.
+
+`buildComparisonData.mjs` generates `overview.highlights` from the unified
+comparison, source distributions, same-shell groupings and chainage units.
+The overview and detail input hashes include both supplementary inputs.
+Counts represent source allocation records, with grouped members counted
+once. Insertions/deletions use full unpaired allocations; increases/decreases
+use absolute paired amount differences, including FAP. The four columns
+reconcile exactly to the operations delta. Unresolved suggestions remain
+unpaired and are disclosed; the table does not certify policy amendments.
+The grouping story uses HGAB2, while the change table uses HGAB3.
+
+Each story links to evidence and has a shareable `#highlights?story=…` URL.
+The workspace loads only the overview payload, not the full project list.
+Run `python scripts/check_highlights_page.py` after packaging to verify it
+under a project prefix at desktop and mobile widths.

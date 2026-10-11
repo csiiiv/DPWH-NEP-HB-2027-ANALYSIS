@@ -49,6 +49,16 @@ LIVE_TITLE_ABBREVIATIONS = {
     'inicuding': 'including',
     'komuniudad': 'komunidad',
     'pupose': 'purpose',
+    # 2026-10-11 Tier-1 OCR promote (House spelling ← NEP slip).
+    'rogue': 'roque',
+    'buqac': 'bugac',
+    'aguino': 'aquino',
+    'siope': 'slope',
+    'baquio': 'baguio',
+    'duguit': 'duquit',
+    'ouezon': 'quezon',
+    'citv': 'city',
+    'nati': 'natl',
 }
 
 # Surface forms for offices (and any non-tokenized label). Keys are the OCR
@@ -93,6 +103,15 @@ PROMOTE_TITLE_PAIRS = {
     frozenset({'inicuding', 'including'}),
     frozenset({'komuniudad', 'komunidad'}),
     frozenset({'pupose', 'purpose'}),
+    frozenset({'rogue', 'roque'}),
+    frozenset({'buqac', 'bugac'}),
+    frozenset({'aguino', 'aquino'}),
+    frozenset({'siope', 'slope'}),
+    frozenset({'baquio', 'baguio'}),
+    frozenset({'duguit', 'duquit'}),
+    frozenset({'ouezon', 'quezon'}),
+    frozenset({'citv', 'city'}),
+    frozenset({'nati', 'natl'}),
 }
 
 REJECT_TITLE_PAIRS = {
@@ -150,7 +169,10 @@ FUZZY_DIFF_TAGS = {
     'parenthetical_modifier': 'Difference only inside parentheses',
     'different_barangay': 'Different barangay (named or numbered)',
     'different_municipality': 'Different municipality/city in the same province',
+    'different_province': 'Different province (same municipality/barangay shell)',
     'different_street': 'Different street / sitio / creek / road section',
+    'location_reassignment': 'Same project shell with a relocated place slot (amendment)',
+    'point_to_point_barangay': 'Point-to-point barangay corridor endpoint change (amendment)',
     'work_descriptor_change': 'Work scope wording only (Solar, and Utilities…)',
     'spelling_ocr': 'Spelling / OCR slip in a shared token',
     'other_place_or_word': 'Different place or word — needs manual review',
@@ -369,8 +391,10 @@ def _slot_tokens_equal(a: list[str] | None, b: list[str] | None) -> bool:
 def _near_spelling(a: list[str], b: list[str]) -> bool:
     """True when two token lists differ only by a high-ratio OCR/spelling slip.
 
-    Rejects whole-token insertions (Isla-Pasolo Creek ↔ Pasolo Creek) even
-    when the joined-string ratio is high because one is nearly a substring.
+    Requires same token length and exactly one differing token with a high
+    character ratio (San Roque ↔ San Rogue). Rejects whole-token insertions
+    and multi-token place swaps (Lim Extension ↔ Lapu-Lapu Extension,
+    Singay ↔ Badiangan) even when joined-string ratios look high.
     """
     from difflib import SequenceMatcher
     if not a or not b:
@@ -379,17 +403,115 @@ def _near_spelling(a: list[str], b: list[str]) -> bool:
     markers = set(_SLOT_MARKERS)
     ha = [t for t in a if t not in markers]
     nb = [t for t in b if t not in markers]
+    if not ha or not nb or len(ha) != len(nb):
+        return False
+    diffs = [(x, y) for x, y in zip(ha, nb) if x != y]
+    if not diffs:
+        return True
+    if len(diffs) != 1:
+        return False
+    x, y = diffs[0]
+    if min(len(x), len(y)) < 4:
+        return False
+    return SequenceMatcher(None, x, y).ratio() >= .8
+
+
+def _barangay_has_corridor(slots: dict[str, list[str]]) -> bool:
+    """True when the barangay slot names a point-to-point corridor (… to …)."""
+    return 'to' in (slots.get('barangay') or [])
+
+
+def _work_shell_equal(house_slots: dict[str, list[str]],
+                      nep_slots: dict[str, list[str]]) -> bool:
+    """Same leading work phrase after dropping stage/facility noise tokens."""
+    noise = {'completion'} | FACILITY_QUALIFIER_TOKENS
+    h = [t for t in (house_slots.get('work') or []) if t not in noise]
+    n = [t for t in (nep_slots.get('work') or []) if t not in noise]
+    return bool(h) and h == n
+
+
+def _place_residue_related(a: list[str] | None, b: list[str] | None) -> bool:
+    """True when two place slots look like variants of the same name.
+
+    Shared residue tokens (G./MH Del Pilar) or a single-token OCR slip count;
+    unrelated names (Wakas ↔ Opias, Alpha ↔ Beta) do not.
+    """
+    markers = set(_SLOT_MARKERS) | {'to'}
+    ha = [t for t in (a or []) if t not in markers]
+    nb = [t for t in (b or []) if t not in markers]
     if not ha or not nb:
         return False
-    # Lengths must be close — a whole extra token is a place change, not OCR.
-    if abs(len(ha) - len(nb)) > 1:
-        return False
-    joined_a, joined_b = ''.join(ha), ''.join(nb)
-    if min(len(joined_a), len(joined_b)) < 4:
-        return False
-    if min(len(joined_a), len(joined_b)) / max(len(joined_a), len(joined_b)) < .85:
-        return False
-    return SequenceMatcher(None, joined_a, joined_b).ratio() >= .8
+    if set(ha) & set(nb):
+        return True
+    return _near_spelling(a or [], b or [])
+
+
+def _province_reassignment(a: list[str] | None, b: list[str] | None) -> bool:
+    """True when provinces look like a printed reassignment, not a new place.
+
+    Requires a shared administrative tail (… del Norte / … del Sur) or an
+    OCR-grade token slip — not merely any trailing locality string.
+    """
+    ha, nb = list(a or []), list(b or [])
+    if len(ha) >= 2 and len(nb) >= 2 and ha[-2:] == nb[-2:]:
+        return True
+    return _near_spelling(ha, nb)
+
+
+def _amendment_place_tags(house_slots: dict[str, list[str]],
+                          nep_slots: dict[str, list[str]],
+                          place_tags: list[str],
+                          house_title: str,
+                          nep_title: str) -> list[str]:
+    """Overlay tags for place-slot amendments (reassignment / corridor).
+
+    These mark House↔NEP pairs that share the project shell but relocate a
+    place role — review as amendments, not new insertions. Requires high
+    title-key similarity so unrelated nearby barangays stay hard mismatches.
+    """
+    from difflib import SequenceMatcher
+    place_change = set(place_tags) & {
+        'different_barangay', 'different_municipality',
+        'different_province', 'different_street',
+    }
+    if not place_change or not _work_shell_equal(house_slots, nep_slots):
+        return []
+    muni_same = _slot_tokens_equal(house_slots.get('municipality'),
+                                   nep_slots.get('municipality'))
+    # Point-to-point corridor endpoint change inside the same municipality
+    # (Agmanaphao→Singay ↔ Agmanaphao→Badiangan; Singay→Mina East ↔ Singay).
+    if 'different_barangay' in place_change and muni_same \
+            and (_barangay_has_corridor(house_slots)
+                 or _barangay_has_corridor(nep_slots)):
+        return ['point_to_point_barangay']
+    # Location reassignment: same municipality shell, one place role moved,
+    # titles nearly identical (Carmen Agusan↔Lanao; Lim↔Lapu-Lapu Extension).
+    key_h = title_match_key(house_title)
+    key_n = title_match_key(nep_title)
+    if not key_h or not key_n:
+        return []
+    if SequenceMatcher(None, key_h, key_n, autojunk=False).ratio() < .92:
+        return []
+    if not muni_same and 'different_province' not in place_change:
+        return []
+    # Province swap keeps barangay+municipality and a shared admin tail
+    # (… del Norte). Street/barangay swap keeps municipality and requires
+    # related place-name residue so Wakas↔Opias stays a hard mismatch.
+    if 'different_province' in place_change:
+        if house_slots.get('barangay') == nep_slots.get('barangay') and muni_same \
+                and _province_reassignment(house_slots.get('province'),
+                                           nep_slots.get('province')):
+            return ['location_reassignment']
+        return []
+    if not muni_same:
+        return []
+    if 'different_street' in place_change and _place_residue_related(
+            house_slots.get('street'), nep_slots.get('street')):
+        return ['location_reassignment']
+    if 'different_barangay' in place_change and _place_residue_related(
+            house_slots.get('barangay'), nep_slots.get('barangay')):
+        return ['location_reassignment']
+    return []
 
 
 def _slot_pair_tags(house_slots: dict[str, list[str]], nep_slots: dict[str, list[str]]) -> list[str]:
@@ -409,6 +531,12 @@ def _slot_pair_tags(house_slots: dict[str, list[str]], nep_slots: dict[str, list
     if not _slot_tokens_equal(house_slots.get('municipality'), nep_slots.get('municipality')) \
             and house_slots.get('municipality') and nep_slots.get('municipality'):
         tags.append('different_municipality')
+    if house_slots.get('province') and nep_slots.get('province') \
+            and not _slot_tokens_equal(house_slots.get('province'),
+                                       nep_slots.get('province')) \
+            and not _near_spelling(house_slots.get('province') or [],
+                                   nep_slots.get('province') or []):
+        tags.append('different_province')
     if house_slots.get('street') != nep_slots.get('street') \
             and (house_slots.get('street') or nep_slots.get('street')) \
             and not _near_spelling(house_slots.get('street') or [],
@@ -510,6 +638,13 @@ def diff_tags(house_title: str, nep_title: str) -> list[str]:
     parsed_h = parse_title_slots(house_title or '')
     parsed_n = parse_title_slots(nep_title or '')
     place_tags = _slot_pair_tags(parsed_h, parsed_n)
+    amend_tags = _amendment_place_tags(
+        parsed_h, parsed_n, place_tags, house_title or '', nep_title or '')
+    # Corridor endpoint amendments supersede the hard barangay mismatch tag so
+    # identity ranking stays usable for attachment.
+    if 'point_to_point_barangay' in amend_tags:
+        place_tags = [t for t in place_tags if t != 'different_barangay']
+    place_tags = place_tags + amend_tags
 
     matcher = SequenceMatcher(None, a, b, autojunk=False)
     tags: list[str] = []
@@ -608,10 +743,14 @@ def diff_tags(house_title: str, nep_title: str) -> list[str]:
 _IDENTITY_PENALTIES = {
     'different_barangay': 0.45,
     'different_municipality': 0.40,
+    'different_province': 0.40,
     'different_gps_coordinates': 0.40,
     'different_street': 0.25,
     'other_place_or_word': 0.20,
     'work_type_change': 0.15,
+    # Corridor endpoint amendments are softer than a hard barangay swap —
+    # the shared origin/municipality still anchors identity.
+    'point_to_point_barangay': 0.12,
     'work_descriptor_change': 0.08,
     'chainage_digit': 0.05,
     'structure_id_digit': 0.05,
@@ -623,6 +762,7 @@ _IDENTITY_PENALTIES = {
     'stage_qualifier': 0.0,
     'parenthetical_modifier': 0.02,
     'spelling_ocr': 0.0,
+    'location_reassignment': 0.0,  # overlay; underlying place tags penalize
     'same_gps_coordinates': -0.05,  # bonus: same site
 }
 

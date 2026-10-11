@@ -98,6 +98,16 @@ class NormalizeLabelsTests(unittest.TestCase):
         self.assertEqual(
             title_match_key('Coverd Court, Barangay San Enrigue'),
             title_match_key('Covered Court, Barangay San Enrique'))
+        # 2026-10-11 Tier-1 OCR promote.
+        self.assertEqual(
+            title_match_key('Barangay San Rogue, San Jacinto'),
+            title_match_key('Barangay San Roque, San Jacinto'))
+        self.assertEqual(
+            title_match_key('Ninoy Aguino Rd'),
+            title_match_key('Ninoy Aquino Rd'))
+        self.assertEqual(
+            title_match_key('Siope Protection'),
+            title_match_key('Slope Protection'))
         self.assertEqual(PENDING_TITLE_ABBREVIATIONS, {})
 
     def test_spaced_n_tilde_and_optional_barangay_in_titles(self):
@@ -144,8 +154,13 @@ class NormalizeLabelsTests(unittest.TestCase):
         self.assertEqual(t('Construction of Multi-Purpose Building at Barangay Peñabatan, Pulilan, Bulacan',
                            'Construction of Multi-Purpose Building, Barangay Pe ñ abatan, Pulilan, Bulacan'),
                          ['connector_word'])
+        # Roque/Rogue is a live OCR promote — titles normalize identical.
         self.assertEqual(t('Construction of Multi-Purpose Building, Barangay San Roque, San Jacinto',
                            'Construction of Multi-Purpose Building, Barangay San Rogue, San Jacinto'),
+                         ['identical'])
+        # Non-live OCR slip still tags as spelling_ocr.
+        self.assertEqual(t('Construction of Multi-Purpose Building, Barangay Peñabatan, Pulilan',
+                           'Construction of Multi-Purpose Building, Barangay Peñbatan, Pulilan'),
                          ['spelling_ocr'])
         self.assertEqual(t('Construction (Completion) of Bridge, Barangay Biga I, Silang',
                            'Construction of Bridge, Barangay Biga I, Silang'),
@@ -230,6 +245,37 @@ class NormalizeLabelsTests(unittest.TestCase):
         self.assertIn('different_street', tags)
         # Parse-then-compare: different barangay is never mislabeled as street,
         # even when titles share work phrase + covered-court parentheticals.
+        self.assertEqual(
+            t('Construction (Completion) of Multi-Purpose Building (Covered Court), Barangay Natunuan South, San Pascual, Batangas',
+              'Construction of Multi-Purpose Building (Covered Court ), Barangay Banaba, San Pascual, Batangas'),
+            ['different_barangay'])
+
+    def test_diff_tags_location_reassignment_and_point_to_point(self):
+        t = diff_tags
+        # Province swap on the same barangay/municipality shell.
+        tags = t(
+            'Construction of Multi-Purpose Building (Covered Court), Barangay Poblacion, Carmen, Agusan del Norte',
+            'Construction of Multi-Purpose Building (Covered Court ), Barangay Poblacion, Carmen, Lanao del Norte')
+        self.assertIn('different_province', tags)
+        self.assertIn('location_reassignment', tags)
+        # Street reassignment inside the same barangay/city.
+        tags = t(
+            'Construction of Multi-Purpose Building, Lim Extension, Barangay San Miguel, Digos City, Davao del Sur',
+            'Construction of Multi-Purpose Building, Lapu-Lapu Extension, Barangay San Miguel, Digos City, Davao del Sur')
+        self.assertIn('different_street', tags)
+        self.assertIn('location_reassignment', tags)
+        # Point-to-point corridor endpoint change (not a hard barangay swap).
+        tags = t(
+            'Construction of Road, Barangay Agmanaphao to Barangay Singay, Mina, Iloilo',
+            'Construction of Road, Barangay Agmanaphao to Barangay Badiangan, Mina, Iloilo')
+        self.assertIn('point_to_point_barangay', tags)
+        self.assertNotIn('different_barangay', tags)
+        # Corridor collapsed to a single barangay.
+        tags = t(
+            'Construction of Road, Barangay Singay to Barangay Mina East, Mina, Iloilo',
+            'Construction of Road, Barangay Singay, Mina, Iloilo')
+        self.assertIn('point_to_point_barangay', tags)
+        # Unrelated nearby barangays stay hard mismatches (no amendment overlay).
         self.assertEqual(
             t('Construction (Completion) of Multi-Purpose Building (Covered Court), Barangay Natunuan South, San Pascual, Batangas',
               'Construction of Multi-Purpose Building (Covered Court ), Barangay Banaba, San Pascual, Batangas'),

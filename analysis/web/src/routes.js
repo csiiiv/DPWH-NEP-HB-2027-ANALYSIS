@@ -1,6 +1,7 @@
 export const routes = {
   home: { label: "Home" },
   analysis: { label: "Analysis" },
+  highlights: { label: "Highlights" },
   compare: { label: "Compare stages" },
   house: { label: "House GAB", file: "hb_native_verification.html" },
   nep: { label: "DBM NEP", file: "nep_source_verification.html" },

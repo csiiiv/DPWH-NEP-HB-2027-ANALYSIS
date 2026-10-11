@@ -466,8 +466,15 @@ export default function Comparison({ route }) {
                         })()}
                       </>}
                       {r.region_difference && <small>Region differs · House: {r.region_difference.house} · NEP: {r.region_difference.nep} · candidate only</small>}
-                      {r.reason && identityMatchStatus(r)!=='matched_chainage' && <small className="normalized-match-badge">Matched after title normalization ({r.reason})</small>}
                       {tab==='projects' && identityMatchStatus(r)==='matched_chainage' && <small className="normalized-match-badge">Matched after chainage check{r.reason?` · ${r.reason}`:''}</small>}
+                      {tab==='projects' && identityMatchStatus(r)==='matched_location' && <small className="normalized-match-badge">Matched as location amendment{r.reason?` · ${r.reason}`:''}</small>}
+                      {tab==='projects' && identityMatchStatus(r)==='matched_soft' && <small className="normalized-match-badge">Matched after soft review{r.reason?` · ${r.reason}`:''}</small>}
+                      {tab==='projects' && identityMatchStatus(r)==='matched_scope' && <small className="normalized-match-badge">Matched as scope amendment{r.reason?` · ${r.reason}`:''}</small>}
+                      {tab==='projects' && ['matched_location','matched_soft','matched_scope'].includes(identityMatchStatus(r)) && (r.diff_tags?.length>0 || r.identity_score!=null) && <span className="diff-tag-row" role="group" aria-label="Attached-pair identity and title differences">
+                        {r.identity_score!=null && <span className="diff-tag diff-tag-identity">identity {Math.round(r.identity_score*100)}%</span>}
+                        {(r.diff_tags||[]).filter(t=>t!=='identical').map(tag=><span key={tag} className="diff-tag" data-tag={tag}>{diffTagLabel(tag)}</span>)}
+                      </span>}
+                      {r.reason && !['matched_chainage','matched_location','matched_soft'].includes(identityMatchStatus(r)) && <small className="normalized-match-badge">Matched after title normalization ({r.reason})</small>}
                       {tab !== "gaps" && <StatusInfo info={readingInfo[r.reading_status]} fallback={label(r.reading_status)} />}
                       {tab !== 'paps' && <small>{compactOffices(r)}</small>}
 

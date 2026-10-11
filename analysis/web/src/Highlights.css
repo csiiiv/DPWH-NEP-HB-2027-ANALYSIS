@@ -1,0 +1,28 @@
+.highlights-intro{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.highlights-intro .finding-share{margin:0}
+.highlights-table-section .table-scroll{overflow-x:auto;border:1px solid #dce4ec;border-radius:8px}
+.highlights-table{border-collapse:collapse;min-width:760px!important;table-layout:fixed}
+.highlights-table caption{padding:.85rem 1rem;text-align:left;background:#f4f7fa;font-weight:500;color:#456}
+.highlights-table th,.highlights-table td{padding:1rem;border:1px solid #dce4ec;text-align:left}
+.highlights-table thead th{background:#eaf1f7;color:#183b59}
+.highlights-table tbody th{width:22%;background:#f8fafc}
+.highlights-table .highlights-total th,.highlights-table .highlights-total td{background:#eaf1f7;font-weight:600}
+.highlights-changes{min-width:1100px!important}
+.highlights-cell-value,.highlights-cell-link{display:flex;flex-direction:column;gap:.4rem;font-size:.86rem}
+.highlights-cell-link{text-decoration:none}
+.highlights-cell-link:hover{text-decoration:underline}
+.highlights-cell-value strong,.highlights-cell-link strong{font-weight:600}
+.highlights-unavailable{color:#637182;font-size:.85rem}
+.highlights-bridge{display:flex;flex-direction:column;gap:.5rem;background:#f0f6fa;border-left:3px solid #285979;padding:1rem;border-radius:4px}
+.highlights-bridge small{color:#526477;line-height:1.5}
+.highlights-stories{list-style:none;counter-reset:highlights;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;padding:0}
+.highlights-stories>li{counter-increment:highlights;position:relative;min-width:0;background:white;border:1px solid #dce4ec;border-radius:10px;padding:1.3rem;scroll-margin-top:1rem}
+.highlights-stories>li::before{content:counter(highlights,decimal-leading-zero);position:absolute;right:1rem;top:.85rem;color:#c3d1dc;font-size:1.8rem;font-weight:700}
+.highlights-stories .eyebrow{padding-right:2.5rem;font-size:.72rem}
+.highlights-stories h3{font-size:1.15rem;line-height:1.4;margin:.75rem 0}
+.highlight-prompt{background:#f6f8fa;border-radius:6px;padding:.8rem 1rem;margin:1rem 0}
+.highlight-prompt strong{font-size:.8rem;color:#285979}
+.highlight-prompt p{margin:.4rem 0 0;line-height:1.6}
+.highlight-links{display:flex;flex-wrap:wrap;gap:.75rem;font-size:.82rem}
+.highlights-stories>li.highlight-selected{border-color:#285979;box-shadow:0 0 0 2px #d7e9f5}
+@media(max-width:800px){.highlights-stories{grid-template-columns:1fr}.highlights-stories>li{padding:1rem}.highlights-bridge span{overflow-wrap:anywhere}}

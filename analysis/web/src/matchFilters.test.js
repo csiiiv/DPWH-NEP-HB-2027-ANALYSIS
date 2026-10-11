@@ -23,6 +23,24 @@ test('identity match status splits exact, normalized, chainage, fuzzy and no mat
     nep: {id: 'n'},
     house: {id: 'h'},
   }), 'matched_chainage');
+  assert.equal(identityMatchStatus({
+    house_match: 'location_amendment_candidate',
+    reason: 'Same project shell with a relocated province. Possible location reassignment amendment, not a new insertion.',
+    nep: {id: 'n'},
+    house: {id: 'h'},
+  }), 'matched_location');
+  assert.equal(identityMatchStatus({
+    house_match: 'soft_match_candidate',
+    reason: 'Same project shell; residual difference is a spelling/OCR slip. Soft-attached after review; tag=spelling_ocr.',
+    nep: {id: 'n'},
+    house: {id: 'h'},
+  }), 'matched_soft');
+  assert.equal(identityMatchStatus({
+    house_match: 'scope_amendment_candidate',
+    reason: 'Same project shell attached as a scope amendment after Tier-3 review.',
+    nep: {id: 'n'},
+    house: {id: 'h'},
+  }), 'matched_scope');
   assert.equal(identityMatchStatus({house_match: 'house_unmatched'}), 'no_match');
   assert.equal(identityMatchStatus({house_match: 'nep_unmatched'}), 'no_match');
 });

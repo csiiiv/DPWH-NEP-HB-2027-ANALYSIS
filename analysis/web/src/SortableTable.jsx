@@ -1,15 +1,18 @@
 import React,{useEffect,useMemo,useState} from 'react';
+import {readRoute,routeHref} from './routes.js';
 // Sortable data table used across Analysis views. Header cells are buttons
 // with aria-sort; rows re-sort client-side without touching the data arrays.
 // `columns`: [{key,label,align:'num'|null,sortable=true,render(row),value(row),
 //              title}]; default sort falls back to column order.
+// `tableId`: stable slug for deep links — renders a # anchor that adds
+// table=<id> to the URL; Analysis scrolls the target into view on open.
 // Missing values render as an em dash; numbers get grouped thousands.
 function formatCell(value){
  if(value==null||value==='')return '—';
  if(typeof value==='number')return value.toLocaleString('en-US');
  return value;
 }
-export default function SortableTable({columns,rows,initialSort,ariaLabel,empty}){
+export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,tableId}){
  const [sort,setSort]=useState(initialSort||{key:columns.find(c=>c.sortable!==false)?.key,direction:'desc'});
  // Reset only when the requested default changes, not when an inline object
  // is recreated during a parent render.
@@ -45,7 +48,16 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty}
   return groups;
  },[columns]);
  const cellClass=column=>[column.align||'',column.band?`band-${column.band}`:'',column.divider?'col-divider':''].filter(Boolean).join(' ');
- return <div className={`sortable-table${bandHeader?' has-bands':''}`} role="region" aria-label={ariaLabel} tabIndex={0}>
+ // # anchor: rewrites the current analysis hash with table=<id>, preserving
+ // every other param (view, source, dim…) so the link is copy-paste ready.
+ const linkTable=()=>{
+  const {key,params}=readRoute();
+  const next=Object.fromEntries(params);next.table=tableId;
+  window.location.hash=routeHref(key,next);
+ };
+ const linked=Boolean(tableId);
+ const targeted=linked&&readRoute().params.get('table')===tableId;
+ return <div id={linked?`table-${tableId}`:undefined} className={`sortable-table${bandHeader?' has-bands':''}${targeted?' table-target':''}`} role="region" aria-label={ariaLabel} tabIndex={0}>
   <table>
    <thead>
     {bandHeader&&<tr className="band-row">{bandHeader.map((group,i)=>
@@ -53,7 +65,8 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty}
       className={[group.band?`band-${group.band}`:'',group.divider?'col-divider':'',group.label?'':'band-spacer'].filter(Boolean).join(' ')}>
       {group.label||'\u00a0'}
      </th>)}</tr>}
-    <tr>{columns.map(column=><th key={column.key} scope="col" className={cellClass(column)}
+    <tr>{linked&&<th scope="col" className="table-link-col"><button type="button" className="table-link" title={`Link to this table (${tableId})`} aria-label={`Copy link to ${ariaLabel}`} onClick={linkTable}>#</button></th>}
+    {columns.map(column=><th key={column.key} scope="col" className={cellClass(column)}
      aria-sort={sort?.key===column.key?(sort.direction==='asc'?'ascending':'descending'):'none'}>
      {column.sortable===false?<span className="th-label">{column.label}</span>
       :<button type="button" className="th-sort" onClick={()=>toggle(column.key)} title={column.title||`Sort by ${column.label}`}>
@@ -62,13 +75,13 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty}
       </button>}
     </th>)}</tr>
    </thead>
-   <tbody>{sorted.map((row,i)=><tr key={row.id??i}>{columns.map(column=>{
+   <tbody>{sorted.map((row,i)=><tr key={row.id??i}>{linked&&<td className="table-link-col"/>}{columns.map(column=>{
      const Tag=column.scope==='row'?'th':'td';
      return column.render
       ?<Tag key={column.key} className={cellClass(column)}>{column.render(row,i)}</Tag>
       :<Tag key={column.key} className={cellClass(column)}>{formatCell(column.value?column.value(row):row[column.key])}</Tag>;
    })}</tr>)}
-    {!rows.length&&<tr><td colSpan={columns.length}>{empty||'No rows.'}</td></tr>}
+    {!rows.length&&<tr><td colSpan={columns.length+(linked?1:0)}>{empty||'No rows.'}</td></tr>}
    </tbody>
   </table>
  </div>;

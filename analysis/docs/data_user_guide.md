@@ -118,6 +118,28 @@ flagged absurd or OCR-repaired lengths). Use for price-per-km work, length
 outliers, and scope-vs-budget stories. Note `with_length: 11,920` — the rest
 are point stations with no computable length.
 
+### 4b. `road_group_candidates_2027.json` — same-shell grouping sidecar
+
+Unpaired rows across 487 shells with insertion candidates (56 road corridors ·
+431 place shells): 1,244 HGAB rows worth ₱23.4B are on the final sheet with no
+NEP counterpart in their shell (**insertion candidates**); a further 140 shells
+hold 242 NEP rows worth ₱12.2B that never received House funding (**deletion
+candidates**). Groups the **final budget sheet**: attached NEP↔HGAB
+pairs collapse to a single HGAB-anchored record (NEP amount + Δ kept as
+provenance), HGAB-only rows stand alone, NEP-only rows appear only where a
+relocation put them in a different shell. Roads group by chainage-stripped
+title base; other projects group by **place shell** (work + municipality +
+province, dropping barangay/street — the split axis). Each group carries a
+scale `pattern`: `split_like` (447 — attached NEP items are scale-comparable
+with the leftovers, reads like one allocation sliced into lookalikes),
+`unsupplied_cluster` (21 — the paired NEP item is far larger than every
+leftover: different work sharing the shell, e.g. Laoag's ₱835M INSPIRE
+building beside 57 barangay-scale ₱2–8M insertions), or `micro_supplied`
+(19 — reverse). A `region_summary` rollup shows where unpaired rows
+concentrate. Powers the Analysis → **Groupings** tab; stage-trace rows for
+the same unpaired rows carry the `road_group` review flag. Split / insertion
+candidates with group context — never certified insertions.
+
 ### 5. `nep_2027_source_projects.json` and `nep_2027_tree.json`
 
 The NEP side alone. `…_source_projects.json` is the flat source-row list
@@ -168,14 +190,33 @@ Identity between House and NEP is **candidate matching**, never asserted:
 3. **Chainage candidates** — same road `title_base`, different station
    spans; attached with a reason (station-marker adjustment, length change,
    re-segmentation).
-4. **Fuzzy suggestions** — similarity ≥ 0.85 in the same scope; **not
+4. **Location amendments** — unique high-similarity pairs that share the
+   project shell but relocate a place slot (`location_reassignment`:
+   province / street / barangay) or change a point-to-point barangay
+   corridor endpoint (`point_to_point_barangay`). Attached like chainage
+   pairs; amount deltas apply. Review as amendments, not new insertions.
+   Each attached row keeps `reason`, `diff_tags`, and `identity_score`.
+5. **Soft matches** — unique equal-amount pairs soft-attached after Tier-1
+   (OCR/spelling or empty high-identity punct/sub-barangay) or Tier-2
+   (`facility_qualifier` only) review. Status `soft_match_candidate`;
+   always carries a typed `reason` plus `diff_tags` and `identity_score`
+   so pairing is never a silent exact match. Amount deltas apply.
+6. **Scope amendments** — unique pairs (identity ≥ 0.90, soft tags only,
+   any amount) attached after Tier-3 review. Covers GPS-confirmed wording
+   changes (`same_gps_coordinates`), re-surveyed chainage digits,
+   unit/phase re-scope (`2 units → 1 unit`), facility/parenthetical
+   scope, and Solar/Footbridge work-scope wording. Status
+   `scope_amendment_candidate`; amount deltas apply and stay flagged;
+   `reason` + `diff_tags` + `identity_score` always carried.
+7. **Fuzzy suggestions** — similarity ≥ 0.85 in the same scope; **not
    attached**. Each carries `confidence` and now `diff_tags` classifying the
    residual title difference (`work_type_change`, `stage_qualifier`,
    `work_phrase_modifier`, `connector_word`, `city_suffix`,
    `facility_qualifier`, `unit_count`, `chainage_digit`,
    `structure_id_digit`, `same_gps_coordinates`,
    `different_gps_coordinates`, `parenthetical_modifier`,
-   `different_barangay`, `different_municipality`, `different_street`,
+   `different_barangay`, `different_municipality`, `different_province`,
+   `different_street`, `location_reassignment`, `point_to_point_barangay`,
    `work_descriptor_change`, `spelling_ocr`, `other_place_or_word`).
    Place tags use an address-slot model: titles are **parsed** into named
    roles (work / street / barangay / municipality / province / chainage)
@@ -199,7 +240,29 @@ In the webapp, the **Flags** dropdown has a "Fuzzy title-difference tags"
 group with one option per tag (`flag=diff:<tag>` in the URL), and the
 analytics dialog's **Review flags** tab breaks down rows per tag with
 plain-language explanations — each tag is its own review queue.
-5. **Ambiguous** — duplicate keys; left unresolved on purpose.
+8. **Ambiguous** — duplicate keys; left unresolved on purpose.
+
+9. **Shell-grouping candidates** — after all tiers run, rows are grouped
+   by funding zone + PAP + region and shell kind: road rows by
+   chainage-stripped `title_base_match_key`, everything else by **place
+   shell** (work phrase + municipality + province from the address-slot
+   parser — barangay/sitio/street deliberately dropped, since that is the
+   axis along which one allocation gets split into lookalike projects).
+   Matched pairs collapse into one final-sheet record; what stays
+   **unpaired** is the signal. Unpaired HGAB rows are **insertion
+   candidates** (`flag: insertion_candidate_group_exhausted`) — on the
+   House sheet with no NEP counterpart in their shell. Unpaired NEP rows
+   are **deletion candidates** (`flag: deletion_candidate_group_house_paired`)
+   — NEP items never funded by that shell at HGAB. Either way the row keeps
+   its existing status (e.g. `fuzzy_candidate` / `house_unmatched` /
+   `nep_only_candidate`) and gains a `road_group` block plus a provenance
+   `reason`. Review flags with group context — never certified
+   insertions or deletions. The Analysis workspace's **Groupings**
+   tab renders both directions with a region rollup, final-sheet/paired
+   counts, House÷NEP split ratios, chainage spans, and cost-per-km per
+   member (`road_group_candidates_2027.json`). Chainage
+   candidate selection within a road group is closest-first: nearest
+   station-span center distance, then nearest amount, then id.
 
 `id` linkage: the same NEP record appears as `nep` on at most one row but can
 appear inside many rows' `suggestions`. House readings link HGAB2↔HGAB3 by
@@ -244,12 +307,26 @@ nep_roads = [u for u in units if u['source'] == 'nep'
              and u.get('length_m') and u['length_m'] > 0]
 ppk = sorted(nep_roads, key=lambda u: u['amount_php'] / (u['length_m']/1000),
              reverse=True)
+
+# 7. Shell groupings — unpaired HGAB rows (insertion candidates)
+groups = json.load(open('analysis/data/road_group_candidates_2027.json'))['groups']
+top = sorted(groups, key=lambda g: g['leftover_amount_php'], reverse=True)[:5]
+for g in top:
+    print(g['region'], g['title'][:60], g['leftover_house_rows'],
+          g['leftover_amount_php'])
+
+# 8. Per-row grouping flags (insertions on stage-trace rows; deletions too)
+insertion_flags = [r for r in rows if (r.get('road_group') or {}).get('flag')
+                   == 'insertion_candidate_group_exhausted']
+deletion_flags = [r for r in rows if (r.get('road_group') or {}).get('flag')
+                  == 'deletion_candidate_group_house_paired']
 ```
 
 Aggregation rules that keep totals right:
 
 - House↔NEP deltas: sum `house_minus_nep_php` **only over paired rows**
-  (`exact_candidate` + `chainage_candidate`).
+  (`exact_candidate` + `chainage_candidate` + `location_amendment_candidate`
+  + `soft_match_candidate` + `scope_amendment_candidate`).
 - Reading deltas: sum `delta_php` over `house_reading_changes_2027.json` rows.
 - Source totals: use each dataset's own summary (e.g.
   `summary.nep_printed_php`, `readingSummary`), never a filtered subset.

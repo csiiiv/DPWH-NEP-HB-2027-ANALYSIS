@@ -26,27 +26,28 @@ with tempfile.TemporaryDirectory() as folder:
                 page.goto(base+'#analysis',wait_until='networkidle')
                 expect(page.get_by_role('heading',name='Analysis',exact=True)).to_be_visible()
                 expect(page.get_by_role('link',name='Analysis',exact=True)).to_have_attribute('aria-current','page')
-                for tab in ['Overview','Insertions','Deletions','Adjustments','Chainage','Statistics']:
+                for tab in ['Overview','Insertions','Deletions','Adjustments','Chainage','Groupings','Statistics']:
                     expect(page.get_by_role('tab',name=tab,exact=True)).to_be_visible()
                 office=page.get_by_role('region',name='Central Office vs DEOs',exact=True)
                 expect(office).to_contain_text(f"{data['sources']['third']['offices']['Central Office']['records']:,}")
                 expect(office).to_contain_text('No recorded office')
                 # Column sorting: click Category for ascending, again for
-                # descending, again to clear back to the default order.
+                # descending, again to clear back to the default order. The
+                # leading # column is a deep-link cell, not a sort header.
                 office.get_by_role('button',name='Category',exact=True).click()
                 expect(office.locator('tbody th').first).to_have_text('Central Office')
-                expect(office.locator('thead th').first).to_have_attribute('aria-sort','ascending')
+                expect(office.get_by_role('columnheader',name='Category',exact=True)).to_have_attribute('aria-sort','ascending')
                 office.get_by_role('button',name='Category',exact=True).click()
                 expect(office.locator('tbody th').first).not_to_have_text('Central Office')
-                expect(office.locator('thead th').first).to_have_attribute('aria-sort','descending')
+                expect(office.get_by_role('columnheader',name='Category',exact=True)).to_have_attribute('aria-sort','descending')
                 office.get_by_role('button',name='Category',exact=True).click()
-                expect(office.locator('thead th').first).to_have_attribute('aria-sort','none')
+                expect(office.get_by_role('columnheader',name='Category',exact=True)).to_have_attribute('aria-sort','none')
                 office.get_by_role('button',name='Allocation (PHP)',exact=True).click()
                 expected_office=max(data['sources']['third']['offices'].items(),key=lambda item:item[1]['amount_php'])[0]
                 expect(office.locator('tbody th').first).to_have_text(expected_office)
                 descending=office.locator('tbody th').all_text_contents()
                 office.get_by_role('button',name='Allocation (PHP)',exact=True).click()
-                expect(office.locator('thead th').last).to_have_attribute('aria-sort','ascending')
+                expect(office.get_by_role('columnheader',name='Allocation (PHP)',exact=True)).to_have_attribute('aria-sort','ascending')
                 # Echo attribution gives every House record an office, so the
                 # two residual buckets tie at PHP 0; the stable sort keeps tied
                 # rows in input order in BOTH directions, so ascending is the
@@ -57,7 +58,7 @@ with tempfile.TemporaryDirectory() as folder:
                 assert [amounts[name] for name in ascending]==list(reversed(descending_amounts))
                 assert sorted(ascending)==sorted(descending)
                 office.get_by_role('button',name='Allocation (PHP)',exact=True).click()
-                expect(office.locator('thead th').last).to_have_attribute('aria-sort','none')
+                expect(office.get_by_role('columnheader',name='Allocation (PHP)',exact=True)).to_have_attribute('aria-sort','none')
                 expect(page.get_by_role('region',name='Records by program',exact=True)).to_contain_text('FAPs')
                 compare=page.get_by_role('region',name='NEP to HGAB3 by Region',exact=True)
                 expect(compare.locator('thead tr.band-row')).to_contain_text('Records')
@@ -71,37 +72,45 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(compare.get_by_role('columnheader',name='Allocation change',exact=True)).to_be_visible()
                 expect(compare.get_by_role('columnheader',name='% allocation change',exact=True)).to_be_visible()
                 expect(compare).to_contain_text('National Capital Region')
-                # Nested drill-down: disclosure buttons under the group label.
+                # Nested drill-down opens a URL-routed modal (drill+axis).
                 expect(compare.get_by_role('button',name=re.compile(r'^Show by PAP')).first).to_be_visible()
                 ilocos=compare.locator('tbody th',has_text='Ilocos')
                 expect(ilocos.first).to_be_visible()
                 ilocos.first.get_by_role('button',name=re.compile(r'^Show by PAP')).click()
-                drill=page.locator('#overview-pap-drilldown')
+                drill=page.get_by_role('dialog')
                 expect(drill).to_be_visible()
-                expect(drill).to_contain_text('Drill-down')
+                expect(drill.get_by_role('heading')).to_contain_text('PAP breakdown')
                 expect(drill.get_by_role('region',name=re.compile('PAP breakdown'),exact=False)).to_contain_text('NEP records')
                 expect(drill.locator('tbody tr').first).to_be_visible()
+                assert 'drill=' in page.url and 'axis=pap' in page.url,(page.url,)
                 drill.get_by_role('button',name='Close breakdown',exact=True).click()
                 expect(drill).to_have_count(0)
-                # Reverse drills: PAP parents expand into region AND office
-                # (DEO) children via separate toggles in the same row.
+                assert 'drill=' not in page.url,(page.url,)
+                # Reverse drills: PAP parents open region AND office breakdowns
+                # as separate URL-routed modals (one at a time).
                 chips=page.get_by_role('group',name='Break down by',exact=True)
                 chips.get_by_role('button',name='PAP',exact=True).click()
                 pap_compare=page.get_by_role('region',name='NEP to HGAB3 by PAP',exact=True)
                 flood=pap_compare.locator('tbody th',has_text='Flood Mitigation')
                 expect(flood.first).to_be_visible()
                 flood.first.get_by_role('button',name=re.compile(r'^Show by region')).click()
-                region_drill=page.locator('#overview-pap-drilldown')
+                region_drill=page.get_by_role('dialog')
                 expect(region_drill).to_be_visible()
+                expect(region_drill.get_by_role('heading')).to_contain_text('Region breakdown')
                 expect(region_drill.get_by_role('region',name=re.compile('Region breakdown'),exact=False)).to_contain_text('NEP records')
                 expect(region_drill.locator('tbody tr').first).to_be_visible()
+                assert 'axis=region' in page.url,(page.url,)
+                region_drill.get_by_role('button',name='Close breakdown',exact=True).click()
+                expect(region_drill).to_have_count(0)
                 flood.first.get_by_role('button',name=re.compile(r'^Show by office')).click()
-                office_drill=page.locator('#overview-pap-drilldown')
+                office_drill=page.get_by_role('dialog')
                 expect(office_drill).to_be_visible()
+                expect(office_drill.get_by_role('heading')).to_contain_text('District office breakdown')
                 expect(office_drill.get_by_role('region',name=re.compile('District office breakdown'),exact=False)).to_contain_text('NEP records')
                 expect(office_drill.locator('tbody tr').first).to_be_visible()
                 expect(office_drill.locator('tbody tr').first).to_contain_text('Central Office')
-                flood.first.get_by_role('button',name=re.compile(r'^Hide office breakdown')).click()
+                assert 'axis=office' in page.url,(page.url,)
+                office_drill.get_by_role('button',name='Close breakdown',exact=True).click()
                 expect(office_drill).to_have_count(0)
                 chips.get_by_role('button',name='Region',exact=True).click()
                 # Grand totals live in the section blurb above the sortable table.
@@ -172,7 +181,9 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(differences.get_by_role('columnheader',name='% change',exact=True)).to_be_visible()
                 differences.get_by_role('button',name='House',exact=True).click()
                 expect(differences.get_by_role('columnheader',name='House',exact=True)).to_have_attribute('aria-sort','descending')
-                house_values=differences.locator('tbody tr td:first-of-type').evaluate_all("cells => cells.map(c => Number(c.querySelector('[title]').title.replace(/[^0-9.-]/g, '')))")
+                # Skip the leading # deep-link cell; House is the first data column.
+                house_values=differences.locator('tbody tr').evaluate_all(
+                    "rows => rows.map(r => {const cell=r.querySelectorAll('td')[1];return Number(cell.querySelector('[title]').title.replace(/[^0-9.-]/g, ''));})")
                 assert house_values==sorted(house_values,reverse=True),house_values
                 page.get_by_label('Revision direction',exact=True).select_option('reduced')
                 expect(differences.get_by_role('columnheader',name='House − NEP',exact=True)).to_have_attribute('aria-sort','ascending')
@@ -242,14 +253,47 @@ with tempfile.TemporaryDirectory() as folder:
                 page.get_by_label('Chainage focus',exact=True).select_option('review')
                 page.screenshot(path=f'/tmp/analysis-chainage-{width}.png')
                 page.get_by_label('Chainage focus',exact=True).select_option('all')
+                # Groupings subtab: shell clusters with URL-routed member modal.
+                page.get_by_role('tab',name='Groupings',exact=True).click()
+                expect(page.get_by_role('heading',name=re.compile(r'^Groupings'),exact=False)).to_be_visible(timeout=60000)
+                expect(page.get_by_role('region',name='Insertion region rollup',exact=True)).to_be_visible()
+                insertions=page.get_by_role('region',name='Insertion candidate groups',exact=True)
+                expect(insertions.locator('tbody tr').first).to_be_visible()
+                expect(insertions.get_by_role('columnheader',name='Insertion rows',exact=True)).to_be_visible()
+                expect(insertions.get_by_role('columnheader',name='Insertion amount',exact=True)).to_be_visible()
+                members=insertions.get_by_role('button',name=re.compile(r'^\d[\d,]* rows$')).first
+                expect(members).to_be_visible()
+                members.click()
+                expect(page).to_have_url(re.compile(r'[?&]shell='),timeout=10000)
+                assert 'side=hgab' in page.url,(page.url,)
+                shell_dialog=page.get_by_role('dialog')
+                expect(shell_dialog).to_be_visible(timeout=10000)
+                expect(shell_dialog.get_by_role('heading')).to_be_visible()
+                expect(shell_dialog).to_contain_text('INSERTION CANDIDATES')
+                expect(shell_dialog.get_by_role('region',name='Group member allocations',exact=True).locator('tbody tr').first).to_be_visible()
+                shell_dialog.get_by_role('button',name='Close group members',exact=True).click()
+                expect(shell_dialog).to_have_count(0)
+                assert 'shell=' not in page.url,(page.url,)
+                deletions=page.get_by_role('region',name='Deletion candidate groups',exact=True)
+                expect(deletions.get_by_role('columnheader',name='Deletion rows',exact=True)).to_be_visible()
+                expect(deletions.get_by_role('columnheader',name='Deletion amount',exact=True)).to_be_visible()
+                # Table deep link: # anchor writes table= into the URL and
+                # restores scroll/highlight on open.
+                insertions.get_by_role('button',name=re.compile(r'^Copy link to')).first.click()
+                assert 'table=groupings-insertions' in page.url,(page.url,)
+                expect(page.locator('#table-groupings-insertions')).to_have_class(re.compile(r'table-target'))
+                page.goto(base+'#analysis?view=roadgroups&table=groupings-deletions',wait_until='networkidle')
+                expect(page.get_by_role('tab',name='Groupings',exact=True)).to_have_attribute('aria-selected','true')
+                expect(page.locator('#table-groupings-deletions')).to_have_class(re.compile(r'table-target'),timeout=60000)
+                page.screenshot(path=f'/tmp/analysis-groupings-{width}.png')
                 # Statistics subtab: descriptive lenses render from the same lazy payload.
                 page.get_by_role('tab',name='Statistics',exact=True).click()
                 expect(page.get_by_role('heading',name='Benford first-digit',exact=True)).to_be_visible(timeout=60000)
                 expect(page.get_by_role('heading',name='Rounding pattern',exact=True)).to_be_visible()
                 expect(page.get_by_role('region',name='Rounding pattern',exact=True)).to_contain_text('₱1.000M')
                 exact=page.get_by_role('region',name='Exact repeated amounts',exact=True)
-                expect(exact.locator('thead th').nth(3)).to_contain_text('Total allocation')
-                expect(exact.locator('tbody tr').first.locator('td').nth(2)).to_be_visible()
+                expect(exact.get_by_role('columnheader',name='Total allocation',exact=True)).to_be_visible()
+                expect(exact.locator('tbody tr').first.get_by_role('cell').nth(2)).to_be_visible()
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 page.screenshot(path=f'/tmp/analysis-statistics-{width}.png')
                 # Deep-link state restore on a non-default source.
@@ -260,5 +304,5 @@ with tempfile.TemporaryDirectory() as folder:
                 page.close()
             browser.close()
         assert not errors,errors
-        print(json.dumps({'widths':[390,1440],'subtabs':['overview','insertions','deletions','adjustments','chainage','statistics'],'source_counts':True,'candidate_groups':True,'deletion_groups':True,'share_and_evidence_links':True,'lazy_detail':True,'chainage':{'scopes':['all','revised'],'stages':True,'guide':True,'benchmark_dimensions':['region','deo']},'statistics':True,'errors':errors}))
+        print(json.dumps({'widths':[390,1440],'subtabs':['overview','insertions','deletions','adjustments','chainage','groupings','statistics'],'source_counts':True,'candidate_groups':True,'deletion_groups':True,'groupings':True,'table_deep_links':True,'share_and_evidence_links':True,'lazy_detail':True,'chainage':{'scopes':['all','revised'],'stages':True,'guide':True,'benchmark_dimensions':['region','deo']},'statistics':True,'errors':errors}))
     finally:server.shutdown()

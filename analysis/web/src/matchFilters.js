@@ -12,6 +12,9 @@ export const MATCH_STATUS_OPTIONS = [
   ['matched', 'Already matched'],
   ['matched_normalized', 'Matched after normalization'],
   ['matched_chainage', 'Matched after chainage check'],
+  ['matched_location', 'Matched as location amendment'],
+  ['matched_soft', 'Matched after soft review'],
+  ['matched_scope', 'Matched as scope amendment'],
   ['fuzzy', 'Fuzzy match'],
   ['ambiguous', 'Ambiguous key'],
   ['no_match', 'No match'],
@@ -26,11 +29,14 @@ export const DIFF_FLAG_OPTIONS = Object.keys(DIFF_TAG_LABELS)
 export const FLAG_OPTIONS = [
   ['house_only', 'House only candidate'],
   ['nep_only', 'NEP only candidate'],
+  ['nep_only_all', 'NEP only · all candidates'],
   ['nep_only_suggested', 'NEP only · possible replacement'],
   ['amount_increase', 'NEP → HGAB increased'],
   ['amount_decrease', 'NEP → HGAB decreased'],
   ['transparency_gap', 'Transparency gap (NEP not listed)'],
   ['outside_api', 'Outside Transparency scope'],
+  ['group_exhausted', 'Grouping · unpaired HGAB row (insertion candidate)'],
+  ['group_nep_leftover', 'Grouping · unpaired NEP row (deletion candidate)'],
   ...DIFF_FLAG_OPTIONS,
 ];
 
@@ -38,6 +44,9 @@ export const MATCH_STATUS_INFO = Object.fromEntries([
   ['matched', ['Already matched', 'Unique House↔NEP pair under the retained matching key with identical raw titles. Identity remains provisional.']],
   ['matched_normalized', ['Matched after normalization', 'Unique House↔NEP pair whose titles agree only after live normalize rules (Brgy./place slips/structure IDs), a stage-qualifier bridge (Construction (Completion) ↔ Construction), or another retained pairing rule. Printed titles stay as extracted.']],
   ['matched_chainage', ['Matched after chainage check', 'Unique House↔NEP pair that shares the same road title_base with differing station spans. Attached for identity; reasons include station-marker adjustment, increased/decreased project length, or re-segmentation. Amount flags still apply.']],
+  ['matched_location', ['Matched as location amendment', 'Unique House↔NEP pair that shares the project shell but relocates a place slot (province / street / barangay) or changes a point-to-point barangay corridor endpoint. Attached as an amendment; amount flags still apply.']],
+  ['matched_soft', ['Matched after soft review', 'Unique equal-amount House↔NEP pair soft-attached after review: OCR/spelling slip, facility qualifier only (Gym / Gymnasium / Covered Court), or high-identity punct/sub-barangay detail. Always carries a typed reason plus diff_tags and identity_score — not a silent exact match.']],
+  ['matched_scope', ['Matched as scope amendment', 'Unique House↔NEP pair (identity ≥ 0.90, soft tags only) attached as a scope amendment after Tier-3 review: GPS-confirmed scope change, re-surveyed chainage digits, unit/phase re-scope, facility or parenthetical scope, Solar/Footbridge wording. Amount deltas apply and stay flagged; provenance (reason + diff_tags + identity_score) is always carried.']],
   ['fuzzy', ['Fuzzy match', 'High title similarity in the same scope with residual OCR/spelling drift. Primary queue for new normalize rules; suggestions do not attach the NEP row.']],
   ['ambiguous', ['Ambiguous key', 'Duplicate exact matching keys prevent a unique one-to-one pairing.']],
   ['no_match', ['No match', 'House-only or NEP-only under the retained matcher — no unique exact pair and no fuzzy suggestion on this row.']],
@@ -48,6 +57,9 @@ export const MATCH_STATUS_INFO = Object.fromEntries([
 export const REVIEW_FLAG_INFO = Object.fromEntries([
   ['house_only', ['House only candidate', 'House record with no attached NEP or Transparency source. Not a confirmed insertion.']],
   ['nep_only', ['NEP only candidate', 'NEP record with no attached House reading. Not a confirmed deletion.']],
+  ['nep_only_all', ['NEP only · all candidates', 'All NEP records without an attached House reading, including possible replacements named by unresolved House suggestions. Not confirmed deletions.']],
+  ['group_exhausted', ['Unpaired HGAB in shell grouping', 'House row on a road-corridor or project-shell grouping (work + municipality + province) whose NEP rows are all paired to other House rows — no NEP counterpart remains for this allocation. Insertion candidate with group context; identity never certified.']],
+  ['group_nep_leftover', ['Unpaired NEP in shell grouping', 'NEP row on a shell grouping whose House side is fully paired while this NEP item remains unmatched — likely dropped or re-titled at HGAB. Deletion candidate with group context; identity never certified.']],
   ['nep_only_suggested', ['NEP only · possible replacement', 'NEP-only row that an unmatched House row names as a fuzzy counterpart.']],
   ['amount_increase', ['NEP → HGAB increased', 'Retained candidate pair where House amount is larger than NEP.']],
   ['amount_decrease', ['NEP → HGAB decreased', 'Retained candidate pair where House amount is smaller than NEP.']],
@@ -62,6 +74,9 @@ export const LEGACY_STATUS_MAP = {
   fuzzy_candidate: {matchStatus: 'fuzzy'},
   chainage_candidate: {matchStatus: 'matched_chainage'},
   chainage: {matchStatus: 'matched_chainage'},
+  location_amendment_candidate: {matchStatus: 'matched_location'},
+  soft_match_candidate: {matchStatus: 'matched_soft'},
+  scope_amendment_candidate: {matchStatus: 'matched_scope'},
   ambiguous: {matchStatus: 'ambiguous'},
   house_only_candidate: {flag: 'house_only'},
   nep_only_candidate: {flag: 'nep_only'},
@@ -85,6 +100,9 @@ export function identityMatchStatus(row) {
   const hm = row.house_match;
   if (hm === 'exact_candidate') return row.reason ? 'matched_normalized' : 'matched';
   if (hm === 'chainage_candidate') return 'matched_chainage';
+  if (hm === 'location_amendment_candidate') return 'matched_location';
+  if (hm === 'soft_match_candidate') return 'matched_soft';
+  if (hm === 'scope_amendment_candidate') return 'matched_scope';
   if (hm === 'fuzzy_candidate' || row.trace === 'fuzzy_candidate') return 'fuzzy';
   if (hm === 'ambiguous' || row.trace === 'ambiguous') return 'ambiguous';
   if (hm === 'region_difference_candidate' || row.trace === 'region_difference_candidate') {
@@ -97,6 +115,15 @@ export function identityMatchStatus(row) {
   if (row.nep && (row.second || row.third || row.house)) {
     if (typeof row.reason === 'string' && /chainage|station numbers differing/i.test(row.reason)) {
       return 'matched_chainage';
+    }
+    if (typeof row.reason === 'string' && /location (reassignment )?amendment|point-to-point barangay/i.test(row.reason)) {
+      return 'matched_location';
+    }
+    if (typeof row.reason === 'string' && /soft-attached after review/i.test(row.reason)) {
+      return 'matched_soft';
+    }
+    if (typeof row.reason === 'string' && /scope amendment after Tier-3 review/i.test(row.reason)) {
+      return 'matched_scope';
     }
     return row.reason || row.region_difference ? 'matched_normalized' : 'matched';
   }
@@ -125,6 +152,12 @@ export function rowFlags(row, counterparts = null) {
   if (row.api_presence === 'outside_api_scope' || (typeof row.trace === 'string' && row.trace.includes('outside_api'))) {
     flags.push('outside_api');
   }
+  if (row.road_group?.flag === 'insertion_candidate_group_exhausted') {
+    flags.push('group_exhausted');
+  }
+  if (row.road_group?.flag === 'deletion_candidate_group_house_paired') {
+    flags.push('group_nep_leftover');
+  }
   return flags;
 }
 
@@ -136,6 +169,10 @@ export function rowDiffTags(row) {
     for (const tag of suggestion.diff_tags ?? []) {
       if (tag !== 'identical') tags.add(tag);
     }
+  }
+  // Attached location amendments carry tags on the row itself.
+  for (const tag of row.diff_tags ?? []) {
+    if (tag !== 'identical') tags.add(tag);
   }
   return [...tags];
 }
@@ -149,6 +186,7 @@ export function matchesMatchStatus(row, matchStatus) {
 
 export function matchesFlag(row, flag, counterparts = null) {
   if (!flag) return true;
+  if (flag === 'nep_only_all') return Boolean(row.nep) && !row.second && !row.third && !row.house;
   if (flag.startsWith(DIFF_FLAG_PREFIX)) {
     // diff:<tag> — any of the row's suggestions carries this difference tag.
     return rowDiffTags(row).includes(flag.slice(DIFF_FLAG_PREFIX.length));

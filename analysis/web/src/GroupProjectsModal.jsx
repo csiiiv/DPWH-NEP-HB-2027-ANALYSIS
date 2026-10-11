@@ -8,14 +8,14 @@ import {filterGroupProjects,compareHrefForGroup} from './groupProjects.js';
 const amountCell=value=><span title={(value?.toLocaleString('en-PH')??'')+' PHP'}>{amount(value)}</span>;
 const signedCell=value=><span className={value>0?'up':value<0?'down':''} title={(value?.toLocaleString('en-PH')??'')+' PHP'}>{value>0?'+':''}{amount(value)}</span>;
 
-export default function GroupProjectsModal({projects,group,onClose,returnFocus}){
+export default function GroupProjectsModal({projects,group,onClose}){
  const dialog=useRef(null);
  const rows=useMemo(()=>filterGroupProjects(projects,group),[projects,group]);
  const compareParams=useMemo(()=>compareHrefForGroup(group),[group]);
  useEffect(()=>{
   const element=dialog.current,previous=document.body.style.overflow;
   element.showModal();document.body.style.overflow='hidden';
-  return ()=>{element.close();document.body.style.overflow=previous;if(returnFocus?.isConnected)returnFocus.focus({preventScroll:true});};
+  return ()=>{element.close();document.body.style.overflow=previous;};
  },[]);
  const title=group.displayLabel||group.label;
  const houseKey=group.reading||'third';
