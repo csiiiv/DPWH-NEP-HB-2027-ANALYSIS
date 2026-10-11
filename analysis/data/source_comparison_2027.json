@@ -2,7 +2,7 @@
   "manifest": {
     "schema_version": 2,
     "fiscal_year": 2027,
-    "built_at": "2026-10-11T00:31:11+08:00",
+    "built_at": "2026-10-11T09:26:23+08:00",
     "stages": {
       "nep": "Executive NEP proposal",
       "house": "HB 10858 supplied source documents; amendment completeness not certified"
@@ -19,7 +19,7 @@
     },
     "generator_dependencies": {
       "analysis/builders/house_native.py": "67405d3561660c7e7c75e1073fc7381e5524dabd562b1a81054004867f9b161b",
-      "analysis/builders/normalize_labels.py": "46368ef2105778cf862fd3b74be47e49645aca92fd03d704508d32c83e97fe4b",
+      "analysis/builders/normalize_labels.py": "596733e37df19b4734b44c171a62d7f8901388bad3f8a822ca6a8fe61ae43ce2",
       "analysis/builders/chainage.py": "ec3582b3fd9898fc28e372ab29946ec9efcba60354250dc46ad2c14c51de59b8",
       "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
     },
@@ -84,12 +84,12 @@
       "review_candidates": 3191
     },
     "match_counts": {
-      "exact_candidate": 9643,
+      "exact_candidate": 9644,
       "house_unmatched": 5814,
       "chainage_candidate": 277,
-      "fuzzy_candidate": 531,
+      "fuzzy_candidate": 530,
       "ambiguous": 5,
-      "nep_unmatched": 1500
+      "nep_unmatched": 1499
     },
     "reviewed_pairs": 0,
     "api": {
@@ -230883,6 +230883,73 @@
       },
       "delta_php": 0,
       "reason": null
+    },
+    {
+      "status": "exact_candidate",
+      "confidence": 1,
+      "house": {
+        "id": "hb:ic:c4344",
+        "native_node_id": "c4344",
+        "title": "Arellano-Palma Br. (B00422CB) along Arellano Blvd",
+        "amount_php": 12000000,
+        "pap": "Rehabilitation/ Major Repair of Permanent Bridges",
+        "pap_id": "p325:r0",
+        "program": "Bridge Program",
+        "zone": "local",
+        "region": "Region VII",
+        "office": "Cebu City District Engineering Office",
+        "record_kind": "project",
+        "pdf_page": 279,
+        "source": {
+          "pdf_page": 279,
+          "source_row": 8656,
+          "title_rows": [
+            {
+              "source_row": 8656,
+              "pdf_page": 279,
+              "text": "Arellano-Palma Br. (B00422CB) along Arellano Blvd"
+            }
+          ]
+        },
+        "evidence": "native_text",
+        "funding_php": {},
+        "title_match_key": "arellanopalmabrb00422cbalongarellanoblvd",
+        "office_canonical": "Cebu City District Engineering Office",
+        "title_base": "Arellano-Palma Br. (B00422CB) along Arellano Blvd",
+        "chainages": [],
+        "chainage_incomplete": false,
+        "chainage_length_review": null,
+        "title_base_match_key": "arellanopalmabrb00422cbalongarellanoblvd"
+      },
+      "nep": {
+        "id": "p331:r7",
+        "title": "Arellano-Palma Br . (B00422CB) along Arellano Bivd",
+        "amount_php": 12000000,
+        "program": "Bridge Program",
+        "pap": "Rehabilitation/ Major Repair of Permanent Bridges",
+        "pap_id": "p325:r0",
+        "zone": "local",
+        "region": "Region VII",
+        "office": "Cebu City District Engineering Office",
+        "pdf_page": 331,
+        "bbox": [
+          0.0,
+          204.318,
+          720.0,
+          230.097
+        ],
+        "evidence": "native_row_ambiguity",
+        "funding_php": {},
+        "title_match_key": "arellanopalmabrb00422cbalongarellanoblvd",
+        "office_canonical": "Cebu City District Engineering Office",
+        "title_base": "Arellano-Palma Br . (B00422CB) along Arellano Bivd",
+        "chainages": [],
+        "chainage_incomplete": false,
+        "chainage_length_review": null,
+        "title_base_match_key": "arellanopalmabrb00422cbalongarellanoblvd"
+      },
+      "delta_php": 0,
+      "reason": "Titles match only after abbreviation/repeat normalization; raw spellings differ."
     },
     {
       "status": "exact_candidate",
@@ -850604,75 +850671,6 @@
       }
     },
     {
-      "status": "fuzzy_candidate",
-      "house": {
-        "id": "hb:ic:c4344",
-        "native_node_id": "c4344",
-        "title": "Arellano-Palma Br. (B00422CB) along Arellano Blvd",
-        "amount_php": 12000000,
-        "pap": "Rehabilitation/ Major Repair of Permanent Bridges",
-        "pap_id": "p325:r0",
-        "program": "Bridge Program",
-        "zone": "local",
-        "region": "Region VII",
-        "office": "Cebu City District Engineering Office",
-        "record_kind": "project",
-        "pdf_page": 279,
-        "source": {
-          "pdf_page": 279,
-          "source_row": 8656,
-          "title_rows": [
-            {
-              "source_row": 8656,
-              "pdf_page": 279,
-              "text": "Arellano-Palma Br. (B00422CB) along Arellano Blvd"
-            }
-          ]
-        },
-        "evidence": "native_text",
-        "funding_php": {},
-        "title_match_key": "arellanopalmabrb00422cbalongarellanoblvd",
-        "office_canonical": "Cebu City District Engineering Office",
-        "title_base": "Arellano-Palma Br. (B00422CB) along Arellano Blvd",
-        "chainages": [],
-        "chainage_incomplete": false,
-        "chainage_length_review": null,
-        "title_base_match_key": "arellanopalmabrb00422cbalongarellanoblvd"
-      },
-      "candidates": [
-        {
-          "nep": {
-            "id": "p331:r7",
-            "title": "Arellano-Palma Br . (B00422CB) along Arellano Bivd",
-            "amount_php": 12000000,
-            "program": "Bridge Program",
-            "pap": "Rehabilitation/ Major Repair of Permanent Bridges",
-            "pap_id": "p325:r0",
-            "zone": "local",
-            "region": "Region VII",
-            "office": "Cebu City District Engineering Office",
-            "pdf_page": 331,
-            "bbox": [
-              0.0,
-              204.318,
-              720.0,
-              230.097
-            ],
-            "evidence": "native_row_ambiguity",
-            "funding_php": {},
-            "title_match_key": "arellanopalmabrb00422cbalongarellanobivd",
-            "office_canonical": "Cebu City District Engineering Office",
-            "title_base": "Arellano-Palma Br . (B00422CB) along Arellano Bivd",
-            "chainages": [],
-            "chainage_incomplete": false,
-            "chainage_length_review": null,
-            "title_base_match_key": "arellanopalmabrb00422cbalongarellanobivd"
-          },
-          "confidence": 0.975
-        }
-      ]
-    },
-    {
       "status": "house_unmatched",
       "house": {
         "id": "hb:ic:c4352",
@@ -1145279,36 +1145277,6 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "sagaybrb00067cbalongcebunorthhagnayawharfrd"
-      }
-    },
-    {
-      "status": "nep_unmatched",
-      "nep": {
-        "id": "p331:r7",
-        "title": "Arellano-Palma Br . (B00422CB) along Arellano Bivd",
-        "amount_php": 12000000,
-        "program": "Bridge Program",
-        "pap": "Rehabilitation/ Major Repair of Permanent Bridges",
-        "pap_id": "p325:r0",
-        "zone": "local",
-        "region": "Region VII",
-        "office": "Cebu City District Engineering Office",
-        "pdf_page": 331,
-        "bbox": [
-          0.0,
-          204.318,
-          720.0,
-          230.097
-        ],
-        "evidence": "native_row_ambiguity",
-        "funding_php": {},
-        "title_match_key": "arellanopalmabrb00422cbalongarellanobivd",
-        "office_canonical": "Cebu City District Engineering Office",
-        "title_base": "Arellano-Palma Br . (B00422CB) along Arellano Bivd",
-        "chainages": [],
-        "chainage_incomplete": false,
-        "chainage_length_review": null,
-        "title_base_match_key": "arellanopalmabrb00422cbalongarellanobivd"
       }
     },
     {

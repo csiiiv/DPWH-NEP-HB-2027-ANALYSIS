@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "fiscal_year": 2027,
-  "built_at": "2026-10-11T00:31:11+08:00",
+  "built_at": "2026-10-11T09:26:23+08:00",
   "stages": {
     "nep": "Executive NEP proposal",
     "house": "HB 10858 supplied source documents; amendment completeness not certified"
@@ -18,7 +18,7 @@
   },
   "generator_dependencies": {
     "analysis/builders/house_native.py": "67405d3561660c7e7c75e1073fc7381e5524dabd562b1a81054004867f9b161b",
-    "analysis/builders/normalize_labels.py": "46368ef2105778cf862fd3b74be47e49645aca92fd03d704508d32c83e97fe4b",
+    "analysis/builders/normalize_labels.py": "596733e37df19b4734b44c171a62d7f8901388bad3f8a822ca6a8fe61ae43ce2",
     "analysis/builders/chainage.py": "ec3582b3fd9898fc28e372ab29946ec9efcba60354250dc46ad2c14c51de59b8",
     "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
   },

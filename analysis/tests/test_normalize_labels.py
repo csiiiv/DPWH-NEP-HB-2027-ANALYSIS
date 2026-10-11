@@ -72,6 +72,16 @@ class NormalizeLabelsTests(unittest.TestCase):
         self.assertEqual(title_tokens('Tagbac-Lubang-Looc Rd')[-2:], ['looc', 'rd'])
         self.assertNotEqual(raw_normalized('Bo0008LB'), raw_normalized('B00008LB'))
 
+    def test_blvd_ocr_slip_bivd(self):
+        # NEP OCR reads "Bivd" for printed "Blvd" (l→i); mined pair was stuck
+        # in review because both tokens are 4 chars (promote needs ≥5).
+        self.assertEqual(
+            title_match_key('Arellano-Palma Br. (B00422CB) along Arellano Blvd'),
+            title_match_key('Arellano-Palma Br . (B00422CB) along Arellano Bivd'))
+        self.assertEqual(LIVE_TITLE_ABBREVIATIONS['bivd'], 'blvd')
+        self.assertEqual(classify_title_substitution(('blvd',), ('bivd',)), 'promote')
+        self.assertNotEqual(raw_normalized('Arellano Bivd'), raw_normalized('Arellano Blvd'))
+
     def test_promoted_abbrev_and_ocr_slips_are_live(self):
         self.assertEqual(LIVE_TITLE_ABBREVIATIONS['bldg'], 'building')
         self.assertEqual(LIVE_TITLE_ABBREVIATIONS['bidg'], 'building')

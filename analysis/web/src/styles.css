@@ -857,6 +857,13 @@ small {
 .dimension-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin:.5rem 0}.dimension-chips button{background:#fff;border:1px solid #b9c6d2;border-radius:999px;padding:.3rem .8rem;font:inherit;font-size:.8rem;color:#52657b;cursor:pointer}.dimension-chips button.active{background:#1f4d7a;border-color:#1f4d7a;color:#fff}
 .analysis-columns{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.analysis-columns .analysis-section{margin:.5rem 0}
 .aggregate-table h3{font-size:.85rem;margin:.5rem 0 .35rem}
+/* Overview PAP drill-down: toggle chip in the group cell + nested panel. */
+.pap-drill-toggle{margin-left:.5rem;font-size:.68rem;border:1px solid #b9c6d2;border-radius:999px;padding:.05rem .5rem;background:#fff;color:#365575}
+.pap-drill-toggle:hover{border-color:#1f4d7a;color:#1f4d7a}
+.pap-drill-toggle.open{background:#1f4d7a;border-color:#1f4d7a;color:#fff}
+.pap-drilldown{margin-top:.85rem;border:1px solid #c9d5e4;border-left:4px solid #1f4d7a;border-radius:8px;background:#f7fafc;padding:.75rem .9rem}
+.pap-drilldown h3{margin:.1rem 0 .4rem;font-size:.9rem;color:#123}
+.pap-drilldown .muted{font-size:.75rem;margin:.2rem 0 .5rem}
 .digit-bars{display:flex;gap:.4rem;align-items:flex-end;min-height:150px;padding:.5rem 0;overflow-x:auto}.digit-bar{display:flex;flex-direction:column;align-items:center;gap:.25rem;min-width:38px;flex:1}.digit-label{font-weight:600;font-size:.8rem}.digit-tracks{display:flex;gap:2px;align-items:flex-end;height:100px}.digit-track{width:14px;height:100px;display:flex;align-items:flex-end;background:#f2f5f8;border-radius:3px 3px 0 0}.digit-track .observed{display:block;width:100%;background:#1f4d7a;border-radius:3px 3px 0 0}.digit-track .expected{display:block;width:100%;background:#d08b2c;border-radius:3px 3px 0 0}.digit-bar small{font-size:.62rem;color:#52657b;text-align:center}
 @media(max-width:900px){.analysis-columns{grid-template-columns:1fr}.digit-tracks{height:70px}}
 .sortable-table{overflow:auto;max-height:560px;border:1px solid #dce4ec;border-radius:8px;background:#fff}

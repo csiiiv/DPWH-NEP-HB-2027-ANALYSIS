@@ -56,7 +56,28 @@ test('headline office and program buckets conserve each source ledger and count 
   assert.equal(groups.reduce((sum,g)=>sum+g.delta_php,0),compare.delta_php);
   assert.equal(groups.reduce((sum,g)=>sum+g.nep_records,0),stats.sources.nep.records);
   assert.equal(groups.reduce((sum,g)=>sum+g.house_records,0),stats.sources.third.records);
+  // Nested drill breakdowns conserve each parent group's tallies exactly:
+  // region/office parents → PAP children; PAP parents → region AND office.
+  // Program parents carry no drill (PAP is already their next level).
+  for(const group of groups){
+   for(const children of [group.by_pap,group.by_region,group.by_office].filter(list=>list?.length)){
+    assert.equal(children.reduce((sum,p)=>sum+p.nep_php,0),group.nep_php);
+    assert.equal(children.reduce((sum,p)=>sum+p.house_php,0),group.house_php);
+    assert.equal(children.reduce((sum,p)=>sum+p.nep_records,0),group.nep_records);
+    assert.equal(children.reduce((sum,p)=>sum+p.house_records,0),group.house_records);
+    for(const child of children)assert.equal(child.delta_php,child.house_php-child.nep_php);
+   }
+  }
  }
+ // PAP parents carry region AND office children; other parents PAP children.
+ const papParents=compare.by_dim.pap;
+ assert.ok(papParents.every(g=>g.by_region?.length>=1&&g.by_office?.length>=1));
+ const officeParents=compare.by_dim.office;
+ assert.ok(officeParents.every(g=>g.by_pap?.length>=1));
+ const regionParents=compare.by_dim.region;
+ assert.ok(regionParents.every(g=>g.by_pap?.length>=1));
+ // Program parents have no drill (their PAPs are already the next level).
+ assert.ok(compare.by_dim.program.every(g=>!g.by_pap.length&&!g.by_region.length&&!g.by_office.length));
  assert.equal(compare.by_dim.overall[0].delta_php,compare.delta_php);
  assert.equal(compare.by_dim.overall[0].nep_records,stats.sources.nep.records);
  assert.equal(compare.by_dim.overall[0].house_records,stats.sources.third.records);

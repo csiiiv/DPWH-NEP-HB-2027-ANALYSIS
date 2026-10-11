@@ -87,6 +87,9 @@ export function headlineStats(input){
 const sideRecords=source=>source.records?.length??1;
 // NEP vs House allocation totals by dimension. Each source contributes to its
 // own region/office/program/PAP label; change is House−NEP for that label.
+// Every non-program parent group also carries nested drill breakdowns
+// (by_pap; plus by_region and by_office for PAP parents) that conserve its
+// tallies.
 export function sourceCompare(rows,sources){
  const byReading={};
  for(const side of ['third','second']){
@@ -94,21 +97,43 @@ export function sourceCompare(rows,sources){
   dims.overall=[{id:'overall',label:'All operations',nep_php:sources.nep.amount_php,house_php:sources[side].amount_php,
    delta_php:sources[side].amount_php-sources.nep.amount_php,nep_records:sources.nep.records,house_records:sources[side].records}];
   for(const dim of ['region','office','program','pap']){
+   // Drill axes per parent dimension: PAP parents break down by region AND
+   // office (separate toggles); region/office parents break down by PAP;
+   // program parents have no drill (PAP is already their next level).
+   const childDims=dim==='pap'?['region','office']:dim==='program'?[]:['pap'];
    const groups=new Map();
+   // Nested drill breakdowns per parent group: {parent → {axis → {child → tallies}}}.
+   const childGroups=new Map();
+   const childMap=(label,axis)=>{
+    if(!childGroups.has(label))childGroups.set(label,new Map());
+    const axes=childGroups.get(label);
+    if(!axes.has(axis))axes.set(axis,new Map());
+    return axes.get(axis);
+   };
+   const tally=(record,label,children,sideKey)=>{
+    const entry=groups.get(label)||{label,nep_php:0,house_php:0,nep_records:0,house_records:0};
+    entry[`${sideKey}_php`]+=record.amount_php;entry[`${sideKey}_records`]+=sideRecords(record);
+    groups.set(label,entry);
+    for(const [axis,child] of children){
+     const map=childMap(label,axis);
+     const childEntry=map.get(child)||{label:child,nep_php:0,house_php:0,nep_records:0,house_records:0};
+     childEntry[`${sideKey}_php`]+=record.amount_php;childEntry[`${sideKey}_records`]+=sideRecords(record);
+     map.set(child,childEntry);
+    }
+   };
    for(const row of rows){
-    if(row.nep){
-     const label=sourceDimLabel(row.nep,dim,row);
-     const entry=groups.get(label)||{label,nep_php:0,house_php:0,nep_records:0,house_records:0};
-     entry.nep_php+=row.nep.amount_php;entry.nep_records+=sideRecords(row.nep);groups.set(label,entry);
-    }
-    if(row[side]){
-     const label=sourceDimLabel(row[side],dim,row);
-     const entry=groups.get(label)||{label,nep_php:0,house_php:0,nep_records:0,house_records:0};
-     entry.house_php+=row[side].amount_php;entry.house_records+=sideRecords(row[side]);groups.set(label,entry);
-    }
+    if(row.nep)tally(row.nep,sourceDimLabel(row.nep,dim,row),childDims.map(axis=>[axis,sourceDimLabel(row.nep,axis,row)]),'nep');
+    if(row[side])tally(row[side],sourceDimLabel(row[side],dim,row),childDims.map(axis=>[axis,sourceDimLabel(row[side],axis,row)]),'house');
    }
-   dims[dim]=[...groups.values()].map(entry=>({id:entry.label,label:entry.label,nep_php:entry.nep_php,house_php:entry.house_php,
-    delta_php:entry.house_php-entry.nep_php,nep_records:entry.nep_records,house_records:entry.house_records}))
+   dims[dim]=[...groups.values()].map(entry=>{
+    const axes=childGroups.get(entry.label)||new Map();
+    const drill=Object.fromEntries(childDims.map(axis=>[axis,sortByDelta([...(axes.get(axis)||new Map()).values()])
+     .map(child=>({...child,delta_php:child.house_php-child.nep_php}))]));
+    return {id:entry.label,label:entry.label,nep_php:entry.nep_php,house_php:entry.house_php,
+     delta_php:entry.house_php-entry.nep_php,nep_records:entry.nep_records,house_records:entry.house_records,
+     drill_dims:childDims,
+     by_pap:drill.pap||[],by_region:drill.region||[],by_office:drill.office||[]};
+   })
     .sort((a,b)=>Math.abs(b.delta_php)-Math.abs(a.delta_php)||b.house_php-a.house_php||a.label.localeCompare(b.label));
   }
   byReading[side]={house_reading:side,nep_php:sources.nep.amount_php,house_php:sources[side].amount_php,
@@ -121,6 +146,9 @@ function sourceDimLabel(record,dim,row){
  if(dim==='office')return sideOffice(record)||'No recorded office';
  if(dim==='program')return (record.zone??row.zone)==='fap'?'Foreign-assisted projects':record.program||row.program||'Other / unclassified';
  return record.pap||row.pap||'No recorded PAP';
+}
+function sortByDelta(entries){
+ return entries.sort((a,b)=>Math.abs(b.house_php-b.nep_php)-Math.abs(a.house_php-a.nep_php)||b.house_php-a.house_php||a.label.localeCompare(b.label));
 }
 // Top groups per dimension over the FULL candidate group, not just the top 20.
 function byDimension(flat){
