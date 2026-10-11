@@ -1,6 +1,6 @@
 # Normalization candidates
 
-Generated: 2026-10-10T16:22:46Z. Read-only mine over `source_comparison_2027.json`. Does not rewrite payloads.
+Generated: 2026-10-11T05:06:07Z. Read-only mine over `source_comparison_2027.json`. Does not rewrite payloads.
 
 ## Offices — promote
 
@@ -30,12 +30,12 @@ Paired House/NEP rows split only by office spelling: **108**.
 
 ## Titles — triage summary
 
-Fuzzy/chainage rows scanned: **531**.
-Substitution patterns: promote 4, reject 101, review 320.
+Fuzzy/chainage rows scanned: **493**.
+Substitution patterns: promote 4, reject 101, review 305.
 
 ### Existing abbreviation effect
 
-Exact pairs that already match only after Brgy./repeat normalization: **356**.
+Exact pairs that already match only after Brgy./repeat normalization: **357**.
 
 ### Promote (abbreviation / OCR / typo class)
 
@@ -70,7 +70,6 @@ Exact pairs that already match only after Brgy./repeat normalization: **356**.
 - 1× `['12', '159', 'tiaong']` ↔ `['10', '305', 'san', 'antonio']`
 - 1× `['ni', 'o']` ↔ `['nino']`
 - 1× `['baguio']` ↔ `['baquio']`
-- 1× `['blvd']` ↔ `['bivd']`
 - 1× `['natl']` ↔ `['nati']`
 - 1× `['mitigation', 'structure']` ↔ `['control', 'wall']`
 - 1× `['sta', '27', '861']` ↔ `['and', 'utilities']`
@@ -79,6 +78,7 @@ Exact pairs that already match only after Brgy./repeat normalization: **356**.
 - 1× `['r']` ↔ `['l']`
 - 1× `['tubod']` ↔ `['puga', 'an', 'sta', '0', '675', '00']`
 - 1× `['ubaldo', 'laya']` ↔ `['puga', 'an']`
+- 1× `['bislig']` ↔ `['bisliq']`
 
 ### Reject samples (work type / chainage / different entity)
 

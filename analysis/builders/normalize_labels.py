@@ -138,12 +138,17 @@ def strip_stage_qualifier(value: str) -> str:
 FUZZY_DIFF_TAGS = {
     'work_type_change': 'Different work type (construction ↔ rehabilitation…)',
     'stage_qualifier': 'Construction (Completion) ↔ Construction qualifier only',
+    'work_phrase_modifier': 'Work phrase / along-at modifier on one side',
     'connector_word': 'at / in / comma phrasing difference',
     'city_suffix': 'City suffix present on one side (Manila ↔ Manila City)',
     'facility_qualifier': 'Facility qualifier on one side (Gym / Gymnasium / Covered Court)',
     'unit_count': 'Unit/phase count on one side (2 units, Phase 2…)',
     'chainage_digit': 'Station/chainage digits differ',
     'structure_id_digit': 'Structure-ID or coordinate digits differ',
+    'same_gps_coordinates': 'Same GPS coordinates, different words',
+    'different_gps_coordinates': 'Different GPS coordinates',
+    'parenthetical_modifier': 'Difference only inside parentheses',
+    'location_subname': 'Different barangay / location sub-name (same area tail)',
     'spelling_ocr': 'Spelling / OCR slip in a shared token',
     'other_place_or_word': 'Different place or word — needs manual review',
 }
@@ -152,6 +157,44 @@ FUZZY_DIFF_TAGS = {
 FACILITY_QUALIFIER_TOKENS = {'gym', 'gymnasium', 'covered', 'court', 'mpb'}
 # Pure phrasing connectors that titles use inconsistently.
 CONNECTOR_TOKENS = {'at', 'in'}
+# Words that form a work-phrase prefix/suffix around a location ("Preventive
+# Maintenance along …", "Rehabilitation of …") — their one-sided presence is a
+# phrasing difference, not a place change.
+WORK_PHRASE_TOKENS = WORK_TYPE_TOKENS | {'along'}
+
+_GPS_RE = re.compile(r'\d{1,3}\s*\.\s*\d{3,}')
+_PAREN_RE = re.compile(r'\([^)]*\)')
+
+
+def _gps_coordinates(value: str) -> list[str]:
+    """Normalized GPS coordinate strings (decimal point, no spaces)."""
+    return [m.replace(' ', '') for m in _GPS_RE.findall(value or '')]
+
+
+def _prep_tokens(value: str) -> list[str]:
+    kept = []
+    for token in title_tokens(value):
+        if token in QUALIFIER_AFTER_WORK_TYPE and kept and kept[-1] in WORK_TYPE_TOKENS:
+            continue
+        kept.append(token)
+    return kept
+
+
+def _segments(value: str) -> list[list[str]]:
+    """Comma segments of a cleaned title as token lists (GPS + parens removed)."""
+    cleaned = _GPS_RE.sub(' ', _PAREN_RE.sub(' ', value or ''))
+    return [title_tokens(part) for part in cleaned.split(',') if part.strip()]
+
+
+def _tail_equal_segments(a: list[list[str]], b: list[list[str]]) -> int:
+    """Count of equal trailing comma segments (municipality/province anchor)."""
+    equal = 0
+    for sa, sb in zip(reversed(a), reversed(b)):
+        if sa == sb:
+            equal += 1
+        else:
+            break
+    return equal
 
 
 def diff_tags(house_title: str, nep_title: str) -> list[str]:
@@ -163,15 +206,36 @@ def diff_tags(house_title: str, nep_title: str) -> list[str]:
     """
     from difflib import SequenceMatcher
 
-    def prep(value: str) -> list[str]:
-        kept = []
-        for token in title_tokens(value):
-            if token in QUALIFIER_AFTER_WORK_TYPE and kept and kept[-1] in WORK_TYPE_TOKENS:
-                continue
-            kept.append(token)
-        return kept
+    a, b = _prep_tokens(house_title or ''), _prep_tokens(nep_title or '')
 
-    a, b = prep(house_title or ''), prep(nep_title or '')
+    # Whole-title signals, most specific first:
+    # 1. GPS coordinates present on both sides decide same/different site.
+    gps_h, gps_n = _gps_coordinates(house_title or ''), _gps_coordinates(nep_title or '')
+    gps_tag = None
+    if gps_h and gps_n:
+        # Compare to 4 decimals (~10 m): same site vs genuinely different point.
+        if [g[:g.index('.') + 4] for g in gps_h] == [g[:g.index('.') + 4] for g in gps_n]:
+            gps_tag = 'same_gps_coordinates'
+        else:
+            gps_tag = 'different_gps_coordinates'
+    # 2. Parenthetical-only differences (outside tokens equal, paren content
+    # differs). Facility qualifiers keep their more specific tag; GPS parens
+    # were already handled above; stage-qualifier parens like (Completion)
+    # normalize away before the comparison.
+    if _PAREN_RE.search(house_title or '') or _PAREN_RE.search(nep_title or ''):
+        stripped_h = _prep_tokens(_PAREN_RE.sub(' ', house_title or ''))
+        stripped_n = _prep_tokens(_PAREN_RE.sub(' ', nep_title or ''))
+        paren_h = set(_prep_tokens(' '.join(_PAREN_RE.findall(house_title or '')))) - WORK_TYPE_TOKENS
+        paren_n = set(_prep_tokens(' '.join(_PAREN_RE.findall(nep_title or '')))) - WORK_TYPE_TOKENS
+        if stripped_h == stripped_n and paren_h != paren_n \
+                and not ((paren_h | paren_n) & FACILITY_QUALIFIER_TOKENS) \
+                and not gps_tag:
+            return ['parenthetical_modifier']
+    seg_h, seg_n = _segments(house_title or ''), _segments(nep_title or '')
+    tail = _tail_equal_segments(seg_h, seg_n)
+    location_locked = (tail >= 1 and len(seg_h) > tail and len(seg_n) > tail
+                       and all(''.join(s).isdigit() is False for s in seg_h[:-tail]))
+
     matcher = SequenceMatcher(None, a, b, autojunk=False)
     tags: list[str] = []
     for tag, i1, i2, j1, j2 in matcher.get_opcodes():
@@ -196,8 +260,16 @@ def diff_tags(house_title: str, nep_title: str) -> list[str]:
                 and not set(hseg) & set(nseg):
             tags.append('work_type_change')
             continue
+        # Work-phrase modifier: one side carries work words + "along" around
+        # the same location ("Preventive Maintenance along Calapan North Rd").
+        if (not hseg or not nseg) and (set(hseg) | set(nseg)) <= WORK_PHRASE_TOKENS \
+                and len(set(hseg) | set(nseg)) > 1:
+            tags.append('work_phrase_modifier')
+            continue
         if all(re.fullmatch(r'\d+|k\d+|sta|to', t) for t in hseg + nseg if t):
-            if any(t.startswith('k') or t == 'sta' for t in hseg + nseg):
+            context = (a[i1 - 1] if i1 > 0 else '') or (b[j1 - 1] if j1 > 0 else '')
+            if any(t.startswith('k') or t == 'sta' for t in hseg + nseg) \
+                    or re.fullmatch(r'k\d+|sta', context or ''):
                 tags.append('chainage_digit')
             else:
                 tags.append('structure_id_digit')
@@ -212,7 +284,15 @@ def diff_tags(house_title: str, nep_title: str) -> list[str]:
             if min(len(ha), len(na)) >= 4 and SequenceMatcher(None, ha, na).ratio() >= .8:
                 tags.append('spelling_ocr')
                 continue
+        # Same municipality/province tail but a different earlier location
+        # segment reads as a barangay / sub-name change, not a random word.
+        if location_locked:
+            tags.append('location_subname')
+            continue
         tags.append('other_place_or_word')
+    # A whole-title GPS verdict subsumes coordinate-digit token diffs.
+    if gps_tag:
+        return [gps_tag]
     # De-duplicate, keep first-seen order.
     seen: set[str] = set()
     ordered = [t for t in tags if not (t in seen or seen.add(t))]

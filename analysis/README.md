@@ -181,6 +181,7 @@ separately; see [archive commands](archive/README.md).
 ## Documentation
 
 - [Data pipeline: sources, builders, and dependency order](docs/data_pipeline.md)
+- [Data user guide: using the datasets for further analysis](docs/data_user_guide.md)
 - [Budget PDFs to auditable datasets: general method and House/NEP examples](docs/pdf_budget_dataset_method.md)
 - [House 2nd/3rd reading differences and engineering office filters](docs/house_reading_comparison_checks.md)
 - [Native House migration — complete change report, 9 October 2026](docs/native_house_migration_change_report_2026-10-09.md)

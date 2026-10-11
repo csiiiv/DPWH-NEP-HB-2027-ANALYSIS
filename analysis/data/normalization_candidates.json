@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-10T16:22:46Z",
+  "generated_at": "2026-10-11T05:06:07Z",
   "source": "source_comparison_2027.json",
-  "project_rows": 17770,
+  "project_rows": 17745,
   "offices": {
     "multi_variant_groups": [
       {
@@ -130,9 +130,9 @@
     "paired_rows_split_only_by_office_spelling": 108
   },
   "titles": {
-    "fuzzy_or_chainage_rows_scanned": 531,
+    "fuzzy_or_chainage_rows_scanned": 493,
     "status_counts": {
-      "fuzzy_candidate": 531
+      "fuzzy_candidate": 493
     },
     "substitutions": [
       {
@@ -1444,25 +1444,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Lanao del Norte Interior Circum. Rd (LDNICR) - (S00970MN) Chainage 10118 - Chainage 11698",
             "nep_title": "Lanao del Norte Interior Circum. Rd (LDNICR ) - (S00970MN) Chainage 9103 - Chainage 9131",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "blvd"
-        ],
-        "nep_tokens": [
-          "bivd"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.975,
-            "status": "fuzzy_candidate",
-            "house_title": "Arellano-Palma Br. (B00422CB) along Arellano Blvd",
-            "nep_title": "Arellano-Palma Br . (B00422CB) along Arellano Bivd",
             "id": null
           }
         ]
@@ -3853,16 +3834,16 @@
         ],
         "nep_tokens": [
           "nalsian",
-          "manaoag"
+          "calasiao"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8718,
+            "confidence": 0.8644,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building at Barangay Atainan, Alcala, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Nalsian, Manaoag, Pangasinan",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay Nalsian, Calasiao, Pangasinan",
             "id": null
           }
         ]
@@ -4214,17 +4195,17 @@
           "dasol"
         ],
         "nep_tokens": [
-          "osiem",
-          "mangaldan"
+          "laoag",
+          "aguilar"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8929,
+            "confidence": 0.8727,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Osmeña, Dasol, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Osiem, Mangaldan, Pangasinan",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay Laoag, Aguilar, Pangasinan",
             "id": null
           }
         ]
@@ -4263,102 +4244,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building at Barangay Poblacion, Bugallon, Pangasinan",
             "nep_title": "Construction of Multi-Purpose Building (Gym ), Barangay Poblacion, Manaoag, Pangasinan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "gueseng"
-        ],
-        "nep_tokens": [
-          "osiem"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8594,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Completion) Barangay Gueseng, Mangaldan, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Osiem, Mangaldan, Pangasinan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "babasit"
-        ],
-        "nep_tokens": [
-          "osiem"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.875,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Completion) Barangay Babasit, Mangaldan, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Osiem, Mangaldan, Pangasinan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "bucao"
-        ],
-        "nep_tokens": [
-          "osiem"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.873,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Completion) Barangay Bucao, Mangaldan, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Osiem, Mangaldan, Pangasinan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "matulong"
-        ],
-        "nep_tokens": [
-          "osiem"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8527,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Completion) Barangay Matulong, Mangaldan, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Osiem, Mangaldan, Pangasinan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "alacan"
-        ],
-        "nep_tokens": [
-          "ambalangan",
-          "dalin"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8613,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Completion) Barangay Alacan, San Fabian, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Ambalangan Dalin, San Fabian, Pangasinan",
             "id": null
           }
         ]
@@ -4420,63 +4305,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Bayoyong, Basista, Pangasinan",
             "nep_title": "Construction of Multi-Purpose Building, Barangay Laoag, Aguilar, Pangasinan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "david"
-        ],
-        "nep_tokens": [
-          "osiem"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8571,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building, Barangay David, Mangaldan, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Osiem, Mangaldan, Pangasinan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "bateng"
-        ],
-        "nep_tokens": [
-          "osiem"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8504,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building, Barangay Bateng, Mangaldan, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Osiem, Mangaldan, Pangasinan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "calaocan"
-        ],
-        "nep_tokens": [
-          "nalsian"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8661,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building, Barangay Calaocan, Manaoag, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Nalsian, Manaoag, Pangasinan",
             "id": null
           }
         ]
@@ -4575,17 +4403,17 @@
           "umingan"
         ],
         "nep_tokens": [
-          "nalsian",
-          "manaoag"
+          "laoag",
+          "aguilar"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8673,
+            "confidence": 0.8649,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Alo-o, Umingan, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Nalsian, Manaoag, Pangasinan",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay Laoag, Aguilar, Pangasinan",
             "id": null
           }
         ]
@@ -4607,28 +4435,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Cabalitian, Umingan, Pangasinan",
             "nep_title": "Construction of Multi-Purpose Building, Barangay Cabaruan, Mangatarem, Pangasinan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "sta",
-          "maria",
-          "umingan"
-        ],
-        "nep_tokens": [
-          "osiem",
-          "mangaldan"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8718,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building, Barangay Sta. Maria, Umingan, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Osiem, Mangaldan, Pangasinan",
             "id": null
           }
         ]
@@ -4756,25 +4562,6 @@
       },
       {
         "house_tokens": [
-          "mabanguc"
-        ],
-        "nep_tokens": [
-          "bisagu"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9455,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building, Barangay Mabanguc, Aparri, Cagayan",
-            "nep_title": "Construction of Multi-Purpose Building at Barangay Bisagu, Aparri, Cagayan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "inga",
           "enrile"
         ],
@@ -4790,49 +4577,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Inga, Enrile, Cagayan",
             "nep_title": "Construction of Multi-Purpose Building, Barangay Toran, Aparri, Cagayan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "centro",
-          "pe",
-          "ablanca"
-        ],
-        "nep_tokens": [
-          "mabanguc",
-          "aparri"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8702,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building, Barangay Centro, Peñablanca, Cagayan",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building, Barangay Mabanguc, Aparri, Cagayan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "calamagui",
-          "solana"
-        ],
-        "nep_tokens": [
-          "tagumay",
-          "gattaran"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8507,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building, Barangay Calamagui, Solana, Cagayan",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building at Barangay Tagumay, Gattaran, Cagayan",
             "id": null
           }
         ]
@@ -6183,20 +5927,19 @@
       },
       {
         "house_tokens": [
-          "barangay",
           "tamlong"
         ],
         "nep_tokens": [
-          "tongko"
+          "opias"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.958,
+            "confidence": 0.8966,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building at Barangay Tamlong, Tayabas City, Quezon",
-            "nep_title": "Construction of Multi-Purpose Building at Tongko, Tayabas City, Quezon",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay Opias, Tayabas City, Quezon",
             "id": null
           }
         ]
@@ -6368,16 +6111,16 @@
           "bukal"
         ],
         "nep_tokens": [
-          "apad"
+          "casuguran"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.9346,
+            "confidence": 0.9107,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building at Barangay Bukal, Jomalig, Quezon",
-            "nep_title": "Construction of Multi-Purpose Building at Barangay Apad, Jomalig, Quezon",
+            "nep_title": "Construction of Multi-Purpose Building at Barangay Casuguran, Jomalig, Quezon",
             "id": null
           }
         ]
@@ -6399,26 +6142,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction/Completion of Multi-Purpose Building at Barangay Gango, Jomalig, Quezon",
             "nep_title": "Construction (Completion) of Multi-Purpose Building at Barangay Bantilan, Infanta, Quezon",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "barangay",
-          "mateuna"
-        ],
-        "nep_tokens": [
-          "tongko"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8527,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction/Completion of Multi-Purpose Building at Barangay Mateuna, Tayabas City, Quezon",
-            "nep_title": "Construction of Multi-Purpose Building at Tongko, Tayabas City, Quezon",
             "id": null
           }
         ]
@@ -6660,25 +6383,6 @@
       },
       {
         "house_tokens": [
-          "bislian"
-        ],
-        "nep_tokens": [
-          "pamatdan"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9027,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building at Barangay Bislian, Polillo, Quezon",
-            "nep_title": "Construction of Multi-Purpose Building at Barangay Pamatdan, Polillo, Quezon",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "bonbon",
           "panukulan"
         ],
@@ -6719,20 +6423,19 @@
       },
       {
         "house_tokens": [
-          "barangay",
           "anos"
         ],
         "nep_tokens": [
-          "tongko"
+          "opias"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.873,
+            "confidence": 0.8618,
             "status": "fuzzy_candidate",
             "house_title": "Construction/Completion of Multi-Purpose Building at Barangay Anos, Tayabas City, Quezon",
-            "nep_title": "Construction of Multi-Purpose Building at Tongko, Tayabas City, Quezon",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay Opias, Tayabas City, Quezon",
             "id": null
           }
         ]
@@ -6763,19 +6466,16 @@
           "tiaong"
         ],
         "nep_tokens": [
-          "at",
-          "barangay",
-          "abo",
           "mauban"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8654,
+            "confidence": 0.8687,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building (Phase II), Tiaong, Quezon",
-            "nep_title": "Construction of Multi-Purpose Building at Barangay Abo-Abo, Mauban Quezon",
+            "nep_title": "Construction of Multi-Purpose Building, Mauban, Quezon",
             "id": null
           }
         ]
@@ -8987,7 +8687,7 @@
     ],
     "triage_counts": {
       "reject": 101,
-      "review": 320,
+      "review": 305,
       "promote": 4
     },
     "promote": [
@@ -10386,25 +10086,6 @@
       },
       {
         "house_tokens": [
-          "blvd"
-        ],
-        "nep_tokens": [
-          "bivd"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.975,
-            "status": "fuzzy_candidate",
-            "house_title": "Arellano-Palma Br. (B00422CB) along Arellano Blvd",
-            "nep_title": "Arellano-Palma Br . (B00422CB) along Arellano Bivd",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "natl"
         ],
         "nep_tokens": [
@@ -11302,11 +10983,33 @@
             "id": null
           }
         ]
+      },
+      {
+        "house_tokens": [
+          "parola",
+          "b",
+          "street"
+        ],
+        "nep_tokens": [
+          "peacock",
+          "st"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.9157,
+            "status": "fuzzy_candidate",
+            "house_title": "Rehabilitation of Road and Drainage along Parola B Street (C0+000 to C0+130), Gen T. De Leon, Valenzuela City",
+            "nep_title": "Rehabilitation of Road and Drainage along Peacock St . (C0 + 000 to C0 + 380 ), Barangay Gen T. De Leon, Valenzuela City",
+            "id": null
+          }
+        ]
       }
     ]
   },
   "existing_abbrev": {
-    "exact_pairs_normalization_dependent": 356,
+    "exact_pairs_normalization_dependent": 357,
     "samples": [
       {
         "house_title": "Dipolog-Oroquieta National Rd - K1810 + 000 - K1813 + 005",
