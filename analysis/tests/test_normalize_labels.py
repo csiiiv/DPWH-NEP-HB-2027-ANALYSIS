@@ -156,7 +156,7 @@ class NormalizeLabelsTests(unittest.TestCase):
                          ['city_suffix'])
         self.assertEqual(t('Construction of Road, Barangay Wakas, Tayabas City',
                            'Construction of Road, Barangay Opias, Tayabas City'),
-                         ['location_subname'])
+                         ['different_barangay'])
         # Chainage context (K-prefix marker before the digit) → chainage, not ID.
         self.assertIn('chainage_digit', t('Manila-Batangas Rd - K0097 + 788 - K0098 + 000',
                                           'Manila-Batangas Rd - K0097 + 787 - K0098 + 000'))
@@ -168,16 +168,16 @@ class NormalizeLabelsTests(unittest.TestCase):
 
     def test_diff_tags_location_and_gps_subflags(self):
         t = diff_tags
-        # Different barangay, same municipality/province tail → sub-name
-        # (the stray "at" also tags as connector phrasing).
+        # Different barangay, same municipality/province tail (the stray "at"
+        # also tags as connector phrasing).
         self.assertEqual(t('Construction of Multi-Purpose Building at Barangay Wakas, Tayabas City, Quezon',
                            'Construction of Multi-Purpose Building, Barangay Opias, Tayabas City, Quezon'),
-                         ['connector_word', 'location_subname'])
+                         ['connector_word', 'different_barangay'])
         # Zone III vs Zone IV inside the same city/province tail (both a city
         # suffix and a sub-name change; opcode order decides tag order).
         self.assertEqual(t('Construction (Completion) of Multi-Purpose Building, Barangay Zone III, Koronadal, South Cotabato',
                            'Construction of Multi-Purpose Building, Barangay Zone IV, Koronadal City, South Cotabato'),
-                         ['location_subname', 'city_suffix'])
+                         ['different_barangay', 'city_suffix'])
         # Same GPS coordinates (to 4 decimals), different words.
         self.assertEqual(t('Construction (Completion) of Bridge along Malasag River, Barangay Cugman, Cagayan de Oro City (8.452176, 124.689299)',
                            'Construction (Completion) of Bridge along Malasag River, Barangay Cugman, Cagayan de Oro City (8.452176°, 124.689299°)'),
@@ -194,6 +194,37 @@ class NormalizeLabelsTests(unittest.TestCase):
         self.assertIn('work_phrase_modifier',
                       t('Calapan North Road - K0046+570 - K0048+063',
                         'Preventive Maintenance along Calapan North Road - K0046+570 - K0048+187'))
+
+    def test_diff_tags_place_slot_subflags(self):
+        t = diff_tags
+        # Numbered barangay ↔ named barangay.
+        self.assertEqual(t('Construction of Multi-purpose Building, Barangay Mangga, Quezon, Isabela',
+                           'Construction of Multi-Purpose Building, Barangay 1, Jones, Isabela'),
+                         ['different_barangay'])
+        # Work-scope wording + different barangay classify independently.
+        self.assertEqual(t('Construction of Water Supply System at Barangay Makawayan, Tingloy, Batangas',
+                           'Construction of Solar Water Supply System at Barangay San Juan, Tingloy, Batangas'),
+                         ['work_descriptor_change', 'different_barangay'])
+        # Pure scope wording ("and Utilities" added) with everything else equal.
+        self.assertIn('work_descriptor_change',
+                      t('Construction of Kirayan Norte Shoreline Protection including Access Roads, Sta. 27+861- Sta. 28+200, Barangay Kirayan, Miagao, Iloilo',
+                        'Construction of Kirayan Norte Shoreline Protection including Access Roads and Utilities, Sta. 28+904-Sta. 29+200, Barangay Kirayan, Miagao, Iloilo'))
+        # Different street names inside the same municipality tail.
+        self.assertEqual(t('Rehabilitation of Road and Drainage along Ilang-Ilang Street (C0+000 to C0+320), Tondo, Manila',
+                           'Rehabilitation of Road and Drainage along M. Delos Reyes St. (C0+000 to C0+320), Tondo, Manila'),
+                         ['different_street'])
+        # Road-only titles (no comma tail) still classify street differences.
+        self.assertEqual(t('Rehabilitation of Road and Drainage along Ilang-Ilang Street (C0+000 to C0+320)',
+                           'Rehabilitation of Road and Drainage along M. Delos Reyes St. (C0+000 to C0+320)'),
+                         ['different_street'])
+        # Same road, different municipality segments (province tail shared).
+        self.assertIn('different_municipality',
+                      t('Improvement of Quezon Eco-Tourism Road, Tiaong, Quezon',
+                        'Improvement of Quezon Eco-Tourism Road, San Antonio, Quezon'))
+        # Creek prefix drop (Isla-Pasolo Creek ↔ Pasolo Creek).
+        self.assertEqual(t('Construction of Flood Control Wall along Isla-Pasolo Creek (C0+350 to C0+700), Barangay Pasolo, Valenzuela City',
+                           'Construction of Flood Control Wall along Pasolo Creek (C0+000 to C0+350), Barangay Pasolo, Valenzuela City'),
+                         ['different_street', 'structure_id_digit'])
 
     def test_substitution_triage(self):
         self.assertEqual(classify_title_substitution(('building',), ('bldg',)), 'promote')

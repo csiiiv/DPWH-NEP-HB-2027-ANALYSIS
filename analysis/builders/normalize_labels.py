@@ -148,7 +148,10 @@ FUZZY_DIFF_TAGS = {
     'same_gps_coordinates': 'Same GPS coordinates, different words',
     'different_gps_coordinates': 'Different GPS coordinates',
     'parenthetical_modifier': 'Difference only inside parentheses',
-    'location_subname': 'Different barangay / location sub-name (same area tail)',
+    'different_barangay': 'Different barangay (named or numbered)',
+    'different_municipality': 'Different municipality/city in the same province',
+    'different_street': 'Different street / sitio / creek / road section',
+    'work_descriptor_change': 'Work scope wording only (Solar, and Utilities…)',
     'spelling_ocr': 'Spelling / OCR slip in a shared token',
     'other_place_or_word': 'Different place or word — needs manual review',
 }
@@ -162,8 +165,56 @@ CONNECTOR_TOKENS = {'at', 'in'}
 # phrasing difference, not a place change.
 WORK_PHRASE_TOKENS = WORK_TYPE_TOKENS | {'along'}
 
+# Master work-descriptor vocabulary: facility/infrastructure nouns and scope
+# qualifiers that appear between the work-type verb and the location in PH
+# project titles (mined from the 2027 corpus: multi purpose building, road,
+# drainage system, flood control structure, bridge, water supply system,
+# slope protection, seawall, revetment, box culvert, evacuation center…).
+# Used (a) to split titles into work-descriptor vs location zones and (b) to
+# classify residual diffs whose changed tokens are all scope wording.
+WORK_DESCRIPTOR_TOKENS = {
+    # work-type verbs and stage words
+    'construction', 'rehabilitation', 'improvement', 'maintenance',
+    'preventive', 'completion', 'reconstruction', 'repair', 'replacement',
+    'upgrading', 'strengthening', 'retrofitting', 'extension', 'expansion',
+    # facilities and structures
+    'multi', 'purpose', 'multipurpose', 'building', 'buildings', 'road',
+    'roads', 'roadway', 'drainage', 'drainages', 'canal', 'canals', 'flood',
+    'control', 'mitigation', 'mitigating', 'structure', 'structures',
+    'stucture', 'wall', 'walls', 'floodwall', 'bridge', 'bridges',
+    'footbridge', 'water', 'supply', 'suppy', 'system', 'systems', 'sytem',
+    'syatem', 'slope', 'protection', 'seawall', 'revetment', 'culvert',
+    'box', 'evacuation', 'center', 'covered', 'court', 'gym', 'gymnasium',
+    'mpb', 'sidewalk', 'pathway', 'pathwalk', 'walk', 'riverbank',
+    'riverwall', 'spillway', 'pumping', 'pump', 'station', 'solar',
+    'network', 'networks', 'facility', 'facilities', 'faciliteis',
+    'lining', 'lined', 'dike', 'dikes', 'earthdike', 'retaining',
+    'retaning', 'retarding', 'detention', 'resettlement', 'ressetlement',
+    'relocation', 'bypass', 'diversion', 'circumferential', 'radial',
+    'arterial', 'utilities', 'concrete', 'concreting', 'paving', 'paved',
+    'shoulders', 'reblocking', 'riprap', 'masonry', 'banks', 'grouted',
+    'spur', 'dike', 'dam', 'dams', 'reservoir', 'outfall', 'overflow',
+    'sewerage', 'septage', 'waterways', 'waterworks', 'potable', 'level',
+    'deepwell', 'spring', 'springs', 'school', 'building', 'hall',
+    'barangay',  # 'barangay hall' descriptor when not the address slot
+    # scope/measure words that ride along in descriptors
+    'units', 'unit', 'phase', 'storey', 'storeybuilding', 'package',
+    'component', 'appurtenant', 'apurtenant', 'works', 'project', 'projects',
+    'including', 'inc', 'related', 'various', 'existing', 'new', 'other',
+    'others', 'additional', 'expanded', 'improved', 'proper',
+}
+# Function words ignored when testing whether a differing pair is pure scope
+# wording.
+_DESCRIPTOR_FUNCTION_TOKENS = {'the', 'of', 'and', 'with', 'for', 'a', 'an', 'to'}
+
 _GPS_RE = re.compile(r'\d{1,3}\s*\.\s*\d{3,}')
 _PAREN_RE = re.compile(r'\([^)]*\)')
+# Prepositions act as soft commas between the work phrase and the location
+# ("Construction of X at/along/in Barangay Y"); splitting on them aligns
+# titles that phrase the same address differently.
+_SEGMENT_SPLIT_RE = re.compile(r',|\b(?:along|at|in|near)\b', re.I)
+_STATION_TOKEN_RE = re.compile(r'(?:sta|k?\d+(?:\.\d+)?|to|km)')
+_ZONE_TOKEN_RE = re.compile(r'(?:zone|purok|district|barangay|bgy|brgy|[0-9]+|[ivx]+)')
 
 
 def _gps_coordinates(value: str) -> list[str]:
@@ -184,6 +235,77 @@ def _segments(value: str) -> list[list[str]]:
     """Comma segments of a cleaned title as token lists (GPS + parens removed)."""
     cleaned = _GPS_RE.sub(' ', _PAREN_RE.sub(' ', value or ''))
     return [title_tokens(part) for part in cleaned.split(',') if part.strip()]
+
+
+def _slots(value: str) -> list[list[str]]:
+    """Address slots: split on commas AND location prepositions.
+
+    "Construction of MPB at Barangay X, Municipality, Province" yields
+    [work phrase, "barangay x", municipality, province] on both sides even
+    when one title phrases the address with "along"/"in" instead of a comma
+    or "at". GPS coordinates and parentheticals are removed first.
+    """
+    cleaned = _GPS_RE.sub(' ', _PAREN_RE.sub(' ', value or ''))
+    return [title_tokens(part) for part in _SEGMENT_SPLIT_RE.split(cleaned) if part.strip()]
+
+
+def _station_run(tokens: list[str]) -> bool:
+    """True when the slot is a station/chainage run (Sta. 1+234 - Sta. 2+345)."""
+    return bool(tokens) and all(_STATION_TOKEN_RE.fullmatch(t) for t in tokens) \
+        and any(t in ('sta', 'km') or t.startswith('k') for t in tokens)
+
+
+def _zone_run(tokens: list[str]) -> bool:
+    """True when the slot is a zone/purok/district/numbered-barangay run."""
+    return bool(tokens) and all(_ZONE_TOKEN_RE.fullmatch(t) for t in tokens) \
+        and any(t in ('zone', 'purok', 'district') for t in tokens)
+
+
+def _first_differing_slot(a: list[list[str]], b: list[list[str]], tail: int):
+    """Index of the first non-equal slot before the shared tail, else None."""
+    limit = min(len(a), len(b)) - tail
+    for i in range(max(limit, 0)):
+        if a[i] != b[i]:
+            return i
+    return None
+
+
+def _classify_place_tokens(house_tokens: list[str], nep_tokens: list[str],
+                           tail: int, seg_h: list[list[str]], seg_n: list[list[str]]) -> str | None:
+    """Name what changed between two differing token runs in a location slot.
+
+    Works on the opcode's own changed tokens (plus their shared context
+    markers) so a work-scope word inside a slot with station drift still
+    classifies as scope wording. Returns a fine-grained place tag or None.
+    """
+    hs, ns = set(house_tokens), set(nep_tokens)
+    changed = hs ^ ns
+    # Pure work-scope wording ("and Utilities", "Solar", "Isla-" prefix):
+    # every changed token belongs to the descriptor vocabulary.
+    if changed and changed <= WORK_DESCRIPTOR_TOKENS | _DESCRIPTOR_FUNCTION_TOKENS:
+        return 'work_descriptor_change'
+    # Numbered barangay ↔ named barangay (Barangay 8 ↔ Barangay Payompon)
+    # or Zone III ↔ Zone IV.
+    if 'barangay' in hs & ns or (hs & ns) & {'zone', 'purok', 'district'}:
+        return 'different_barangay'
+    if _zone_run(house_tokens) and _zone_run(nep_tokens):
+        return 'different_barangay'
+    # Station/section runs on the same road → station/section difference.
+    if _station_run(house_tokens) or _station_run(nep_tokens):
+        return 'different_street'
+    # Street-type markers shared by both runs (Ilang-Ilang Street ↔ M.
+    # Delos Reyes St.) → street name difference.
+    street_markers = {'street', 'st', 'avenue', 'ave', 'road', 'rd',
+                      'boulevard', 'blvd', 'drive', 'dr', 'lane', 'ln',
+                      'creek', 'river', 'sitio', 'extension', 'ext'}
+    if (hs | ns) & street_markers:
+        return 'different_street'
+    # Differing slot sits where a barangay/street normally sits (second slot,
+    # before a shared municipality tail) and is not scope wording → street or
+    # sitio/creek/section name.
+    if tail >= 1 and min(len(seg_h), len(seg_n)) >= 2:
+        return 'different_street'
+    return None
 
 
 def _tail_equal_segments(a: list[list[str]], b: list[list[str]]) -> int:
@@ -235,6 +357,42 @@ def diff_tags(house_title: str, nep_title: str) -> list[str]:
     tail = _tail_equal_segments(seg_h, seg_n)
     location_locked = (tail >= 1 and len(seg_h) > tail and len(seg_n) > tail
                        and all(''.join(s).isdigit() is False for s in seg_h[:-tail]))
+    # Address-slot view (commas + at/along/in/near). Slot start offsets in the
+    # flat token stream let each opcode be attributed to its slot.
+    slot_h, slot_n = _slots(house_title or ''), _slots(nep_title or '')
+    slot_starts_h: list[int] = []
+    offset = 0
+    for slot in slot_h:
+        # Skip connector tokens ('at'/'in'/'along') that preceded this slot.
+        while offset < len(a) and a[offset] in CONNECTOR_TOKENS | {'along'}:
+            offset += 1
+        slot_starts_h.append(offset)
+        offset += len(slot)
+    diff_slot = _first_differing_slot(slot_h, slot_n, tail)
+    place_tag = None
+    if location_locked and diff_slot is not None:
+        place_tag = _classify_place_tokens(slot_h[diff_slot], slot_n[diff_slot],
+                                           tail, seg_h, seg_n)
+        if place_tag is None:
+            place_tag = 'different_street'
+    elif tail == 0 and len(seg_h) == len(seg_n) and len(seg_h) > 1:
+        # No shared tail at all but same segment count: if the second-to-last
+        # (municipality) slot differs while the last (province) matches, it is
+        # a different municipality in the same province.
+        if seg_h[-1] == seg_n[-1] and seg_h[-2] != seg_n[-2]:
+            place_tag = 'different_municipality'
+            # Position of the municipality slot start in the flat stream.
+            municipality_slot = len(slot_h) - 2
+    # The slot immediately before the shared tail is the municipality slot in
+    # the PH address hierarchy ([work], [barangay], [municipality], [province]).
+    municipality_slot = len(slot_h) - tail - 1 if tail >= 1 else None
+
+    def slot_at(index: int) -> int:
+        """Slot index containing flat-token position `index` (house side)."""
+        for i in range(len(slot_starts_h) - 1, -1, -1):
+            if index >= slot_starts_h[i]:
+                return i
+        return 0
 
     matcher = SequenceMatcher(None, a, b, autojunk=False)
     tags: list[str] = []
@@ -260,6 +418,22 @@ def diff_tags(house_title: str, nep_title: str) -> list[str]:
                 and not set(hseg) & set(nseg):
             tags.append('work_type_change')
             continue
+        # Mixed opcodes difflib merges across a station boundary decompose
+        # into their parts: scope-wording tokens and station tokens tag
+        # separately ("… Access Roads, Sta. 27+861" ↔ "… and Utilities, Sta.
+        # 28+904" aligns as ['sta','27','861'] ↔ ['and','utilities']).
+        # Unit/phase counts keep their more specific tag.
+        if not ((not hseg or not nseg) and all(
+                re.fullmatch(r'(?:phase[0-9ivx]*|purok|unit|units|[0-9]+)', t)
+                for t in (hseg or nseg))):
+            scope_tokens = [t for t in hseg + nseg
+                            if t in WORK_DESCRIPTOR_TOKENS | _DESCRIPTOR_FUNCTION_TOKENS]
+            station_tokens = [t for t in hseg + nseg
+                              if re.fullmatch(r'\d+|k\d+|sta|to', t)]
+            if scope_tokens and station_tokens and len(scope_tokens) + len(station_tokens) == len(hseg) + len(nseg):
+                tags.append('work_descriptor_change')
+                tags.append('chainage_digit')
+                continue
         # Work-phrase modifier: one side carries work words + "along" around
         # the same location ("Preventive Maintenance along Calapan North Rd").
         if (not hseg or not nseg) and (set(hseg) | set(nseg)) <= WORK_PHRASE_TOKENS \
@@ -284,10 +458,45 @@ def diff_tags(house_title: str, nep_title: str) -> list[str]:
             if min(len(ha), len(na)) >= 4 and SequenceMatcher(None, ha, na).ratio() >= .8:
                 tags.append('spelling_ocr')
                 continue
-        # Same municipality/province tail but a different earlier location
-        # segment reads as a barangay / sub-name change, not a random word.
-        if location_locked:
-            tags.append('location_subname')
+        # Location-zone difference: attribute this opcode to its address slot
+        # and classify the opcode's changed tokens with slot context.
+        if location_locked or place_tag:
+            si = slot_at(i1)
+            if place_tag == 'different_municipality' and si >= len(slot_h) - 2:
+                tags.append('different_municipality')
+                continue
+            house_slot = slot_h[si] if si < len(slot_h) else []
+            nep_slot = slot_n[si] if si < len(slot_n) else []
+            # Classify the opcode's own tokens, augmented with shared slot
+            # markers (barangay/zone/street words) so context survives.
+            shared = [t for t in house_slot if t in nep_slot]
+            slot_tag = _classify_place_tokens(hseg + shared, nseg + shared,
+                                              tail, seg_h, seg_n)
+            barangay_context = {'barangay', 'zone', 'purok', 'district'} & (set(house_slot) | set(nep_slot))
+            street_context = ({'street', 'st', 'avenue', 'ave', 'boulevard',
+                               'blvd', 'drive', 'lane', 'creek', 'river',
+                               'sitio', 'extension'} & (set(hseg) | set(nseg) | set(shared)))
+            # Priority: barangay > street markers > municipality position >
+            # generic street fallback. A differing slot with no barangay or
+            # street marker sitting directly before the shared (province)
+            # tail is the municipality slot in the PH address hierarchy.
+            if slot_tag in ('different_street', None) and not barangay_context \
+                    and not street_context \
+                    and municipality_slot is not None and si == municipality_slot:
+                slot_tag = 'different_municipality'
+            if slot_tag:
+                tags.append(slot_tag)
+                continue
+        # Road-only titles (no comma tail): differing tokens with a street
+        # marker on either side still read as a street-name difference
+        # (Ilang-Ilang Street ↔ M. Delos Reyes St.).
+        street_markers = {'street', 'st', 'avenue', 'ave', 'boulevard', 'blvd',
+                          'drive', 'lane', 'creek', 'sitio'}
+        if (set(hseg) | set(nseg)) & street_markers:
+            tags.append('different_street')
+            continue
+        if place_tag:
+            tags.append(place_tag)
             continue
         tags.append('other_place_or_word')
     # A whole-title GPS verdict subsumes coordinate-digit token diffs.

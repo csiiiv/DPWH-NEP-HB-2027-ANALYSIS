@@ -857,7 +857,10 @@ small {
 .diff-tag[data-tag="same_gps_coordinates"]{background:#e8f3ec;border-color:#b5dcc8;color:#14532d}
 .diff-tag[data-tag="different_gps_coordinates"]{background:#f6e9e9;border-color:#e3c6c6;color:#7a2e2e}
 .diff-tag[data-tag="parenthetical_modifier"]{background:#f0f4f8;border-color:#c8d4e0;color:#33506b}
-.diff-tag[data-tag="location_subname"]{background:#fdf3e3;border-color:#ecd4a3;color:#7a5410}
+.diff-tag[data-tag="different_barangay"]{background:#fdf3e3;border-color:#ecd4a3;color:#7a5410}
+.diff-tag[data-tag="different_municipality"]{background:#f9ecf0;border-color:#e6c3d2;color:#7a2e4e}
+.diff-tag[data-tag="different_street"]{background:#eef2f8;border-color:#c6d2e6;color:#2f4669}
+.diff-tag[data-tag="work_descriptor_change"]{background:#eef7f3;border-color:#bfe0d2;color:#1d5c46}
 .diff-tag[data-tag="other_place_or_word"]{background:#f6e9e9;border-color:#e3c6c6;color:#7a2e2e}
 .chainage-in-cell{display:flex;flex-direction:column;gap:.12rem;margin-top:.4rem;padding-top:.35rem;border-top:1px solid #dce4ec;text-align:left;white-space:normal}
 .chainage-in-cell small{display:block;font-size:.7rem;font-weight:400;color:#3d5166;line-height:1.35}

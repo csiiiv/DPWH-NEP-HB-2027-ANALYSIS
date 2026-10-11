@@ -175,14 +175,18 @@ Identity between House and NEP is **candidate matching**, never asserted:
    `facility_qualifier`, `unit_count`, `chainage_digit`,
    `structure_id_digit`, `same_gps_coordinates`,
    `different_gps_coordinates`, `parenthetical_modifier`,
-   `location_subname`, `spelling_ocr`, `other_place_or_word`). Sub-flags
-   refined from the old generic "different place/word": `location_subname`
-   means the municipality/province tail matches and only the barangay or
-   earlier location segment differs; `same_gps_coordinates` means the titles
-   carry matching decimal coordinates (~4-decimal precision) with wording
-   differences elsewhere; `parenthetical_modifier` means titles are identical
-   outside parentheses (e.g. an added `(Phase 2)`); `work_phrase_modifier`
-   covers one-sided "Preventive Maintenance along …" phrasing.
+   `different_barangay`, `different_municipality`, `different_street`,
+   `work_descriptor_change`, `spelling_ocr`, `other_place_or_word`).
+   Place tags use an address-slot model: titles split on commas **and**
+   location prepositions (`at`/`along`/`in`/`near`), slots align from the
+   shared municipality/province tail, and each differing opcode classifies
+   by its slot — `different_barangay` (named/numbered barangay, zone, purok
+   or district), `different_municipality` (same province tail, different
+   city/municipality), `different_street` (street, sitio, creek or road
+   section), or `work_descriptor_change` (scope wording only — Solar, and
+   Utilities — from a master work-descriptor vocabulary). Whitespace and
+   case inside parentheses are normalized before comparing, so
+   `(Covered Court)` vs `(covered court )` compares equal.
 
 In the webapp, the **Flags** dropdown has a "Fuzzy title-difference tags"
 group with one option per tag (`flag=diff:<tag>` in the URL), and the
