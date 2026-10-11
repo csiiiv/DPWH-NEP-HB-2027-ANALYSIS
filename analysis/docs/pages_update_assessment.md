@@ -1,6 +1,6 @@
 # Current budget webpages and remaining work
 
-Updated: **10 October 2026**. The [React workbench](../web/README.md) is the
+Updated: **12 October 2026**. The [React workbench](../web/README.md) is the
 published presentation. Retained HTML viewers are reproducible diagnostic
 outputs; their published URLs redirect to the corresponding app routes.
 Comparisons remain provisional while source evidence and project identities
@@ -20,7 +20,7 @@ I-B office allocations, I-C named-project leaves, FAP project totals, and
 comparison allocation records have different grains. I-C excludes Personnel
 Services; its MOOE+CO total is not the full agency total or the operations total.
 The current sources remain the retained HB 10858 PDFs under `HB_BUDGET/`.
-The House readings tab additionally compares the retained third-reading artifacts and opens their own PDF documents. See [reading differences](house_reading_comparison_checks.md).
+The comparison's House columns additionally compare the retained third-reading artifacts and open their own PDF documents. See [reading differences](house_reading_comparison_checks.md).
 
 The OCR-era v5 candidate and its four extraction gaps are historical. Current
 builders, manifests, webpage payloads and packaged downloads use native I-C.

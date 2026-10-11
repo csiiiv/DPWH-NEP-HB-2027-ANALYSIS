@@ -1,14 +1,15 @@
 # FY2027 DPWH analysis workbench
 
-Updated: **10 October 2026**. Generated monetary values are integer PHP unless
+Updated: **12 October 2026**. Generated monetary values are integer PHP unless
 stated otherwise.
 
 [Open the SPA](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/)
 · [Repository guide](../README.md)
 · [Frontend commands and routes](web/README.md)
 · [Analysis headlines](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#analysis)
+· [Media highlights](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#highlights)
 
-The current presentation is a React + Vite SPA with nine workspaces. Python
+The current presentation is a React + Vite SPA with eleven workspaces. Python
 builders retain responsibility for extraction, repairs, audits, and candidate
 matching. All three sources retain `comparison_ready: false`: arithmetic
 passes, while DBM row evidence, House project identity and amendment completeness, and
@@ -46,16 +47,20 @@ is preserved; two archived helpers still support active House repairs. See the
 | Route | Workspace |
 |---|---|
 | `#home` | Workbench map, review-candidate headlines, and independent source status |
+| `#highlights` | Ten media angles with dedicated evidence dialogs, DPWH coverage, and HGAB3-versus-NEP validated candidate change tables |
 | `#compare` | Sortable PAP/project/listing-gap comparison and source PDF pane |
-| `#analysis` | Office/program headlines with nested Overview drill-downs (region/DEO ↔ PAP), ranked insertions, NEP-only deletions with possible replacements, adjustments, chainage amendments (all-data overview + region/DEO peer ₱/km benchmark · revised-pair patterns + records), and statistics |
+| `#analysis` | Office/program headlines with nested Overview drill-downs (region/DEO ↔ PAP), ranked insertions, NEP-only deletions with possible replacements, adjustments, chainage amendments (all-data overview + region/DEO peer ₱/km benchmark · revised-pair patterns + records), same-shell groupings, and statistics |
 | `#house` | House GAB I-B hierarchy, rollups, and embedded I-B PDF |
 | `#nep` | DBM NEP hierarchy, expenditure classes, source review, and embedded II-B PDF |
 | `#transparency` | DPWH Transparency NEP snapshot hierarchy |
 | `#resources` | Direct links to the latest workable JSON datasets and audit docs |
+| `#about` | Workbench overview, build model, and rendered project documentation |
 | `#house-nep` | Printed budgets, local/FAP program controls, House extraction gaps, and candidates |
 | `#nep-detail` | Detailed expense/program tree and native-text evidence |
 
-The shared header links both READMEs. Hash routes support refresh and history;
+The shared header links the workspaces; the former header README links now
+live on `#about`, which also links the DA/DOH/NIA orientation notes under
+`other-analysis/`. Hash routes support refresh and history;
 former viewer URLs redirect into the corresponding route when packaged.
 `#nep?view=review` opens the source queue. Verification routes accept `node`
 for a recorded entity ID; `section` preserves former in-page anchors.

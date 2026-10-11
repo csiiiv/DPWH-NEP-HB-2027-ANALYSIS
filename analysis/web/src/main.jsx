@@ -27,6 +27,7 @@ const Analysis = lazy(()=>import("./Analysis.jsx"));
 const Highlights = lazy(()=>import("./Highlights.jsx"));
 const Comparison = lazy(() => import("./Comparison.jsx"));
 const Resources = lazy(() => import("./Resources.jsx"));
+const About = lazy(() => import("./About.jsx"));
 function App() {
   const [route, setRoute] = useState(readRoute);
   useEffect(() => {
@@ -52,7 +53,7 @@ function App() {
       <WorkbenchHeader route={route.key} />
       <main id="main" tabIndex="-1" className="shell">
         <Suspense fallback={<p role="status">Loading workspace…</p>}>
-          {route.key === "highlights" ? <Highlights route={route} /> : route.key === "analysis" ? <Analysis route={route} /> : route.key === "compare" ? <Comparison route={route} /> : route.key === "home" ? <Home /> : route.key === "resources" ? <Resources /> : routes[route.key] ?
+          {route.key === "highlights" ? <Highlights route={route} /> : route.key === "analysis" ? <Analysis route={route} /> : route.key === "compare" ? <Comparison route={route} /> : route.key === "home" ? <Home /> : route.key === "resources" ? <Resources /> : route.key === "about" ? <About /> : routes[route.key] ?
             <SourceWorkspace key={route.key} route={route} /> :
             <section><h1>Page not found</h1><p>This workbench route is unavailable.</p><a href="#home">Return home</a></section>}
         </Suspense>
@@ -69,7 +70,7 @@ const php = (value) =>
   }).format(value);
 
 const workspaces = [
-  {href: "#highlights", title: "Highlights", body: "Ten media angles with dedicated evidence dialogs, DPWH coverage, and third-reading change tables."},
+  {href: "#highlights", title: "Highlights", body: "Ten media angles with dedicated evidence dialogs, DPWH coverage, and validated third-reading change tables."},
   {href: "#compare", title: "Compare stages", body: "PAP totals, project comparison rows, House-reading filters, NEP-only splits, fuzzy suggestions, analytics, and CSV/JSON exports."},
   {href: "#analysis", title: "Analysis", body: "Office/program headlines, ranked insertions and deletions, adjustments, and descriptive statistics with group drill-downs into Compare."},
   {href: "#analysis?view=insertions", title: "Insertions", body: "House-only allocation records ranked by amount — no suggestion, unresolved NEP suggestions, and HGAB3-only."},
@@ -79,8 +80,7 @@ const workspaces = [
   {href: "#nep", title: "DBM NEP", body: "Canonical NEP tree, expenditure classes, source review queue, and II-B PDF preview."},
   {href: "#transparency", title: "DPWH Transparency NEP", body: "Retained Transparency listing hierarchy and snapshot checks."},
   {href: "#resources", title: "Resources", body: "Direct links to retained JSON datasets, audits, and method docs."},
-  {href: "#house-nep", title: "House / NEP detail", body: "Printed controls, local/FAP program totals, extraction gaps, and allocation candidates."},
-  {href: "#nep-detail", title: "NEP detail", body: "Detailed expense/program tree with native-text evidence."},
+  {href: "#about", title: "About", body: "What this workbench covers, how it is built, and where the project documentation lives."},
 ];
 
 function Home() {
@@ -172,7 +172,7 @@ function Home() {
               </p>
             )}
             <a href={routeHref(legacyRoutes[s.page])}>Inspect hierarchy →</a>
-            {s.project_detail_summary && <a href="#house-nep">Inspect native I-C allocation candidates →</a>}
+            {s.project_detail_summary && <a href="#house?view=projects">Inspect native I-C allocation candidates →</a>}
             {s.review_summary.needs_source_check > 0 && (
               <a href={routeHref(legacyRoutes[s.page], { view: "review" })}>
                 Review {s.review_summary.needs_source_check.toLocaleString()}{" "}

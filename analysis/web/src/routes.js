@@ -7,6 +7,7 @@ export const routes = {
   nep: { label: "DBM NEP", file: "nep_source_verification.html" },
   transparency: { label: "DPWH Transparency NEP", file: "dpwh_nep_api_verification.html" },
   resources: { label: "Resources" },
+  about: { label: "About" },
   "house-nep": { label: "House / NEP detail", file: "source_comparison_2027.html" },
   "nep-detail": { label: "NEP detail", file: "nep_2027_tree.html" },
 };

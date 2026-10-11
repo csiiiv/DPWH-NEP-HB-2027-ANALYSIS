@@ -311,6 +311,13 @@ small {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px 18px;
 }
+.about-docs {
+  max-width: 900px;
+}
+.about-disclaimer {
+  max-width: 900px;
+  margin: 0 auto 1.25rem;
+}
 .resource-list li {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -782,6 +789,15 @@ small {
 .analytics-dialog{width:calc(100vw - 48px);height:calc(100dvh - 48px);max-height:calc(100dvh - 48px);overflow:hidden;padding:0;border:1px solid #cbd5e1;border-radius:16px;color:inherit;background:#f5f7fb;box-shadow:0 24px 80px #0f172a44}
 .analytics-dialog[open]{display:flex;flex-direction:column}
 .analytics-dialog::backdrop{background:#0f172a99}
+/* Transient loading stand-in shown while a heavy modal's payload/chunk is
+   still arriving (group records, shell members). Same dialog chrome as the
+   real modal so the swap-in is seamless. */
+.loading-dialog{width:min(520px,calc(100vw - 48px));height:auto;max-height:calc(100dvh - 48px)}
+.loading-dialog-content{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:48px 32px;text-align:center}
+.loading-dialog-note{margin:0;color:#334155}
+.loading-spinner{width:34px;height:34px;border-radius:50%;border:3px solid #dbe3ef;border-top-color:#2563eb;animation:loading-spin 0.8s linear infinite}
+@keyframes loading-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.loading-spinner{animation:none;border-top-color:#2563eb;border-left-color:#93c5fd}}
 .analytics-header{flex:none;background:white;padding:20px 24px 0;border-bottom:1px solid #dce3ed}
 .analytics-heading{display:flex;justify-content:space-between;align-items:center;gap:16px}
 .analytics-heading .eyebrow{margin:0 0 4px;font-size:.7rem}.analytics-heading h2{margin:0;font-size:1.4rem}
@@ -820,6 +836,8 @@ small {
 .analytics-leaders{margin:0;padding-left:20px}.analytics-leaders li{padding:12px 0;border-bottom:1px solid #edf2f8;overflow-wrap:anywhere;font-size:.85rem}.analytics-leaders strong{display:block;margin-top:6px}
 @media(max-width:700px){.analytics-dialog{width:calc(100vw - 16px);height:calc(100dvh - 16px);max-height:calc(100dvh - 16px);border-radius:10px}.analytics-header{padding:16px 16px 0}.analytics-content{padding:16px}.analytics-columns{grid-template-columns:1fr;gap:0}.analytics-heading{align-items:flex-start}.analytics-heading h2{font-size:1.1rem}.analytics-summary-cards{grid-template-columns:1fr;gap:10px}.analytics-summary-cards article{padding:14px}.analytics-summary-cards strong{font-size:1.3rem}.analytics-tabs{gap:0}.analytics-tabs button{flex:1 1 50%;padding:10px 4px;font-size:.8rem}.analytics-source-control{display:block}.analytics-source-control select{min-width:0}.analytics-card{padding:16px}.analytics-info{width:30px;height:30px;min-height:30px}}
 @media(max-width:700px){.analytics-coverage{border:0}.analytics-coverage table,.analytics-coverage tbody{display:block;width:100%}.analytics-coverage thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.analytics-coverage tr{display:block;margin:0 0 14px;border:1px solid #dce3ed;border-radius:8px;overflow:hidden}.analytics-coverage th{display:block;width:100%;background:#edf2f8}.analytics-coverage td[data-label]{display:flex;justify-content:space-between;gap:12px;white-space:normal}.analytics-coverage td[data-label]::before{content:attr(data-label);color:#5d6b7b;font-size:.75rem}.analytics-coverage td:last-child{font-weight:700}}
+/* Loading-dialog stays compact even inside the mobile full-height rule. */
+@media(max-width:700px){.loading-dialog{width:min(520px,calc(100vw - 16px));height:auto;max-height:calc(100dvh - 16px)}}
 /* Comparison results take priority; source evidence opens on demand. */
 .comparison-context{margin:0 0 1rem;border:1px solid var(--border,#d8dee8);border-radius:10px;padding:.65rem 1rem}
 .comparison-context summary{cursor:pointer;font-weight:600}.comparison-context .stage-totals{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -1007,6 +1025,8 @@ th.num .th-sort{justify-content:flex-end}
 .group-projects-dialog .group-projects-content{padding:12px 20px 20px;overflow:auto;flex:1;min-height:0}
 /* Table deep links: narrow # anchor column, only visible on row/header hover. */
 .table-link-col{width:1%;padding:0 .25rem;vertical-align:middle}
+/* Auto table layout hands unclaimed space to this column; keep it pinned. */
+th.table-link-col{width:1px;min-width:0;max-width:1px;overflow:visible}
 .table-link{border:0;background:none;padding:0 .15rem;font-weight:700;color:#1f4d7a;cursor:pointer;opacity:0;text-decoration:none;font-size:.85rem;line-height:1}
 th:hover .table-link,td:hover .table-link,.table-link:focus-visible{opacity:.85}
 .table-link:hover{opacity:1}

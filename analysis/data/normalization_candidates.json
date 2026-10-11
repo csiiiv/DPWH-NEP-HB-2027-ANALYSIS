@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-11T05:06:07Z",
+  "generated_at": "2026-10-11T19:47:31Z",
   "source": "source_comparison_2027.json",
-  "project_rows": 17745,
+  "project_rows": 17611,
   "offices": {
     "multi_variant_groups": [
       {
@@ -130,9 +130,9 @@
     "paired_rows_split_only_by_office_spelling": 108
   },
   "titles": {
-    "fuzzy_or_chainage_rows_scanned": 493,
+    "fuzzy_or_chainage_rows_scanned": 385,
     "status_counts": {
-      "fuzzy_candidate": 493
+      "fuzzy_candidate": 385
     },
     "substitutions": [
       {
@@ -142,7 +142,7 @@
         "nep_tokens": [
           "construction"
         ],
-        "count": 18,
+        "count": 20,
         "triage": "reject",
         "examples": [
           {
@@ -170,113 +170,12 @@
       },
       {
         "house_tokens": [
-          "roque"
-        ],
-        "nep_tokens": [
-          "rogue"
-        ],
-        "count": 5,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9821,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Drainage System, Barangay San Roque, San Jacinto, Pangasinan",
-            "nep_title": "Construction of Drainage System, Barangay San Rogue, San Jacinto, Pangasinan",
-            "id": null
-          },
-          {
-            "confidence": 0.9877,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Drainage System at Bagong Sirang, San Roque and Carangag, San Andres, Catanduanes",
-            "nep_title": "Construction of Drainage System at Bagong Sirang, San Rogue and Carangag, San Andres, Catanduanes",
-            "id": null
-          },
-          {
-            "confidence": 0.8889,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building San Roque, Paombong, Bulacan",
-            "nep_title": "Construction of Multi-Purpose Building at Barangay San Rogue, Paombong, Bulacan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "bridge"
-        ],
-        "nep_tokens": [
-          "footbridge"
-        ],
-        "count": 5,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.8696,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Bridge, Barangay Santo Niño, Batangas City, Batangas",
-            "nep_title": "Construction of Footbridge, Barangay Santo Ni ñ o, Batangas City",
-            "id": null
-          },
-          {
-            "confidence": 0.9545,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Bridge in Barangay Camp 4, Talisay City, Cebu",
-            "nep_title": "Construction of Footbridge in Barangay Camp 4, Talisay City, Cebu",
-            "id": null
-          },
-          {
-            "confidence": 0.9661,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Bridge, Barangay A. Tumamak, Villaba, Leyte (11.201775, 124.430504)",
-            "nep_title": "Construction of Footbridge, Barangay A. Tumamak, Villaba, Leyte (11.201775, 124.430504)",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "pala",
-          "o"
-        ],
-        "nep_tokens": [
-          "puga",
-          "an"
-        ],
-        "count": 4,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9391,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Pala- o Section, L/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+490, Iligan City",
-            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
-            "id": null
-          },
-          {
-            "confidence": 0.9391,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Pala- o Section, L/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+490, Iligan City",
-            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
-            "id": null
-          },
-          {
-            "confidence": 0.9391,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River Pala- o Section, R/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+680, Iligan City",
-            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "aque"
         ],
         "nep_tokens": [
           "ague"
         ],
-        "count": 3,
+        "count": 2,
         "triage": "review",
         "examples": [
           {
@@ -284,13 +183,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Rehabilitation of Parañaque River South near Amvel Business Park, District 1, Parañaque City",
             "nep_title": "Rehabilitation of Para ñ ague River South near Amvel Business Park, District 1, Para ñ aque City",
-            "id": null
-          },
-          {
-            "confidence": 0.9894,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Mitigation Structure along Parañaque River North (Don Galo Section), Barangay Don Galo, Parañaque City",
-            "nep_title": "Construction of Flood Mitigation Structure along Para ñ ague River North (Don Galo Section ), Barangay Don Galo, Para ñ aque City",
             "id": null
           },
           {
@@ -304,33 +196,28 @@
       },
       {
         "house_tokens": [
-          "agusan"
+          "pala",
+          "o"
         ],
         "nep_tokens": [
-          "lanao"
+          "puga",
+          "an"
         ],
-        "count": 3,
+        "count": 2,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.9404,
+            "confidence": 0.9391,
             "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Covered Court) at Barangay A. Beltran, Jabonga, Agusan del Norte",
-            "nep_title": "Construction of Multi-Purpose Building (Covered Court ), Barangay A. Beltran, Jabonga, Lanao del Norte",
+            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Pala- o Section, L/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+490, Iligan City",
+            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
             "id": null
           },
           {
-            "confidence": 0.953,
+            "confidence": 0.9391,
             "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Covered Court), Barangay Poblacion, Carmen, Agusan del Norte",
-            "nep_title": "Construction of Multi-Purpose Building (Covered Court ), Barangay Poblacion, Carmen, Lanao del Norte",
-            "id": null
-          },
-          {
-            "confidence": 0.9427,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Covered Court) at Barangay Santo Niño, Magallanes, Agusan del Norte",
-            "nep_title": "Construction of Multi-Purpose Building (Covered Court ), Barangay Santo Ni ñ o, Magallanes, Lanao del Norte",
+            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Pala- o Section, L/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+490, Iligan City",
+            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
             "id": null
           }
         ]
@@ -470,6 +357,35 @@
       },
       {
         "house_tokens": [
+          "san",
+          "agustin"
+        ],
+        "nep_tokens": [
+          "hall",
+          "barangay",
+          "nagbayan"
+        ],
+        "count": 2,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.8519,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Multi-Purpose Building, Barangay San Agustin, Castillejos, Zambales (14.933202 ,120.196721)",
+            "nep_title": "Construction of Multi-Purpose Building (Barangay Hall ), Barangay Nagbayan, Castillejos, Zambales (14.935136, 120.159188)",
+            "id": null
+          },
+          {
+            "confidence": 0.8519,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Multi-Purpose Building, Barangay San Agustin, Castillejos, Zambales (14.933857 ,120.197857)",
+            "nep_title": "Construction of Multi-Purpose Building (Barangay Hall ), Barangay Nagbayan, Castillejos, Zambales (14.935136, 120.159188)",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
           "wakas"
         ],
         "nep_tokens": [
@@ -523,6 +439,32 @@
       },
       {
         "house_tokens": [
+          "building"
+        ],
+        "nep_tokens": [
+          "hall"
+        ],
+        "count": 2,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.8598,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Multi-Purpose Building, Barangay Isauan, Tigbauan, Iloilo",
+            "nep_title": "Construction of Multi-Purpose Hall, Barangay Linobayan, Tigbauan, Iloilo",
+            "id": null
+          },
+          {
+            "confidence": 0.8519,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Multi-Purpose Building, Barangay Bagacay, Tigbauan, Iloilo",
+            "nep_title": "Construction of Multi-Purpose Hall, Barangay Linobayan, Tigbauan, Iloilo",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
           "completion"
         ],
         "nep_tokens": [
@@ -543,34 +485,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Completion of Multi-Purpose Building, Barangay Poblacion, Ipil, Zamboanga Sibugay",
             "nep_title": "Construction of Multi-Purpose Building (Gymnasium ), Brgy. Poblacion, Ipil, Zamboanga Sibugay",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "poblacion"
-        ],
-        "nep_tokens": [
-          "hall",
-          "barangay",
-          "alga"
-        ],
-        "count": 2,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8686,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building, Barangay Poblacion, Municipality of Catarman, Province of Camiguin",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building (Barangay Hall ), Barangay Alga, Municipality of Catarman, Province of Camiguin",
-            "id": null
-          },
-          {
-            "confidence": 0.9297,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building, Barangay Poblacion, Municipality of Catarman, Province of Camiguin",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building (Barangay Hall ), Barangay Alga, Municipality of Catarman, Province of Camiguin",
             "id": null
           }
         ]
@@ -662,65 +576,6 @@
       },
       {
         "house_tokens": [
-          "219"
-        ],
-        "nep_tokens": [
-          "671"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9487,
-            "status": "fuzzy_candidate",
-            "house_title": "Palico-Balayan-Batangas Rd - K0147 + 520 - K0148 + 219",
-            "nep_title": "Palico – Balayan-Batangas Rd - K0147 + 520 - K0148 + 671",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "598"
-        ],
-        "nep_tokens": [
-          "973"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9574,
-            "status": "fuzzy_candidate",
-            "house_title": "Magpet-Nowa-Doroluman-Greenfield Rd - K1633 + 023 - K1634 + 598",
-            "nep_title": "Magpet-Nowa-Doroluman-Greenfield Rd - K1633 + 023 - K1634 + 973",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "260"
-        ],
-        "nep_tokens": [
-          "000",
-          "k0465",
-          "563"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9057,
-            "status": "fuzzy_candidate",
-            "house_title": "Mt. Province-Ifugao Rd (Kiling-Paracelis Sect) - K0464 + 640 - K0465 + 260",
-            "nep_title": "Mt. Province-Ifugao Rd (Kiling-Paracelis Sect ) - K0465 + 000 - K0465 + 563",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "k0460"
         ],
         "nep_tokens": [
@@ -761,50 +616,6 @@
       },
       {
         "house_tokens": [
-          "k1528",
-          "120",
-          "k1528",
-          "500"
-        ],
-        "nep_tokens": [
-          "k1552",
-          "068",
-          "k1552",
-          "145"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.8824,
-            "status": "fuzzy_candidate",
-            "house_title": "Kapalong-Talaingod-Valencia (Bukidnon) Rd K1528+120 -K1528+500",
-            "nep_title": "Kapalong-Talaingod-Valencia (Bukidnon) Rd - K1552 + 068 - K1552 + 145",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "aquino"
-        ],
-        "nep_tokens": [
-          "aguino"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9857,
-            "status": "fuzzy_candidate",
-            "house_title": "Isulan Jct-Ninoy Aquino Rd - K1845 + 263 - K1845 + 363, K1845 + 365 - K1845 + 507, K1845 + 627 - K1845 + 695",
-            "nep_title": "Isulan Jct-Ninoy Aguino Rd - K1845 + 263 - K1845 + 363, K1845 + 365 - K1845 + 507, K1845 + 627 - K1845 + 695",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "014"
         ],
         "nep_tokens": [
@@ -821,25 +632,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Talisay-Laurel-Agoncillo Rd - K0103 + -197 - K0104 + 014",
             "nep_title": "Talisay-Laurel-Agoncillo Rd - K0103 + - 197 - K0104 + 288, K0104 + 449 - K0104 +",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "500"
-        ],
-        "nep_tokens": [
-          "620"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9744,
-            "status": "fuzzy_candidate",
-            "house_title": "Panguil Bay Access Road (Ozamiz City - Tangub City Section), Sta. 0+000 - Sta. 0+500, Misamis Occidental",
-            "nep_title": "Panguil Bay Access Road (Ozamiz City-Tangub City Section ), Sta. 0 + 000 - Sta. 0 + 620, Misamis Occidental",
             "id": null
           }
         ]
@@ -1063,37 +855,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Quezon Eco - Tourism - Sariaya - Candelaria - Tiaong - San Antonio Road, Section I: Sta. 2 + 880 - 3 + 760, Secton II: Sta. 10 + 982 - Sta. 11 + 381, Section III: Sta. 11 + 475 - Sta. 11 + 640, Quezon",
             "nep_title": "Quezon Eco - Tourism - Sariaya - Candelaria - Tiaong - San Antonio Road, Section I: Sta. 10 + 732.5 - Sta. 10 + 840, Section II: Sta. 11 + 293 - Sta. 11 + 381, Section III: Sta. 11 + 475 - Sta. 13 + 038, Tiaong, Quezon",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "12",
-          "159"
-        ],
-        "nep_tokens": [
-          "10",
-          "305",
-          "sta",
-          "11",
-          "381",
-          "46",
-          "section",
-          "ii",
-          "sta",
-          "11",
-          "474",
-          "46"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.8793,
-            "status": "fuzzy_candidate",
-            "house_title": "Quezon Eco - Tourism - Sariaya - Candelaria - Tiaong - San Antonio Road, Section I: Sta. 12 + 159 - Sta. 12 + 355, Section II: Sta. 16 + 377 - Sta. 17 + 962, Tiaong, Quezon",
-            "nep_title": "Quezon Eco - Tourism - Sariaya - Candelaria - Tiaong - San Antonio Road, Section I: Sta. 10 + 305 - Sta. 11 + 381.46, Section II: Sta. 11 + 474.46 - Sta. 12 + 355, Tiaong, Quezon",
             "id": null
           }
         ]
@@ -1393,162 +1154,6 @@
       },
       {
         "house_tokens": [
-          "baguio"
-        ],
-        "nep_tokens": [
-          "baquio"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9935,
-            "status": "fuzzy_candidate",
-            "house_title": "Installation/Application of Road Safety Facilities (Roadway Lighting) Along Kapalong - Talaingod - Valencia Rd - K1580 + 500 - K1584 + 000, Barangay Halapitan - Barangay Little Baguio, San Fernando, Bukidnon 2nd LD",
-            "nep_title": "Installation / Application of Road Safety Facilities (Roadway Lighting) Along Kapalong - Talaingod - Valencia Rd - K1580 + 500 - K1584 + 000, Brgy. Halapitan - Brgy. Little Baquio, San Fernando, Bukidnon 2nd LD",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "10118"
-        ],
-        "nep_tokens": [
-          "9103"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9265,
-            "status": "fuzzy_candidate",
-            "house_title": "Lanao del Norte Interior Circum. Rd (LDNICR) - (S00970MN) Chainage 10118 - Chainage 11698",
-            "nep_title": "Lanao del Norte Interior Circum. Rd (LDNICR ) - (S00970MN) Chainage 9103 - Chainage 9131",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "11698"
-        ],
-        "nep_tokens": [
-          "9131"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9265,
-            "status": "fuzzy_candidate",
-            "house_title": "Lanao del Norte Interior Circum. Rd (LDNICR) - (S00970MN) Chainage 10118 - Chainage 11698",
-            "nep_title": "Lanao del Norte Interior Circum. Rd (LDNICR ) - (S00970MN) Chainage 9103 - Chainage 9131",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "natl"
-        ],
-        "nep_tokens": [
-          "nati"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9767,
-            "status": "fuzzy_candidate",
-            "house_title": "Polo Parallel Br. along Jct Polo-Dapitan Park Natl Rd",
-            "nep_title": "Polo Parallel Br. along Jct Polo-Dapitan Park Nati Rd",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "350"
-        ],
-        "nep_tokens": [
-          "000"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.925,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Control wall along Isla-Pasolo Creek (C0+350 to C0+700), Barangay Pasolo, Valenzuela City",
-            "nep_title": "Construction of Flood Control Wall Along Pasolo Creek (C0 + 000 to C0 + 350 ), Barangay Pasolo, Valenzuela City",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "700"
-        ],
-        "nep_tokens": [
-          "350"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.925,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Control wall along Isla-Pasolo Creek (C0+350 to C0+700), Barangay Pasolo, Valenzuela City",
-            "nep_title": "Construction of Flood Control Wall Along Pasolo Creek (C0 + 000 to C0 + 350 ), Barangay Pasolo, Valenzuela City",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "k0004",
-          "340"
-        ],
-        "nep_tokens": [
-          "k0003",
-          "505"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9655,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Drainage along Taft Ave S02953LZ K0002 + (-597) - K0004 + 340",
-            "nep_title": "Construction of Drainage along Taft Ave S02953LZ K0002 + (- 597 ) - K0003 + 505",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "k0004",
-          "330"
-        ],
-        "nep_tokens": [
-          "k0003",
-          "875"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9483,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Drainage along Taft Ave S02958LZ K0004 + (-330) - K0002 + 532",
-            "nep_title": "Construction of Drainage along Taft Ave S02958LZ K0003 + 875 - K0002 + 532",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "mitigation",
           "structure"
         ],
@@ -1776,25 +1381,6 @@
       },
       {
         "house_tokens": [
-          "330"
-        ],
-        "nep_tokens": [
-          "600"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9828,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L/S), Barangay Puga-an, Sta. 0+000 - Sta. 0+330, Iligan City",
-            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "490"
         ],
         "nep_tokens": [
@@ -1807,44 +1393,6 @@
             "confidence": 0.9391,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Pala- o Section, L/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+490, Iligan City",
-            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "r"
-        ],
-        "nep_tokens": [
-          "l"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9391,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River Pala- o Section, R/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+680, Iligan City",
-            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "680"
-        ],
-        "nep_tokens": [
-          "600"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9391,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River Pala- o Section, R/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+680, Iligan City",
             "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
             "id": null
           }
@@ -2127,25 +1675,6 @@
       },
       {
         "house_tokens": [
-          "poblacion"
-        ],
-        "nep_tokens": [
-          "pob"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9412,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Drainage System at Barangay Poblacion 38, Infanta, Quezon",
-            "nep_title": "Construction of Drainage System at Barangay Pob 38, Infanta, Quezon",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "santa",
           "lucia",
           "mauban"
@@ -2192,34 +1721,15 @@
       },
       {
         "house_tokens": [
-          "bitan",
-          "ag"
-        ],
-        "nep_tokens": [
-          "palawan"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9398,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Drainage Structure along Bitan-ag Creek, Barangay Camaman-an, Cagayan de Oro City",
-            "nep_title": "Construction (Completion) of Drainage Structure along Palawan Creek, Barangay Camaman-an, Cagayan de Oro City",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "280",
           "fugu",
           "gattaran"
         ],
         "nep_tokens": [
-          "170",
+          "160",
           "barangay",
-          "magapit",
+          "sta",
+          "maria",
           "lal",
           "lo"
         ],
@@ -2227,10 +1737,10 @@
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8824,
+            "confidence": 0.8772,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Flood Control Structure along Cagayan River, Sta. 0+000 - Sta. 0+280, Fugu, Gattaran, Cagayan",
-            "nep_title": "Construction of Flood Control Structure along Cagayan River, Sta. 0 + 000 - Sta. 0 + 170, Barangay Magapit, Lal-lo, Cagayan",
+            "nep_title": "Construction of Flood Control Structure along Cagayan River, Sta. 0 + 000 - Sta. 0 + 160, Barangay Sta. Maria, Lal-lo, Cagayan",
             "id": null
           }
         ]
@@ -2399,65 +1909,6 @@
       },
       {
         "house_tokens": [
-          "buqac"
-        ],
-        "nep_tokens": [
-          "bugac"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9892,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Public Water Supply System, Purok Makugihon Dos, Sitio Buqac, Poblacion 2, Bansalan, Davao del Sur",
-            "nep_title": "Construction of Public Water Supply System, Purok Makugihon Dos, Sitio Bugac, Poblacion 2, Bansalan, Davao del Sur",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "quezon",
-          "city"
-        ],
-        "nep_tokens": [
-          "ouezon",
-          "citv"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.989,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Road and Drainage at Atis St. (Chainage 0+000 - Chainage 0+144), Dalanghita St. (Chainage 0+000 - Chainage 156.50), Dayap St. (Chainage 0+000 - Chainage 0+179), Durian St. (Chainage 0+000 - Chainage 0+212) at Barangay Sta. Monica, Quezon City",
-            "nep_title": "Construction of Road and Drainage at Atis St . (Chainage 0 + 000 - Chainage 0 + 144 ), Dalanghita St . (Chainage 0 + 000 - Chainage 156.50 ), Dayap St . (Chainage 0 + 000 - Chainage 0 + 179 ), Durian St . (Chainage 0 + 000 - Chainage 0 + 212) at Barangay Sta. Monica, Ouezon Citv",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "quezon"
-        ],
-        "nep_tokens": [
-          "ouezon"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9947,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Road and Drainage at Lanzones St. (Chainage 0+000 - Chainage 0+314.50), Macopa St. (Chainage 0+000 - Chainage 0+121), Mabolo St. (Chainage 0+000 - Chainage 0+108) and Langka St. (Chainage 0+000 - Chainage 0+118) at Barangay Sta. Monica, Quezon City",
-            "nep_title": "Construction of Road and Drainage at Lanzones St . (Chainage 0 + 000 - Chainage 0 + 314.50 ), Macopa St . (Chainage 0 + 000 - Chainage 0 + 121 ), Mabolo St . (Chainage 0 + 000 - Chainage 0 + 108) and Langka St . (Chainage 0 + 000 - Chainage 0 + 118) at Barangay Sta. Monica, Ouezon City",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "0",
           "000"
         ],
@@ -2492,6 +1943,25 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction of Access Road/Diversion Road, Daang Kalikasan to Candelaria, Yamot, Candelaria, Zambales Sta. 0+000.00-Sta. 1+800.00",
             "nep_title": "Construction of Access Road / Diversion Road, Daang Kalikasan to Candelaria, Yamot- Lauis, Candelaria, Zambales, Sta. 3 + 600.00 - Sta. 4 + 800.00",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "bridge"
+        ],
+        "nep_tokens": [
+          "footbridge"
+        ],
+        "count": 1,
+        "triage": "reject",
+        "examples": [
+          {
+            "confidence": 0.8696,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Bridge, Barangay Santo Niño, Batangas City, Batangas",
+            "nep_title": "Construction of Footbridge, Barangay Santo Ni ñ o, Batangas City",
             "id": null
           }
         ]
@@ -2585,25 +2055,6 @@
       },
       {
         "house_tokens": [
-          "orienta"
-        ],
-        "nep_tokens": [
-          "oriental"
-        ],
-        "count": 1,
-        "triage": "promote",
-        "examples": [
-          {
-            "confidence": 0.9948,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Laguindingan-Iligan City Alternate Road, Barangay Ayaˇaya Section, Sta. 44+000 - Sta. 46+000, Lugait, Misamis Orienta",
-            "nep_title": "Construction of Laguindingan-Iligan City Alternate Road, Barangay Aya aya Section, Sta. 44 + 000 - Sta. 46 + 000, Lugait, Misamis Oriental",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "anibongan"
         ],
         "nep_tokens": [
@@ -2618,48 +2069,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction of Bridge, Barangay Anibongan, Carmen, Davao del Norte - Sta. 2+600 - Sta. 2+670",
             "nep_title": "Construction of Bridge, Barangay San Isidro, Carmen, Davao del Norte - Sta. 2 + 600 - Sta. 2 + 670",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "10",
-          "715"
-        ],
-        "nep_tokens": [
-          "26",
-          "191"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9079,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Esperanza-Lebak Bypass Road, Sta. 10 + 715 - Sta. 17 + 737, Esperanza, Sultan Kudarat",
-            "nep_title": "Construction of Esperanza - Lebak Bypass Road, Sta. 26 + 191 - Sta. 29 + 841, Esperanza, Sultan Kudarat",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "17",
-          "737"
-        ],
-        "nep_tokens": [
-          "29",
-          "841"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9079,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Esperanza-Lebak Bypass Road, Sta. 10 + 715 - Sta. 17 + 737, Esperanza, Sultan Kudarat",
-            "nep_title": "Construction of Esperanza - Lebak Bypass Road, Sta. 26 + 191 - Sta. 29 + 841, Esperanza, Sultan Kudarat",
             "id": null
           }
         ]
@@ -2890,42 +2299,37 @@
           "street"
         ],
         "nep_tokens": [
-          "m",
-          "delos",
-          "reyes",
+          "caimito",
           "st"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8929,
+            "confidence": 0.8902,
             "status": "fuzzy_candidate",
             "house_title": "Rehabilitation of Road and Drainage along Ilang-Ilang Street (C0+000 to C0+090), Gen T. De Leon, Valenzuela City",
-            "nep_title": "Rehabilitation of Road and Drainage along M. Delos Reyes St . (C0 + 000 to C 1 + 130 ), Barangay Gen T. De Leon, Valenzuela City",
+            "nep_title": "Rehabilitation of Road and Drainage along Caimito St . (C0 + 000 to C0 + 360 ), Barangay Gen T. De Leon, Valenzuela City",
             "id": null
           }
         ]
       },
       {
         "house_tokens": [
-          "c0",
           "090"
         ],
         "nep_tokens": [
-          "c",
-          "1",
-          "130",
+          "360",
           "barangay"
         ],
         "count": 1,
-        "triage": "review",
+        "triage": "reject",
         "examples": [
           {
-            "confidence": 0.8929,
+            "confidence": 0.8902,
             "status": "fuzzy_candidate",
             "house_title": "Rehabilitation of Road and Drainage along Ilang-Ilang Street (C0+000 to C0+090), Gen T. De Leon, Valenzuela City",
-            "nep_title": "Rehabilitation of Road and Drainage along M. Delos Reyes St . (C0 + 000 to C 1 + 130 ), Barangay Gen T. De Leon, Valenzuela City",
+            "nep_title": "Rehabilitation of Road and Drainage along Caimito St . (C0 + 000 to C0 + 360 ), Barangay Gen T. De Leon, Valenzuela City",
             "id": null
           }
         ]
@@ -3176,25 +2580,6 @@
       },
       {
         "house_tokens": [
-          "slope"
-        ],
-        "nep_tokens": [
-          "siope"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9861,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Road with Slope Protection, Barangay Pacifico to Barangay Cacafean, Marcos, Ilocos Norte",
-            "nep_title": "Construction of Road with Siope Protection, Barangay Pacifico to Barangay Cacafean, Marcos, Ilocos Norte",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "baguinge"
         ],
         "nep_tokens": [
@@ -3233,25 +2618,6 @@
       },
       {
         "house_tokens": [
-          "sur"
-        ],
-        "nep_tokens": [
-          "norte"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9647,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Road, Mount Data Junction-Binaka-Bebe-Asbiagan, Barangay Monamon Sur, Bauko, Mountain Province",
-            "nep_title": "Construction of Road, Mount Data Junction-Binaka-Bebe-Asbiagan, Barangay Monamon Norte, Bauko, Mountain Province",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "200"
         ],
         "nep_tokens": [
@@ -3265,46 +2631,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Rehabilitation of Road, Barangay Calawitan, San Ildefonso, Bulacan, Sta. 00+000 - 00+200",
             "nep_title": "Construction of Road, Barangay Calawitan, San Ildefonso, Bulacan, Sta. 00 + 000 - 00 + 400",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "700"
-        ],
-        "nep_tokens": [
-          "750"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.8605,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Road, Sitio Binbin, Barangay General Luna, Carranglan, Nueva Ecija Sta. 0+000 - Sta. 2+900, Sta. 4+700 - Sta. 5+30",
-            "nep_title": "Construction of Road, Barangay General Luna to Barangay Binbin, Carranglan, Nueva Ecija Sta. 0 + 000 - Sta. 2 + 900, Sta. 4 + 750 - Sta. 6 + 570",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "5",
-          "30"
-        ],
-        "nep_tokens": [
-          "6",
-          "570"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.8605,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Road, Sitio Binbin, Barangay General Luna, Carranglan, Nueva Ecija Sta. 0+000 - Sta. 2+900, Sta. 4+700 - Sta. 5+30",
-            "nep_title": "Construction of Road, Barangay General Luna to Barangay Binbin, Carranglan, Nueva Ecija Sta. 0 + 000 - Sta. 2 + 900, Sta. 4 + 750 - Sta. 6 + 570",
             "id": null
           }
         ]
@@ -3325,25 +2651,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction of Road, Cuayang Bugtong, Candaba, Pampanga",
             "nep_title": "Construction of Road, Cauayan, Candaba, Pampanga",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "duquit"
-        ],
-        "nep_tokens": [
-          "duguit"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9921,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Road and Drainage, Barangay Duquit, Mabalacat City, Pampanga, Sta. 0+000 - Sta. 0+138, Sta. 0+000 - Sta. 0+120, Sta. 0+000 - Sta. 0+260, Sta. 0+000 - Sta. 0+234, Sta. 0+000 - Sta. 0+285",
-            "nep_title": "Construction of Road and Drainage, Barangay Duguit, Mabalacat City, Pampanga, Sta. 0 + 000 - Sta. 0 + 138, Sta. 0 + 000 - Sta. 0 + 120, Sta. 0 + 000 - Sta. 0 + 260, Sta. 0 + 000 - Sta. 0 + 234, Sta. 0 + 000 - Sta. 0 + 285",
             "id": null
           }
         ]
@@ -3529,44 +2836,6 @@
       },
       {
         "house_tokens": [
-          "malamig"
-        ],
-        "nep_tokens": [
-          "tawiran"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9091,
-            "status": "fuzzy_candidate",
-            "house_title": "Rehabilitation of Road, Barangay Malamig, City of Calapan, Oriental Mindoro",
-            "nep_title": "Rehabilitation of Road, Barangay Tawiran, City of Calapan, Oriental Mindoro",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "managpi"
-        ],
-        "nep_tokens": [
-          "tawiran"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9091,
-            "status": "fuzzy_candidate",
-            "house_title": "Rehabilitation of Road, Barangay Managpi, City of Calapan, Oriental Mindoro",
-            "nep_title": "Rehabilitation of Road, Barangay Tawiran, City of Calapan, Oriental Mindoro",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "belen"
         ],
         "nep_tokens": [
@@ -3699,25 +2968,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction of Road, Sitio Ilaya, Barangay Candelaria, New Washington, Aklan",
             "nep_title": "Construction of Road, Sitio Tugbungan, Barangay Candelaria, New Washington, Aklan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "singay"
-        ],
-        "nep_tokens": [
-          "badiangan"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9263,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Road, Barangay Agmanaphao to Barangay Singay, Mina, Iloilo",
-            "nep_title": "Construction of Road, Barangay Agmanaphao to Barangay Badiangan, Mina, Iloilo",
             "id": null
           }
         ]
@@ -3891,16 +3141,16 @@
           "933202"
         ],
         "nep_tokens": [
-          "932335"
+          "935136"
         ],
         "count": 1,
         "triage": "reject",
         "examples": [
           {
-            "confidence": 0.8605,
+            "confidence": 0.8519,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay San Agustin, Castillejos, Zambales (14.933202 ,120.196721)",
-            "nep_title": "Construction of Multi-Purpose Building (Covered Court ), Barangay San Agustin, Castillejos, Zambales (14.932335, 120.196559)",
+            "nep_title": "Construction of Multi-Purpose Building (Barangay Hall ), Barangay Nagbayan, Castillejos, Zambales (14.935136, 120.159188)",
             "id": null
           }
         ]
@@ -3910,16 +3160,16 @@
           "196721"
         ],
         "nep_tokens": [
-          "196559"
+          "159188"
         ],
         "count": 1,
         "triage": "reject",
         "examples": [
           {
-            "confidence": 0.8605,
+            "confidence": 0.8519,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay San Agustin, Castillejos, Zambales (14.933202 ,120.196721)",
-            "nep_title": "Construction of Multi-Purpose Building (Covered Court ), Barangay San Agustin, Castillejos, Zambales (14.932335, 120.196559)",
+            "nep_title": "Construction of Multi-Purpose Building (Barangay Hall ), Barangay Nagbayan, Castillejos, Zambales (14.935136, 120.159188)",
             "id": null
           }
         ]
@@ -4150,26 +3400,6 @@
       },
       {
         "house_tokens": [
-          "maguindanao"
-        ],
-        "nep_tokens": [
-          "magu",
-          "ndanao"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9932,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building, Barangay Labu-Labu 2, Datu Hoffer Ampatuan, Maguindanao del Sur",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Labu-Labu 2, Datu Hoffer Ampatuan, Magu í ndanao del Sur",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "165"
         ],
         "nep_tokens": [
@@ -4221,10 +3451,10 @@
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8571,
+            "confidence": 0.8527,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building at Barangay Poblacion, Bugallon, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building (Gym ), Barangay Poblacion, Manaoag, Pangasinan",
+            "nep_title": "Construction of Multi-Purpose Building (Gym ), Barangay Poblacion, Mangatarem, Pangasinan",
             "id": null
           }
         ]
@@ -4234,16 +3464,16 @@
           "bugallon"
         ],
         "nep_tokens": [
-          "manaoag"
+          "mangatarem"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8571,
+            "confidence": 0.8527,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building at Barangay Poblacion, Bugallon, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building (Gym ), Barangay Poblacion, Manaoag, Pangasinan",
+            "nep_title": "Construction of Multi-Purpose Building (Gym ), Barangay Poblacion, Mangatarem, Pangasinan",
             "id": null
           }
         ]
@@ -4333,20 +3563,22 @@
       },
       {
         "house_tokens": [
+          "poblacion",
           "b",
           "tayug"
         ],
         "nep_tokens": [
-          "manaoag"
+          "panacol",
+          "aguilar"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.9016,
+            "confidence": 0.8547,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Poblacion B, Tayug, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building (Gym ), Barangay Poblacion, Manaoag, Pangasinan",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay Panacol, Aguilar, Pangasinan",
             "id": null
           }
         ]
@@ -4403,17 +3635,18 @@
           "umingan"
         ],
         "nep_tokens": [
-          "laoag",
-          "aguilar"
+          "salapingao",
+          "dagupan",
+          "city"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8649,
+            "confidence": 0.85,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Alo-o, Umingan, Pangasinan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Laoag, Aguilar, Pangasinan",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay Salapingao, Dagupan City, Pangasinan",
             "id": null
           }
         ]
@@ -4781,25 +4014,6 @@
       },
       {
         "house_tokens": [
-          "abatan"
-        ],
-        "nep_tokens": [
-          "batan"
-        ],
-        "count": 1,
-        "triage": "promote",
-        "examples": [
-          {
-            "confidence": 0.9091,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building, Barangay Peñabatan, Pulilan, Bulacan",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building, Barangay Pe ñ batan, Pulilan, Bulacan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "laog",
           "angat"
         ],
@@ -4816,25 +4030,6 @@
             "confidence": 0.8704,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi Purpose Building, Barangay Laog, Angat, Bulacan",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Ilog Halo, San Miguel, Bulacan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "bulo"
-        ],
-        "nep_tokens": [
-          "halo"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9655,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building, Barangay Ilog-Bulo, San Miguel, Bulacan",
             "nep_title": "Construction of Multi-Purpose Building, Barangay Ilog Halo, San Miguel, Bulacan",
             "id": null
           }
@@ -4905,16 +4100,17 @@
           "nieves"
         ],
         "nep_tokens": [
-          "burgos"
+          "san",
+          "bartolome"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.918,
+            "confidence": 0.8906,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Nieves, San Leonardo, Nueva Ecija",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Burgos, San Leonardo, Nueva Ecija",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay San Bartolome, San Leonardo, Nueva Ecija",
             "id": null
           }
         ]
@@ -4991,17 +4187,18 @@
           "arayat"
         ],
         "nep_tokens": [
-          "capalangan",
+          "sitio",
+          "banag",
           "apalit"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8829,
+            "confidence": 0.8649,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Camba, Arayat, Pampanga",
-            "nep_title": "Construction of Multi-Purpose Building, Capalangan, Apalit, Pampanga",
+            "nep_title": "Construction of Multi-Purpose Building, Sitio Banag, Apalit, Pampanga",
             "id": null
           }
         ]
@@ -5128,38 +4325,19 @@
       },
       {
         "house_tokens": [
-          "toledo"
-        ],
-        "nep_tokens": [
-          "coral"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9595,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Covered Court), Barangay Toledo, Municipality of Ramos, Province of Tarlac",
-            "nep_title": "Construction of Multi-Purpose Building (Covered Court ), Barangay Coral, Municipality of Ramos, Province of Tarlac",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "933857"
         ],
         "nep_tokens": [
-          "932335"
+          "935136"
         ],
         "count": 1,
         "triage": "reject",
         "examples": [
           {
-            "confidence": 0.8721,
+            "confidence": 0.8519,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay San Agustin, Castillejos, Zambales (14.933857 ,120.197857)",
-            "nep_title": "Construction of Multi-Purpose Building (Covered Court ), Barangay San Agustin, Castillejos, Zambales (14.932335, 120.196559)",
+            "nep_title": "Construction of Multi-Purpose Building (Barangay Hall ), Barangay Nagbayan, Castillejos, Zambales (14.935136, 120.159188)",
             "id": null
           }
         ]
@@ -5169,16 +4347,16 @@
           "197857"
         ],
         "nep_tokens": [
-          "196559"
+          "159188"
         ],
         "count": 1,
         "triage": "reject",
         "examples": [
           {
-            "confidence": 0.8721,
+            "confidence": 0.8519,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay San Agustin, Castillejos, Zambales (14.933857 ,120.197857)",
-            "nep_title": "Construction of Multi-Purpose Building (Covered Court ), Barangay San Agustin, Castillejos, Zambales (14.932335, 120.196559)",
+            "nep_title": "Construction of Multi-Purpose Building (Barangay Hall ), Barangay Nagbayan, Castillejos, Zambales (14.935136, 120.159188)",
             "id": null
           }
         ]
@@ -5425,17 +4603,17 @@
           "mabini"
         ],
         "nep_tokens": [
-          "aplaya",
+          "manghinao",
           "bauan"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.9134,
+            "confidence": 0.9077,
             "status": "fuzzy_candidate",
             "house_title": "Construction (Completion) of Multi-Purpose Building, Barangay Anilao, Mabini, Batangas",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building, Barangay Aplaya, Bauan, Batangas",
+            "nep_title": "Construction (Completion) of Multi-Purpose Building, Barangay Manghinao, Bauan, Batangas",
             "id": null
           }
         ]
@@ -5464,17 +4642,16 @@
           "danglayan"
         ],
         "nep_tokens": [
-          "san",
-          "antonio"
+          "banaba"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.9106,
+            "confidence": 0.8702,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Danglayan, San Pascual, Batangas",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay San Antonio, San Pascual, Batangas",
+            "nep_title": "Construction of Multi-Purpose Building (Covered Court ), Barangay Banaba, San Pascual, Batangas",
             "id": null
           }
         ]
@@ -5567,17 +4744,17 @@
           "cuenca"
         ],
         "nep_tokens": [
-          "aplaya",
+          "manghinao",
           "bauan"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8682,
+            "confidence": 0.8636,
             "status": "fuzzy_candidate",
             "house_title": "Construction (Completion) of Multi-purpose Building, Barangay Bungahan, Cuenca, Batangas",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building, Barangay Aplaya, Bauan, Batangas",
+            "nep_title": "Construction (Completion) of Multi-Purpose Building, Barangay Manghinao, Bauan, Batangas",
             "id": null
           }
         ]
@@ -5843,18 +5020,17 @@
           "siniloan"
         ],
         "nep_tokens": [
-          "bagong",
-          "silang",
-          "lumban"
+          "concepcion",
+          "pila"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8793,
+            "confidence": 0.8571,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building at Barangay Burgos, Siniloan, Laguna",
-            "nep_title": "Construction of Multi-Purpose Building at Barangay Bagong Silang, Lumban, Laguna",
+            "nep_title": "Construction of Multi-Purpose Building at Barangay Concepcion, Pila, Laguna",
             "id": null
           }
         ]
@@ -5965,21 +5141,19 @@
       },
       {
         "house_tokens": [
-          "balay",
-          "mauban"
+          "balay"
         ],
         "nep_tokens": [
-          "bantilan",
-          "infanta"
+          "baao"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8923,
+            "confidence": 0.887,
             "status": "fuzzy_candidate",
             "house_title": "Construction/Completion of Multi-Purpose Building at Barangay Balay-Balay, Mauban, Quezon",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building at Barangay Bantilan, Infanta, Quezon",
+            "nep_title": "Construction of Multi-Purpose Building at Barangay Baao, Mauban, Quezon",
             "id": null
           }
         ]
@@ -5989,16 +5163,16 @@
           "polo"
         ],
         "nep_tokens": [
-          "abo"
+          "baao"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.9515,
+            "confidence": 0.9423,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building at Barangay Polo, Mauban, Quezon",
-            "nep_title": "Construction of Multi-Purpose Building at Barangay Abo-Abo, Mauban Quezon",
+            "nep_title": "Construction of Multi-Purpose Building at Barangay Baao, Mauban, Quezon",
             "id": null
           }
         ]
@@ -6008,17 +5182,16 @@
           "ikirin"
         ],
         "nep_tokens": [
-          "del",
-          "carmen"
+          "mapagong"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.9043,
+            "confidence": 0.8929,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building at Barangay Ikirin, Pagbilao, Quezon",
-            "nep_title": "Construction of Multi-Purpose Building at Barangay Del Carmen, Pagbilao, Quezon",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay Mapagong, Pagbilao, Quezon",
             "id": null
           }
         ]
@@ -6127,21 +5300,19 @@
       },
       {
         "house_tokens": [
-          "gango",
-          "jomalig"
+          "gango"
         ],
         "nep_tokens": [
-          "bantilan",
-          "infanta"
+          "casuguran"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.855,
+            "confidence": 0.8525,
             "status": "fuzzy_candidate",
             "house_title": "Construction/Completion of Multi-Purpose Building at Barangay Gango, Jomalig, Quezon",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building at Barangay Bantilan, Infanta, Quezon",
+            "nep_title": "Construction of Multi-Purpose Building at Barangay Casuguran, Jomalig, Quezon",
             "id": null
           }
         ]
@@ -6174,16 +5345,17 @@
           "bukal"
         ],
         "nep_tokens": [
-          "mapagong"
+          "del",
+          "carmen"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.9009,
+            "confidence": 0.8947,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building at Barangay Bukal, Pagbilao, Quezon",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Mapagong, Pagbilao, Quezon",
+            "nep_title": "Construction of Multi-Purpose Building at Barangay Del Carmen, Pagbilao, Quezon",
             "id": null
           }
         ]
@@ -6193,16 +5365,17 @@
           "talipan"
         ],
         "nep_tokens": [
-          "mapagong"
+          "del",
+          "carmen"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.9204,
+            "confidence": 0.8966,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building at Barangay Talipan, Pagbilao, Quezon",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Mapagong, Pagbilao, Quezon",
+            "nep_title": "Construction of Multi-Purpose Building at Barangay Del Carmen, Pagbilao, Quezon",
             "id": null
           }
         ]
@@ -6242,25 +5415,6 @@
             "confidence": 0.9231,
             "status": "fuzzy_candidate",
             "house_title": "Construction/Completion of Multi-Purpose Building at Barangay Agos-Agos, Infanta, Quezon",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building at Barangay Bantilan, Infanta, Quezon",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "batican"
-        ],
-        "nep_tokens": [
-          "bantilan"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9774,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction/Completion of Multi-Purpose Building at Barangay Batican, Infanta, Quezon",
             "nep_title": "Construction (Completion) of Multi-Purpose Building at Barangay Bantilan, Infanta, Quezon",
             "id": null
           }
@@ -6436,25 +5590,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction/Completion of Multi-Purpose Building at Barangay Anos, Tayabas City, Quezon",
             "nep_title": "Construction of Multi-Purpose Building, Barangay Opias, Tayabas City, Quezon",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "i"
-        ],
-        "nep_tokens": [
-          "61"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9735,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building at Barangay Poblacion I, Real, Quezon",
-            "nep_title": "Construction of Multi-Purpose Building at Barangay Poblacion 61, Real, Quezon",
             "id": null
           }
         ]
@@ -7011,25 +6146,6 @@
       },
       {
         "house_tokens": [
-          "g"
-        ],
-        "nep_tokens": [
-          "mh"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.976,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Barangay Hall) at Barangay G. Del Pilar, Bulan, Sorsogon",
-            "nep_title": "Construction of Multi-Purpose Building (Barangay Hall) at Barangay MH Del Pilar, Bulan, Sorsogon",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "pawa",
           "matnog"
         ],
@@ -7120,17 +6236,17 @@
           "pinamalatican"
         ],
         "nep_tokens": [
-          "malapad",
-          "cogon"
+          "poblacion",
+          "sur"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.885,
+            "confidence": 0.8673,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Pinamalatican, Sigma, Capiz",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Malapad, Cogon, Sigma, Capiz",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay Poblacion Sur, Sigma, Capiz",
             "id": null
           }
         ]
@@ -7140,17 +6256,17 @@
           "balucuan"
         ],
         "nep_tokens": [
-          "malapad",
-          "cogon"
+          "poblacion",
+          "sur"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8889,
+            "confidence": 0.8704,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Balucuan, Sigma, Capiz",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Malapad, Cogon, Sigma, Capiz",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay Poblacion Sur, Sigma, Capiz",
             "id": null
           }
         ]
@@ -7214,21 +6330,19 @@
       },
       {
         "house_tokens": [
-          "isauan",
-          "tigbauan"
+          "isauan"
         ],
         "nep_tokens": [
-          "barasan",
-          "igbaras"
+          "linobayan"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8889,
+            "confidence": 0.8598,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Isauan, Tigbauan, Iloilo",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Barasan, Igbaras, Iloilo",
+            "nep_title": "Construction of Multi-Purpose Hall, Barangay Linobayan, Tigbauan, Iloilo",
             "id": null
           }
         ]
@@ -7337,21 +6451,19 @@
       },
       {
         "house_tokens": [
-          "bagacay",
-          "tigbauan"
+          "bagacay"
         ],
         "nep_tokens": [
-          "barasan",
-          "igbaras"
+          "linobayan"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8991,
+            "confidence": 0.8519,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Bagacay, Tigbauan, Iloilo",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Barasan, Igbaras, Iloilo",
+            "nep_title": "Construction of Multi-Purpose Hall, Barangay Linobayan, Tigbauan, Iloilo",
             "id": null
           }
         ]
@@ -7553,22 +6665,23 @@
       },
       {
         "house_tokens": [
+          "barangay",
           "ungka",
           "2",
           "pavia"
         ],
         "nep_tokens": [
-          "anoring",
-          "sara"
+          "san",
+          "joaquin"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.873,
+            "confidence": 0.8595,
             "status": "fuzzy_candidate",
             "house_title": "Construction (Completion) of Multi-Purpose Building, Barangay Ungka 2, Pavia, Iloilo",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building, NISU, Barangay Anoring, Sara, Iloilo",
+            "nep_title": "Construction (Completion) of Multi-Purpose Building, San Joaquin, Iloilo",
             "id": null
           }
         ]
@@ -7992,68 +7105,6 @@
       },
       {
         "house_tokens": [
-          "south",
-          "poblacion"
-        ],
-        "nep_tokens": [
-          "hall",
-          "barangay",
-          "bacnit"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8646,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building, Barangay South Poblacion, Municipality of Guinsiliban, Province of Camiguin",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building (Barangay Hall ), Barangay Bacnit, Municipality of Sagay, Province of Camiguin",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "guinsiliban"
-        ],
-        "nep_tokens": [
-          "sagay"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8646,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building, Barangay South Poblacion, Municipality of Guinsiliban, Province of Camiguin",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building (Barangay Hall ), Barangay Bacnit, Municipality of Sagay, Province of Camiguin",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "poblacion"
-        ],
-        "nep_tokens": [
-          "hall",
-          "barangay",
-          "bacnit"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9392,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building, Barangay Poblacion, Municipality of Sagay, Province of Camiguin",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building (Barangay Hall ), Barangay Bacnit, Municipality of Sagay, Province of Camiguin",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "maliwanag",
           "maigo"
         ],
@@ -8242,25 +7293,6 @@
       },
       {
         "house_tokens": [
-          "lim"
-        ],
-        "nep_tokens": [
-          "lapu"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9669,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building, Lim Extension, Barangay San Miguel, Digos City, Davao del Sur",
-            "nep_title": "Construction of Multi-Purpose Building, Lapu-Lapu Extension, Barangay San Miguel, Digos City, Davao del Sur",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "caloocan"
         ],
         "nep_tokens": [
@@ -8403,21 +7435,19 @@
       {
         "house_tokens": [
           "barurao",
-          "ii",
-          "lebak"
+          "ii"
         ],
         "nep_tokens": [
-          "baluan",
-          "palimbang"
+          "purikay"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.878,
+            "confidence": 0.8682,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Barurao II, Lebak, Sultan Kudarat",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Baluan, Palimbang, Sultan Kudarat",
+            "nep_title": "Construction of Multi-Purpose Building (Gymnasium ), Barangay Purkay, Lebak, Sultan Kudarat",
             "id": null
           }
         ]
@@ -8428,17 +7458,17 @@
           "lebak"
         ],
         "nep_tokens": [
-          "baluan",
+          "kraan",
           "palimbang"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.878,
+            "confidence": 0.8689,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Kinudalan, Lebak, Sultan Kudarat",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Baluan, Palimbang, Sultan Kudarat",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay Kraan, Palimbang, Sultan Kudarat",
             "id": null
           }
         ]
@@ -8505,28 +7535,6 @@
       },
       {
         "house_tokens": [
-          "pasandalan",
-          "lebak"
-        ],
-        "nep_tokens": [
-          "san",
-          "rogue",
-          "palimbang"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8571,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building, Barangay Pasandalan, Lebak, Sultan Kudarat",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay San Rogue, Palimbang, Sultan Kudarat",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "kolong"
         ],
         "nep_tokens": [
@@ -8550,27 +7558,6 @@
           "bagumbayan"
         ],
         "nep_tokens": [
-          "kraan",
-          "palimbang"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.871,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building, Barangay Daguma, Bagumbayan, Sultan Kudarat",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Kraan, Palimbang, Sultan Kudarat",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "basak",
-          "lebak"
-        ],
-        "nep_tokens": [
           "baluan",
           "palimbang"
         ],
@@ -8578,10 +7565,29 @@
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8908,
+            "confidence": 0.864,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Multi-Purpose Building, Barangay Daguma, Bagumbayan, Sultan Kudarat",
+            "nep_title": "Construction of Multi-Purpose Building, Barangay Baluan, Palimbang, Sultan Kudarat",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "basak"
+        ],
+        "nep_tokens": [
+          "purikay"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.88,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Barangay Basak, Lebak, Sultan Kudarat",
-            "nep_title": "Construction of Multi-Purpose Building, Barangay Baluan, Palimbang, Sultan Kudarat",
+            "nep_title": "Construction of Multi-Purpose Building (Gymnasium ), Barangay Purkay, Lebak, Sultan Kudarat",
             "id": null
           }
         ]
@@ -8645,27 +7651,6 @@
       },
       {
         "house_tokens": [
-          "barangay",
-          "hall"
-        ],
-        "nep_tokens": [
-          "covered",
-          "court"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9259,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building (Barangay HAll) Barangay Mabuhay, Pilar, Siargao Island, Surigao del Norte (9.826381, 126.108974)",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building (Covered Court) barangay Mabuhay, Pilar, Siargao Island, Surigao del Norte (9.826381, 126.108974)",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "quarters"
         ],
         "nep_tokens": [
@@ -8686,9 +7671,9 @@
       }
     ],
     "triage_counts": {
-      "reject": 101,
-      "review": 305,
-      "promote": 4
+      "reject": 83,
+      "review": 277,
+      "promote": 2
     },
     "promote": [
       {
@@ -8742,44 +7727,6 @@
             "id": null
           }
         ]
-      },
-      {
-        "house_tokens": [
-          "orienta"
-        ],
-        "nep_tokens": [
-          "oriental"
-        ],
-        "count": 1,
-        "triage": "promote",
-        "examples": [
-          {
-            "confidence": 0.9948,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Laguindingan-Iligan City Alternate Road, Barangay Ayaˇaya Section, Sta. 44+000 - Sta. 46+000, Lugait, Misamis Orienta",
-            "nep_title": "Construction of Laguindingan-Iligan City Alternate Road, Barangay Aya aya Section, Sta. 44 + 000 - Sta. 46 + 000, Lugait, Misamis Oriental",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "abatan"
-        ],
-        "nep_tokens": [
-          "batan"
-        ],
-        "count": 1,
-        "triage": "promote",
-        "examples": [
-          {
-            "confidence": 0.9091,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building, Barangay Peñabatan, Pulilan, Bulacan",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building, Barangay Pe ñ batan, Pulilan, Bulacan",
-            "id": null
-          }
-        ]
       }
     ],
     "reject": [
@@ -8790,7 +7737,7 @@
         "nep_tokens": [
           "construction"
         ],
-        "count": 18,
+        "count": 20,
         "triage": "reject",
         "examples": [
           {
@@ -8812,39 +7759,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Rehabilitation of Drainage System, Barangay Zone 5, Cadiz City, Negros Occidental",
             "nep_title": "Construction of Drainage System, Barangay Zone 5, Cadiz City, Negros Occidental",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "bridge"
-        ],
-        "nep_tokens": [
-          "footbridge"
-        ],
-        "count": 5,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.8696,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Bridge, Barangay Santo Niño, Batangas City, Batangas",
-            "nep_title": "Construction of Footbridge, Barangay Santo Ni ñ o, Batangas City",
-            "id": null
-          },
-          {
-            "confidence": 0.9545,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Bridge in Barangay Camp 4, Talisay City, Cebu",
-            "nep_title": "Construction of Footbridge in Barangay Camp 4, Talisay City, Cebu",
-            "id": null
-          },
-          {
-            "confidence": 0.9661,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Bridge, Barangay A. Tumamak, Villaba, Leyte (11.201775, 124.430504)",
-            "nep_title": "Construction of Footbridge, Barangay A. Tumamak, Villaba, Leyte (11.201775, 124.430504)",
             "id": null
           }
         ]
@@ -8960,65 +7874,6 @@
       },
       {
         "house_tokens": [
-          "219"
-        ],
-        "nep_tokens": [
-          "671"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9487,
-            "status": "fuzzy_candidate",
-            "house_title": "Palico-Balayan-Batangas Rd - K0147 + 520 - K0148 + 219",
-            "nep_title": "Palico – Balayan-Batangas Rd - K0147 + 520 - K0148 + 671",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "598"
-        ],
-        "nep_tokens": [
-          "973"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9574,
-            "status": "fuzzy_candidate",
-            "house_title": "Magpet-Nowa-Doroluman-Greenfield Rd - K1633 + 023 - K1634 + 598",
-            "nep_title": "Magpet-Nowa-Doroluman-Greenfield Rd - K1633 + 023 - K1634 + 973",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "260"
-        ],
-        "nep_tokens": [
-          "000",
-          "k0465",
-          "563"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9057,
-            "status": "fuzzy_candidate",
-            "house_title": "Mt. Province-Ifugao Rd (Kiling-Paracelis Sect) - K0464 + 640 - K0465 + 260",
-            "nep_title": "Mt. Province-Ifugao Rd (Kiling-Paracelis Sect ) - K0465 + 000 - K0465 + 563",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "k0460"
         ],
         "nep_tokens": [
@@ -9059,31 +7914,6 @@
       },
       {
         "house_tokens": [
-          "k1528",
-          "120",
-          "k1528",
-          "500"
-        ],
-        "nep_tokens": [
-          "k1552",
-          "068",
-          "k1552",
-          "145"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.8824,
-            "status": "fuzzy_candidate",
-            "house_title": "Kapalong-Talaingod-Valencia (Bukidnon) Rd K1528+120 -K1528+500",
-            "nep_title": "Kapalong-Talaingod-Valencia (Bukidnon) Rd - K1552 + 068 - K1552 + 145",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "014"
         ],
         "nep_tokens": [
@@ -9100,25 +7930,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Talisay-Laurel-Agoncillo Rd - K0103 + -197 - K0104 + 014",
             "nep_title": "Talisay-Laurel-Agoncillo Rd - K0103 + - 197 - K0104 + 288, K0104 + 449 - K0104 +",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "500"
-        ],
-        "nep_tokens": [
-          "620"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9744,
-            "status": "fuzzy_candidate",
-            "house_title": "Panguil Bay Access Road (Ozamiz City - Tangub City Section), Sta. 0+000 - Sta. 0+500, Misamis Occidental",
-            "nep_title": "Panguil Bay Access Road (Ozamiz City-Tangub City Section ), Sta. 0 + 000 - Sta. 0 + 620, Misamis Occidental",
             "id": null
           }
         ]
@@ -9313,37 +8124,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Quezon Eco - Tourism - Sariaya - Candelaria - Tiaong - San Antonio Road, Section I: Sta. 2 + 880 - 3 + 760, Secton II: Sta. 10 + 982 - Sta. 11 + 381, Section III: Sta. 11 + 475 - Sta. 11 + 640, Quezon",
             "nep_title": "Quezon Eco - Tourism - Sariaya - Candelaria - Tiaong - San Antonio Road, Section I: Sta. 10 + 732.5 - Sta. 10 + 840, Section II: Sta. 11 + 293 - Sta. 11 + 381, Section III: Sta. 11 + 475 - Sta. 13 + 038, Tiaong, Quezon",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "12",
-          "159"
-        ],
-        "nep_tokens": [
-          "10",
-          "305",
-          "sta",
-          "11",
-          "381",
-          "46",
-          "section",
-          "ii",
-          "sta",
-          "11",
-          "474",
-          "46"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.8793,
-            "status": "fuzzy_candidate",
-            "house_title": "Quezon Eco - Tourism - Sariaya - Candelaria - Tiaong - San Antonio Road, Section I: Sta. 12 + 159 - Sta. 12 + 355, Section II: Sta. 16 + 377 - Sta. 17 + 962, Tiaong, Quezon",
-            "nep_title": "Quezon Eco - Tourism - Sariaya - Candelaria - Tiaong - San Antonio Road, Section I: Sta. 10 + 305 - Sta. 11 + 381.46, Section II: Sta. 11 + 474.46 - Sta. 12 + 355, Tiaong, Quezon",
             "id": null
           }
         ]
@@ -9580,76 +8360,222 @@
       },
       {
         "house_tokens": [
-          "10118"
-        ],
-        "nep_tokens": [
-          "9103"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9265,
-            "status": "fuzzy_candidate",
-            "house_title": "Lanao del Norte Interior Circum. Rd (LDNICR) - (S00970MN) Chainage 10118 - Chainage 11698",
-            "nep_title": "Lanao del Norte Interior Circum. Rd (LDNICR ) - (S00970MN) Chainage 9103 - Chainage 9131",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "11698"
-        ],
-        "nep_tokens": [
-          "9131"
-        ],
-        "count": 1,
-        "triage": "reject",
-        "examples": [
-          {
-            "confidence": 0.9265,
-            "status": "fuzzy_candidate",
-            "house_title": "Lanao del Norte Interior Circum. Rd (LDNICR) - (S00970MN) Chainage 10118 - Chainage 11698",
-            "nep_title": "Lanao del Norte Interior Circum. Rd (LDNICR ) - (S00970MN) Chainage 9103 - Chainage 9131",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "350"
         ],
         "nep_tokens": [
-          "000"
+          "300"
         ],
         "count": 1,
         "triage": "reject",
         "examples": [
           {
-            "confidence": 0.925,
+            "confidence": 0.8767,
             "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Control wall along Isla-Pasolo Creek (C0+350 to C0+700), Barangay Pasolo, Valenzuela City",
-            "nep_title": "Construction of Flood Control Wall Along Pasolo Creek (C0 + 000 to C0 + 350 ), Barangay Pasolo, Valenzuela City",
+            "house_title": "Rehabilitation of Riverwall along Tullahan River (C0+000 to C0+350), Barangay Ugong, Valenzuela City",
+            "nep_title": "Construction of Riverwall along Tullahan River (C0 + 000 to C0 + 300 ), Barangay Ugong, Valenzuela City",
             "id": null
           }
         ]
       },
       {
         "house_tokens": [
-          "700"
+          "200"
         ],
         "nep_tokens": [
-          "350"
+          "904",
+          "sta",
+          "29",
+          "244"
         ],
         "count": 1,
         "triage": "reject",
         "examples": [
           {
-            "confidence": 0.925,
+            "confidence": 0.8649,
             "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Control wall along Isla-Pasolo Creek (C0+350 to C0+700), Barangay Pasolo, Valenzuela City",
-            "nep_title": "Construction of Flood Control Wall Along Pasolo Creek (C0 + 000 to C0 + 350 ), Barangay Pasolo, Valenzuela City",
+            "house_title": "Construction of Kirayan Norte Shoreline Protection including Access Roads, Sta. 27+861- Sta. 28+200, Barangay Kirayan Norte, Miagao, Iloilo",
+            "nep_title": "Construction of Kirayan Norte Shoreline Protection including Access Roads and Utilities, Sta. 28 + 904-Sta. 29 + 244, Barangay Kirayan Norte, Miagao, Iloilo",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "007"
+        ],
+        "nep_tokens": [
+          "609",
+          "sta",
+          "29",
+          "949"
+        ],
+        "count": 1,
+        "triage": "reject",
+        "examples": [
+          {
+            "confidence": 0.8598,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Kirayan Sur Shoreline Protection including Access Roads, Sta. 28+693 - Sta. 29+007, Barangay Kirayan Sur, Miagao, Iloilo",
+            "nep_title": "Construction of Kirayan Sur Shoreline Protection including Access Roads and Utilities, Sta. 29 + 609-Sta. 29 + 949, Barangay Kirayan Sur, Miagao, Iloilo",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "27",
+          "512"
+        ],
+        "nep_tokens": [
+          "28",
+          "354"
+        ],
+        "count": 1,
+        "triage": "reject",
+        "examples": [
+          {
+            "confidence": 0.9018,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Miagao Shoreline Protection including Access Roads, Sta. 27+512 - Sta. 27+856, Barangay Kirayan Norte - Barangay Banuyao, Miagao, Iloilo",
+            "nep_title": "Construction of Miagao Shoreline Protection Including Access Roads and Utilities, Sta. 28 + 354-Sta. 28 + 694, Barangay Kirayan Norte - Barangay Banuyao, Miagao, Iloilo",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "27",
+          "856"
+        ],
+        "nep_tokens": [
+          "28",
+          "694"
+        ],
+        "count": 1,
+        "triage": "reject",
+        "examples": [
+          {
+            "confidence": 0.9018,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Miagao Shoreline Protection including Access Roads, Sta. 27+512 - Sta. 27+856, Barangay Kirayan Norte - Barangay Banuyao, Miagao, Iloilo",
+            "nep_title": "Construction of Miagao Shoreline Protection Including Access Roads and Utilities, Sta. 28 + 354-Sta. 28 + 694, Barangay Kirayan Norte - Barangay Banuyao, Miagao, Iloilo",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "561"
+        ],
+        "nep_tokens": [
+          "450"
+        ],
+        "count": 1,
+        "triage": "reject",
+        "examples": [
+          {
+            "confidence": 0.9073,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Oton Shoreline Protection including Access Roads, Sta. 01+561 - Sta. 01+905, Barangay Poblacion East, Oton, Iloilo",
+            "nep_title": "Construction of Oton Shoreline Protection Including Access Roads and Facilities, Sta. 01 + 450-Sta. 01 + 790, Barangay Poblacion East, Oton, Iloilo",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "905"
+        ],
+        "nep_tokens": [
+          "790"
+        ],
+        "count": 1,
+        "triage": "reject",
+        "examples": [
+          {
+            "confidence": 0.9073,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Oton Shoreline Protection including Access Roads, Sta. 01+561 - Sta. 01+905, Barangay Poblacion East, Oton, Iloilo",
+            "nep_title": "Construction of Oton Shoreline Protection Including Access Roads and Facilities, Sta. 01 + 450-Sta. 01 + 790, Barangay Poblacion East, Oton, Iloilo",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "490"
+        ],
+        "nep_tokens": [
+          "600"
+        ],
+        "count": 1,
+        "triage": "reject",
+        "examples": [
+          {
+            "confidence": 0.9391,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Pala- o Section, L/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+490, Iligan City",
+            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "510",
+          "sta",
+          "1",
+          "780"
+        ],
+        "nep_tokens": [
+          "275"
+        ],
+        "count": 1,
+        "triage": "reject",
+        "examples": [
+          {
+            "confidence": 0.8525,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Flood Mitigation Structures and Drainage Systems along Iligan River (Ubaldo Laya - Tubod Section, R/S), Barangay Tubod, Sta. 1 + 510 - Sta. 1 + 780, Iligan City",
+            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, R / S ), Barangay Puga-an, Sta. 0 + 675.00 - Sta. 1 + 275, Iligan City",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "320"
+        ],
+        "nep_tokens": [
+          "600"
+        ],
+        "count": 1,
+        "triage": "reject",
+        "examples": [
+          {
+            "confidence": 0.8745,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Flood Mitigation Structures and Drainage Systems along Iligan River (Ubaldo Laya - Tubod Section, L/S), Barangay Ubaldo Laya, Sta. 0 + 000 - Sta. 0 + 320, Iligan City",
+            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "652362"
+        ],
+        "nep_tokens": [
+          "650965"
+        ],
+        "count": 1,
+        "triage": "reject",
+        "examples": [
+          {
+            "confidence": 0.8644,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of C-4 Pumping Station, Navotas City (14.652362, 120.951739)",
+            "nep_title": "Construction of Luna Pumping Station, Navotas City (14.650965, 120.953393)",
             "id": null
           }
         ]
@@ -9658,80 +8584,12 @@
     "review": [
       {
         "house_tokens": [
-          "roque"
-        ],
-        "nep_tokens": [
-          "rogue"
-        ],
-        "count": 5,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9821,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Drainage System, Barangay San Roque, San Jacinto, Pangasinan",
-            "nep_title": "Construction of Drainage System, Barangay San Rogue, San Jacinto, Pangasinan",
-            "id": null
-          },
-          {
-            "confidence": 0.9877,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Drainage System at Bagong Sirang, San Roque and Carangag, San Andres, Catanduanes",
-            "nep_title": "Construction of Drainage System at Bagong Sirang, San Rogue and Carangag, San Andres, Catanduanes",
-            "id": null
-          },
-          {
-            "confidence": 0.8889,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building San Roque, Paombong, Bulacan",
-            "nep_title": "Construction of Multi-Purpose Building at Barangay San Rogue, Paombong, Bulacan",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "pala",
-          "o"
-        ],
-        "nep_tokens": [
-          "puga",
-          "an"
-        ],
-        "count": 4,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9391,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Pala- o Section, L/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+490, Iligan City",
-            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
-            "id": null
-          },
-          {
-            "confidence": 0.9391,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Pala- o Section, L/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+490, Iligan City",
-            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
-            "id": null
-          },
-          {
-            "confidence": 0.9391,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River Pala- o Section, R/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+680, Iligan City",
-            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "aque"
         ],
         "nep_tokens": [
           "ague"
         ],
-        "count": 3,
+        "count": 2,
         "triage": "review",
         "examples": [
           {
@@ -9739,13 +8597,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Rehabilitation of Parañaque River South near Amvel Business Park, District 1, Parañaque City",
             "nep_title": "Rehabilitation of Para ñ ague River South near Amvel Business Park, District 1, Para ñ aque City",
-            "id": null
-          },
-          {
-            "confidence": 0.9894,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Mitigation Structure along Parañaque River North (Don Galo Section), Barangay Don Galo, Parañaque City",
-            "nep_title": "Construction of Flood Mitigation Structure along Para ñ ague River North (Don Galo Section ), Barangay Don Galo, Para ñ aque City",
             "id": null
           },
           {
@@ -9759,33 +8610,28 @@
       },
       {
         "house_tokens": [
-          "agusan"
+          "pala",
+          "o"
         ],
         "nep_tokens": [
-          "lanao"
+          "puga",
+          "an"
         ],
-        "count": 3,
+        "count": 2,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.9404,
+            "confidence": 0.9391,
             "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Covered Court) at Barangay A. Beltran, Jabonga, Agusan del Norte",
-            "nep_title": "Construction of Multi-Purpose Building (Covered Court ), Barangay A. Beltran, Jabonga, Lanao del Norte",
+            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Pala- o Section, L/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+490, Iligan City",
+            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
             "id": null
           },
           {
-            "confidence": 0.953,
+            "confidence": 0.9391,
             "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Covered Court), Barangay Poblacion, Carmen, Agusan del Norte",
-            "nep_title": "Construction of Multi-Purpose Building (Covered Court ), Barangay Poblacion, Carmen, Lanao del Norte",
-            "id": null
-          },
-          {
-            "confidence": 0.9427,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building (Covered Court) at Barangay Santo Niño, Magallanes, Agusan del Norte",
-            "nep_title": "Construction of Multi-Purpose Building (Covered Court ), Barangay Santo Ni ñ o, Magallanes, Lanao del Norte",
+            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Pala- o Section, L/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+490, Iligan City",
+            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
             "id": null
           }
         ]
@@ -9847,6 +8693,35 @@
       },
       {
         "house_tokens": [
+          "san",
+          "agustin"
+        ],
+        "nep_tokens": [
+          "hall",
+          "barangay",
+          "nagbayan"
+        ],
+        "count": 2,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.8519,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Multi-Purpose Building, Barangay San Agustin, Castillejos, Zambales (14.933202 ,120.196721)",
+            "nep_title": "Construction of Multi-Purpose Building (Barangay Hall ), Barangay Nagbayan, Castillejos, Zambales (14.935136, 120.159188)",
+            "id": null
+          },
+          {
+            "confidence": 0.8519,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Multi-Purpose Building, Barangay San Agustin, Castillejos, Zambales (14.933857 ,120.197857)",
+            "nep_title": "Construction of Multi-Purpose Building (Barangay Hall ), Barangay Nagbayan, Castillejos, Zambales (14.935136, 120.159188)",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
           "wakas"
         ],
         "nep_tokens": [
@@ -9900,28 +8775,26 @@
       },
       {
         "house_tokens": [
-          "poblacion"
+          "building"
         ],
         "nep_tokens": [
-          "hall",
-          "barangay",
-          "alga"
+          "hall"
         ],
         "count": 2,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8686,
+            "confidence": 0.8598,
             "status": "fuzzy_candidate",
-            "house_title": "Construction of Multi-Purpose Building, Barangay Poblacion, Municipality of Catarman, Province of Camiguin",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building (Barangay Hall ), Barangay Alga, Municipality of Catarman, Province of Camiguin",
+            "house_title": "Construction of Multi-Purpose Building, Barangay Isauan, Tigbauan, Iloilo",
+            "nep_title": "Construction of Multi-Purpose Hall, Barangay Linobayan, Tigbauan, Iloilo",
             "id": null
           },
           {
-            "confidence": 0.9297,
+            "confidence": 0.8519,
             "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Multi-Purpose Building, Barangay Poblacion, Municipality of Catarman, Province of Camiguin",
-            "nep_title": "Construction (Completion) of Multi-Purpose Building (Barangay Hall ), Barangay Alga, Municipality of Catarman, Province of Camiguin",
+            "house_title": "Construction of Multi-Purpose Building, Barangay Bagacay, Tigbauan, Iloilo",
+            "nep_title": "Construction of Multi-Purpose Hall, Barangay Linobayan, Tigbauan, Iloilo",
             "id": null
           }
         ]
@@ -9950,25 +8823,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction of Multi-Purpose Building, Purok 8, Barangay Poblacion, El Salvador City, Misamis Oriental",
             "nep_title": "Construction of Multi-Purpose Building, Brgy. Poblacion, Lugait, Misamis Oriental",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "aquino"
-        ],
-        "nep_tokens": [
-          "aguino"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9857,
-            "status": "fuzzy_candidate",
-            "house_title": "Isulan Jct-Ninoy Aquino Rd - K1845 + 263 - K1845 + 363, K1845 + 365 - K1845 + 507, K1845 + 627 - K1845 + 695",
-            "nep_title": "Isulan Jct-Ninoy Aguino Rd - K1845 + 263 - K1845 + 363, K1845 + 365 - K1845 + 507, K1845 + 627 - K1845 + 695",
             "id": null
           }
         ]
@@ -10067,44 +8921,6 @@
       },
       {
         "house_tokens": [
-          "baguio"
-        ],
-        "nep_tokens": [
-          "baquio"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9935,
-            "status": "fuzzy_candidate",
-            "house_title": "Installation/Application of Road Safety Facilities (Roadway Lighting) Along Kapalong - Talaingod - Valencia Rd - K1580 + 500 - K1584 + 000, Barangay Halapitan - Barangay Little Baguio, San Fernando, Bukidnon 2nd LD",
-            "nep_title": "Installation / Application of Road Safety Facilities (Roadway Lighting) Along Kapalong - Talaingod - Valencia Rd - K1580 + 500 - K1584 + 000, Brgy. Halapitan - Brgy. Little Baquio, San Fernando, Bukidnon 2nd LD",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "natl"
-        ],
-        "nep_tokens": [
-          "nati"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9767,
-            "status": "fuzzy_candidate",
-            "house_title": "Polo Parallel Br. along Jct Polo-Dapitan Park Natl Rd",
-            "nep_title": "Polo Parallel Br. along Jct Polo-Dapitan Park Nati Rd",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "mitigation",
           "structure"
         ],
@@ -10183,25 +8999,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction of Tumagbok River Control Project, Barangay Bagumbayan, Miagao, Iloilo",
             "nep_title": "Construction of Tumagbok River Control Project, Barangay Bayunan, Miagao, Iloilo",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "r"
-        ],
-        "nep_tokens": [
-          "l"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9391,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River Pala- o Section, R/S), Barangay Pala-o, Sta. 0+000 - Sta. 0+680, Iligan City",
-            "nep_title": "Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an Section, L / S ), Barangay Puga-an, Sta. 0 + 000 - Sta. 0 + 600, Iligan City",
             "id": null
           }
         ]
@@ -10358,25 +9155,6 @@
       },
       {
         "house_tokens": [
-          "poblacion"
-        ],
-        "nep_tokens": [
-          "pob"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9412,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Drainage System at Barangay Poblacion 38, Infanta, Quezon",
-            "nep_title": "Construction of Drainage System at Barangay Pob 38, Infanta, Quezon",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "santa",
           "lucia",
           "mauban"
@@ -10423,34 +9201,15 @@
       },
       {
         "house_tokens": [
-          "bitan",
-          "ag"
-        ],
-        "nep_tokens": [
-          "palawan"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9398,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction (Completion) of Drainage Structure along Bitan-ag Creek, Barangay Camaman-an, Cagayan de Oro City",
-            "nep_title": "Construction (Completion) of Drainage Structure along Palawan Creek, Barangay Camaman-an, Cagayan de Oro City",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
           "280",
           "fugu",
           "gattaran"
         ],
         "nep_tokens": [
-          "170",
+          "160",
           "barangay",
-          "magapit",
+          "sta",
+          "maria",
           "lal",
           "lo"
         ],
@@ -10458,10 +9217,10 @@
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8824,
+            "confidence": 0.8772,
             "status": "fuzzy_candidate",
             "house_title": "Construction of Flood Control Structure along Cagayan River, Sta. 0+000 - Sta. 0+280, Fugu, Gattaran, Cagayan",
-            "nep_title": "Construction of Flood Control Structure along Cagayan River, Sta. 0 + 000 - Sta. 0 + 170, Barangay Magapit, Lal-lo, Cagayan",
+            "nep_title": "Construction of Flood Control Structure along Cagayan River, Sta. 0 + 000 - Sta. 0 + 160, Barangay Sta. Maria, Lal-lo, Cagayan",
             "id": null
           }
         ]
@@ -10624,65 +9383,6 @@
             "status": "fuzzy_candidate",
             "house_title": "Construction of Public Water Supply System in Barangay Nanan, Payao, Zamboanga Sibugay",
             "nep_title": "Construction of Public Water Supply System in Brgy. Goling, Diplahan, Zamboanga Sibugay",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "buqac"
-        ],
-        "nep_tokens": [
-          "bugac"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9892,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Public Water Supply System, Purok Makugihon Dos, Sitio Buqac, Poblacion 2, Bansalan, Davao del Sur",
-            "nep_title": "Construction of Public Water Supply System, Purok Makugihon Dos, Sitio Bugac, Poblacion 2, Bansalan, Davao del Sur",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "quezon",
-          "city"
-        ],
-        "nep_tokens": [
-          "ouezon",
-          "citv"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.989,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Road and Drainage at Atis St. (Chainage 0+000 - Chainage 0+144), Dalanghita St. (Chainage 0+000 - Chainage 156.50), Dayap St. (Chainage 0+000 - Chainage 0+179), Durian St. (Chainage 0+000 - Chainage 0+212) at Barangay Sta. Monica, Quezon City",
-            "nep_title": "Construction of Road and Drainage at Atis St . (Chainage 0 + 000 - Chainage 0 + 144 ), Dalanghita St . (Chainage 0 + 000 - Chainage 156.50 ), Dayap St . (Chainage 0 + 000 - Chainage 0 + 179 ), Durian St . (Chainage 0 + 000 - Chainage 0 + 212) at Barangay Sta. Monica, Ouezon Citv",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "quezon"
-        ],
-        "nep_tokens": [
-          "ouezon"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.9947,
-            "status": "fuzzy_candidate",
-            "house_title": "Construction of Road and Drainage at Lanzones St. (Chainage 0+000 - Chainage 0+314.50), Macopa St. (Chainage 0+000 - Chainage 0+121), Mabolo St. (Chainage 0+000 - Chainage 0+108) and Langka St. (Chainage 0+000 - Chainage 0+118) at Barangay Sta. Monica, Quezon City",
-            "nep_title": "Construction of Road and Drainage at Lanzones St . (Chainage 0 + 000 - Chainage 0 + 314.50 ), Macopa St . (Chainage 0 + 000 - Chainage 0 + 121 ), Mabolo St . (Chainage 0 + 000 - Chainage 0 + 108) and Langka St . (Chainage 0 + 000 - Chainage 0 + 118) at Barangay Sta. Monica, Ouezon City",
             "id": null
           }
         ]
@@ -10902,42 +9602,17 @@
           "street"
         ],
         "nep_tokens": [
-          "m",
-          "delos",
-          "reyes",
+          "caimito",
           "st"
         ],
         "count": 1,
         "triage": "review",
         "examples": [
           {
-            "confidence": 0.8929,
+            "confidence": 0.8902,
             "status": "fuzzy_candidate",
             "house_title": "Rehabilitation of Road and Drainage along Ilang-Ilang Street (C0+000 to C0+090), Gen T. De Leon, Valenzuela City",
-            "nep_title": "Rehabilitation of Road and Drainage along M. Delos Reyes St . (C0 + 000 to C 1 + 130 ), Barangay Gen T. De Leon, Valenzuela City",
-            "id": null
-          }
-        ]
-      },
-      {
-        "house_tokens": [
-          "c0",
-          "090"
-        ],
-        "nep_tokens": [
-          "c",
-          "1",
-          "130",
-          "barangay"
-        ],
-        "count": 1,
-        "triage": "review",
-        "examples": [
-          {
-            "confidence": 0.8929,
-            "status": "fuzzy_candidate",
-            "house_title": "Rehabilitation of Road and Drainage along Ilang-Ilang Street (C0+000 to C0+090), Gen T. De Leon, Valenzuela City",
-            "nep_title": "Rehabilitation of Road and Drainage along M. Delos Reyes St . (C0 + 000 to C 1 + 130 ), Barangay Gen T. De Leon, Valenzuela City",
+            "nep_title": "Rehabilitation of Road and Drainage along Caimito St . (C0 + 000 to C0 + 360 ), Barangay Gen T. De Leon, Valenzuela City",
             "id": null
           }
         ]
@@ -11005,15 +9680,241 @@
             "id": null
           }
         ]
+      },
+      {
+        "house_tokens": [
+          "rosal",
+          "street"
+        ],
+        "nep_tokens": [
+          "peacock",
+          "st"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.908,
+            "status": "fuzzy_candidate",
+            "house_title": "Rehabilitation of Road and Drainage along Rosal Street (C0+000 to C080), Gen T. De Leon, Valenzuela City",
+            "nep_title": "Rehabilitation of Road and Drainage along Peacock St . (C0 + 000 to C0 + 380 ), Barangay Gen T. De Leon, Valenzuela City",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "c080"
+        ],
+        "nep_tokens": [
+          "c0",
+          "380",
+          "barangay"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.908,
+            "status": "fuzzy_candidate",
+            "house_title": "Rehabilitation of Road and Drainage along Rosal Street (C0+000 to C080), Gen T. De Leon, Valenzuela City",
+            "nep_title": "Rehabilitation of Road and Drainage along Peacock St . (C0 + 000 to C0 + 380 ), Barangay Gen T. De Leon, Valenzuela City",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "f",
+          "francisco"
+        ],
+        "nep_tokens": [
+          "to",
+          "s",
+          "de",
+          "guzman"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.8655,
+            "status": "fuzzy_candidate",
+            "house_title": "Rehabilitation of Road and Drainage along Manukan (F. Francisco) (C0+000 to C0+277) , Barangay Parada, Valenzuela City",
+            "nep_title": "Rehabilitation of Road and Drainage along Manukan to S. De Guzman (C0 + 000 to C0 + 490 ), Barangay Parada, Valenzuela City",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "road"
+        ],
+        "nep_tokens": [
+          "roads"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.8921,
+            "status": "fuzzy_candidate",
+            "house_title": "Rehabilitation of Road and Drainage along Mangga St. (C 0+000 - C 0+509), Barangay 179, Caloocan City",
+            "nep_title": "Rehabilitation of Roads and Drainage along Tanigue St ., (C 0 + 000 - C 0 + 180 ), Barangay 14, Caloocan City",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "mangga"
+        ],
+        "nep_tokens": [
+          "tanigue"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.8921,
+            "status": "fuzzy_candidate",
+            "house_title": "Rehabilitation of Road and Drainage along Mangga St. (C 0+000 - C 0+509), Barangay 179, Caloocan City",
+            "nep_title": "Rehabilitation of Roads and Drainage along Tanigue St ., (C 0 + 000 - C 0 + 180 ), Barangay 14, Caloocan City",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "baguinge"
+        ],
+        "nep_tokens": [
+          "tuplac"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.8846,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Yuko - Duit Access Road, Baguinge, Kiangan, Ifugao",
+            "nep_title": "Construction of Yuko - Duit Access Road, Tuplac, Kiangan, Ifugao",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "patay"
+        ],
+        "nep_tokens": [
+          "poblacion"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.8936,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Road, Barangay Patay, Sagada, Mountain Province",
+            "nep_title": "Construction of Road, Barangay Poblacion, Sagada, Mountain Province",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "cuayang",
+          "bugtong"
+        ],
+        "nep_tokens": [
+          "cauayan"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.8966,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Road, Cuayang Bugtong, Candaba, Pampanga",
+            "nep_title": "Construction of Road, Cauayan, Candaba, Pampanga",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "san",
+          "francisco"
+        ],
+        "nep_tokens": [
+          "mainaga"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.885,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Barangay Road of San Francisco-Sto. Niño Section, Mabini, Batangas",
+            "nep_title": "Construction of Barangay Road of Mainaga-Sto. Ni ñ o Section, Mabini, Batangas",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "construction",
+          "of"
+        ],
+        "nep_tokens": [
+          "constructionl"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.982,
+            "status": "fuzzy_candidate",
+            "house_title": "Construction of Road including Drainage and Slope Protection, Barangay Padre Castillo, San Pascual, Batangas",
+            "nep_title": "Constructionl Road inIcuding Drainage and Slope Protection, Barangay Padre Castillo, San Pascual, Batangas",
+            "id": null
+          }
+        ]
+      },
+      {
+        "house_tokens": [
+          "alangilan"
+        ],
+        "nep_tokens": [
+          "haligue",
+          "kanluran"
+        ],
+        "count": 1,
+        "triage": "review",
+        "examples": [
+          {
+            "confidence": 0.878,
+            "status": "fuzzy_candidate",
+            "house_title": "Improvement of Road, Barangay Alangilan, Batangas City",
+            "nep_title": "Improvement of Road, Barangay Haligue Kanluran, Batangas City",
+            "id": null
+          }
+        ]
       }
     ]
   },
   "existing_abbrev": {
-    "exact_pairs_normalization_dependent": 357,
+    "exact_pairs_normalization_dependent": 369,
     "samples": [
       {
         "house_title": "Dipolog-Oroquieta National Rd - K1810 + 000 - K1813 + 005",
         "nep_title": "Dipolog-Oroguieta National Rd - K1810 + 000 - K1813 + 005",
+        "reason": "Titles match only after abbreviation/repeat normalization; raw spellings differ."
+      },
+      {
+        "house_title": "Isulan Jct-Ninoy Aquino Rd - K1845 + 263 - K1845 + 363, K1845 + 365 - K1845 + 507, K1845 + 627 - K1845 + 695",
+        "nep_title": "Isulan Jct-Ninoy Aguino Rd - K1845 + 263 - K1845 + 363, K1845 + 365 - K1845 + 507, K1845 + 627 - K1845 + 695",
         "reason": "Titles match only after abbreviation/repeat normalization; raw spellings differ."
       },
       {
@@ -11029,11 +9930,6 @@
       {
         "house_title": "Alfonso Lista-San Manuel Diversion Road, Sta. 8+622.5 - Sta. 11+600, Barangay Little Tadian, Ifugao",
         "nep_title": "Alfonso Lista-San Manuel Diversion Road, Sta. 8 + 622.5 - Sta. 11 + 600, Brgy. Little Tadian, Ifugao",
-        "reason": "Titles match only after abbreviation/repeat normalization; raw spellings differ."
-      },
-      {
-        "house_title": "Metro Dumaguete Diversion Road, Sta. 0+000 - Sta. 4+286, Barangay Magatas, Sibulan, Negros Oriental",
-        "nep_title": "Metro Dumaguete Diversion Road, Sta. 0 + 000 - Sta. 4 + 286, Brgy. Magatas, Sibulan, Negros Oriental",
         "reason": "Titles match only after abbreviation/repeat normalization; raw spellings differ."
       }
     ]

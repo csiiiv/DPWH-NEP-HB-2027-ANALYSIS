@@ -1,6 +1,6 @@
 # Normalization candidates
 
-Generated: 2026-10-11T05:06:07Z. Read-only mine over `source_comparison_2027.json`. Does not rewrite payloads.
+Generated: 2026-10-11T19:47:31Z. Read-only mine over `source_comparison_2027.json`. Does not rewrite payloads.
 
 ## Offices — promote
 
@@ -30,12 +30,12 @@ Paired House/NEP rows split only by office spelling: **108**.
 
 ## Titles — triage summary
 
-Fuzzy/chainage rows scanned: **493**.
-Substitution patterns: promote 4, reject 101, review 305.
+Fuzzy/chainage rows scanned: **385**.
+Substitution patterns: promote 2, reject 83, review 277.
 
 ### Existing abbreviation effect
 
-Exact pairs that already match only after Brgy./repeat normalization: **357**.
+Exact pairs that already match only after Brgy./repeat normalization: **369**.
 
 ### Promote (abbreviation / OCR / typo class)
 
@@ -45,58 +45,52 @@ Exact pairs that already match only after Brgy./repeat normalization: **357**.
 - 2× `['systems']` ↔ `['system']`
   - e.g. conf=0.8525: Construction of Flood Mitigation Structures and Drainage Systems along Iligan River (Ubald
     vs Construction of Flood Mitigation Structure and Drainage System along Iligan River (Puga-an
-- 1× `['orienta']` ↔ `['oriental']`
-  - e.g. conf=0.9948: Construction of Laguindingan-Iligan City Alternate Road, Barangay Ayaˇaya Section, Sta. 44
-    vs Construction of Laguindingan-Iligan City Alternate Road, Barangay Aya aya Section, Sta. 44
-- 1× `['abatan']` ↔ `['batan']`
-  - e.g. conf=0.9091: Construction of Multi-Purpose Building, Barangay Peñabatan, Pulilan, Bulacan
-    vs Construction (Completion) of Multi-Purpose Building, Barangay Pe ñ batan, Pulilan, Bulacan
 
 ### Review (inspect before adding rules)
 
-- 5× `['roque']` ↔ `['rogue']`
-- 4× `['pala', 'o']` ↔ `['puga', 'an']`
-- 3× `['aque']` ↔ `['ague']`
-- 3× `['agusan']` ↔ `['lanao']`
+- 2× `['aque']` ↔ `['ague']`
+- 2× `['pala', 'o']` ↔ `['puga', 'an']`
 - 2× `['ubaldo', 'laya', 'tubod']` ↔ `['puga', 'an']`
 - 2× `['granada']` ↔ `['alangilan']`
+- 2× `['san', 'agustin']` ↔ `['hall', 'barangay', 'nagbayan']`
 - 2× `['wakas']` ↔ `['opias']`
 - 2× `['anoling']` ↔ `['mahabang', 'lalim']`
-- 2× `['poblacion']` ↔ `['hall', 'barangay', 'alga']`
+- 2× `['building']` ↔ `['hall']`
 - 2× `['el', 'salvador', 'city']` ↔ `['lugait']`
-- 1× `['aquino']` ↔ `['aguino']`
 - 1× `['2', '880', '3', '760', 'secton']` ↔ `['10', '732', '5', 'sta', '10', '840', 'section']`
 - 1× `['ii']` ↔ `['iii']`
 - 1× `['12', '159', 'tiaong']` ↔ `['10', '305', 'san', 'antonio']`
 - 1× `['ni', 'o']` ↔ `['nino']`
-- 1× `['baguio']` ↔ `['baquio']`
-- 1× `['natl']` ↔ `['nati']`
 - 1× `['mitigation', 'structure']` ↔ `['control', 'wall']`
 - 1× `['sta', '27', '861']` ↔ `['and', 'utilities']`
 - 1× `['sta', '28', '693']` ↔ `['and', 'utilities']`
 - 1× `['bagumbayan']` ↔ `['bayunan']`
-- 1× `['r']` ↔ `['l']`
 - 1× `['tubod']` ↔ `['puga', 'an', 'sta', '0', '675', '00']`
 - 1× `['ubaldo', 'laya']` ↔ `['puga', 'an']`
 - 1× `['bislig']` ↔ `['bisliq']`
+- 1× `['c', '4']` ↔ `['luna']`
+- 1× `['along', 'f', 'carlos']` ↔ `['at', 'del', 'nacia', 'iv']`
+- 1× `['baesa']` ↔ `['barangay', 'sauyo']`
+- 1× `['balite', 'san', 'luis']` ↔ `['banalo', 'lobo']`
+- 1× `['santa', 'lucia', 'mauban']` ↔ `['sta', 'catalina', 'pagbilao']`
 
 ### Reject samples (work type / chainage / different entity)
 
-- 18× `['rehabilitation']` ↔ `['construction']`
-- 5× `['bridge']` ↔ `['footbridge']`
+- 20× `['rehabilitation']` ↔ `['construction']`
 - 2× `['construction']` ↔ `['improvement']`
 - 2× `['completion']` ↔ `['construction']`
 - 1× `['519']` ↔ `['469']`
 - 1× `['181']` ↔ `['197']`
 - 1× `['063']` ↔ `['187']`
-- 1× `['219']` ↔ `['671']`
-- 1× `['598']` ↔ `['973']`
-- 1× `['260']` ↔ `['000', 'k0465', '563']`
 - 1× `['k0460']` ↔ `['k0462']`
 - 1× `['k0460', '509']` ↔ `['k0463', '000']`
-- 1× `['k1528', '120', 'k1528', '500']` ↔ `['k1552', '068', 'k1552', '145']`
 - 1× `['014']` ↔ `['288', 'k0104', '449', 'k0104']`
-- 1× `['500']` ↔ `['620']`
+- 1× `['202']` ↔ `['059', '5', 'baguio', 'city']`
+- 1× `['11', '554']` ↔ `['8', '354']`
+- 1× `['11', '674']` ↔ `['10', '859']`
+- 1× `['12', '355']` ↔ `['10', '305']`
+- 1× `['16', '285']` ↔ `['11', '381', '46']`
+- 1× `['16', '325']` ↔ `['11', '474', '46']`
 
 ## Working from fuzzy matches
 

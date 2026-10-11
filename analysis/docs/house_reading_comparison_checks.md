@@ -1,9 +1,9 @@
 # House 2nd → 3rd reading comparison and office filters
 
-Date: **10 October 2026**. Both native House baselines remain retained. The
+Date: **12 October 2026**. Both native House baselines remain retained. The
 House/NEP candidate view continues to use the second reading; the stage
-comparison now includes a **House readings** tab comparing second and third
-reading operations allocations. Open `#compare?view=readings` in the app.
+comparison shows HGAB2/HGAB3 columns in both PAP totals and Project records
+(legacy `view=readings` links translate into Project records).
 
 ## Source scope and totals
 
@@ -62,8 +62,8 @@ native node numbers establish identity between readings.
 Unique keys pair directly. One repeated key in each reading is shown as a
 group with its complete source records and aggregate amount, without an
 invented individual pairing. Every operations allocation is consumed once.
-The table contains 16,268 unique same-amount pairs, one repeated-key group
-and five third-reading-only rows.
+The table contains 16,264 unique same-amount pairs, three repeated-key groups
+(two members each) and five third-reading-only rows.
 
 For ledger differences, an absent side contributes zero: **delta = third
 amount − second amount**. The absent source amount remains displayed as
@@ -73,6 +73,7 @@ reading. Row deltas sum to the printed operations difference of ₱134,000,000.
 The comparison defaults to **Changed allocations**. Users can inspect all
 records, same amounts, reading-only records, paired amount changes and
 repeated keys. Sorting applies to the entire filtered result before pagination.
+Fuzzy rows display identity-score chips and can be sorted by identity score.
 
 ## Region and engineering office filters
 
@@ -140,19 +141,21 @@ The adapter attaches the audited reading ledger through each second-reading
 record's retained `source_record_id`. It consumes every HGAB2 allocation once,
 keeps repeated keys grouped, and adds third-only records. Both House columns
 reconcile independently to their operations controls; NEP/API amounts are
-preserved. Project rows total 18,124, including one grouped repeated House key.
-The 46 PAP/FAP rows likewise reconcile, with two changed PAP controls (+₱68M
+preserved. Project rows total 17,613 on current data: 16,272 reading-keyed rows
+(16,264 same-amount pairs, three repeated-key groups and five HGAB3-only
+additions) plus 1,341 NEP-only rows. The 46 PAP/FAP rows likewise
+reconcile, with two changed PAP controls (+₱68M
 flood maintenance, +₱66M BIP access roads). Unmapped House controls remain
 unavailable. PAP PDF references now carry each reading's printed heading pages.
 
 
 ## Optional region join
 
-The 18,124-row count above is the strict comparison. Retained Central
+The 17,613-row count above is the strict comparison. Retained Central
 Office/region echo wrappers now attribute every FAP loan, so the former
 region-difference candidates match strictly and the optional
 **Region matching → Allow different regions · flag candidates** join has no
-remaining pairs to merge on current data (18,124 rows either way). The join
+remaining pairs to merge on current data (17,613 rows either way). The join
 remains available for future documents whose House and NEP listings genuinely
 carry different regions; it retains every source amount, source ID, PDF page
 and full tree path. Program and PAP labels may differ between joined records

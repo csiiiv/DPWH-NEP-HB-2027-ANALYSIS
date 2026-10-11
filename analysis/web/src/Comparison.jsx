@@ -230,7 +230,7 @@ export default function Comparison({ route }) {
         scopes.
       </p>
       <p className="muted">House allocations and titles use native Volume I-C; v5 is retired.
-        {" "}<a href="#house-nep">Inspect extraction controls and allocation candidates →</a>
+        {" "}<a href="#house?view=projects">Inspect project line items and source PDFs →</a>
       </p>
       <div className="cards stage-totals">
         <article>

@@ -28,15 +28,18 @@ live Transparency data or regenerate source outputs.
 | Hash route | Workspace |
 |---|---|
 | `#home` | Workbench map, review-candidate headlines, and source status |
+| `#highlights` | Ten media angles with dedicated evidence dialogs, DPWH coverage, and HGAB3-versus-NEP validated candidate change tables |
 | `#compare` | Stage comparison |
-| `#analysis` | Headlines, insertions, deletions, adjustments, chainage amendments (all-data overview · peer ₱/km benchmark · revised-pair patterns + records), statistics |
-| `#highlights` | Ten media angles with dedicated evidence dialogs, DPWH coverage, and HGAB3-versus-NEP candidate change tables |
+| `#analysis` | Headlines, insertions, deletions, adjustments, chainage amendments (all-data overview · peer ₱/km benchmark · revised-pair patterns + records), same-shell groupings, statistics |
 | `#house` | Third-reading native I-B totals and controls; reading and project-view toggles |
 | `#nep` | DBM NEP verification |
 | `#transparency` | Transparency NEP verification |
 | `#resources` | Direct links to the latest workable JSON and audit docs |
-| `#house-nep` | Native I-C / NEP allocation candidates |
-| `#nep-detail` | Detailed NEP tree |
+| `#about` | Workbench overview, disclaimer, build model, and rendered project documentation |
+
+`#house-nep` (House / NEP detail) and `#nep-detail` (NEP detail) are legacy
+routes without header tabs; they stay reachable for old viewer-URL redirects.
+Their content is superseded by `#house?view=projects`, `#compare`, and `#nep`.
 
 Use `#nep?view=review` for the source queue, `node` for a verification entity ID,
 and `section` for an in-page destination. Unknown routes show a recovery link.
@@ -128,9 +131,11 @@ python scripts/validate_current_pages.py
 Both **PAP totals** and **Project records** show HGAB2 (second reading), HGAB3
 (third reading), and HGAB3-minus-HGAB2 beside Transparency and NEP. HGAB3 is the
 latest House reading; the former generic House column was HGAB2. All records are shown by default. **Match status** filters identity quality
-(`matched`, `matched_normalized`, `fuzzy`, `chainage`, `ambiguous`, `no_match`).
+(`matched`, `matched_normalized`, `matched_chainage`, `matched_location`,
+`matched_soft`, `matched_scope`, `fuzzy`, `ambiguous`, `no_match`).
 **Flags** cover presence and coverage (`house_only`, `nep_only`,
-`nep_only_suggested`, amount up/down, Transparency gap / outside scope). House
+`nep_only_suggested`, amount up/down, Transparency gap / outside scope,
+grouping flags, and per-tag fuzzy title-difference queues). House
 reading change stays on HGAB2↔HGAB3 ledger differences. Share with
 `#compare?view=projects&match=fuzzy` or `&flag=house_only`.
 The operations increase is ₱134,000,000, offset by Support to Operations.
@@ -224,6 +229,9 @@ cards with a sorting control. Search and program selections persist across tabs.
 from the retained inputs before development/build and during site packaging.
 Input hashes prevent mixing builds; unit checks compare compact source amounts,
 identities, assignments, page evidence and grouped records with the full ledger.
+Pages and heroes frame each workspace; Analysis subtabs open with headline
+cards, and PDF source anchors throughout the app (including Highlights
+dialogs and Resources) open the shared PDF.js modal at the recorded file page.
 
 After packaging, `python3 scripts/check_comparison_workspace.py` checks lazy
 loading, desktop/mobile layouts, preserved filters, exact filtered exports and
@@ -237,12 +245,20 @@ bucket across programs. Overview includes a **NEP → HGAB by region / office / 
 table (House−NEP amount and percent). Under each region/office/PAP group name,
 **Show by …** disclosure buttons open a nested breakdown that conserves the
 parent’s record and allocation totals (regions/offices → PAPs; PAPs → regions
-or district offices). House-only rankings separate records without NEP suggestions, unresolved
+or district offices); the nested drill is itself shareable (`drill=` + `axis=`).
+House-only rankings separate records without NEP suggestions, unresolved
 suggestions and third-reading-only records. The **Deletions** subtab mirrors that
 layout for NEP-only rows (no House record), split into no suggestion, possible
 replacements (House rows name this NEP item as a counterpart), and HGAB2-only.
-Ranked group drill-downs deep-link into Compare with the matching `change=` filter.
-Source and ranking selections are shareable as
+The **Adjustments** subtab shows cross-document House-vs-NEP differences on
+paired candidate rows by dimension, followed by the smaller HGAB2→HGAB3
+reading ledger. **Chainage** splits into scope × stage views (all-data
+overview/benchmark versus revised-pair patterns/records) with modus
+classifications and a peer ₱/km benchmark. **Groupings** renders the
+same-shell sidecar with region rollups and shareable member modals; **Statistics**
+covers rounding, Benford and value clustering. Ranked group drill-downs
+deep-link into Compare with the matching flag filter, and `table=` deep links
+scroll to a specific table. Source and ranking selections are shareable as
 `#analysis?source=third&ranking=no_suggestion` and
 `#analysis?view=deletions&ranking=suggested`.
 ## Highlights workspace
@@ -257,11 +273,18 @@ the total row explicitly covers DPWH only.
 comparison, source distributions, same-shell groupings and chainage units.
 The overview and detail input hashes include both supplementary inputs.
 Counts represent source allocation records, with grouped members counted
-once. Insertions/deletions use full unpaired allocations; increases/decreases
-use absolute paired amount differences, including FAP. The four columns
-reconcile exactly to the operations delta. Unresolved suggestions remain
-unpaired and are disclosed; the table does not certify policy amendments.
-The grouping story uses HGAB2, while the change table uses HGAB3.
+once. The four change columns count **validated candidates only**:
+unpaired rows with a plausible-but-unverified counterpart — House rows with
+retained NEP suggestions, and NEP-only rows that unmatched House rows name
+as possible re-titled replacements — are held out of the columns and the
+reconciliation (389 insertion rows worth ₱10.52B and 273 deletion rows worth
+₱8.08B on current data). The full buckets (validated + held) still reconcile
+exactly to the printed operations delta of ₱14.15B; the validated subset
+reconciles to ₱11.71B. A traceability table and bridge disclose the held
+rows, and the coverage note names the overhead controls (GAS + Support to
+Operations) that sit above the operations tables in both sources. The table
+does not certify policy amendments. The grouping story uses HGAB2, while the
+change table uses HGAB3.
 
 Each story opens a dedicated evidence dialog through its shareable
 `#highlights?story=…` URL. The dialogs have subject-specific hero figures,

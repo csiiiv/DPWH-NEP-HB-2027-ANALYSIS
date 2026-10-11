@@ -13,6 +13,7 @@ import ChainageGuide,{Term,GUIDE_CONCEPTS} from './ChainageGuide.jsx';
 import {formatLengthKm,formatSignedKm} from './chainageDisplay.js';
 import {officeName,regionName} from './regionNames.js';
 import {openModalDialog} from './modalLifecycle.js';
+import LoadingModal from './LoadingModal.jsx';
 const GroupProjectsModal=lazy(()=>import('./GroupProjectsModal.jsx'));
 const names={third:'HGAB3 · 3rd reading',second:'HGAB2 · 2nd reading',nep:'DBM NEP',api:'DPWH Transparency NEP'};
 const labels={'Bridge Program':'Bridges','Convergence and Special Support Program':'CSSP','Foreign-assisted projects':'FAPs'};
@@ -71,6 +72,9 @@ export default function Analysis({route}){
  // Detail rows load lazily for deletions/adjustments/chainage/statistics, or when a group modal opens.
  useEffect(()=>{
   if((!['deletions','adjustments','chainage','statistics'].includes(view)&&!group)||!data||detail)return;
+  // Warm the modal chunk alongside the payload so the loading dialog swaps
+  // straight into the real modal — no second waiting state.
+  import('./GroupProjectsModal.jsx').catch(()=>{});
   const c=new AbortController();loadData('comparison_projects_2027.json',c.signal)
    .then(payload=>setDetail(hydrateProjects(payload))).catch(e=>{if(e.name!=='AbortError')setError(e.message);});
   return()=>c.abort();
@@ -108,7 +112,13 @@ export default function Analysis({route}){
   },80);
   return ()=>clearTimeout(t);
  },[tableTarget,data,detail,roadGroups]);
- function change(key,value){const params=Object.fromEntries(route.params);params[key]=value;window.location.hash=routeHref('analysis',params);}
+ function change(key,value){const params=Object.fromEntries(route.params);params[key]=value;
+  // View switches start the new view from its own defaults: a degenerate
+  // dim=overall would otherwise ride along and pin the one-row overview
+  // table (or hide aggregates) on every tab. Modal and deep-link params
+  // belong to the old view and never survive a tab change.
+  if(key==='view'){if(params.dim==='overall')delete params.dim;for(const stale of ['drill','axis','table'])delete params[stale];}
+  window.location.hash=routeHref('analysis',params);}
  // Modal open/close writes the modal params into the hash — shareable links,
  // and the browser back button closes the dialog.
  function openModal(params){const next=Object.fromEntries(route.params);Object.assign(next,params);window.location.hash=routeHref('analysis',next);}
@@ -141,7 +151,15 @@ export default function Analysis({route}){
   {view==='chainage'&&<Chainage detail={detail} focus={chainageFocus} change={change} benchmark={benchmark} setBenchmark={setBenchmark} stage={chainageStage} scope={chainageScope}/>}
   {view==='roadgroups'&&<RoadGroups payload={roadGroups} open={shellOpen} onOpenShell={g=>openModal({shell:g.shell,side:g.state==='nep_leftover'?'nep':'hgab',zone:g.zone||'',pap:g.pap||'',region:g.region||''})} onClose={closeModal}/>}
   {view==='statistics'&&detail&&<Statistics detail={detail} source={source} dim={dim} change={change}/>}
-  {group&&detail&&<Suspense fallback={null}><GroupProjectsModal projects={detail} group={group} onClose={closeModal}/></Suspense>}
+  {/* Heavy-modal loading states: group records need the 50 MB per-record payload
+      (plus a lazy chunk), shell members need the road-group sidecar. Until the
+      payload lands a modal-shaped loading dialog keeps the user oriented and
+      the modal contract intact (backdrop, scroll lock, Esc cancels). */}
+  {group&&!detail&&<LoadingModal eyebrow="GROUP RECORDS" title={group.displayLabel} note="Loading per-record comparison data — a large payload fetched once per session." onClose={closeModal}/>}
+  {group&&detail&&<Suspense fallback={<LoadingModal eyebrow="GROUP RECORDS" title={group.displayLabel} note="Opening group records…" onClose={closeModal}/>}>
+   <GroupProjectsModal projects={detail} group={group} onClose={closeModal}/>
+  </Suspense>}
+  {view==='roadgroups'&&shellOpen&&!roadGroups&&<LoadingModal eyebrow="SHELL GROUPING" title={shellOpen.shell} note="Loading road-group candidates…" onClose={closeModal}/>}
  </div>;
 }
 const reading=source=>['second','third'].includes(source)?source:'third';
@@ -270,7 +288,7 @@ function Insertions({headlines,reading,ranking,dim,change,onOpenGroup}){
   {dim!=='overall'&&<AggregateTable tableId={`insertions-by-${dim}`} title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
    onOpenGroup={g=>onOpenGroup({scope:'insertions',reading,ranking,dim,label:g.label,displayLabel:groupLabel(dim,g.label)})}/>}
   <SortableTable tableId="insertions-top" ariaLabel="Top insertion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
-   {key:'rank',label:'#',sortable:false,render:(r,i)=><span>{i+1}</span>},
+   {key:'rank',label:'#',sortable:false,width:'1%',render:(r,i)=><span>{i+1}</span>},
    {key:'title',label:'Project / assignment',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {regionName(r.region)} · {officeName(r.office)||'No recorded office'}</small></span>},
    {key:'amount_php',label:'Allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
    {key:'allocation_records',label:'Records / status',align:'num',render:r=><span>{r.allocation_records} source allocation {r.allocation_records===1?'record':'records'}<small>{r.trace.replaceAll('_',' ')}</small></span>},
@@ -293,7 +311,7 @@ function Deletions({headlines,ranking,dim,change,onOpenGroup}){
   {dim!=='overall'&&<AggregateTable tableId={`deletions-by-${dim}`} title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
    onOpenGroup={g=>onOpenGroup({scope:'deletions',ranking,dim,label:g.label,displayLabel:groupLabel(dim,g.label)})}/>}
   <SortableTable tableId="deletions-top" ariaLabel="Top deletion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
-   {key:'rank',label:'#',sortable:false,render:(r,i)=><span>{i+1}</span>},
+   {key:'rank',label:'#',sortable:false,width:'1%',render:(r,i)=><span>{i+1}</span>},
    {key:'title',label:'Project / assignment',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {regionName(r.region)} · {officeName(r.office)||'No recorded office'}</small></span>},
    {key:'amount_php',label:'NEP allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
    {key:'allocation_records',label:'Records / status',align:'num',render:r=><span>{r.allocation_records} NEP allocation {r.allocation_records===1?'record':'records'}<small>{r.trace.replaceAll('_',' ')}</small></span>},
@@ -323,21 +341,11 @@ function Adjustments({detail,revisionSets,dim,direction,change,onOpenGroup}){
  const byDim=useMemo(()=>dim==='overall'?null:differenceByDimension(cross,dim),[cross,dim]);
  return <>
   <div className="cards analysis-headlines">
-   <article><h3>Reading adjustments</h3><strong>{revisionSets.reading.length.toLocaleString()}</strong><p>HGAB3 vs HGAB2 · retained matching key</p></article>
-   <article><h3>Reading net Δ</h3><strong>{signedCell(revisionSets.delta_php)}</strong><p>2nd → 3rd · repeated keys remain grouped</p></article>
    <article><h3>House vs NEP pairs</h3><strong>{cross.length.toLocaleString()}</strong><p>Unequal-amount candidate pairs</p></article>
    <article><h3>Cross-doc net</h3><strong>{signedCell(totals.net)}</strong><p>Increased {signedCell(totals.increased)} · decreased {signedCell(-totals.decreased)}</p></article>
+   <article><h3>Reading adjustments</h3><strong>{revisionSets.reading.length.toLocaleString()}</strong><p>HGAB3 vs HGAB2 · retained matching key</p></article>
+   <article><h3>Reading net Δ</h3><strong>{signedCell(revisionSets.delta_php)}</strong><p>2nd → 3rd · repeated keys remain grouped</p></article>
   </div>
-  <section className="analysis-section"><h2>Reading adjustments · HGAB3 vs HGAB2</h2>
-   <p className="notice">Recorded 2nd→3rd reading differences under the retained matching key: {revisionSets.reading.length.toLocaleString()} rows · net {amount(revisionSets.delta_php)}. Repeated keys remain grouped.</p>
-   <SortableTable tableId="adjustments-reading" ariaLabel="Reading adjustments" initialSort={{key:'reading_delta_php',direction:'desc'}} rows={revisionSets.reading} columns={[
-    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {regionName(r.region)}</small></span>},
-    {key:'second_php',label:'HGAB2',align:'num',render:r=>r.second_php!=null?amountCell(r.second_php):<span>—</span>},
-    {key:'third_php',label:'HGAB3',align:'num',render:r=>r.third_php!=null?amountCell(r.third_php):<span>—</span>},
-    {key:'reading_delta_php',label:'Δ',align:'num',render:r=>r.reading_delta_php!=null?signedCell(r.reading_delta_php):<span>new in HGAB3</span>},
-    {key:'pct',label:'% change',align:'num',value:r=>percentChange(r.third_php,r.second_php),render:r=>signedPercent(percentChange(r.third_php,r.second_php))},
-   ]}/>
-  </section>
   <section className="analysis-section"><h2>House vs NEP differences · provisional identity</h2>
    <DimensionChips dim={dim} change={change}/>
    <div className="analysis-controls"><label>Direction<select aria-label="Revision direction" value={direction} onChange={e=>change('direction',e.target.value)}><option value="increased">Most increased (House above NEP)</option><option value="reduced">Most reduced (House below NEP)</option></select></label></div>
@@ -351,6 +359,16 @@ function Adjustments({detail,revisionSets,dim,direction,change,onOpenGroup}){
     {key:'nep_php',label:'NEP',align:'num',render:r=>r.nep_php!=null?amountCell(r.nep_php):<span>—</span>},
     {key:'gap',label:'House − NEP',align:'num',render:r=>signedCell(r.gap)},
     {key:'pct',label:'% change',align:'num',render:r=>signedPercent(r.pct)},
+   ]}/>
+  </section>
+  <section className="analysis-section"><h2>Reading adjustments · HGAB3 vs HGAB2</h2>
+   <p className="notice">Recorded 2nd→3rd reading differences under the retained matching key: {revisionSets.reading.length.toLocaleString()} rows · net {amount(revisionSets.delta_php)}. Repeated keys remain grouped. This ledger is far smaller than the cross-document comparison above — reading edits only, not House-versus-NEP changes.</p>
+   <SortableTable tableId="adjustments-reading" ariaLabel="Reading adjustments" initialSort={{key:'reading_delta_php',direction:'desc'}} rows={revisionSets.reading} columns={[
+    {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{short(r.program)} · {regionName(r.region)}</small></span>},
+    {key:'second_php',label:'HGAB2',align:'num',render:r=>r.second_php!=null?amountCell(r.second_php):<span>—</span>},
+    {key:'third_php',label:'HGAB3',align:'num',render:r=>r.third_php!=null?amountCell(r.third_php):<span>—</span>},
+    {key:'reading_delta_php',label:'Δ',align:'num',render:r=>r.reading_delta_php!=null?signedCell(r.reading_delta_php):<span>new in HGAB3</span>},
+    {key:'pct',label:'% change',align:'num',value:r=>percentChange(r.third_php,r.second_php),render:r=>signedPercent(percentChange(r.third_php,r.second_php))},
    ]}/>
   </section>
  </>;

@@ -1,6 +1,6 @@
 # Shareable data findings
 
-The React workbench stores active searches and filters in its hash routes.
+Updated: **12 October 2026**. The React workbench stores active searches and filters in its hash routes.
 Use **Copy link**, **Link to this finding**, or copy the browser address.
 Opening the URL loads the source data and applies those settings. Editing
 filters updates the current history entry without reloading data; Back and
@@ -19,9 +19,11 @@ Supported parameters:
 | `view` | `paps`, `projects`, or `gaps` |
 | `q` | Search text |
 | `program`, `region`, `office` | Exact recorded filter values; use the UI to obtain the office key |
-| `status` | NEP/HGAB2 candidate match status |
+| `match` | Identity match status (`matched`, `matched_normalized`, `matched_chainage`, `matched_location`, `matched_soft`, `matched_scope`, `fuzzy`, `ambiguous`, `no_match`) |
+| `flag` | Presence/coverage flag: `house_only`, `nep_only`, `nep_only_all`, `nep_only_suggested`, `amount_increase`, `amount_decrease`, `transparency_gap`, `outside_api`, `group_exhausted`, `group_nep_leftover`, or `diff:<tag>` fuzzy title-difference tags |
+| `status` | Legacy deep-link trace value; mapped onto match/flag on load |
 | `change` | House reading change: `reading_changed`, `third_only`, `same_amount`, `amount_changed`, `second_only`, `repeated_key`, or `no_house_record` |
-| `sort` | `title`, stage index `0`/`1`/`2`/`3`, `reading_delta`, or listing-gap `amount`/`region`/`pdf_page`, depending on table |
+| `sort` | `title`, stage index `0`/`1`/`2`/`3`, `reading_delta`, `identity_score`, or listing-gap `amount`/`region`/`pdf_page`, depending on table |
 | `metric` | `total`, `delta`, or `percent` |
 | `order` | `asc` (default) or `desc` |
 | `record`, `path_source` | Expanded project record ID and selected tree source (`third`, `second`, `nep`, `api`) |
@@ -159,8 +161,10 @@ dataset downloads remain in the source-context section.
 
 The build generates `comparison_overview_2027.json` and
 `comparison_projects_2027.json` from the retained stage trace and House reading
-comparison. The initial overview is about **82 KB** (including Analysis headlines); Project records lazily loads
-about **26 MB**, compared with about **86 MB** for both original inputs. Sizes are
+comparison. The initial overview is about **1.9 MB** (including Analysis
+headlines and Highlights data); Project records lazily loads about **50 MB**,
+plus about **15 MB** for `highlights_details_2027.json` when a Highlights
+dialog opens, compared with about **93 MB** for the original inputs. Sizes are
 uncompressed. Compact sources preserve original amounts, identities, recorded
 assignments, evidence and page references; repeated fields are restored on load.
 Both payloads carry their input SHA-256 hashes and a mixed-build pair is rejected.
@@ -204,7 +208,13 @@ The score is a normalized-title similarity measure, not a calibrated probability
 Fuzzy matching retains up to three suggestions above 0.85 from a token-overlap
 shortlist of at most 20 unmatched NEP records in the same region/PAP/funding scope.
 Common abbreviation variants (`Brgy.`/`Barangay`) and repeated-token doubling
-(`Sta. Sta.`) are normalized before matching. When a suggestion differs from the
+(`Sta. Sta.`) are normalized before matching. Each suggestion also carries
+`identity_score` (text similarity minus place-mismatch penalties, with GPS-same
+and weak amount-agreement signals), used to rank suggestions and shown as a
+chip on fuzzy rows; the table can sort by identity score. Residual title
+differences are classified into `diff_tags` (different barangay/municipality/
+street, chainage digits, work-type change, spelling/OCR, and so on), each
+selectable as its own review queue through `flag=diff:<tag>`. When a suggestion differs from the
 House title only in chainage or station numbers, the row is labeled a
 **Same road · different chainage** candidate instead: that pattern usually
 reflects re-segmentation or coverage amendments rather than a new insertion.
@@ -271,3 +281,26 @@ way: no House suggestion, possible replacements (with referring House-row
 counts), and HGAB2-only. Dimension aggregates and group modals deep-link into
 Compare with `flag=nep_only` or `flag=nep_only_suggested`. Shared routes
 preserve source and ranking selections.
+
+**Adjustments** (`#analysis?view=adjustments`) shows unequal-amount House-vs-NEP
+candidate pairs by region/office/category/PAP with an increased/reduced
+direction control, followed by the HGAB2→HGAB3 reading ledger. **Chainage**
+(`#analysis?view=chainage`) splits into all-data overview and peer ₱/km
+benchmark versus revised-pair patterns and records (`scope=all|revised`,
+`stage=overview|benchmark|patterns|records`, `focus=` length/modus filters).
+**Groupings** (`#analysis?view=roadgroups`) renders same-shell insertion and
+deletion candidate groups with region rollups and member modals; **Statistics**
+covers rounding, Benford and value clustering. `table=` deep links scroll to a
+named table, and drill-downs are shareable via `drill=` + `axis=`.
+
+### Highlights
+
+`#highlights` presents ten media angles with two tables (operations coverage
+and HGAB3-vs-NEP validated candidate changes). The four change columns count
+validated candidates only — rows with plausible-but-unverified counterparts are
+held out and disclosed in a traceability table; the full buckets still
+reconcile to the printed operations delta. Each story opens a dedicated
+evidence dialog via `#highlights?story=<id>` (ids: `funding-shift`,
+`multi-purpose`, `caloocan`, `flood-priorities`, `house-only`, `groupings`,
+`regional-gains`, `office-capacity`, `shorter-works`, `rainwater`). Dialogs
+lazily load `highlights_details_2027.json`.

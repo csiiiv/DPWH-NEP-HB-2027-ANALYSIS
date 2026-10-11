@@ -48,6 +48,9 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,
   return groups;
  },[columns]);
  const cellClass=column=>[column.align||'',column.band?`band-${column.band}`:'',column.divider?'col-divider':''].filter(Boolean).join(' ');
+ // Optional per-column width hint (e.g. '1%' for rank columns) applied to the
+ // header and body cells so narrow columns stay narrow in auto table layout.
+ const cellStyle=column=>column.width?{width:column.width}:undefined;
  // # anchor: rewrites the current analysis hash with table=<id>, preserving
  // every other param (view, source, dim…) so the link is copy-paste ready.
  const linkTable=()=>{
@@ -60,13 +63,17 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,
  return <div id={linked?`table-${tableId}`:undefined} className={`sortable-table${bandHeader?' has-bands':''}${targeted?' table-target':''}`} role="region" aria-label={ariaLabel} tabIndex={0}>
   <table>
    <thead>
-    {bandHeader&&<tr className="band-row">{bandHeader.map((group,i)=>
+    {bandHeader&&<tr className="band-row">
+     {/* The link column exists only in the column header row; emit a
+         matching spacer so band labels align with their columns. */}
+     {linked&&<th scope="col" className="table-link-col band-spacer" aria-hidden="true"></th>}
+     {bandHeader.map((group,i)=>
      <th key={`${group.band||'g'}-${i}`} colSpan={group.span} scope="col"
       className={[group.band?`band-${group.band}`:'',group.divider?'col-divider':'',group.label?'':'band-spacer'].filter(Boolean).join(' ')}>
       {group.label||'\u00a0'}
      </th>)}</tr>}
     <tr>{linked&&<th scope="col" className="table-link-col"><button type="button" className="table-link" title={`Link to this table (${tableId})`} aria-label={`Copy link to ${ariaLabel}`} onClick={linkTable}>#</button></th>}
-    {columns.map(column=><th key={column.key} scope="col" className={cellClass(column)}
+    {columns.map(column=><th key={column.key} scope="col" className={cellClass(column)} style={cellStyle(column)}
      aria-sort={sort?.key===column.key?(sort.direction==='asc'?'ascending':'descending'):'none'}>
      {column.sortable===false?<span className="th-label">{column.label}</span>
       :<button type="button" className="th-sort" onClick={()=>toggle(column.key)} title={column.title||`Sort by ${column.label}`}>
@@ -78,8 +85,8 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,
    <tbody>{sorted.map((row,i)=><tr key={row.id??i}>{linked&&<td className="table-link-col"/>}{columns.map(column=>{
      const Tag=column.scope==='row'?'th':'td';
      return column.render
-      ?<Tag key={column.key} className={cellClass(column)}>{column.render(row,i)}</Tag>
-      :<Tag key={column.key} className={cellClass(column)}>{formatCell(column.value?column.value(row):row[column.key])}</Tag>;
+      ?<Tag key={column.key} className={cellClass(column)} style={cellStyle(column)}>{column.render(row,i)}</Tag>
+      :<Tag key={column.key} className={cellClass(column)} style={cellStyle(column)}>{formatCell(column.value?column.value(row):row[column.key])}</Tag>;
    })}</tr>)}
     {!rows.length&&<tr><td colSpan={columns.length+(linked?1:0)}>{empty||'No rows.'}</td></tr>}
    </tbody>

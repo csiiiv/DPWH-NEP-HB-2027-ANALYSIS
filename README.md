@@ -59,7 +59,7 @@ Inside `analysis/`, current code and datasets are split by role — see
 
 ## Latest usable datasets
 
-Status as of **10 October 2026**. Monetary values in the generated datasets are
+Status as of **12 October 2026**. Monetary values in the generated datasets are
 integer Philippine pesos after converting API values from thousands of pesos. The complete NEP baseline covers **new appropriations**;
 automatic appropriations are excluded.
 
@@ -179,20 +179,25 @@ commits, snapshots, and provenance identify the material actually used.
 
 ## Current application
 
-All nine workspaces use one React shell and shared navigation. Hash routes
+All eleven workspaces use one React shell and shared navigation. Hash routes
 support refresh and browser history under the GitHub Pages project prefix.
 
 | Workspace | App route | Purpose |
 |---|---|---|
 | Overview | [Home](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#home) | Workbench map, review-candidate headlines, and independent source status |
+| Highlights | [Highlights](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#highlights) | Ten media angles with evidence dialogs, DPWH coverage, and validated HGAB3-vs-NEP candidate changes |
 | Compare budget stages | [Compare](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#compare) | PAP totals, project candidates, and Transparency listing gaps |
-| Analysis | [Analysis](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#analysis) | Office/program counts, ranked insertions, NEP-only deletions (with possible replacements), adjustments, chainage amendments, and statistics |
+| Analysis | [Analysis](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#analysis) | Office/program counts, ranked insertions, NEP-only deletions (with possible replacements), adjustments, chainage amendments, same-shell groupings, and statistics |
 | House GAB | [House tree](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#house) | Native I-B hierarchy, expenditure columns, and recursive rollups |
 | DBM NEP | [DBM tree](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#nep) | PS/MOOE/CO hierarchy, progressive rollups, and source review |
 | DPWH Transparency NEP | [Transparency tree](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#transparency) | Retained listing hierarchy and snapshot checks |
 | Resources | [Resources](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#resources) | Direct links to the latest workable JSON datasets and audit docs |
-| House / NEP detail | [Detail comparison](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#house-nep) | Printed controls, local/FAP program totals, extraction gaps, and candidates |
-| NEP detail | [Detail tree](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#nep-detail) | Expense/program tree and native-text evidence |
+| About | [About](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#about) | Project overview, disclaimer, build method, and links to the READMEs and guides |
+
+The former **House / NEP detail** (`#house-nep`) and **NEP detail** (`#nep-detail`)
+workspaces are no longer in the navigation: they remain reachable as legacy
+redirect targets for old viewer URLs, but their content is superseded by the
+House GAB project view, Compare, and the DBM NEP workspace.
 
 Comparison headers sort the full filtered result before pagination. Amount
 headers offer total, delta, and percent sorting; choosing the same mode reverses
@@ -215,8 +220,8 @@ tree has no established PDF mapping.
 
 The root and six former `analysis/*.html` viewer URLs redirect into the app,
 including review/section fragments. Checkout-style `analysis/viewers/*.html`
-and `site/index.html` aliases are also packaged. Both README links appear in the
-shared header. Reports open rendered Markdown on GitHub. Historical analysis
+and `site/index.html` aliases are also packaged. Both README links moved to the in-app [About](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/#about)
+page. Reports open rendered Markdown on GitHub. Historical analysis
 remains in [the archive](analysis/archive/README.md), outside the current app.
 
 React owns routing, loading, shared navigation, and PDF selection. Verification

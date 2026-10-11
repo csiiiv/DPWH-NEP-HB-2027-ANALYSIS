@@ -5,6 +5,7 @@ import {routeHref} from './routes.js';
 import {regionName} from './regionNames.js';
 import ShareLink from './ShareLink.jsx';
 import {PdfSourceLink} from './PdfSourceModal.jsx';
+import LoadingModal from './LoadingModal.jsx';
 import './Highlights.css';
 import {hydrateHighlightDetails} from './highlightDetails.js';
 const HighlightModal=lazy(()=>import('./HighlightModal.jsx'));
@@ -22,6 +23,13 @@ function AllocationCell({value,change=false,href}){
  return href?<a className="highlights-cell-link" href={href}>{content}</a>:<div className="highlights-cell-value">{content}</div>;
 }
 
+// Split buckets carry comparison rows and amounts only (no grouped member
+// counts), so they render through a dedicated cell instead of AllocationCell.
+function SplitCell({value}){
+ if(!value)return <span className="highlights-unavailable">Not covered</span>;
+ return <div className="highlights-cell-value"><strong>{number(value.comparison_rows)} comparison rows</strong><span title={exact(value.amount_php)}>Worth {amount(value.amount_php)}</span></div>;
+}
+
 function CoverageTable({data}){
  return <section className="analysis-section highlights-table-section" aria-labelledby="coverage-heading">
   <h2 id="coverage-heading">Budget coverage by stage</h2>
@@ -37,7 +45,7 @@ function CoverageTable({data}){
     })}</tbody>
    </table>
   </div>
-  <p className="muted">Coverage is DPWH only. Other agencies are unavailable, rather than zero. Counts are source allocation records, not independently verified or deduplicated projects across stages. Funding components and parent controls are not counted again. Full agency new appropriations: NEP {amount(data.agency.nep_php)}; both House readings {amount(data.agency.house_php)}.</p>
+  <p className="muted">Coverage is DPWH only. Other agencies are unavailable, rather than zero. Counts are source allocation records, not independently verified or deduplicated projects across stages. Funding components and parent controls are not counted again. Operations exclude the overhead controls above them: NEP {amount(data.controls.nep_php)} and HGAB3 {amount(data.controls.third_php)} of General Administration and Support plus Support to Operations sit outside these tables. Full agency new appropriations: NEP {amount(data.agency.nep_php)}; both House readings {amount(data.agency.house_php)}.</p>
  </section>;
 }
 
@@ -58,8 +66,25 @@ function ChangesTable({data}){
     })}</tbody>
    </table>
   </div>
-  <p className="muted">Insertions mean no attached NEP record; deletions mean no attached third-reading House record. Neither is a certified policy change. The insertion column includes {number(data.unresolved_insertions)} comparison rows with unresolved suggestions; a suggested pair can appear in both candidate columns. Counts include grouped allocation members.</p>
-  <div className="highlights-bridge"><strong>Operations change reconciles to {amount(data.net_change_php)}</strong><span>{amount(data.changes.insertions.amount_php)} − {amount(data.changes.deletions.amount_php)} + {amount(data.changes.increased.amount_php)} − {amount(data.changes.decreased.amount_php)} = {amount(data.net_change_php)}</span><small>{number(data.changes.unchanged.records)} attached allocation records have unchanged amounts and are outside the four change columns. Amounts shown are rounded; the reconciliation uses exact pesos.</small></div>
+  <p className="muted">Insertions mean no attached NEP record; deletions mean no attached third-reading House record. Neither is a certified policy change. Only validated candidates are counted: rows with plausible-but-unverified counterparts are held out — {number(data.unresolved_insertions)} insertion rows and {number(data.deletion_split.suggested.comparison_rows)} deletion rows. Counts include grouped allocation members.</p>
+  <div className="table-scroll highlights-splits" role="region" aria-label="Candidate ambiguity split" tabIndex={0}>
+   <table className="highlights-table"><caption>Traceability split of the candidate columns · {number(data.traceability.rows)} rows worth {amount(data.traceability.amount_php)} cannot be matched line-to-line by title</caption>
+    <thead><tr><th scope="col">Candidate column</th><th scope="col">No counterpart found</th><th scope="col">Plausible counterpart · unresolved</th><th scope="col">Total</th></tr></thead>
+    <tbody>
+     <tr><th scope="row">Insertion candidates</th>
+      <td><SplitCell value={data.insertion_split.no_suggestion}/></td>
+      <td><SplitCell value={data.insertion_split.unresolved}/></td>
+      <td><AllocationCell value={data.changes_full.insertions}/></td></tr>
+     <tr><th scope="row">Deletion candidates</th>
+      <td><SplitCell value={data.deletion_split.no_suggestion}/></td>
+      <td><SplitCell value={data.deletion_split.suggested}/></td>
+      <td><AllocationCell value={data.changes_full.deletions}/></td></tr>
+    </tbody>
+   </table>
+  </div>
+  <div className="highlights-bridge highlights-traceability"><strong>{number(data.traceability.rows)} candidate rows worth {amount(data.traceability.amount_php)} cannot be traced line-to-line from NEP to House</strong><span>{number(data.insertion_split.unresolved.comparison_rows)} House lines ({amount(data.insertion_split.unresolved.amount_php)}) resemble existing NEP projects but were not paired; {number(data.deletion_split.suggested.comparison_rows)} NEP lines ({amount(data.deletion_split.suggested.amount_php)}) are named by unmatched House rows as possible re-titled replacements. Title continuity is broken for these items — the printed records alone do not say which NEP project they continue.</span><small>These rows are held out of the insertion and deletion columns above until verified, and they are excluded from the change reconciliation. Each one must be checked against the original printed pages before it is described as new, deleted or replaced. This is a property of the printed documents, not a defect in the review method.</small></div>
+  <div className="highlights-bridge"><strong>Validated change reconciles to {amount(data.validated_net_php)}</strong><span>{amount(data.changes.insertions.amount_php)} − {amount(data.changes.deletions.amount_php)} + {amount(data.changes.increased.amount_php)} − {amount(data.changes.decreased.amount_php)} = {amount(data.validated_net_php)}</span><small>The full candidate bridge — including the {number(data.traceability.rows)} held rows — reconciles to the printed operations change of {amount(data.net_change_php)}. {number(data.changes.unchanged.records)} attached allocation records have unchanged amounts and are outside the four change columns. Amounts shown are rounded; the reconciliations use exact pesos.</small></div>
+  <div className="highlights-bridge highlights-controls"><strong>Controls above the project layer are outside this bridge</strong><span>New appropriations minus operations (General Administration and Support + Support to Operations): NEP {amount(data.controls.nep_php)} · HGAB3 {amount(data.controls.third_php)} · change {amount(data.controls.delta_php)}.</span><small>The four candidate columns and the reconciliation cover named project and office allocations only. The agency total moves {amount(data.agency.house_php-data.agency.nep_php)} because this overhead layer also changes; those adjustments appear in no project row and need Volume I-B control review.</small></div>
  </section>;
 }
 
@@ -85,8 +110,8 @@ function stories(data){
   {id:'flood-priorities',label:'Printed PAP controls',title:'Flood allocations shift toward drainage and away from major river basins',
    evidence:`Structures and drainage: ${billion(drain.nep_php)} → ${billion(drain.third_php)}. Major river basins and principal rivers: ${billion(river.nep_php)} → ${billion(river.third_php)}. These are the non-FAP categories.`,
    prompt:'Do the changes follow flood-risk assessments and basin plans? Are local drainage projects supported by adequate downstream capacity? Check foreign-assisted flood projects separately.',href:compare({program:'Flood Management Program'})},
-  {id:'house-only',label:'Provisional matching',title:`${billion(data.changes.insertions.amount_php)} in House allocations have no attached NEP record`,
-   evidence:`${number(data.changes.insertions.records)} third-reading allocation records are House-only candidates. This broader total includes unresolved suggestions; unmatched titles do not establish new insertions.`,
+  {id:'house-only',label:'Validated matching',title:`${billion(data.changes.insertions.amount_php)} in House allocations have no attached NEP record and no plausible counterpart`,
+   evidence:`${number(data.changes.insertions.records)} third-reading allocation records are validated insertion candidates: ${number(data.insertion_split.no_suggestion.comparison_rows)} with no NEP suggestion (${billion(data.insertion_split.no_suggestion.amount_php)}). A further ${number(data.insertion_split.unresolved.comparison_rows)} resemble NEP projects yet stay unpaired (${billion(data.insertion_split.unresolved.amount_php)}); they are held out of the columns and the change reconciliation until verified. Unmatched titles do not establish new insertions.`,
    prompt:'Start with the largest allocations. Check printed NEP pages, alternative titles, changed locations and grouped allocations, then request amendment justifications for confirmed additions.',href:compare({flag:'house_only'})},
   {id:'groupings',label:'Provisional grouping · HGAB2',title:`${billion(group?.leftover_amount_php??0)} in unmatched allocations share corridors or places with matched projects`,
    evidence:group?`${number(group.leftover_house_rows)} unmatched second-reading allocations occur across ${number(group.exhausted_groups)} groups whose NEP counterparts are already attached elsewhere.${data.laoag?` Laoag includes ${number(data.laoag.records)} unmatched building allocations worth ${amount(data.laoag.amount_php)}.`:''}`:'Grouping evidence is unavailable in this build.',
@@ -147,6 +172,6 @@ export default function Highlights({route}){
     </article>
    </li>)}</ol>
   </section>
-  {story&&<Suspense fallback={<p role="status">Opening highlight…</p>}><HighlightModal key={story.id} story={story} summary={data} payload={details} error={detailError} onClose={closeModal}/></Suspense>}
+  {story&&<Suspense fallback={<LoadingModal eyebrow={story.label} title={story.title} note="Opening highlight evidence…" onClose={closeModal}/>}><HighlightModal key={story.id} story={story} summary={data} payload={details} error={detailError} onClose={closeModal}/></Suspense>}
  </div>;
 }

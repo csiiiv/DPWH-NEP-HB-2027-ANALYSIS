@@ -1,6 +1,6 @@
 # FY2027 DPWH data — user guide and primer
 
-Updated: **11 October 2026**. A practical guide for analysts using this
+Updated: **12 October 2026**. A practical guide for analysts using this
 repository's datasets in their own work: what each dataset contains, which one
 to pick for a given question, how records link across sources, and the caveats
 that keep conclusions honest.
@@ -44,39 +44,43 @@ All paths are under `analysis/data/`. Amounts are **integer PHP** everywhere
 
 ### 1. `stage_trace_2027.json` — the unified comparison table
 
-The main analytical table: **17,745 rows**, one per comparison record
+The main analytical table: **17,611 rows**, one per comparison record
 (House-anchored where a House reading exists, NEP-only rows otherwise).
 Each row links every source that could be attached:
 
 ```jsonc
 {
-  "id": "…", "trace": "amount_same",          // combined lifecycle status
+  "trace": "amount_same",                    // combined lifecycle status
   "house_match": "exact_candidate",           // NEP↔House pairing status
   "api_presence": "paired",                   // Transparency coverage
-  "reading_status": "same_amount",            // HGAB2↔HGAB3 outcome
   "house_minus_nep_php": 0,                   // House minus NEP amount
   "title": "…", "program": "…", "pap": "…", "region": "…", "zone": "local",
   "house": { … }, "nep": { … }, "api": { … }, // attached source records
   "suggestions": [                            // fuzzy NEP candidates (if any)
-    {"confidence": 0.9487, "diff_tags": ["chainage_digit"], "nep": { … }}
+    {"confidence": 0.9487, "identity_score": 0.94, "amount_ratio": 1.0,
+     "diff_tags": ["chainage_digit"], "nep": { … }}
   ],
-  "reason": null                              // why a non-plain match attached
+  "reason": null,                             // why a non-plain match attached
+  "road_group": { "flag": "insertion_candidate_group_exhausted", … }
 }
 ```
 
-Key enum values:
+Key enum values (current retained counts):
 
-- `house_match`: `exact_candidate` (9,668) · `chainage_candidate` (277) ·
-  `fuzzy_candidate` (493) · `ambiguous` (5) · `house_unmatched` (5,827) ·
-  `nep_unmatched` (1,475)
+- `house_match`: `exact_candidate` (9,680) · `chainage_candidate` (324) ·
+  `location_amendment_candidate` (29) · `scope_amendment_candidate` (35) ·
+  `soft_match_candidate` (11) · `fuzzy_candidate` (385) ·
+  `ambiguous` (5) · `house_unmatched` (5,801) · `nep_unmatched` (1,341)
 - `trace`: `amount_same` · `candidate_increase` / `candidate_decrease`
   (paired, amount differs) · `house_only_candidate` · `nep_only_candidate` ·
   `fuzzy_candidate` · `ambiguous` · plus `transparency_gap_then_*` /
   `outside_api_then_*` compounds
 - `api_presence`: `paired` (11,372) · `nep_not_in_transparency` (23) ·
   `outside_api_scope` (25, mostly FAP) · `no_nep_anchor` (no NEP side to pair)
-- `reading_status`: `same_amount` · `third_only` (new at 3rd reading) ·
-  `repeated_key` · `no_house_record`
+- HGAB2↔HGAB3 reading outcomes live in `house_reading_changes_2027.json`
+  (`trace`: `same_amount` 16,264 · `third_only` 5 · `repeated_key` 3), not in
+  the stage-trace rows; the unified web payload carries them as
+  `reading_status` after the record-ID join.
 
 Side records (`house`, `nep`, `api`, suggestion `nep`) share a common shape:
 `id`, `title`, `amount_php`, `region`, `office`, `office_canonical`,
@@ -92,11 +96,13 @@ Transparency-gap hunting, fuzzy-pair review.
 
 ### 2. `comparison_projects_2027.json` — compact SPA payload
 
-Same rows as the stage trace but compacted for the browser (redundant fields
-inherited from the row are trimmed; the app re-hydrates them). Prefer the
-stage trace for offline analysis; this file documents the browser contract.
-`comparison_overview_2027.json` holds the SPA's headline summaries, PAP
-controls, and Transparency gaps without the project rows.
+Same rows as the stage trace plus the HGAB3 join (17,613 unified rows),
+compacted for the browser (redundant fields inherited from the row are
+trimmed; the app re-hydrates them). Prefer the stage trace for offline
+analysis; this file documents the browser contract. It is generated
+(git-ignored) by `buildComparisonData.mjs`, as is
+`comparison_overview_2027.json`, which holds the SPA's headline summaries,
+Highlights data, PAP controls, and Transparency gaps without the project rows.
 
 ### 3. `house_reading_changes_2027.json` — 2nd vs 3rd reading
 
@@ -115,7 +121,7 @@ parseable chainage. Fields: `source` (`nep`/`hb2`/`hb3`), `title_base`,
 `chainages` (spans with `meters_from`/`meters_to`/`length_m`), computed
 `length_m`, `point_only`, and `length_review` (`absurd`/`repaired`/null —
 flagged absurd or OCR-repaired lengths). Use for price-per-km work, length
-outliers, and scope-vs-budget stories. Note `with_length: 11,920` — the rest
+outliers, and scope-vs-budget stories. Note `with_length: 11,917` — the rest
 are point stations with no computable length.
 
 ### 4b. `road_group_candidates_2027.json` — same-shell grouping sidecar
@@ -145,7 +151,7 @@ candidates with group context — never certified insertions.
 The NEP side alone. `…_source_projects.json` is the flat source-row list
 (11,420 project/funding rows with `pap3`, `region`, `office`, `allocation_kind`,
 `zone`) plus `pap_controls` (the 45 printed PAP controls). `nep_2027_tree.json`
-(94MB) is the full additive hierarchy: every node with `label`, `amount_php`,
+(20MB) is the full additive hierarchy: every node with `label`, `amount_php`,
 `kind` (program/PAP/region/office/project/funding), `parent`, `children`, and
 source bbox evidence. Use the tree when you need the document's own structure
 (e.g., office subtotals inside a region) rather than the comparison grain.

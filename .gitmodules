@@ -1,3 +1,6 @@
 [submodule "reference/ph-budget-analysis"]
 	path = reference/ph-budget-analysis
 	url = https://github.com/ajamontesa/ph-budget-analysis.git
+[submodule "dpwh_coor2psgc_geomapping"]
+	path = dpwh_coor2psgc_geomapping
+	url = https://github.com/csiiiv/dpwh_coor2psgc_geomapping.git

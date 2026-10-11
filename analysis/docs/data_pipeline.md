@@ -1,6 +1,6 @@
 # FY2027 data pipeline
 
-Updated: **11 October 2026**. The complete artifact-level map of the DPWH
+Updated: **12 October 2026**. The complete artifact-level map of the DPWH
 workbench: what builds what, from what, in what order, and what the numbers
 should be at each stage. Companion to the [workbench README](../README.md)
 (commands), the [structure/verification design](data_structure_and_crosscheck_design.md)
@@ -169,8 +169,9 @@ build_current_pages.py
 One-to-one exact candidates via unique normalized title + canonical region +
 PAP node (FAP by program+zone). A guarded stage-qualifier bridge also pairs
 unique `Construction (Completion)` ↔ `Construction` titles in the same scope
-(dual line items that keep both variants stay unmatched). Retained match counts:
-**9,668 exact · 277 chainage · 493 fuzzy · 5 ambiguous · 5,827 house-only · 1,475 nep-only**.
+(dual line items that keep both variants stay unmatched). Retained match counts
+(HGAB2-anchored stage-trace grain):
+**9,680 exact · 324 chainage · 29 location amendments · 35 scope amendments · 11 soft matches · 385 fuzzy · 5 ambiguous · 5,801 house-only · 1,341 nep-only**.
 Also refreshes the verification overview pages.
 
 ## Stage 4 · Stage trace
@@ -183,7 +184,8 @@ build_stage_trace.py
 ```
 
 Unified HGAB2-anchored rows with NEP/API attachment and trace statuses
-(17,745 records after stage-qualifier bridges folded 24 fuzzy/NEP pairs).
+(17,611 records after the tiered review passes folded former fuzzy/NEP pairs
+into attached location/scope/soft matches).
 
 ## Stage 5 · House readings comparator
 
@@ -197,7 +199,7 @@ flowchart LR
     KEY["reading_key:<br/>zone · pap_id · region · raw office ·<br/>allocation kind · title_match_key"]
     H2 & H3 --> KEY
     N -.-> KEY
-    KEY --> PAIR["house_reading_changes_2027.json<br/>16,272 pairs · ~38M"]
+    KEY --> PAIR["house_reading_changes_2027.json<br/>16,272 keyed rows · ~38M"]
     PAIR --> |"per side: merged fields + slim records[]<br/>(single-leaf sides: no records[])"| OUT["second ↔ third pairing<br/>same_amount 16,264 · third_only 5 · repeated 3"]
 ```
 
@@ -219,10 +221,10 @@ Every chainage-bearing allocation across all three sources — matched or not:
 
 | Source | Units | With measurable length |
 |---|---:|---:|
-| DBM NEP | 3,570 | 3,469 |
-| HGAB2 | 4,334 | 4,223 |
-| HGAB3 | 4,339 | 4,228 |
-| **Total** | **12,243** | **11,920** |
+| DBM NEP | 3,570 | 3,468 |
+| HGAB2 | 4,334 | 4,222 |
+| HGAB3 | 4,339 | 4,227 |
+| **Total** | **12,243** | **11,917** |
 
 Each unit carries title/program/region/zone/office, spans, summed length, and
 review flags. This is the population behind the Analysis · Chainage **peer
@@ -235,7 +237,7 @@ the web payload instead.
 ```text
 build_road_groups.py
   in:  source_comparison_2027.json
-  out: road_group_candidates_2027.json (~1.1M)
+  out: road_group_candidates_2027.json (~2M)
 ```
 
 Groups the **final budget sheet** by funding zone + PAP + region and shell
@@ -264,9 +266,10 @@ review context, never certified identity.
 flowchart LR
     TRC["stage_trace_2027.json"] --> UC["unifiedComparison()<br/>web/src/unifiedComparison.js"]
     HRD["house_reading_changes_2027.json"] --> UC
-    UC -->|"17,772 unified rows"| FULL["comparison_projects_2027.json<br/>~50M · lazy"]
+    UC -->|"17,613 unified rows"| FULL["comparison_projects_2027.json<br/>~50M · lazy"]
     UC --> HS["headlineStats()"]
-    HS --> OV["comparison_overview_2027.json<br/>~0.6M · eager"]
+    HS --> OV["comparison_overview_2027.json<br/>~1.9M · eager"]
+    HLD["highlightDetails()<br/>web/src/highlightDetails.js"] -.->|"highlights dialogs"| DET["highlights_details_2027.json<br/>~15M · lazy"]
     CHU["chainage_units_2027.json"] -.->|"benchmark only"| SPA
     RDG["road_group_candidates_2027.json"] -.->|"groupings tab"| SPA
     OV --> SPA["SPA #analysis"]
@@ -306,8 +309,8 @@ Browser checks: `check_analysis_page.py`, `check_react_pages.py`,
 ```mermaid
 flowchart LR
     T1["House I-B printed total<br/>₱654,102,015,000"] --> T2["Readings ledger<br/>operations: 2nd ₱586.94B / 3rd ₱587.08B<br/>Δ = +₱134M (5 third_only)"]
-    T2 --> T3["Unified rows 17,772<br/>(17,770 stage rows + HGAB3-only join)"]
-    T3 --> T4["Chainage pairs 240 · sidecar units 12,243<br/>modus-classified 213"]
+    T2 --> T3["Unified rows 17,613<br/>(17,611 stage rows + HGAB3-only join)"]
+    T3 --> T4["Chainage amendments 287 · sidecar units 12,243<br/>modus-classified 251"]
     N1["DBM NEP ₱642.6B"] -.->|"per-source totals<br/>carried unchanged"| T3
     A1["Transparency ₱445.4B"] -.->|"NEP↔API reconciliation"| T3
 ```
