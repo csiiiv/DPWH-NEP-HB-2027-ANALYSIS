@@ -143,7 +143,10 @@ def build_rows(comparison: dict, reconciliation: dict) -> list[dict]:
             'nep': nep,
             'house': house,
             'suggestions': [
-                {'confidence': c['confidence'], 'diff_tags': c.get('diff_tags'), 'nep': slim(c['nep'])}
+                {'confidence': c['confidence'],
+                 'identity_score': c.get('identity_score'),
+                 'amount_ratio': c.get('amount_ratio'),
+                 'diff_tags': c.get('diff_tags'), 'nep': slim(c['nep'])}
                 for c in record.get('candidates') or []
             ],
             'reason': record.get('reason'),

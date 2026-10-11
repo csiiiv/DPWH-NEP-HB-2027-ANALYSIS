@@ -177,16 +177,23 @@ Identity between House and NEP is **candidate matching**, never asserted:
    `different_gps_coordinates`, `parenthetical_modifier`,
    `different_barangay`, `different_municipality`, `different_street`,
    `work_descriptor_change`, `spelling_ocr`, `other_place_or_word`).
-   Place tags use an address-slot model: titles split on commas **and**
-   location prepositions (`at`/`along`/`in`/`near`), slots align from the
-   shared municipality/province tail, and each differing opcode classifies
-   by its slot — `different_barangay` (named/numbered barangay, zone, purok
-   or district), `different_municipality` (same province tail, different
-   city/municipality), `different_street` (street, sitio, creek or road
-   section), or `work_descriptor_change` (scope wording only — Solar, and
-   Utilities — from a master work-descriptor vocabulary). Whitespace and
-   case inside parentheses are normalized before comparing, so
-   `(Covered Court)` vs `(covered court )` compares equal.
+   Place tags use an address-slot model: titles are **parsed** into named
+   roles (work / street / barangay / municipality / province / chainage)
+   using contextual markers (`barangay` prefix, `Sta.`/`K` runs, rightmost
+   locality segments), then compared **role-to-role** — not by token-opcode
+   alignment, which misattributes place names when parentheticals or
+   differing token counts desync positions. A pair like
+   `…(Covered Court), Barangay Natunuan South, San Pascual…` vs
+   `…(Covered Court), Barangay Banaba, San Pascual…` therefore tags as
+   `different_barangay`, never `different_street`.
+
+Suggestions also carry an **`identity_score`** (0–1) used for ranking:
+   text similarity minus place-mismatch penalties (barangay/municipality
+   dominate; street/scope/phrasing are softer), with a small GPS-same bonus
+   and a weak amount-agreement signal. `confidence` remains the raw text
+   similarity for display. Whitespace and case inside parentheses are
+   normalized before comparing, so `(Covered Court)` vs `(covered court )`
+   compares equal.
 
 In the webapp, the **Flags** dropdown has a "Fuzzy title-difference tags"
 group with one option per tag (`flag=diff:<tag>` in the URL), and the

@@ -270,6 +270,156 @@ def _first_differing_slot(a: list[list[str]], b: list[list[str]], tail: int):
     return None
 
 
+# --- Parse-then-compare title model -----------------------------------------
+#
+# Opcodes (difflib alignment) proved unreliable for place classification:
+# token runs merge across slot boundaries and paren tokens desync positions.
+# Instead each title is parsed into named slots using PH title conventions,
+# then compared role-to-role. Slots are identified contextually, not by
+# position: a run starting with the 'barangay' marker is the barangay slot
+# wherever it appears; a station run (Sta./K… + digits) is chainage; a run
+# introduced by 'along/at/in/near' or a comma after the work phrase is the
+# location zone.
+
+_SLOT_MARKERS = {
+    'barangay': 'barangay', 'brgy': 'barangay', 'bgy': 'barangay',
+    'purok': 'purok', 'sitio': 'sitio', 'zone': 'zone',
+    'district': 'district',
+}
+
+
+def parse_title_slots(value: str) -> dict[str, list[str]]:
+    """Parse a PH project title into named address/work slots.
+
+    Returns a dict of slot name → token list. Slot names: 'work' (leading
+    work phrase), 'street' (location introduced by along/at/in/near without
+    a barangay/zone marker), 'barangay', 'zone', 'purok', 'sitio',
+    'municipality', 'province', 'chainage' (station runs), 'parens'
+    (parentheticals), 'gps' (decimal coordinates), and 'other' (unplaced
+    comma segments). Positions are contextual, so a barangay slot found
+    anywhere in the title fills 'barangay' regardless of index.
+    """
+    text = value or ''
+    parens = _PAREN_RE.findall(text)
+    gps = _gps_coordinates(text)
+    cleaned = _GPS_RE.sub(' ', _PAREN_RE.sub(' ', text))
+    slots: dict[str, list[str]] = {'parens': [t for p in parens for t in title_tokens(p)],
+                                   'gps': gps}
+    segs = [title_tokens(part) for part in _SEGMENT_SPLIT_RE.split(cleaned) if part.strip()]
+    if not segs:
+        return slots
+    # First segment (before any comma/preposition) is the work phrase.
+    slots['work'] = segs[0]
+    place_segs = segs[1:]
+    # Walk place segments from the right: province, municipality, then
+    # barangay/street/zone/station by marker.
+    roles: dict[str, list[str]] = {}
+    n = len(place_segs)
+    for i, seg in enumerate(place_segs):
+        from_right = n - i
+        # Partial station runs (Section I: Sta. 11+640 …) still count as
+        # chainage when a station marker is present.
+        has_station = any(t in ('sta', 'km') or t.startswith('k') and t[1:].isdigit()
+                          for t in seg)
+        if _station_run(seg) or (has_station and from_right > 2):
+            roles.setdefault('chainage', seg)
+        elif seg and seg[0] in _SLOT_MARKERS:
+            roles.setdefault(_SLOT_MARKERS[seg[0]], seg)
+        elif from_right == 1:
+            # "Valenzuela City" / "Manila City" with no separate province →
+            # treat as municipality (city is the locality, not a province).
+            street_markers = {'street', 'st', 'avenue', 'ave', 'boulevard',
+                              'blvd', 'drive', 'lane', 'creek', 'river',
+                              'sitio', 'road', 'rd', 'extension'}
+            if seg and seg[-1] == 'city' and n == 2:
+                roles.setdefault('municipality', seg)
+            elif n == 1 and (set(seg) & street_markers):
+                # Single place segment with a street marker (road-only titles
+                # with no municipality/province) → street, not province.
+                roles.setdefault('street', seg)
+            else:
+                roles.setdefault('province', seg)
+        elif from_right == 2:
+            roles.setdefault('municipality', seg)
+        else:
+            # Location without an explicit marker between the work phrase and
+            # the municipality: street/road/creek/section name.
+            roles.setdefault('street', seg)
+    for role, seg in roles.items():
+        slots[role] = seg
+    # Comma segments not consumed by a role (extra middle segments).
+    consumed = {id(s) for s in roles.values()}
+    leftover = [s for s in place_segs if id(s) not in consumed]
+    if leftover:
+        slots['other'] = [t for s in leftover for t in s]
+    return slots
+
+
+def _slot_tokens_equal(a: list[str] | None, b: list[str] | None) -> bool:
+    """Equality with trailing 'city' normalized away (Manila ↔ Manila City)."""
+    if a is None and b is None:
+        return True
+    if not a or not b:
+        return a == b
+    def strip(tokens):
+        return tokens[:-1] if tokens and tokens[-1] == 'city' else tokens
+    return strip(a) == strip(b)
+
+
+def _near_spelling(a: list[str], b: list[str]) -> bool:
+    """True when two token lists differ only by a high-ratio OCR/spelling slip.
+
+    Rejects whole-token insertions (Isla-Pasolo Creek ↔ Pasolo Creek) even
+    when the joined-string ratio is high because one is nearly a substring.
+    """
+    from difflib import SequenceMatcher
+    if not a or not b:
+        return False
+    # Drop shared markers (barangay/zone/purok) and compare the residue.
+    markers = set(_SLOT_MARKERS)
+    ha = [t for t in a if t not in markers]
+    nb = [t for t in b if t not in markers]
+    if not ha or not nb:
+        return False
+    # Lengths must be close — a whole extra token is a place change, not OCR.
+    if abs(len(ha) - len(nb)) > 1:
+        return False
+    joined_a, joined_b = ''.join(ha), ''.join(nb)
+    if min(len(joined_a), len(joined_b)) < 4:
+        return False
+    if min(len(joined_a), len(joined_b)) / max(len(joined_a), len(joined_b)) < .85:
+        return False
+    return SequenceMatcher(None, joined_a, joined_b).ratio() >= .8
+
+
+def _slot_pair_tags(house_slots: dict[str, list[str]], nep_slots: dict[str, list[str]]) -> list[str]:
+    """Role-to-role place tags from two parsed titles (no opcodes)."""
+    tags: list[str] = []
+    # Sub-barangay markers (barangay / zone / purok / sitio) — any mismatch
+    # among them is a different_barangay signal, unless the residue is an
+    # OCR/spelling slip (San Roque ↔ San Rogue) which the opcode loop tags.
+    for role in ('barangay', 'zone', 'purok', 'sitio'):
+        h, n = house_slots.get(role), nep_slots.get(role)
+        if h != n and h and n and not _near_spelling(h, n):
+            tags.append('different_barangay')
+            break
+        if role == 'barangay' and ((h and not n) or (n and not h)):
+            tags.append('different_barangay')
+            break
+    if not _slot_tokens_equal(house_slots.get('municipality'), nep_slots.get('municipality')) \
+            and house_slots.get('municipality') and nep_slots.get('municipality'):
+        tags.append('different_municipality')
+    if house_slots.get('street') != nep_slots.get('street') \
+            and (house_slots.get('street') or nep_slots.get('street')) \
+            and not _near_spelling(house_slots.get('street') or [],
+                                   nep_slots.get('street') or []):
+        tags.append('different_street')
+    if house_slots.get('chainage') != nep_slots.get('chainage') \
+            and house_slots.get('chainage') and nep_slots.get('chainage'):
+        tags.append('chainage_digit')
+    return tags
+
+
 def _classify_place_tokens(house_tokens: list[str], nep_tokens: list[str],
                            tail: int, seg_h: list[list[str]], seg_n: list[list[str]]) -> str | None:
     """Name what changed between two differing token runs in a location slot.
@@ -355,44 +505,11 @@ def diff_tags(house_title: str, nep_title: str) -> list[str]:
             return ['parenthetical_modifier']
     seg_h, seg_n = _segments(house_title or ''), _segments(nep_title or '')
     tail = _tail_equal_segments(seg_h, seg_n)
-    location_locked = (tail >= 1 and len(seg_h) > tail and len(seg_n) > tail
-                       and all(''.join(s).isdigit() is False for s in seg_h[:-tail]))
-    # Address-slot view (commas + at/along/in/near). Slot start offsets in the
-    # flat token stream let each opcode be attributed to its slot.
-    slot_h, slot_n = _slots(house_title or ''), _slots(nep_title or '')
-    slot_starts_h: list[int] = []
-    offset = 0
-    for slot in slot_h:
-        # Skip connector tokens ('at'/'in'/'along') that preceded this slot.
-        while offset < len(a) and a[offset] in CONNECTOR_TOKENS | {'along'}:
-            offset += 1
-        slot_starts_h.append(offset)
-        offset += len(slot)
-    diff_slot = _first_differing_slot(slot_h, slot_n, tail)
-    place_tag = None
-    if location_locked and diff_slot is not None:
-        place_tag = _classify_place_tokens(slot_h[diff_slot], slot_n[diff_slot],
-                                           tail, seg_h, seg_n)
-        if place_tag is None:
-            place_tag = 'different_street'
-    elif tail == 0 and len(seg_h) == len(seg_n) and len(seg_h) > 1:
-        # No shared tail at all but same segment count: if the second-to-last
-        # (municipality) slot differs while the last (province) matches, it is
-        # a different municipality in the same province.
-        if seg_h[-1] == seg_n[-1] and seg_h[-2] != seg_n[-2]:
-            place_tag = 'different_municipality'
-            # Position of the municipality slot start in the flat stream.
-            municipality_slot = len(slot_h) - 2
-    # The slot immediately before the shared tail is the municipality slot in
-    # the PH address hierarchy ([work], [barangay], [municipality], [province]).
-    municipality_slot = len(slot_h) - tail - 1 if tail >= 1 else None
-
-    def slot_at(index: int) -> int:
-        """Slot index containing flat-token position `index` (house side)."""
-        for i in range(len(slot_starts_h) - 1, -1, -1):
-            if index >= slot_starts_h[i]:
-                return i
-        return 0
+    # Parse-then-compare: place differences come from role-to-role slot
+    # comparison (contextual markers), never from opcode alignment.
+    parsed_h = parse_title_slots(house_title or '')
+    parsed_n = parse_title_slots(nep_title or '')
+    place_tags = _slot_pair_tags(parsed_h, parsed_n)
 
     matcher = SequenceMatcher(None, a, b, autojunk=False)
     tags: list[str] = []
@@ -400,6 +517,7 @@ def diff_tags(house_title: str, nep_title: str) -> list[str]:
         if tag == 'equal':
             continue
         hseg, nseg = a[i1:i2], b[j1:j2]
+        changed_tokens = set(hseg) ^ set(nseg)
         # Stage-qualifier diffs were already folded by prep; a completion-only
         # opcode here means the qualifier moved without a work-type lead.
         if set(hseg) | set(nseg) <= {'completion'}:
@@ -458,54 +576,100 @@ def diff_tags(house_title: str, nep_title: str) -> list[str]:
             if min(len(ha), len(na)) >= 4 and SequenceMatcher(None, ha, na).ratio() >= .8:
                 tags.append('spelling_ocr')
                 continue
-        # Location-zone difference: attribute this opcode to its address slot
-        # and classify the opcode's changed tokens with slot context.
-        if location_locked or place_tag:
-            si = slot_at(i1)
-            if place_tag == 'different_municipality' and si >= len(slot_h) - 2:
-                tags.append('different_municipality')
-                continue
-            house_slot = slot_h[si] if si < len(slot_h) else []
-            nep_slot = slot_n[si] if si < len(slot_n) else []
-            # Classify the opcode's own tokens, augmented with shared slot
-            # markers (barangay/zone/street words) so context survives.
-            shared = [t for t in house_slot if t in nep_slot]
-            slot_tag = _classify_place_tokens(hseg + shared, nseg + shared,
-                                              tail, seg_h, seg_n)
-            barangay_context = {'barangay', 'zone', 'purok', 'district'} & (set(house_slot) | set(nep_slot))
-            street_context = ({'street', 'st', 'avenue', 'ave', 'boulevard',
-                               'blvd', 'drive', 'lane', 'creek', 'river',
-                               'sitio', 'extension'} & (set(hseg) | set(nseg) | set(shared)))
-            # Priority: barangay > street markers > municipality position >
-            # generic street fallback. A differing slot with no barangay or
-            # street marker sitting directly before the shared (province)
-            # tail is the municipality slot in the PH address hierarchy.
-            if slot_tag in ('different_street', None) and not barangay_context \
-                    and not street_context \
-                    and municipality_slot is not None and si == municipality_slot:
-                slot_tag = 'different_municipality'
-            if slot_tag:
-                tags.append(slot_tag)
-                continue
-        # Road-only titles (no comma tail): differing tokens with a street
-        # marker on either side still read as a street-name difference
-        # (Ilang-Ilang Street ↔ M. Delos Reyes St.).
-        street_markers = {'street', 'st', 'avenue', 'ave', 'boulevard', 'blvd',
-                          'drive', 'lane', 'creek', 'sitio'}
-        if (set(hseg) | set(nseg)) & street_markers:
-            tags.append('different_street')
+        # Place tokens are already classified role-to-role; skip them here so
+        # opcodes that land on barangay/street/municipality names don't get a
+        # second (wrong) tag. Scope-vocabulary rewording still tags.
+        place_tokens = set()
+        for role in ('barangay', 'municipality', 'province', 'street', 'zone',
+                     'purok', 'sitio', 'chainage'):
+            place_tokens.update(parsed_h.get(role) or [])
+            place_tokens.update(parsed_n.get(role) or [])
+        if changed_tokens and changed_tokens <= place_tokens:
             continue
-        if place_tag:
-            tags.append(place_tag)
+        if changed_tokens and changed_tokens <= WORK_DESCRIPTOR_TOKENS | _DESCRIPTOR_FUNCTION_TOKENS:
+            tags.append('work_descriptor_change')
             continue
         tags.append('other_place_or_word')
     # A whole-title GPS verdict subsumes coordinate-digit token diffs.
     if gps_tag:
         return [gps_tag]
+    # Place tags from the slot model lead; opcode tags follow.
+    combined = place_tags + tags
     # De-duplicate, keep first-seen order.
     seen: set[str] = set()
-    ordered = [t for t in tags if not (t in seen or seen.add(t))]
+    ordered = [t for t in combined if not (t in seen or seen.add(t))]
     return ordered or (['identical'] if a == b else [])
+
+
+# Identity-score weights for fuzzy suggestion ranking. Hard place mismatches
+# (different barangay / municipality) dominate; soft phrasing diffs barely
+# move the needle. Amount agreement is a weak supporting signal only —
+# amounts never establish identity on their own.
+_IDENTITY_PENALTIES = {
+    'different_barangay': 0.45,
+    'different_municipality': 0.40,
+    'different_gps_coordinates': 0.40,
+    'different_street': 0.25,
+    'other_place_or_word': 0.20,
+    'work_type_change': 0.15,
+    'work_descriptor_change': 0.08,
+    'chainage_digit': 0.05,
+    'structure_id_digit': 0.05,
+    'unit_count': 0.04,
+    'facility_qualifier': 0.03,
+    'city_suffix': 0.02,
+    'connector_word': 0.01,
+    'work_phrase_modifier': 0.01,
+    'stage_qualifier': 0.0,
+    'parenthetical_modifier': 0.02,
+    'spelling_ocr': 0.0,
+    'same_gps_coordinates': -0.05,  # bonus: same site
+}
+
+
+def identity_score(house_title: str, nep_title: str,
+                   house_amount: float | None = None,
+                   nep_amount: float | None = None,
+                   text_similarity: float | None = None) -> dict:
+    """Compose a reviewable identity score for a House↔NEP fuzzy pair.
+
+    Returns ``{'score': float 0..1, 'text_similarity': float, 'diff_tags': [...],
+    'penalties': {tag: amount}, 'amount_ratio': float|None}``.
+
+    Score starts at text similarity (or 1.0 when not supplied) and subtracts
+    per-tag penalties. Different barangay / municipality hard-penalize so a
+    high text-similarity pair in different barangays ranks below a lower-
+    similarity pair that shares the address. Same GPS coordinates give a
+    small bonus. Amount agreement (ratio of smaller to larger) can add up
+    to +0.05 when amounts are within 20%, or subtract up to 0.05 when they
+    differ by more than 5× — never enough to overturn a place mismatch.
+    """
+    from difflib import SequenceMatcher
+    tags = diff_tags(house_title, nep_title)
+    if text_similarity is None:
+        a, b = _prep_tokens(house_title or ''), _prep_tokens(nep_title or '')
+        text_similarity = SequenceMatcher(None, a, b, autojunk=False).ratio() if a or b else 1.0
+    penalties = {}
+    score = float(text_similarity)
+    for tag in tags:
+        if tag in _IDENTITY_PENALTIES:
+            penalties[tag] = _IDENTITY_PENALTIES[tag]
+            score -= _IDENTITY_PENALTIES[tag]
+    amount_ratio = None
+    if house_amount and nep_amount and house_amount > 0 and nep_amount > 0:
+        amount_ratio = min(house_amount, nep_amount) / max(house_amount, nep_amount)
+        if amount_ratio >= 0.8:
+            score += 0.05
+        elif amount_ratio < 0.2:
+            score -= 0.05
+    score = max(0.0, min(1.0, round(score, 4)))
+    return {
+        'score': score,
+        'text_similarity': round(float(text_similarity), 4),
+        'diff_tags': tags,
+        'penalties': penalties,
+        'amount_ratio': None if amount_ratio is None else round(amount_ratio, 4),
+    }
 
 
 def _nfkc(value: str) -> str:

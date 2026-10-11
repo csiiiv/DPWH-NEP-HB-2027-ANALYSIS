@@ -14,7 +14,7 @@ export function comparisonPayloads(stages,readings){
  const unified=unifiedComparison(stages,readings);
  const projects=unified.projects.map(row=>{
   const result={...row};delete result.candidates;
-  if(row.suggestions?.length)result.suggestions=row.suggestions.map(s=>({confidence:s.confidence,diff_tags:s.diff_tags,nep:compactSource(s.nep)}));else delete result.suggestions;
+  if(row.suggestions?.length)result.suggestions=row.suggestions.map(s=>({confidence:s.confidence,identity_score:s.identity_score,amount_ratio:s.amount_ratio,diff_tags:s.diff_tags,nep:compactSource(s.nep)}));else delete result.suggestions;
   for(const side of ['second','third','nep','api']){
    result[side]=compactSource(row[side]);
    if(result[side])for(const key of ['title','program','pap','zone','region'])if(result[side][key]!==undefined && result[side][key]===row[key]){(result[side].inherit??=[]).push(key);delete result[side][key];}

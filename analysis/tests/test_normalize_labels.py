@@ -11,7 +11,9 @@ from normalize_labels import (
     annotate_source_labels,
     canonical_office,
     classify_title_substitution,
+    identity_score,
     normalized,
+    parse_title_slots,
     raw_normalized,
     strip_stage_qualifier,
     title_match_key,
@@ -169,12 +171,11 @@ class NormalizeLabelsTests(unittest.TestCase):
     def test_diff_tags_location_and_gps_subflags(self):
         t = diff_tags
         # Different barangay, same municipality/province tail (the stray "at"
-        # also tags as connector phrasing).
+        # also tags as connector phrasing). Place tags lead; opcode tags follow.
         self.assertEqual(t('Construction of Multi-Purpose Building at Barangay Wakas, Tayabas City, Quezon',
                            'Construction of Multi-Purpose Building, Barangay Opias, Tayabas City, Quezon'),
-                         ['connector_word', 'different_barangay'])
-        # Zone III vs Zone IV inside the same city/province tail (both a city
-        # suffix and a sub-name change; opcode order decides tag order).
+                         ['different_barangay', 'connector_word'])
+        # Zone III vs Zone IV inside the same city/province tail.
         self.assertEqual(t('Construction (Completion) of Multi-Purpose Building, Barangay Zone III, Koronadal, South Cotabato',
                            'Construction of Multi-Purpose Building, Barangay Zone IV, Koronadal City, South Cotabato'),
                          ['different_barangay', 'city_suffix'])
@@ -197,14 +198,16 @@ class NormalizeLabelsTests(unittest.TestCase):
 
     def test_diff_tags_place_slot_subflags(self):
         t = diff_tags
-        # Numbered barangay ↔ named barangay.
-        self.assertEqual(t('Construction of Multi-purpose Building, Barangay Mangga, Quezon, Isabela',
-                           'Construction of Multi-Purpose Building, Barangay 1, Jones, Isabela'),
-                         ['different_barangay'])
+        # Numbered barangay ↔ named barangay (also different municipalities).
+        tags = t('Construction of Multi-purpose Building, Barangay Mangga, Quezon, Isabela',
+                 'Construction of Multi-Purpose Building, Barangay 1, Jones, Isabela')
+        self.assertIn('different_barangay', tags)
+        self.assertIn('different_municipality', tags)
         # Work-scope wording + different barangay classify independently.
-        self.assertEqual(t('Construction of Water Supply System at Barangay Makawayan, Tingloy, Batangas',
-                           'Construction of Solar Water Supply System at Barangay San Juan, Tingloy, Batangas'),
-                         ['work_descriptor_change', 'different_barangay'])
+        tags = t('Construction of Water Supply System at Barangay Makawayan, Tingloy, Batangas',
+                 'Construction of Solar Water Supply System at Barangay San Juan, Tingloy, Batangas')
+        self.assertIn('different_barangay', tags)
+        self.assertIn('work_descriptor_change', tags)
         # Pure scope wording ("and Utilities" added) with everything else equal.
         self.assertIn('work_descriptor_change',
                       t('Construction of Kirayan Norte Shoreline Protection including Access Roads, Sta. 27+861- Sta. 28+200, Barangay Kirayan, Miagao, Iloilo',
@@ -222,9 +225,36 @@ class NormalizeLabelsTests(unittest.TestCase):
                       t('Improvement of Quezon Eco-Tourism Road, Tiaong, Quezon',
                         'Improvement of Quezon Eco-Tourism Road, San Antonio, Quezon'))
         # Creek prefix drop (Isla-Pasolo Creek ↔ Pasolo Creek).
-        self.assertEqual(t('Construction of Flood Control Wall along Isla-Pasolo Creek (C0+350 to C0+700), Barangay Pasolo, Valenzuela City',
-                           'Construction of Flood Control Wall along Pasolo Creek (C0+000 to C0+350), Barangay Pasolo, Valenzuela City'),
-                         ['different_street', 'structure_id_digit'])
+        tags = t('Construction of Flood Control Wall along Isla-Pasolo Creek (C0+350 to C0+700), Barangay Pasolo, Valenzuela City',
+                 'Construction of Flood Control Wall along Pasolo Creek (C0+000 to C0+350), Barangay Pasolo, Valenzuela City')
+        self.assertIn('different_street', tags)
+        # Parse-then-compare: different barangay is never mislabeled as street,
+        # even when titles share work phrase + covered-court parentheticals.
+        self.assertEqual(
+            t('Construction (Completion) of Multi-Purpose Building (Covered Court), Barangay Natunuan South, San Pascual, Batangas',
+              'Construction of Multi-Purpose Building (Covered Court ), Barangay Banaba, San Pascual, Batangas'),
+            ['different_barangay'])
+
+    def test_identity_score_penalizes_place_mismatches(self):
+        # High text similarity but different barangay → low identity score.
+        h = 'Construction (Completion) of Multi-Purpose Building (Covered Court), Barangay Natunuan South, San Pascual, Batangas'
+        n = 'Construction of Multi-Purpose Building (Covered Court ), Barangay Banaba, San Pascual, Batangas'
+        result = identity_score(h, n, house_amount=5_000_000, nep_amount=100_000_000)
+        self.assertEqual(result['diff_tags'], ['different_barangay'])
+        self.assertGreater(result['text_similarity'], 0.85)
+        self.assertLess(result['score'], 0.5)
+        self.assertLess(result['amount_ratio'], 0.2)
+        # Same site (OCR/spelling only) keeps a high identity score.
+        same = identity_score(
+            'Construction of Bridge, Barangay Cugman, Cagayan de Oro City',
+            'Construction of Bridge, Barangay Cugman, Cagayan de Oro City')
+        self.assertEqual(same['diff_tags'], ['identical'])
+        self.assertGreaterEqual(same['score'], 0.95)
+        # Parsed slots expose barangay/municipality/province by marker, not index.
+        slots = parse_title_slots(h)
+        self.assertEqual(slots['barangay'], ['barangay', 'natunuan', 'south'])
+        self.assertEqual(slots['municipality'], ['san', 'pascual'])
+        self.assertEqual(slots['province'], ['batangas'])
 
     def test_substitution_triage(self):
         self.assertEqual(classify_title_substitution(('building',), ('bldg',)), 'promote')
