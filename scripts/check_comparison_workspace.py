@@ -104,10 +104,10 @@ with tempfile.TemporaryDirectory() as folder:
                     page.get_by_label('Sort results',exact=True).select_option('reading_delta')
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 page.screenshot(path=f'/tmp/compare-projects-{width}.png')
-                # Fuzzy triage: chainage-differing Palico-Balayan-Batangas pair
-                # still unattached (the former B03135LZ place-slip fixture was
-                # promoted to an exact match by place-spelling normalization).
-                page.goto(base+'#compare?view=projects&match=fuzzy&q=house-reading%3A382',wait_until='networkidle')
+                # Fuzzy triage: chainage-differing Mt. Province–Ifugao pair
+                # still unattached (the former Palico-Balayan fixture was
+                # promoted to a chainage match by closer station pairing).
+                page.goto(base+'#compare?view=projects&match=fuzzy&q=house-reading%3A1083',wait_until='networkidle')
                 # Difference tags surface directly on the fuzzy row (top suggestion),
                 # before any click, as well as inside the suggestion details.
                 fuzzy_row=page.locator('.comparison-table tbody tr').first
@@ -122,28 +122,28 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(candidates.locator('.candidate-table tbody tr')).to_have_count(4)
                 expect(candidates.locator('.candidate-table')).to_be_visible()
                 expect(candidates.locator('.candidate-table thead th')).to_have_count(5)
-                expect(candidates.locator('.candidate-table tbody tr').nth(2).locator('.candidate-project')).to_contain_text('Palico – Balayan-Batangas Rd - K0147 + 520 - K0148 + 671')
-                expect(candidates.locator('.candidate-table tbody tr').nth(2).locator('.candidate-assignment')).to_contain_text('Region IV-A')
-                expect(candidates).to_contain_text('identity 90% · 95% text')
+                expect(candidates.locator('.candidate-table tbody tr').nth(2).locator('.candidate-project')).to_contain_text('Mt. Province-Ifugao Rd (Kiling-Paracelis Sect ) - K0462 + 000 - K0463 + 000')
+                expect(candidates.locator('.candidate-table tbody tr').nth(2).locator('.candidate-assignment')).to_contain_text('CAR')
+                expect(candidates).to_contain_text('identity 94% · 94% text')
                 # Difference tags classify the residual title diff per suggestion.
                 expect(candidates.locator('.diff-tag').first).to_be_visible()
                 expect(candidates.locator('.diff-tag-row').first).to_be_visible()
-                expect(candidates).to_contain_text('Palico-Balayan-Batangas Rd - K0147 + 520 - K0148 + 219')
-                expect(candidates).to_contain_text('Palico – Balayan-Batangas Rd - K0147 + 520 - K0148 + 671')
-                expect(candidates).to_contain_text('₱48,000,000')
-                expect(candidates.get_by_role('link',name='Open suggested NEP entry in source tree',exact=False).first).to_have_attribute('href','#nep?node=p206%3Ar1')
+                expect(candidates).to_contain_text('Mt. Province-Ifugao Rd (Kiling-Paracelis Sect) - K0460 + 000 - K0460 + 509')
+                expect(candidates).to_contain_text('Mt. Province-Ifugao Rd (Kiling-Paracelis Sect ) - K0462 + 000 - K0463 + 000')
+                expect(candidates).to_contain_text('₱18,499,000')
+                expect(candidates.get_by_role('link',name='Open suggested NEP entry in source tree',exact=False).first).to_have_attribute('href','#nep?node=p239%3Ar6')
                 expect(page.locator('.comparison-table tbody tr').first.locator('td').nth(1)).to_have_text('—')
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 page.screenshot(path=f'/tmp/fuzzy-candidate-{width}.png')
                 page.reload(wait_until='networkidle')
-                expect(candidates).to_contain_text('identity 90% · 95% text',timeout=60000)
-                candidates.get_by_role('button',name='Preview suggested NEP PDF p.206',exact=True).click()
+                expect(candidates).to_contain_text('identity 94% · 94% text',timeout=60000)
+                candidates.get_by_role('button',name='Preview suggested NEP PDF p.239',exact=True).first.click()
                 expect(page.locator('.pdf-pane')).to_be_visible(timeout=60000)
-                expect(page.get_by_label('PDF page',exact=True)).to_have_value('206',timeout=60000)
+                expect(page.get_by_label('PDF page',exact=True)).to_have_value('239',timeout=60000)
                 page.get_by_role('button',name='Clear preview',exact=True).click()
                 expect(page.locator('.source-pane')).to_have_count(0)
                 expect(candidates).to_be_visible()
-                page.goto(base+'#compare?view=projects&match=fuzzy&q=house-reading:5146',wait_until='networkidle')
+                page.goto(base+'#compare?view=projects&match=fuzzy&q=house-reading:4500',wait_until='networkidle')
                 page.get_by_role('button',name='Review 2 NEP suggestions',exact=True).click(timeout=60000)
                 candidates=page.get_by_role('region',name='Suggested NEP matches',exact=True)
                 # 2 House reading rows + 2 suggestion rows
@@ -158,7 +158,7 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(page.locator('.normalized-match-badge')).to_contain_text('Matched after chainage check')
                 expect(page.locator('.chainage-in-cell').first).to_contain_text('Chainage:')
                 # Unresolved fuzzy referral still keeps House and NEP on separate rows.
-                page.goto(base+'#compare?view=projects&q=K1553',wait_until='networkidle')
+                page.goto(base+'#compare?view=projects&q=B01989MN',wait_until='networkidle')
                 expect(page.locator('.result-count')).to_contain_text(f'2 of {total_label} comparison rows',timeout=60000)
                 expect(page.locator('.count-explanation')).to_contain_text('not unique projects')
                 expect(page.locator('.counterpart-badge')).to_contain_text('Suggested NEP counterpart · unresolved (1 House comparison row)')
