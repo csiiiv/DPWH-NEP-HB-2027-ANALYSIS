@@ -214,18 +214,13 @@ export default function Comparison({ route }) {
   const tableNames = names;
   return (
     <>
-      <section className="hero">
+      <section className="hero hero-compact">
         <p className="eyebrow">DPWH · FY2027</p>
         <h1>Compare budget stages</h1>
         <p>
-          PAP totals, project comparison rows, House-reading filters, and
-          source PDF evidence across Transparency NEP, DBM NEP, and both
-          House readings.
-        </p>
-        <p className="muted">
-          Candidate matches do not certify additions, removals, or final
-          amendments. Source totals and extraction coverage describe different
-          scopes.
+          PAP totals, project records and source PDF evidence across
+          Transparency NEP, DBM NEP, and both House readings. Candidate
+          matches do not certify additions, removals, or final amendments.
         </p>
       </section>
       <details className="comparison-context"><summary>Source scopes, reading controls and downloads</summary>

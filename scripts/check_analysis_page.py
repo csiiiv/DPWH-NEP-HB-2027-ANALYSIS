@@ -153,9 +153,11 @@ with tempfile.TemporaryDirectory() as folder:
                 del_groups=data['deletions']
                 top=page.get_by_role('region',name='Top deletion candidates',exact=True)
                 expect(top.locator('tbody tr')).to_have_count(100)
-                expect(page.locator('.analysis-section .muted').first).to_contain_text(f"{del_groups['no_suggestion']['comparison_rows']:,} comparison rows")
+                del_section=page.locator('section.analysis-section').filter(has=page.get_by_role('heading',name='Top deletion candidates'))
+                group_card=del_section.locator('.analysis-headlines article').filter(has_text='Comparison rows')
+                expect(group_card).to_contain_text(f"{del_groups['no_suggestion']['comparison_rows']:,}")
                 page.get_by_label('Analysis deletion group',exact=True).select_option('suggested')
-                expect(page.locator('.analysis-section .muted').first).to_contain_text(f"{del_groups['suggested']['comparison_rows']:,} comparison rows")
+                expect(group_card).to_contain_text(f"{del_groups['suggested']['comparison_rows']:,}")
                 expect(page.get_by_role('columnheader',name=re.compile('Referring House rows'))).to_be_visible()
                 page.get_by_role('button',name='Region',exact=True).click()
                 by_region=page.get_by_role('region',name='Totals by region',exact=True)

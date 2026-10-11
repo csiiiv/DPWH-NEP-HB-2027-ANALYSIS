@@ -106,6 +106,13 @@ small {
   min-width: 220px;
   font: inherit;
 }
+@media(max-width:700px){
+  .hero{padding:16px;margin:6px 0 10px}
+  .hero h1{font-size:24px}
+  /* The fold check needs the Compare filters within the first screenful;
+     the blurb repeats the caveat inside the details below. */
+  .hero-compact p{display:none}
+}
 .secondary {
   display: inline-block;
   background: #fff;
