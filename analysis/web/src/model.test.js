@@ -155,6 +155,19 @@ test("cached searches preserve project titles, recorded IDs, office names and st
  assert.deepEqual(selectRows(rows,{query:'Different',column:'1',direction:-1}).map(r=>r.title),['Road 2']);
  assert.equal(rows[0].title,'Road 10');
 });
+
+test('identity_score sort uses top suggestion score; rows without suggestions sort last',()=>{
+ const rows=[
+  {title:'High',suggestions:[{identity_score:0.9,confidence:0.95,diff_tags:['spelling_ocr']}]},
+  {title:'Low',suggestions:[{identity_score:0.35,confidence:0.88,diff_tags:['different_barangay']}]},
+  {title:'Mid',suggestions:[{identity_score:0.7,confidence:0.9,diff_tags:[]}]},
+  {title:'Exact',nep:{amount_php:1}},
+ ];
+ assert.deepEqual(selectRows(rows,{tab:'projects',column:'identity_score',direction:-1}).map(r=>r.title),
+                  ['High','Mid','Low','Exact']);
+ assert.deepEqual(selectRows(rows,{tab:'projects',column:'identity_score',direction:1}).map(r=>r.title),
+                  ['Low','Mid','High','Exact']);
+});
 test('House-only insertion candidates exclude any attached NEP or Transparency source',()=>{
  const rows=[
   {id:'paired',title:'A',second:{amount_php:0},third:{amount_php:0},nep:{amount_php:0}},

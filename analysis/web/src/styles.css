@@ -846,6 +846,9 @@ small {
 .normalized-match-badge{display:block;background:#eef5fc;color:#1f4d7a;padding:.35rem .5rem;border-radius:6px;margin:.3rem 0;font-size:.72rem}
 .diff-tag-row{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.3rem}
 .diff-tag.diff-tag-top{background:#1f4d7a;border-color:#1f4d7a;color:#fff;font-style:italic}
+.diff-tag.diff-tag-identity{background:#1f4d7a;border-color:#1f4d7a;color:#fff;cursor:pointer;font-variant-numeric:tabular-nums}
+.diff-tag.diff-tag-identity:hover,.diff-tag.diff-tag-identity:focus-visible{background:#163a5c;border-color:#163a5c;outline:2px solid #bcd2ea;outline-offset:1px}
+.diff-tag.diff-tag-identity .diff-tag-identity-text{font-weight:500;opacity:.85}
 .diff-tag{display:inline-block;padding:.1rem .45rem;border-radius:999px;font-size:.66rem;font-weight:600;line-height:1.4;background:#eef2f6;color:#3d5166;border:1px solid #cdd8e2}
 .diff-tag[data-tag="spelling_ocr"]{background:#e8f3ec;border-color:#bcdcc7;color:#1d5c36}
 .diff-tag[data-tag="stage_qualifier"]{background:#eef5fc;border-color:#bcd2ea;color:#1f4d7a}

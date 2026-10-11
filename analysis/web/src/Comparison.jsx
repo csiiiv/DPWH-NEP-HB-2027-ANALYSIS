@@ -395,10 +395,11 @@ export default function Comparison({ route }) {
           {flag==='house_only' && <p className="muted">Insertion candidates: HGAB2 or HGAB3 records with no attached NEP or Transparency source. Unmatched records can reflect title or assignment differences; this does not confirm absence from the NEP PDF.</p>}
           {flag.startsWith('diff:') && <p className="muted">Fuzzy queue filtered by title-difference tag ({diffTagLabel(flag.slice('diff:'.length))}): rows whose NEP suggestions carry this residual difference. Tags classify the text difference only — they do not assert identity. See the expanded review table for per-suggestion tags.</p>}
           {(flag==='nep_only'||flag==='nep_only_suggested') && <p className="muted">Deletion candidates: NEP line items with no attached House record. {flag==='nep_only_suggested'?'At least one unmatched House row names this NEP item as a fuzzy counterpart — review for a re-titled or re-scoped replacement. Suggestions refer to House rows, not certified identities.':'No unmatched House row suggests a counterpart. Title or assignment differences can prevent pairing; this does not confirm removal.'}</p>}
-          {matchStatus==='fuzzy' && <p className="muted">Fuzzy matches are the OCR triage queue: similar House and NEP titles in the same scope, with residual spelling to promote into normalize rules.</p>}
+          {matchStatus==='fuzzy' && <p className="muted">Fuzzy matches are the OCR triage queue: similar House and NEP titles in the same scope, with residual spelling to promote into normalize rules. Identity scores rank suggestions after place-mismatch penalties; sort by Identity score to triage low-confidence pairs first.</p>}
+          {column==='identity_score' && <p className="muted">Sorted by identity score of each row’s top NEP suggestion (text similarity minus place-mismatch penalties). Rows without fuzzy suggestions sort last.</p>}
           <div className="mobile-sort">
             <label>Sort results<select aria-label="Sort results" value={column} onChange={e=>{setColumn(e.target.value);setMode('total');}}>
-              {(tab==='gaps'?[['title','Project'],['amount','Amount'],['region','Region'],['pdf_page','PDF page']]:[['title',tab==='paps'?'PAP':'Project'],...tableNames.map((n,i)=>[String(i),n]),['reading_delta','HGAB3 − HGAB2']]).map(([v,n])=><option key={v} value={v}>{n}</option>)}
+              {(tab==='gaps'?[['title','Project'],['amount','Amount'],['region','Region'],['pdf_page','PDF page']]:[['title',tab==='paps'?'PAP':'Project'],...tableNames.map((n,i)=>[String(i),n]),['reading_delta','HGAB3 − HGAB2'],...(tab==='projects'?[['identity_score','Identity score (top suggestion)']]:[])]).map(([v,n])=><option key={v} value={v}>{n}</option>)}
             </select></label><button onClick={()=>setDirection(-direction)}>{direction===1?'Ascending ↑':'Descending ↓'}</button>
           </div>
           <div className="results-toolbar">
@@ -450,7 +451,19 @@ export default function Comparison({ route }) {
                       {counterpartCounts.has(r.id) && <small className="counterpart-badge">Suggested NEP counterpart · unresolved ({counterpartCounts.get(r.id)} House comparison {counterpartCounts.get(r.id)===1?'row':'rows'}). Kept separately pending review.</small>}
                       {r.suggestions?.length>0 && <>
                         <button className="candidate-review-button" aria-expanded={finding.record===r.id} onClick={()=>setFinding('record',finding.record===r.id?'':r.id)}>Review {r.suggestions.length} NEP {r.suggestions.length===1?'suggestion':'suggestions'}</button>
-                        {(()=>{const tags=r.suggestions[0].diff_tags?.filter(t=>t!=='identical')||[];return tags.length>0&&<span className="diff-tag-row" role="group" aria-label="Top suggestion title differences">{r.suggestions.length>1&&<span className="diff-tag diff-tag-top" title="Tags shown for the top (highest-similarity) suggestion">top:</span>}{tags.map(tag=><span key={tag} className="diff-tag" data-tag={tag}>{diffTagLabel(tag)}</span>)}</span>;})()}
+                        {(()=>{
+                          const top=r.suggestions[0];
+                          const tags=top.diff_tags?.filter(t=>t!=='identical')||[];
+                          const identity=top.identity_score;
+                          const text=top.confidence;
+                          return (identity!=null || tags.length>0) && <span className="diff-tag-row" role="group" aria-label="Top suggestion identity and title differences">
+                            {r.suggestions.length>1&&<span className="diff-tag diff-tag-top" title="Scores and tags shown for the top (highest-identity) suggestion">top:</span>}
+                            {identity!=null && <button type="button" className="diff-tag diff-tag-identity" title="Identity score for the top suggestion (text similarity minus place-mismatch penalties). Click to sort by identity score." aria-label={`Identity score ${Math.round(identity*100)} percent. Sort by identity score.`} onClick={()=>{setColumn('identity_score');setMode('total');setDirection(-1);}}>
+                              identity {Math.round(identity*100)}%{text!=null && <span className="diff-tag-identity-text"> · {Math.round(text*100)}% text</span>}
+                            </button>}
+                            {tags.map(tag=><span key={tag} className="diff-tag" data-tag={tag}>{diffTagLabel(tag)}</span>)}
+                          </span>;
+                        })()}
                       </>}
                       {r.region_difference && <small>Region differs · House: {r.region_difference.house} · NEP: {r.region_difference.nep} · candidate only</small>}
                       {r.reason && identityMatchStatus(r)!=='matched_chainage' && <small className="normalized-match-badge">Matched after title normalization ({r.reason})</small>}

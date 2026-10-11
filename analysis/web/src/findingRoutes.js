@@ -40,7 +40,7 @@ export function comparisonState(params) {
     flag: mappedFlag,
     regionMatching:params.get('region_match') === 'ignore' ? 'ignore' : 'strict',
     readingStatus,
-    column:choice(column, tab === 'gaps' ? ['title','amount','region','pdf_page'] : ['title','0','1','2','3','reading_delta'], 'title'),
+    column:choice(column, tab === 'gaps' ? ['title','amount','region','pdf_page'] : ['title','0','1','2','3','reading_delta','identity_score'], 'title'),
     mode:choice(params.get('metric'), ['total','delta','percent'], 'total'), direction:params.get('order') === 'desc' ? -1 : 1,
     record:tab === 'projects' ? params.get('record') || '' : '', pathSource:choice(params.get('path_source'),['third','second','nep','api'],''),
     page:boundedInteger(params.get('page'),1,1,100000)-1};

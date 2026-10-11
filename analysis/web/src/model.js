@@ -22,6 +22,7 @@ function sortedRows(rows,tab,column,mode,direction) {
   if(!cache.has(id)) {
     const key=r=>{
       if(column==='reading_delta')return r.reading_delta_php ?? r.delta_php;
+      if(column==='identity_score')return r.suggestions?.[0]?.identity_score ?? null;
       if(column==='title')return r.title ?? r.label;
       if(['region','pdf_page','trace'].includes(column))return r[column] ?? null;
       if(tab==='gaps')return r.amount_php ?? null;

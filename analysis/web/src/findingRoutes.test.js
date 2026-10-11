@@ -25,6 +25,12 @@ test('optional region matching is shareable and unknown modes use strict matchin
  assert.deepEqual(comparisonState(new URLSearchParams(comparisonParams(state))),state);
  assert.equal(comparisonState(new URLSearchParams('region_match=unknown')).regionMatching,'strict');
 });
+test('identity_score sort is shareable in the URL',()=>{
+ const state=comparisonState(new URLSearchParams('view=projects&sort=identity_score&order=desc'));
+ assert.equal(state.column,'identity_score');
+ assert.equal(state.direction,-1);
+ assert.deepEqual(comparisonState(new URLSearchParams(comparisonParams(state))),state);
+});
 test('match status and flags parse from shareable URLs; legacy status maps',()=>{
  const modern=comparisonState(new URLSearchParams('view=projects&match=fuzzy&flag=amount_increase'));
  assert.equal(modern.matchStatus,'fuzzy');
