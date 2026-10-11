@@ -11,7 +11,10 @@ sys.path[:0] = [str(_Path(__file__).resolve().parents[1]), str(_Path(__file__).r
 from paths import ANALYSIS, REPO, DATA, VIEWERS, DOCS, ARCHIVE, EVIDENCE
 from house_native import comparison_inputs, office_from_region_parent, validate_native_detail
 from chainage import chainage_signature, classify_chainage_amendment
-from normalize_labels import annotate_source_labels, digits_omitted, normalized, raw_normalized
+from normalize_labels import (
+    annotate_source_labels, digits_omitted, normalized, raw_normalized,
+    strip_stage_qualifier,
+)
 
 import hashlib
 import json
@@ -44,8 +47,12 @@ METHOD = ('Unique normalized title + canonical region + canonical PAP node ID '
           'Amount does not determine identity. Duplicate keys remain ambiguous. '
           'FAP loans additionally pair across differing program sections '
           '(I-C National Building Program vs NEP Local Program) when the '
-          'normalized title, region and funding zone are each unique. Remaining '
-          'House rows receive up to three fuzzy suggestions within the same '
+          'normalized title, region and funding zone are each unique. '
+          'A guarded fallback then pairs remaining rows when titles differ only '
+          'by a stage qualifier after the work type (Construction (Completion) '
+          'vs Construction) and the stripped key is unique on both sides of the '
+          'same scope — dual line items that keep both variants stay unmatched. '
+          'Remaining House rows receive up to three fuzzy suggestions within the same '
           'region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; '
           'unique same title_base with different chainage spans (or digit-only title diffs) '
           'attach as chainage matches (consume NEP). '
@@ -205,6 +212,33 @@ def project_matches(house, source):
                                           'region + funding zone pairs the loan documents.'})
                 matched_h.add(h)
                 matched_n.add(n)
+    # Stage-qualifier bridge: Construction (Completion) ↔ Construction when the
+    # stripped key is unique on both sides. Dual line items that keep both
+    # variants in the same scope stay unmatched (would not be unique).
+    stripped_h, stripped_n = defaultdict(list), defaultdict(list)
+    for i, r in enumerate(house):
+        if i not in matched_h:
+            stripped_h[(*scope_key(r), strip_stage_qualifier(r['title']))].append(i)
+    for i, r in enumerate(source):
+        if i not in matched_n:
+            stripped_n[(*scope_key(r), strip_stage_qualifier(r['title']))].append(i)
+    for k in sorted(stripped_h):
+        if len(stripped_h[k]) == len(stripped_n.get(k, [])) == 1:
+            h, n = stripped_h[k][0], stripped_n[k][0]
+            # Skip when titles already share a full match key (would have paired
+            # above, or are duplicate-key ambiguous). Only bridge true qualifier diffs.
+            if _title_key(house[h]) == _title_key(source[n]):
+                continue
+            records.append({
+                'status': 'exact_candidate', 'confidence': 1,
+                'house': house[h], 'nep': source[n],
+                'delta_php': house[h]['amount_php'] - source[n]['amount_php'],
+                'reason': 'Titles match after dropping the stage qualifier '
+                          '(Construction (Completion) ↔ Construction); unique '
+                          'stripped key in the same region/PAP/zone.',
+            })
+            matched_h.add(h)
+            matched_n.add(n)
     # Token index narrows suggestions without ranking by amount or claiming identity.
     tokens = defaultdict(set)
     for i, r in enumerate(source):

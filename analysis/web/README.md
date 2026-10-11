@@ -227,11 +227,14 @@ The main **Analysis** route (`#analysis`) loads build-time headline summaries fr
 Overview/Insertions. It reports office categories and mutually exclusive program
 buckets per source, counting grouped allocation members once. FAP is a funding
 bucket across programs. Overview includes a **NEP → HGAB by region / office / category / PAP**
-table (House−NEP amount and percent). House-only rankings separate records without NEP suggestions, unresolved
+table (House−NEP amount and percent). Under each region/office/PAP group name,
+**Show by …** disclosure buttons open a nested breakdown that conserves the
+parent’s record and allocation totals (regions/offices → PAPs; PAPs → regions
+or district offices). House-only rankings separate records without NEP suggestions, unresolved
 suggestions and third-reading-only records. The **Deletions** subtab mirrors that
 layout for NEP-only rows (no House record), split into no suggestion, possible
 replacements (House rows name this NEP item as a counterpart), and HGAB2-only.
-Group drill-downs deep-link into Compare with the matching `change=` filter.
+Ranked group drill-downs deep-link into Compare with the matching `change=` filter.
 Source and ranking selections are shareable as
 `#analysis?source=third&ranking=no_suggestion` and
 `#analysis?view=deletions&ranking=suggested`.

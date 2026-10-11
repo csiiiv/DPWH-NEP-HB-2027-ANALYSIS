@@ -13,6 +13,7 @@ from normalize_labels import (
     classify_title_substitution,
     normalized,
     raw_normalized,
+    strip_stage_qualifier,
     title_match_key,
     title_tokens,
 )
@@ -113,6 +114,24 @@ class NormalizeLabelsTests(unittest.TestCase):
         # Tokens still surface the expanded label for mining/alignment.
         self.assertIn('barangay', title_tokens('Brgy Pulo Santa Cruz'))
         self.assertNotIn('barangay', title_match_key('Brgy Pulo Santa Cruz'))
+
+    def test_stage_qualifier_strip_not_live_match_key(self):
+        # Construction (Completion) / Construction/Completion share a stripped
+        # key with plain Construction, but title_match_key keeps the token so
+        # dual line items (completion + fresh start) stay distinct.
+        with_q = 'Construction (Completion) of Bridge, Barangay Biga I, Silang, Cavite'
+        slash = 'Construction/Completion of Bridge, Barangay Biga I, Silang, Cavite'
+        plain = 'Construction of Bridge, Barangay Biga I, Silang, Cavite'
+        self.assertEqual(strip_stage_qualifier(with_q), strip_stage_qualifier(plain))
+        self.assertEqual(strip_stage_qualifier(slash), strip_stage_qualifier(plain))
+        self.assertNotEqual(title_match_key(with_q), title_match_key(plain))
+        # Bare "Completion of …" (no leading work type) keeps its token.
+        self.assertNotEqual(
+            strip_stage_qualifier('Completion of Multi-Purpose Building, Barangay X'),
+            strip_stage_qualifier('Construction of Multi-Purpose Building, Barangay X'))
+        # Work-type swaps stay rejected for mining triage.
+        self.assertEqual(
+            classify_title_substitution(('completion',), ('construction',)), 'reject')
 
     def test_substitution_triage(self):
         self.assertEqual(classify_title_substitution(('building',), ('bldg',)), 'promote')

@@ -106,23 +106,36 @@ function Overview({stats,source,headlines,dim,change}){
  const drillRows=drillParent&&drill?(drillParent[drill.axis==='region'?'by_region':drill.axis==='office'?'by_office':'by_pap']||[]):null;
  const drillAxis=drill?.axis;
  const drillDimLabel=drillAxis==='region'?'Region':drillAxis==='office'?'District office':'PAP';
- const drillButton=(row,axis,plural)=>{
+ const drillAxisNoun=axis=>axis==='region'?'region':axis==='office'?'office':'PAP';
+ const drillButton=(row,axis)=>{
   const list=row[axis==='region'?'by_region':axis==='office'?'by_office':'by_pap'];
   if(!list?.length)return null;
   const open=drill?.label===row.label&&drill.axis===axis;
-  return <button type="button" className={`group-open pap-drill-toggle${open?' open':''}`} aria-expanded={open} aria-controls="overview-pap-drilldown" onClick={()=>setDrill(open?null:{label:row.label,axis})}>{open?'Hide':plural}</button>;
+  const noun=drillAxisNoun(axis);
+  const countLabel=`${list.length.toLocaleString()} ${noun}${list.length===1?'':'s'}`;
+  const action=open?`Hide ${noun} breakdown`:`Show by ${noun}`;
+  return <button type="button" className={`overview-drill-btn${open?' open':''}`} aria-expanded={open} aria-controls="overview-pap-drilldown" aria-label={`${action} · ${countLabel}`} onClick={()=>setDrill(open?null:{label:row.label,axis})}>
+   <span className="overview-drill-chevron" aria-hidden="true">{open?'▾':'▸'}</span>
+   <span className="overview-drill-label" aria-hidden="true">{action}</span>
+   <span className="overview-drill-count" aria-hidden="true">{countLabel}</span>
+  </button>;
  };
+ const parentTitle=drill?dim==='program'?short(drill.label):groupLabel(dim,drill.label):'';
  return <>
   <div className="cards analysis-headlines"><article><h3>Source allocation records</h3><strong>{stats.records.toLocaleString()}</strong><p>{names[source]}</p></article><article><h3>Allocated amount</h3><strong>{amount(stats.amount_php)}</strong><p>PHP · selected source only</p></article><article><h3>Central Office / DEOs</h3><strong>{stats.offices['Central Office'].records.toLocaleString()} / {stats.offices['District engineering offices (DEOs)'].records.toLocaleString()}</strong><p>Allocation records · regional and missing offices separate</p></article></div>
   <section className="analysis-section"><h2>NEP → {houseLabel}{dim==='overall'?'':' by '+dimensionTitle(dim)}</h2>
    <DimensionChips dim={dim} change={change}/>
-   <p className="muted">Operations comparison grain. Totals: NEP {amount(compare.nep_php)} ({headlines.sources.nep.records.toLocaleString()} records) · {houseLabel} {amount(compare.house_php)} ({headlines.sources[houseSide].records.toLocaleString()} records) · records change {signedCount(headlines.sources[houseSide].records-headlines.sources.nep.records)} · allocation change {signedCell(compare.delta_php)}. Each source uses its own assignment for the selected breakdown; a paired row can land in different groups when labels differ.{dim!=='overall'&&' Select a group name to expand its nested breakdown (regions/offices → PAPs; PAPs → regions or offices).'}</p>
+   <p className="muted">Operations comparison grain. Totals: NEP {amount(compare.nep_php)} ({headlines.sources.nep.records.toLocaleString()} records) · {houseLabel} {amount(compare.house_php)} ({headlines.sources[houseSide].records.toLocaleString()} records) · records change {signedCount(headlines.sources[houseSide].records-headlines.sources.nep.records)} · allocation change {signedCell(compare.delta_php)}. Each source uses its own assignment for the selected breakdown; a paired row can land in different groups when labels differ.{dim!=='overall'&&' Use the Show by … buttons under a group name to open its nested breakdown (regions/offices → PAPs; PAPs → regions or offices).'}</p>
    <SortableTable ariaLabel={`NEP to ${houseLabel} by ${dimLabel}`} initialSort={{key:'delta_php',direction:'desc'}} rows={rows.map(r=>{
     const nepRecords=r.nep_records??0,houseRecords=r.house_records??0;
     return {...r,delta_records:houseRecords-nepRecords,pct_records:percentChange(houseRecords,nepRecords),pct_alloc:percentChange(r.house_php,r.nep_php)};
    })} columns={[
-    {key:'label',label:dimLabel,scope:'row',render:r=><span>{dim==='overall'?r.label:dim==='program'?short(r.label):groupLabel(dim,r.label)}
-     {dim==='pap'?<>{drillButton(r,'region','Regions')}{drillButton(r,'office','Offices')}</>:drillButton(r,'pap','PAPs')}</span>},
+    {key:'label',label:dimLabel,scope:'row',render:r=><span className="overview-group-cell">
+     <span className="overview-group-label">{dim==='overall'?r.label:dim==='program'?short(r.label):groupLabel(dim,r.label)}</span>
+     {dim!=='overall'&&dim!=='program'&&<span className="overview-drill-actions" role="group" aria-label={`Drill down ${groupLabel(dim,r.label)}`}>
+      {dim==='pap'?<>{drillButton(r,'region')}{drillButton(r,'office')}</>:drillButton(r,'pap')}
+     </span>}
+    </span>},
     {key:'nep_records',label:'NEP records',align:'num',band:'records',bandLabel:'Records',render:r=><span>{(r.nep_records??0).toLocaleString()}</span>},
     {key:'house_records',label:`${houseLabel} records`,align:'num',band:'records',render:r=><span>{(r.house_records??0).toLocaleString()}</span>},
     {key:'delta_records',label:'Records change',align:'num',band:'records',render:r=>signedCount(r.delta_records)},
@@ -133,8 +146,17 @@ function Overview({stats,source,headlines,dim,change}){
     {key:'pct_alloc',label:'% allocation change',align:'num',band:'allocations',render:r=>signedPercent(r.pct_alloc)},
    ]}/>
    {drillRows&&<div id="overview-pap-drilldown" className="pap-drilldown">
-    <h3>{drillDimLabel} breakdown · {dim==='program'?short(drill.label):groupLabel(dim,drill.label)}</h3>
-    <p className="muted">Records and allocations per {drillDimLabel.toLowerCase()} inside {dim==='program'?short(drill.label):groupLabel(dim,drill.label)} — each source counts under its own recorded {drillDimLabel.toLowerCase()}, so a pair split across labels appears in both. Sorted by allocation change.</p>
+    <div className="pap-drilldown-head">
+     <div>
+      <p className="pap-drilldown-kicker">Drill-down</p>
+      <h3>{drillDimLabel} breakdown · {parentTitle}</h3>
+     </div>
+     <button type="button" className="overview-drill-btn open" onClick={()=>setDrill(null)}>
+      <span className="overview-drill-chevron" aria-hidden="true">▴</span>
+      <span className="overview-drill-label">Close breakdown</span>
+     </button>
+    </div>
+    <p className="muted">Records and allocations per {drillDimLabel.toLowerCase()} inside {parentTitle} — each source counts under its own recorded {drillDimLabel.toLowerCase()}, so a pair split across labels appears in both. Sorted by allocation change.</p>
     <SortableTable ariaLabel={`${drillDimLabel} breakdown for ${drill.label}`} initialSort={{key:'delta_php',direction:'desc'}} rows={drillRows.map(r=>{
      const nepRecords=r.nep_records??0,houseRecords=r.house_records??0;
      return {...r,delta_records:houseRecords-nepRecords,pct_records:percentChange(houseRecords,nepRecords),pct_alloc:percentChange(r.house_php,r.nep_php)};

@@ -25,7 +25,7 @@ export const FLAG_OPTIONS = [
 
 export const MATCH_STATUS_INFO = Object.fromEntries([
   ['matched', ['Already matched', 'Unique House↔NEP pair under the retained matching key with identical raw titles. Identity remains provisional.']],
-  ['matched_normalized', ['Matched after normalization', 'Unique House↔NEP pair whose titles agree only after live normalize rules (Brgy./place slips/structure IDs) or another retained pairing rule. Printed titles stay as extracted.']],
+  ['matched_normalized', ['Matched after normalization', 'Unique House↔NEP pair whose titles agree only after live normalize rules (Brgy./place slips/structure IDs), a stage-qualifier bridge (Construction (Completion) ↔ Construction), or another retained pairing rule. Printed titles stay as extracted.']],
   ['matched_chainage', ['Matched after chainage check', 'Unique House↔NEP pair that shares the same road title_base with differing station spans. Attached for identity; reasons include station-marker adjustment, increased/decreased project length, or re-segmentation. Amount flags still apply.']],
   ['fuzzy', ['Fuzzy match', 'High title similarity in the same scope with residual OCR/spelling drift. Primary queue for new normalize rules; suggestions do not attach the NEP row.']],
   ['ambiguous', ['Ambiguous key', 'Duplicate exact matching keys prevent a unique one-to-one pairing.']],

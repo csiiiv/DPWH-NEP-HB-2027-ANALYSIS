@@ -47,7 +47,7 @@ is preserved; two archived helpers still support active House repairs. See the
 |---|---|
 | `#home` | Workbench map, review-candidate headlines, and independent source status |
 | `#compare` | Sortable PAP/project/listing-gap comparison and source PDF pane |
-| `#analysis` | Office/program headlines, ranked insertions, NEP-only deletions with possible replacements, adjustments, chainage amendments (all-data overview + region/DEO peer ₱/km benchmark · revised-pair patterns + records), and statistics |
+| `#analysis` | Office/program headlines with nested Overview drill-downs (region/DEO ↔ PAP), ranked insertions, NEP-only deletions with possible replacements, adjustments, chainage amendments (all-data overview + region/DEO peer ₱/km benchmark · revised-pair patterns + records), and statistics |
 | `#house` | House GAB I-B hierarchy, rollups, and embedded I-B PDF |
 | `#nep` | DBM NEP hierarchy, expenditure classes, source review, and embedded II-B PDF |
 | `#transparency` | DPWH Transparency NEP snapshot hierarchy |

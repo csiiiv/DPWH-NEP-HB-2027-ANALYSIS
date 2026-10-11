@@ -26,9 +26,17 @@ class CurrentPageTests(unittest.TestCase):
         data = validate_current_pages()
         self.assertEqual(data['summary']['house_balanced_paps'], 44)
         self.assertEqual(data['summary']['reviewed_pairs'], 0)
+        from normalize_labels import strip_stage_qualifier
         for row in data['projects']:
             if row['status'] == 'exact_candidate':
-                self.assertEqual(normalized(row['house']['title']), normalized(row['nep']['title']))
+                # Stage-qualifier bridges keep the printed (Completion) token in
+                # title_match_key; identity is the stripped key instead.
+                if row.get('reason') and 'stage qualifier' in row['reason']:
+                    self.assertEqual(
+                        strip_stage_qualifier(row['house']['title']),
+                        strip_stage_qualifier(row['nep']['title']))
+                else:
+                    self.assertEqual(normalized(row['house']['title']), normalized(row['nep']['title']))
                 # FAP loans may sit under different program sections in I-C
                 # and the NEP; the audited cross-program pass pairs them by
                 # unique title + region + funding zone instead of program.
@@ -151,6 +159,44 @@ class CurrentPageTests(unittest.TestCase):
             [allocation('n', title='Reconstruction of Road, Barangay Mabini, Sample City')])
         self.assertEqual(flagged[0]['status'], 'exact_candidate')
         self.assertIn('normalization', flagged[0]['reason'])
+
+    def test_construction_completion_qualifier_bridges_unique_pairs(self):
+        # Unique Construction (Completion) ↔ Construction pairs attach as exact
+        # with a review reason; dual line items in the same scope stay unmatched.
+        h = allocation('h', title='Construction (Completion) of Bridge, Barangay Biga I, Silang')
+        n = allocation('n', title='Construction of Bridge, Barangay Biga I, Silang', amount=8000000)
+        rows = project_matches([h], [n])
+        self.assertEqual([r['status'] for r in rows], ['exact_candidate'])
+        self.assertEqual(rows[0]['delta_php'], 2000000)
+        self.assertIn('stage qualifier', rows[0]['reason'])
+        # Reverse direction (House plain, NEP qualified).
+        rev = project_matches(
+            [allocation('h', title='Construction of Bridge, Barangay Biga I, Silang')],
+            [allocation('n', title='Construction (Completion) of Bridge, Barangay Biga I, Silang')])
+        self.assertEqual(rev[0]['status'], 'exact_candidate')
+        self.assertIn('stage qualifier', rev[0]['reason'])
+        # Both variants already exist on each side → exact-key pairs keep them
+        # distinct (no stage-qualifier fusion).
+        dual = project_matches(
+            [allocation('h1', title='Construction (Completion) of Building, Barangay Luna', amount=10_000_000),
+             allocation('h2', title='Construction of Building, Barangay Luna', amount=50_000_000)],
+            [allocation('n1', title='Construction (Completion) of Building, Barangay Luna', amount=10_000_000),
+             allocation('n2', title='Construction of Building, Barangay Luna', amount=50_000_000)])
+        exact = [r for r in dual if r['status'] == 'exact_candidate']
+        self.assertEqual(len(exact), 2)
+        self.assertTrue(all(r.get('reason') is None for r in exact))
+        # House keeps both variants but NEP has only the plain title → stripped
+        # key is not unique on the House side; do not greedily attach either.
+        blocked = project_matches(
+            [allocation('h1', title='Construction (Completion) of Building, Catigbian', amount=60_000_000),
+             allocation('h2', title='Construction of Building, Catigbian', amount=5_000_000)],
+            [allocation('n', title='Construction of Building, Catigbian', amount=5_000_000)])
+        self.assertEqual([r['status'] for r in blocked].count('exact_candidate'), 1)
+        attached = next(r for r in blocked if r['status'] == 'exact_candidate')
+        self.assertEqual(attached['house']['id'], 'h2')  # full-key exact, not the qualifier
+        self.assertIsNone(attached.get('reason'))
+        leftover = next(r for r in blocked if r['house']['id'] == 'h1')
+        self.assertIn(leftover['status'], ('fuzzy_candidate', 'house_unmatched', 'ambiguous'))
 
     def test_region_direct_leaves_inherit_regional_or_central_office(self):
         self.assertEqual(regional_office_label('Region I'), 'Regional Office I')

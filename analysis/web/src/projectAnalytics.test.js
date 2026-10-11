@@ -8,8 +8,8 @@ const read=name=>JSON.parse(readFileSync(new URL(`../../data/${name}.json`,impor
 test('analytics of all rows preserves source ledgers, additions and House delta',()=>{
  const stages=read('stage_trace_2027'),readings=read('house_reading_changes_2027');
  const rows=unifiedComparison(stages,readings).projects,stats=projectAnalytics(rows);
- // 17772 → 17771: the Arellano "Bivd"→"Blvd" OCR pair now attaches exactly.
- assert.equal(stats.count,17771);assert.equal(stats.changes.third_only,5);assert.equal(stats.readingDelta,134000000);
+ // 17771 → 17747: Construction (Completion)↔Construction bridges attached 24 pairs.
+ assert.equal(stats.count,17747);assert.equal(stats.changes.third_only,5);assert.equal(stats.readingDelta,134000000);
  for(const side of ['second','third'])assert.equal(stats.totals[side].amount,readings.summary[side].operations_including_projects);
  for(const side of ['api','nep'])assert.equal(stats.totals[side].amount,stages.projects.reduce((s,r)=>s+(r[side]?.amount_php || 0),0));
  const regions=compareDistribution(rows,'region');

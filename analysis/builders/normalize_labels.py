@@ -107,6 +107,30 @@ WORK_TYPE_TOKENS = {
     'maintenance', 'preventive',
 }
 
+# Project-stage qualifier pairs like "Construction (Completion)" vs plain
+# "Construction" describe the same delivered structure; the qualifier moves
+# between documents. The token is dropped (only directly after the work type)
+# for a guarded fallback pairing — never merged into title_match_key, because
+# both variants can coexist as distinct line items (completion + fresh start)
+# in the same scope.
+QUALIFIER_AFTER_WORK_TYPE = {'completion'}
+
+
+def strip_stage_qualifier(value: str) -> str:
+    """Match key with the stage qualifier dropped after the work type.
+
+    ``Construction (Completion) of X`` and ``Construction of X`` share a
+    stripped key; ``Completion of X`` (no leading work type) keeps its token.
+    Punctuation is irrelevant — tokens split before the check.
+    """
+    tokens = title_tokens(value)
+    kept = []
+    for token in tokens:
+        if token in QUALIFIER_AFTER_WORK_TYPE and kept and kept[-1] in WORK_TYPE_TOKENS:
+            continue
+        kept.append(token)
+    return ''.join(t for t in kept if t != 'barangay')
+
 
 def _nfkc(value: str) -> str:
     return unicodedata.normalize('NFKC', value or '').strip()

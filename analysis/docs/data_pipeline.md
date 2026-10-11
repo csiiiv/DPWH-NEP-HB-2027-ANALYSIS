@@ -167,8 +167,10 @@ build_current_pages.py
 ```
 
 One-to-one exact candidates via unique normalized title + canonical region +
-PAP node (FAP by program+zone). Retained match counts:
-**9,643 exact · 277 chainage · 531 fuzzy · 5 ambiguous · 5,814 house-only · 1,500 nep-only**.
+PAP node (FAP by program+zone). A guarded stage-qualifier bridge also pairs
+unique `Construction (Completion)` ↔ `Construction` titles in the same scope
+(dual line items that keep both variants stay unmatched). Retained match counts:
+**9,668 exact · 277 chainage · 493 fuzzy · 5 ambiguous · 5,827 house-only · 1,475 nep-only**.
 Also refreshes the verification overview pages.
 
 ## Stage 4 · Stage trace
@@ -181,8 +183,7 @@ build_stage_trace.py
 ```
 
 Unified HGAB2-anchored rows with NEP/API attachment and trace statuses
-(17,770 records: 9,547 amount_same · 5,814 house_only · 1,500 nep_only ·
-531 fuzzy · 325 ±amount · 31 transparency-gap · 25 outside-api · 5 ambiguous).
+(17,745 records after stage-qualifier bridges folded 24 fuzzy/NEP pairs).
 
 ## Stage 5 · House readings comparator
 
