@@ -7,7 +7,8 @@ import ShareLink from './ShareLink.jsx';
 import SortableTable from './SortableTable.jsx';
 import {benford,trailingZeros,lastDigits,roundingLadder,valueBands,kmeansClusters,exactConcentrations} from './analysisStats.js';
 import {CHAINAGE_FOCUS,CHAINAGE_MODUS,MODUS_DEADBAND,amountChangeBins,chainageAmendmentRows,filterChainageRows,modusSummary,perKmChangeBins,redFlagPerKm,summarizeChainage} from './chainageAnalysis.js';
-import {BENCHMARK_SOURCES,outlierUnits,peerCohorts,unitPerKm} from './chainageBenchmark.js';
+import {BENCHMARK_DIMENSIONS,BENCHMARK_SOURCES,outlierUnits,peerCohorts,perKmBands,summarizeUnits,unitPerKm} from './chainageBenchmark.js';
+import ChainageGuide,{Term,GUIDE_CONCEPTS} from './ChainageGuide.jsx';
 import {formatLengthKm,formatSignedKm} from './chainageDisplay.js';
 import {officeName,regionName} from './regionNames.js';
 const GroupProjectsModal=lazy(()=>import('./GroupProjectsModal.jsx'));
@@ -43,6 +44,8 @@ export default function Analysis({route}){
  const dim=pick(route.params,'dim',dimensions.map(d=>d[0]),'overall');
  const direction=pick(route.params,'direction',['increased','reduced'],'increased');
  const chainageFocus=pick(route.params,'focus',Object.keys(CHAINAGE_FOCUS),'all');
+ const chainageStage=pick(route.params,'stage',['patterns','benchmark','records','overview'],'patterns');
+ const chainageScope=pick(route.params,'scope',['all','revised'],'all');
  const deletionRanking=pick(route.params,'ranking',Object.keys(deletionModes),'no_suggestion');
  // Overview defaults to region so the NEP vs House change table is immediately useful.
  const overviewDim=view==='overview'&&!route.params.get('dim')?'region':dim;
@@ -80,7 +83,7 @@ export default function Analysis({route}){
   {view==='insertions'&&<Insertions headlines={data.headlines} reading={reading(source)} ranking={ranking} dim={dim} change={change} onOpenGroup={openGroup}/>}
   {view==='deletions'&&<Deletions headlines={data.headlines} ranking={deletionRanking} dim={dim} change={change} onOpenGroup={openGroup}/>}
   {view==='adjustments'&&detail&&<Adjustments detail={detail} revisionSets={data.headlines.revisionSets} dim={dim} direction={direction} change={change} onOpenGroup={openGroup}/>}
-  {view==='chainage'&&<Chainage detail={detail} focus={chainageFocus} change={change} benchmark={benchmark} setBenchmark={setBenchmark}/>}
+  {view==='chainage'&&<Chainage detail={detail} focus={chainageFocus} change={change} benchmark={benchmark} setBenchmark={setBenchmark} stage={chainageStage} scope={chainageScope}/>}
   {view==='statistics'&&detail&&<Statistics detail={detail} source={source} dim={dim} change={change}/>}
   {group&&detail&&<Suspense fallback={null}><GroupProjectsModal projects={detail} group={group} onClose={()=>setGroup(null)}/></Suspense>}
  </div>;
@@ -235,9 +238,36 @@ const CHAINAGE_SORTS=[
  ['house_length_m','HGAB length'],
  ['title','Project'],
 ];
-function Chainage({detail,focus,change,benchmark,setBenchmark}){
+// Focus groups for the records table, grouped for the dropdown.
+function chainageFocusGroups(){
+ const base=[['Basics',Object.entries(CHAINAGE_FOCUS).filter(([key])=>!key.startsWith('modus_'))]];
+ return [...base,['Amendment modus',Object.entries(CHAINAGE_FOCUS).filter(([key])=>key.startsWith('modus_'))]];
+}
+// One step of the How-to-read collapsible. Tooltip already shows the short
+// definition; this adds the worked detail only when asked for.
+function HowToRead({conceptKey,label='How to read this'}){
+ const concept=GUIDE_CONCEPTS.find(c=>c.key===conceptKey);
+ if(!concept)return null;
+ return <details className="howto"><summary>{label}</summary>
+  <p><strong>{concept.term}.</strong> {concept.short}</p>
+  {concept.body}
+ </details>;
+}
+// Modal band of a source's ₱/km distribution — "where most sit" hint for the
+// population table. Falls back to a dash when nothing is measurable.
+function perKmBandHint(units,source){
+ const result=perKmBands(units,{source});
+ const top=[...result.bands].sort((a,b)=>b.units-a.units)[0];
+ if(!top||!top.units)return '—';
+ return `${top.label} · ${top.units.toLocaleString()} of ${result.measurable.toLocaleString()}`;
+}
+function Chainage({detail,focus,change,benchmark,setBenchmark,stage,scope}){
  const [sort,setSort]=useState('per_km_delta');
  const [benchSource,setBenchSource]=useState('all');
+ // Benchmark peer axis: region cohorts pool every DEO in the region; DEO
+ // cohorts compare a ₱/km against its own district's norm.
+ const [benchDimension,setBenchDimension]=useState('region');
+ const [outliersOpen,setOutliersOpen]=useState(false);
  const rows=useMemo(()=>chainageAmendmentRows(detail),[detail]);
  const summary=useMemo(()=>summarizeChainage(rows),[rows]);
  const shown=useMemo(()=>filterChainageRows(rows,focus),[rows,focus]);
@@ -261,19 +291,84 @@ function Chainage({detail,focus,change,benchmark,setBenchmark}){
  const bins=useMemo(()=>perKmChangeBins(rows),[rows]);
  const amountBins=useMemo(()=>amountChangeBins(rows),[rows]);
  const modus=useMemo(()=>modusSummary(rows),[rows]);
- const cohorts=useMemo(()=>benchmark?peerCohorts(benchmark,{source:benchSource,minPeers:5}):[],[benchmark,benchSource]);
- const outliers=useMemo(()=>benchmark?outlierUnits(benchmark,{source:benchSource,minPeers:5}).slice(0,100):[],[benchmark,benchSource]);
+ const measurableUnits=useMemo(()=>benchmark?benchmark.filter(u=>!u.point_only&&u.amount_php):[],[benchmark]);
+ const cohorts=useMemo(()=>benchmark?peerCohorts(benchmark,{source:benchSource,minPeers:5,dimension:benchDimension}):[],[benchmark,benchSource,benchDimension]);
+ const outliers=useMemo(()=>benchmark?outlierUnits(benchmark,{source:benchSource,minPeers:5,dimension:benchDimension}).slice(0,100):[],[benchmark,benchSource,benchDimension]);
+ const cohortAxis=benchDimension==='deo'?'DEO':'region';
+ // All-data overview tallies (sidecar population, not matched pairs).
+ const unitTotals=useMemo(()=>benchmark?summarizeUnits(benchmark):[],[benchmark]);
+ const unitBands=useMemo(()=>benchmark?perKmBands(benchmark):null,[benchmark]);
+ const unitsTotalKm=useMemo(()=>unitTotals.reduce((s,t)=>s+t.length_m,0),[unitTotals]);
+ const unitsTotalPhp=useMemo(()=>unitTotals.reduce((s,t)=>s+t.amount_php,0),[unitTotals]);
+ // Full outlier tally for the hero card (the table still shows the top 100).
+ const outlierCount=useMemo(()=>benchmark?outlierUnits(benchmark,{minPeers:5,dimension:benchDimension}).filter(r=>Math.abs(r.z)>=3).length:null,[benchmark,benchDimension]);
+ // Stages differ per scope: the all-data scope carries the population
+ // overview and benchmark; the revised scope keeps the matched-pair stages.
+ const stageChips=scope==='all'
+  ?[['overview','① Overview'],['benchmark','② Peer ₱/km benchmark']]
+  :[['patterns','① Amendment patterns'],['benchmark','② Peer ₱/km benchmark'],['records','③ Project records']];
+ const activeStage=stageChips.some(([key])=>key===stage)?stage:stageChips[0][0];
  return <section className="analysis-section"><h2>Chainage amendments</h2>
+  {/* Scope split: every chainage-bearing unit vs the matched-pair subset.
+      Each stage below is one standalone question with its own tables;
+      all stages are URL-addressable so a shared link opens exactly one. */}
+  <div className="chainage-scopes" role="tablist" aria-label="Chainage scope">
+   {[['all','All chainage data'],['revised','Revised / adjusted chainage']].map(([key,label])=>
+    <button key={key} role="tab" aria-selected={scope===key} onClick={()=>change('scope',key)}>{label}</button>)}
+  </div>
+  <p className="muted chainage-scope-note">{scope==='all'
+   ?<>Every allocation record with parsed chainage spans — {benchmark?`${benchmark.length.toLocaleString()} units`:''} across DBM NEP, HGAB2 and HGAB3, matched or not. Answers “what does the ₱/km landscape look like, and which units are outliers against their peers?”</>
+   :<>The {rows.length.toLocaleString()} House↔NEP pairs attached after the chainage check — same road <code>title_base</code>, different station spans. Answers “what changed between readings, and in which of the three amendment levers?”</>}</p>
+  <div className="chainage-stages" role="tablist" aria-label="Chainage stages">
+   {stageChips.map(([key,label])=>
+    <button key={key} role="tab" aria-selected={activeStage===key} onClick={()=>change('stage',key)}>{label}</button>)}
+  </div>
+  {scope==='all'&&activeStage==='overview'&&<>
+  <div className="cards analysis-headlines">
+   <article><h3>Chainage units</h3><strong>{benchmark?benchmark.length.toLocaleString():'…'}</strong><p>All sources · matched or not</p></article>
+   <article><h3>Measurable length</h3><strong>{unitTotals.length?unitTotals.reduce((s,t)=>s+t.measurable,0).toLocaleString():'…'}</strong><p>Points {unitTotals.length?unitTotals.reduce((s,t)=>s+t.points,0).toLocaleString():''} · review {unitTotals.length?unitTotals.reduce((s,t)=>s+t.review,0).toLocaleString():''}</p></article>
+   <article><h3>Total chainage length</h3><strong>{benchmark?formatLengthKm(unitsTotalKm):'…'}</strong><p>Sum of repaired span lengths</p></article>
+   <article><h3>Allocation carried</h3><strong>{benchmark?amount(unitsTotalPhp):'…'}</strong><p>NEP + HGAB2 + HGAB3 units</p></article>
+   <article><h3>Cohorts · outliers</h3><strong>{cohorts.length.toLocaleString()} · {outlierCount==null?'…':outlierCount.toLocaleString()}</strong><p>{cohortAxis} axis · |z| ≥ 3 units of {measurableUnits.length.toLocaleString()} measurable</p></article>
+  </div>
+  <section className="analysis-section"><h3>Population by source</h3>
+   <p className="muted">Every chainage-bearing unit per source: total units, how many carry a measurable length (vs single point stations and review flags), and the length and allocation they represent. House sides largely shadow each other; the NEP side is the pre-House baseline.</p>
+   <SortableTable ariaLabel="Chainage population by source" initialSort={{key:'order',direction:'asc'}} rows={unitTotals.map((t,i)=>({...t,order:i}))} columns={[
+    {key:'order',label:'#',align:'num',sortable:false,render:(r,i)=><span>{i+1}</span>},
+    {key:'source',label:'Source',scope:'row',render:r=><span>{BENCHMARK_SOURCES[r.source]||r.source}</span>},
+    {key:'units',label:'Units',align:'num',render:r=>r.units.toLocaleString()},
+    {key:'measurable',label:'Measurable',align:'num',render:r=>r.measurable.toLocaleString()},
+    {key:'points',label:'Point stations',align:'num',render:r=>r.points.toLocaleString()},
+    {key:'review',label:'Length review',align:'num',render:r=>r.review.toLocaleString()},
+    {key:'length_m',label:'Chainage length',align:'num',render:r=>formatLengthKm(r.length_m)},
+    {key:'amount_php',label:'Allocation',align:'num',render:r=>amountCell(r.amount_php)},
+    {key:'median_band',label:'Where most sit',sortable:false,render:r=>benchmark?perKmBandHint(benchmark,r.source):'…'},
+   ]} empty={benchmark?'No units.':'Loading chainage units…'}/>
+  </section>
+  <section className="analysis-section"><h3>Price-per-km bands · {unitBands?unitBands.measurable.toLocaleString():'…'} measurable units</h3>
+   <HowToRead conceptKey="perKm"/>
+   <p className="muted">Fixed peso bands of <Term k="perKm">price per km</Term> across the whole population — the FY2027 landscape is right-skewed (median ≈ ₱41M/km), so band counts show where the bulk sits before any cohort reasoning. Units without measurable length ({unitBands?unitBands.unmeasurable.toLocaleString():''}) are excluded. <span className="band-bars">{unitBands&&unitBands.bands.map(b=>{const max=Math.max(...unitBands.bands.map(x=>x.units))||1;return <span key={b.label} className="band-bar"><i style={{height:`${Math.max(4,b.units/max*46)}px`}}/></span>;})}</span></p>
+   <SortableTable ariaLabel="Price per km bands" initialSort={{key:'min',direction:'asc'}} rows={unitBands?unitBands.bands:[]} columns={[
+    {key:'label',label:'₱/km band',scope:'row'},
+    {key:'units',label:'Units',align:'num',render:r=><span>{r.units.toLocaleString()}<small> · {unitBands&&unitBands.measurable?((r.units/unitBands.measurable)*100).toFixed(1):'0.0'}%</small></span>},
+    {key:'length_m',label:'Chainage length',align:'num',render:r=>formatLengthKm(r.length_m)},
+    {key:'amount_php',label:'Allocation',align:'num',render:r=>amountCell(r.amount_php)},
+   ]} empty={benchmark?'No measurable units.':'Loading chainage units…'}/>
+   <p className="muted">Explore further: switch to <button type="button" className="link-button" onClick={()=>change('stage','benchmark')}>② Peer ₱/km benchmark</button> for cohort medians and outliers, or <button type="button" className="link-button" onClick={()=>change('scope','revised')}>Revised / adjusted chainage</button> for what changed between readings.</p>
+  </section>
+  </>}
+  {scope==='revised'&&activeStage==='patterns'&&<>
   <p className="notice">Rows attached after chainage check: same road <code>title_base</code>, different station spans. Length Δ is HGAB minus NEP (sum of repaired span lengths). Price per km divides each source’s allocation by its listed chainage length; both bases differ between readings, so treat Δ price/km as a review lens, not a unit-cost finding. Point stations have no length. OCR km repairs and absurd unresolved spans are flagged.</p>
   <div className="cards analysis-headlines">
    <article><h3>Chainage matches</h3><strong>{summary.rows.toLocaleString()}</strong><p>Attached House↔NEP pairs</p></article>
    <article><h3>Length up / down</h3><strong>{summary.length_up.toLocaleString()} / {summary.length_down.toLocaleString()}</strong><p>Same length {summary.length_same.toLocaleString()} · points {summary.point_only.toLocaleString()}</p></article>
    <article><h3>Length review</h3><strong>{summary.review.toLocaleString()}</strong><p>Repaired OCR {summary.repaired_km_ocr.toLocaleString()} · absurd {summary.absurd_unresolved.toLocaleString()}</p></article>
    <article><h3>Net length Δ</h3><strong>{formatSignedKm(summary.length_delta_m_net)??'—'}</strong><p>Budget net {signedCell(summary.budget_gap_php_net)}</p></article>
-   <article className="red-flag"><h3>Price/km red flags</h3><strong>{redFlags.length.toLocaleString()}</strong><p>|Δ| &gt; 10% · {amount(redFlags.reduce((s,r)=>s+(r.house_php??0),0))} HGAB</p></article>
+   <article className="red-flag"><h3><Term k="redFlag">Price/km red flags</Term></h3><strong>{redFlags.length.toLocaleString()}</strong><p>|Δ| &gt; 10% · {amount(redFlags.reduce((s,r)=>s+(r.house_php??0),0))} HGAB</p></article>
   </div>
-   <section className="analysis-section"><h3>Amendment modus · {modus.measurable.toLocaleString()} measurable rows</h3>
-   <p className="muted">Every measurable row classified on budget Δ × scope Δ × unit-rate Δ (±{MODUS_DEADBAND}% deadband each) and named for the archetype that trio implies. Directions use HGAB vs NEP. Median Δ columns show the group’s middle record — half the rows above, half below — robust to OCR outliers. Per record the identity (1+budget)=(1+scope)(1+rate) holds exactly, so a flat budget with scope −45% ⇒ rate ≈ +82%.</p>
+  <section className="analysis-section"><h3>Amendment modus · {modus.measurable.toLocaleString()} measurable rows</h3>
+   <HowToRead conceptKey="modus"/>
+   <p className="muted">Every measurable row classified on <Term k="modus">budget Δ × scope Δ × unit-rate Δ</Term> (±{MODUS_DEADBAND}% <Term k="deadband">deadband</Term> each) and named for the archetype that trio implies. Directions use HGAB vs NEP. <Term k="median">Median Δ</Term> columns show the group’s middle record — half the rows above, half below — robust to OCR outliers. Per record the identity (1+budget)=(1+scope)(1+rate) holds exactly, so a flat budget with scope −45% ⇒ rate ≈ +82%.</p>
    <SortableTable ariaLabel="Amendment modus" initialSort={{key:'records',direction:'desc'}} rows={modus.groups} columns={[
     {key:'records',label:'Records',align:'num',render:r=><span>{r.records.toLocaleString()}<small> · {modus.measurable?((r.records/modus.measurable)*100).toFixed(1):'0.0'}%</small></span>},
     {key:'modus',label:'Modus',scope:'row',render:r=><span>{CHAINAGE_MODUS[r.modus].label}{smallOf(CHAINAGE_MODUS[r.modus].hint)}</span>},
@@ -302,13 +397,17 @@ function Chainage({detail,focus,change,benchmark,setBenchmark}){
     {key:'house_php',label:'HGAB allocation',align:'num',render:r=>amountCell(r.house_php)},
    ]} empty="No rows with an amount change."/>
   </section>
+  </>}
+  {activeStage==='benchmark'&&<>
   <section className="analysis-section"><h3>Price-per-km peer benchmark · all chainage records</h3>
-   <p className="muted">Every chainage-bearing allocation — matched or not — from DBM NEP, HGAB2 and HGAB3, grouped into program × region × zone cohorts (min 5 peers with measurable length; {benchmark?`${benchmark.filter(u=>!u.point_only&&u.amount_php).length.toLocaleString()} measurable units`:''}). Each cohort shows the median ₱/km with its interquartile band; the outlier table ranks units by robust z (deviation from the cohort median in MADs). Use this to ask whether a ₱/km is plausible for similar PAPs in the same region — not whether a pair changed.</p>
+   <p className="muted">Every chainage-bearing allocation — matched or not — from DBM NEP, HGAB2 and HGAB3, grouped into program × <Term k="cohort">{cohortAxis}</Term> × zone <Term k="cohort">cohorts</Term> (min 5 peers with measurable length; {measurableUnits.length.toLocaleString()} measurable units). Each cohort shows the <Term k="median">median ₱/km</Term> with its interquartile band; the outlier table ranks units by <Term k="robustZ">robust z</Term> (deviation from the cohort median in <Term k="mad">MADs</Term>). Use this to ask whether a ₱/km is plausible for similar PAPs in the same {cohortAxis} — not whether a pair changed.</p>
    <div className="analysis-controls">
+    <label>Peer axis<select aria-label="Benchmark peer axis" value={benchDimension} onChange={e=>setBenchDimension(e.target.value)}>{Object.entries(BENCHMARK_DIMENSIONS).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
     <label>Benchmark source<select aria-label="Benchmark source" value={benchSource} onChange={e=>setBenchSource(e.target.value)}>{Object.entries(BENCHMARK_SOURCES).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
    </div>
+   <HowToRead conceptKey={benchDimension==='deo'?'deo':'cohort'} label={benchDimension==='deo'?'Region vs DEO cohorts — how to choose':'How to read peer cohorts'}/>
    <SortableTable ariaLabel="Price per km peer cohorts" initialSort={{key:'units',direction:'desc'}} rows={cohorts} columns={[
-    {key:'program',label:'Cohort',scope:'row',render:r=><span className="cell-main">{r.program}<small>{r.region}{r.zone?` · ${r.zone}`:''}</small></span>},
+    {key:'program',label:'Cohort',scope:'row',render:r=><span className="cell-main">{r.program}<small>{benchDimension==='deo'?officeName(r.office):r.region}{r.zone?` · ${r.zone}`:''}</small></span>},
     {key:'units',label:'Units',align:'num',render:r=>r.units.toLocaleString()},
     {key:'length_m',label:'Total length',align:'num',render:r=>formatLengthKm(r.length_m)},
     {key:'amount_php',label:'Allocation',align:'num',render:r=>amountCell(r.amount_php)},
@@ -318,9 +417,10 @@ function Chainage({detail,focus,change,benchmark,setBenchmark}){
     {key:'min_per_km',label:'Min ₱/km',align:'num',render:r=>amountCell(r.min_per_km)},
     {key:'max_per_km',label:'Max ₱/km',align:'num',render:r=>amountCell(r.max_per_km)},
    ]} empty={benchmark?'No cohorts with enough measurable peers.':'Loading chainage units…'}/>
-   {benchmark&&<details className="benchmark-outliers"><summary>Top 100 per-km outliers by robust z</summary>
+   {benchmark&&<details className="benchmark-outliers" open={outliersOpen} onToggle={e=>setOutliersOpen(e.currentTarget.open)}>
+    <summary>Top 100 per-km outliers by robust z</summary>
     <SortableTable ariaLabel="Price per km outliers" initialSort={{key:'z',direction:'desc'}} rows={outliers.map(r=>({...r.unit,z:r.z,cohort_median:r.cohort.median_per_km,cohort_units:r.cohort.units}))} columns={[
-     {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{BENCHMARK_SOURCES[r.source]||r.source} · {r.program} · {r.region}</small></span>},
+     {key:'title',label:'Project',scope:'row',render:r=><span className="cell-main">{r.title}<small>{BENCHMARK_SOURCES[r.source]||r.source} · {r.program} · {benchDimension==='deo'?officeName(r.office):r.region}</small></span>},
      {key:'per_km',label:'₱/km',align:'num',render:r=>amountCell(unitPerKm(r))},
      {key:'cohort_median',label:'Cohort median ₱/km',align:'num',render:r=>amountCell(r.cohort_median)},
      {key:'cohort_units',label:'Cohort units',align:'num',render:r=>r.cohort_units.toLocaleString()},
@@ -328,8 +428,10 @@ function Chainage({detail,focus,change,benchmark,setBenchmark}){
     ]} empty="No measurable outliers."/>
    </details>}
   </section>
+  </>}
+  {scope==='revised'&&activeStage==='records'&&<>
   <div className="analysis-controls">
-   <label>Focus<select aria-label="Chainage focus" value={focus} onChange={e=>change('focus',e.target.value)}>{Object.entries(CHAINAGE_FOCUS).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
+   <label>Focus<select aria-label="Chainage focus" value={focus} onChange={e=>change('focus',e.target.value)}>{chainageFocusGroups().map(([group,entries])=><optgroup key={group} label={group}>{entries.map(([key,label])=><option key={key} value={key}>{label}</option>)}</optgroup>)}</select></label>
    <label>Sort<select aria-label="Chainage sort" value={sort} onChange={e=>setSort(e.target.value)}>{CHAINAGE_SORTS.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
    <a href={routeHref('compare',{view:'projects',match:'matched_chainage'})}>Open all in Compare →</a></div>
   <p className="muted">{shown.length.toLocaleString()} of {rows.length.toLocaleString()} chainage rows · sorted by {CHAINAGE_SORTS.find(([k])=>k===sort)?.[1].toLowerCase()}. Each source column carries its allocation, station spans, length and price/km; the Δ columns hold the HGAB−NEP deltas with percent change.</p>
@@ -342,6 +444,8 @@ function Chainage({detail,focus,change,benchmark,setBenchmark}){
    {key:'budget_gap_php',label:'Δ amount',align:'num',render:r=>r.budget_gap_php==null?<span>—</span>:<span className="chainage-cell"><span className={r.budget_gap_php>0?'up':r.budget_gap_php<0?'down':''}>{r.budget_gap_php>0?'+':''}{amount(r.budget_gap_php)}</span>{r.budget_gap_pct!=null&&<small className={`delta ${r.budget_gap_php>0?'up':r.budget_gap_php<0?'down':''}`}>{r.budget_gap_pct>0?'+':''}{r.budget_gap_pct.toFixed(1)}%</small>}</span>},
    {key:'review',label:'Open',sortable:false,render:r=><a href={routeHref('compare',{view:'projects',match:'matched_chainage',q:r.id,record:r.id})}>Compare</a>},
   ]} empty="No chainage matches in this focus."/>
+  </>}
+  <ChainageGuide/>
  </section>;
 }
 function houseMinusNep(row){const house=row.third??row.second;return house!=null&&row.nep!=null?house.amount_php-row.nep.amount_php:null;}

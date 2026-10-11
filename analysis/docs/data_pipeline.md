@@ -225,8 +225,9 @@ Every chainage-bearing allocation across all three sources — matched or not:
 
 Each unit carries title/program/region/zone/office, spans, summed length, and
 review flags. This is the population behind the Analysis · Chainage **peer
-benchmark** (per-km cohorts by program × region × zone, MAD-based outlier
-z-scores); the matched-pair amendment view derives from the web payload instead.
+benchmark** (per-km cohorts by program × zone and a switchable region or DEO
+axis, MAD-based outlier z-scores); the matched-pair amendment view derives from
+the web payload instead.
 
 ## Stage 7 · Web payloads
 
@@ -242,7 +243,7 @@ flowchart LR
     FULL --> SPA
     subgraph LAZY["lazy subtabs"]
         DEL["deletions · adjustments"]
-        CHA["chainage (pair view)"]
+        CHA["chainage (scope × stage: all-data overview/benchmark · revised patterns/records)"]
         STA["statistics"]
     end
     SPA --> LAZY

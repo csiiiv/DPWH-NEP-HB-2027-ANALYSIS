@@ -898,6 +898,43 @@ th.num .th-sort{justify-content:flex-end}
 .chainage-cell .delta{font-weight:600;font-size:.72rem}
 .chainage-cell .delta.up{color:#0b6b3a}
 .chainage-cell .delta.down{color:#a12020}
+/* Chainage stage chips: each stage is one question with its own tables. */
+.chainage-stages{display:flex;gap:.4rem;flex-wrap:wrap;margin:.6rem 0 1rem}
+.chainage-stages button{background:#fff;border:1px solid #b9c6d2;border-radius:999px;padding:.4rem .9rem;font:inherit;font-size:.85rem;font-weight:600;color:#52657b;cursor:pointer}
+.chainage-stages button:hover{border-color:#1f4d7a;color:#1f4d7a}
+.chainage-stages button[aria-selected="true"]{background:#1f4d7a;border-color:#1f4d7a;color:#fff}
+/* Scope chips sit above the stages: whole population vs revised subset. */
+.chainage-scopes{display:flex;gap:.5rem;flex-wrap:wrap;margin:.6rem 0 .4rem}
+.chainage-scopes button{background:#eef3f8;border:1px solid #c9d5e4;border-radius:8px;padding:.45rem .95rem;font:inherit;font-size:.88rem;font-weight:700;color:#365575;cursor:pointer}
+.chainage-scopes button:hover{border-color:#1f4d7a;color:#1f4d7a}
+.chainage-scopes button[aria-selected="true"]{background:#1f4d7a;border-color:#1f4d7a;color:#fff}
+.chainage-scope-note{margin:.2rem 0 .4rem}
+/* Inline navigation buttons that read as links inside muted paragraphs. */
+.link-button{border:0;background:none;padding:0;font:inherit;font-weight:600;color:#1f4d7a;text-decoration:underline;cursor:pointer}
+.link-button:hover{color:#123}
+/* Mini bar strip previewing the band distribution inside the section blurb. */
+.band-bars{display:inline-flex;align-items:flex-end;gap:2px;height:48px;vertical-align:middle;margin-left:.6rem}
+.band-bar{display:inline-flex;width:14px;height:48px;align-items:flex-end}
+.band-bar i{display:block;width:100%;background:#1f4d7a;border-radius:2px 2px 0 0;opacity:.75}
+/* Inline term with hover/focus definition; dotted underline signals it. */
+.term{border-bottom:1px dotted #6b7f96;cursor:help;text-decoration:none}
+.term:focus-visible{outline:2px solid #1f4d7a;outline-offset:2px}
+/* Per-section "How to read this" collapsible with worked detail. */
+.howto{margin:.35rem 0}
+.howto>summary{cursor:pointer;font-size:.78rem;font-weight:600;color:#1f4d7a;list-style-position:inside}
+.howto[open]>summary{margin-bottom:.4rem}
+.howto>p:first-of-type{margin-top:.25rem}
+/* Concept guide: card grid of plain-language definitions. */
+.chainage-guide{border:1px solid #c9d5e4;border-radius:10px;background:#f7fafc;margin-top:1rem;padding:.75rem 1rem}
+.chainage-guide>summary{cursor:pointer;font-weight:700;font-size:.9rem;color:#1f4d7a;display:flex;flex-direction:column;gap:.15rem}
+.chainage-guide>summary small{font-weight:400;font-size:.72rem;color:#52657b}
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:.75rem;margin-top:.75rem}
+.guide-card{background:#fff;border:1px solid #dce4ec;border-radius:8px;padding:.7rem .85rem}
+.guide-card h4{margin:.1rem 0 .35rem;font-size:.85rem;color:#123}
+.guide-card p{margin:.35rem 0;font-size:.8rem;line-height:1.5}
+.guide-archetypes-title{margin:.9rem 0 .3rem;font-size:.85rem;color:#123}
+.guide-archetypes p{display:flex;align-items:baseline;gap:.5rem;margin:.3rem 0;font-size:.78rem;line-height:1.45;flex-wrap:wrap}
+.guide-archetypes .modus-pill{flex:none}
 /* Chainage hero red-flag card and distribution pill. */
 .cards article.red-flag{border-color:#c98a8a;background:#fdf6f6}
 .cards article.red-flag h3{color:#8a2a2a}

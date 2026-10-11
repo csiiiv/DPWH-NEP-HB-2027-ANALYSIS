@@ -157,17 +157,24 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(dialog).to_have_count(0)
                 assert any('comparison_projects_2027.json' in url for url in requests)
                 page.screenshot(path=f'/tmp/analysis-adjustments-{width}.png')
-                # Chainage subtab: compact NEP/HGAB columns, Δ columns, red flags, distribution bins.
+                # Chainage subtab: scope split (all data vs revised pairs) ×
+                # stages — overview/benchmark for all, patterns/records for
+                # the matched-pair subset.
                 page.get_by_role('tab',name='Chainage',exact=True).click()
                 expect(page.get_by_role('heading',name='Chainage amendments',exact=True)).to_be_visible(timeout=60000)
-                chainage_region=page.get_by_role('region',name='Chainage amendments',exact=True)
-                expect(chainage_region.get_by_role('columnheader',name='NEP',exact=True)).to_be_visible()
-                expect(chainage_region.get_by_role('columnheader',name='HGAB',exact=True)).to_be_visible()
-                expect(chainage_region.get_by_role('columnheader',name='Δ price/km',exact=True)).to_be_visible()
-                expect(chainage_region.get_by_role('columnheader',name='Δ length',exact=True)).to_be_visible()
-                expect(chainage_region.get_by_role('columnheader',name='Δ amount',exact=True)).to_be_visible()
-                expect(chainage_region).to_contain_text('km')
-                # Hero red-flag card and 25-point distribution bins carry allocations.
+                # Default scope: all chainage data → population overview.
+                scopes=page.get_by_role('tablist',name='Chainage scope',exact=True)
+                expect(scopes.get_by_role('tab',name='All chainage data',exact=True)).to_have_attribute('aria-selected','true')
+                stages=page.get_by_role('tablist',name='Chainage stages',exact=True)
+                expect(stages.get_by_role('tab',name=re.compile(r'Overview'),exact=False)).to_have_attribute('aria-selected','true')
+                population=page.get_by_role('region',name='Chainage population by source',exact=True)
+                expect(population).to_contain_text('DBM NEP')
+                bands=page.get_by_role('region',name='Price per km bands',exact=True)
+                expect(bands).to_contain_text('₱25–50M')
+                expect(bands).to_contain_text('₱100M+')
+                # Revised scope keeps the matched-pair stages.
+                scopes.get_by_role('tab',name='Revised / adjusted chainage',exact=True).click()
+                expect(stages.get_by_role('tab',name=re.compile(r'Amendment patterns'),exact=False)).to_have_attribute('aria-selected','true')
                 expect(page.get_by_role('heading',name='Price/km red flags',exact=True)).to_be_visible()
                 expect(page.locator('h3').filter(has_text='price/km distribution')).to_be_visible()
                 distribution=page.get_by_role('region',name='Price per km change bins',exact=True)
@@ -176,6 +183,28 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(distribution.get_by_role('columnheader',name='HGAB allocation',exact=True)).to_be_visible()
                 expect(distribution.locator('tbody tr')).to_have_count(9)
                 expect(distribution).to_contain_text('200%+')
+                # Concept guide defines the vocabulary behind every metric.
+                guide=page.locator('details.chainage-guide')
+                guide.locator('summary').click()
+                expect(guide.get_by_role('heading',name=re.compile(r'^MAD '))).to_be_visible()
+                expect(guide).to_contain_text('robust z')
+                # Peer benchmark stage: switchable region ↔ DEO peer axis.
+                stages.get_by_role('tab',name=re.compile(r'benchmark'),exact=False).click()
+                cohorts=page.get_by_role('region',name='Price per km peer cohorts',exact=True)
+                expect(cohorts).to_contain_text('Region III')
+                page.get_by_label('Benchmark peer axis',exact=True).select_option('deo')
+                expect(cohorts).to_contain_text('District Engineering Office')
+                page.get_by_label('Benchmark peer axis',exact=True).select_option('region')
+                expect(cohorts).to_contain_text('Region III')
+                # Records stage with grouped focus dropdown.
+                stages.get_by_role('tab',name=re.compile(r'Project records'),exact=False).click()
+                chainage_region=page.get_by_role('region',name='Chainage amendments',exact=True)
+                expect(chainage_region.get_by_role('columnheader',name='NEP',exact=True)).to_be_visible()
+                expect(chainage_region.get_by_role('columnheader',name='HGAB',exact=True)).to_be_visible()
+                expect(chainage_region.get_by_role('columnheader',name='Δ price/km',exact=True)).to_be_visible()
+                expect(chainage_region.get_by_role('columnheader',name='Δ length',exact=True)).to_be_visible()
+                expect(chainage_region.get_by_role('columnheader',name='Δ amount',exact=True)).to_be_visible()
+                expect(chainage_region).to_contain_text('km')
                 expect(page.get_by_label('Chainage focus',exact=True)).to_be_visible()
                 page.get_by_label('Chainage focus',exact=True).select_option('review')
                 page.screenshot(path=f'/tmp/analysis-chainage-{width}.png')
@@ -198,5 +227,5 @@ with tempfile.TemporaryDirectory() as folder:
                 page.close()
             browser.close()
         assert not errors,errors
-        print(json.dumps({'widths':[390,1440],'subtabs':['overview','insertions','deletions','adjustments','chainage','statistics'],'source_counts':True,'candidate_groups':True,'deletion_groups':True,'share_and_evidence_links':True,'lazy_detail':True,'chainage':True,'statistics':True,'errors':errors}))
+        print(json.dumps({'widths':[390,1440],'subtabs':['overview','insertions','deletions','adjustments','chainage','statistics'],'source_counts':True,'candidate_groups':True,'deletion_groups':True,'share_and_evidence_links':True,'lazy_detail':True,'chainage':{'scopes':['all','revised'],'stages':True,'guide':True,'benchmark_dimensions':['region','deo']},'statistics':True,'errors':errors}))
     finally:server.shutdown()
