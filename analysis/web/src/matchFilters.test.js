@@ -1,10 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  DIFF_FLAG_OPTIONS,
   identityMatchStatus,
   matchesFlag,
   matchesMatchStatus,
   parseLegacyStatus,
+  rowDiffTags,
   rowFlags,
 } from './matchFilters.js';
 
@@ -56,4 +58,29 @@ test('select helpers and legacy status mapping', () => {
   assert.equal(matchesFlag({id: 'n', nep: {id: 'n'}}, 'nep_only_suggested', new Map([['n', 1]])), true);
   assert.deepEqual(parseLegacyStatus('fuzzy_candidate'), {matchStatus: 'fuzzy', flag: '', trace: ''});
   assert.deepEqual(parseLegacyStatus('candidate_increase'), {matchStatus: '', flag: 'amount_increase', trace: ''});
+});
+
+test('diff-tag flags filter fuzzy rows by suggestion difference tags', () => {
+  const row = {
+    house_match: 'fuzzy_candidate',
+    second: {id: 'h'},
+    suggestions: [
+      {confidence: .95, diff_tags: ['location_subname']},
+      {confidence: .9, diff_tags: ['location_subname', 'chainage_digit']},
+      {confidence: .88, diff_tags: ['identical']},
+    ],
+  };
+  // All distinct non-identical tags across suggestions, order of appearance.
+  assert.deepEqual(rowDiffTags(row), ['location_subname', 'chainage_digit']);
+  assert.equal(matchesFlag(row, 'diff:location_subname'), true);
+  assert.equal(matchesFlag(row, 'diff:chainage_digit'), true);
+  // 'identical' never becomes a filter option or a row tag.
+  assert.equal(matchesFlag(row, 'diff:identical'), false);
+  assert.ok(!DIFF_FLAG_OPTIONS.some(([value]) => value === 'diff:identical'));
+  assert.equal(matchesFlag(row, 'diff:spelling_ocr'), false);
+  // Rows without suggestions match nothing.
+  assert.equal(matchesFlag({house_match: 'exact_candidate', second: {id: 'h'}}, 'diff:location_subname'), false);
+  // Plain flags still compose independently: a fuzzy row with House sources
+  // and no attached NEP is also a house_only insertion candidate.
+  assert.equal(matchesFlag(row, 'house_only'), true);
 });

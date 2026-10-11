@@ -183,6 +183,11 @@ Identity between House and NEP is **candidate matching**, never asserted:
    differences elsewhere; `parenthetical_modifier` means titles are identical
    outside parentheses (e.g. an added `(Phase 2)`); `work_phrase_modifier`
    covers one-sided "Preventive Maintenance along …" phrasing.
+
+In the webapp, the **Flags** dropdown has a "Fuzzy title-difference tags"
+group with one option per tag (`flag=diff:<tag>` in the URL), and the
+analytics dialog's **Review flags** tab breaks down rows per tag with
+plain-language explanations — each tag is its own review queue.
 5. **Ambiguous** — duplicate keys; left unresolved on purpose.
 
 `id` linkage: the same NEP record appears as `nep` on at most one row but can

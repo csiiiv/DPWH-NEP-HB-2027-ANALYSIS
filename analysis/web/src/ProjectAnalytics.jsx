@@ -3,6 +3,7 @@ import {amount,programLabel} from './model.js';
 import {analyticsSources,projectAnalytics,compareDistribution} from './projectAnalytics.js';
 import {readingInfo,matchInfo,flagInfo} from './analyticsStatusInfo.js';
 import {officeName,regionName} from './regionNames.js';
+import {DIFF_TAG_INFO} from './diffTags.js';
 const sections=[['overview','Overview'],['distribution','Distribution'],['changes','Changes & matches'],['flags','Review flags']];
 const human=value=>String(value ?? 'Unavailable').replaceAll('_',' ');
 const distributionLabel=(field,label)=>field==='region'?regionName(label):field==='office'?officeName(label):label;
@@ -46,7 +47,7 @@ export default function ProjectAnalytics({rows,finding,onClose,returnFocus}) {
     <div className="analytics-columns"><Distribution title="Region distribution" data={regions} field="region"/><Distribution title="Engineering office distribution" data={offices} field="office"/></div>
    </>}
    {tab==='changes' && <><p className="analytics-section-intro">House reading statuses compare HGAB2 with HGAB3. Cross-source statuses describe retained HGAB2/NEP candidate matches and any optional different-region joins. Select an info tag for its definition.</p><div className="analytics-columns"><Counts title="House reading status" entries={summary.changes} definitions={readingInfo}/><Counts title="Cross-source match status" entries={summary.matches} definitions={matchInfo}/></div></>}
-   {tab==='flags' && <><p className="analytics-section-intro">{flagged.toLocaleString()} rows have at least one review flag. Categories can overlap, so their counts do not add up to a unique project total. These flags identify review needs.</p><Counts title="Review flags" entries={summary.flags} definitions={flagInfo} /></>}
+   {tab==='flags' && <><p className="analytics-section-intro">{flagged.toLocaleString()} rows have at least one review flag. Categories can overlap, so their counts do not add up to a unique project total. These flags identify review needs.</p><div className="analytics-columns"><Counts title="Review flags" entries={summary.flags} definitions={flagInfo} />{Object.keys(summary.diffTags).length>0 && <Counts title="Fuzzy title-difference tags" entries={summary.diffTags} definitions={DIFF_TAG_INFO} />}</div><p className="muted">Fuzzy title-difference tags classify the residual title difference between each House row and its NEP suggestions (rows with several suggestions can carry several tags, so counts overlap). Use the Flags filter on the results page to pull any tag’s review queue.</p></>}
   </div>
  </dialog>;
 }

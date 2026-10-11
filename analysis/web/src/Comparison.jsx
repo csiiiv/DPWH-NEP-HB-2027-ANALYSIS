@@ -6,6 +6,8 @@ import {regionCandidates} from "./regionCandidates.js";
 import {officeAssignments} from "../../viewers/project_offices.mjs";
 import {readingInfo,matchInfo} from "./analyticsStatusInfo.js";
 import {
+  DIFF_FLAG_OPTIONS,
+  DIFF_FLAG_PREFIX,
   FLAG_OPTIONS,
   MATCH_STATUS_INFO,
   MATCH_STATUS_OPTIONS,
@@ -371,7 +373,12 @@ export default function Comparison({ route }) {
             {tab === "projects" && <label>Flags
               <select aria-label="Review flags" value={flag} onChange={e=>setFlag(e.target.value)}>
                 <option value="">All flags</option>
-                {FLAG_OPTIONS.map(([value,text])=><option key={value} value={value}>{text}</option>)}
+                <optgroup label="Presence / amounts / coverage">
+                  {FLAG_OPTIONS.filter(([value])=>!value.startsWith(DIFF_FLAG_PREFIX)).map(([value,text])=><option key={value} value={value}>{text}</option>)}
+                </optgroup>
+                <optgroup label="Fuzzy title-difference tags (top suggestion)">
+                  {DIFF_FLAG_OPTIONS.map(([value,text])=><option key={value} value={value}>{text}</option>)}
+                </optgroup>
               </select>
             </label>}
           </div>
@@ -386,6 +393,7 @@ export default function Comparison({ route }) {
             <button onClick={()=>{for(const key of ['query','program','region','office','matchStatus','flag','trace','readingStatus'])setFinding(key,'');setFinding('regionMatching','strict');setSearchDraft('');}}>Clear filters</button>
           </div>}
           {flag==='house_only' && <p className="muted">Insertion candidates: HGAB2 or HGAB3 records with no attached NEP or Transparency source. Unmatched records can reflect title or assignment differences; this does not confirm absence from the NEP PDF.</p>}
+          {flag.startsWith('diff:') && <p className="muted">Fuzzy queue filtered by title-difference tag ({diffTagLabel(flag.slice('diff:'.length))}): rows whose NEP suggestions carry this residual difference. Tags classify the text difference only — they do not assert identity. See the expanded review table for per-suggestion tags.</p>}
           {(flag==='nep_only'||flag==='nep_only_suggested') && <p className="muted">Deletion candidates: NEP line items with no attached House record. {flag==='nep_only_suggested'?'At least one unmatched House row names this NEP item as a fuzzy counterpart — review for a re-titled or re-scoped replacement. Suggestions refer to House rows, not certified identities.':'No unmatched House row suggests a counterpart. Title or assignment differences can prevent pairing; this does not confirm removal.'}</p>}
           {matchStatus==='fuzzy' && <p className="muted">Fuzzy matches are the OCR triage queue: similar House and NEP titles in the same scope, with residual spelling to promote into normalize rules.</p>}
           <div className="mobile-sort">

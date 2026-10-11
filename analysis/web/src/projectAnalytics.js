@@ -3,6 +3,7 @@ export const analyticsSources=[['third','HGAB3 · 3rd reading'],['second','HGAB2
 export function projectAnalytics(rows) {
   const totals=Object.fromEntries(analyticsSources.map(([side])=>[side,{rows:0,records:0,amount:0}]));
   const changes={},matches={},flags={region_difference:0,office_difference:0,no_office:0,repeated_key:0,uncertain_match:0,nep_evidence_review:0};
+  const diffTags={};
   let readingDelta=0,flaggedRows=0;
   for(const row of rows){
     for(const [side] of analyticsSources)if(row[side]){
@@ -20,8 +21,13 @@ export function projectAnalytics(rows) {
     if(['ambiguous','fuzzy_candidate','region_difference_candidate'].includes(row.trace))flags.uncertain_match++;
     if(['native_row_ambiguity','nearby_alignment_candidate','native_text_review','not_checked'].includes(row.nep?.evidence))flags.nep_evidence_review++;
     if(Object.values(flags).reduce((sum,count)=>sum+count,0)>flagTotal)flaggedRows++;
+    // Title-difference tags across this row's fuzzy suggestions. Rows can
+    // carry several suggestions with different tags, so counts overlap and
+    // do not sum to the fuzzy-row total.
+    const seenTags=new Set();
+    for(const suggestion of row.suggestions ?? [])for(const tag of suggestion.diff_tags ?? [])if(tag!=='identical' && !seenTags.has(tag)){seenTags.add(tag);diffTags[tag]=(diffTags[tag] || 0)+1;}
   }
-  return {count:rows.length,totals,changes,matches,flags,readingDelta,flaggedRows};
+  return {count:rows.length,totals,changes,matches,flags,diffTags,readingDelta,flaggedRows};
 }
 // Group House (HGAB3) against DBM NEP by each source's own recorded label, so
 // paired bars stay comparable while label disagreements stay visible. Each bar

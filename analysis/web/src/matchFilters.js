@@ -1,7 +1,11 @@
+import {DIFF_TAG_LABELS} from './diffTags.js';
+
 /** Identity quality vs inspection flags for Compare project filters.
 
 Match status is mutually exclusive (how titles paired). Flags are orthogonal
 (presence, amount delta, Transparency coverage) and may combine with status.
+`diff:<tag>` flags select fuzzy rows whose suggestions carry a specific
+title-difference tag, so each sub-flag has its own review queue.
 */
 
 export const MATCH_STATUS_OPTIONS = [
@@ -13,6 +17,12 @@ export const MATCH_STATUS_OPTIONS = [
   ['no_match', 'No match'],
 ];
 
+export const DIFF_FLAG_PREFIX = 'diff:';
+
+export const DIFF_FLAG_OPTIONS = Object.keys(DIFF_TAG_LABELS)
+  .filter(tag => tag !== 'identical')
+  .map(tag => [`${DIFF_FLAG_PREFIX}${tag}`, `Fuzzy · ${DIFF_TAG_LABELS[tag]}`]);
+
 export const FLAG_OPTIONS = [
   ['house_only', 'House only candidate'],
   ['nep_only', 'NEP only candidate'],
@@ -21,6 +31,7 @@ export const FLAG_OPTIONS = [
   ['amount_decrease', 'NEP → HGAB decreased'],
   ['transparency_gap', 'Transparency gap (NEP not listed)'],
   ['outside_api', 'Outside Transparency scope'],
+  ...DIFF_FLAG_OPTIONS,
 ];
 
 export const MATCH_STATUS_INFO = Object.fromEntries([
@@ -117,6 +128,18 @@ export function rowFlags(row, counterparts = null) {
   return flags;
 }
 
+/** All title-difference tags across a row's fuzzy suggestions (deduplicated,
+ *  order of first appearance). */
+export function rowDiffTags(row) {
+  const tags = new Set();
+  for (const suggestion of row.suggestions ?? []) {
+    for (const tag of suggestion.diff_tags ?? []) {
+      if (tag !== 'identical') tags.add(tag);
+    }
+  }
+  return [...tags];
+}
+
 export function matchesMatchStatus(row, matchStatus) {
   if (!matchStatus) return true;
   // Legacy match=chainage deep links.
@@ -126,6 +149,10 @@ export function matchesMatchStatus(row, matchStatus) {
 
 export function matchesFlag(row, flag, counterparts = null) {
   if (!flag) return true;
+  if (flag.startsWith(DIFF_FLAG_PREFIX)) {
+    // diff:<tag> — any of the row's suggestions carries this difference tag.
+    return rowDiffTags(row).includes(flag.slice(DIFF_FLAG_PREFIX.length));
+  }
   if (flag === 'nep_only') {
     // Plain NEP-only excludes rows that have a House fuzzy referral.
     return Boolean(row.nep) && !row.second && !row.third && !row.house
@@ -155,5 +182,9 @@ export function matchStatusLabel(value) {
 }
 
 export function flagLabel(value) {
-  return FLAG_OPTIONS.find(([v]) => v === value)?.[1] || value;
+  return FLAG_OPTIONS.find(([v]) => v === value)?.[1]
+    || REVIEW_FLAG_INFO[value]?.[0]
+    || (value.startsWith(DIFF_FLAG_PREFIX)
+      ? `Fuzzy · ${DIFF_TAG_LABELS[value.slice(DIFF_FLAG_PREFIX.length)] || value.slice(DIFF_FLAG_PREFIX.length)}`
+      : value);
 }

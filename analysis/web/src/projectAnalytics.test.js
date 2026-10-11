@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {projectAnalytics,compareDistribution} from './projectAnalytics.js';
 import {readingInfo,matchInfo,flagInfo} from './analyticsStatusInfo.js';
+import {DIFF_TAG_INFO} from './diffTags.js';
 import {unifiedComparison} from './unifiedComparison.js';
 const read=name=>JSON.parse(readFileSync(new URL(`../../data/${name}.json`,import.meta.url)));
 test('analytics of all rows preserves source ledgers, additions and House delta',()=>{
@@ -48,7 +49,28 @@ test('paired distributions keep differing labels, absent sources and own-scale s
 test('every retained reading/match status and flag has a plain-language explanation',()=>{
  const rows=unifiedComparison(read('stage_trace_2027'),read('house_reading_changes_2027')).projects;
  const stats=projectAnalytics(rows);
- for(const [entries,definitions] of [[stats.changes,readingInfo],[stats.matches,matchInfo],[stats.flags,flagInfo]])
+ for(const [entries,definitions] of [[stats.changes,readingInfo],[stats.matches,matchInfo],[stats.flags,flagInfo],[stats.diffTags,DIFF_TAG_INFO]])
   for(const key of Object.keys(entries)){assert(definitions[key]?.[0],key);assert(definitions[key]?.[1]?.length>40,key);}
  assert(matchInfo.region_difference_candidate[1].includes('Original assignments are preserved'));
+});
+
+test('diff-tag analytics count rows per suggestion tag and deduplicate within a row',()=>{
+ const rows=[
+  {id:'a',reading_status:'same_amount',trace:'fuzzy_candidate',reading_delta_php:0,
+   second:{amount_php:1},third:{amount_php:1},
+   suggestions:[{confidence:.95,diff_tags:['location_subname']},{confidence:.9,diff_tags:['location_subname','chainage_digit']}]},
+  {id:'b',reading_status:'same_amount',trace:'fuzzy_candidate',reading_delta_php:0,
+   second:{amount_php:1},third:{amount_php:1},
+   suggestions:[{confidence:.92,diff_tags:['same_gps_coordinates']}]},
+  {id:'c',reading_status:'same_amount',trace:'exact_candidate',reading_delta_php:0,
+   second:{amount_php:1},third:{amount_php:1},nep:{amount_php:1}},
+ ];
+ const stats=projectAnalytics(rows);
+ // Row 'a' counts once per distinct tag despite two suggestions sharing tags.
+ assert.equal(stats.diffTags.location_subname,1);
+ assert.equal(stats.diffTags.chainage_digit,1);
+ assert.equal(stats.diffTags.same_gps_coordinates,1);
+ assert.equal(stats.diffTags.identical,undefined);
+ // Non-fuzzy rows contribute nothing.
+ assert.equal(Object.keys(stats.diffTags).length,3);
 });

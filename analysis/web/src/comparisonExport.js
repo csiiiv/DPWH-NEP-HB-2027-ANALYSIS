@@ -8,7 +8,7 @@ export function exportResults(rows,finding,format){
 // Filesystem-safe slug for one filter value: alphanumerics and dashes only,
 // collapsed whitespace, capped per segment so long titles cannot blow up names.
 function slug(value,max=40){
- return String(value??'').trim().replace(/\s+/g,'-').replace(/[^0-9A-Za-z_-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'').slice(0,max);
+ return String(value??'').trim().replaceAll(':','-').replace(/\s+/g,'-').replace(/[^0-9A-Za-z_-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'').slice(0,max);
 }
 const FILTER_KEYS=[
  ['tab','view',null],['query','q',''],['program','program',''],
