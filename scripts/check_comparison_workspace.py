@@ -108,6 +108,13 @@ with tempfile.TemporaryDirectory() as folder:
                 # still unattached (the former B03135LZ place-slip fixture was
                 # promoted to an exact match by place-spelling normalization).
                 page.goto(base+'#compare?view=projects&match=fuzzy&q=house-reading%3A382',wait_until='networkidle')
+                # Difference tags surface directly on the fuzzy row (top suggestion),
+                # before any click, as well as inside the suggestion details.
+                fuzzy_row=page.locator('.comparison-table tbody tr').first
+                expect(fuzzy_row.locator('.candidate-review-button')).to_be_visible()
+                expect(fuzzy_row.locator('.diff-tag-row')).to_be_visible()
+                expect(fuzzy_row.locator('.diff-tag').first).to_be_visible()
+                expect(fuzzy_row.get_by_role('group',name='Top suggestion title differences',exact=True)).to_be_visible()
                 page.get_by_role('button',name='Review 2 NEP suggestions',exact=True).click(timeout=60000)
                 candidates=page.get_by_role('region',name='Suggested NEP matches',exact=True)
                 # 2 House reading rows + 2 suggestion rows
@@ -117,6 +124,9 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(candidates.locator('.candidate-table tbody tr').nth(2).locator('.candidate-project')).to_contain_text('Palico – Balayan-Batangas Rd - K0147 + 520 - K0148 + 671')
                 expect(candidates.locator('.candidate-table tbody tr').nth(2).locator('.candidate-assignment')).to_contain_text('Region IV-A')
                 expect(candidates).to_contain_text('0.9487 · 94.87% text similarity')
+                # Difference tags classify the residual title diff per suggestion.
+                expect(candidates.locator('.diff-tag').first).to_be_visible()
+                expect(candidates.locator('.diff-tag-row').first).to_be_visible()
                 expect(candidates).to_contain_text('Palico-Balayan-Batangas Rd - K0147 + 520 - K0148 + 219')
                 expect(candidates).to_contain_text('Palico – Balayan-Batangas Rd - K0147 + 520 - K0148 + 671')
                 expect(candidates).to_contain_text('₱48,000,000')

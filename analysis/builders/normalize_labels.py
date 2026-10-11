@@ -132,6 +132,93 @@ def strip_stage_qualifier(value: str) -> str:
     return ''.join(t for t in kept if t != 'barangay')
 
 
+# Fuzzy-review taxonomy: classify the residual title-token difference between
+# a House row and one of its NEP suggestions. Tags are additive and ordered
+# most-specific-first; unclassified substitutions stay 'other_place_or_word'.
+FUZZY_DIFF_TAGS = {
+    'work_type_change': 'Different work type (construction ↔ rehabilitation…)',
+    'stage_qualifier': 'Construction (Completion) ↔ Construction qualifier only',
+    'connector_word': 'at / in / comma phrasing difference',
+    'city_suffix': 'City suffix present on one side (Manila ↔ Manila City)',
+    'facility_qualifier': 'Facility qualifier on one side (Gym / Gymnasium / Covered Court)',
+    'unit_count': 'Unit/phase count on one side (2 units, Phase 2…)',
+    'chainage_digit': 'Station/chainage digits differ',
+    'structure_id_digit': 'Structure-ID or coordinate digits differ',
+    'spelling_ocr': 'Spelling / OCR slip in a shared token',
+    'other_place_or_word': 'Different place or word — needs manual review',
+}
+
+# Tokens whose one-sided presence reads as facility scope, not identity.
+FACILITY_QUALIFIER_TOKENS = {'gym', 'gymnasium', 'covered', 'court', 'mpb'}
+# Pure phrasing connectors that titles use inconsistently.
+CONNECTOR_TOKENS = {'at', 'in'}
+
+
+def diff_tags(house_title: str, nep_title: str) -> list[str]:
+    """Classify residual differences between a House title and a NEP title.
+
+    Operates on the same normalized tokens as matching (abbrev expansion,
+    repeat collapse, stage-qualifier strip), then tags each opcode from the
+    token alignment. Returns a de-duplicated tag list for review UI/mining.
+    """
+    from difflib import SequenceMatcher
+
+    def prep(value: str) -> list[str]:
+        kept = []
+        for token in title_tokens(value):
+            if token in QUALIFIER_AFTER_WORK_TYPE and kept and kept[-1] in WORK_TYPE_TOKENS:
+                continue
+            kept.append(token)
+        return kept
+
+    a, b = prep(house_title or ''), prep(nep_title or '')
+    matcher = SequenceMatcher(None, a, b, autojunk=False)
+    tags: list[str] = []
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == 'equal':
+            continue
+        hseg, nseg = a[i1:i2], b[j1:j2]
+        # Stage-qualifier diffs were already folded by prep; a completion-only
+        # opcode here means the qualifier moved without a work-type lead.
+        if set(hseg) | set(nseg) <= {'completion'}:
+            tags.append('stage_qualifier')
+            continue
+        if set(hseg) | set(nseg) <= CONNECTOR_TOKENS:
+            tags.append('connector_word')
+            continue
+        if (not hseg or not nseg) and (set(hseg) | set(nseg)) == {'city'}:
+            tags.append('city_suffix')
+            continue
+        if set(hseg) | set(nseg) <= FACILITY_QUALIFIER_TOKENS:
+            tags.append('facility_qualifier')
+            continue
+        if (set(hseg) & WORK_TYPE_TOKENS) and (set(nseg) & WORK_TYPE_TOKENS) \
+                and not set(hseg) & set(nseg):
+            tags.append('work_type_change')
+            continue
+        if all(re.fullmatch(r'\d+|k\d+|sta|to', t) for t in hseg + nseg if t):
+            if any(t.startswith('k') or t == 'sta' for t in hseg + nseg):
+                tags.append('chainage_digit')
+            else:
+                tags.append('structure_id_digit')
+            continue
+        if (not hseg or not nseg) and all(
+                re.fullmatch(r'(?:phase[0-9ivx]*|purok|unit|units|[0-9]+)', t)
+                for t in (hseg or nseg)):
+            tags.append('unit_count')
+            continue
+        if len(hseg) == 1 and len(nseg) == 1:
+            ha, na = hseg[0], nseg[0]
+            if min(len(ha), len(na)) >= 4 and SequenceMatcher(None, ha, na).ratio() >= .8:
+                tags.append('spelling_ocr')
+                continue
+        tags.append('other_place_or_word')
+    # De-duplicate, keep first-seen order.
+    seen: set[str] = set()
+    ordered = [t for t in tags if not (t in seen or seen.add(t))]
+    return ordered or (['identical'] if a == b else [])
+
+
 def _nfkc(value: str) -> str:
     return unicodedata.normalize('NFKC', value or '').strip()
 

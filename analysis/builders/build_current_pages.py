@@ -12,7 +12,7 @@ from paths import ANALYSIS, REPO, DATA, VIEWERS, DOCS, ARCHIVE, EVIDENCE
 from house_native import comparison_inputs, office_from_region_parent, validate_native_detail
 from chainage import chainage_signature, classify_chainage_amendment
 from normalize_labels import (
-    annotate_source_labels, digits_omitted, normalized, raw_normalized,
+    annotate_source_labels, diff_tags, digits_omitted, normalized, raw_normalized,
     strip_stage_qualifier,
 )
 
@@ -262,7 +262,8 @@ def project_matches(house, source):
         for n, _ in sorted(counts.items(), key=lambda pair: (-pair[1], source[pair[0]]['id']))[:20]:
             score = SequenceMatcher(None, _title_key(h), _title_key(source[n]), autojunk=False).ratio()
             if score >= .85:
-                suggestions.append({'nep': source[n], 'confidence': round(score, 4)})
+                suggestions.append({'nep': source[n], 'confidence': round(score, 4),
+                                    'diff_tags': diff_tags(h['title'], source[n]['title'])})
         suggestions.sort(key=lambda r: (-r['confidence'], r['nep']['id']))
         # Unique same-base chainage hit → attach (matched); else fuzzy suggestions.
         chainage_hits = [s for s in suggestions if _is_chainage_pair(h, s['nep'])]

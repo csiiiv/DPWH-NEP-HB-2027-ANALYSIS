@@ -15,6 +15,7 @@ import {
 } from "./matchFilters.js";
 import {hydrateProjects} from "./comparisonData.js";
 import {downloadResults} from "./comparisonExport.js";
+import {diffTagLabel} from "./diffTags.js";
 import {useDebouncedSearch} from "./useDebouncedSearch.js";
 import ShareLink from "./ShareLink.jsx";
 import {useComparisonFinding} from "./useComparisonFinding.js";
@@ -439,7 +440,10 @@ export default function Comparison({ route }) {
                       </small>
                       {tab==='projects' && <StatusInfo info={MATCH_STATUS_INFO[identityMatchStatus(r)] || matchInfo[r.trace]} fallback={matchStatusLabel(identityMatchStatus(r)) || label(r.trace)} />}
                       {counterpartCounts.has(r.id) && <small className="counterpart-badge">Suggested NEP counterpart · unresolved ({counterpartCounts.get(r.id)} House comparison {counterpartCounts.get(r.id)===1?'row':'rows'}). Kept separately pending review.</small>}
-                      {r.suggestions?.length>0 && <button className="candidate-review-button" aria-expanded={finding.record===r.id} onClick={()=>setFinding('record',finding.record===r.id?'':r.id)}>Review {r.suggestions.length} NEP {r.suggestions.length===1?'suggestion':'suggestions'}</button>}
+                      {r.suggestions?.length>0 && <>
+                        <button className="candidate-review-button" aria-expanded={finding.record===r.id} onClick={()=>setFinding('record',finding.record===r.id?'':r.id)}>Review {r.suggestions.length} NEP {r.suggestions.length===1?'suggestion':'suggestions'}</button>
+                        {(()=>{const tags=r.suggestions[0].diff_tags?.filter(t=>t!=='identical')||[];return tags.length>0&&<span className="diff-tag-row" role="group" aria-label="Top suggestion title differences">{r.suggestions.length>1&&<span className="diff-tag diff-tag-top" title="Tags shown for the top (highest-similarity) suggestion">top:</span>}{tags.map(tag=><span key={tag} className="diff-tag" data-tag={tag}>{diffTagLabel(tag)}</span>)}</span>;})()}
+                      </>}
                       {r.region_difference && <small>Region differs · House: {r.region_difference.house} · NEP: {r.region_difference.nep} · candidate only</small>}
                       {r.reason && identityMatchStatus(r)!=='matched_chainage' && <small className="normalized-match-badge">Matched after title normalization ({r.reason})</small>}
                       {tab==='projects' && identityMatchStatus(r)==='matched_chainage' && <small className="normalized-match-badge">Matched after chainage check{r.reason?` · ${r.reason}`:''}</small>}

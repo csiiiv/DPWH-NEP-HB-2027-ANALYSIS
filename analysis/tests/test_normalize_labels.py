@@ -16,6 +16,7 @@ from normalize_labels import (
     strip_stage_qualifier,
     title_match_key,
     title_tokens,
+    diff_tags,
 )
 
 
@@ -132,6 +133,37 @@ class NormalizeLabelsTests(unittest.TestCase):
         # Work-type swaps stay rejected for mining triage.
         self.assertEqual(
             classify_title_substitution(('completion',), ('construction',)), 'reject')
+
+    def test_diff_tags_classify_residual_fuzzy_differences(self):
+        t = diff_tags
+        self.assertEqual(t('Construction of Multi-Purpose Building, Barangay Poblacion, Manaoag, Pangasinan',
+                           'Construction of Multi-Purpose Building (Gym), Barangay Poblacion, Manaoag, Pangasinan'),
+                         ['facility_qualifier'])
+        self.assertEqual(t('Construction of Multi-Purpose Building at Barangay Peñabatan, Pulilan, Bulacan',
+                           'Construction of Multi-Purpose Building, Barangay Pe ñ abatan, Pulilan, Bulacan'),
+                         ['connector_word'])
+        self.assertEqual(t('Construction of Multi-Purpose Building, Barangay San Roque, San Jacinto',
+                           'Construction of Multi-Purpose Building, Barangay San Rogue, San Jacinto'),
+                         ['spelling_ocr'])
+        self.assertEqual(t('Construction (Completion) of Bridge, Barangay Biga I, Silang',
+                           'Construction of Bridge, Barangay Biga I, Silang'),
+                         ['identical'])
+        self.assertEqual(t('Rehabilitation of Road, Barangay Mabini',
+                           'Construction of Road, Barangay Mabini'),
+                         ['work_type_change'])
+        self.assertEqual(t('Construction (Completion) of Multi-Purpose Building, Sentro Komunidad de Santa Cruz, Manila',
+                           'Construction (Completion) of Multi-Purpose Building, Sentro Komunidad de Santa Cruz, Manila City'),
+                         ['city_suffix'])
+        self.assertEqual(t('Construction of Road, Barangay Wakas, Tayabas City',
+                           'Construction of Road, Barangay Opias, Tayabas City'),
+                         ['other_place_or_word'])
+        self.assertIn('structure_id_digit', t('Manila-Batangas Rd - K0097 + 788 - K0098 + 000',
+                                              'Manila-Batangas Rd - K0097 + 787 - K0098 + 000'))
+        self.assertIn('unit_count', t('Construction of 2-units Multi-Purpose Building, Barangay 1, Jones',
+                                      'Construction of Multi-Purpose Building, Barangay 1, Jones'))
+        # Identical titles produce the explicit 'identical' marker.
+        self.assertEqual(t('Construction of Bridge, Barangay Biga I, Silang',
+                           'Construction of Bridge, Barangay Biga I, Silang'), ['identical'])
 
     def test_substitution_triage(self):
         self.assertEqual(classify_title_substitution(('building',), ('bldg',)), 'promote')

@@ -844,6 +844,16 @@ small {
 .comparison-table .candidate-table tbody tr.suggested-source-row{background:#fffaf0}.comparison-table .candidate-table tbody tr.house-source-row{background:#fff}
 .count-explanation{padding:0 .85rem;font-size:.8rem}.counterpart-badge{display:block;background:#fff7e8;color:#79531e;padding:.35rem .5rem;border-radius:6px;margin:.3rem 0}
 .normalized-match-badge{display:block;background:#eef5fc;color:#1f4d7a;padding:.35rem .5rem;border-radius:6px;margin:.3rem 0;font-size:.72rem}
+.diff-tag-row{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.3rem}
+.diff-tag.diff-tag-top{background:#1f4d7a;border-color:#1f4d7a;color:#fff;font-style:italic}
+.diff-tag{display:inline-block;padding:.1rem .45rem;border-radius:999px;font-size:.66rem;font-weight:600;line-height:1.4;background:#eef2f6;color:#3d5166;border:1px solid #cdd8e2}
+.diff-tag[data-tag="spelling_ocr"]{background:#e8f3ec;border-color:#bcdcc7;color:#1d5c36}
+.diff-tag[data-tag="stage_qualifier"]{background:#eef5fc;border-color:#bcd2ea;color:#1f4d7a}
+.diff-tag[data-tag="connector_word"],.diff-tag[data-tag="city_suffix"]{background:#f4f0e4;border-color:#e2d6b4;color:#6b5416}
+.diff-tag[data-tag="work_type_change"]{background:#fbeae8;border-color:#e8c2bb;color:#8a2a1d}
+.diff-tag[data-tag="facility_qualifier"],.diff-tag[data-tag="unit_count"]{background:#f3ecf8;border-color:#d9c5ea;color:#5b3480}
+.diff-tag[data-tag="chainage_digit"],.diff-tag[data-tag="structure_id_digit"]{background:#e9f1f5;border-color:#c2d6e0;color:#274b5e}
+.diff-tag[data-tag="other_place_or_word"]{background:#f6e9e9;border-color:#e3c6c6;color:#7a2e2e}
 .chainage-in-cell{display:flex;flex-direction:column;gap:.12rem;margin-top:.4rem;padding-top:.35rem;border-top:1px solid #dce4ec;text-align:left;white-space:normal}
 .chainage-in-cell small{display:block;font-size:.7rem;font-weight:400;color:#3d5166;line-height:1.35}
 .chainage-in-cell .chainage-length-delta{font-weight:700;font-size:.72rem}
