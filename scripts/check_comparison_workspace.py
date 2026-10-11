@@ -3,7 +3,7 @@
 from pathlib import Path
 from functools import partial
 from http.server import ThreadingHTTPServer
-import sys, tempfile, threading, json
+import sys, tempfile, threading, json, re
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -114,7 +114,8 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(fuzzy_row.locator('.candidate-review-button')).to_be_visible()
                 expect(fuzzy_row.locator('.diff-tag-row')).to_be_visible()
                 expect(fuzzy_row.locator('.diff-tag').first).to_be_visible()
-                expect(fuzzy_row.get_by_role('group',name='Top suggestion title differences',exact=True)).to_be_visible()
+                expect(fuzzy_row.get_by_role('group',name='Top suggestion identity and title differences',exact=True)).to_be_visible()
+                expect(fuzzy_row.get_by_role('button',name=re.compile(r'Identity score \d+ percent'),exact=False)).to_be_visible()
                 page.get_by_role('button',name='Review 2 NEP suggestions',exact=True).click(timeout=60000)
                 candidates=page.get_by_role('region',name='Suggested NEP matches',exact=True)
                 # 2 House reading rows + 2 suggestion rows
