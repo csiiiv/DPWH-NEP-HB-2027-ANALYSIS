@@ -30,7 +30,7 @@ live Transparency data or regenerate source outputs.
 | `#home` | Workbench map, review-candidate headlines, and source status |
 | `#compare` | Stage comparison |
 | `#analysis` | Headlines, insertions, deletions, adjustments, chainage amendments (all-data overview · peer ₱/km benchmark · revised-pair patterns + records), statistics |
-| `#highlights` | Ten media angles and investigative prompts, DPWH coverage, and HGAB3-versus-NEP candidate change tables |
+| `#highlights` | Nine media angles with dedicated evidence dialogs, DPWH coverage, and HGAB3-versus-NEP candidate change tables |
 | `#house` | Third-reading native I-B totals and controls; reading and project-view toggles |
 | `#nep` | DBM NEP verification |
 | `#transparency` | Transparency NEP verification |
@@ -241,7 +241,7 @@ Source and ranking selections are shareable as
 `#analysis?view=deletions&ranking=suggested`.
 ## Highlights workspace
 
-The **Highlights** navigation tab (`#highlights`) presents ten media angles
+The **Highlights** navigation tab (`#highlights`) presents nine media angles
 with investigative prompts and two tables: DPWH operations coverage across
 NEP/HGAB2/HGAB3, and HGAB3-versus-NEP candidate changes. The supplied
 multi-agency layout is retained; DA, NIA and DOH display **Not covered**, and
@@ -257,7 +257,17 @@ reconcile exactly to the operations delta. Unresolved suggestions remain
 unpaired and are disclosed; the table does not certify policy amendments.
 The grouping story uses HGAB2, while the change table uses HGAB3.
 
-Each story links to evidence and has a shareable `#highlights?story=…` URL.
-The workspace loads only the overview payload, not the full project list.
+Each story opens a dedicated evidence dialog through its shareable
+`#highlights?story=…` URL. The dialogs have subject-specific hero figures,
+source controls, distributions, full allocation lists where relevant,
+search/sorting before pagination, exact-peso CSV exports and PDF references.
+Groups expand to member allocations; regions drill into PAP changes.
+Escape, Close and browser Back dismiss dialogs, restoring page scrolling.
+The removed Transparency listing-gap story remains available in Compare.
+
+The page initially loads only the overview payload. Opening a dialog lazily
+loads `highlights_details_2027.json`, a compact shared evidence pool generated
+alongside the overview; input hashes must match. The pool is cached across
+dialogs and does not require loading the full comparison project payload.
 Run `python scripts/check_highlights_page.py` after packaging to verify it
 under a project prefix at desktop and mobile widths.

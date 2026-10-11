@@ -53,7 +53,8 @@ export function highlightsData({rows,headlines,paps,stages,readings,roadGroups,c
   paps,regions,offices:{nep:headlines.sources.nep.offices,third:headlines.sources.third.offices},
   grouping,laoag:laoag?{records:laoag.leftover_house_rows,amount_php:laoag.leftover_amount_php}:null,
   chainage:{shorter_same_amount:shorter.length,example},
-  reading:{added:headlines.rankings.third.third_only,delta_php:readings.summary.allocation_delta_php},
+  reading:{added:headlines.rankings.third.third_only,delta_php:readings.summary.allocation_delta_php,
+   agency_delta_php:readings.summary.third.new_appropriations-(readings.summary.second?.new_appropriations??readings.summary.third.new_appropriations)},
   transparency:stages.summary.transparency_to_official,
   provenance:{built_at:stages.manifest?.built_at,reviewed_pairs:stages.summary.official_to_house.reviewed_pairs}};
 }

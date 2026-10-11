@@ -67,7 +67,7 @@ const php = (value) =>
   }).format(value);
 
 const workspaces = [
-  {href: "#highlights", title: "Highlights", body: "Ten media angles and investigative prompts, with DPWH coverage and third-reading change tables."},
+  {href: "#highlights", title: "Highlights", body: "Nine media angles with dedicated evidence dialogs, DPWH coverage, and third-reading change tables."},
   {href: "#compare", title: "Compare stages", body: "PAP totals, project comparison rows, House-reading filters, NEP-only splits, fuzzy suggestions, analytics, and CSV/JSON exports."},
   {href: "#analysis", title: "Analysis", body: "Office/program headlines, ranked insertions and deletions, adjustments, and descriptive statistics with group drill-downs into Compare."},
   {href: "#analysis?view=insertions", title: "Insertions", body: "House-only allocation records ranked by amount — no suggestion, unresolved NEP suggestions, and HGAB3-only."},

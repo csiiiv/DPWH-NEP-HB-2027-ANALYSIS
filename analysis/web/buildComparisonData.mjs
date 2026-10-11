@@ -4,6 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {headlineStats} from './src/headlineStats.js';
 import {unifiedComparison} from './src/unifiedComparison.js';
 import {highlightsData} from './src/highlightsData.js';
+import {highlightDetails} from './src/highlightDetails.js';
 const fields=['id','source_record_id','native_node_id','title','title_match_key','title_base','title_base_match_key','chainages','chainage_incomplete','chainage_length_review','amount_php','program','pap','pap_id','zone','region','office','office_canonical','pdf_page','pdf_pages','record_kind','evidence','funding_php'];
 function compactSource(source){
  if(!source)return null;
@@ -28,13 +29,14 @@ export function comparisonPayloads(stages,readings,extras={}){
  }
  return {overview:{schema_version:1,summary:stages.summary,readingSummary:readings.summary,headlines,
   highlights:highlightsData({rows:unified.projects,headlines,paps:unified.paps,stages,readings,...extras}),
-  paps:unified.paps,transparency_gaps:stages.transparency_gaps},detail:{schema_version:1,projects}};
+  paps:unified.paps,transparency_gaps:stages.transparency_gaps},detail:{schema_version:1,projects},
+  highlightsDetail:highlightDetails({rows:unified.projects,headlines,paps:unified.paps,stages,readings,...extras})};
 }
 export function buildComparisonData(){
  const data=new URL('../data/',import.meta.url),names=['stage_trace_2027.json','house_reading_changes_2027.json','road_group_candidates_2027.json','chainage_units_2027.json'];
  const raw=names.map(name=>readFileSync(new URL(name,data))),inputs=Object.fromEntries(names.map((name,i)=>[name,createHash('sha256').update(raw[i]).digest('hex')]));
  const [stages,readings,roadGroups,chainage]=raw.map(value=>JSON.parse(value));
- const {overview,detail}=comparisonPayloads(stages,readings,{roadGroups,chainage});
- for(const [name,payload] of [['comparison_overview_2027.json',overview],['comparison_projects_2027.json',detail]])writeFileSync(new URL(name,data),JSON.stringify({...payload,input_sha256:inputs})+'\n');
+ const {overview,detail,highlightsDetail}=comparisonPayloads(stages,readings,{roadGroups,chainage});
+ for(const [name,payload] of [['comparison_overview_2027.json',overview],['comparison_projects_2027.json',detail],['highlights_details_2027.json',highlightsDetail]])writeFileSync(new URL(name,data),JSON.stringify({...payload,input_sha256:inputs})+'\n');
 }
 if(process.argv[1]===fileURLToPath(import.meta.url))buildComparisonData();

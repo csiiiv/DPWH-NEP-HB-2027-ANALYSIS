@@ -1,10 +1,12 @@
-import React,{useEffect,useState} from 'react';
+import React,{lazy,Suspense,useEffect,useState} from 'react';
 import {loadData,sourceReference} from './data.js';
 import {amount} from './model.js';
 import {routeHref} from './routes.js';
 import {regionName} from './regionNames.js';
 import ShareLink from './ShareLink.jsx';
 import './Highlights.css';
+import {hydrateHighlightDetails} from './highlightDetails.js';
+const HighlightModal=lazy(()=>import('./HighlightModal.jsx'));
 
 const number=value=>value.toLocaleString('en-PH');
 const billion=value=>`₱${(value/1e9).toFixed(2)}B`;
@@ -94,9 +96,6 @@ function stories(data){
   {id:'office-capacity',label:'Recorded office assignments',title:`District engineering office allocations increase by ${billion(deo.amount_php-priorDeo.amount_php)}`,
    evidence:`DEO allocations rise ${percent(deo.amount_php-priorDeo.amount_php,priorDeo.amount_php)} to ${billion(deo.amount_php)}. Central Office retains ${billion(central.amount_php)}, or ${percent(central.amount_php,data.sources.third.amount_php)} of House operations.`,
    prompt:'Which offices can deliver the additional workload? Who will procure and implement Central Office allocations, and where are their beneficiaries? Office assignment alone does not establish project location.',href:'#analysis?view=overview&dim=office'},
-  {id:'transparency-gaps',label:'Retained API snapshot',title:`Transparency listing omits ${billion(data.transparency.nep_not_in_transparency_php)} in printed NEP allocations`,
-   evidence:`${number(data.transparency.nep_not_in_transparency_rows)} non-FAP allocations are absent from the saved API snapshot. The larger API-versus-agency gap also includes excluded foreign-assisted projects and non-operations spending.`,
-   prompt:'Why are these categories absent? Request their project-level breakdowns and check whether subsequent releases include them. A snapshot listing gap does not establish concealment.',href:routeHref('compare',{view:'gaps'})},
   {id:'shorter-works',label:'Provisional identity and parsed lengths',title:'Same budget, shorter listed works warrant engineering review',
    evidence:`${number(data.chainage.shorter_same_amount)} chainage candidate pairs have shorter parsed HGAB3 lengths with unchanged amounts, excluding flagged length anomalies.${example?` ${example.title}: ${amount(example.amount_php)} in both sources, ${number(example.nep_length_m)}m → ${number(example.house_length_m)}m.`:''}`,
    prompt:'Does the revised design involve more expensive works, a relocated segment or corrected stationing? Compare drawings and quantities before treating the implied cost increase as overpricing.',href:compare({match:'matched_chainage',...(example?{q:example.id,record:example.id}:{})}),example},
@@ -104,23 +103,34 @@ function stories(data){
 }
 
 export default function Highlights({route}){
- const [data,setData]=useState(null),[error,setError]=useState('');
+ const [data,setData]=useState(null),[error,setError]=useState(''),[details,setDetails]=useState(null),[detailError,setDetailError]=useState(''),[hashes,setHashes]=useState(null);
  useEffect(()=>{const controller=new AbortController();loadData('comparison_overview_2027.json',controller.signal).then(payload=>{
   if(!payload.highlights)throw new Error('Highlights are unavailable. Rebuild the comparison data.');
   setData(payload.highlights);
+  setHashes(payload.input_sha256);
  }).catch(e=>{if(e.name!=='AbortError')setError(e.message);});return()=>controller.abort();},[]);
  const selected=route.params.get('story');
- useEffect(()=>{if(data&&selected)document.getElementById(`highlight-${selected}`)?.scrollIntoView({block:'start'});},[data,selected]);
+ const story=data?stories(data).find(item=>item.id===selected):null;
+ useEffect(()=>{
+  if(!story||details||!hashes)return;
+  const controller=new AbortController();setDetailError('');
+  loadData('highlights_details_2027.json',controller.signal).then(payload=>{
+   if(JSON.stringify(payload.input_sha256)!==JSON.stringify(hashes))throw new Error('The evidence and summary versions differ. Refresh the page to load the current data.');
+   setDetails(hydrateHighlightDetails(payload));
+  }).catch(e=>{if(e.name!=='AbortError')setDetailError(e.message);});
+  return()=>controller.abort();
+ },[story?.id,details,hashes]);
+ function closeModal(){const params=Object.fromEntries(route.params);delete params.story;window.location.hash=routeHref('highlights',params);}
  if(error)return <p role="alert">{error}</p>;
  if(!data)return <p role="status">Loading highlights…</p>;
  return <div className="headline-analysis highlights-workspace">
-  <section className="highlights-intro"><div><p className="eyebrow">DPWH · FY2027</p><h1>Highlights</h1><p>Ten media angles and investigative prompts, grounded in the retained budget records.</p></div><ShareLink/></section>
+  <section className="highlights-intro"><div><p className="eyebrow">DPWH · FY2027</p><h1>Highlights</h1><p>Nine media angles and investigative prompts, grounded in the retained budget records.</p></div><ShareLink/></section>
   <p className="notice">These are budget proposals, not enacted spending. Printed controls and source distributions describe recorded amounts; project identities remain provisional. {number(data.provenance.reviewed_pairs)} cross-document pairs are manually certified. The tables compare operations; the first headline also uses full agency new appropriations.</p>
   <CoverageTable data={data}/><ChangesTable data={data}/>
-  <section aria-labelledby="story-heading"><h2 id="story-heading">Top 10 story angles</h2><p className="muted">Ranked by news value and strength of the retained evidence. Open the source comparisons before publishing an individual project claim.</p>
+  <section aria-labelledby="story-heading"><h2 id="story-heading">Nine story angles</h2><p className="muted">Ranked by news value and strength of the retained evidence. Open a highlight for its figures, relevant records, and source references.</p>
    <ol className="highlights-stories">{stories(data).map(story=><li id={`highlight-${story.id}`} key={story.id} className={selected===story.id?'highlight-selected':''}>
     <article><p className="eyebrow">{story.label}</p><h3>{story.title}</h3><p>{story.evidence}</p><div className="highlight-prompt"><strong>Investigate</strong><p>{story.prompt}</p></div>
-     <div className="highlight-links"><a href={story.href}>Open evidence →</a><a href={routeHref('highlights',{story:story.id})}>Link to this highlight</a>
+     <div className="highlight-links"><button className="highlight-open" aria-haspopup="dialog" onClick={()=>{window.location.hash=routeHref('highlights',{story:story.id});}}>Explore this highlight →</button><a href={routeHref('highlights',{story:story.id})}>Link to this highlight</a>
       {story.example&&[['nep',story.example.nep_page,'NEP'],['house-third',story.example.house_page,'HGAB3']].map(([key,page,label])=>{
        const ref=sourceReference(key,page);return ref?<a key={key} href={`${ref.url}#page=${page}`} target="_blank" rel="noopener noreferrer">{label} PDF p.{page}</a>:null;
       })}
@@ -128,5 +138,6 @@ export default function Highlights({route}){
     </article>
    </li>)}</ol>
   </section>
+  {story&&<Suspense fallback={<p role="status">Opening highlight…</p>}><HighlightModal key={story.id} story={story} summary={data} payload={details} error={detailError} onClose={closeModal}/></Suspense>}
  </div>;
 }
