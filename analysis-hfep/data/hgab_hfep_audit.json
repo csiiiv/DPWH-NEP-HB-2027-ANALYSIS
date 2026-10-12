@@ -1,0 +1,6440 @@
+{
+  "metadata": {
+    "schema_version": 1,
+    "fiscal_year": 2027,
+    "currency": "PHP",
+    "source_unit": "pesos_printed_on_annex",
+    "unit_multiplier": 1,
+    "document": "HB 10858 General Appropriations Bill, local HB_BUDGET copy",
+    "legislative_stage": "not_independently_authenticated",
+    "scope": "DOH FY 2027 Health Facilities Enhancement Program (HFEP) annex; not the entire DOH appropriation. The I-A HFEP allocation of PHP 10,088,832,000 additionally includes PHP 67,173,000 MOOE, which is outside this annex.",
+    "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+    "source_sha256": "a82800c4cc2684566a37f7780d8f9131d2e7b2c97444d335d94df012dec065b6",
+    "source_pdf_pages": [
+      877,
+      893
+    ],
+    "source_printed_pages": [
+      857,
+      873
+    ],
+    "agency_control_pdf_pages": {
+      "IA_allocation_table": [
+        1067
+      ],
+      "IA_special_provision": [
+        1039
+      ]
+    },
+    "extractor_sha256": "4534252e778d159369e1f26708d39be9bb38eb2e1b55bcb16c2bf260eb966555",
+    "pymupdf_version": "1.28.2",
+    "ids": "source-artifact-local page and band identifiers; not cross-document facility identities"
+  },
+  "passed": true,
+  "errors": [],
+  "summary": {
+    "detail_pages": 17,
+    "source_bands": 1157,
+    "band_role_counts": {
+      "annex_heading": 3,
+      "column_header": 17,
+      "category": 8,
+      "blank_spacer": 312,
+      "subcategory": 14,
+      "region": 91,
+      "province": 198,
+      "facility": 513,
+      "grand_total": 1
+    },
+    "table_words_accounted_for": 5009,
+    "nodes": 826,
+    "facilities": 513,
+    "facility_ledger_total_php": 10021659000,
+    "facility_ledger_infrastructure_php": 5990046000,
+    "facility_ledger_medical_equipment_php": 3900913000,
+    "facility_ledger_motor_vehicle_php": 130700000,
+    "internal_control_checks": 311,
+    "failed_internal_controls": 0,
+    "reading_comparison_identical_pages": 17
+  },
+  "rollup_checks": [
+    {
+      "node_id": "ib:p877:r11",
+      "label": "Apayao",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r15",
+      "label": "Sagada",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 5400000,
+        "total": 5400000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 5400000,
+        "total": 5400000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r9",
+      "label": "CAR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 15400000,
+        "total": 15400000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15400000,
+        "total": 15400000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r21",
+      "label": "Isabela",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 4000000,
+        "total": 4000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 4000000,
+        "total": 4000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r19",
+      "label": "Region II",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 4000000,
+        "total": 4000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 4000000,
+        "total": 4000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r26",
+      "label": "Bukidnon",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r29",
+      "label": "Misamis Oriental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 3000000,
+        "medical_equipment": 240000,
+        "total": 3240000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 3000000,
+        "medical_equipment": 240000,
+        "total": 3240000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r24",
+      "label": "Region X",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 13000000,
+        "medical_equipment": 240000,
+        "total": 13240000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 13000000,
+        "total": 13240000,
+        "medical_equipment": 240000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r7",
+      "label": "1.a Construction of New Barangay Health Stations (BHS)",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "infrastructure": 32400000,
+        "medical_equipment": 240000,
+        "total": 32640000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 32400000,
+        "total": 32640000,
+        "medical_equipment": 240000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r36",
+      "label": "Abra",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2000000,
+        "medical_equipment": 270000,
+        "total": 2270000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 270000,
+        "total": 2270000,
+        "infrastructure": 2000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r41",
+      "label": "Benguet",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 3500000,
+        "total": 3500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 3500000,
+        "total": 3500000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r44",
+      "label": "Mountain Province",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 2015000,
+        "total": 2015000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2015000,
+        "total": 2015000
+      },
+      "child_count": 15,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r34",
+      "label": "CAR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 5500000,
+        "medical_equipment": 2285000,
+        "total": 7785000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2285000,
+        "total": 7785000,
+        "infrastructure": 5500000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r63",
+      "label": "Nueva Ecija",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 24000000,
+        "total": 24000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 24000000,
+        "total": 24000000
+      },
+      "child_count": 48,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r61",
+      "label": "Region III",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 24000000,
+        "total": 24000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 24000000,
+        "total": 24000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p878:r51",
+      "label": "Albay",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 1500000,
+        "total": 1500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 1500000,
+        "total": 1500000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p878:r49",
+      "label": "Region V",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 1500000,
+        "total": 1500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 1500000,
+        "total": 1500000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p878:r56",
+      "label": "Aklan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 400000,
+        "total": 400000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 400000,
+        "total": 400000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p878:r54",
+      "label": "Region VI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 400000,
+        "total": 400000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 400000,
+        "total": 400000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p878:r61",
+      "label": "Biliran",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 1180000,
+        "total": 1180000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 1180000,
+        "total": 1180000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p878:r64",
+      "label": "Eastern Samar",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 590000,
+        "total": 590000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 590000,
+        "total": 590000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p878:r67",
+      "label": "Western Samar",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 1000000,
+        "total": 1000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 1000000,
+        "total": 1000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p878:r59",
+      "label": "Region VIII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 2770000,
+        "total": 2770000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2770000,
+        "total": 2770000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r4",
+      "label": "Sulu",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2000000,
+        "total": 2000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2000000,
+        "total": 2000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r2",
+      "label": "Region IX",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 2000000,
+        "total": 2000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2000000,
+        "total": 2000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r32",
+      "label": "1.b Completion/Equipping of BHS",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "infrastructure": 12170000,
+        "medical_equipment": 26285000,
+        "total": 38455000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 26285000,
+        "total": 38455000,
+        "infrastructure": 12170000
+      },
+      "child_count": 6,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r11",
+      "label": "Bataan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 25000000,
+        "total": 25000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 25000000,
+        "total": 25000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r9",
+      "label": "Region III",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 25000000,
+        "total": 25000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 25000000,
+        "total": 25000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r16",
+      "label": "Batangas",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 5000000,
+        "total": 5000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 5000000,
+        "total": 5000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r14",
+      "label": "CALABARZON",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 5000000,
+        "total": 5000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 5000000,
+        "total": 5000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r7",
+      "label": "1.c Construction of New Primary Care Facility",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "infrastructure": 30000000,
+        "total": 30000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 30000000,
+        "total": 30000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r23",
+      "label": "Metro Manila",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "medical_equipment": 28775000,
+        "total": 38775000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 28775000,
+        "total": 38775000,
+        "infrastructure": 10000000
+      },
+      "child_count": 23,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r48",
+      "label": "Navotas City",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 140000,
+        "total": 140000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 140000,
+        "total": 140000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r21",
+      "label": "NCR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "medical_equipment": 28915000,
+        "total": 38915000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 28915000,
+        "total": 38915000,
+        "infrastructure": 10000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r53",
+      "label": "Abra",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 920000,
+        "total": 920000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 920000,
+        "total": 920000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r56",
+      "label": "Apayao",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 135000,
+        "total": 135000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 135000,
+        "total": 135000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r59",
+      "label": "Ifugao",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 270000,
+        "total": 270000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 270000,
+        "total": 270000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r63",
+      "label": "Kalinga",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2700000,
+        "medical_equipment": 10360000,
+        "total": 13060000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 10360000,
+        "total": 13060000,
+        "infrastructure": 2700000
+      },
+      "child_count": 12,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r8",
+      "label": "Mountain Province",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 135000,
+        "total": 135000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 135000,
+        "total": 135000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r51",
+      "label": "CAR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 2700000,
+        "medical_equipment": 11820000,
+        "total": 14520000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 11820000,
+        "total": 14520000,
+        "infrastructure": 2700000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r13",
+      "label": "Bulacan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 2900000,
+        "total": 2900000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2900000,
+        "total": 2900000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r16",
+      "label": "Nueva Ecija",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 20000000,
+        "total": 20000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 20000000,
+        "total": 20000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r11",
+      "label": "Region III",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 22900000,
+        "total": 22900000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 22900000,
+        "total": 22900000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r22",
+      "label": "Batangas",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2700000,
+        "medical_equipment": 540000,
+        "total": 3240000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2700000,
+        "medical_equipment": 540000,
+        "total": 3240000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r20",
+      "label": "CALABARZON",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 2700000,
+        "medical_equipment": 540000,
+        "total": 3240000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2700000,
+        "medical_equipment": 540000,
+        "total": 3240000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r27",
+      "label": "Palawan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2700000,
+        "medical_equipment": 540000,
+        "total": 3240000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2700000,
+        "medical_equipment": 540000,
+        "total": 3240000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r25",
+      "label": "MIMAROPA",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 2700000,
+        "medical_equipment": 540000,
+        "total": 3240000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2700000,
+        "medical_equipment": 540000,
+        "total": 3240000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r32",
+      "label": "Albay",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2700000,
+        "medical_equipment": 540000,
+        "total": 3240000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2700000,
+        "medical_equipment": 540000,
+        "total": 3240000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r35",
+      "label": "Masbate",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 1000000,
+        "total": 1000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 1000000,
+        "total": 1000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r30",
+      "label": "Region V",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 3700000,
+        "medical_equipment": 540000,
+        "total": 4240000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 3700000,
+        "medical_equipment": 540000,
+        "total": 4240000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r40",
+      "label": "Aklan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 3500000,
+        "total": 3500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 3500000,
+        "total": 3500000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r43",
+      "label": "Capiz",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 14500000,
+        "total": 14500000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 14500000,
+        "total": 14500000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r50",
+      "label": "Iloilo",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10200000,
+        "medical_equipment": 11080000,
+        "total": 21280000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10200000,
+        "medical_equipment": 11080000,
+        "total": 21280000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r38",
+      "label": "Region VI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 13700000,
+        "medical_equipment": 25580000,
+        "total": 39280000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 13700000,
+        "total": 39280000,
+        "medical_equipment": 25580000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r59",
+      "label": "Negros Occidental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 38500000,
+        "medical_equipment": 60900000,
+        "total": 99400000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 60900000,
+        "total": 99400000,
+        "infrastructure": 38500000
+      },
+      "child_count": 10,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r71",
+      "label": "Negros Oriental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 22100000,
+        "medical_equipment": 8800000,
+        "total": 30900000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 22100000,
+        "total": 30900000,
+        "medical_equipment": 8800000
+      },
+      "child_count": 7,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p880:r57",
+      "label": "NIR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 60600000,
+        "medical_equipment": 69700000,
+        "total": 130300000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 69700000,
+        "total": 130300000,
+        "infrastructure": 60600000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r10",
+      "label": "Bohol",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 1750000,
+        "medical_equipment": 37700000,
+        "total": 39450000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 37700000,
+        "total": 39450000,
+        "infrastructure": 1750000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r16",
+      "label": "Cebu",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10900000,
+        "medical_equipment": 5520000,
+        "total": 16420000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10900000,
+        "total": 16420000,
+        "medical_equipment": 5520000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r8",
+      "label": "Region VII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 12650000,
+        "medical_equipment": 43220000,
+        "total": 55870000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 43220000,
+        "total": 55870000,
+        "infrastructure": 12650000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r25",
+      "label": "Biliran",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 2900000,
+        "total": 2900000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2900000,
+        "total": 2900000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r28",
+      "label": "Leyte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 5000000,
+        "medical_equipment": 2900000,
+        "total": 7900000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 5000000,
+        "total": 7900000,
+        "medical_equipment": 2900000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r33",
+      "label": "Northern Samar",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 7700000,
+        "medical_equipment": 1060000,
+        "total": 8760000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 1060000,
+        "total": 8760000,
+        "infrastructure": 7700000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r40",
+      "label": "Samar",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 3300000,
+        "total": 3300000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 3300000,
+        "total": 3300000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r44",
+      "label": "Western Samar",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2500000,
+        "total": 2500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2500000,
+        "total": 2500000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r23",
+      "label": "Region VIII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 15200000,
+        "medical_equipment": 10160000,
+        "total": 25360000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 10160000,
+        "total": 25360000,
+        "infrastructure": 15200000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r49",
+      "label": "Sulu",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2900000,
+        "medical_equipment": 2940000,
+        "total": 5840000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2940000,
+        "total": 5840000,
+        "infrastructure": 2900000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r53",
+      "label": "Zamboanga del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2500000,
+        "total": 2500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2500000,
+        "total": 2500000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r56",
+      "label": "Zamboanga del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2500000,
+        "total": 2500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2500000,
+        "total": 2500000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r59",
+      "label": "Zamboanga Sibugay",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 1400000,
+        "total": 1400000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 1400000,
+        "total": 1400000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r47",
+      "label": "Region IX",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 7900000,
+        "medical_equipment": 4340000,
+        "total": 12240000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 4340000,
+        "total": 12240000,
+        "infrastructure": 7900000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r64",
+      "label": "Lanao del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 1100000,
+        "total": 1100000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 1100000,
+        "total": 1100000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r67",
+      "label": "Misamis Occidental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 1570000,
+        "total": 1570000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 1570000,
+        "total": 1570000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r71",
+      "label": "Misamis Oriental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2500000,
+        "total": 2500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2500000,
+        "total": 2500000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p881:r62",
+      "label": "Region X",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 2500000,
+        "medical_equipment": 2670000,
+        "total": 5170000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2670000,
+        "total": 5170000,
+        "infrastructure": 2500000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r4",
+      "label": "Davao de Oro",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 17500000,
+        "total": 17500000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 17500000,
+        "total": 17500000
+      },
+      "child_count": 7,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r13",
+      "label": "Davao del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2500000,
+        "total": 2500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2500000,
+        "total": 2500000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r16",
+      "label": "Davao del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 5000000,
+        "total": 5000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 5000000,
+        "total": 5000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r2",
+      "label": "Region XI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 7500000,
+        "medical_equipment": 17500000,
+        "total": 25000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 17500000,
+        "total": 25000000,
+        "infrastructure": 7500000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r22",
+      "label": "Cotabato",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 5000000,
+        "total": 5000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 5000000,
+        "total": 5000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r25",
+      "label": "Sultan Kudarat",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 1470000,
+        "total": 1470000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 1470000,
+        "total": 1470000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r20",
+      "label": "Region XII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 6470000,
+        "total": 6470000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 6470000,
+        "total": 6470000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r30",
+      "label": "City of Butuan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 1000000,
+        "total": 1000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 1000000,
+        "total": 1000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r33",
+      "label": "Dinagat Islands",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2210000,
+        "total": 2210000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2210000,
+        "total": 2210000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r38",
+      "label": "Surigao del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 7670000,
+        "medical_equipment": 2000000,
+        "total": 9670000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 7670000,
+        "total": 9670000,
+        "medical_equipment": 2000000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r44",
+      "label": "Surigao del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2900000,
+        "medical_equipment": 3570000,
+        "total": 6470000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 3570000,
+        "total": 6470000,
+        "infrastructure": 2900000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r28",
+      "label": "Region XIII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 13780000,
+        "medical_equipment": 5570000,
+        "total": 19350000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 13780000,
+        "total": 19350000,
+        "medical_equipment": 5570000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r53",
+      "label": "Special Geographic Area",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 18000000,
+        "total": 18000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 18000000,
+        "total": 18000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r51",
+      "label": "BARMM",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 18000000,
+        "total": 18000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 18000000,
+        "total": 18000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p879:r19",
+      "label": "1.d Completion/Equipping of Primary Care Facilities",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "infrastructure": 162100000,
+        "medical_equipment": 261995000,
+        "total": 424095000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 261995000,
+        "total": 424095000,
+        "infrastructure": 162100000
+      },
+      "child_count": 16,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p877:r5",
+      "label": "1. Primary Care Facilities",
+      "kind": "category_control",
+      "printed_amounts_php": {
+        "infrastructure": 236670000,
+        "medical_equipment": 288520000,
+        "total": 525190000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 236670000,
+        "total": 525190000,
+        "medical_equipment": 288520000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r64",
+      "label": "Metro Manila",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 120000000,
+        "medical_equipment": 207765000,
+        "total": 327765000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 207765000,
+        "total": 327765000,
+        "infrastructure": 120000000
+      },
+      "child_count": 13,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r62",
+      "label": "NCR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 120000000,
+        "medical_equipment": 207765000,
+        "total": 327765000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 207765000,
+        "total": 327765000,
+        "infrastructure": 120000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r9",
+      "label": "Ilocos Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 310682000,
+        "medical_equipment": 200000000,
+        "total": 510682000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 310682000,
+        "total": 510682000,
+        "medical_equipment": 200000000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r7",
+      "label": "Region I",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 310682000,
+        "medical_equipment": 200000000,
+        "total": 510682000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 310682000,
+        "total": 510682000,
+        "medical_equipment": 200000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r17",
+      "label": "Ifugao",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 6900000,
+        "total": 6900000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 6900000,
+        "total": 6900000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r20",
+      "label": "Kalinga",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 9400000,
+        "medical_equipment": 9350000,
+        "total": 18750000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 9350000,
+        "total": 18750000,
+        "infrastructure": 9400000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r26",
+      "label": "Mountain Province",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 32200000,
+        "total": 32200000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 32200000,
+        "total": 32200000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r15",
+      "label": "CAR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 48500000,
+        "medical_equipment": 9350000,
+        "total": 57850000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 48500000,
+        "total": 57850000,
+        "medical_equipment": 9350000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r33",
+      "label": "Batanes",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 5000000,
+        "total": 5000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 5000000,
+        "total": 5000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r36",
+      "label": "Cagayan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 45200000,
+        "medical_equipment": 5400000,
+        "total": 50600000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 45200000,
+        "total": 50600000,
+        "medical_equipment": 5400000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r43",
+      "label": "Isabela",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 560000000,
+        "medical_equipment": 240000000,
+        "total": 800000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 560000000,
+        "medical_equipment": 240000000,
+        "total": 800000000
+      },
+      "child_count": 10,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r55",
+      "label": "Nueva Vizcaya",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 31500000,
+        "total": 31500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 31500000,
+        "total": 31500000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r31",
+      "label": "Region II",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 636700000,
+        "medical_equipment": 250400000,
+        "total": 887100000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 250400000,
+        "total": 887100000,
+        "infrastructure": 636700000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r62",
+      "label": "Aurora",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "medical_equipment": 30000000,
+        "total": 40000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "medical_equipment": 30000000,
+        "total": 40000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r65",
+      "label": "Bataan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 63600000,
+        "total": 63600000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 63600000,
+        "total": 63600000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r69",
+      "label": "Bulacan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "medical_equipment": 145000000,
+        "total": 160000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 160000000,
+        "medical_equipment": 145000000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r5",
+      "label": "Masantol",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 5400000,
+        "total": 5400000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 5400000,
+        "total": 5400000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r8",
+      "label": "Nueva Ecija",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 80000000,
+        "medical_equipment": 100095000,
+        "total": 180095000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 80000000,
+        "medical_equipment": 100095000,
+        "total": 180095000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r13",
+      "label": "Pampanga",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 75000000,
+        "total": 75000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 75000000,
+        "total": 75000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r16",
+      "label": "Tarlac",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 71600000,
+        "medical_equipment": 90000000,
+        "total": 161600000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 90000000,
+        "total": 161600000,
+        "infrastructure": 71600000
+      },
+      "child_count": 10,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r28",
+      "label": "Zambales",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 40000000,
+        "total": 40000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 40000000,
+        "total": 40000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p883:r60",
+      "label": "Region III",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 182000000,
+        "medical_equipment": 543695000,
+        "total": 725695000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 182000000,
+        "medical_equipment": 543695000,
+        "total": 725695000
+      },
+      "child_count": 8,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r34",
+      "label": "Batangas",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 80000000,
+        "total": 80000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 80000000,
+        "total": 80000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r37",
+      "label": "Cavite",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 35000000,
+        "total": 35000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 35000000,
+        "total": 35000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r41",
+      "label": "Laguna",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 50000000,
+        "medical_equipment": 30000000,
+        "total": 80000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 50000000,
+        "total": 80000000,
+        "medical_equipment": 30000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r32",
+      "label": "CALABARZON",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 50000000,
+        "medical_equipment": 145000000,
+        "total": 195000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 145000000,
+        "total": 195000000,
+        "infrastructure": 50000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r48",
+      "label": "Marinduque",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 11500000,
+        "total": 11500000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 11500000,
+        "total": 11500000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r52",
+      "label": "Occidental Mindoro",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 30000000,
+        "total": 30000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 30000000,
+        "total": 30000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r57",
+      "label": "Oriental Mindoro",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 39000000,
+        "total": 39000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 39000000,
+        "total": 39000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r62",
+      "label": "Palawan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 55000000,
+        "medical_equipment": 29000000,
+        "total": 84000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 55000000,
+        "total": 84000000,
+        "medical_equipment": 29000000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r68",
+      "label": "Romblon",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 31500000,
+        "total": 31500000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 31500000,
+        "total": 31500000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p884:r46",
+      "label": "MIMAROPA",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 124000000,
+        "medical_equipment": 72000000,
+        "total": 196000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 72000000,
+        "total": 196000000,
+        "infrastructure": 124000000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r5",
+      "label": "Camarines Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 5000000,
+        "total": 5000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 5000000,
+        "total": 5000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r8",
+      "label": "Camarines Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 5000000,
+        "total": 5000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 5000000,
+        "total": 5000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r11",
+      "label": "Catanduanes",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 25000000,
+        "total": 25000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 25000000,
+        "total": 25000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r14",
+      "label": "Masbate",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 5000000,
+        "total": 5000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 5000000,
+        "total": 5000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r17",
+      "label": "Sorsogon",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 40000000,
+        "total": 40000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 40000000,
+        "total": 40000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r3",
+      "label": "Region V",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 45000000,
+        "medical_equipment": 35000000,
+        "total": 80000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 45000000,
+        "total": 80000000,
+        "medical_equipment": 35000000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r23",
+      "label": "Aklan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 40000000,
+        "medical_equipment": 11500000,
+        "total": 51500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 40000000,
+        "total": 51500000,
+        "medical_equipment": 11500000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r27",
+      "label": "Antique",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 50000000,
+        "medical_equipment": 10000000,
+        "total": 60000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 50000000,
+        "medical_equipment": 10000000,
+        "total": 60000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r32",
+      "label": "Capiz",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 25000000,
+        "medical_equipment": 50000000,
+        "total": 75000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 25000000,
+        "medical_equipment": 50000000,
+        "total": 75000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r35",
+      "label": "Guimaras",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 55000000,
+        "medical_equipment": 82000000,
+        "total": 137000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 82000000,
+        "total": 137000000,
+        "infrastructure": 55000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r40",
+      "label": "Iloilo",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 190240000,
+        "medical_equipment": 65000000,
+        "total": 255240000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 65000000,
+        "total": 255240000,
+        "infrastructure": 190240000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r21",
+      "label": "Region VI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 360240000,
+        "medical_equipment": 218500000,
+        "total": 578740000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 360240000,
+        "total": 578740000,
+        "medical_equipment": 218500000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r49",
+      "label": "Negros Occidental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 142904000,
+        "medical_equipment": 134300000,
+        "total": 277204000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 142904000,
+        "total": 277204000,
+        "medical_equipment": 134300000
+      },
+      "child_count": 10,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r61",
+      "label": "Negros Oriental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 127800000,
+        "medical_equipment": 89500000,
+        "total": 217300000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 127800000,
+        "medical_equipment": 89500000,
+        "total": 217300000
+      },
+      "child_count": 9,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r2",
+      "label": "Siquijor",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 50000000,
+        "medical_equipment": 85000000,
+        "total": 135000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 85000000,
+        "total": 135000000,
+        "infrastructure": 50000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p885:r47",
+      "label": "NIR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 320704000,
+        "medical_equipment": 308800000,
+        "total": 629504000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 320704000,
+        "total": 629504000,
+        "medical_equipment": 308800000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r8",
+      "label": "Bohol",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 15003000,
+        "total": 15003000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 15003000,
+        "total": 15003000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r11",
+      "label": "Cebu",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 50000000,
+        "total": 50000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 50000000,
+        "total": 50000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r6",
+      "label": "Region VII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 50000000,
+        "medical_equipment": 15003000,
+        "total": 65003000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 15003000,
+        "total": 65003000,
+        "infrastructure": 50000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r16",
+      "label": "Biliran",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r19",
+      "label": "Eastern Samar",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 65000000,
+        "total": 65000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 65000000,
+        "total": 65000000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r26",
+      "label": "Leyte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 33750000,
+        "total": 33750000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 33750000,
+        "total": 33750000
+      },
+      "child_count": 7,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r35",
+      "label": "Northern Samar",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 50000000,
+        "medical_equipment": 74900000,
+        "total": 124900000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 74900000,
+        "total": 124900000,
+        "infrastructure": 50000000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r41",
+      "label": "Samar",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 5800000,
+        "total": 5800000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 5800000,
+        "total": 5800000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r44",
+      "label": "Western Samar",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 10347000,
+        "total": 10347000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 10347000,
+        "total": 10347000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r14",
+      "label": "Region VIII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 50000000,
+        "medical_equipment": 199797000,
+        "total": 249797000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 199797000,
+        "total": 249797000,
+        "infrastructure": 50000000
+      },
+      "child_count": 6,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r49",
+      "label": "Zamboanga del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r52",
+      "label": "Zamboanga del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r55",
+      "label": "Zamboanga Sibugay",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 35500000,
+        "total": 35500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 35500000,
+        "total": 35500000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r47",
+      "label": "Region IX",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 55500000,
+        "total": 55500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 55500000,
+        "total": 55500000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r62",
+      "label": "Bukidnon",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 1750000,
+        "total": 1750000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 1750000,
+        "total": 1750000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r65",
+      "label": "Camiguin",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r68",
+      "label": "City of Cagayan De Oro",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 50000000,
+        "total": 50000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 50000000,
+        "total": 50000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r2",
+      "label": "Lanao del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 1750000,
+        "medical_equipment": 1750000,
+        "total": 3500000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 1750000,
+        "total": 3500000,
+        "infrastructure": 1750000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r6",
+      "label": "Misamis Occidental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 3500000,
+        "medical_equipment": 120000000,
+        "total": 123500000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 120000000,
+        "total": 123500000,
+        "infrastructure": 3500000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r11",
+      "label": "Misamis Oriental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 81750000,
+        "medical_equipment": 25000000,
+        "total": 106750000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 81750000,
+        "total": 106750000,
+        "medical_equipment": 25000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p886:r60",
+      "label": "Region X",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 138750000,
+        "medical_equipment": 156750000,
+        "total": 295500000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 138750000,
+        "total": 295500000,
+        "medical_equipment": 156750000
+      },
+      "child_count": 6,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r18",
+      "label": "Davao de Oro",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 80000000,
+        "medical_equipment": 50000000,
+        "total": 130000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 80000000,
+        "total": 130000000,
+        "medical_equipment": 50000000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r24",
+      "label": "Davao del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 25800000,
+        "medical_equipment": 50000000,
+        "total": 75800000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 25800000,
+        "total": 75800000,
+        "medical_equipment": 50000000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r30",
+      "label": "Davao del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 25000000,
+        "total": 25000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 25000000,
+        "total": 25000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r34",
+      "label": "Davao Occidental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 2900000,
+        "total": 2900000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2900000,
+        "total": 2900000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r37",
+      "label": "Davao Oriental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 30000000,
+        "total": 30000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 30000000,
+        "total": 30000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r16",
+      "label": "Region XI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 163700000,
+        "medical_equipment": 100000000,
+        "total": 263700000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 163700000,
+        "total": 263700000,
+        "medical_equipment": 100000000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r43",
+      "label": "Cotabato",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 102500000,
+        "total": 102500000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 102500000,
+        "total": 102500000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r48",
+      "label": "South Cotabato",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 100000000,
+        "total": 100000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 100000000,
+        "total": 100000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r51",
+      "label": "Sultan Kudarat",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "medical_equipment": 10000000,
+        "total": 20000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "total": 20000000,
+        "medical_equipment": 10000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r41",
+      "label": "Region XII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 110000000,
+        "medical_equipment": 112500000,
+        "total": 222500000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 112500000,
+        "total": 222500000,
+        "infrastructure": 110000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r57",
+      "label": "City of Butuan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 75000000,
+        "total": 75000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 75000000,
+        "total": 75000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r60",
+      "label": "Dinagat Islands",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 4000000,
+        "total": 4000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 4000000,
+        "total": 4000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r63",
+      "label": "Surigao del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 6710000,
+        "total": 6710000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 6710000,
+        "total": 6710000
+      },
+      "child_count": 9,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r5",
+      "label": "Surigao del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 28000000,
+        "medical_equipment": 3300000,
+        "total": 31300000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 28000000,
+        "total": 31300000,
+        "medical_equipment": 3300000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p887:r55",
+      "label": "Region XIII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 32000000,
+        "medical_equipment": 85010000,
+        "total": 117010000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 85010000,
+        "total": 117010000,
+        "infrastructure": 32000000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r14",
+      "label": "Basilan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 8700000,
+        "total": 8700000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 8700000,
+        "total": 8700000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r18",
+      "label": "Lanao del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 21000000,
+        "total": 21000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 21000000,
+        "total": 21000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r22",
+      "label": "Maguindanao del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 36500000,
+        "medical_equipment": 6500000,
+        "total": 43000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 36500000,
+        "total": 43000000,
+        "medical_equipment": 6500000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r28",
+      "label": "Maguindanao del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 6000000,
+        "medical_equipment": 13000000,
+        "total": 19000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 6000000,
+        "total": 19000000,
+        "medical_equipment": 13000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r32",
+      "label": "Tawi-Tawi",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 4000000,
+        "medical_equipment": 5500000,
+        "total": 9500000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 5500000,
+        "total": 9500000,
+        "infrastructure": 4000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r12",
+      "label": "BARMM",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 76200000,
+        "medical_equipment": 25000000,
+        "total": 101200000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 76200000,
+        "total": 101200000,
+        "medical_equipment": 25000000
+      },
+      "child_count": 5,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r60",
+      "label": "2.a Completion/Equipping of LGU Hospitals",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "infrastructure": 2873976000,
+        "medical_equipment": 2684570000,
+        "total": 5558546000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2684570000,
+        "total": 5558546000,
+        "infrastructure": 2873976000
+      },
+      "child_count": 18,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p882:r58",
+      "label": "2. LGU Hospitals",
+      "kind": "category_control",
+      "printed_amounts_php": {
+        "infrastructure": 2873976000,
+        "medical_equipment": 2684570000,
+        "total": 5558546000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2684570000,
+        "total": 5558546000,
+        "infrastructure": 2873976000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r42",
+      "label": "Metro Manila",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 740000000,
+        "total": 740000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 740000000,
+        "total": 740000000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r40",
+      "label": "NCR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 740000000,
+        "total": 740000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 740000000,
+        "total": 740000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r50",
+      "label": "Ilocos Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 50000000,
+        "total": 50000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 50000000,
+        "total": 50000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r53",
+      "label": "La Union",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 30000000,
+        "total": 30000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 30000000,
+        "total": 30000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r56",
+      "label": "Pangasinan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 50000000,
+        "total": 50000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 50000000,
+        "total": 50000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r48",
+      "label": "Region I",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 130000000,
+        "total": 130000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 130000000,
+        "total": 130000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r61",
+      "label": "Apayao",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r59",
+      "label": "CAR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r66",
+      "label": "Batanes",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r69",
+      "label": "Cagayan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 65000000,
+        "medical_equipment": 50000000,
+        "total": 115000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 65000000,
+        "medical_equipment": 50000000,
+        "total": 115000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r64",
+      "label": "Region II",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 65000000,
+        "medical_equipment": 60000000,
+        "total": 125000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 60000000,
+        "total": 125000000,
+        "infrastructure": 65000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r4",
+      "label": "Bataan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 90000000,
+        "total": 90000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 90000000,
+        "total": 90000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r8",
+      "label": "Bulacan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r11",
+      "label": "Nueva Ecija",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 60000000,
+        "total": 60000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 60000000,
+        "total": 60000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r15",
+      "label": "Pampanga",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 150000000,
+        "medical_equipment": 200000000,
+        "total": 350000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 150000000,
+        "medical_equipment": 200000000,
+        "total": 350000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r2",
+      "label": "Region III",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 240000000,
+        "medical_equipment": 270000000,
+        "total": 510000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 240000000,
+        "total": 510000000,
+        "medical_equipment": 270000000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r20",
+      "label": "Cavite",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 60000000,
+        "total": 60000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 60000000,
+        "total": 60000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r23",
+      "label": "Laguna",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 40000000,
+        "total": 40000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 40000000,
+        "total": 40000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r26",
+      "label": "Quezon",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 60000000,
+        "total": 60000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 60000000,
+        "total": 60000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r18",
+      "label": "CALABARZON",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 160000000,
+        "total": 160000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 160000000,
+        "total": 160000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r32",
+      "label": "Iloilo",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 40000000,
+        "medical_equipment": 20000000,
+        "total": 60000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 40000000,
+        "total": 60000000,
+        "medical_equipment": 20000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r30",
+      "label": "Region VI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 40000000,
+        "medical_equipment": 20000000,
+        "total": 60000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 40000000,
+        "total": 60000000,
+        "medical_equipment": 20000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r38",
+      "label": "Cebu",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 25000000,
+        "medical_equipment": 50000000,
+        "total": 75000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 50000000,
+        "total": 75000000,
+        "infrastructure": 25000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r36",
+      "label": "Region VII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 25000000,
+        "medical_equipment": 50000000,
+        "total": 75000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 50000000,
+        "total": 75000000,
+        "infrastructure": 25000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r44",
+      "label": "Samar",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 80000000,
+        "medical_equipment": 10000000,
+        "total": 90000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 80000000,
+        "medical_equipment": 10000000,
+        "total": 90000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r42",
+      "label": "Region VIII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 80000000,
+        "medical_equipment": 10000000,
+        "total": 90000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 80000000,
+        "medical_equipment": 10000000,
+        "total": 90000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r49",
+      "label": "Zamboanga del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 350000000,
+        "total": 350000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 350000000,
+        "total": 350000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r47",
+      "label": "Region IX",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 350000000,
+        "total": 350000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 350000000,
+        "total": 350000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r54",
+      "label": "Camiguin",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 90000000,
+        "medical_equipment": 59703000,
+        "total": 149703000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 90000000,
+        "medical_equipment": 59703000,
+        "total": 149703000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r57",
+      "label": "Lanao del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 50000000,
+        "total": 50000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 50000000,
+        "total": 50000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r60",
+      "label": "Misamis Occidental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 100000000,
+        "total": 100000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 100000000,
+        "total": 100000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r63",
+      "label": "Misamis Oriental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 160000000,
+        "medical_equipment": 20000000,
+        "total": 180000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 160000000,
+        "medical_equipment": 20000000,
+        "total": 180000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r52",
+      "label": "Region X",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 350000000,
+        "medical_equipment": 129703000,
+        "total": 479703000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 350000000,
+        "medical_equipment": 129703000,
+        "total": 479703000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r69",
+      "label": "Davao del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 20000000,
+        "total": 20000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 20000000,
+        "total": 20000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r2",
+      "label": "Davao Occidental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 50000000,
+        "medical_equipment": 25000000,
+        "total": 75000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 50000000,
+        "medical_equipment": 25000000,
+        "total": 75000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p889:r67",
+      "label": "Region XI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 70000000,
+        "medical_equipment": 25000000,
+        "total": 95000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 70000000,
+        "total": 95000000,
+        "medical_equipment": 25000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r7",
+      "label": "Maguindanao del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 55000000,
+        "total": 55000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 55000000,
+        "total": 55000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r11",
+      "label": "South Cotabato",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 130000000,
+        "total": 130000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 130000000,
+        "total": 130000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r5",
+      "label": "Region XII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 130000000,
+        "medical_equipment": 55000000,
+        "total": 185000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 55000000,
+        "total": 185000000,
+        "infrastructure": 130000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r16",
+      "label": "Surigao del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 50000000,
+        "total": 50000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 50000000,
+        "total": 50000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r19",
+      "label": "Surigao del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 37000000,
+        "total": 37000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 37000000,
+        "total": 37000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r14",
+      "label": "Region XIII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 87000000,
+        "total": 87000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 87000000,
+        "total": 87000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r24",
+      "label": "Basilan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "medical_equipment": 20000000,
+        "total": 35000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "medical_equipment": 20000000,
+        "total": 35000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r22",
+      "label": "BARMM",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "medical_equipment": 20000000,
+        "total": 35000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "medical_equipment": 20000000,
+        "total": 35000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r38",
+      "label": "3.a Completion/Equipping of DOH Hospitals",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "infrastructure": 2275000000,
+        "medical_equipment": 856703000,
+        "total": 3131703000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2275000000,
+        "total": 3131703000,
+        "medical_equipment": 856703000
+      },
+      "child_count": 15,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p888:r36",
+      "label": "3. DOH Hospitals",
+      "kind": "category_control",
+      "printed_amounts_php": {
+        "infrastructure": 2275000000,
+        "medical_equipment": 856703000,
+        "total": 3131703000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 2275000000,
+        "total": 3131703000,
+        "medical_equipment": 856703000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r33",
+      "label": "Camiguin",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 3400000,
+        "total": 3400000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 3400000,
+        "total": 3400000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r37",
+      "label": "Misamis Occidental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 1000000,
+        "total": 1000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 1000000,
+        "total": 1000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r31",
+      "label": "Region X",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 4400000,
+        "total": 4400000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 4400000,
+        "total": 4400000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r29",
+      "label": "4.a Completion of BUCAS",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "infrastructure": 4400000,
+        "total": 4400000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 4400000,
+        "total": 4400000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r27",
+      "label": "4. BUCAS",
+      "kind": "category_control",
+      "printed_amounts_php": {
+        "infrastructure": 4400000,
+        "total": 4400000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 4400000,
+        "total": 4400000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r46",
+      "label": "La Union",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 25000000,
+        "total": 25000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 25000000,
+        "total": 25000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r49",
+      "label": "Pangasinan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 13000000,
+        "total": 13000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 13000000,
+        "total": 13000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r44",
+      "label": "Region I",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 13000000,
+        "medical_equipment": 25000000,
+        "total": 38000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 25000000,
+        "total": 38000000,
+        "infrastructure": 13000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r54",
+      "label": "Mountain Province",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 4000000,
+        "total": 4000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 4000000,
+        "total": 4000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r52",
+      "label": "CAR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 4000000,
+        "total": 4000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 4000000,
+        "total": 4000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r59",
+      "label": "Isabela",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r57",
+      "label": "Region II",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r64",
+      "label": "Bataan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 50000000,
+        "total": 50000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 50000000,
+        "total": 50000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r67",
+      "label": "Nueva Ecija",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r62",
+      "label": "Region III",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 65000000,
+        "total": 65000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 65000000,
+        "total": 65000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r4",
+      "label": "Cavite",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 40000000,
+        "total": 40000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 40000000,
+        "total": 40000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r2",
+      "label": "CALABARZON",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 40000000,
+        "total": 40000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 40000000,
+        "total": 40000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r10",
+      "label": "Albay",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "medical_equipment": 5000000,
+        "total": 20000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "medical_equipment": 5000000,
+        "total": 20000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r13",
+      "label": "Camarines Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r8",
+      "label": "Region V",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 30000000,
+        "medical_equipment": 5000000,
+        "total": 35000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 30000000,
+        "medical_equipment": 5000000,
+        "total": 35000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r18",
+      "label": "Iloilo",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r16",
+      "label": "Region VI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r23",
+      "label": "Leyte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r21",
+      "label": "Region VIII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r28",
+      "label": "Zamboanga del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 5000000,
+        "total": 5000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 5000000,
+        "total": 5000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r26",
+      "label": "Region IX",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 5000000,
+        "total": 5000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 5000000,
+        "total": 5000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r33",
+      "label": "Bukidnon",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r36",
+      "label": "Misamis Oriental",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r31",
+      "label": "Region X",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 25000000,
+        "total": 25000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 25000000,
+        "total": 25000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r41",
+      "label": "Davao del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r39",
+      "label": "Region XI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r46",
+      "label": "Sarangani",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 2000000,
+        "total": 2000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2000000,
+        "total": 2000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r44",
+      "label": "Region XII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 2000000,
+        "total": 2000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2000000,
+        "total": 2000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r51",
+      "label": "Agusan del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 12000000,
+        "total": 12000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 12000000,
+        "total": 12000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r54",
+      "label": "Surigao del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r49",
+      "label": "Region XIII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 27000000,
+        "total": 27000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 27000000,
+        "total": 27000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r42",
+      "label": "5.a Completion/Equipping of DOH Drug Abuse Treatment and Rehabilitation Centers",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "infrastructure": 259000000,
+        "medical_equipment": 37000000,
+        "total": 296000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 37000000,
+        "total": 296000000,
+        "infrastructure": 259000000
+      },
+      "child_count": 13,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p890:r40",
+      "label": "5. Drug Abuse Treatment and Rehabilitation Centers",
+      "kind": "category_control",
+      "printed_amounts_php": {
+        "infrastructure": 259000000,
+        "medical_equipment": 37000000,
+        "total": 296000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 37000000,
+        "total": 296000000,
+        "infrastructure": 259000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r63",
+      "label": "Metro Manila",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 220000,
+        "total": 220000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 220000,
+        "total": 220000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r61",
+      "label": "NCR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 220000,
+        "total": 220000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 220000,
+        "total": 220000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r68",
+      "label": "Pampanga",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 180000,
+        "total": 180000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 180000,
+        "total": 180000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r66",
+      "label": "Region III",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 180000,
+        "total": 180000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 180000,
+        "total": 180000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r4",
+      "label": "Albay",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 110000,
+        "total": 110000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 110000,
+        "total": 110000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r2",
+      "label": "Region V",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 110000,
+        "total": 110000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 110000,
+        "total": 110000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r9",
+      "label": "Iloilo",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 160000,
+        "total": 160000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 160000,
+        "total": 160000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r7",
+      "label": "Region VI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 160000,
+        "total": 160000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 160000,
+        "total": 160000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r14",
+      "label": "Cebu",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 160000,
+        "total": 160000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 160000,
+        "total": 160000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r12",
+      "label": "Region VII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 160000,
+        "total": 160000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 160000,
+        "total": 160000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r19",
+      "label": "Zamboanga del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 110000,
+        "total": 110000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 110000,
+        "total": 110000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r17",
+      "label": "Region IX",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 110000,
+        "total": 110000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 110000,
+        "total": 110000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r24",
+      "label": "Davao del Sur",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 180000,
+        "total": 180000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 180000,
+        "total": 180000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r22",
+      "label": "Region XI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 180000,
+        "total": 180000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 180000,
+        "total": 180000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r59",
+      "label": "6.a Completion/Equipping of Bureau of Quarantine Facilities",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "medical_equipment": 1120000,
+        "total": 1120000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 1120000,
+        "total": 1120000
+      },
+      "child_count": 7,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p891:r57",
+      "label": "6. Bureau of Quarantine",
+      "kind": "category_control",
+      "printed_amounts_php": {
+        "medical_equipment": 1120000,
+        "total": 1120000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 1120000,
+        "total": 1120000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r33",
+      "label": "City of Cebu",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r31",
+      "label": "Region VII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r38",
+      "label": "Maguindanao del Norte",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r41",
+      "label": "South Cotabato",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 15000000,
+        "total": 15000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r36",
+      "label": "Region XII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 30000000,
+        "total": 30000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 30000000,
+        "total": 30000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r29",
+      "label": "7.a Blood Facilities",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "infrastructure": 45000000,
+        "total": 45000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 45000000,
+        "total": 45000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r48",
+      "label": "Isabela",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 20000000,
+        "total": 20000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 20000000,
+        "total": 20000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r46",
+      "label": "Region II",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 20000000,
+        "total": 20000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 20000000,
+        "total": 20000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r53",
+      "label": "City of Cagayan De Oro",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r51",
+      "label": "Region X",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 10000000,
+        "total": 10000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r58",
+      "label": "South Cotabato",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 40000000,
+        "total": 40000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 40000000,
+        "total": 40000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r56",
+      "label": "Region XII",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 40000000,
+        "total": 40000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 40000000,
+        "total": 40000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r44",
+      "label": "7.b Laboratories",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "infrastructure": 70000000,
+        "total": 70000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 70000000,
+        "total": 70000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r66",
+      "label": "Cagayan",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 6000000,
+        "total": 6000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 6000000,
+        "total": 6000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r64",
+      "label": "Region II",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 6000000,
+        "total": 6000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 6000000,
+        "total": 6000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r71",
+      "label": "Iloilo",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 26000000,
+        "medical_equipment": 25000000,
+        "total": 51000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 26000000,
+        "total": 51000000,
+        "medical_equipment": 25000000
+      },
+      "child_count": 3,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r69",
+      "label": "Region VI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 26000000,
+        "medical_equipment": 25000000,
+        "total": 51000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 26000000,
+        "total": 51000000,
+        "medical_equipment": 25000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r62",
+      "label": "7.c Dialysis Centers",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "infrastructure": 26000000,
+        "medical_equipment": 31000000,
+        "total": 57000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 31000000,
+        "total": 57000000,
+        "infrastructure": 26000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p893:r9",
+      "label": "Metro Manila",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "motor_vehicle": 130700000,
+        "total": 130700000
+      },
+      "recursive_children_sum_php": {
+        "motor_vehicle": 130700000,
+        "total": 130700000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "motor_vehicle": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p893:r7",
+      "label": "NCR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "motor_vehicle": 130700000,
+        "total": 130700000
+      },
+      "recursive_children_sum_php": {
+        "motor_vehicle": 130700000,
+        "total": 130700000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "motor_vehicle": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p893:r5",
+      "label": "7.d Central Office",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "motor_vehicle": 130700000,
+        "total": 130700000
+      },
+      "recursive_children_sum_php": {
+        "motor_vehicle": 130700000,
+        "total": 130700000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "motor_vehicle": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p892:r27",
+      "label": "7. Other Health Care Facilities",
+      "kind": "category_control",
+      "printed_amounts_php": {
+        "infrastructure": 141000000,
+        "medical_equipment": 31000000,
+        "motor_vehicle": 130700000,
+        "total": 302700000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 141000000,
+        "total": 302700000,
+        "medical_equipment": 31000000,
+        "motor_vehicle": 130700000
+      },
+      "child_count": 4,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "motor_vehicle": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p893:r18",
+      "label": "Metro Manila",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "medical_equipment": 2000000,
+        "total": 2000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2000000,
+        "total": 2000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p893:r16",
+      "label": "NCR",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "medical_equipment": 2000000,
+        "total": 2000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2000000,
+        "total": 2000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p893:r23",
+      "label": "City of Iloilo",
+      "kind": "province_control",
+      "printed_amounts_php": {
+        "infrastructure": 200000000,
+        "total": 200000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 200000000,
+        "total": 200000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p893:r21",
+      "label": "Region VI",
+      "kind": "region_control",
+      "printed_amounts_php": {
+        "infrastructure": 200000000,
+        "total": 200000000
+      },
+      "recursive_children_sum_php": {
+        "infrastructure": 200000000,
+        "total": 200000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p893:r14",
+      "label": "8.a Completion/Equipping of State Universities",
+      "kind": "subcategory_control",
+      "printed_amounts_php": {
+        "infrastructure": 200000000,
+        "medical_equipment": 2000000,
+        "total": 202000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2000000,
+        "total": 202000000,
+        "infrastructure": 200000000
+      },
+      "child_count": 2,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    },
+    {
+      "node_id": "ib:p893:r12",
+      "label": "8. State Universities",
+      "kind": "category_control",
+      "printed_amounts_php": {
+        "infrastructure": 200000000,
+        "medical_equipment": 2000000,
+        "total": 202000000
+      },
+      "recursive_children_sum_php": {
+        "medical_equipment": 2000000,
+        "total": 202000000,
+        "infrastructure": 200000000
+      },
+      "child_count": 1,
+      "differences_php": {
+        "infrastructure": 0,
+        "medical_equipment": 0,
+        "total": 0
+      },
+      "passed": true
+    }
+  ],
+  "agency_check": {
+    "label": "Health Facilities Enhancement Program",
+    "mooe_php": 67173000,
+    "capital_outlay_php": 10021659000,
+    "total_php": 10088832000,
+    "source": {
+      "source_pdf": "HB_BUDGET/1 - HB 10858 VOL IA.pdf",
+      "pdf_page": 1067,
+      "printed_page": 1057,
+      "token_bboxes": [
+        [
+          411.9163,
+          516.6409,
+          441.7987,
+          527.4216
+        ],
+        [
+          473.8801,
+          516.6409,
+          515.3484,
+          527.4216
+        ],
+        [
+          547.4012,
+          516.6409,
+          588.8694,
+          527.4216
+        ]
+      ]
+    },
+    "annex_capital_outlay_php": 10021659000,
+    "annex_vs_agency_capital_outlay_difference_php": 0,
+    "agency_mooe_plus_co_equals_total": true,
+    "note": "The I-A row shows the wider HFEP allocation: MOOE plus the annex's capital outlays. The annex total must match only the capital-outlay component.",
+    "passed": true
+  },
+  "repeated_facility_groups": [],
+  "source_evidence": {
+    "method": "native ruled bands, bold control rows, four amount columns",
+    "all_rows_individually_image_reviewed": false,
+    "comparison_ready": false
+  },
+  "reading_comparison": {
+    "method": "page.get_text() equality over PDF 877-893 of both I-B copies",
+    "identical_pages": 17,
+    "total_pages": 17,
+    "pages": [
+      {
+        "pdf_page": 877,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 878,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 879,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 880,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 881,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 882,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 883,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 884,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 885,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 886,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 887,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 888,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 889,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 890,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 891,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 892,
+        "native_text_identical": true
+      },
+      {
+        "pdf_page": 893,
+        "native_text_identical": true
+      }
+    ],
+    "note": "Textual identity does not authenticate the legislative stage of either supplied copy."
+  }
+}

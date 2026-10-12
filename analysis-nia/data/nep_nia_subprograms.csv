@@ -1,0 +1,7 @@
+sub_program,control_amount,project_count,project_sum,difference,tallies
+"National Irrigation System",4662231000,216,4662231000,0,True
+"Communal Irrigation System",1620000000,192,1620000000,0,True
+"Other Irrigation System",3000000000,13,3000000000,0,True
+"Establishment of Pump Irrigation",7915950000,330,7915950000,0,True
+"Special Irrigation",200000000,29,200000000,0,True
+"Extension/Expansion",200000000,11,200000000,0,True

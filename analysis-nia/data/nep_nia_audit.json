@@ -1,0 +1,96 @@
+{
+  "total_projects": 791,
+  "grand_total": 17598181000,
+  "control_total": 17598181000,
+  "sub_program_checks": {
+    "National Irrigation System": {
+      "project_count": 216,
+      "project_sum": 4662231000,
+      "control": 4662231000,
+      "difference": 0,
+      "tallies": true,
+      "coverage_pct": 100.0
+    },
+    "Communal Irrigation System": {
+      "project_count": 192,
+      "project_sum": 1620000000,
+      "control": 1620000000,
+      "difference": 0,
+      "tallies": true,
+      "coverage_pct": 100.0
+    },
+    "Other Irrigation System": {
+      "project_count": 13,
+      "project_sum": 3000000000,
+      "control": 3000000000,
+      "difference": 0,
+      "tallies": true,
+      "coverage_pct": 100.0
+    },
+    "Establishment of Pump Irrigation": {
+      "project_count": 330,
+      "project_sum": 7915950000,
+      "control": 7915950000,
+      "difference": 0,
+      "tallies": true,
+      "coverage_pct": 100.0
+    },
+    "Special Irrigation": {
+      "project_count": 29,
+      "project_sum": 200000000,
+      "control": 200000000,
+      "difference": 0,
+      "tallies": true,
+      "coverage_pct": 100.0
+    },
+    "Extension/Expansion": {
+      "project_count": 11,
+      "project_sum": 200000000,
+      "control": 200000000,
+      "difference": 0,
+      "tallies": true,
+      "coverage_pct": 100.0
+    }
+  },
+  "heading_crops": [
+    "verified_nep_nia_p1_restoration_nis_heading.png",
+    "verified_nep_nia_p9_cis_heading.png",
+    "verified_nep_nia_p16_other_heading.png",
+    "verified_nep_nia_p17_pump_heading.png",
+    "verified_nep_nia_p29_special_heading.png",
+    "verified_nep_nia_p30_extension_heading.png"
+  ],
+  "paddleocr_vl_crosscheck": {
+    "available": true,
+    "per_control": {
+      "National Irrigation System": {
+        "control": 4662231000,
+        "token_in_paddleocr": true
+      },
+      "Communal Irrigation System": {
+        "control": 1620000000,
+        "token_in_paddleocr": true
+      },
+      "Other Irrigation System": {
+        "control": 3000000000,
+        "token_in_paddleocr": true
+      },
+      "Establishment of Pump Irrigation": {
+        "control": 7915950000,
+        "token_in_paddleocr": true
+      },
+      "Special Irrigation": {
+        "control": 200000000,
+        "token_in_paddleocr": true
+      },
+      "Extension/Expansion": {
+        "control": 200000000,
+        "token_in_paddleocr": true
+      }
+    }
+  },
+  "checks": {
+    "all_sub_programs_tally": true,
+    "grand_total_tallies": true
+  }
+}

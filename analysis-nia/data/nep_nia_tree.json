@@ -1,0 +1,59 @@
+{
+  "root": {
+    "name": "NIA FY2027 Irrigation Programs (NEP)",
+    "pdf_file": "NIA.pdf",
+    "total_pages": 30,
+    "total_projects": 791,
+    "total_amount": 17598181000,
+    "children": {
+      "IRRIGATION SYSTEMS RESTORATION PROGRAM": {
+        "control_amount": 9282231000,
+        "project_amount": 9282231000,
+        "children": {
+          "National Irrigation System": {
+            "control_amount": 4662231000,
+            "project_count": 216,
+            "project_amount": 4662231000,
+            "difference": 0
+          },
+          "Communal Irrigation System": {
+            "control_amount": 1620000000,
+            "project_count": 192,
+            "project_amount": 1620000000,
+            "difference": 0
+          },
+          "Other Irrigation System": {
+            "control_amount": 3000000000,
+            "project_count": 13,
+            "project_amount": 3000000000,
+            "difference": 0
+          }
+        }
+      },
+      "IRRIGATION SYSTEMS DEVELOPMENT PROGRAM": {
+        "control_amount": 8315950000,
+        "project_amount": 8315950000,
+        "children": {
+          "Establishment of Pump Irrigation": {
+            "control_amount": 7915950000,
+            "project_count": 330,
+            "project_amount": 7915950000,
+            "difference": 0
+          },
+          "Special Irrigation": {
+            "control_amount": 200000000,
+            "project_count": 29,
+            "project_amount": 200000000,
+            "difference": 0
+          },
+          "Extension/Expansion": {
+            "control_amount": 200000000,
+            "project_count": 11,
+            "project_amount": 200000000,
+            "difference": 0
+          }
+        }
+      }
+    }
+  }
+}

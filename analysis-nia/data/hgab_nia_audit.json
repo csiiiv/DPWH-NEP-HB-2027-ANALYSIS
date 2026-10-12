@@ -1,0 +1,535 @@
+{
+  "metadata": {
+    "schema_version": 1,
+    "fiscal_year": 2027,
+    "currency": "PHP",
+    "source_unit": "pesos",
+    "unit_multiplier": 1,
+    "document": "HB 10858 General Appropriations Bill, local HB_BUDGET copy",
+    "legislative_stage": "not_independently_authenticated",
+    "scope": "NIA FY 2027 Irrigation Program detailed annex (printed 874-919); not the whole NIA appropriation of PHP 45,172,024,000 and not the agency's separately listed major locally-funded and foreign-assisted projects",
+    "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+    "source_sha256": "a82800c4cc2684566a37f7780d8f9131d2e7b2c97444d335d94df012dec065b6",
+    "source_pdf_pages": [
+      896,
+      941
+    ],
+    "source_printed_pages": [
+      874,
+      919
+    ],
+    "agency_control_pdf_pages": [
+      568,
+      570
+    ],
+    "extractor_sha256": "3f4ebe585ebb8c750ea86fe67bb6af9072fb5ca72542112ec685038c5e682dd0",
+    "pymupdf_version": "1.28.2",
+    "ids": "source-artifact-local page and layout row identifiers; not cross-document project identities"
+  },
+  "passed": true,
+  "errors": [],
+  "summary": {
+    "detail_pages": 46,
+    "source_table_rows": 835,
+    "row_role_counts": {
+      "subprogram_control": 6,
+      "project": 828,
+      "program_control": 1
+    },
+    "content_words_accounted_for": 12775,
+    "furniture_words_accounted_for": 554,
+    "nodes": 836,
+    "projects": 828,
+    "subprograms": 6,
+    "project_ledger_total_php": 17999305000,
+    "recursive_project_total_php": 17999305000,
+    "internal_control_checks": 6,
+    "failed_internal_controls": 0,
+    "agency_control_checks": 11,
+    "failed_agency_controls": 0,
+    "agency_only_carp_rows": 1,
+    "title_numeric_token_rows": 2
+  },
+  "rollup_checks": [
+    {
+      "node_id": "ib:p896:r1",
+      "label": "National Irrigation System Sub-Program",
+      "printed_amount_php": 5471255000,
+      "immediate_children_sum_php": 5471255000,
+      "recursive_project_sum_php": 5471255000,
+      "direct_difference_php": 0,
+      "recursive_difference_php": 0,
+      "project_count": 217,
+      "passed": true
+    },
+    {
+      "node_id": "ib:p908:r1",
+      "label": "Communal Irrigation System Sub-Program",
+      "printed_amount_php": 3243000000,
+      "immediate_children_sum_php": 3243000000,
+      "recursive_project_sum_php": 3243000000,
+      "direct_difference_php": 0,
+      "recursive_difference_php": 0,
+      "project_count": 215,
+      "passed": true
+    },
+    {
+      "node_id": "ib:p918:r18",
+      "label": "Other Irrigation System Sub-Program",
+      "printed_amount_php": 460000000,
+      "immediate_children_sum_php": 460000000,
+      "recursive_project_sum_php": 460000000,
+      "direct_difference_php": 0,
+      "recursive_difference_php": 0,
+      "project_count": 5,
+      "passed": true
+    },
+    {
+      "node_id": "ib:p919:r6",
+      "label": "Establishment of Pump Irrigation Sub-Program",
+      "printed_amount_php": 8466950000,
+      "immediate_children_sum_php": 8466950000,
+      "recursive_project_sum_php": 8466950000,
+      "direct_difference_php": 0,
+      "recursive_difference_php": 0,
+      "project_count": 354,
+      "passed": true
+    },
+    {
+      "node_id": "ib:p939:r1",
+      "label": "Special Irrigation Sub-Program",
+      "printed_amount_php": 158100000,
+      "immediate_children_sum_php": 158100000,
+      "recursive_project_sum_php": 158100000,
+      "direct_difference_php": 0,
+      "recursive_difference_php": 0,
+      "project_count": 26,
+      "passed": true
+    },
+    {
+      "node_id": "ib:p940:r8",
+      "label": "Extension/Expansion of Existing Irrigation System Sub-Program",
+      "printed_amount_php": 200000000,
+      "immediate_children_sum_php": 200000000,
+      "recursive_project_sum_php": 200000000,
+      "direct_difference_php": 0,
+      "recursive_difference_php": 0,
+      "project_count": 11,
+      "passed": true
+    }
+  ],
+  "agency_checks": [
+    {
+      "label": "IRRIGATION SYSTEMS RESTORATION PROGRAM",
+      "role": "agency_control",
+      "mooe_php": 9174255000,
+      "total_php": 9174255000,
+      "source": {
+        "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+        "pdf_page": 570,
+        "printed_page": 562,
+        "bbox": [
+          41.6795,
+          196.8361,
+          595.0994,
+          207.9508
+        ],
+        "mooe_token_bbox": [
+          393.3982,
+          197.1702,
+          431.5279,
+          207.9508
+        ],
+        "total_token_bbox": [
+          539.9113,
+          197.1702,
+          578.0409,
+          207.9508
+        ]
+      },
+      "annex_total_php": 9174255000,
+      "difference_php": 0,
+      "passed": true,
+      "note": "sum of the three annex sub-programs printed before the Development heading"
+    },
+    {
+      "label": "National Irrigation System Sub-program",
+      "role": "agency_control",
+      "mooe_php": 5471255000,
+      "total_php": 5471255000,
+      "source": {
+        "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+        "pdf_page": 570,
+        "printed_page": 562,
+        "bbox": [
+          41.6795,
+          219.7836,
+          595.0994,
+          230.8983
+        ],
+        "mooe_token_bbox": [
+          393.3982,
+          220.1178,
+          431.5279,
+          230.8983
+        ],
+        "total_token_bbox": [
+          539.9113,
+          220.1178,
+          578.0409,
+          230.8983
+        ]
+      },
+      "annex_total_php": 5471255000,
+      "difference_php": 0,
+      "passed": true,
+      "note": null
+    },
+    {
+      "label": "Communal Irrigation System Sub-program",
+      "role": "agency_control",
+      "mooe_php": 3243000000,
+      "total_php": 3243000000,
+      "source": {
+        "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+        "pdf_page": 570,
+        "printed_page": 562,
+        "bbox": [
+          41.6795,
+          242.7311,
+          595.0994,
+          253.846
+        ],
+        "mooe_token_bbox": [
+          393.3982,
+          243.0654,
+          431.5279,
+          253.846
+        ],
+        "total_token_bbox": [
+          539.9113,
+          243.0654,
+          578.0409,
+          253.846
+        ]
+      },
+      "annex_total_php": 3243000000,
+      "difference_php": 0,
+      "passed": true,
+      "note": null
+    },
+    {
+      "label": "Other Irrigation Systems Sub-program",
+      "role": "agency_control",
+      "mooe_php": 460000000,
+      "total_php": 460000000,
+      "source": {
+        "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+        "pdf_page": 570,
+        "printed_page": 562,
+        "bbox": [
+          41.6795,
+          265.6785,
+          595.0994,
+          276.7934
+        ],
+        "mooe_token_bbox": [
+          398.2996,
+          266.0128,
+          431.5198,
+          276.7934
+        ],
+        "total_token_bbox": [
+          544.8127,
+          266.0128,
+          578.0327,
+          276.7934
+        ]
+      },
+      "annex_total_php": 460000000,
+      "difference_php": 0,
+      "passed": true,
+      "note": null
+    },
+    {
+      "label": "IRRIGATION SYSTEMS DEVELOPMENT PROGRAM",
+      "role": "agency_control",
+      "mooe_php": 9523117000,
+      "total_php": 9523117000,
+      "source": {
+        "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+        "pdf_page": 570,
+        "printed_page": 562,
+        "bbox": [
+          41.6795,
+          288.626,
+          595.0994,
+          299.7409
+        ],
+        "mooe_token_bbox": [
+          393.3982,
+          288.9603,
+          431.5279,
+          299.7409
+        ],
+        "total_token_bbox": [
+          539.9113,
+          288.9603,
+          578.0409,
+          299.7409
+        ]
+      },
+      "annex_total_php": 8825050000,
+      "difference_php": 0,
+      "passed": true,
+      "note": "annex Development group plus the agency-only CARP row"
+    },
+    {
+      "label": "Establishment of Pump Irrigation Sub-Program",
+      "role": "agency_control",
+      "mooe_php": 8466950000,
+      "total_php": 8466950000,
+      "source": {
+        "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+        "pdf_page": 570,
+        "printed_page": 562,
+        "bbox": [
+          41.6795,
+          311.6014,
+          595.0994,
+          322.7162
+        ],
+        "mooe_token_bbox": [
+          393.3982,
+          311.9356,
+          431.5279,
+          322.7162
+        ],
+        "total_token_bbox": [
+          539.9113,
+          311.9356,
+          578.0409,
+          322.7162
+        ]
+      },
+      "annex_total_php": 8466950000,
+      "difference_php": 0,
+      "passed": true,
+      "note": null
+    },
+    {
+      "label": "Special Irrigation Sub-program",
+      "role": "agency_control",
+      "mooe_php": 158100000,
+      "total_php": 158100000,
+      "source": {
+        "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+        "pdf_page": 570,
+        "printed_page": 562,
+        "bbox": [
+          41.6795,
+          334.549,
+          595.0994,
+          345.6638
+        ],
+        "mooe_token_bbox": [
+          398.2996,
+          334.8831,
+          431.5198,
+          345.6638
+        ],
+        "total_token_bbox": [
+          544.8127,
+          334.8831,
+          578.0327,
+          345.6638
+        ]
+      },
+      "annex_total_php": 158100000,
+      "difference_php": 0,
+      "passed": true,
+      "note": null
+    },
+    {
+      "label": "Extension/Expansion of Existing Irrigation System Sub-program",
+      "role": "agency_control",
+      "mooe_php": 200000000,
+      "total_php": 200000000,
+      "source": {
+        "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+        "pdf_page": 570,
+        "printed_page": 562,
+        "bbox": [
+          41.6795,
+          368.9702,
+          595.0994,
+          380.085
+        ],
+        "mooe_token_bbox": [
+          398.2996,
+          369.3044,
+          431.5198,
+          380.085
+        ],
+        "total_token_bbox": [
+          544.8127,
+          369.3044,
+          578.0327,
+          380.085
+        ]
+      },
+      "annex_total_php": 200000000,
+      "difference_php": 0,
+      "passed": true,
+      "note": null
+    },
+    {
+      "label": "Other Irrigation Systems Sub-program",
+      "role": "agency_control",
+      "mooe_php": 698067000,
+      "total_php": 698067000,
+      "source": {
+        "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+        "pdf_page": 570,
+        "printed_page": 562,
+        "bbox": [
+          41.6795,
+          391.9178,
+          595.0994,
+          403.0325
+        ],
+        "mooe_token_bbox": [
+          398.2996,
+          392.2519,
+          431.5198,
+          403.0325
+        ],
+        "total_token_bbox": [
+          544.8127,
+          392.2519,
+          578.0327,
+          403.0325
+        ]
+      },
+      "annex_total_php": null,
+      "difference_php": null,
+      "passed": true,
+      "note": "agency-only scope: not printed as an annex sub-program; special provision 3 links this row to CARP"
+    },
+    {
+      "label": "Sub-total, Operations",
+      "role": "agency_control",
+      "mooe_php": 18697372000,
+      "total_php": 18697372000,
+      "source": {
+        "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+        "pdf_page": 570,
+        "printed_page": 562,
+        "bbox": [
+          41.6795,
+          414.8653,
+          595.0994,
+          425.9801
+        ],
+        "mooe_token_bbox": [
+          390.0563,
+          415.1995,
+          431.5247,
+          425.9801
+        ],
+        "total_token_bbox": [
+          536.5695,
+          415.1995,
+          578.0377,
+          425.9801
+        ]
+      },
+      "annex_total_php": 18697372000,
+      "difference_php": 0,
+      "passed": true,
+      "note": "annex programs plus the agency-only CARP Other Irrigation row"
+    },
+    {
+      "label": "TOTAL NEW APPROPRIATIONS",
+      "role": "agency_control",
+      "mooe_php": 45172024000,
+      "total_php": 45172024000,
+      "source": {
+        "source_pdf": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
+        "pdf_page": 568,
+        "printed_page": 560,
+        "bbox": [
+          41.6795,
+          308.8695,
+          595.0994,
+          320.8755
+        ],
+        "mooe_token_bbox": [
+          390.0563,
+          310.0948,
+          431.5247,
+          320.8755
+        ],
+        "total_token_bbox": [
+          536.5695,
+          310.0948,
+          578.0377,
+          320.8755
+        ]
+      },
+      "annex_total_php": null,
+      "difference_php": null,
+      "passed": true,
+      "note": "scope context: annex is not the whole NIA appropriation"
+    }
+  ],
+  "repeated_title_groups": [
+    {
+      "title": "TASMORIS (O'donnell Side): Construction of Canal Lining at Lateral B-1 and Concreting of Service Road at Lateral B in Brgy. Calingcuan",
+      "project_ids": [
+        "ib:p900:r3",
+        "ib:p900:r5"
+      ]
+    },
+    {
+      "title": "Balingasag RIS: Rehabilitation of Slope Protection, Right Downstream, Sta. 0+000 to 0+100",
+      "project_ids": [
+        "ib:p903:r10",
+        "ib:p903:r11"
+      ]
+    },
+    {
+      "title": "San Juan SPIP: Establishment of Solar-Powered Pump Irrigation Project with AI Monitoring System",
+      "project_ids": [
+        "ib:p920:r11",
+        "ib:p923:r13"
+      ]
+    },
+    {
+      "title": "Bakod Bayan SPIP: Establishment of Solar-Powered Pump Irrigation Project with AI Monitoring System",
+      "project_ids": [
+        "ib:p927:r3",
+        "ib:p927:r18"
+      ]
+    }
+  ],
+  "title_numeric_tokens": [
+    {
+      "row_id": "ib:p906:r15",
+      "tokens": [
+        "1,000"
+      ]
+    },
+    {
+      "row_id": "ib:p915:r17",
+      "tokens": [
+        "1,210"
+      ]
+    }
+  ],
+  "source_evidence": {
+    "method": "native words grouped by indent, bold headings, and a right-aligned amount column",
+    "all_rows_individually_image_reviewed": false,
+    "comparison_ready": false
+  }
+}
