@@ -1,313 +1,103 @@
-# React + Vite budget workbench
+# FMR React workbench
 
-The current SPA presentation for FY2027 DPWH **House GAB**, **DBM NEP**, and
-**DPWH Transparency NEP**. Source datasets and accounting stay in the Python
-workbench; the frontend does not certify candidate matches or repair amounts.
+On branch **FMR**, this app presents the retained FY2027 DA farm-to-market road
+annexes. Earlier DPWH modules remain in this directory; the entry point now uses
+`FmrApp.jsx` and loads only the FMR browser payload.
 
-[Hosted app](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/)
-· [Repository README](../../README.md)
-· [Analysis README](../README.md)
-· [Migration design](../docs/react_vite_migration.md)
+## Development and packaging
 
-## Development
-
-Use Node 22, matching Pages CI. Run from the repository root:
+From the repository root, using Node 22 and Python 3:
 
 ```sh
 npm ci --prefix analysis/web
 npm run dev --prefix analysis/web
 ```
 
-Open Vite's printed URL; pass `-- --port 5176 --strictPort` to select a port.
-The development middleware serves retained JSON, verification payloads, and PDF
-ranges from the checkout. No separate API process is needed. It does not fetch
-live Transparency data or regenerate source outputs.
-
-## Routes and components
-
-| Hash route | Workspace |
-|---|---|
-| `#home` | Workbench map, review-candidate headlines, and source status |
-| `#highlights` | Ten media angles with dedicated evidence dialogs, DPWH coverage, and HGAB3-versus-NEP validated candidate change tables |
-| `#compare` | Stage comparison |
-| `#analysis` | Headlines, insertions, deletions, adjustments, chainage amendments (all-data overview · peer ₱/km benchmark · revised-pair patterns + records), same-shell groupings, statistics |
-| `#house` | Third-reading native I-B totals and controls; reading and project-view toggles |
-| `#nep` | DBM NEP verification |
-| `#transparency` | Transparency NEP verification |
-| `#resources` | Direct links to the latest workable JSON and audit docs |
-| `#about` | Workbench overview, disclaimer, build model, and rendered project documentation |
-
-`#house-nep` (House / NEP detail) and `#nep-detail` (NEP detail) are legacy
-routes without header tabs; they stay reachable for old viewer-URL redirects.
-Their content is superseded by `#house?view=projects`, `#compare`, and `#nep`.
-
-Use `#nep?view=review` for the source queue, `node` for a verification entity ID,
-and `section` for an in-page destination. Unknown routes show a recovery link.
-
-- `main.jsx`, `routes.js`, `WorkbenchHeader.jsx`: shared shell, hash routing, and tabs.
-- `Comparison.jsx`, `model.js`: filters, full-result sorting, pagination, and PDF selection.
-- `SourceWorkspace.jsx`, `workspaces/`: scoped verification/detail controllers and selection callbacks. These preserve existing tools inside React-owned views; their internals are not all declarative React components.
-- `data.js`: data loading, asset URLs, and the source-document registry.
-- `PdfPreview.jsx`: shared lazy PDF.js viewer with page/fit/zoom controls and cancellation.
-- `vite.config.js`: relative asset base and development-only retained-file/range middleware.
-
-Comparison and House GAB/DBM NEP trees use the same embedded PDF component.
-House trees reference Volume I-B; House project comparisons reference I-C;
-DBM references use Volume II-B. Source page buttons open the pane. Nodes without
-page references clear it. The Transparency tree has no PDF mapping. Crop links
-and images are absent from the two migrated verification views; audit artifacts
-remain retained separately. PDF source anchors throughout the app open the
-shared PDF.js modal at their recorded file page, including Resources and links
-emitted by retained controllers. The modal keeps an explicit original-document
-download. Closing a PDF restores the underlying evidence dialog and focus;
-stacked dialogs share the page scroll lock. GitHub blob PDF references resolve
-to raw documents; external publishers can restrict browser access, which the
-viewer reports without substituting a different document.
-
-## Production package
+`predev` and `prebuild` run `other-analysis/build_fmr_workbench.py`. Vite's retained
+file middleware serves JSON, source PDFs with byte ranges, review images, and
+source documentation from the checkout.
 
 ```sh
 npm run build --prefix analysis/web
-python scripts/build_pages.py
+python scripts/build_fmr_pages.py
 python scripts/serve_pages.py --port 8000
 ```
 
-Vite emits `analysis/web/dist/`. Packaging emits `_site/`, including `/app/`,
-canonical JSON, retained PDFs, and compatibility redirects. The root and former
-viewer URLs route into the SPA. Open `http://127.0.0.1:8000/` to test the complete
-package. Both output directories are ignored by Git and rebuilt in CI.
+Open `http://127.0.0.1:8000/`. Use this complete package for previews with source
+evidence. Relative URLs also work under a GitHub Pages project prefix.
 
-`npm run preview --prefix analysis/web` serves only the Vite output; it does not
-run the development middleware or provide all sibling source assets. Use the
-packaged preview for end-to-end checks. Packaging requires the exact retained
-`dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf` and checks its canonical SHA-256.
+## Main tabs
 
-## Tests
+| Route | Content |
+|---|---|
+| `#home` | Source totals, budget difference, and workspace links |
+| `#highlights` | Coverage/change tables and findings with evidence dialogs |
+| `#compare` | Regional controls and project candidate comparisons |
+| `#analysis` | Overview, candidate rankings, adjustments, coordinates, allocation statistics |
+| `#house` | Supplied House GAB source tree, projects, coordinate review |
+| `#nep` | DBM NEP source tree, projects, coordinate review |
+
+Source pages accept `view=tree|projects|review`, `node`, `q`, `region`, `status`,
+and `category`. The tree sits above selected arithmetic/evidence; the selected
+PDF renders in a sticky desktop column and stacks below the workspace on mobile.
+Mobile has explicit results/evidence controls. Review categories overlap;
+previous/next navigation respects the region, category and search scope.
+
+Compare accepts `view=regions|projects`, `region`, `q`, `status`, `direction`,
+`method`, `coordinate`, `pair`, `sort`, `dir`, and `page`. Sorting covers the
+whole filtered ledger before 50-row pagination. Copying a link or reloading
+preserves the page and sorting. Filters reset pagination. CSV and JSON exports
+include every filtered row and retain source-local IDs, titles, exact amounts,
+and PDF provenance. Mobile uses labeled cards with its own sort control.
+
+Analysis accepts `stage=nep|house` and
+`view=overview|house_candidates|nep_candidates|adjustments|coordinates|stats`.
+`records=region:<key>|band:<index>|amount:<pesos>|all` opens a supporting source
+record dialog. Earlier `insertions`, `deletions`, `chainage`, and `statistics`
+view links resolve to their corresponding FMR views. Candidate populations stay
+provisional. Coordinates show endpoint-distance diagnostics, not construction
+cost/km: the source supplies no road chainage or constructed road length.
+
+Highlights accepts `story=<finding-id>` and story filters. Coverage and candidate
+funding-change tables appear first. Each of the eight findings opens its own
+fact panel, supporting records/controls, exports, PDF evidence and onward link.
+
+`readingNote` links the bounded House comparison: extracted text is identical on
+all 60 FMR annex pages (PDF 667–726) in the retained 2nd/3rd-reading copies. The
+app still uses the normalized working-copy ledger; it does not fabricate a
+separately extracted third-reading stage.
+
+Unknown routes and invalid evidence selections show recovery actions. PDF
+references use explicit FMR document metadata rather than the DPWH registry.
+
+## Reused and shared components
+
+- `WorkbenchHeader.jsx`: six FMR navigation items supplied by the entry point.
+- `SortableTable.jsx`: sorting over all filtered rows, with optional pagination.
+- `ShareLink.jsx`, `modalLifecycle.js`: shared links, native dialogs, focus restoration.
+- `PdfPreview.jsx`: lazy PDF.js viewer with page, fit, zoom, and original download.
+- `FmrApp.jsx`: the same source tree/evidence component for both FMR documents.
+- `fmrModel.js`: project filters, allocation statistics, comparison rows, and CSV exports.
+- `Fmr.css`, `styles.css`: FMR presentation and the existing workbench styles.
+
+## Validation
 
 ```sh
 npm test --prefix analysis/web
-npm run build --prefix analysis/web
-python scripts/build_pages.py
-node --test analysis/tests/test_static_navigation.cjs
-python scripts/check_react_pages.py
+node analysis/web/src/fmrSmoke.mjs
+python -m unittest discover -s other-analysis/tests -v
+python scripts/check_fmr_pages.py
 ```
 
-For browser checks, install Playwright and Chromium if Chrome is unavailable:
+The browser check runs after build and packaging and requires Python Playwright
+and Chrome/Chromium. It exercises all six tabs at mobile and desktop sizes, tree
+expansion, deep links, global sorting, pagination, CSV downloads, reviewed images,
+stacked dialogs, Highlight evidence, Analysis drill-downs, mobile overflow,
+route-backed comparison sorting/paging, JSON exports, and all four source/control
+PDFs with byte ranges. To test the development server directly, set
+`FMR_WORKBENCH_URL=http://127.0.0.1:5173/`. Screenshots are saved to
+`/tmp/fmr-ui-verification/`. The render smoke check exercises loaded data in all
+main views and common deep links, rather than rendering only the loading shell.
 
-```sh
-python -m pip install playwright==1.55.0
-python -m playwright install chromium
-```
-
-The browser suite mounts the package under a GitHub project prefix and exercises
-390px/1440px layouts, all routes, history, source review, expense scopes,
-full-result sorting, real PDF rendering/range requests, reference buttons, and
-absence of crop links. Set `REACT_WORKBENCH_URL` to test the running Vite server.
-The [Pages workflow](../../.github/workflows/pages.yml) also runs Python audit
-and freshness checks before deployment.
-
-## Current House data
-
-Native I-B supplies the full PS/MOOE/CO agency controls (₱654,102,015,000).
-Native I-C supplies MOOE+CO detail (₱639,179,718,000), including 15,972 named
-project leaves and 29 FAP totals. The operations comparison consumes 16,270
-allocation records totaling ₱586,941,661,000; office/region allocations and FAP
-project totals retain their own grain. These counts are not interchangeable.
-The [I-C audit](../docs/hb_native_ic_rollup_checks.md) records 2,686 balanced
-internal controls and 56 independent I-B checks. v5 is historical and is not
-loaded or packaged by the current app.
-
-After changing source artifacts or presentation templates, rebuild retained
-payloads before the Vite/package commands above:
-
-```sh
-python analysis/builders/build_current_pages.py
-python analysis/builders/build_stage_trace.py
-python scripts/validate_current_pages.py
-```
-
-## House reading comparison
-
-Both **PAP totals** and **Project records** show HGAB2 (second reading), HGAB3
-(third reading), and HGAB3-minus-HGAB2 beside Transparency and NEP. HGAB3 is the
-latest House reading; the former generic House column was HGAB2. All records are shown by default. **Match status** filters identity quality
-(`matched`, `matched_normalized`, `matched_chainage`, `matched_location`,
-`matched_soft`, `matched_scope`, `fuzzy`, `ambiguous`, `no_match`).
-**Flags** cover presence and coverage (`house_only`, `nep_only`,
-`nep_only_suggested`, amount up/down, Transparency gap / outside scope,
-grouping flags, and per-tag fuzzy title-difference queues). House
-reading change stays on HGAB2↔HGAB3 ledger differences. Share with
-`#compare?view=projects&match=fuzzy` or `&flag=house_only`.
-The operations increase is ₱134,000,000, offset by Support to Operations.
-Agency total is unchanged. Repeated House keys remain grouped; NEP/API candidate
-anchors retain their second-reading provenance. See
-[methods and checks](../docs/house_reading_comparison_checks.md).
-
-Rebuild `python analysis/builders/build_house_readings.py` alongside the other
-retained payload builders before packaging.
-
-## Project office filters
-
-The stage comparison and House/NEP detail view offer region and engineering
-office/DEO selectors. Office options narrow to the selected region; changing
-region clears the office selection. Filtering applies to the entire result
-before sorting and pagination. Source-labelled office names appear on each
-project row, including Central Office and regional offices where recorded.
-
-A record matches an office assigned by any displayed House, NEP or Transparency
-source. Suggested fuzzy counterparts do not establish office assignments.
-**No recorded office** selects records without an office in any displayed
-source; no office is inferred from a project's title or location. These filters
-use the shared native hierarchy fields and also support the third-reading
-artifacts. House/NEP detail retains the second reading; the main comparison
-shows both. Open `#compare?view=projects&change=reading_changed` for changes.
-
-## Open work
-
-The React PAP table includes 45 local controls and the separate FAP control. All 44 mapped non-FAP House PAP controls balance; one NEP PAP remains
-unmapped. DBM source checks, project identity, and amendment completeness remain
-open. The detailed comparison exposes local/FAP totals with zero House extraction
-gap. PDF
-box overlays, an accessible PDF text layer, saved review decisions, and further
-declarative component conversion remain future work.
-
-PAP totals include a separate FAP control, so local PAPs plus FAP reconcile
-to operations. FAP has no Transparency comparison amount because it is
-outside that listing scope. Both House reading PAP controls retain FAP.
-
-Source page links name the reading and volume. House hierarchy links use I-B;
-PAP/project comparisons use I-C. NEP references use the retained II-B OCR PDF.
-See [source page reference checks](../docs/source_page_reference_checks.md).
-
-House project browsing: `#house?view=projects&reading=third` and
-`#house?view=projects&reading=second` show the native I-C hierarchies separately
-from the I-B controls. `#nep?view=projects` filters the NEP tree to project line
-items. Project search accepts reordered words and punctuation variations;
-`Barangays 34–35` can match `Barangay 34 and 35`. Parent paths and source PDF
-previews remain available in each view.
-
-The House workspace defaults to third reading. `#house?view=controls&reading=second`
-opens second-reading I-B controls. The reading controls preserve the selected
-I-B/I-C view; the view controls preserve the selected reading. Both I-B views
-include PS, MOOE and CO, while I-C project totals exclude PS. The changes link
-opens the existing second-to-third-reading comparison.
-
-Searches, filters, sort order and pagination now have shareable hash URLs.
-Use **Copy link** on comparison and source workspaces. Opening a link restores
-its settings after loading the retained data. See
-[shareable findings](../docs/shareable_findings.md) for route parameters and examples.
-
-Project titles in the comparison expand full source-tree paths inline. Source
-buttons select HGAB3/HGAB2/NEP/Transparency; ancestor links open the corresponding
-hierarchy node. Repeated House records retain separate member paths. Expanded
-records and selected sources are included in shared URLs.
-
-Project records offer **Region matching → Allow different regions · flag
-candidates**. Strict region matching remains the default. Since the retained
-Central Office/region echo wrappers attribute every FAP loan, the optional
-mode currently merges nothing — all former region-difference pairs now match
-strictly — but it remains available for future documents whose listings
-genuinely carry different regions; it labels both source assignments and
-preserves duplicate records, source assignments, tree paths and totals.
-Use `#compare?view=projects&q=4432-PHI` to share a strict-matched finding.
-
-Project records offer **Show analytics** for the entire applied search/filter
-result, including all pages. The modal leads with HGAB3 and NEP source totals,
-charts House (HGAB3) and DBM NEP amounts side by side per recorded region and
-office, and counts House changes, candidate statuses and overlapping review
-flags. Missing source amounts remain unavailable. Reading-only entries and provisional
-matches do not certify policy insertions; review flags do not establish fraud.
-After packaging, run `python3 scripts/check_project_analytics.py` to check
-mobile/desktop modal scope, source switching, closing and focus restoration.
-
-Comparison results use the full workspace until a PDF source opens. Source scopes
-and canonical downloads are collapsible; advanced filters, active chips and
-filtered CSV/JSON exports sit beside the results. Mobile rows use labeled amount
-cards with a sorting control. Search and program selections persist across tabs.
-
-`buildComparisonData.mjs` generates a small PAP overview and lazy project payload
-from the retained inputs before development/build and during site packaging.
-Input hashes prevent mixing builds; unit checks compare compact source amounts,
-identities, assignments, page evidence and grouped records with the full ledger.
-Pages and heroes frame each workspace; Analysis subtabs open with headline
-cards, and PDF source anchors throughout the app (including Highlights
-dialogs and Resources) open the shared PDF.js modal at the recorded file page.
-
-After packaging, `python3 scripts/check_comparison_workspace.py` checks lazy
-loading, desktop/mobile layouts, preserved filters, exact filtered exports and
-the analytics modal under the GitHub Pages project prefix.
-
-The main **Analysis** route (`#analysis`) loads build-time headline summaries from
-`comparison_overview_2027.json`, without fetching the full project payload on
-Overview/Insertions. It reports office categories and mutually exclusive program
-buckets per source, counting grouped allocation members once. FAP is a funding
-bucket across programs. Overview includes a **NEP → HGAB by region / office / category / PAP**
-table (House−NEP amount and percent). Under each region/office/PAP group name,
-**Show by …** disclosure buttons open a nested breakdown that conserves the
-parent’s record and allocation totals (regions/offices → PAPs; PAPs → regions
-or district offices); the nested drill is itself shareable (`drill=` + `axis=`).
-House-only rankings separate records without NEP suggestions, unresolved
-suggestions and third-reading-only records. The **Deletions** subtab mirrors that
-layout for NEP-only rows (no House record), split into no suggestion, possible
-replacements (House rows name this NEP item as a counterpart), and HGAB2-only.
-The **Adjustments** subtab shows cross-document House-vs-NEP differences on
-paired candidate rows by dimension, followed by the smaller HGAB2→HGAB3
-reading ledger. **Chainage** splits into scope × stage views (all-data
-overview/benchmark versus revised-pair patterns/records) with modus
-classifications and a peer ₱/km benchmark. **Groupings** renders the
-same-shell sidecar with region rollups and shareable member modals; **Statistics**
-covers rounding, Benford and value clustering. Ranked group drill-downs
-deep-link into Compare with the matching flag filter, and `table=` deep links
-scroll to a specific table. Source and ranking selections are shareable as
-`#analysis?source=third&ranking=no_suggestion` and
-`#analysis?view=deletions&ranking=suggested`.
-## Highlights workspace
-
-The **Highlights** navigation tab (`#highlights`) presents ten media angles
-with investigative prompts and two tables: DPWH operations coverage across
-NEP/HGAB2/HGAB3, and HGAB3-versus-NEP candidate changes. The supplied
-multi-agency layout is retained; DA, NIA and DOH display **Not covered**, and
-the total row explicitly covers DPWH only.
-
-`buildComparisonData.mjs` generates `overview.highlights` from the unified
-comparison, source distributions, same-shell groupings and chainage units.
-The overview and detail input hashes include both supplementary inputs.
-Counts represent source allocation records, with grouped members counted
-once. The four change columns count **validated candidates only**:
-unpaired rows with a plausible-but-unverified counterpart — House rows with
-retained NEP suggestions, and NEP-only rows that unmatched House rows name
-as possible re-titled replacements — are held out of the columns and the
-reconciliation (389 insertion rows worth ₱10.52B and 273 deletion rows worth
-₱8.08B on current data). The full buckets (validated + held) still reconcile
-exactly to the printed operations delta of ₱14.15B; the validated subset
-reconciles to ₱11.71B. A traceability table and bridge disclose the held
-rows, and the coverage note names the overhead controls (GAS + Support to
-Operations) that sit above the operations tables in both sources. The table
-does not certify policy amendments. The grouping story uses HGAB2, while the
-change table uses HGAB3.
-
-Each story opens a dedicated evidence dialog through its shareable
-`#highlights?story=…` URL. The dialogs have subject-specific hero figures,
-source controls, distributions, full allocation lists where relevant,
-search/sorting before pagination, exact-peso CSV exports and PDF references.
-Groups open member allocations in a separate modal; regions open their PAP
-changes in a separate modal. Neither view preselects a row or adds details
-below the parent table. Each detail modal has its own title and hero figures,
-and Back to highlight or Escape returns to the original row with focus restored.
-PDF references can open a viewer above the detail modal.
-Escape, Close and browser Back dismiss dialogs, restoring page scrolling.
-The removed Transparency listing-gap story remains available in Compare.
-The tenth story covers Rainwater Collector System office allocations:
-₱1,027,200,000 unchanged across all three stages, with 199 allocations of
-₱4.2M, 17 of ₱9M and one BARMM allocation of ₱38.4M. The modal shows printed
-PAP controls, repeated amount bands, regional distribution and all 217 office
-records with references for every stage. These are allocations, not counts of
-systems; site lists, capacities and cost assumptions remain investigative
-questions rather than inferred project facts.
-
-The page initially loads only the overview payload. Opening a dialog lazily
-loads `highlights_details_2027.json`, a compact shared evidence pool generated
-alongside the overview; input hashes must match. The pool is cached across
-dialogs and does not require loading the full comparison project payload.
-Run `python scripts/check_highlights_page.py` after packaging to verify it
-under a project prefix at desktop and mobile widths.
+See [FMR workbench guide](../../other-analysis/FMR_WORKBENCH.md) for source and
+matching limitations. This branch has no separately published site.

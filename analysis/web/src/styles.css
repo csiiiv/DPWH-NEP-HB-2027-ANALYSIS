@@ -49,6 +49,16 @@ button:disabled {
 header.shell {
   padding-bottom: 0;
 }
+/* Workspace selector above the tab row: labels the active dataset so shared
+   tabs never read as the same budget. */
+.workspace-tabs {
+  padding: 10px 0 8px;
+}
+.workspace-tabs a {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
 nav {
   display: flex;
   flex-wrap: wrap;

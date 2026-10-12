@@ -1,5 +1,5 @@
 import React,{lazy,Suspense,useEffect,useState} from 'react';
-import {loadData,sourceReference} from './data.js';
+import {loadData,siteUrl,sourceReference} from './data.js';
 import {amount} from './model.js';
 import {routeHref} from './routes.js';
 import {regionName} from './regionNames.js';
@@ -16,10 +16,11 @@ const percent=(value,base)=>base?`${(100*value/base).toFixed(1)}%`:'unavailable'
 const compare=params=>routeHref('compare',{view:'projects',region_match:'ignore',...params});
 const agencies=['DPWH','DA Farm to Market Roads','NIA Irrigation','DOH Health Facilities','Total · DPWH coverage only'];
 const exact=value=>`${number(value)} PHP`;
+const fmrHref=(key='',params={})=>routeHref(key,params,'fmr');
 
-function AllocationCell({value,change=false,href}){
+function AllocationCell({value,change=false,href,note}){
  if(!value)return <span className="highlights-unavailable">Not covered</span>;
- const content=<><strong>{number(value.records)} allocation records</strong><span title={exact(value.amount_php)}>{change?'Change of ':'Worth '}{amount(value.amount_php)}</span></>;
+ const content=<><strong>{number(value.records)} allocation records</strong><span title={exact(value.amount_php)}>{change?'Change of ':'Worth '}{amount(value.amount_php)}</span>{note&&<small className="highlights-cell-note">{note}</small>}</>;
  return href?<a className="highlights-cell-link" href={href}>{content}</a>:<div className="highlights-cell-value">{content}</div>;
 }
 

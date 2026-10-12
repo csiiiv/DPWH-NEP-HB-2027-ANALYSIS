@@ -1,0 +1,5 @@
+project_id,layer,point_id,kind,repair,coordinates,verdict,where,title_barangay_match,note
+ib:p689:r18,hgab,ib:p689:r18:point1,printed,,"[120.396365, 15.713972]",AGREE,"Camiling, Tarlac / Brgy. Sinulatan 1st",,
+ib:p723:r3,hgab,ib:p723:r3:point1,printed,,"[124.8880754, 7.005288]",PARTIAL,"M'Lang, Cotabato / Brgy. Dalipe",,
+ib:p723:r3,hgab,ib:p723:r3:point2,printed,,"[124.8790839, 7.0053251]",PARTIAL,"M'Lang, Cotabato / Brgy. Dalipe",,
+ib:p723:r3,hgab,ib:p723:r3:point1,candidate_repair,printed 7:005288 -> 7.005288 (existing candidate),"[124.8880754, 7.005288]",PARTIAL,"M'Lang, Cotabato / Brgy. Dalipe",False,

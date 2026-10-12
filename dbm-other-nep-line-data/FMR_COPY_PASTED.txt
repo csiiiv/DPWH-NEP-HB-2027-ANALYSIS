@@ -1,0 +1,68 @@
+DEPARTMENTOF AGRICULTURE
+LOCALLY-FUNDEDPROJECTS
+FARM-TO-MARKETROADS
+NAMEOFPROJECTS AMOUNTIN
+PESOS
+REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN
+DESIGNATED KEY PRODUCTION AREAS
+16,000,000,000
+Region I - ILOCOS 1,630,000,000
+Construction of Sitio Rango, Brgy. Tubburan FMR, Brgy. Tubburan, Bacarra, Ilocos Norte
+START: 18.284622, 120.625421
+END: 18.287494, 120.628232
+15,000,000
+Construction of San Lorenzo FMR, Brgy. San Lorenzo, Bangui, Ilocos Norte
+START: 18.328793, 120.620162
+END: 18.313030, 120.643061
+15,000,000
+Construction of Brgy. Escoda - Brgy. Elizabeth FMR, Brgy. Escoda and Brgy. Elizabeth, Marcos,
+Ilocos Norte
+START: 17.00918,120.7245783
+END: 17.9980347,120.732015
+30,000,000
+Construction of Brgy. Zapat-Brgy. Baracbac FMR,Brgy. Zapat andBrgy. Baracbac,Sinait,
+Tiocos Sur
+START: 17.827154,120.480996
+END: 17.822475, 120.4835533
+15,000,000
+Construction of Brgy. Darao - Brgy. Cacandungan FMR,Brgy. Darao and Brgy. Cacandungan,
+San Juan, Ilocos Sur
+START: 17.7394692,120.4776663
+END: 17.74321,120.48857733
+15,000,000
+Construction of Sitio Guayen, Brgy. Poblacion FMR, Brgy. Poblacion, Suyo, Ilocos Sur
+START: 16.9757946, 120.5022113
+END: 16.973898, 120.497236
+30,000,000
+Construction of Sitio Sao, Brgy. Daking FMR, Brgy. Daking, San Gabriel, La Union
+"ISTART: 16.690215,120.283898
+END: 16.686410,120.478915
+15,000,000
+Construction of Sitio Dayegdeg, Brgy. Lon-oy FMR, Brgy. Lon-oy, San Gabriel, La Union
+START: 16.690762,120.50409
+END: 16.69485,120.502863
+15,000,000
+Construction of Sitio Sinabugan to Sitio Centro, Brgy. Tio-angan FMR, Brgy. Tio-angan,
+Bagulin, La Union
+START: 16.609478, 120.469497
+END: 16.604472, 120.468306
+15,000,000
+Construction of Brgy. Alibangsay FMR, Brgy. Alibangsay, Bagulin, La Union
+START: 16.607014, 120.505772
+END: 16.603856, 120.508889
+15,000,000
+Construction of Brgy. Bahog Norte FMR, Brgy. Banog Norte, Bani, Pangasinan
+START: 16.189049,119.898014
+END: 16.208783,119.907145
+30,000,000
+Construction of Brgy. Gueteb FMR, Brgy. Gueteb, Urbiztondo, Pangasinan
+START: 15.846369, 120.353982
+END: 15.846547, 120.346926
+15,000,000
+Construction of Brgy. Buenlag FMR, Brgy. Buenlag, Mangatarem, Pangasinan
+START: 15.8047319, 120.2548345 : END: 15.8050199, 120.2610412
+15,000,000
+Construction of Brgy. Tobor FMR, Brgy. Tobor, Malasiqui, Pangasinan
+START: 15.879305, 120.522945
+END: 15.887629, 120.519110
+15,000,000

@@ -38,6 +38,9 @@ function retainedFiles() {
           return;
         }
         const routes = [
+          ["/other-analysis/", [root + "/other-analysis"]],
+          ["/dbm-other-nep-line-data/", [root + "/dbm-other-nep-line-data"]],
+          ["/dbm-nep-data/", [root + "/dbm-nep-data"]],
           [
             "/analysis/",
             [
@@ -76,6 +79,9 @@ function retainedFiles() {
             ".js": "application/javascript",
             ".mjs": "application/javascript",
             ".webp": "image/webp",
+            ".png": "image/png",
+            ".md": "text/plain; charset=utf-8",
+            ".csv": "text/csv; charset=utf-8",
           }[path.extname(file)] || "application/octet-stream",
         );
         res.setHeader("Accept-Ranges", "bytes");

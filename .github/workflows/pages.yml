@@ -5,8 +5,11 @@ on:
     branches: [main]
     paths:
       - 'analysis/**'
+      - 'other-analysis/**'
       - 'site/**'
       - 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
+      - 'dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf'
+      - 'dbm-other-nep-line-data/FMR.pdf'
       - 'scripts/**'
       - 'dpwh-transparency-nep-data/**'
       - 'HB_BUDGET/*.pdf'
@@ -15,8 +18,11 @@ on:
   pull_request:
     paths:
       - 'analysis/**'
+      - 'other-analysis/**'
       - 'site/**'
       - 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
+      - 'dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf'
+      - 'dbm-other-nep-line-data/FMR.pdf'
       - 'scripts/**'
       - 'dpwh-transparency-nep-data/**'
       - 'HB_BUDGET/*.pdf'
@@ -41,7 +47,7 @@ jobs:
           python-version: '3.12'
       - name: Check native House extraction and source-title regressions
         run: |
-          python3 -m pip install PyMuPDF==1.28.2
+          python3 -m pip install PyMuPDF==1.28.2 numpy==2.1.0 opencv-python-headless==4.10.0.84
           python3 scripts/hb_native_ic_rollup.py --check
           python3 scripts/hb_native_ic_rollup.py --check --pdf "HB_BUDGET_3rd_reading/3- HB 10858 FOR 3RD READING VOL I-C .pdf" --ib-rollup analysis/data/hb_dpwh_native_rollup_3rd_reading.json --out analysis/data/hb_dpwh_native_ic_projects_3rd_reading.json --report analysis/data/hb_dpwh_native_ic_rollup_audit_3rd_reading.json
           python3 -m unittest scripts.tests.test_hb_native_ic_rollup scripts.tests.test_hb_native_rollup -v
@@ -60,6 +66,14 @@ jobs:
           python3 -m unittest discover -s analysis/tests -p test_stage_trace.py -v
           python3 -m unittest discover -s analysis/tests -p test_static_pages.py -v
           python3 -m unittest discover -s analysis/tests -p test_pdf_range_server.py -v
+      - name: Check FMR extraction, normalization and matching
+        run: |
+          python3 -m unittest discover -s other-analysis/tests -v
+          python3 other-analysis/extract_hgab_fmr.py --check
+          python3 other-analysis/normalize_hgab_fmr_coordinates.py --check
+          python3 other-analysis/extract_nep_fmr.py --check
+          python3 other-analysis/normalize_nep_fmr_coordinates.py --check --render-review-images
+          python3 other-analysis/build_fmr_workbench.py --check
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -71,7 +85,7 @@ jobs:
           npm ci
           npm test
           npm run build
-      - name: Package SPA, source data and compatibility routes
+      - name: Package SPA, DPWH and FMR sources
         run: python3 scripts/build_pages.py --with-react
       - name: Check React navigation, sorting and real PDF range rendering
         run: |
@@ -82,6 +96,7 @@ jobs:
           python3 scripts/check_react_pages.py
           python3 scripts/check_comparison_workspace.py
           python3 scripts/check_analysis_page.py
+          python3 scripts/check_fmr_pages.py
       - name: Check root and historical route redirects under project base
         run: node --test analysis/tests/test_static_navigation.cjs
       - name: Configure Pages

@@ -1,0 +1,245 @@
+id,region,title,amount_php,coordinates_raw,coordinate_status,coordinate_review_flags,source_pdf,pdf_page,printed_page,table_row,parent_id,path
+ib:p667:r9,REGION I - ILOCOS,"Construction of Sitio Dayegdeg, Brgy. Lon-oy FMR, Brgy. Lon-oy, San Gabriel, La Union",15000000,"START: 16.690762, 120.50409
+END: 16.69485 120.502863",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,667,651,9,ib:p667:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION I - ILOCOS → Construction of Sitio Dayegdeg, Brgy. Lon-oy FMR, Brgy. Lon-oy, San Gabriel, La Union"
+ib:p669:r17,REGION I - ILOCOS,"Construction of Brgy. 1 San Lorenzo FMR, Laoag City, Ilocos Norte",10000000,"START: 120.58051, 18.20349
+END: 120.58199, 18.20462",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,669,653,17,ib:p667:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION I - ILOCOS → Construction of Brgy. 1 San Lorenzo FMR, Laoag City, Ilocos Norte"
+ib:p669:r18,REGION I - ILOCOS,"Construction of Brgy. 25 Santa Cayetana FMR, Laoag City, Ilocos Norte",10000000,"START: 120.603758, 18.191183
+END: 120.602979, 18.189186",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,669,653,18,ib:p667:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION I - ILOCOS → Construction of Brgy. 25 Santa Cayetana FMR, Laoag City, Ilocos Norte"
+ib:p670:r2,REGION I - ILOCOS,"Construction of Brgy. 27 FMR, Laoag City, Ilocos Norte",10000000,"START: Section 1: 120.605466, 18.187746,
+Section 2: 120.607603, 18.195734
+END: Section 1: 120.605367, 18.186354,
+Section 2: 120.609355, 18.194385",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,670,654,2,ib:p667:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION I - ILOCOS → Construction of Brgy. 27 FMR, Laoag City, Ilocos Norte"
+ib:p670:r3,REGION I - ILOCOS,"Construction of Brgy. 40 Balatong FMR, Laoag City, Ilocos Norte",10000000,"START: 120.573241, 18.169507
+END: 120.56871, 18.17286",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,670,654,3,ib:p667:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION I - ILOCOS → Construction of Brgy. 40 Balatong FMR, Laoag City, Ilocos Norte"
+ib:p670:r4,REGION I - ILOCOS,"Construction of Brgy. 41 Balacad FMR, Laoag City, Ilocos Norte",10000000,"START: 120.540087, 18.152453
+END: 120.153581, 120.53601",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,670,654,4,ib:p667:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION I - ILOCOS → Construction of Brgy. 41 Balacad FMR, Laoag City, Ilocos Norte"
+ib:p670:r6,REGION I - ILOCOS,"Construction of Brgy. 30-B Santa Maria FMR, Laoag City, Ilocos Norte",20000000,"START: 120.573425, 18.209478
+END: 120.570290, 18.208550",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,670,654,6,ib:p667:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION I - ILOCOS → Construction of Brgy. 30-B Santa Maria FMR, Laoag City, Ilocos Norte"
+ib:p670:r14,REGION I - ILOCOS,"Construction of Brgy. 49-B Raraburan FMR, Laoag City, Ilocos Norte",5000000,"START: 120.582357, 18.176329
+END: 120.57644, 18.177000",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,670,654,14,ib:p667:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION I - ILOCOS → Construction of Brgy. 49-B Raraburan FMR, Laoag City, Ilocos Norte"
+ib:p672:r7,REGION I - ILOCOS,"Concreting of Sitio Bigat Road, Brgy. Awile FMR, Brgy. Awile, Anda, Pangasinan",15000000,"START: 16. 259313, 119.971428
+END: 16.261663, 119.96178",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,672,656,7,ib:p667:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION I - ILOCOS → Concreting of Sitio Bigat Road, Brgy. Awile FMR, Brgy. Awile, Anda, Pangasinan"
+ib:p673:r17,CORDILLERA ADMINISTRATIVE REGION (CAR),"Construction of NRJ, Bana-ao-Besocol-Oleg-Aki FMR, Kabayan, Benguet",106000000,"START: 16.676675N, 120.832020E
+END: 16. 676282N, 120.870986E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,673,657,17,ib:p672:r18,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → CORDILLERA ADMINISTRATIVE REGION (CAR) → Construction of NRJ, Bana-ao-Besocol-Oleg-Aki FMR, Kabayan, Benguet"
+ib:p677:r10,REGION II - CAGAYAN VALLEY,"Construction of Brgy. Villa Teresita FMR, Brgy. Villa Teresita, San Guillermo, Isabela",30000000,"START: (1) 16.7598517, 121.8570901,
+(2) 16.7548787, 121.8595580
+END: (1) 16.7603738, 121.8674364,
+(2) 16.7509336, 121.8661148",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,677,661,10,ib:p674:r6,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION II - CAGAYAN VALLEY → Construction of Brgy. Villa Teresita FMR, Brgy. Villa Teresita, San Guillermo, Isabela"
+ib:p677:r14,REGION II - CAGAYAN VALLEY,"Construction of Brgy. Gappal FMR 3, Brgy. Gappal, Cauayan City, Isabela",15000000,"START: (1) 16.838767, 121.819837,
+(2) 16.839367, 121.818317
+END: (1) 16.839646, 121.815839,
+(2) 16.844298, 121.818599",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,677,661,14,ib:p674:r6,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION II - CAGAYAN VALLEY → Construction of Brgy. Gappal FMR 3, Brgy. Gappal, Cauayan City, Isabela"
+ib:p678:r2,REGION II - CAGAYAN VALLEY,"Construction of Brgy. Manaoag FMR 2, Brgy. Manaoag, Cauayan City, Isabela",18000000,"START: (1) 16.820358, 121.835449,
+(2) 16.819428, 121.839956
+END: (1) 16.816004, 121.839421,
+(2) 16.819006, 121.842496",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,678,662,2,ib:p674:r6,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION II - CAGAYAN VALLEY → Construction of Brgy. Manaoag FMR 2, Brgy. Manaoag, Cauayan City, Isabela"
+ib:p678:r3,REGION II - CAGAYAN VALLEY,"Construction of Brgy. Nagrumbuan FMR 1, Brgy. Nagrumbuan, Cauayan City, Isabela",27000000,"START: (1) 16.898689, 121.703517,
+(2) 16.898692, 121.703649
+END: (1) 16.895275, 121.691734,
+(2) 16.902095, 121.706454",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,678,662,3,ib:p674:r6,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION II - CAGAYAN VALLEY → Construction of Brgy. Nagrumbuan FMR 1, Brgy. Nagrumbuan, Cauayan City, Isabela"
+ib:p678:r4,REGION II - CAGAYAN VALLEY,"Construction of Brgy. Sta. Maria to Villa Concepcion FMR, Brgy. Sta. Maria, Cauayan City, Isabela",22500000,"START: (1) 16.850671, 121.910944,
+(2) 16.847303, 121.928037
+END: (1) 16.851051, 121.917758,
+(2) 16.842231, 121.930214",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,678,662,4,ib:p674:r6,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION II - CAGAYAN VALLEY → Construction of Brgy. Sta. Maria to Villa Concepcion FMR, Brgy. Sta. Maria, Cauayan City, Isabela"
+ib:p678:r10,REGION II - CAGAYAN VALLEY,"Construction of Nursery, P7, Brgy. Sto. Niño FMR, Brgy. Sto. Niño, San Agustin, Isabela",39000000,"START (SEC 1): 16.464822, 121.783702
+START (SEC 2): 16.467103, 121.809653
+END (SEC 1): 16.466869, 121.805868
+END (SEC 2): 16.468489, 121.810549",needs_review,endpoint_count_or_section_structure_needs_review | section_specific_endpoints,HB_BUDGET/2 - HB 10858 VOL IB.pdf,678,662,10,ib:p674:r6,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION II - CAGAYAN VALLEY → Construction of Nursery, P7, Brgy. Sto. Niño FMR, Brgy. Sto. Niño, San Agustin, Isabela"
+ib:p678:r14,REGION II - CAGAYAN VALLEY,"Construction of Purok 5 to 7, Brgy. Palacian FMR, San Agustin, Isabela",29200000,"START: (1) 16.418111, 121.750278,
+(2) 16.416781, 121.746356,
+(3) 16.415851, 121.746222,
+(4) 16.416308, 121.74348
+END: (1) 16.416668, 121.749579,
+(2) 16.416847, 121.752497,
+(3) 16.417524, 121.740345,
+(4) 16.413261, 121.745073",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,678,662,14,ib:p674:r6,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION II - CAGAYAN VALLEY → Construction of Purok 5 to 7, Brgy. Palacian FMR, San Agustin, Isabela"
+ib:p680:r19,REGION III - CENTRAL LUZON,"Concreting of Sitio Linawan, Brgy. Dulong Bayan FMR, Brgy. Dulong Bayan, San Jose Del Monte City, Bulacan",15000000,"START: 14828381, 121.033211
+END: 14.829078, 121.130642",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,680,664,19,ib:p680:r10,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION III - CENTRAL LUZON → Concreting of Sitio Linawan, Brgy. Dulong Bayan FMR, Brgy. Dulong Bayan, San Jose Del Monte City, Bulacan"
+ib:p685:r5,REGION III - CENTRAL LUZON,"Construction of Brgy. Tampac I FMR, Brgy. Tampac I, Guimba, Nueva Ecija",23375000,"START: 15.6352648, 120.7972783
+END: 15.6377206, 129.8030109",needs_review,outside_philippines_orientation_bounds,HB_BUDGET/2 - HB 10858 VOL IB.pdf,685,669,5,ib:p680:r10,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION III - CENTRAL LUZON → Construction of Brgy. Tampac I FMR, Brgy. Tampac I, Guimba, Nueva Ecija"
+ib:p688:r8,REGION III - CENTRAL LUZON,"Construction of Sitio Old Maluya, Brgy. Cupang Proper FMR, Brgy. Cupang Proper, Balanga City, Bataan",15000000,"START: 14.648739° Y: 120.502743°
+END: 14.643844° Y: 120.509282°",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,688,672,8,ib:p680:r10,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION III - CENTRAL LUZON → Construction of Sitio Old Maluya, Brgy. Cupang Proper FMR, Brgy. Cupang Proper, Balanga City, Bataan"
+ib:p688:r9,REGION III - CENTRAL LUZON,"Construction of Sitio Ogpoy - Sitio Ariada, Brgy. Alangan FMR, Brgy. Alangan, Limay, Bataan",15000000,"START: 14.519829° Y: 120.569192°
+END: 14.514647° Y: 120.562530°",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,688,672,9,ib:p680:r10,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION III - CENTRAL LUZON → Construction of Sitio Ogpoy - Sitio Ariada, Brgy. Alangan FMR, Brgy. Alangan, Limay, Bataan"
+ib:p688:r10,REGION III - CENTRAL LUZON,"Construction of Sitio Puso-Puso, Brgy. Cabog-Cabog FMR, Brgy. Cabog-Cabog, Balanga City, Bataan",18000000,"START: 14.599949° Y:120.469076°
+END: 14.593008° Y: 120.461863°",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,688,672,10,ib:p680:r10,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION III - CENTRAL LUZON → Construction of Sitio Puso-Puso, Brgy. Cabog-Cabog FMR, Brgy. Cabog-Cabog, Balanga City, Bataan"
+ib:p688:r11,REGION III - CENTRAL LUZON,"Construction of Brgy. Rizal FMR, Brgy. Rizal, Pilar, Bataan",8500000,"START: 14.647910° Y:120.554807°
+END: 14.651683° Y: 120.551876°",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,688,672,11,ib:p680:r10,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION III - CENTRAL LUZON → Construction of Brgy. Rizal FMR, Brgy. Rizal, Pilar, Bataan"
+ib:p688:r15,REGION III - CENTRAL LUZON,"Construction of Sitio Palunatin, Brgy. Sabatan FMR, Brgy. Sabatan, Orion, Bataan",15000000,"START: 14.599354° Y: 120.553313°
+END: 14.592919° Y: 120.544561°",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,688,672,15,ib:p680:r10,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION III - CENTRAL LUZON → Construction of Sitio Palunatin, Brgy. Sabatan FMR, Brgy. Sabatan, Orion, Bataan"
+ib:p688:r16,REGION III - CENTRAL LUZON,"Construction of Sitio Damulog, Brgy. Daan Pare FMR, Brgy. Daan Pare, Orion, Bataan",15000000,"START: 14.562981° Y: 120.534818°
+END: 14.570457° Y:120.543900°",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,688,672,16,ib:p680:r10,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION III - CENTRAL LUZON → Construction of Sitio Damulog, Brgy. Daan Pare FMR, Brgy. Daan Pare, Orion, Bataan"
+ib:p689:r2,REGION III - CENTRAL LUZON,"Construction of Sitio Ogpoy - Sitio Ariada, Brgy. Alangan FMR, Brgy. Alangan, Limay, Bataan",22500000,"START: 14.514647° Y: 120.562530°
+END: 14.515159° Y: 120.550005°",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,689,673,2,ib:p680:r10,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION III - CENTRAL LUZON → Construction of Sitio Ogpoy - Sitio Ariada, Brgy. Alangan FMR, Brgy. Alangan, Limay, Bataan"
+ib:p689:r3,REGION III - CENTRAL LUZON,"Construction of Sitio Tikip, Brgy. Reformista FMR, Brgy. Reformista, Limay, Bataan",15000000,"START: 14.553310° Y:120.524394°
+END: 14.554586° Y:120.522020°",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,689,673,3,ib:p680:r10,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION III - CENTRAL LUZON → Construction of Sitio Tikip, Brgy. Reformista FMR, Brgy. Reformista, Limay, Bataan"
+ib:p689:r15,REGION III - CENTRAL LUZON,"Concreting of Brgy. Balsik going to Iron Farm FMR, Brgy. Balsik, Hermosa, Bataan",10000000,"START: ""N 14.880831, E 120.484186
+END: N 14.882717, E 120.479517""",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,689,673,15,ib:p680:r10,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION III - CENTRAL LUZON → Concreting of Brgy. Balsik going to Iron Farm FMR, Brgy. Balsik, Hermosa, Bataan"
+ib:p689:r18,REGION III - CENTRAL LUZON,"Construction of Brgy. Sinulatan First FMR, Brgy. Sinulatan First, Camiling, Tarlac",10000000,"STA.0+000.00 STA. 0+479.40
+LAT: 15.713972`N LONG: 120.396365`E",needs_review,endpoint_count_or_section_structure_needs_review | no_explicit_start_end_markers,HB_BUDGET/2 - HB 10858 VOL IB.pdf,689,673,18,ib:p680:r10,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION III - CENTRAL LUZON → Construction of Brgy. Sinulatan First FMR, Brgy. Sinulatan First, Camiling, Tarlac"
+ib:p690:r15,REGION IVA - CALABARZON,"Construction of Brgy. Santa Maria FMR, Brgy. Santa Maria, Laurel, Batangas",15000000,"START: 14.040303, 120. 893223
+END: 14.040481, 120.878766",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,690,674,15,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction of Brgy. Santa Maria FMR, Brgy. Santa Maria, Laurel, Batangas"
+ib:p691:r17,REGION IVA - CALABARZON,"Construction of Brgy. Cansuso FMR, Brgy. Cansuso, Cavinti, Laguna",15000000,"START: 14.239481, 121.611718
+END: 14. 233296, 121.601841",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,691,675,17,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction of Brgy. Cansuso FMR, Brgy. Cansuso, Cavinti, Laguna"
+ib:p692:r12,REGION IVA - CALABARZON,"Construction of Brgy. Sapangan FMR, Brgy. Sapangan, San Juan, Batangas",35000000,"START: S1-13.7861519, 121.3636771
+S2-13.7059722, 121.3570456
+END: S1-13.78862752, 121.3582386
+S2-13.7868393, 121.3552979",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,692,676,12,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction of Brgy. Sapangan FMR, Brgy. Sapangan, San Juan, Batangas"
+ib:p692:r16,REGION IVA - CALABARZON,"Construction of Brgy. Tagumpay FMR, Brgy. Tagumpay, Real, Quezon",55000000,"START: S1-14.606378 121.587138,
+S2-4.606488 121.583412
+END: S1- 4.606694 121.583835,
+S2-14.606957 121.579656",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,692,676,16,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction of Brgy. Tagumpay FMR, Brgy. Tagumpay, Real, Quezon"
+ib:p693:r18,REGION IVA - CALABARZON,"Construction of Brgy. Silangan Calutan FMR, Agdangan, Quezon",15000000,"START: S1 - 13 51 '39.52"", 121 54'20.64""
+S2- 13 51'16.99"", 121 54'33.51""
+END: S1 - 13 51 '29.05"", 121 54'15.37""
+S2 - 13 51'18.22"", 121 55'8.36""",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,693,677,18,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction of Brgy. Silangan Calutan FMR, Agdangan, Quezon"
+ib:p694:r9,REGION IVA - CALABARZON,"Construction of Brgy. San Roque to Anahawan FMR, Brgy. San Roque, Calauag, Quezon",19500000,"START: (1) 13.946009, 122.367383,
+(2) 13.946203, 122.369088,
+(3) 13.944050, 122.370713,
+(4) 13.942890, 122.370908
+END: (1) 13.945921, 122.368003,
+(2) 13.944964, 122.370123,
+(3) 13.943257, 122.370893,
+(4) 13.936060, 122.372138",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,694,678,9,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction of Brgy. San Roque to Anahawan FMR, Brgy. San Roque, Calauag, Quezon"
+ib:p694:r10,REGION IVA - CALABARZON,"Construction of Brgy. Yaganak FMR, Brgy. Yaganak, Calauag, Quezon",15000000,"START: (1) 13.929963, 122.359869,
+(2) 13.932690, 122.358050,
+(3) 13.923706, 122.360121
+END: (1) 13.932510, 122.358579,
+(2) 13.934675, 122.356408,
+(3) 13.921606, 122.362273",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,694,678,10,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction of Brgy. Yaganak FMR, Brgy. Yaganak, Calauag, Quezon"
+ib:p695:r4,REGION IVA - CALABARZON,"Construction of Brgy. San Jose FMR, Brgy. San Jose, Guinayangan, Quezon",19050000,"START: 14.087951°, 122.398810°
+14.086868°, 122.403428°
+14.085477°, 122.405223°
+14.084120°, 122.414996°
+END: 14.086705°, 122.402963°
+14.085993°, 122.404762°
+14.085886°, 122.406615°
+14.083458°, 122.417790°",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,695,679,4,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction of Brgy. San Jose FMR, Brgy. San Jose, Guinayangan, Quezon"
+ib:p695:r5,REGION IVA - CALABARZON,"Construction of Brgy. Bukal Maligaya FMR, Brgy. Bukal Maligaya, Guinayangan, Quezon",21075000,"START: 13.977486, 122.370816
+13.975626, 122.372295
+13.975219, 122.373236
+13.975257, 122.376413
+END: 13.975841, 122.371948
+13.975266, 122.372883
+13.975168, 122.376017
+13.970456, 122.379945",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,695,679,5,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction of Brgy. Bukal Maligaya FMR, Brgy. Bukal Maligaya, Guinayangan, Quezon"
+ib:p695:r6,REGION IVA - CALABARZON,"Construction of Brgy. San Isidro FMR, Brgy. San Isidro, Tagkawayan, Quezon",16875000,"START: 14.000956° 122.467405°, 13.996600° 122.463009°
+END: 13.998811° 122.465074°, 14.003095° 122.453564°",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,695,679,6,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction of Brgy. San Isidro FMR, Brgy. San Isidro, Tagkawayan, Quezon"
+ib:p695:r7,REGION IVA - CALABARZON,"Construction of Brgy. Silangan Maligaya FMR, Brgy. Silangan Maligaya, Agdangan, Quezon",30000000,"START: S1- 13°52'54.48"", 121°54'59.77""
+S2- 13°52'55.27"", 121°55'18.09""
+S3- 13°53'7.39"", 121°55'51.51 ""
+S4-13°53'57.34"", 121°56'16.07""
+END: S1- 13°52'57.12"", 121°55'14.23""
+S2- 13°52'59.12"", 121°55'21.43""
+S3- 13°53'55.15"", 121°56'16.70""
+S4- 13°54'9.72"", 121°56'14.76""",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,695,679,7,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction of Brgy. Silangan Maligaya FMR, Brgy. Silangan Maligaya, Agdangan, Quezon"
+ib:p695:r12,REGION IVA - CALABARZON,"Construction/Improvement of Brgy. Tulay FMR, Brgy. Tulay, Ibaan, Batangas",15000000,"START: 13°51’06.55”N, 121°08’43.75”E
+END: 13°51’03.85”N, 121°09’13.47”E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,695,679,12,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction/Improvement of Brgy. Tulay FMR, Brgy. Tulay, Ibaan, Batangas"
+ib:p696:r2,REGION IVA - CALABARZON,"Construction of Brgy. Bilibinwang FMR, Brgy. Bilibinwang, Agoncillo, Batangas",15000000,"STARTt: 13.987007°, 120.943149°
+END: 13.990489°, 120.942032°",needs_review,nonstandard_endpoint_marker,HB_BUDGET/2 - HB 10858 VOL IB.pdf,696,680,2,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction of Brgy. Bilibinwang FMR, Brgy. Bilibinwang, Agoncillo, Batangas"
+ib:p696:r3,REGION IVA - CALABARZON,"Construction/Improvement of Brgy. Bago FMR, Brgy. Bago, Ibaan, Batangas",15000000,"START: 13°48’24.40”N, 121°06’59.49”E
+END: 13°47’47.94”N, 121°07’13.01”E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,696,680,3,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction/Improvement of Brgy. Bago FMR, Brgy. Bago, Ibaan, Batangas"
+ib:p696:r4,REGION IVA - CALABARZON,"Construction/Improvement of Brgy. Mabalor FMR, Brgy. Mabalor, Ibaan, Batangas",15000000,"START: 13°46’54.15”N, 121°09’22.11”E
+END: 13°47’20.55”N, 121°09’45.46”E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,696,680,4,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction/Improvement of Brgy. Mabalor FMR, Brgy. Mabalor, Ibaan, Batangas"
+ib:p696:r5,REGION IVA - CALABARZON,"Construction/Improvement of Brgy. Bungahan FMR, Brgy. Bungahan, Ibaan, Batangas",15000000,"START: 13°48'38.62""N, 121°07'41.97""E
+END: 13°47'47.63""N, 121°07'40.00""E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,696,680,5,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Construction/Improvement of Brgy. Bungahan FMR, Brgy. Bungahan, Ibaan, Batangas"
+ib:p697:r4,REGION IVA - CALABARZON,"Concreting of Sitio Dayapan, Brgy. San Miguel - Brgy. Tayuman FMR, Brgy. San Miguel and Brgy. Tayuman, Lobo, Batangas",18000000,"START: S1-13.675988, 121.215890
+S2-13.669903, 121.217081
+END: S1-13.669919, 121.217005
+S2-13.665410, 121.217218",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,697,681,4,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Concreting of Sitio Dayapan, Brgy. San Miguel - Brgy. Tayuman FMR, Brgy. San Miguel and Brgy. Tayuman, Lobo, Batangas"
+ib:p697:r8,REGION IVA - CALABARZON,"Opening and Concreting of Sitio Mariwasa, Brgy. Biga FMR, Brgy. Biga Lobo, Batangas",25000000,"START: 13.640360,121.328152
+13.641227, 121.325541
+END: 13.640630, 121.326410
+13.646824, 121.318147",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,697,681,8,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Opening and Concreting of Sitio Mariwasa, Brgy. Biga FMR, Brgy. Biga Lobo, Batangas"
+ib:p697:r11,REGION IVA - CALABARZON,"Concreting of Brgy. Malabrigo FMR, Brgy. Malabrigo, Lobo, Batangas",35000000,"Section 1 START: 13.600940, 121.260642
+END: 13.601465, 121.260938
+Section 2 START: 13.601348, 121.261627
+END: 13.601352, 121.262153
+Section 3 START: 13.601795, 121.263978
+END: 13.602902, 121.265135
+Section 4 START: 13.603182, 121.266477
+END: 13.603403, 121.267242
+Section 5 START: 13.6041767, 121.268621
+END: 13.605585, 121.269842",needs_review,coordinate_format_needs_review | endpoint_count_or_section_structure_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,697,681,11,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Concreting of Brgy. Malabrigo FMR, Brgy. Malabrigo, Lobo, Batangas"
+ib:p697:r12,REGION IVA - CALABARZON,"Concreting of Brgy. San Martin FMR, Brgy. San Martin, San Luis, Batangas",5000000,"START: S1-13.842103, 120.954358
+S2-13.843125, 120.950735
+END: S1-13.84248, 121.953232
+S2-13.843681, 120.950128",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,697,681,12,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Concreting of Brgy. San Martin FMR, Brgy. San Martin, San Luis, Batangas"
+ib:p698:r7,REGION IVA - CALABARZON,"Concreting of Brgy. Papaya FMR, Brgy. Papaya, Tingloy, Batangas",15000000,"Section 1: START: 13.637293, 120.885406
+END: 13.639701, 120.88211
+Section 2: START: 13.636549, 120.885703
+END: 13.635829, 120.885775",needs_review,coordinate_format_needs_review | endpoint_count_or_section_structure_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,698,682,7,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Concreting of Brgy. Papaya FMR, Brgy. Papaya, Tingloy, Batangas"
+ib:p698:r12,REGION IVA - CALABARZON,"Concreting of Brgy. Tayuman FMR, Brgy. Tayuman, Lobo, Batangas",5000000,"Section 1: START: 13.661663, 121.217115
+END: 13.661264, 121.217189
+Section 2: START: 13.658654, 121.218512
+END: 13.656253, 121.21999",needs_review,coordinate_format_needs_review | endpoint_count_or_section_structure_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,698,682,12,ib:p690:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVA - CALABARZON → Concreting of Brgy. Tayuman FMR, Brgy. Tayuman, Lobo, Batangas"
+ib:p700:r15,REGION IVB - MIMAROPA,"Construction of Local Access road Rizal St., Brgy. Tenga-Tenga to Brgy. Suba FMR, Brgy. Tenga-Tenga to Brgy. Suba, Cuyo, Palawan",50000000,"START: 10°50'24.29""N, 121° 0'26.68""E
+END: 10°48'51.76""N, 121° 0'50.64""E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,700,684,15,ib:p699:r9,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVB - MIMAROPA → Construction of Local Access road Rizal St., Brgy. Tenga-Tenga to Brgy. Suba FMR, Brgy. Tenga-Tenga to Brgy. Suba, Cuyo, Palawan"
+ib:p701:r7,REGION IVB - MIMAROPA,"Construction of Brgy. Pangulo to Brgy. Linao FMR, Brgy. Pangulo, Calatrava, Romblon",30000000,"START: 12°37'15.23""N, 122° 4'48.35""E
+END: 12°37'52.43""N, 122° 5'7.17""E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,701,685,7,ib:p699:r9,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IVB - MIMAROPA → Construction of Brgy. Pangulo to Brgy. Linao FMR, Brgy. Pangulo, Calatrava, Romblon"
+ib:p703:r2,REGION V - BICOL,"Construction of Zone 1 Hanawan FMR, Brgy. Hanawan, Ocampo, Camarines Sur",15000000,"START: 13 34'54.67""N, 123 25'10.78""E
+END: 13 34'58.06""N, 123 24'39.38""E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,703,687,2,ib:p702:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION V - BICOL → Construction of Zone 1 Hanawan FMR, Brgy. Hanawan, Ocampo, Camarines Sur"
+ib:p703:r6,REGION V - BICOL,"Construction of Brgy. Sagrada FMR, Baao, Camarines Sur",15000000,"START: 13 26'40.59""N, 123 23'8.29""E
+END: 13 25'47.95""N, 123 22'27.73""E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,703,687,6,ib:p702:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION V - BICOL → Construction of Brgy. Sagrada FMR, Baao, Camarines Sur"
+ib:p703:r11,REGION V - BICOL,"Construction of Brgy. Luna to Brgy. San Isidro FMR, San Jacinto, Masbate",15000000,"Start: 12.529293, 123.707502
+End: 12.528813, 123.691.92",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,703,687,11,ib:p702:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION V - BICOL → Construction of Brgy. Luna to Brgy. San Isidro FMR, San Jacinto, Masbate"
+ib:p704:r10,REGION V - BICOL,"Construction of Brgy. Lacag FMR, Brgy. Lacag, Daraga, Albay",10000000,"STAR:13.160074, 123.674393
+END: 13.160124, 123.668820",needs_review,nonstandard_endpoint_marker,HB_BUDGET/2 - HB 10858 VOL IB.pdf,704,688,10,ib:p702:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION V - BICOL → Construction of Brgy. Lacag FMR, Brgy. Lacag, Daraga, Albay"
+ib:p705:r4,REGION V - BICOL,"Concreting of Sitio Maycuaway, Maysalay to Sitio Hipnagi, Scout Fuentebella FMR, Brgy. Scount Fuentebella, Goa, Camarines Sur",20000000,"START: 13.807096, 123.402514
+END 13.813465, 123.402274",needs_review,coordinate_format_needs_review | endpoint_count_or_section_structure_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,705,689,4,ib:p702:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION V - BICOL → Concreting of Sitio Maycuaway, Maysalay to Sitio Hipnagi, Scout Fuentebella FMR, Brgy. Scount Fuentebella, Goa, Camarines Sur"
+ib:p708:r11,REGION VI - WESTERN VISAYAS,"Concreting of Brgy. Pajo - Brgy. Igang FMR, Pototan, Iloilo",35000000,"START: 10.8966574, 122.6526728
+END: 10.9107683, 122. 6399516",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,708,692,11,ib:p706:r16,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION VI - WESTERN VISAYAS → Concreting of Brgy. Pajo - Brgy. Igang FMR, Pototan, Iloilo"
+ib:p713:r2,REGION VII - CENTRAL VISAYAS,"Concreting of Brgy. Batadbatad - Brgy. Buguil FMR, Moalboal, Cebu",10000000,"Section 1 START: 9.94391, 123.441809
+END: 9.941741, 123.444869
+Section 2 START: 9.941201, 123.445775
+END: 9.936061, 123.452527",needs_review,coordinate_format_needs_review | endpoint_count_or_section_structure_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,713,697,2,ib:p712:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION VII - CENTRAL VISAYAS → Concreting of Brgy. Batadbatad - Brgy. Buguil FMR, Moalboal, Cebu"
+ib:p713:r3,REGION VII - CENTRAL VISAYAS,"Concreting of Brgy. Basiao - Brgy. Candiis FMR, Badian, Cebu",30000000,"Section 1 START: 9.812059, 123. 405993
+END: 9.8052549, 123.406771
+Section 2 START: 9.8052549, 123.406771
+END: 1.8042275, 123.4080266",needs_review,coordinate_format_needs_review | endpoint_count_or_section_structure_needs_review | outside_philippines_orientation_bounds,HB_BUDGET/2 - HB 10858 VOL IB.pdf,713,697,3,ib:p712:r4,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION VII - CENTRAL VISAYAS → Concreting of Brgy. Basiao - Brgy. Candiis FMR, Badian, Cebu"
+ib:p715:r10,REGION VIII - EASTERN VISAYAS,"Construction of Brgy. San Andres FMR, Brgy. San Andres, Catbalogan, Samar",53200000,"START: 11°48'1.15""N, 124°53'56.31""E
+END: 11°48'39.10""N, 124°53'53.31""E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,715,699,10,ib:p713:r7,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION VIII - EASTERN VISAYAS → Construction of Brgy. San Andres FMR, Brgy. San Andres, Catbalogan, Samar"
+ib:p715:r12,REGION VIII - EASTERN VISAYAS,"Construction of Brgy. San Miguel - Brgy. Maca-anga FMR, Llorente, Eastern Samar",20000000,"START: 125.525684, 11.434555
+END: 125.522339, 11.433354",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,715,699,12,ib:p713:r7,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION VIII - EASTERN VISAYAS → Construction of Brgy. San Miguel - Brgy. Maca-anga FMR, Llorente, Eastern Samar"
+ib:p715:r14,REGION VIII - EASTERN VISAYAS,"Concreting of Brgy. Libertad - Brgy. Roxas FMR, Brgy. Libertad and Brgy. Roxas 1, Calbayog City, Samar",13200000,"START: 12.144258, 124.592586
+END: 12. 139616, 124.593930",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,715,699,14,ib:p713:r7,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION VIII - EASTERN VISAYAS → Concreting of Brgy. Libertad - Brgy. Roxas FMR, Brgy. Libertad and Brgy. Roxas 1, Calbayog City, Samar"
+ib:p716:r5,REGION VIII - EASTERN VISAYAS,"Construction of Brgy. Baruk - Brgy. Caghalong - Brgy. Can-ilay FMR, Can-avid, Eastern Samar",50000000,"START: 125.366023, 12.006087
+END: 125.35426, 12.008986",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,716,700,5,ib:p713:r7,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION VIII - EASTERN VISAYAS → Construction of Brgy. Baruk - Brgy. Caghalong - Brgy. Can-ilay FMR, Can-avid, Eastern Samar"
+ib:p716:r6,REGION VIII - EASTERN VISAYAS,"Construction of Brgy. Aet FMR, Brgy. Aet, Sulat, Eastern Samar",15000000,"START: 125.399054, 11.812253
+END: 125.398107, 11.811394",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,716,700,6,ib:p713:r7,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION VIII - EASTERN VISAYAS → Construction of Brgy. Aet FMR, Brgy. Aet, Sulat, Eastern Samar"
+ib:p716:r7,REGION VIII - EASTERN VISAYAS,"Construction of Brgy. Magsaysay - Brgy. Malvar FMR, Balangkayan, Eastern Samar",25000000,"START: 125.263092, 11.263858
+END: 125.261709, 11.264157",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,716,700,7,ib:p713:r7,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION VIII - EASTERN VISAYAS → Construction of Brgy. Magsaysay - Brgy. Malvar FMR, Balangkayan, Eastern Samar"
+ib:p716:r9,REGION VIII - EASTERN VISAYAS,"Construction of Brgy. Pangabutan FMR, Brgy. Pangabutan, Taft, Eastern Samar",25000000,"START: 125.397139, 11.957625
+END: 125.393329, 11.957733",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,716,700,9,ib:p713:r7,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION VIII - EASTERN VISAYAS → Construction of Brgy. Pangabutan FMR, Brgy. Pangabutan, Taft, Eastern Samar"
+ib:p718:r4,REGION IX - ZAMBOANGA PENINSULA,"Concreting of Brgy. Lumbang - Brgy. Makiri FMR Phse III, Brgy. Lumbang, Isabela City, Basilan",15000000,"START: 6°40'00.46""N, 121°56'42.26""E
+END: 6°40'25.35""N, 121°56'34.10""E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,718,702,4,ib:p716:r14,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IX - ZAMBOANGA PENINSULA → Concreting of Brgy. Lumbang - Brgy. Makiri FMR Phse III, Brgy. Lumbang, Isabela City, Basilan"
+ib:p718:r6,REGION IX - ZAMBOANGA PENINSULA,"Construction of Sitio Pantay-Kawasan FMR, Brgy. Kawasan, Panamao, Sulu",10000000,"Sta: 0+00 Lat: 5.989279, Long: 121.240667
+Sta. 0+650 Lat: 5.986219, Long: 121.245419",needs_review,endpoint_count_or_section_structure_needs_review | no_explicit_start_end_markers,HB_BUDGET/2 - HB 10858 VOL IB.pdf,718,702,6,ib:p716:r14,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IX - ZAMBOANGA PENINSULA → Construction of Sitio Pantay-Kawasan FMR, Brgy. Kawasan, Panamao, Sulu"
+ib:p718:r7,REGION IX - ZAMBOANGA PENINSULA,"Construction of Huwit-Huwit - Lianutan FMR Phase II, Brgy. Huwit-Huwit, Omar, Sulu",15000000,"STA. 0+00 Lat: 5.948460, Long: 121.353418
+STA. 0+1050 Lat: 5.948704, Long: 121.344079",needs_review,endpoint_count_or_section_structure_needs_review | no_explicit_start_end_markers,HB_BUDGET/2 - HB 10858 VOL IB.pdf,718,702,7,ib:p716:r14,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IX - ZAMBOANGA PENINSULA → Construction of Huwit-Huwit - Lianutan FMR Phase II, Brgy. Huwit-Huwit, Omar, Sulu"
+ib:p718:r10,REGION IX - ZAMBOANGA PENINSULA,"Construction of Brgy. Magangon, Polanco - Brgy. Del Pilar, Piñan FMR, Zamboanga del Norte",50000000,"START: 123.400367, 8.482883
+END: 123.407885, 8.471070",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,718,702,10,ib:p716:r14,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION IX - ZAMBOANGA PENINSULA → Construction of Brgy. Magangon, Polanco - Brgy. Del Pilar, Piñan FMR, Zamboanga del Norte"
+ib:p719:r16,REGION X - NORTHERN MINDANAO,"Concreting of Brgy. Unidos - Brgy. Agunod to Brgy. Quirino FMR, Plaridel, Misamis Occidental",10000000,"START: 8°34'52.07""N, 123°40'6.88""E
+END: 8°31'55.79""N, 123°40'23.23""E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,719,703,16,ib:p718:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION X - NORTHERN MINDANAO → Concreting of Brgy. Unidos - Brgy. Agunod to Brgy. Quirino FMR, Plaridel, Misamis Occidental"
+ib:p720:r3,REGION X - NORTHERN MINDANAO,"Concreting of Sitio Lourdes, Brgy. Tignapoloan FMR, Brgy. Tignapoloan, Cagayan de Oro City",25000000,"START: 8°14'25.06""N, 124°31'3.39""E
+END: 8°14'23.75""N, 124°30'39.85""E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,720,704,3,ib:p718:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION X - NORTHERN MINDANAO → Concreting of Sitio Lourdes, Brgy. Tignapoloan FMR, Brgy. Tignapoloan, Cagayan de Oro City"
+ib:p720:r4,REGION X - NORTHERN MINDANAO,"Concreting of Brgy. Dagumbaan to Brgy. Bagong Silang FMR, Brgy. Dagumbaan, Maramag, Bukidnon",8400000,"START: 124.9136133, 7.8691945
+124.9094178, 7.8761894
+END: 124.912623, 7.8712103
+124.9084762, 7.8781199",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,720,704,4,ib:p718:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION X - NORTHERN MINDANAO → Concreting of Brgy. Dagumbaan to Brgy. Bagong Silang FMR, Brgy. Dagumbaan, Maramag, Bukidnon"
+ib:p721:r2,REGION XI - DAVAO,"Construction of Coastal Road to Bacuring to Tugun to Nabintad to Gapas, Brgy. Madaum FMR, Brgy. Madaum, Tagum City, Davao del Norte",55000000,"START: Lat: 7.3681N, Long: 125.7876E
+END: Lat: 7.3710N, Long: 125.7968E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,721,705,2,ib:p720:r11,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION XI - DAVAO → Construction of Coastal Road to Bacuring to Tugun to Nabintad to Gapas, Brgy. Madaum FMR, Brgy. Madaum, Tagum City, Davao del Norte"
+ib:p721:r12,REGION XI - DAVAO,"Construction of Sitio Kapoc to Tabunan, Brgy. Cadunan FMR, Mabini, Davao de Oro",10000000,"START: 125.872541, 7.339008
+END: 125.877107, 7.335521",needs_review,out_of_range_or_reversed_decimal_pair,HB_BUDGET/2 - HB 10858 VOL IB.pdf,721,705,12,ib:p720:r11,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION XI - DAVAO → Construction of Sitio Kapoc to Tabunan, Brgy. Cadunan FMR, Mabini, Davao de Oro"
+ib:p723:r3,REGION XII - SOCCSKSARGEN,"Construction of Purok Modelo - Purok Malipayon, Brgy. Bangbang FMR, Brgy. Bangbang, Matalam, Cotabato",10000000,"START: 7:005288, 124.8880754
+END: 7.0053251, 124.8790839",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,723,707,3,ib:p721:r15,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION XII - SOCCSKSARGEN → Construction of Purok Modelo - Purok Malipayon, Brgy. Bangbang FMR, Brgy. Bangbang, Matalam, Cotabato"
+ib:p726:r8,REGION XIII - CARAGA,"Construction of NRJ Purok Sun Flower, Brgy. Gamut FMR Phase II, Brgy. Gamut, Tago, Surigao del Sur",30000000,"START: 9.006130, 126.158518o 285
+END: 9.008621, 126.149157o 228",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,726,710,8,ib:p723:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION XIII - CARAGA → Construction of NRJ Purok Sun Flower, Brgy. Gamut FMR Phase II, Brgy. Gamut, Tago, Surigao del Sur"
+ib:p726:r9,REGION XIII - CARAGA,"Concreting of Purok 6- Purok 7 FMR, Brgy. Bonbon, Butuan City",15000000,"START: 8.54'22.32""N, 125.29'41.134
+END: 8.54'9.300""N, 125.29'22.03""E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,726,710,9,ib:p723:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION XIII - CARAGA → Concreting of Purok 6- Purok 7 FMR, Brgy. Bonbon, Butuan City"
+ib:p726:r10,REGION XIII - CARAGA,"Concreting of NRJ Purok 4, Brgy. De Oro - Bugsukan FMR, Butuan City",30000000,"START: 8.917551""N, 125.643664""E
+END: 8.932022""N, 125.659681""E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,726,710,10,ib:p723:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION XIII - CARAGA → Concreting of NRJ Purok 4, Brgy. De Oro - Bugsukan FMR, Butuan City"
+ib:p726:r11,REGION XIII - CARAGA,"Concreting of Brgy. Montag Phase II FMR, Brgy. Montag, Basilisa, Dinagat Islands",13200000,"START: 10° 6'24.59""N, 125°32'37.79""E
+END: 10° 6'35.65""N, 125°32'15.64""E",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,726,710,11,ib:p723:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION XIII - CARAGA → Concreting of Brgy. Montag Phase II FMR, Brgy. Montag, Basilisa, Dinagat Islands"
+ib:p726:r13,REGION XIII - CARAGA,"Construction of P-3 Brgy. Mabini to Sitio Tagbasinga, Brgy. Mat-I FMR, Surigao City, Surigao del Norte",30000000,"START: 9.697611, 125.465514
+END: 9.705084, 125. 459405",needs_review,coordinate_format_needs_review,HB_BUDGET/2 - HB 10858 VOL IB.pdf,726,710,13,ib:p723:r12,"REPAIR/REHABILITATION AND CONSTRUCTION OF FARM-TO-MARKET ROADS IN DESIGNATED KEY PRODUCTION AREAS → REGION XIII - CARAGA → Construction of P-3 Brgy. Mabini to Sitio Tagbasinga, Brgy. Mat-I FMR, Surigao City, Surigao del Norte"

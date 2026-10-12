@@ -1,0 +1,99 @@
+{
+ "metadata": {
+  "schema_version": 1,
+  "generated_utc": null,
+  "generated_date": "2026-10-13",
+  "hgab_layer": "other-analysis/data/hgab_fmr_coordinates_normalized.json",
+  "hgab_layer_sha256": "948831ad3af0d402da43077d3901545812adbddb91922bf09cd906d734bf24fb",
+  "nep_layer": "other-analysis/data/nep_fmr_coordinates_normalized.json",
+  "nep_layer_sha256": "1b2d39e386886dc4f98750df7d4e1f7d35d38c673e5a53b6de146450ac534adb",
+  "validator_sha256": "fadd490df5735c3f0c58ef5b37b658feb387805915950fad8a744fff5256ab67",
+  "geomapper_submodule_commit": "1cc5b55dd6b85364d01a810be8d1a43ab8d53ed7",
+  "psgc_shapefiles_source": "altcoder/philippines-psgc-shapefiles (2023), via dpwh_coor2psgc_geomapping submodule",
+  "psgc_shapefiles_sha256": {
+   "Regions/PH_Adm1_Regions.shp.shp": "4262b2df9040488b8637c7b5bfff55e74b457432c48527a80fee44c4fac3066a",
+   "Provdists/PH_Adm2_ProvDists.shp.shp": "8780b98c1a3b1032ceca3bb342ada6676adb3b03f7a610ab9185272c65f15d2e",
+   "Municities/PH_Adm3_MuniCities.shp.shp": "3a79ce951c0059eebd87633c70e82c7fbf34d2076cd459e64f59d55321486aaa",
+   "BgySubMuns/PH_Adm4_BgySubMuns.shp.shp": "ac54a054a24a38e167131e5e7acb94cfcfd3f484d38ba4adcd12b3b9b21ea6a2"
+  },
+  "repair_manifest_project_count": 1,
+  "coordinate_unit": "decimal degrees",
+  "coordinate_column_order": "longitude, latitude",
+  "disposition": "evidence for remaining flagged projects; PSGC-supported off-by-one digit repairs were accepted into normalized numeric arrays via fmr_digit_repairs.py (raw text immutable)"
+ },
+ "passed": true,
+ "summary": {
+  "printed_points": 3,
+  "printed_verdicts": {
+   "AGREE": 1,
+   "PARTIAL": 2
+  },
+  "candidate_repairs": 1,
+  "repair_verdicts": {
+   "PARTIAL": 1
+  },
+  "repair_agree_projects": [],
+  "manual_review_projects": [
+   "ib:p723:r3"
+  ]
+ },
+ "points": [
+  {
+   "project_id": "ib:p689:r18",
+   "layer": "hgab",
+   "point_id": "ib:p689:r18:point1",
+   "kind": "printed",
+   "coordinates": [
+    120.396365,
+    15.713972
+   ],
+   "verdict": "AGREE",
+   "where": "Camiling, Tarlac / Brgy. Sinulatan 1st",
+   "title_barangay_match": null,
+   "note": null
+  },
+  {
+   "project_id": "ib:p723:r3",
+   "layer": "hgab",
+   "point_id": "ib:p723:r3:point1",
+   "kind": "printed",
+   "coordinates": [
+    124.8880754,
+    7.005288
+   ],
+   "verdict": "PARTIAL",
+   "where": "M'Lang, Cotabato / Brgy. Dalipe",
+   "title_barangay_match": null,
+   "note": null
+  },
+  {
+   "project_id": "ib:p723:r3",
+   "layer": "hgab",
+   "point_id": "ib:p723:r3:point2",
+   "kind": "printed",
+   "coordinates": [
+    124.8790839,
+    7.0053251
+   ],
+   "verdict": "PARTIAL",
+   "where": "M'Lang, Cotabato / Brgy. Dalipe",
+   "title_barangay_match": null,
+   "note": null
+  },
+  {
+   "project_id": "ib:p723:r3",
+   "layer": "hgab",
+   "point_id": "ib:p723:r3:point1",
+   "kind": "candidate_repair",
+   "repair": "printed 7:005288 -> 7.005288 (existing candidate)",
+   "coordinates": [
+    124.8880754,
+    7.005288
+   ],
+   "verdict": "PARTIAL",
+   "where": "M'Lang, Cotabato / Brgy. Dalipe",
+   "title_barangay_match": false,
+   "note": null
+  }
+ ]
+}

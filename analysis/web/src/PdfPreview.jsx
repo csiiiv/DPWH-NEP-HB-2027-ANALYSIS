@@ -2,7 +2,7 @@ import React, { useEffect, useId, useRef, useState } from "react";
 import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
 import workerUrl from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
-export default function PdfPreview({ source, onClose, closeLabel = "Clear preview", downloadOriginal = false }) {
+export default function PdfPreview({ source, onClose, closeLabel = "Clear preview", downloadOriginal = false, autoFocusClose = downloadOriginal }) {
   const titleId = useId();
   const canvas = useRef(null),
     host = useRef(null);
@@ -106,7 +106,7 @@ export default function PdfPreview({ source, onClose, closeLabel = "Clear previe
           <h2 id={titleId}>{source.document}</h2>
           <p>{source.title}</p>
         </div>
-        <button onClick={onClose} autoFocus={downloadOriginal}>{closeLabel}</button>
+        <button onClick={onClose} autoFocus={autoFocusClose}>{closeLabel}</button>
       </div>
       <div className="pdf-toolbar" role="toolbar" aria-label="PDF navigation">
         <div className="group">

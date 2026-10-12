@@ -7,17 +7,27 @@ import {readRoute,routeHref} from './routes.js';
 // `tableId`: stable slug for deep links — renders a # anchor that adds
 // table=<id> to the URL; Analysis scrolls the target into view on open.
 // Missing values render as an em dash; numbers get grouped thousands.
+// Controlled mode: pass `sort` + `onSortChange` and/or `page` + `onPageChange`
+// to back sorting/pagination with route state (FMR tabs do this so a copied
+// link restores the exact view). Without them, state stays internal (DPWH).
 function formatCell(value){
  if(value==null||value==='')return '—';
  if(typeof value==='number')return value.toLocaleString('en-US');
  return value;
 }
-export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,tableId}){
- const [sort,setSort]=useState(initialSort||{key:columns.find(c=>c.sortable!==false)?.key,direction:'desc'});
+export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,tableId,pageSize,sort:controlledSort,onSortChange,page:controlledPage,onPageChange}){
+ const [internalSort,setInternalSort]=useState(initialSort||{key:columns.find(c=>c.sortable!==false)?.key,direction:'desc'});
+ const sort=controlledSort!==undefined?controlledSort:internalSort;
+ const [internalPage,setInternalPage]=useState(1);
+ const page=controlledPage??internalPage;
+ const rowIdentity=rows.map((r,i)=>r.id??i).join('\u001f');
+ const setSort=next=>{if(onSortChange)onSortChange(next);else setInternalSort(next);};
+ const setPage=next=>{if(onPageChange)onPageChange(next);else setInternalPage(next);};
+ useEffect(()=>{if(controlledPage===undefined)setInternalPage(1);},[rowIdentity,sort?.key,sort?.direction,controlledPage]);
  // Reset only when the requested default changes, not when an inline object
  // is recreated during a parent render.
  useEffect(()=>{
-  setSort(initialSort||{key:columns.find(c=>c.sortable!==false)?.key,direction:'desc'});
+  if(controlledSort===undefined)setInternalSort(initialSort||{key:columns.find(c=>c.sortable!==false)?.key,direction:'desc'});
  },[initialSort?.key,initialSort?.direction]);
  const sorted=useMemo(()=>{
   if(!sort?.key)return rows;
@@ -37,6 +47,9 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,
   setSort(current=>!current||current.key!==key?{key,direction:initial}
    :current.direction===initial?{key,direction:initial==='asc'?'desc':'asc'}:null);
  }
+ const pageCount=pageSize?Math.max(1,Math.ceil(sorted.length/pageSize)):1;
+ const currentPage=Math.max(1,Math.min(page,pageCount));
+ const visible=pageSize?sorted.slice((currentPage-1)*pageSize,currentPage*pageSize):sorted;
  const bandHeader=useMemo(()=>{
   if(!columns.some(c=>c.bandLabel))return null;
   const groups=[];
@@ -60,7 +73,7 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,
  };
  const linked=Boolean(tableId);
  const targeted=linked&&readRoute().params.get('table')===tableId;
- return <div id={linked?`table-${tableId}`:undefined} className={`sortable-table${bandHeader?' has-bands':''}${targeted?' table-target':''}`} role="region" aria-label={ariaLabel} tabIndex={0}>
+ return <><div id={linked?`table-${tableId}`:undefined} className={`sortable-table${bandHeader?' has-bands':''}${targeted?' table-target':''}`} role="region" aria-label={ariaLabel} tabIndex={0}>
   <table>
    <thead>
     {bandHeader&&<tr className="band-row">
@@ -82,7 +95,7 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,
       </button>}
     </th>)}</tr>
    </thead>
-   <tbody>{sorted.map((row,i)=><tr key={row.id??i}>{linked&&<td className="table-link-col"/>}{columns.map(column=>{
+   <tbody>{visible.map((row,i)=><tr key={row.id??i}>{linked&&<td className="table-link-col"/>}{columns.map(column=>{
      const Tag=column.scope==='row'?'th':'td';
      return column.render
       ?<Tag key={column.key} className={cellClass(column)} style={cellStyle(column)}>{column.render(row,i)}</Tag>
@@ -91,5 +104,9 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,
     {!rows.length&&<tr><td colSpan={columns.length+(linked?1:0)}>{empty||'No rows.'}</td></tr>}
    </tbody>
   </table>
- </div>;
+ </div>{pageSize&&<nav className="fmr-pagination" aria-label={`${ariaLabel} pages`}>
+  <button disabled={currentPage===1} onClick={()=>setPage(p=>p-1)}>Previous</button>
+  <span aria-live="polite">Page {currentPage} of {pageCount} · {sorted.length.toLocaleString()} rows</span>
+  <button disabled={currentPage===pageCount} onClick={()=>setPage(p=>p+1)}>Next</button>
+ </nav>}</>;
 }

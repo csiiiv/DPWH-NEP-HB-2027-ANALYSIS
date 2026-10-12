@@ -1,0 +1,60 @@
+/* MapLibre canvas hosting for the FMR segment map. */
+.fmr-objects-filter { position: relative; display: flex; flex-direction: column; gap: 4px; min-width: 12rem; }
+.fmr-objects-label { font-size: 12px; color: #526780; }
+.fmr-objects-trigger {
+  appearance: none; text-align: left; border: 1px solid #c5d0de; background: #fff;
+  border-radius: 6px; padding: 7px 10px; font: inherit; font-size: 13px; cursor: pointer;
+  color: #203147;
+}
+.fmr-objects-trigger:hover, .fmr-objects-trigger[aria-expanded="true"] { border-color: #8aa0bb; background: #f7f9fc; }
+.fmr-objects-menu {
+  position: absolute; top: calc(100% + 4px); left: 0; z-index: 8; min-width: 16rem;
+  background: #fff; border: 1px solid #d9e2ed; border-radius: 8px; padding: 8px;
+  box-shadow: 0 8px 24px #182f4b22; display: flex; flex-direction: column; gap: 2px;
+}
+.fmr-objects-actions { display: flex; gap: 8px; margin-bottom: 4px; }
+.fmr-objects-actions button {
+  border: 0; background: transparent; color: #2a4a78; font-size: 12px; cursor: pointer; padding: 2px 0;
+}
+.fmr-objects-option {
+  display: flex; align-items: flex-start; gap: 8px; padding: 5px 6px; border-radius: 6px;
+  font-size: 13px; cursor: pointer;
+}
+.fmr-objects-option:hover { background: #f3f6fa; }
+.fmr-objects-option input { margin-top: 2px; }
+.fmr-map-shell { position: relative; border: 1px solid #d9e2ed; border-radius: 10px; overflow: hidden; background: #eef2f7; }
+.fmr-map-canvas { width: 100%; height: min(72vh, 760px); }
+.fmr-map-canvas .maplibregl-ctrl-attrib { font-size: 10px; }
+.fmr-map-controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.fmr-map-controls label { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.fmr-map-legend { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: #526780; }
+.fmr-map-legend i { width: 14px; height: 4px; border-radius: 2px; display: inline-block; }
+.fmr-map-legend-arrow { font-size: 11px; line-height: 1; font-weight: 700; }
+.fmr-map-warning { position: absolute; top: 10px; left: 10px; z-index: 5; margin: 0; background: #fffdf3; border: 1px solid #e5d9a8; border-radius: 8px; padding: 8px 12px; font-size: 12px; max-width: 70%; }
+.fmr-map-info { position: absolute; top: 10px; right: 10px; z-index: 5; width: min(380px, calc(100% - 20px)); max-height: calc(100% - 20px); overflow: auto; background: white; border: 1px solid #d9e2ed; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 6px 24px #182f4b22; }
+.fmr-map-info-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; justify-content: space-between; }
+.fmr-map-info strong { overflow-wrap: anywhere; flex: 1 1 12rem; }
+.fmr-map-info small { color: #526780; }
+.fmr-map-info dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; margin: 0; font-size: 13px; }
+.fmr-map-info dt { color: #526780; }
+.fmr-map-info dd { margin: 0; text-align: right; overflow-wrap: anywhere; font-weight: 600; }
+.fmr-map-info-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.fmr-map-info-actions a.primary { background: #203147; color: #fff; text-decoration: none; border-radius: 6px; padding: 6px 10px; font-size: 13px; }
+.fmr-map-info-actions a, .fmr-map-info-actions button { font-size: 12px; }
+.fmr-map-chip { align-self: flex-start; border: 1px solid #c5d0de; background: #eef3f9; color: #2a4a78; border-radius: 999px; padding: 3px 10px; font-size: 11px; cursor: pointer; }
+.fmr-map-flags { display: flex; flex-wrap: wrap; gap: 6px; }
+.fmr-map-flag {
+  display: inline-flex; align-items: center; gap: 6px; max-width: 100%;
+  border: 1px solid #e5c48a; background: #fff6e5; color: #775217;
+  border-radius: 999px; padding: 3px 10px 3px 6px; font-size: 11px; font-weight: 600;
+  cursor: help; overflow-wrap: anywhere;
+}
+.fmr-map-flag:focus-visible { outline: 2px solid #b45309; outline-offset: 2px; }
+.fmr-map-flag-side {
+  border-radius: 999px; background: #775217; color: #fff6e5;
+  padding: 1px 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.02em;
+}
+.fmr-map-stack { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 12px; background: #f7f9fc; border: 1px solid #e5ebf2; border-radius: 8px; padding: 6px 8px; }
+.fmr-provenance-dialog { width: min(720px, 96vw); max-height: 90vh; }
+.fmr-provenance-dialog .fmr-dialog-body { overflow: auto; max-height: calc(90vh - 80px); }
+@media (max-width: 700px) { .fmr-map-canvas { height: 60vh; } .fmr-map-info { position: static; border-radius: 0; border-width: 1px 0; max-height: none; } }

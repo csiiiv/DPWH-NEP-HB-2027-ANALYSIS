@@ -123,6 +123,61 @@ def validate_site():
                 raise ValueError(f'Broken local link: {file.name}: {link}')
 
 
+def fmr_app_redirect(destination, route):
+    """FMR workspace entry points redirect into the SPA at #fmr/<route>.
+
+    A location fragment (e.g. #nep or #nep?view=review) is preserved as the
+    FMR route so external links can deep-link the workspace.
+    """
+    return ('<!doctype html><html lang="en"><meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<title>DA Farm-to-Market Roads workbench</title>'
+            '<p><a href="' + destination + '#fmr/' + route + '">Open the FMR workbench</a></p>'
+            '<a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/README.md">Repository README</a> '
+            '<a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/other-analysis/README.md">FMR source README</a>'
+            '<script>const fragment=location.hash.slice(1);location.replace(' + json.dumps(destination) +
+            '+"#fmr/"+(fragment || ' + json.dumps(route) + '));</script></html>')
+
+
+def package_fmr():
+    """Package the FMR workspace datasets and source evidence beside DPWH.
+
+    Mirrors scripts/build_fmr_pages.py but writes into the already-cleared
+    combined site instead of owning _site, so both workspaces publish from a
+    single artifact.
+    """
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('fmr_builder', ROOT / 'other-analysis/build_fmr_workbench.py')
+    builder = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(builder)
+    dataset_path = ROOT / 'other-analysis/data/fmr_workbench.json'
+    data = json.loads(dataset_path.read_text())
+    if data.get('schema_version') != 1:
+        raise ValueError('Unsupported FMR dataset schema')
+    fmr_root = OUTPUT / 'fmr'
+    fmr_root.mkdir()
+    # Preserve original document paths so source evidence and PDF ranges agree.
+    pdfs = {p for s in data['stages'].values()
+            for p in (s['metadata']['source_pdf'], s['metadata']['cross_volume_source_pdf'])}
+    for path in sorted(pdfs):
+        destination = OUTPUT / path
+        if destination.is_file():
+            continue
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / path, destination)
+    # The SPA resolves other-analysis/… relative to app/, so evidence sits at
+    # the site root beside it — exactly like the standalone FMR package did.
+    evidence = OUTPUT / 'other-analysis'
+    evidence.mkdir()
+    shutil.copytree(ROOT / 'other-analysis/data', evidence / 'data', ignore=shutil.ignore_patterns('__pycache__'))
+    for path in (ROOT / 'other-analysis').iterdir():
+        if path.is_file() and path.suffix in ('.md', '.csv', '.json'):
+            shutil.copy2(path, evidence / path.name)
+    (fmr_root / 'index.html').write_text(fmr_app_redirect('../app/', 'home'))
+    (OUTPUT / 'fmr.html').write_text(fmr_app_redirect('app/', 'home'))
+    print(f'Packaged FMR workbench evidence and PDFs for {len(pdfs)} source documents')
+
+
 def main(with_react=True):
     validate_current_pages()
     OUTPUT.mkdir(exist_ok=True)
@@ -203,6 +258,7 @@ def main(with_react=True):
         (OUTPUT / 'site/index.html').write_text(app_redirect('../app/', 'home', root=True))
         (OUTPUT / 'pdfs').mkdir()
         shutil.copyfile(pdf, OUTPUT / 'pdfs' / pdf.name)
+        package_fmr()
     validate_site()
     print(f'Prepared and checked {len(VIEWER_NAMES)} dashboards in {OUTPUT}')
 
