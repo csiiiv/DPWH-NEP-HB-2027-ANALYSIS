@@ -36,6 +36,7 @@ def app_redirect(destination, route, root=False):
             '<a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/README.md">Repository README</a> '
             '<a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/README.md">Workbench README</a>'
             '<script>const fragment=location.hash.slice(1);location.replace(' + json.dumps(destination) +
+            ('+(location.search || "")' if root else '') +
             '+"#"+' + ('(fragment || "home")' if root else json.dumps(route) +
                          '+(fragment ? "?"+(fragment==="review" ? "view=review" : "section="+encodeURIComponent(fragment)) : "")') +
             ');</script></html>')
@@ -108,9 +109,12 @@ def validate_site():
             raise ValueError(f'Encoded JavaScript URL placeholder: {file}')
         parser = LinkParser()
         parser.feed(text)
-        readmes = {'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/README.md',
-                   'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/README.md'}
-        if not readmes.issubset(set(parser.links)):
+        repository_readme = 'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/README.md'
+        workbench_readmes = {
+            'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/README.md',
+            'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/other-analysis/README.md',
+        }
+        if repository_readme not in parser.links or not workbench_readmes.intersection(parser.links):
             raise ValueError(f'Missing repository/workbench README links: {file}')
         for link in parser.links:
             url = urlsplit(link)

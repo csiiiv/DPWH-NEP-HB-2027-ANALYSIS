@@ -2,8 +2,11 @@
 """Exercise loaded FMR views, provenance exports, routing and inline PDF review."""
 from functools import partial
 from http.server import ThreadingHTTPServer
+import csv
+from io import StringIO
 import json
 import os
+import re
 from pathlib import Path
 import tempfile
 import threading
@@ -64,7 +67,8 @@ def main():
                     # lines come from the committed payload.
                     goto('map')
                     page.wait_for_selector('.fmr-map-canvas .maplibregl-canvas', timeout=60000)
-                    expect(page.locator('.fmr-map')).to_contain_text('segments from')
+                    expect(page.locator('.fmr-map .fmr-result-bar')).to_contain_text(re.compile(r'[1-9][\d,]* overlays'))
+                    expect(page.get_by_label('Coordinate basis', exact=True)).to_have_value('reviewed')
                     no_overflow()
                     expect(page.get_by_role('link', name='Map', exact=True)).to_have_attribute('aria-current', 'page')
                     for route in ['home', 'highlights', 'compare', 'compare?view=projects', 'analysis', 'analysis?view=house_candidates', 'analysis?view=nep_candidates', 'analysis?view=adjustments', 'analysis?view=coordinates', 'analysis?view=stats']:
@@ -128,11 +132,15 @@ def main():
                         expect(pagination).to_contain_text('1 rows')
                         with page.expect_download() as result:
                             page.get_by_role('button', name='Export filtered CSV').click()
-                        csv = Path(result.value.path()).read_text(encoding='utf-8-sig')
-                        assert 'Sitio Rango' in csv and 'pdf_page' in csv and csv.count('\n') == 2
+                        exported_csv = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
+                        assert len(exported_csv) == 1 and 'Sitio Rango' in exported_csv[0]['title']
+                        assert exported_csv[0]['pdf_page'] and exported_csv[0]['source_pdf'] == s['metadata']['source_pdf']
 
                         goto(stage + '?view=review')
-                        expect(page.get_by_role('region', name='FMR projects').locator('tbody tr')).to_have_count(s['summary']['projects_needing_review'])
+                        expect(page.get_by_role('region', name='FMR projects').locator('tbody button.fmr-text-button')).to_have_count(s['summary']['projects_needing_review'])
+                        if not s['summary']['projects_needing_review']:
+                            expect(page.get_by_role('button', name='Next finding', exact=True)).to_be_disabled()
+                            expect(page.locator('.fmr-queue-bar')).to_contain_text('No findings in this scope')
                         page.get_by_label('Region', exact=True).select_option(s['regions'][0]['key'])
                         expected = [p for p in s['projects'] if p['region_key'] == s['regions'][0]['key'] and p['status'] == 'needs_review']
                         if expected:
@@ -160,7 +168,7 @@ def main():
                     page.get_by_label('Candidate status', exact=True).select_option('changed')
                     expect(pager).to_contain_text('Page 1 of')
                     expect(results.locator('.fmr-card' if width == 390 else 'tbody tr')).to_have_count(4)
-                    page.get_by_text('More filters', exact=True).click()
+                    page.get_by_text('Provenance and advanced filters', exact=True).click()
                     page.get_by_label('Amount direction', exact=True).select_option('decreased')
                     expect(results.locator('.fmr-card' if width == 390 else 'tbody tr')).to_have_count(3)
                     expect(page.get_by_label('Active filters')).to_contain_text('Decreased')
@@ -172,7 +180,8 @@ def main():
                     assert len(exported['rows']) == 4 and exported['rows'][0]['nep']['source']['source_pdf']
                     with page.expect_download() as result:
                         page.get_by_role('button', name='Export filtered CSV', exact=True).click()
-                    assert Path(result.value.path()).read_text(encoding='utf-8-sig').count('\n') == 5
+                    exported_csv = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
+                    assert len(exported_csv) == 4 and all(row['nep_source_pdf'] and row['house_source_pdf'] for row in exported_csv)
                     page.get_by_text('Show analytics', exact=False).click()
                     expect(page.locator('details').filter(has=page.locator('summary').filter(has_text='Show analytics'))).to_contain_text('Funding bridge')
                     if width == 390:
@@ -213,7 +222,7 @@ def main():
                     page.get_by_role('region', name='FMR allocation bands').locator('tbody button').first.click()
                     records = page.get_by_role('dialog', name='Analysis source records')
                     expect(records).to_be_visible()
-                    expect(records.get_by_role('region', name='FMR projects').locator('tbody tr')).not_to_have_count(0)
+                    expect(records.get_by_role('region', name='FMR projects').locator('tbody button.fmr-text-button')).not_to_have_count(0)
                     page.keyboard.press('Escape')
                     goto('analysis?view=overview&region=IVA')
                     expect(page.get_by_role('region', name='FMR allocation overview').locator('tbody tr')).to_have_count(1)

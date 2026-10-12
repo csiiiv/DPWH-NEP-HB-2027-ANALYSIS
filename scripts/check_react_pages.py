@@ -69,7 +69,7 @@ with sync_playwright() as p:
         assert "15,972 named-project leaves" in native_summary
         assert "29 FAP totals" in native_summary
         assert "639,179,718,000" in native_summary and "excludes PS" in native_summary
-        assert page.get_by_role("link", name="Inspect native I-C allocation candidates").get_attribute("href") == "#house-nep"
+        expect(page.get_by_role("link", name="Inspect native I-C allocation candidates")).to_have_attribute("href", "#house?view=projects")
 
         assert not any(
             "stage_trace_2027.json" in url
@@ -271,7 +271,8 @@ with sync_playwright() as p:
         page.goto(base + "#compare?view=readings", wait_until="networkidle")
         expect(page.get_by_role("button", name="Project records", exact=True)).to_have_attribute("aria-pressed", "true")
         expect(page.locator(".comparison-table thead")).to_contain_text("HGAB3 − HGAB2")
-        page.get_by_role("navigation", name="Detail workspaces").get_by_role("link", name="House / NEP detail").click()
+        # Retained detail routes remain available through historical deep links.
+        page.goto(base + "#house-nep", wait_until="networkidle")
         page.locator("#budgetRows tr").first.wait_for(timeout=60000)
         assert "House native I-C operations extract" in page.locator("#cards").inner_text()
         assert "44/44" in page.locator("#coverageSummary").inner_text()
@@ -316,7 +317,7 @@ with sync_playwright() as p:
         page.locator("#budget table th button").first.click()
         assert page.locator("#budget table th").first.get_attribute("aria-sort") in ("ascending", "descending")
         page.evaluate("window.spaNavigationProbe = 42")
-        page.get_by_role("navigation", name="Detail workspaces").get_by_role("link", name="NEP detail", exact=True).click()
+        page.evaluate("location.hash = '#nep-detail'")
         page.locator(".retained-view #tree [data-node]").first.wait_for(timeout=60000)
         page.get_by_label("Tree view", exact=True).select_option("program")
         page.locator(".retained-view #tree [data-node]").first.wait_for()

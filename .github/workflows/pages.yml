@@ -6,6 +6,8 @@ on:
     paths:
       - 'analysis/**'
       - 'other-analysis/**'
+      - 'dpwh_coor2psgc_geomapping'
+      - '.gitmodules'
       - 'site/**'
       - 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
       - 'dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf'
@@ -19,6 +21,8 @@ on:
     paths:
       - 'analysis/**'
       - 'other-analysis/**'
+      - 'dpwh_coor2psgc_geomapping'
+      - '.gitmodules'
       - 'site/**'
       - 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
       - 'dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf'
@@ -66,6 +70,29 @@ jobs:
           python3 -m unittest discover -s analysis/tests -p test_stage_trace.py -v
           python3 -m unittest discover -s analysis/tests -p test_static_pages.py -v
           python3 -m unittest discover -s analysis/tests -p test_pdf_range_server.py -v
+      - name: Initialize FMR geomapper
+        run: git submodule update --init dpwh_coor2psgc_geomapping
+      - name: Fetch audited PSGC boundaries
+        uses: actions/checkout@v6
+        with:
+          repository: altcoder/philippines-psgc-shapefiles
+          ref: a44a73091f19e4950dbdc0d7cb77a5e17b101a0a
+          path: dpwh_coor2psgc_geomapping/philippines-psgc-shapefiles
+          sparse-checkout: dist
+      - name: Download and unpack PSGC shapefiles
+        working-directory: dpwh_coor2psgc_geomapping/philippines-psgc-shapefiles
+        run: |
+          git lfs pull --include="dist/PH_Adm[1-4]*.shp.zip" --exclude=""
+          mkdir -p data/2023/{Regions,Provdists,Municities,BgySubMuns}
+          unzip -q dist/PH_Adm1_Regions.shp.zip -d data/2023/Regions
+          unzip -q dist/PH_Adm2_ProvDists.shp.zip -d data/2023/Provdists
+          unzip -q dist/PH_Adm3_MuniCities.shp.zip -d data/2023/Municities
+          unzip -q dist/PH_Adm4_BgySubMuns.shp.zip -d data/2023/BgySubMuns
+      - name: Generate FMR datasets
+        run: |
+          python3 -m pip install geopandas==1.1.1 shapely==2.1.2 pandas==2.2.3 pyogrio==0.12.1
+          python3 other-analysis/build_fmr_final_dataset.py
+          python3 other-analysis/build_fmr_workbench.py
       - name: Check FMR extraction, normalization and matching
         run: |
           python3 -m unittest discover -s other-analysis/tests -v
