@@ -1,7 +1,14 @@
 # Cross-workspace UI consistency pass
 
-Status: proposed implementation plan based on source review. No product changes
-or combined-branch integration certification are implied by this document.
+Status: in progress. Batches landed (all browser suites and unit tests green at
+each step): Compare tab label standardized to sentence case across registries,
+model tab lists and cross-links; NIA Analysis and Compare view tabs converted
+to link navigation with `aria-current`; hfepTabs aligned with the registry and
+driving document titles; FMR/HFEP filter chips humanized to share the select
+labels; NIA chips resolve sub-program/candidate-status labels; the three annex
+Analysis heroes share one source-selector/basis-label/Share pattern; docs
+updated. Remaining phases (exports/mobile parity audit, record/evidence
+displays, page-specific gaps) are still unstarted.
 
 ## Outcome
 
