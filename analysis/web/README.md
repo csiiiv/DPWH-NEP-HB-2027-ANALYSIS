@@ -1,8 +1,14 @@
-# FMR React workbench
+# FY2027 React workbenches
 
-On branch **FMR**, this app presents the retained FY2027 DA farm-to-market road
-annexes. Earlier DPWH modules remain in this directory; the entry point now uses
-`FmrApp.jsx` and loads only the FMR browser payload.
+`Workbench.jsx` selects DPWH, DA farm-to-market roads, or NIA irrigation from
+the hash route. The shared header uses `routes.js` to render each workspace's
+navigation. Annex apps and browser datasets load when their workspace opens.
+The FMR workflow is described below; see the
+[NIA workbench guide](../../analysis-nia/NIA_WORKBENCH.md) for irrigation views.
+NIA Compare follows DPWH's compact table workspace and inline PDF layout.
+NIA Analysis includes Insertions (House-only candidates), Deletions (NEP-only
+candidates), and Adjustments (paired amount changes), with group rankings and
+supporting-record dialogs.
 
 ## Development and packaging
 
@@ -13,13 +19,14 @@ npm ci --prefix analysis/web
 npm run dev --prefix analysis/web
 ```
 
-`predev` and `prebuild` run `other-analysis/build_fmr_workbench.py`. Vite's retained
+`predev` and `prebuild` rebuild the comparison payloads and run both
+`other-analysis/build_fmr_workbench.py` and `analysis-nia/build_nia_workbench.py`. Vite's retained
 file middleware serves JSON, source PDFs with byte ranges, review images, and
 source documentation from the checkout.
 
 ```sh
 npm run build --prefix analysis/web
-python scripts/build_fmr_pages.py
+python scripts/build_pages.py --with-react
 python scripts/serve_pages.py --port 8000
 ```
 

@@ -1,16 +1,23 @@
-# FY2027 FMR Budget Workbench
+# FY2027 Budget Workbenches
 
-The **FMR branch** adapts the existing React workbench to the Department of
-Agriculture's locally funded farm-to-market road annex. It reuses the navigation,
-sortable tables, share links, modal behavior, and PDF viewer.
+The React workbench includes DPWH, the Department of Agriculture's locally funded
+farm-to-market road annex, and the NIA irrigation schedules. Switch workspaces
+in the shared header; each retains its own routes, data, and source evidence.
 
-The main tabs are **Home · Highlights · Compare Stages · Analysis · House GAB ·
-DBM NEP**. House GAB and DBM NEP share a program → region → project tree view.
+The annex tabs are **Home · Highlights · Compare Stages · Analysis · House GAB ·
+DBM NEP**; FMR also has a Map. FMR sources use program → region → project trees;
+NIA uses the printed heading → sub-program → project hierarchy.
 
 | Source | Allocation | Projects | Regions | Remaining coordinate review |
 |---|---:|---:|---:|---:|
 | DBM NEP | ₱16,000,000,000 | 704 | 16 | 8 |
 | House GAB supplied copy | ₱19,628,100,000 | 964 | 16 | 14 |
+
+The NIA workspace (`#nia/home`) covers **791 NEP rows (₱17,598,181,000)** and
+**828 House rows (₱17,999,305,000)** under six sub-programs. The difference is
+**₱401,124,000**. Its 509 unique-title candidate pairs remain provisional;
+319 House-only and 282 NEP-only rows are source observations. See the
+[NIA workbench guide](analysis-nia/NIA_WORKBENCH.md).
 
 House legislative reading is not independently authenticated. Project pairings
 are candidates, with both source IDs and PDF references retained. Multi-segment
@@ -26,7 +33,7 @@ npm ci --prefix analysis/web
 npm run dev --prefix analysis/web
 ```
 
-Open the URL printed by Vite. The predev step rebuilds the FMR browser dataset
+Open the URL printed by Vite. The predev step rebuilds the annex browser datasets
 from retained JSON. Development serves the source PDFs, images, and datasets
 from this checkout; no API server is needed.
 
@@ -34,13 +41,13 @@ To preview the complete static package:
 
 ```sh
 npm run build --prefix analysis/web
-python scripts/build_fmr_pages.py
+python scripts/build_pages.py --with-react
 python scripts/serve_pages.py --port 8000
 ```
 
 Open `http://127.0.0.1:8000/`. The generated `dist/`, browser payload, and `_site/`
 are git-ignored. Vite's standalone preview does not include the retained evidence;
-use the packaged preview above. The packager rebuilds `_site/` with FMR assets.
+use the packaged preview above. The packager includes all three workspaces.
 
 ## Guides and validation
 
@@ -55,9 +62,11 @@ python -m unittest discover -s other-analysis/tests -v
 python -m unittest discover -s analysis-nia/tests -v
 npm test --prefix analysis/web
 python other-analysis/build_fmr_workbench.py --check
+python analysis-nia/build_nia_workbench.py --check
 python scripts/check_fmr_pages.py
+python scripts/check_nia_pages.py
 ```
 
 Browser checks require Playwright and Chromium and run after packaging. The
-branch workflow validates the FMR app; automatic Pages deployment remains
+branch workflow validates the DPWH, FMR, and NIA workbenches; automatic Pages deployment remains
 restricted to `main`. This branch has not been published.

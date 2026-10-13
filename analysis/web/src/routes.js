@@ -8,8 +8,7 @@
 // Adding a workspace: append an entry to `workspaces` below. The prefix is
 // the hash segment, `pages` is its tab list (reuse DPWH tab keys where an
 // analogy exists so workspace switching keeps the reader on the analogous
-// page), and `load` is the lazy app import used by Workbench.jsx. No other
-// file needs a workspace branch.
+// page). Add the lazy app import to Workbench.jsx's loader registry as well.
 export const routes = {
   home: { label: "Home" },
   analysis: { label: "Analysis" },
@@ -32,7 +31,7 @@ export const legacyRoutes = Object.fromEntries([
 // Workspace registry: everything the shell needs to know about a workspace.
 // DPWH is the unprefixed default; annex workspaces each own one hash prefix.
 // `label` appears in the header's workspace selector, `pages` is the tab
-// list, and `load` is the lazy app import (so annex bundles stay code-split).
+// list. Workbench.jsx maintains the lazy loaders so annex bundles stay code-split.
 export const workspaces = {
   dpwh: {
     label: "DPWH",
@@ -58,6 +57,18 @@ export const workspaces = {
       ["compare", "Compare Stages"],
       ["analysis", "Analysis"],
       ["map", "Map"],
+      ["house", "House GAB"],
+      ["nep", "DBM NEP"],
+    ],
+  },
+  nia: {
+    label: "NIA Irrigation",
+    prefix: "nia",
+    pages: [
+      ["home", "Home"],
+      ["highlights", "Highlights"],
+      ["compare", "Compare Stages"],
+      ["analysis", "Analysis"],
       ["house", "House GAB"],
       ["nep", "DBM NEP"],
     ],

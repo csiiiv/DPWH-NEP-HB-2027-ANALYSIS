@@ -57,8 +57,8 @@ test('unregistered hash prefixes fall back to the DPWH workspace', () => {
 });
 test('the workspace registry exposes consistent labels, prefixes and pages', () => {
   // Every workspace needs a label, at least one tab, and a unique prefix.
-  assert.deepEqual(workspaceLabels, {dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads'});
-  assert.deepEqual(Object.keys(workspaces), ['dpwh', 'fmr']);
+  assert.deepEqual(workspaceLabels, {dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', nia: 'NIA Irrigation'});
+  assert.deepEqual(Object.keys(workspaces), ['dpwh', 'fmr', 'nia']);
   const prefixes = Object.values(workspaces).map(ws => ws.prefix);
   assert.equal(new Set(prefixes).size, prefixes.length, 'prefixes must be unique');
   for (const ws of Object.values(workspaces)) {
@@ -69,4 +69,14 @@ test('the workspace registry exposes consistent labels, prefixes and pages', () 
   // DPWH keeps the empty prefix; annexes each own one hash segment.
   assert.equal(workspaces.dpwh.prefix, '');
   assert.ok(dpwhPages.length >= fmrPages.length);
+});
+test('NIA deep links and analogous workspace switches preserve source selections', () => {
+  const route = readRoute('#nia/house?node=ib%3Ap896%3Ar2');
+  assert.equal(route.workspace, 'nia');
+  assert.equal(route.key, 'house');
+  assert.equal(route.params.get('node'), 'ib:p896:r2');
+  assert.equal(readRoute('#nia').key, 'home');
+  assert.equal(routeHref('compare', {view: 'projects'}, 'nia'), '#nia/compare?view=projects');
+  assert.equal(workspaceHref('nia', readRoute('#fmr/house?node=x')), '#nia/house');
+  assert.equal(workspaceHref('nia', readRoute('#fmr/map')), '#nia/home');
 });

@@ -3,6 +3,7 @@
 import importlib.util
 from pathlib import Path
 import shutil
+from package_nia import package_nia
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -31,6 +32,7 @@ def main():
     for path in (ROOT / 'other-analysis').iterdir():
         if path.is_file() and path.suffix in ('.md','.csv','.json'):
             shutil.copy2(path, site / 'other-analysis' / path.name)
+    package_nia(site)
     (site / '.nojekyll').touch()
     (site / 'index.html').write_text('''<!doctype html><html lang="en"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>FMR workbench</title>

@@ -98,8 +98,8 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,
    <tbody>{visible.map((row,i)=><tr key={row.id??i}>{linked&&<td className="table-link-col"/>}{columns.map(column=>{
      const Tag=column.scope==='row'?'th':'td';
      return column.render
-      ?<Tag key={column.key} className={cellClass(column)} style={cellStyle(column)}>{column.render(row,i)}</Tag>
-      :<Tag key={column.key} className={cellClass(column)} style={cellStyle(column)}>{formatCell(column.value?column.value(row):row[column.key])}</Tag>;
+      ?<Tag key={column.key} data-label={column.label} className={cellClass(column)} style={cellStyle(column)}>{column.render(row,i)}</Tag>
+      :<Tag key={column.key} data-label={column.label} className={cellClass(column)} style={cellStyle(column)}>{formatCell(column.value?column.value(row):row[column.key])}</Tag>;
    })}</tr>)}
     {!rows.length&&<tr><td colSpan={columns.length+(linked?1:0)}>{empty||'No rows.'}</td></tr>}
    </tbody>

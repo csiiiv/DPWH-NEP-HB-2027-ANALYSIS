@@ -39,6 +39,7 @@ function retainedFiles() {
         }
         const routes = [
           ["/other-analysis/", [root + "/other-analysis"]],
+          ["/analysis-nia/", [root + "/analysis-nia"]],
           ["/dbm-other-nep-line-data/", [root + "/dbm-other-nep-line-data"]],
           ["/dbm-nep-data/", [root + "/dbm-nep-data"]],
           [
