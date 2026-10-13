@@ -260,8 +260,8 @@ function Compare({data, route, rows, onPdf, inlineSource, clearPdf}) {
       </article>)}<article><h3>House − NEP</h3><strong className="up">{signedMoney(data.comparison_summary.delta_php)}</strong><p>Six reconciled sub-programs</p></article></div>
       <p className="notice">{data.matching_note}</p><ScopeNote/>
     </details>
-    <nav className="view-tabs" aria-label="Comparison tables">{[['subprograms', 'Sub-program totals'], ['projects', 'Project records']].map(([key, label]) =>
-      <button key={key} aria-pressed={view === key} onClick={() => navigate(route, {view: key, page: null, sort: null, dir: null, status: null, pair: null})}>{label}</button>)}</nav>
+    <Tabs route={route} defaultKey="subprograms" items={[['subprograms', 'Sub-program totals'], ['projects', 'Project records']]}
+      ariaLabel="Comparison tables" reset={{sort: null, dir: null, status: null, pair: null}}/>
     <p className="comparison-scope">Amounts in PHP · Change = House GAB − DBM NEP. {view === 'projects'
       ? 'Pairings are provisional. Select a project title to inspect both source records.' : 'Full printed sub-program controls are independent of project-title matching.'}</p>
     {inlineSource && <div className="workspace-switch" aria-label="Workspace panels"><button aria-pressed={panel === 'table'} onClick={() => navigate(route, {panel: 'table'})}>Table</button>
@@ -273,8 +273,12 @@ function Compare({data, route, rows, onPdf, inlineSource, clearPdf}) {
           <div className={`filters advanced-filters ${moreFilters ? 'open' : ''}`}><label>Candidate status<select aria-label="Candidate status" value={p.status || ''} onChange={e => filterChange(route, {status: e.target.value})}>
             <option value="">All rows</option>{Object.entries(comparisonFilterLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
           </select></label></div></>}
-        {(p.q || p.subprogram || p.status) && <div className="active-filters" aria-label="Active filters">{['q', 'subprogram', ...(view === 'projects' ? ['status'] : [])].filter(k => p[k]).map(k =>
-          <button key={k} aria-label={`Remove ${k} filter`} onClick={() => filterChange(route, {[k]: null})}>{k === 'status' ? comparisonFilterLabels[p[k]] || p[k] : p[k]} ×</button>)}
+        {(p.q || p.subprogram || p.status) && <div className="active-filters" aria-label="Active filters">
+          {[['q', 'search'], ['subprogram', 'sub-program'], ...(view === 'projects' ? [['status', 'candidate status']] : [])].filter(([k]) => p[k]).map(([k, name]) => {
+            const value = k === 'status' ? comparisonFilterLabels[p[k]] || p[k]
+              : k === 'subprogram' ? data.stages.house.subprograms.find(s => s.key === p[k])?.label || p[k] : p[k];
+            return <button key={k} aria-label={`Remove ${name} filter`} onClick={() => filterChange(route, {[k]: null})}>{value} ×</button>;
+          })}
           <button onClick={() => filterChange(route, {q: null, subprogram: null, status: null})}>Clear filters</button></div>}
         {view === 'projects' ? <><details className="nia-candidate-summary"><summary>Candidate counts and funding reconciliation</summary>
           <p>{agg.counts.paired} candidate pairs · {agg.counts.house_only} House-only · {agg.counts.nep_only} NEP-only observations.</p>

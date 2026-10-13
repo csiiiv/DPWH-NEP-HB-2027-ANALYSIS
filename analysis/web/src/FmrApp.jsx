@@ -74,6 +74,11 @@ function SourceButton({source, onPdf, label}) {
   return <button className="fmr-source-button" onClick={() => onPdf(source)}>{label || `PDF p. ${source.pdf_page}`}<small>Printed p. {source.printed_page}</small></button>;
 }
 const FILTER_KEYS = ['q','region','status','direction','method','coordinate','coord_side','extraction','rule','review_flag','text_basis','category','amount','minAmount','maxAmount'];
+// Chips and selects share one label source so a filter always reads the same way.
+const FILTER_LABELS = {q:'Search', region:'Region', status:'Status', direction:'Amount direction', method:'Match method',
+  coordinate:'Coordinate status', coord_side:'Source side', extraction:'Extraction flag', rule:'Interpretation rule',
+  review_flag:'Remaining review flag', text_basis:'Coordinate text basis', category:'Category', amount:'Amount',
+  minAmount:'Min total', maxAmount:'Max total'};
 const COORDINATE_OPTIONS = [['normalized','Normalized'],['needs_review','Needs review'],['interpreted','Interpreted / flagged'],['multi','Multiple segments']];
 const COORD_SIDE_OPTIONS = [['nep','NEP side'],['house','House side'],['both','Both sides']];
 function changeFilters(route, patch) {navigate(route,{...patch,page:null});}
@@ -114,7 +119,7 @@ function Filters({route, regions, coordinate = false, comparison = false, review
     : 'Extraction flags are pre-normalizer findings. Interpretation rules record how values were read. Remaining flags are still open after normalize.'}</p></details>}
   <div className="fmr-chips" aria-label="Active filters">{FILTER_KEYS.filter(k => params[k]).map(k => {
     const value = k === 'region' ? regions.find(r => (r.key || r.id) === params[k])?.label || params[k] : labels[k]?.[params[k]] || params[k].replaceAll('_',' ');
-    return <span className="fmr-chip" key={k}>{k}: {value}<button aria-label={`Remove ${k} filter`} onClick={() => changeFilters(route,{[k]:null})}>×</button></span>;
+    return <span className="fmr-chip" key={k}>{FILTER_LABELS[k] || k}: {value}<button aria-label={`Remove ${FILTER_LABELS[k] || k} filter`} onClick={() => changeFilters(route,{[k]:null})}>×</button></span>;
   })}</div></>;
 }
 function ViewTabs({route, views, defaultView}) {

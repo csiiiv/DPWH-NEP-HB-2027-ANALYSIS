@@ -61,7 +61,7 @@ def main():
                     goto('compare')
                     context = page.locator('.comparison-context')
                     assert not context.evaluate('(e) => e.open')
-                    expect(page.get_by_role('button', name='Sub-program totals', exact=True)).to_have_attribute('aria-pressed', 'true')
+                    expect(page.get_by_role('link', name='Sub-program totals', exact=True)).to_have_attribute('aria-current', 'page')
                     expect(page.get_by_role('region', name='NIA sub-program stage comparison', exact=True).locator('tbody tr')).to_have_count(6)
                     page.get_by_label('Sub-program', exact=True).select_option('Other Irrigation System')
                     expect(page.get_by_role('region', name='NIA sub-program stage comparison', exact=True).locator('tbody tr')).to_have_count(1)

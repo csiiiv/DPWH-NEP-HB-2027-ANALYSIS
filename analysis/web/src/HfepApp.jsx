@@ -86,6 +86,8 @@ function PdfPane({source, onClose}) {
 }
 
 const FILTER_KEYS = ['q', 'category', 'subcategory', 'region', 'status', 'flag', 'lineage', 'minAmount', 'maxAmount', 'province'];
+const FILTER_LABELS = {q: 'Search', category: 'Category', subcategory: 'Subcategory', region: 'Region', status: 'Facility status',
+  flag: 'Extraction flag', lineage: 'Interpretation rule', minAmount: 'Min total', maxAmount: 'Max total', province: 'Province'};
 const STATUS_OPTIONS = [['flagged', 'Flagged'], ['interpreted', 'Interpreted'], ['clean', 'Clean']];
 function changeFilters(route, patch) {navigate(route, {...patch, page: null});}
 function Filters({route, index, review = false}) {
@@ -126,8 +128,8 @@ function Filters({route, index, review = false}) {
   <div className="fmr-chips" aria-label="Active filters">{FILTER_KEYS.filter(k => params[k]).map(k => {
     const value = k === 'status' ? statusLabels[params[k]] || params[k]
       : k === 'flag' ? flagLabel(params[k]) : k === 'lineage' ? lineageLabel(params[k]) : params[k];
-    return <span className="fmr-chip" key={k}>{k}: {value}
-      <button aria-label={`Remove ${k} filter`} onClick={() => changeFilters(route, {[k]: null})}>×</button></span>;
+    return <span className="fmr-chip" key={k}>{FILTER_LABELS[k] || k}: {value}
+      <button aria-label={`Remove ${FILTER_LABELS[k] || k} filter`} onClick={() => changeFilters(route, {[k]: null})}>×</button></span>;
   })}</div></>;
 }
 

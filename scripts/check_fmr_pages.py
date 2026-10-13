@@ -172,7 +172,7 @@ def main():
                     page.get_by_label('Amount direction', exact=True).select_option('decreased')
                     expect(results.locator('.fmr-card' if width == 390 else 'tbody tr')).to_have_count(3)
                     expect(page.get_by_label('Active filters')).to_contain_text('Decreased')
-                    page.get_by_role('button', name='Remove direction filter').click()
+                    page.get_by_role('button', name='Remove Amount direction filter').click()
                     expect(results.locator('.fmr-card' if width == 390 else 'tbody tr')).to_have_count(4)
                     with page.expect_download() as result:
                         page.get_by_role('button', name='Export filtered JSON', exact=True).click()
