@@ -1,6 +1,7 @@
 import React, { useEffect, useId, useRef, useState } from "react";
 import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
 import workerUrl from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
+import {disposePdfLoadingTask} from "./pdfLifecycle.js";
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 export default function PdfPreview({ source, onClose, closeLabel = "Clear preview", downloadOriginal = false, autoFocusClose = downloadOriginal }) {
   const titleId = useId();
@@ -50,7 +51,7 @@ export default function PdfPreview({ source, onClose, closeLabel = "Clear previe
       });
     return () => {
       live = false;
-      task.destroy().catch(() => {});
+      disposePdfLoadingTask(task);
     };
   }, [source.url]);
   useEffect(() => {

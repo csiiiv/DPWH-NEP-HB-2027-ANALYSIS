@@ -4,6 +4,9 @@ Built on **12 October 2026** from the supplied **HB 10858 FY 2027 Volume I-B** i
 
 **Engineering worklog:** [issues encountered during extraction and how each was resolved](HGAB_NIA_EXTRACTION_WORKLOG.md).
 
+**Interactive workbench:** [NIA routes, comparison rules, evidence, and checks](NIA_WORKBENCH.md).
+Open `#nia/home` in the shared React app to explore both retained schedules.
+
 The extraction recovers **828 printed project line items** under **six sub-program controls** and one printed program heading, totalling **₱17,999,305,000**. Every sub-program project sum reconciles. All six sub-program amounts and both program-level totals also agree with the independently read NIA agency table on Volume I-B printed 559–564 (PDF 567–572), including the agency-only CARP-linked row of **₱698,067,000** that the annex does not print.
 
 ## Outputs
@@ -89,7 +92,7 @@ Four repeated-title groups (two printed rows each) are retained as separate rows
 - Not a complete NIA inventory: the agency section's named major projects, subsidy rows, and object-of-expenditures table (in thousands) are outside scope.
 - Not geospatial: unlike FMR, the NIA annex prints no coordinates.
 - Not row-by-row image-reviewed: every row is a native-layout match with word-level ownership, but no individual rendered-row review has been performed (`comparison_ready: false`).
-- Not a NEP comparison: the DBM NEP standalone NIA PDF (`dbm-other-nep-line-data/NIA.pdf`, 30 pages, OCR text layer) shows a materially different structure — an `IRRIGATION SYSTEMS RESTORATION PROGRAM` heading and NIS control of ₱4,662,231,000 (vs HGAB ₱5,471,255,000) — and is a natural next extraction target. **This extraction now exists:** see [NEP_NIA_EXTRACTION_FINDINGS.md](NEP_NIA_EXTRACTION_FINDINGS.md) (791 rows, ₱17,598,181,000, all six controls exact) and [NEP_NIA_METHODOLOGY_AND_LESSONS.md](NEP_NIA_METHODOLOGY_AND_LESSONS.md) (the scanned-annex method and pitfalls reference). The final dataset with per-row provenance is [data/nep_nia_dataset.json](data/nep_nia_dataset.json).
+- Not a certified project-identity comparison: the DBM NEP standalone NIA PDF (`dbm-other-nep-line-data/NIA.pdf`, 30 pages, OCR text layer) has a different structure, including a printed Restoration heading and NIS control of ₱4,662,231,000. Its extraction exists: see [NEP_NIA_EXTRACTION_FINDINGS.md](NEP_NIA_EXTRACTION_FINDINGS.md) (791 rows, ₱17,598,181,000, all six controls exact) and [NEP_NIA_METHODOLOGY_AND_LESSONS.md](NEP_NIA_METHODOLOGY_AND_LESSONS.md). The final dataset is [data/nep_nia_dataset.json](data/nep_nia_dataset.json); the [workbench](NIA_WORKBENCH.md) compares controls and provisional title candidates.
 
 ## Rebuild and checks
 

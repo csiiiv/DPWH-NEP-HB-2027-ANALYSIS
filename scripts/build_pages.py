@@ -10,6 +10,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 from validate_current_pages import validate_current_pages
+from package_nia import package_nia
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / '_site'
@@ -113,6 +114,7 @@ def validate_site():
         workbench_readmes = {
             'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/README.md',
             'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/other-analysis/README.md',
+            'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis-nia/README.md',
             'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis-hfep/README.md',
         }
         if repository_readme not in parser.links or not workbench_readmes.intersection(parser.links):
@@ -310,6 +312,7 @@ def main(with_react=True):
         shutil.copyfile(pdf, OUTPUT / 'pdfs' / pdf.name)
         package_fmr()
         package_hfep()
+        package_nia(OUTPUT)
     validate_site()
     print(f'Prepared and checked {len(VIEWER_NAMES)} dashboards in {OUTPUT}')
 

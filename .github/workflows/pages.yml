@@ -6,12 +6,16 @@ on:
     paths:
       - 'analysis/**'
       - 'other-analysis/**'
+      - 'analysis-nia/**'
+      - 'analysis-hfep/**'
       - 'dpwh_coor2psgc_geomapping'
       - '.gitmodules'
       - 'site/**'
       - 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
       - 'dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf'
       - 'dbm-other-nep-line-data/FMR.pdf'
+      - 'dbm-other-nep-line-data/NIA.pdf'
+      - 'dbm-other-nep-line-data/HFEP_2.pdf'
       - 'scripts/**'
       - 'dpwh-transparency-nep-data/**'
       - 'HB_BUDGET/*.pdf'
@@ -21,12 +25,16 @@ on:
     paths:
       - 'analysis/**'
       - 'other-analysis/**'
+      - 'analysis-nia/**'
+      - 'analysis-hfep/**'
       - 'dpwh_coor2psgc_geomapping'
       - '.gitmodules'
       - 'site/**'
       - 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
       - 'dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf'
       - 'dbm-other-nep-line-data/FMR.pdf'
+      - 'dbm-other-nep-line-data/NIA.pdf'
+      - 'dbm-other-nep-line-data/HFEP_2.pdf'
       - 'scripts/**'
       - 'dpwh-transparency-nep-data/**'
       - 'HB_BUDGET/*.pdf'
@@ -106,13 +114,23 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: analysis/web/package-lock.json
+      - name: Check NIA extraction and browser accounting
+        run: |
+          python3 -m unittest discover -s analysis-nia/tests -v
+          python3 analysis-nia/build_nia_workbench.py
+          python3 analysis-nia/build_nia_workbench.py --check
+      - name: Check HFEP extraction and browser accounting
+        run: |
+          python3 -m unittest discover -s analysis-hfep/tests -v
+          python3 other-analysis/build_hfep_workbench.py
+          python3 other-analysis/build_hfep_workbench.py --check
       - name: Build and check React workbench
         working-directory: analysis/web
         run: |
           npm ci
           npm test
           npm run build
-      - name: Package SPA, DPWH and FMR sources
+      - name: Package SPA, DPWH, FMR, HFEP and NIA sources
         run: python3 scripts/build_pages.py --with-react
       - name: Check React navigation, sorting and real PDF range rendering
         run: |
@@ -124,6 +142,8 @@ jobs:
           python3 scripts/check_comparison_workspace.py
           python3 scripts/check_analysis_page.py
           python3 scripts/check_fmr_pages.py
+          python3 scripts/check_hfep_pages.py
+          python3 scripts/check_nia_pages.py
       - name: Check root and historical route redirects under project base
         run: node --test analysis/tests/test_static_navigation.cjs
       - name: Configure Pages
