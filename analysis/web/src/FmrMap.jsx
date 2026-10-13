@@ -17,7 +17,7 @@ import {
   STAGE_COLORS, PAIRED_COLOR, HUB_COLOR, INCREASE_COLOR, DECREASE_COLOR,
   MULTI_SEGMENT_COLOR, RED_FLAG_COLOR, COORD_BASIS_OPTIONS,
   MAP_OBJECT_OPTIONS, DEFAULT_MAP_OBJECTS,
-  buildMapOverlay, filterOverlayByObjects, stackForFeature,
+  buildMapOverlay, filterOverlayByObjects, stackForFeature, drawableSegments, pointCoordinates,
 } from './fmrMapModel.js';
 import './FmrMap.css';
 import './Fmr.css';
@@ -298,7 +298,7 @@ function ObjectIcon({object}) {
   return <MarkerIcon kind={kind}/>;
 }
 
-function MapSelectionCard({data, feature, stack, stackIndex, onStack, onClose, onPdf, onProvenance, reviewThresholds = {}}) {
+function MapSelectionCard({data, feature, stack, stackIndex, onStack, onClose, onPdf, onProvenance, onZoom, reviewThresholds = {}}) {
   const p = feature.properties;
   const [detailsOpen,setDetailsOpen] = useState(false);
   useEffect(() => setDetailsOpen(false),[feature.id]);
@@ -365,7 +365,7 @@ function MapSelectionCard({data, feature, stack, stackIndex, onStack, onClose, o
       {stack.length > 1 && <div className="fmr-map-stack" aria-label="Overlapping projects at this location"><span>Project {stackIndex+1} of {stack.length}</span>
         <button disabled={stackIndex===0} onClick={() => onStack(stackIndex-1)}>Previous</button><button disabled={stackIndex>=stack.length-1} onClick={() => onStack(stackIndex+1)}>Next</button></div>}
       <div className="fmr-map-info-actions"><a className="primary" href={primaryHref}>{paired ? 'Open in Compare →' : 'Open source record →'}</a>
-        <button onClick={() => setDetailsOpen(true)}>Details &amp; evidence</button></div>
+        <button onClick={() => onZoom(feature)}>Zoom to project</button><button onClick={() => setDetailsOpen(true)}>Details &amp; evidence</button></div>
     </aside>
     {detailsOpen && <Dialog label="Map project details" className="fmr-map-details-dialog" onClose={() => setDetailsOpen(false)}>
       <div className="fmr-dialog-heading"><h2>Project details &amp; evidence</h2><button onClick={() => setDetailsOpen(false)}>Close details</button></div>
@@ -537,6 +537,29 @@ export default function FmrMap({data, route}) {
     setSelected(feature || overlay.flags.features[0] || null);setStackIndex(0);
   },[ready,overlay,filters.project,filters.pair,filters.focus]);
 
+  const zoomToProject = feature => {
+    const instance = map.current;
+    if (!instance) return;
+    const p = feature.properties;
+    const paired = p.matchKind === 'paired' || ['paired','pair_increase','pair_decrease'].includes(p.objectKind);
+    const ids = paired ? [p.nepId,p.houseId] : [p.projectId];
+    const bounds = new LngLatBounds();
+    let count = 0;
+    for (const project of ids.map(id => projectById(data,id)).filter(Boolean)) {
+      const segments = drawableSegments(project,filters.coordBasis);
+      const coordinates = segments.length ? segments.flatMap(segment => segment.coordinates)
+        : (project.points || []).map(point => pointCoordinates(point,filters.coordBasis)).filter(Boolean);
+      for (const coordinate of coordinates) {
+        if (coordinate.every(Number.isFinite) && Math.abs(coordinate[0])<=180 && Math.abs(coordinate[1])<=90) {bounds.extend(coordinate);count++;}
+      }
+    }
+    if (!count) return;
+    const width = container.current.clientWidth;
+    const mobile = window.matchMedia('(max-width: 700px)').matches;
+    instance.fitBounds(bounds,{padding:{top:60,bottom:60,left:60,right:mobile ? 60 : Math.min(450,width*.5)},maxZoom:15,duration:600});
+    if (mobile) container.current.scrollIntoView({behavior:'smooth',block:'center'});
+  };
+
   const select = (key, label, options) => options?.length ? <label>{label}<select aria-label={label} value={filters[key] || ''} onChange={e => setFilter(key, e.target.value)}>
     <option value="">All {label.toLowerCase()}</option>{options.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></label> : null;
 
@@ -581,6 +604,7 @@ export default function FmrMap({data, route}) {
       {!ready && !failed && <p className="fmr-map-warning" role="status">Loading basemap…</p>}
       {active && <MapSelectionCard
         reviewThresholds={Object.fromEntries(Object.entries(filters).filter(([key]) => key.startsWith('rf_')))} data={data} feature={active} stack={stack} stackIndex={stackIndex}
+        onZoom={zoomToProject}
         onStack={setStackIndex}
         onClose={() => setSelected(null)}
         onPdf={setPdfSource}
