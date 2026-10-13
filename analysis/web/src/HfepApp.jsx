@@ -525,10 +525,11 @@ function Analysis({indexes, route, onPdf, data}) {
     <div className="fmr-page-title"><div>
       <p className="fmr-eyebrow">FY2027 · Analysis · {stage.label}</p>
       <h1>Analysis</h1><p>Choose an analytical question, inspect its population, and follow aggregates into source records.</p>
-    </div><ShareLink/></div>
-    <label className="hero-source" style={{display: 'flex', gap: 8, alignItems: 'center', margin: '12px 0'}}>Budget source
-      <select value={stageKey} onChange={e => navigate(route, {stage: e.target.value, records: null})}>
-        <option value="nep">DBM NEP</option><option value="house">House GAB</option></select></label>
+    </div><div className="hero-actions">{crossDocViews.includes(view)
+      ? <span className="hero-source">{view === 'insertions' ? 'House GAB · unmatched source rows' : view === 'deletions' ? 'DBM NEP · unmatched source rows' : 'House GAB ↔ DBM NEP'}</span>
+      : <label className="hero-source">Budget source
+      <select aria-label="Analysis budget source" value={stageKey} onChange={e => navigate(route, {stage: e.target.value, records: null})}>
+        <option value="nep">DBM NEP</option><option value="house">House GAB</option></select></label>}<ShareLink/></div></div>
     <ViewTabs route={route} defaultView="overview" views={[['overview', 'Overview'], ['insertions', 'Insertions'], ['deletions', 'Deletions'], ['adjustments', 'Adjustments'], ['categories', 'Categories'], ['stats', 'Statistics'], ['review', 'Extraction review']]}/>
     <h2 className="fmr-question">{questions[view] || 'Source records'}</h2>
     {!crossDocViews.includes(view) && <Filters route={route} index={index}/>}

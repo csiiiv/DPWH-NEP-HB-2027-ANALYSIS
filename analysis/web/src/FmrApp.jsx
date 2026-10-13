@@ -488,7 +488,9 @@ function Analysis({data, route, onPdf}) {
   const drill=records => navigate(route,{records});
   const measured=projects.filter(p => p.status === 'normalized' && p.segments.every(s => Number.isFinite(s.straight_line_distance_km)) && projectLengthKm(p) > 0).map(p => ({...p,distance:projectLengthKm(p)}));
   return <>
-    <Hero title="Analysis" actions={!candidateView ? <label className="hero-source">Budget source<select value={key} onChange={e => navigate(route,{stage:e.target.value,records:null,category:null,page:null,rf_project:null})}><option value="nep">DBM NEP</option><option value="house">House GAB</option></select></label> : null}><p>Choose an analytical question, inspect its population, and follow aggregates into source records.</p></Hero>
+    <Hero title="Analysis" actions={candidateView
+      ? <span className="hero-source">{view === 'house_candidates' ? 'House GAB · unmatched source rows' : view === 'nep_candidates' ? 'DBM NEP · unmatched source rows' : 'House GAB ↔ DBM NEP'}</span>
+      : <label className="hero-source">Budget source<select value={key} onChange={e => navigate(route,{stage:e.target.value,records:null,category:null,page:null,rf_project:null})}><option value="nep">DBM NEP</option><option value="house">House GAB</option></select></label>}><p>Choose an analytical question, inspect its population, and follow aggregates into source records.</p></Hero>
     <ViewTabs route={route} defaultView="overview" views={analysisViews}/><h2 className="fmr-question">{analysisQuestions[view] || 'Source records'}</h2>
     <Filters route={route} regions={candidateView ? data.regions : stage.regions} coordinate={!candidateView} comparison={candidateView} fixedStatus={candidateView ? candidateStatus : undefined} provenance={provenance}/>
     {candidateView ? <><p className="fmr-muted">{candidateStatus === 'changed' ? 'Changed candidate pairs; source amounts and paired differences remain distinct.' : `Unmatched ${stage.label} source rows are candidates, not certified ${key === 'house' ? 'insertions' : 'deletions'}.`}</p>
