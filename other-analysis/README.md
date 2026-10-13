@@ -2,7 +2,7 @@
 
 **FMR branch workbench:** [routes, candidate matching, and local run guide](FMR_WORKBENCH.md).
 The React app now uses both FMR hierarchies with six main tabs: Home, Highlights,
-Compare Stages, Analysis, House GAB, and DBM NEP. The supplied House copy's
+Compare stages, Analysis, House GAB, and DBM NEP. The supplied House copy's
 legislative reading remains unauthenticated; project matches remain candidates.
 
 **House FMR printed-total comparison:** [working copy versus named third-reading copy](FMR_HOUSE_PRINTED_TOTALS_COMPARISON.md).

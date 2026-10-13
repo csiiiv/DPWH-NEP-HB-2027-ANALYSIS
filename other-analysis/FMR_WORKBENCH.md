@@ -36,7 +36,7 @@ remain the retained inputs. No live API is queried.
 
 ## Main tabs
 
-The navigation order is **Home, Highlights, Compare Stages, Analysis, House GAB,
+The navigation order is **Home, Highlights, Compare stages, Analysis, House GAB,
 DBM NEP**.
 
 - **House GAB / DBM NEP:** the same expandable tree, project table, and coordinate
@@ -47,7 +47,7 @@ DBM NEP**.
   and previous/next navigation respect the current scope. Program and regional
   controls link to the independent agency schedule too. NEP reviewed rows retain
   raw OCR, interpreted transcription, review notes, and rendered source images.
-- **Compare Stages:** regional control differences and provisional project
+- **Compare stages:** regional control differences and provisional project
   candidates, with separate match-method/coordinate/direction filters, removable
   chips, inline PDF buttons, filtered analytics, CSV/JSON exports, mobile cards,
   and URL-backed sorting and pagination.

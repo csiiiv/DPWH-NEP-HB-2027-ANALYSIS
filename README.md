@@ -4,7 +4,7 @@ The React workbench includes DPWH, the Department of Agriculture's locally funde
 farm-to-market road annex, DOH health facilities, and the NIA irrigation schedules. Switch workspaces
 in the shared header; each retains its own routes, data, and source evidence.
 
-The annex tabs are **Home · Highlights · Compare Stages · Analysis · House GAB ·
+The annex tabs are **Home · Highlights · Compare stages · Analysis · House GAB ·
 DBM NEP**; FMR also has a Map. FMR sources use program → region → project trees;
 NIA uses the printed heading → sub-program → project hierarchy.
 
