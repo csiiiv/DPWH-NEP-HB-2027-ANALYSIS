@@ -583,7 +583,7 @@ Amounts in pesos. Generated from nep_hfep_facilities.csv / nep_hfep_controls.csv
     - Dr. Paulino J. Garcia Memorial Research and Medical Center — ₱50,000,000 (p9 / II-A p735 / printed 727)
     - Talavera General Hospital — ₱10,000,000 (p9 / II-A p735 / printed 727)
   - **Pampanga** — ₱950,000,000 (p9 / II-A p735 / printed 727)
-    - cYao 80,000,000 。 — ₱400,000,000 (p9 / II-A p735 / printed 727)
+    - Central Luzon Center for Health Development (Clark Multi-Specialty Medical Center) — ₱400,000,000 (p9 / II-A p735 / printed 727) [OCR repaired from "cYao 80,000,000 。"]
     - Jose B. Lingad Memorial General Hospital — ₱350,000,000 (p9 / II-A p735 / printed 727)
     - Sen. Edgardo J. Angara General Hospital (SEJAGEN) — ₱200,000,000 (p9 / II-A p735 / printed 727)
 - **CALABARZON** — ₱460,000,000 (p9 / II-A p735 / printed 727)

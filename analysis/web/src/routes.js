@@ -108,6 +108,11 @@ export function readWorkspace(hash) {
 export function readRoute(hash = location.hash) {
   const [path, query = ""] = hash.replace(/^#\/?/, "").split("?");
   const params = new URLSearchParams(query);
+  // Older tab links serialized reset values as text. Accept those shared URLs
+  // without treating "null" as a record selection or filter; preserve search text.
+  for (const key of ['pair','node','group','records','status','direction','ranking','sort','dir']) {
+    if (['null','undefined'].includes(params.get(key))) params.delete(key);
+  }
   const segments = path.split("/").filter(Boolean);
   const workspace = workspaceByPrefix[segments[0]] ?? "dpwh";
   if (workspace !== "dpwh")
@@ -117,7 +122,8 @@ export function readRoute(hash = location.hash) {
 // Links keep the active workspace unless a caller explicitly passes one, so
 // any component can emit routeHref(key, params) and stay in its workspace.
 export function routeHref(key, params = {}, workspace = readWorkspace()) {
-  const query = new URLSearchParams(params).toString();
+  const entries = params instanceof URLSearchParams ? [...params] : Object.entries(params);
+  const query = new URLSearchParams(entries.filter(([,value]) => value != null && value !== '')).toString();
   const prefix = workspaces[workspace]?.prefix ? `${workspaces[workspace].prefix}/` : "";
   return `#${prefix}${key}${query ? "?" + query : ""}`;
 }

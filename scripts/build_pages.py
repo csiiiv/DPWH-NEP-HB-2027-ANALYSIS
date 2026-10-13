@@ -205,8 +205,8 @@ def package_hfep():
         raise ValueError('Unsupported HFEP dataset schema')
     hfep_root = OUTPUT / 'hfep'
     hfep_root.mkdir()
-    # Preserve original document paths: the annex PDFs (HB_BUDGET Volume I-B,
-    # HFEP_2.pdf) and the agency-control volumes the evidence buttons cite.
+    # Preserve original document paths: House Volume I-B, NEP Volume II-A
+    # (canonical annex preview), and the agency-control volumes evidence cites.
     pdfs = {s['preview_pdf'] for s in data['stages'].values()}
     pdfs |= {s['agency_check']['source']['source_pdf'] for s in data['stages'].values()}
     for path in sorted(pdfs):

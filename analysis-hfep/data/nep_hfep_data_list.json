@@ -22,7 +22,7 @@
         "printed_page": 274
       },
       "printed_page_offset": 718,
-      "extractor_sha256": "2ff2e83e7564228668b11a8492429c94c7cd580d9b58e016ef2b1a79bb7a5538",
+      "extractor_sha256": "6aeb1bd4bdfe81c0df00fa317feb492ec18f8c4ee1e73250dc3eea734941a062",
       "pymupdf_version": "1.28.2",
       "ids": "artifact-local page/row identifiers; not cross-document identities"
     },
@@ -126,6 +126,17 @@
           ],
           "raw": "City of Valenzuela,Pinalagad Health Center",
           "note": "missing space after comma as printed"
+        }
+      ],
+      "label_repairs": [
+        {
+          "id": "label_ocr_garbled_clark",
+          "affects_ids": [
+            "nep_hfep:p9:r37"
+          ],
+          "raw": "cYao 80,000,000 。",
+          "corrected": "Central Luzon Center for Health Development (Clark Multi-Specialty Medical Center)",
+          "note": "PP-StructureV3 OCR garbled the facility name into amount fragments; repaired from HFEP_2.pdf native text (printed page 727 / PDF page 9) and the House annex counterpart title"
         }
       ],
       "verified_odd_amounts": [
@@ -12879,7 +12890,7 @@
     },
     {
       "id": "nep_hfep:p9:r37",
-      "label": "cYao 80,000,000 。",
+      "label": "Central Luzon Center for Health Development (Clark Multi-Specialty Medical Center)",
       "label_raw": "cYao 80,000,000 。",
       "hierarchy": {
         "category": "3. DOH Hospitals",
@@ -12906,7 +12917,13 @@
         "table_row": 37
       },
       "provenance": {
-        "normalizations": [],
+        "normalizations": [
+          {
+            "type": "label_ocr_repair",
+            "from": "cYao 80,000,000 。",
+            "to": "Central Luzon Center for Health Development (Clark Multi-Specialty Medical Center)"
+          }
+        ],
         "amount_lineage": [
           {
             "column": "motor_vehicle",
@@ -12915,7 +12932,14 @@
             "interpreted": "0"
           }
         ],
-        "flags": [],
+        "flags": [
+          {
+            "flag": "ocr_suspect_label",
+            "id": "label_ocr_garbled_clark",
+            "raw": "cYao 80,000,000 。",
+            "note": "PP-StructureV3 OCR garbled the facility name into amount fragments; repaired from HFEP_2.pdf native text (printed page 727 / PDF page 9) and the House annex counterpart title"
+          }
+        ],
         "image_review_status": "not_individually_reviewed"
       }
     },

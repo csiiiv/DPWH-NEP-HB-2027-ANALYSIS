@@ -61,7 +61,7 @@ use the packaged preview above. The packager includes all four workspaces.
 ```sh
 python -m unittest discover -s other-analysis/tests -v
 python -m unittest discover -s analysis-nia/tests -v
-python -m unittest discover -s analysis-hfep/tests -v
+python -m pytest analysis-hfep/tests -q
 npm test --prefix analysis/web
 python other-analysis/build_fmr_workbench.py --check
 python analysis-nia/build_nia_workbench.py --check
@@ -73,4 +73,4 @@ python scripts/check_hfep_pages.py
 
 Browser checks require Playwright and Chromium and run after packaging. The
 branch workflow validates the DPWH, FMR, HFEP, and NIA workbenches; automatic Pages deployment remains
-restricted to `main`. This branch has not been published.
+restricted to `main` and runs only after the validation checks pass.

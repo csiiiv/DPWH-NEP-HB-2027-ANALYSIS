@@ -94,3 +94,21 @@ test('NIA deep links and analogous workspace switches preserve source selections
   assert.equal(workspaceHref('nia', readRoute('#fmr/house?node=x')), '#nia/house');
   assert.equal(workspaceHref('nia', readRoute('#fmr/map')), '#nia/home');
 });
+
+
+test('tab resets omit cleared state instead of selecting a candidate named null', () => {
+  for (const workspace of ['dpwh','fmr','nia','hfep']) {
+    const href=routeHref('analysis',{view:'deletions',pair:null,status:null,group:null,sort:undefined,page:'',q:'canal',stage:'house'},workspace);
+    const parsed=readRoute(href);
+    assert.equal(parsed.params.get('pair'),null);assert.equal(parsed.params.get('status'),null);
+    assert.equal(parsed.params.get('group'),null);assert.equal(parsed.params.get('sort'),null);
+    assert.equal(parsed.params.get('page'),null);assert.equal(parsed.params.get('q'),'canal');
+    assert.equal(parsed.params.get('stage'),'house');
+  }
+  assert.equal(routeHref('home',{page:0,flag:false},'nia'),'#nia/home?page=0&flag=false');
+});
+test('legacy null reset links recover without stripping literal search text',()=>{
+  const route=readRoute('#nia/analysis?view=insertions&pair=null&status=null&group=undefined&q=null');
+  assert.equal(route.params.get('pair'),null);assert.equal(route.params.get('status'),null);
+  assert.equal(route.params.get('group'),null);assert.equal(route.params.get('q'),'null');
+});

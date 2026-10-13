@@ -66,6 +66,10 @@ export const NORMALIZATION_INFO = {
     label: 'Label whitespace collapsed',
     why: 'Repeated whitespace inside the printed label was collapsed for display; the raw label is retained.',
   },
+  label_ocr_repair: {
+    label: 'OCR label repaired',
+    why: 'The PP-StructureV3 OCR reading of the facility name was garbled; the display label was repaired from the PDF native text layer while the raw OCR reading is retained.',
+  },
 };
 export const flagLabel = flag => FLAG_INFO[flag]?.label || String(flag || '').replaceAll('_', ' ');
 export const lineageLabel = rule => LINEAGE_INFO[rule]?.label || String(rule || '').replaceAll('_', ' ');
@@ -228,11 +232,15 @@ export function filterFacilities(facilities, {
     if (lineage && !(f.amount_lineage || []).some(step => step.rule === lineage) &&
       !(f.normalizations || []).some(n => (typeof n === 'string' ? n : n.type) === lineage)) return false;
     if (category || subcategory || region) {
-      // Scope labels come from the hierarchy path carried on each facility.
+      // path: root › category [› subcategory] › region › province › facility.
+      // Index from the tail so NEP rows without a subcategory still resolve.
       const labels = f.path_labels;
-      if (category && labels[1] !== category) return false;
-      if (subcategory && labels[2] !== subcategory) return false;
-      if (region && labels[3] !== region) return false;
+      const pathRegion = labels.length >= 5 ? labels[labels.length - 3] : null;
+      const pathCategory = labels[1] ?? null;
+      const pathSubcategory = labels.length >= 6 ? labels[2] : null;
+      if (category && pathCategory !== category) return false;
+      if (subcategory && pathSubcategory !== subcategory) return false;
+      if (region && pathRegion !== region) return false;
     }
     if (terms.length) {
       const haystack = `${f.title} ${f.id} ${f.path_labels.join(' ')} ${(f.flags || []).map(x => typeof x === 'string' ? x : `${x.flag} ${x.id ?? ''} ${x.note ?? ''}`).join(' ')} ${(f.amount_lineage || []).map(s => s.rule).join(' ')}`.toLocaleLowerCase();

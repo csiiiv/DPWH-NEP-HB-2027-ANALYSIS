@@ -86,10 +86,20 @@ def main():
                         expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('Page 1 of')
                         assert 'sort=nep_php' in page.url
 
+                    # Tab reset values must not serialize as pair=null/status=null.
+                    goto('analysis')
+                    for label, expected_count in [('Insertions',319),('Deletions',282),('Adjustments',4),('Candidates',1110)]:
+                        page.get_by_role('link',name=label,exact=True).click()
+                        expect(page.get_by_role('dialog',name='NIA candidate evidence')).to_have_count(0)
+                        expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text(f'{expected_count:,} rows')
+                        assert 'pair=null' not in page.url and 'status=null' not in page.url
+                    goto('analysis?view=insertions&pair=null&status=null')
+                    expect(page.get_by_role('dialog',name='NIA candidate evidence')).to_have_count(0)
+                    expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text('319 rows')
                     for view, expected_count, side in [('insertions', 319, 'house'), ('deletions', 282, 'nep'), ('adjustments', 4, None)]:
                         goto('analysis?view=' + view)
                         expect(page.get_by_role('link', name=view.title(), exact=True)).to_have_attribute('aria-current', 'page')
-                        expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text(f'{expected_count} rows')
+                        expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text(f'{expected_count:,} rows')
                         with page.expect_download() as result:
                             page.get_by_role('button', name='Export filtered CSV', exact=True).click()
                         exported = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))

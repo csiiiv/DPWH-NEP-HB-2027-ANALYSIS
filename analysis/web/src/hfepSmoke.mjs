@@ -26,7 +26,7 @@ try {
     if (hash === '#hfep/nep?view=tree&node=nep_hfep:p2:r47' && !html.includes('Metro Manila')) throw new Error('Defect node evidence missing');
     if (hash === '#hfep/highlights?story=nep-defect' && !html.includes('metro_manila_med_overhang_140000')) throw new Error('Defect chain missing');
     if (hash === '#hfep/compare?view=columns' && !html.includes('4,451,000,000')) throw new Error('Column reconciliation total missing');
-    if (hash === '#hfep/compare?view=pairs' && !html.includes('Line-item pairs')) throw new Error('Pairs view missing');
+    if (hash === '#hfep/compare?view=pairs' && !html.includes('Funding Records')) throw new Error('Pairs view missing');
     console.log(`OK ${hash}`);
   }
 } finally {await server.close();}

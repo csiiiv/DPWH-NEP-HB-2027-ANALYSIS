@@ -4,7 +4,9 @@ import {readFileSync} from 'node:fs';
 import {headlineStats} from './headlineStats.js';
 import {highlightsData} from './highlightsData.js';
 import {unifiedComparison} from './unifiedComparison.js';
-import {matchesFlag} from './matchFilters.js';
+import {matchesFlag, matchesMatchStatus} from './matchFilters.js';
+import {regionCandidates} from './regionCandidates.js';
+import {suggestedCounterparts} from './suggestedCounterparts.js';
 
 const record=(id,amount_php,extra={})=>({id,title:id,amount_php,zone:'local',region:'Region I',office:'Central Office',program:'Bridge Program',pap:'Bridges',...extra});
 function fixture(rows,extras={}){
@@ -124,4 +126,13 @@ test('retained DPWH data reproduces both House readings and the full operations 
  const deletionRows=unified.projects.filter(row=>matchesFlag(row,'nep_only_all'));
  assert.equal(deletionRows.reduce((sum,row)=>sum+row.nep.amount_php,0),data.changes_full.deletions.amount_php);
  assert.equal(deletionRows.length,data.changes_full.deletions.comparison_rows);
+ const reviewRows=regionCandidates(unified.projects),counterparts=suggestedCounterparts(reviewRows);
+ for(const [key,flag,match] of [['insertions','house_only','no_match'],['deletions','nep_only',''],
+  ['increased','amount_increase',''],['decreased','amount_decrease','']]){
+  const subset=reviewRows.filter(row=>matchesFlag(row,flag,counterparts)&&matchesMatchStatus(row,match));
+  assert.equal(subset.length,data.changes[key].comparison_rows,key);
+  const allocation=row=>key==='insertions'?row.third.amount_php:key==='deletions'?row.nep.amount_php
+   :Math.abs(row.third.amount_php-row.nep.amount_php);
+  assert.equal(subset.reduce((sum,row)=>sum+allocation(row),0),data.changes[key].amount_php,key);
+ }
 });

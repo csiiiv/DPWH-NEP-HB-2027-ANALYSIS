@@ -12,6 +12,7 @@ on:
       - '.gitmodules'
       - 'site/**'
       - 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
+      - 'dbm-nep-data/NEP-2027-VOLUME-2A_OCR.pdf'
       - 'dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf'
       - 'dbm-other-nep-line-data/FMR.pdf'
       - 'dbm-other-nep-line-data/NIA.pdf'
@@ -31,6 +32,7 @@ on:
       - '.gitmodules'
       - 'site/**'
       - 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
+      - 'dbm-nep-data/NEP-2027-VOLUME-2A_OCR.pdf'
       - 'dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf'
       - 'dbm-other-nep-line-data/FMR.pdf'
       - 'dbm-other-nep-line-data/NIA.pdf'
@@ -59,7 +61,7 @@ jobs:
           python-version: '3.12'
       - name: Check native House extraction and source-title regressions
         run: |
-          python3 -m pip install PyMuPDF==1.28.2 numpy==2.1.0 opencv-python-headless==4.10.0.84
+          python3 -m pip install PyMuPDF==1.28.2 numpy==2.1.0 opencv-python-headless==4.10.0.84 pytest==8.3.4
           python3 scripts/hb_native_ic_rollup.py --check
           python3 scripts/hb_native_ic_rollup.py --check --pdf "HB_BUDGET_3rd_reading/3- HB 10858 FOR 3RD READING VOL I-C .pdf" --ib-rollup analysis/data/hb_dpwh_native_rollup_3rd_reading.json --out analysis/data/hb_dpwh_native_ic_projects_3rd_reading.json --report analysis/data/hb_dpwh_native_ic_rollup_audit_3rd_reading.json
           python3 -m unittest scripts.tests.test_hb_native_ic_rollup scripts.tests.test_hb_native_rollup -v
@@ -121,7 +123,10 @@ jobs:
           python3 analysis-nia/build_nia_workbench.py --check
       - name: Check HFEP extraction and browser accounting
         run: |
-          python3 -m unittest discover -s analysis-hfep/tests -v
+          python3 -m pytest analysis-hfep/tests -q
+          python3 analysis-hfep/extract_hgab_hfep.py --check
+          python3 analysis-hfep/build_hgab_data_list.py --check
+          python3 analysis-hfep/extract_nep_hfep.py --check
           python3 other-analysis/build_hfep_workbench.py
           python3 other-analysis/build_hfep_workbench.py --check
       - name: Build and check React workbench
@@ -141,6 +146,7 @@ jobs:
           python3 scripts/check_react_pages.py
           python3 scripts/check_comparison_workspace.py
           python3 scripts/check_analysis_page.py
+          python3 scripts/check_highlights_page.py
           python3 scripts/check_fmr_pages.py
           python3 scripts/check_hfep_pages.py
           python3 scripts/check_nia_pages.py

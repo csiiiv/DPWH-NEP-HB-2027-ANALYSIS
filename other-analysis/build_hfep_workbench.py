@@ -40,6 +40,11 @@ NEP_PRINTED_DEFECT = {
 }
 HOUSE_ANNEX_CONTROL_TOTAL = 10_021_659_000
 NEP_ANNEX_CONTROL_TOTAL = 14_472_659_000
+# Extraction runs on the 13-page standalone annex (HFEP_2.pdf); the workbench
+# preview opens the canonical Volume II-A OCR PDF at the matching pages.
+# HFEP_2 p.N == Volume II-A p.(N+726) == printed page (N+718).
+NEP_VOLUME_PDF = 'dbm-nep-data/NEP-2027-VOLUME-2A_OCR.pdf'
+NEP_STANDALONE_TO_VOLUME_PAGE = 726
 
 
 def _sha256(path):
@@ -209,7 +214,7 @@ def load_stage(stage_key, prefix):
             'grand_total': grand_total, 'provenance': provenance}
 
 
-def _facility_payload(f, province, stage):
+def _facility_payload(f, province, stage, *, pdf_page_offset=0, preview_pdf=None):
     flags = []
     for flag in (f.get('provenance') or {}).get('flags', []):
         if isinstance(flag, dict):
@@ -226,7 +231,7 @@ def _facility_payload(f, province, stage):
         'parent_id': f['parent_id'],
         'amounts_php': {column: _column(f['printed_amounts_php'], column) for column in FUND_COLUMNS},
         'amounts_raw': f.get('printed_amounts_raw') or {},
-        'source': _source_payload(f['source']),
+        'source': _source_payload(f['source'], pdf_page_offset=pdf_page_offset, preview_pdf=preview_pdf),
         'flags': flags,
         'normalizations': [{'type': n.get('type'), 'from': n.get('from'), 'to': n.get('to')}
                            if isinstance(n, dict) else {'type': n}
@@ -235,11 +240,14 @@ def _facility_payload(f, province, stage):
     }
 
 
-def _source_payload(source):
+def _source_payload(source, *, pdf_page_offset=0, preview_pdf=None):
+    # preview_pdf rewrites OCR-JSON provenance to the human-readable annex PDF
+    # the workbench opens (Volume II-A for NEP). Extraction artifacts keep the
+    # JSON path; the browser payload should not.
     payload = {
-        'source_pdf': source['source_pdf'],
-        'row_id': source['row_id'],
-        'pdf_page': source['pdf_page'],
+        'source_pdf': preview_pdf or source['source_pdf'],
+        'row_id': source.get('row_id'),
+        'pdf_page': source['pdf_page'] + pdf_page_offset,
         'printed_page': source['printed_page'],
     }
     # Row locator is band (native-text extractor) or table_row (OCR extractor).
@@ -259,29 +267,51 @@ def build():
         ('house', house, 'House GAB · Volume I-B annex', HOUSE_ANNEX_CONTROL_TOTAL),
         ('nep', nep, 'DBM NEP · Volume II-A annex', NEP_ANNEX_CONTROL_TOTAL),
     ):
+        # NEP evidence opens Volume II-A (same document the agency PAP cites);
+        # House already opens Volume I-B. Standalone HFEP_2 page numbers are
+        # remapped so the PDF viewer lands on the Volume II-A page.
+        page_offset = NEP_STANDALONE_TO_VOLUME_PAGE if stage_key == 'nep' else 0
+        preview_pdf = NEP_VOLUME_PDF if stage_key == 'nep' else stage['metadata']['source_pdf']
+        # NEP rows rewrite source_pdf to Volume II-A; House keeps Volume I-B.
+        source_preview = NEP_VOLUME_PDF if stage_key == 'nep' else None
+        src = lambda source: _source_payload(
+            source, pdf_page_offset=page_offset, preview_pdf=source_preview)
+
         facilities_payload = [
-            _facility_payload(f, None, stage_key) for f in stage['facilities']]
+            _facility_payload(f, None, stage_key, pdf_page_offset=page_offset,
+                              preview_pdf=source_preview)
+            for f in stage['facilities']]
+        if stage_key == 'nep':
+            for f in facilities_payload:
+                # Volume II-A PDF page = printed page + 8 (printed 719 → p.727).
+                if f['source']['pdf_page'] != f['source']['printed_page'] + 8:
+                    raise ValueError(f'nep: volume page remap drifted on {f["id"]}')
+                if not 727 <= f['source']['pdf_page'] <= 739:
+                    raise ValueError(f'nep: volume page out of HFEP annex range: {f["id"]}')
+                if f['source']['source_pdf'] != NEP_VOLUME_PDF:
+                    raise ValueError(f'nep: source_pdf must be Volume II-A: {f["id"]}')
+
         provinces_payload = [{
             'id': p['id'], 'label': p['label'], 'parent_id': p['parent_id'],
             'amounts_php': {column: _column(p['printed_amounts_php'], column) for column in FUND_COLUMNS},
             'facility_ids': stage['facility_by_parent'].get(p['id'], []) and
                             [f['id'] for f in stage['facility_by_parent'][p['id']]],
-            'source': _source_payload(p['source']),
+            'source': src(p['source']),
         } for p in stage['provinces']]
         regions = [{
             'id': n['id'], 'label': n['label'], 'parent_id': n['parent_id'],
             'amounts_php': {column: _column(n['printed_amounts_php'], column) for column in FUND_COLUMNS},
-            'child_ids': n['child_ids'], 'source': _source_payload(n['source']),
+            'child_ids': n['child_ids'], 'source': src(n['source']),
         } for n in stage['tree']['nodes'] if n['kind'] == 'region_control']
         subcategories = [{
             'id': n['id'], 'label': n['label'], 'parent_id': n['parent_id'],
             'amounts_php': {column: _column(n['printed_amounts_php'], column) for column in FUND_COLUMNS},
-            'child_ids': n['child_ids'], 'source': _source_payload(n['source']),
+            'child_ids': n['child_ids'], 'source': src(n['source']),
         } for n in stage['tree']['nodes'] if n['kind'] == 'subcategory_control']
         categories = [{
             'id': n['id'], 'label': n['label'],
             'amounts_php': {column: _column(n['printed_amounts_php'], column) for column in FUND_COLUMNS},
-            'child_ids': n['child_ids'], 'source': _source_payload(n['source']),
+            'child_ids': n['child_ids'], 'source': src(n['source']),
         } for n in stage['tree']['nodes'] if n['kind'] == 'category_control']
 
         if stage_key == 'nep':
@@ -300,19 +330,19 @@ def build():
             'document': stage['metadata']['document'],
             'legislative_stage': stage['metadata']['legislative_stage'],
             'scope': stage['metadata']['scope'],
-            'preview_pdf': stage['metadata']['source_pdf'],
+            'preview_pdf': preview_pdf,
             'root': {
                 'id': stage['root']['id'],
                 'label': stage['root']['label'],
                 'amounts_php': root_amounts,
-                'source': _source_payload(stage['root']['source']),
+                'source': src(stage['root']['source']),
             },
             'grand_total': {
                 'id': stage['grand_total']['id'],
                 'label': stage['grand_total']['label'],
                 'amounts_php': {column: _column(stage['grand_total']['printed_amounts_php'], column)
                                 for column in FUND_COLUMNS},
-                'source': _source_payload(stage['grand_total']['source']),
+                'source': src(stage['grand_total']['source']),
             },
             'categories': categories,
             'subcategories': subcategories,
@@ -380,7 +410,11 @@ def build_comparison(house, nep):
         return re.sub(r'\s+', ' ', text).strip()
 
     def scope_of(facility):
-        return (facility['path_labels'][3], facility['path_labels'][4])
+        # path: root › category [› subcategory] › region › province › facility.
+        # NEP categories without a subcategory print a 5-label path; indexing
+        # from the tail keeps (region, province) stable across both shapes.
+        labels = facility['path_labels']
+        return (labels[-3], labels[-2])
 
     nep_blocks = {}
     for f in nep['facilities']:

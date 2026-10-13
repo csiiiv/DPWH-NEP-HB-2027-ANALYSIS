@@ -108,4 +108,5 @@ PDFs with byte ranges. To test the development server directly, set
 main views and common deep links, rather than rendering only the loading shell.
 
 See [FMR workbench guide](../../other-analysis/FMR_WORKBENCH.md) for source and
-matching limitations. This branch has no separately published site.
+matching limitations. The combined workbench deploys to GitHub Pages from `main`
+after the workflow's data, unit and browser checks pass.

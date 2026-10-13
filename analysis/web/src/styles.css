@@ -119,8 +119,10 @@ small {
 @media(max-width:700px){
   .hero{padding:16px;margin:6px 0 10px}
   .hero h1{font-size:24px}
-  /* The fold check needs the Compare filters within the first screenful;
-     the blurb repeats the caveat inside the details below. */
+  /* Keep Compare search within the first screenful as workspace links wrap;
+     source context remains available in the details below. */
+  .hero.hero-compact{padding:16px}
+  .hero-compact h1{margin:0;line-height:1.25}
   .hero-compact p{display:none}
 }
 .secondary {
@@ -883,6 +885,43 @@ small {
 .comparison-table .candidate-table tbody tr.suggested-source-row{background:#fffaf0}.comparison-table .candidate-table tbody tr.house-source-row{background:#fff}
 .count-explanation{padding:0 .85rem;font-size:.8rem}.counterpart-badge{display:block;background:#fff7e8;color:#79531e;padding:.35rem .5rem;border-radius:6px;margin:.3rem 0}
 .normalized-match-badge{display:block;background:#eef5fc;color:#1f4d7a;padding:.35rem .5rem;border-radius:6px;margin:.3rem 0;font-size:.72rem}
+.comparison-table tr.pair-record-row th{padding-left:1.5rem;font-weight:500;background:#f8fafc}
+.comparison-table tr.pair-record-row td{background:#f8fafc;font-size:.9rem}
+.comparison-table tr.pair-record-row .pair-record-label{display:block}
+.comparison-table tr.pair-record-row.event-revised .normalized-match-badge{background:#fbeae8;color:#8a2a1d}
+.comparison-table tr.pair-record-row.event-added .normalized-match-badge{background:#e8f3ec;color:#1d5c36}
+.comparison-table tr.pair-record-row.event-dropped .normalized-match-badge{background:#fdf3e3;color:#7a5410}
+.comparison-table tr.pair-facility-row{border-top:2px solid #d8dee8}
+/* HFEP pairs: two money groups (facility totals vs funding-column records). */
+.comparison-table table.hfep-pairs-table{min-width:1100px}
+.comparison-table .hfep-pairs-table .pair-group-row th.col-totals,
+.comparison-table .hfep-pairs-table th.col-totals,
+.comparison-table .hfep-pairs-table td.col-totals{background:#eef5fc}
+.comparison-table .hfep-pairs-table .pair-group-row th.col-records,
+.comparison-table .hfep-pairs-table th.col-records,
+.comparison-table .hfep-pairs-table td.col-records{background:#eef7f3}
+.comparison-table .hfep-pairs-table .pair-group-row th.col-totals{color:#1f4d7a}
+.comparison-table .hfep-pairs-table .pair-group-row th.col-records{color:#1d5c46}
+.comparison-table .hfep-pairs-table th.col-name{background:#f5f8fc}
+.comparison-table .hfep-pairs-table .pair-group-row th[scope=colgroup]{text-align:center;font-size:.78rem;letter-spacing:.02em;border-bottom:1px solid #c9d5e4}
+.comparison-table .hfep-pairs-table .pair-subhead-row th{font-size:.75rem}
+.comparison-table .hfep-pairs-table td.col-empty{color:#9aa8b8;background-image:none}
+.comparison-table .hfep-pairs-table tr.pair-record-row td.col-totals,
+.comparison-table .hfep-pairs-table tr.pair-facility-row td.col-records.col-empty{opacity:.55}
+/* Keep increase/decrease amount colors over group background tints. */
+.comparison-table .hfep-pairs-table td.up,
+.comparison-table .hfep-pairs-table td.up.col-totals,
+.comparison-table .hfep-pairs-table td.up.col-records{color:#126c48}
+.comparison-table .hfep-pairs-table td.down,
+.comparison-table .hfep-pairs-table td.down.col-totals,
+.comparison-table .hfep-pairs-table td.down.col-records{color:#b33b36}
+@media(max-width:700px){
+  .comparison-table table.hfep-pairs-table{display:table;min-width:1000px;width:100%}
+  .comparison-table .hfep-pairs-table thead{display:table-header-group;position:static;width:auto;height:auto;overflow:visible;clip-path:none}
+  .comparison-table .hfep-pairs-table tbody{display:table-row-group}
+  .comparison-table .hfep-pairs-table tr{display:table-row;border:0;border-radius:0;margin:0}
+  .comparison-table .hfep-pairs-table th,.comparison-table .hfep-pairs-table td{display:table-cell;grid-column:auto}
+}
 .diff-tag-row{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.3rem}
 .diff-tag.diff-tag-top{background:#1f4d7a;border-color:#1f4d7a;color:#fff;font-style:italic}
 .diff-tag.diff-tag-identity{background:#1f4d7a;border-color:#1f4d7a;color:#fff;cursor:pointer;font-variant-numeric:tabular-nums}

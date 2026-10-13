@@ -19,7 +19,7 @@
       "printed_page": 274
     },
     "printed_page_offset": 718,
-    "extractor_sha256": "2ff2e83e7564228668b11a8492429c94c7cd580d9b58e016ef2b1a79bb7a5538",
+    "extractor_sha256": "6aeb1bd4bdfe81c0df00fa317feb492ec18f8c4ee1e73250dc3eea734941a062",
     "pymupdf_version": "1.28.2",
     "ids": "artifact-local page/row identifiers; not cross-document identities"
   },
@@ -29778,7 +29778,7 @@
       "kind": "facility",
       "parent_id": "nep_hfep:p9:r36",
       "child_ids": [],
-      "label": "cYao 80,000,000 。",
+      "label": "Central Luzon Center for Health Development (Clark Multi-Specialty Medical Center)",
       "label_raw": "cYao 80,000,000 。",
       "printed_amounts_php": {
         "infrastructure": 200000000,
@@ -29813,10 +29813,16 @@
         "3. DOH Hospitals",
         "Region III",
         "Pampanga",
-        "cYao 80,000,000 。"
+        "Central Luzon Center for Health Development (Clark Multi-Specialty Medical Center)"
       ],
       "provenance": {
-        "normalizations": [],
+        "normalizations": [
+          {
+            "type": "label_ocr_repair",
+            "from": "cYao 80,000,000 。",
+            "to": "Central Luzon Center for Health Development (Clark Multi-Specialty Medical Center)"
+          }
+        ],
         "amount_lineage": [
           {
             "column": "motor_vehicle",
@@ -29825,7 +29831,14 @@
             "interpreted": "0"
           }
         ],
-        "flags": []
+        "flags": [
+          {
+            "flag": "ocr_suspect_label",
+            "id": "label_ocr_garbled_clark",
+            "raw": "cYao 80,000,000 。",
+            "note": "PP-StructureV3 OCR garbled the facility name into amount fragments; repaired from HFEP_2.pdf native text (printed page 727 / PDF page 9) and the House annex counterpart title"
+          }
+        ]
       }
     },
     {

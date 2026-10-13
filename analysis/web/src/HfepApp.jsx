@@ -63,19 +63,36 @@ function ReadingNote() {
   return <details className="fmr-method fmr-reading"><summary>House 2nd ↔ 3rd reading: HFEP annex text identical</summary>
     <p>{readingNote}</p></details>;
 }
-// A NEP facility's source_pdf points at the OCR JSON; the human PDF is the
-// stage's preview document. House rows already carry the real PDF path.
+// A NEP facility's source_pdf may still point at the OCR JSON; the human PDF is
+// the stage preview (Volume II-A). House rows already carry Volume I-B.
 function pdfPathFor(stage, source) {
-  const path = source.source_pdf;
+  const path = source?.source_pdf || '';
   return path.endsWith('.json') ? stage.preview_pdf : path;
+}
+// Resolve which annex PDF a source row belongs to. Never ask every stage's
+// pdfPathFor for a JSON source — that maps JSON → each stage's preview and
+// falsely matches House first.
+function resolvePdfStage(data, source, preferredKey) {
+  if (!data || !source) return null;
+  if (preferredKey && data.stages[preferredKey]) return data.stages[preferredKey];
+  const path = source.source_pdf || '';
+  const row = source.row_id || '';
+  if (row.startsWith('nep_hfep:') || /HFEP\.pdf|VOLUME-2A|nep_hfep/i.test(path)) return data.stages.nep;
+  if (row.startsWith('ib:') || /HB_BUDGET|VOL IB|hgab/i.test(path)) return data.stages.house;
+  for (const stage of [data.stages.nep, data.stages.house])
+    if (path === stage.preview_pdf) return stage;
+  return null;
 }
 function previewSource(stage, node) {
   return {url: siteUrl(pdfPathFor(stage, node.source)), document: pdfPathFor(stage, node.source).split('/').pop(),
     title: node.label.length > 80 ? `${node.label.slice(0, 77)}…` : node.label, page: node.source.pdf_page};
 }
+function volumeLabel(stage) {
+  return stage.key === 'nep' ? 'Vol II-A' : stage.key === 'house' ? 'Vol I-B' : 'PDF';
+}
 function SourceButton({stage, source, onPdf, label}) {
-  return <button className="fmr-source-button" onClick={() => onPdf(source)}>
-    {label || `PDF p. ${source.pdf_page}`}<small>Printed p. {source.printed_page}</small></button>;
+  return <button className="fmr-source-button" onClick={() => onPdf(source, stage?.key)}>
+    {label || `${volumeLabel(stage)} p. ${source.pdf_page}`}<small>Printed p. {source.printed_page}</small></button>;
 }
 function PdfPane({source, onClose}) {
   const ref = useRef(null);
@@ -259,13 +276,15 @@ function Evidence({index, id, onPdf}) {
     <p className="fmr-eyebrow">{facility ? 'Facility evidence' : node.kind === 'grand_total' ? 'Annex grand total' : 'Printed control'}</p>
     <h2>{node.label}</h2>
     <p className="fmr-evidence-amount"><Amount value={columnAmount(node.amounts_php, 'total')} exact/></p>
-    {facility && <p className="fmr-muted">{facilityScope(index, facility).category} › {facilityScope(index, facility).subcategory} › {facilityScope(index, facility).region} › {facilityScope(index, facility).province}</p>}
+    {facility && <p className="fmr-muted">{[facilityScope(index, facility).category, facilityScope(index, facility).subcategory,
+      facilityScope(index, facility).region, facilityScope(index, facility).province].filter(Boolean).join(' › ')}</p>}
     <nav className="fmr-breadcrumbs" aria-label="Source breadcrumbs">{path.map((step, i) => <React.Fragment key={step.id}>
       {i > 0 && <span className="sep">›</span>}<a href={routeHref(stage.key, {node: step.id, view: 'tree'})}>{step.label}</a>
     </React.Fragment>)}</nav>
     <p><code>{id}</code></p>
     <ArithmeticDl index={index} id={id}/>
-    <p><SourceButton stage={stage} source={node.source} onPdf={onPdf} label="Open source page"/></p>
+    <p><SourceButton stage={stage} source={node.source} onPdf={onPdf}
+      label={`${volumeLabel(stage)} p. ${node.source.pdf_page}`}/></p>
     {facility && <>
       <table className="fmr-psgc-table"><caption className="sr-only">Funding columns</caption>
         <thead><tr><th scope="col">Column</th><th scope="col">Amount</th></tr></thead>
@@ -397,7 +416,11 @@ function aggregateBy(rows, key) {
     const label = key(row);
     if (label == null) continue;
     const entry = groups.get(label) || {id: label, label, rows: 0, amount_php: 0};
-    entry.rows++; entry.amount_php += columnAmount(row.amounts_php, 'total') || 0;
+    entry.rows++;
+    // Facility rows carry amounts_php; line-item records carry a single side value.
+    entry.amount_php += row.amounts_php
+      ? (columnAmount(row.amounts_php, 'total') || 0)
+      : (row.house_value ?? row.nep_value ?? 0);
     groups.set(label, entry);
   }
   return [...groups.values()].sort((a, b) => b.amount_php - a.amount_php || a.label.localeCompare(b.label));
@@ -411,54 +434,61 @@ function CrossDocAggregate({title, groups, drillKey, route}) {
       {key: 'amount_php', label: 'Allocation (PHP)', align: 'num', render: r => <Amount value={r.amount_php} exact/>},
     ]}/></div>;
 }
+function unmatchedRecords(comparison, side) {
+  return lineItemRecords(comparison).filter(r => r.event === 'unmatched' && r.side === side);
+}
 function Insertions({comparison, route, onPdf, data}) {
   const houseStage = data.stages.house;
-  const rows = comparison.house_only_rows;
-  const total = rows.reduce((s, r) => s + (columnAmount(r.amounts_php, 'total') || 0), 0);
+  const records = useMemo(() => unmatchedRecords(comparison, 'house'), [comparison]);
+  const facilities = comparison.house_only_rows;
+  const total = records.reduce((s, r) => s + (r.house_value || 0), 0);
   return <>
     <div className="fmr-stats">
-      <Stat label="Insertion candidates" value={rows.length} detail="House rows with no NEP counterpart"/>
-      <Stat label="House-only allocation" value={<Amount value={total} exact/>} detail="ranked by amount below"/>
-      <Stat label="Matched pairs" value={comparison.rows.length} detail={`of ${comparison.rows.length + rows.length} House rows`}/>
-      <Stat label="Rest matches" value={`${Math.round(comparison.rows.length / (comparison.rows.length + rows.length) * 100)}%`} detail="at ≥0.95 title similarity"/>
+      <Stat label="Unmatched House records" value={records.length} detail={`${facilities.length} facility rows · one record per printed funding column`}/>
+      <Stat label="House-only allocation" value={<Amount value={total} exact/>} detail="sum of unmatched printed component cells"/>
+      <Stat label="Matched pairs" value={comparison.rows.length} detail={`of ${comparison.rows.length + facilities.length} House rows`}/>
+      <Stat label="Rest matches" value={`${Math.round(comparison.rows.length / (comparison.rows.length + facilities.length) * 100)}%`} detail="at ≥0.95 title similarity"/>
     </div>
-    <p className="fmr-notice">These are review candidates, not confirmed insertions: the House annex records LGU-side rows at its own grain, so an unmatched House row usually means the NEP lists the same money at a different grain (lumped, split, or retitled) — not that the House added a facility. Verify against the NEP annex before claiming an insertion.</p>
-    <CrossDocAggregate title="Insertion candidates by region" groups={aggregateBy(rows, r => r.scope?.region)} drillKey="region" route={route}/>
-    <section className="fmr-section"><h3>Top insertion candidates</h3>
-      <SortableTable rows={[...rows].sort((a, b) => (columnAmount(b.amounts_php, 'total') || 0) - (columnAmount(a.amounts_php, 'total') || 0)).slice(0, 100)
-        .map((r, i) => ({...r, id: r.id, rank: i + 1}))} ariaLabel="Top insertion candidates" initialSort={{key: 'rank', direction: 'asc'}} pageSize={25} columns={[
+    <p className="fmr-notice">These are review candidates at line-item record grain (infrastructure, medical equipment or motor vehicle on an unmatched House facility), not confirmed insertions. An unmatched House record usually means the NEP lists the same money at a different grain (lumped, split, retitled or under another funding column) — not that the House added a facility. Verify against the NEP annex before claiming an insertion.</p>
+    <CrossDocAggregate title="Unmatched House records by region" groups={aggregateBy(records, r => r.region)} drillKey="region" route={route}/>
+    <section className="fmr-section"><h3>Top unmatched House records</h3>
+      <SortableTable rows={[...records].sort((a, b) => (b.house_value || 0) - (a.house_value || 0)).slice(0, 150)
+        .map((r, i) => ({...r, rank: i + 1}))} ariaLabel="Top unmatched House records" initialSort={{key: 'rank', direction: 'asc'}} pageSize={25} columns={[
         {key: 'rank', label: '#', value: r => r.rank},
-        {key: 'title', label: 'House facility', scope: 'row', render: r => <a href={routeHref('house', {node: r.id, view: 'tree'})}>{r.title}</a>},
-        {key: 'region', label: 'Region', value: r => r.scope?.region, render: r => r.scope?.region},
-        {key: 'province', label: 'Province', value: r => r.scope?.province, render: r => r.scope?.province},
-        {key: 'amount', label: 'House amount (PHP)', align: 'num', value: r => columnAmount(r.amounts_php, 'total'), render: r => <Amount value={columnAmount(r.amounts_php, 'total')} exact/>},
-        {key: 'source', label: 'Source', sortable: false, render: r => <SourceButton stage={houseStage} source={r.source} onPdf={onPdf}/>},
+        {key: 'title', label: 'House record', scope: 'row', render: r => <><a href={routeHref('house', {node: r.facility_id, view: 'tree'})}>{r.title}</a><small>{r.column_label}</small></>},
+        {key: 'column', label: 'Funding column', value: r => r.column_label},
+        {key: 'region', label: 'Region', value: r => r.region, render: r => r.region},
+        {key: 'province', label: 'Province', value: r => r.province, render: r => r.province},
+        {key: 'amount', label: 'House amount (PHP)', align: 'num', value: r => r.house_value, render: r => <Amount value={r.house_value} exact/>},
+        {key: 'source', label: 'Source', sortable: false, render: r => <SourceButton stage={houseStage} source={r.house_source} onPdf={onPdf}/>},
         {key: 'review', label: 'Review', sortable: false, render: r => <a href={routeHref('nep', {q: r.title.slice(0, 40)})}>Search NEP annex</a>},
       ]}/></section>
   </>;
 }
 function Deletions({comparison, route, onPdf, data}) {
   const nepStage = data.stages.nep;
-  const rows = comparison.nep_only_rows;
-  const total = rows.reduce((s, r) => s + (columnAmount(r.amounts_php, 'total') || 0), 0);
+  const records = useMemo(() => unmatchedRecords(comparison, 'nep'), [comparison]);
+  const facilities = comparison.nep_only_rows;
+  const total = records.reduce((s, r) => s + (r.nep_value || 0), 0);
   return <>
     <div className="fmr-stats">
-      <Stat label="Deletion candidates" value={rows.length} detail="NEP rows with no House counterpart"/>
+      <Stat label="Unmatched NEP records" value={records.length} detail={`${facilities.length} facility rows · one record per printed funding column`}/>
       <Stat label="NEP-only allocation" value={<Amount value={total} exact/>} detail="includes national-side items"/>
-      <Stat label="Matched pairs" value={comparison.rows.length} detail={`of ${comparison.rows.length + rows.length} NEP rows`}/>
-      <Stat label="Rest matches" value={`${Math.round(comparison.rows.length / (comparison.rows.length + rows.length) * 100)}%`} detail="at ≥0.95 title similarity"/>
+      <Stat label="Matched pairs" value={comparison.rows.length} detail={`of ${comparison.rows.length + facilities.length} NEP rows`}/>
+      <Stat label="Rest matches" value={`${Math.round(comparison.rows.length / (comparison.rows.length + facilities.length) * 100)}%`} detail="at ≥0.95 title similarity"/>
     </div>
-    <p className="fmr-notice">These are review candidates, not confirmed deletions: the NEP annex covers national and LGU capital outlays while the House annex covers LGU-side rows only, so most NEP-only rows are national-side items (hospitals, centers, central-office programs) that cannot appear in the House annex by scope. Verify the scope labels before claiming a deletion.</p>
-    <CrossDocAggregate title="Deletion candidates by region" groups={aggregateBy(rows, r => r.scope?.region)} drillKey="region" route={route}/>
-    <section className="fmr-section"><h3>Top deletion candidates</h3>
-      <SortableTable rows={[...rows].sort((a, b) => (columnAmount(b.amounts_php, 'total') || 0) - (columnAmount(a.amounts_php, 'total') || 0)).slice(0, 100)
-        .map((r, i) => ({...r, rank: i + 1}))} ariaLabel="Top deletion candidates" initialSort={{key: 'rank', direction: 'asc'}} pageSize={25} columns={[
+    <p className="fmr-notice">These are review candidates at line-item record grain, not confirmed deletions. The NEP annex covers national and LGU capital outlays while the House annex covers LGU-side rows only, so most unmatched NEP records are national-side items that cannot appear in the House annex by scope. Verify the scope labels before claiming a deletion.</p>
+    <CrossDocAggregate title="Unmatched NEP records by region" groups={aggregateBy(records, r => r.region)} drillKey="region" route={route}/>
+    <section className="fmr-section"><h3>Top unmatched NEP records</h3>
+      <SortableTable rows={[...records].sort((a, b) => (b.nep_value || 0) - (a.nep_value || 0)).slice(0, 150)
+        .map((r, i) => ({...r, rank: i + 1}))} ariaLabel="Top unmatched NEP records" initialSort={{key: 'rank', direction: 'asc'}} pageSize={25} columns={[
         {key: 'rank', label: '#', value: r => r.rank},
-        {key: 'title', label: 'NEP facility', scope: 'row', render: r => <a href={routeHref('nep', {node: r.id, view: 'tree'})}>{r.title}</a>},
-        {key: 'region', label: 'Region', value: r => r.scope?.region, render: r => r.scope?.region},
-        {key: 'province', label: 'Province', value: r => r.scope?.province, render: r => r.scope?.province},
-        {key: 'amount', label: 'NEP amount (PHP)', align: 'num', value: r => columnAmount(r.amounts_php, 'total'), render: r => <Amount value={columnAmount(r.amounts_php, 'total')} exact/>},
-        {key: 'source', label: 'Source', sortable: false, render: r => <SourceButton stage={nepStage} source={r.source} onPdf={onPdf}/>},
+        {key: 'title', label: 'NEP record', scope: 'row', render: r => <><a href={routeHref('nep', {node: r.facility_id, view: 'tree'})}>{r.title}</a><small>{r.column_label}</small></>},
+        {key: 'column', label: 'Funding column', value: r => r.column_label},
+        {key: 'region', label: 'Region', value: r => r.region, render: r => r.region},
+        {key: 'province', label: 'Province', value: r => r.province, render: r => r.province},
+        {key: 'amount', label: 'NEP amount (PHP)', align: 'num', value: r => r.nep_value, render: r => <Amount value={r.nep_value} exact/>},
+        {key: 'source', label: 'Source', sortable: false, render: r => <SourceButton stage={nepStage} source={r.nep_source} onPdf={onPdf}/>},
         {key: 'review', label: 'Review', sortable: false, render: r => <a href={routeHref('house', {q: r.title.slice(0, 40)})}>Search House annex</a>},
       ]}/></section>
   </>;
@@ -508,8 +538,8 @@ function Adjustments({comparison, route, onPdf, data}) {
         {key: 'nep_value', label: 'NEP (PHP)', align: 'num', render: r => <Amount value={r.nep_value} exact/>},
         {key: 'difference', label: 'Δ (PHP)', align: 'num', value: r => r.difference ?? Number.NaN, render: r => <Amount value={r.difference} signed exact/>},
         {key: 'source', label: 'Source', sortable: false, render: r => <>
-          {r.house_source && r.event !== 'added' && <SourceButton stage={data.stages.house} source={r.house_source} onPdf={onPdf} label={`House p. ${r.house_source.pdf_page}`}/>}
-          {r.nep_source && r.event !== 'dropped' && <SourceButton stage={data.stages.nep} source={r.nep_source} onPdf={onPdf} label={`NEP p. ${r.nep_source.pdf_page}`}/>}</>},
+          {r.house_source && r.event !== 'added' && <SourceButton stage={data.stages.house} source={r.house_source} onPdf={onPdf} label={`Vol I-B p. ${r.house_source.pdf_page}`}/>}
+          {r.nep_source && r.event !== 'dropped' && <SourceButton stage={data.stages.nep} source={r.nep_source} onPdf={onPdf} label={`Vol II-A p. ${r.nep_source.pdf_page}`}/>}</>},
         {key: 'review', label: 'Review', sortable: false, render: r => r.pair_id
           ? <a href={routeHref('compare', {view: 'pairs', q: r.title.slice(0, 40)})}>Compare pair</a>
           : <a href={routeHref(r.side, {q: r.title.slice(0, 40)})}>Search {r.side === 'house' ? 'House' : 'NEP'} annex</a>},
@@ -536,8 +566,8 @@ function Analysis({indexes, route, onPdf, data}) {
   const drill = next => navigate(route, {records: next});
   const crossDocViews = ['insertions', 'deletions', 'adjustments'];
   const questions = {overview: 'How are HFEP capital outlays distributed across regions and categories?',
-    insertions: 'Which House rows have no NEP counterpart at line-item grain?',
-    deletions: 'Which NEP rows have no House counterpart at line-item grain?',
+    insertions: 'Which unmatched House funding-column records have no NEP counterpart?',
+    deletions: 'Which unmatched NEP funding-column records have no House counterpart?',
     adjustments: 'Which line-item records were revised, added or dropped between the annexes?',
     categories: 'Which facility categories and subcategories does this annex fund?',
     stats: 'Which allocation patterns describe this facility population?',
@@ -623,6 +653,52 @@ function Analysis({indexes, route, onPdf, data}) {
   </>;
 }
 
+// Pairs-table delta is House-centric: HGAB − NEP (how the House annex moved
+// relative to the NEP). Added (NEP-only) → −NEP; dropped (House-only) → +HGAB.
+function hgabDelta(cell) {
+  if (!cell || cell.event === 'none') return null;
+  if (cell.event === 'revised' || cell.event === 'same')
+    return cell.house == null || cell.nep == null ? null : cell.house - cell.nep;
+  if (cell.event === 'added') return cell.nep == null ? null : -cell.nep;
+  if (cell.event === 'dropped') return cell.house == null ? null : cell.house;
+  return null;
+}
+function formatDelta(value) {
+  if (value == null) return '—';
+  if (value === 0) return 'same';
+  return `${value > 0 ? '+' : ''}${money(value)}`;
+}
+function DeltaCell({value, caption, group}) {
+  return <td className={`num col-${group} ${value > 0 ? 'up' : value < 0 ? 'down' : ''}`} data-label={caption}>{formatDelta(value)}</td>;
+}
+// Value of one printed funding-column record for within-group / group-extreme sorts.
+function recordFieldValue(cell, field) {
+  if (!cell || cell.event === 'none') return null;
+  if (field === 'nep') return cell.nep;
+  if (field === 'house') return cell.house;
+  return hgabDelta(cell);
+}
+// Extreme funding-column value inside a facility pair. Asc sorts by the
+// group's lowest record; desc sorts by the group's highest — hierarchy stays
+// nested (facility row + its printed records).
+function recordExtremes(pair, field) {
+  const values = COMPONENT_COLUMNS
+    .map(c => recordFieldValue(pair.columns[c], field))
+    .filter(v => v != null);
+  if (!values.length) return null;
+  return {min: Math.min(...values), max: Math.max(...values)};
+}
+const RECORD_SORT_FIELDS = {record_nep: 'nep', record_hgab: 'house', record_delta: 'delta'};
+// Printed records under one facility, ordered by the active record column
+// (or natural funding-column order when sorting by facility totals / name).
+function printedRecordsForPair(pair, sortKey, sortDir) {
+  const printed = COMPONENT_COLUMNS.filter(c => pair.columns[c].event !== 'none');
+  const field = RECORD_SORT_FIELDS[sortKey];
+  if (!field) return printed;
+  return sortRows(printed, column => recordFieldValue(pair.columns[column], field),
+    {key: sortKey, direction: sortDir});
+}
+
 function Compare({data, indexes, route, onPdf, inlineSource}) {
   const params = routeParams(route.params);
   const tab = params.view || 'columns';
@@ -632,18 +708,32 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
   const regions = useMemo(() => [...new Set(comparison.rows.flatMap(r => [r.house_scope?.region, r.nep_scope?.region]).filter(Boolean))]
     .sort((a, b) => a.localeCompare(b, 'en', {numeric: true})), [comparison]);
   const page = Math.max(1, Number(params.page) || 1);
-  // Sortable pairs table: sort key + direction ride in the route so shared
-  // links reproduce the exact view (DPWH comparison table pattern).
-  const sortKeys = ['title', 'region', 'house', 'nep', 'delta', 'match'];
+  // Always keep the nested facility→records hierarchy. Record-column sorts
+  // order facility groups by min (asc) or max (desc) of that record field.
+  const sortKeys = ['title', 'region', 'total_nep', 'total_hgab', 'total_delta',
+    'record_nep', 'record_hgab', 'record_delta', 'match'];
   const sortKey = sortKeys.includes(params.sort) ? params.sort : 'title';
   const sortDir = params.dir === 'desc' ? 'desc' : 'asc';
-  const sortValue = {title: r => r.house.title, region: r => r.house_scope?.region, house: r => r.columns.total.house,
-    nep: r => r.columns.total.nep, delta: r => r.columns.total.difference ?? 0, match: r => r.similarity};
-  const sortedRows = useMemo(() => sortRows(rows, sortValue[sortKey], {key: sortKey, direction: sortDir}), [rows, sortKey, sortDir]);
-  const setSort = key => navigate(route, {sort: key === 'title' ? null : key, dir: key === sortKey && sortDir === 'asc' ? 'desc' : null, page: null});
-  const sortHeader = (name, key) => <th scope="col" aria-sort={sortKey === key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}>
-    <button className="sort-header" aria-label={`Sort by ${name}`} onClick={() => setSort(key)}>{name}
-      <span className="sort-indicator" aria-hidden="true">{sortKey === key ? (sortDir === 'asc' ? ' ↑' : ' ↓') : ' ↕'}</span></button></th>;
+  const facilitySortValue = {
+    title: r => r.house.title, region: r => r.house_scope?.region,
+    total_nep: r => r.columns.total.nep, total_hgab: r => r.columns.total.house,
+    total_delta: r => hgabDelta(r.columns.total), match: r => r.similarity,
+    record_nep: r => {const e = recordExtremes(r, 'nep'); return e ? (sortDir === 'asc' ? e.min : e.max) : null;},
+    record_hgab: r => {const e = recordExtremes(r, 'house'); return e ? (sortDir === 'asc' ? e.min : e.max) : null;},
+    record_delta: r => {const e = recordExtremes(r, 'delta'); return e ? (sortDir === 'asc' ? e.min : e.max) : null;},
+  };
+  const sortedFacilityRows = useMemo(
+    () => sortRows(rows, facilitySortValue[sortKey] || facilitySortValue.title, {key: sortKey, direction: sortDir}),
+    [rows, sortKey, sortDir]);
+  const setSort = key => navigate(route, {
+    sort: key === 'title' ? null : key,
+    dir: key === sortKey && sortDir === 'asc' ? 'desc' : null,
+    page: null,
+  });
+  const sortButton = (name, key, ariaName = name) => <button className="sort-header" aria-label={`Sort by ${ariaName}`} onClick={() => setSort(key)}>{name}
+    <span className="sort-indicator" aria-hidden="true">{sortKey === key ? (sortDir === 'asc' ? ' ↑' : ' ↓') : ' ↕'}</span></button>;
+  const sortHeader = (name, key, group, ariaName) => <th scope="col" className={group ? `col-${group}` : undefined}
+    aria-sort={sortKey === key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}>{sortButton(name, key, ariaName)}</th>;
   const [panel, setPanel] = useState('table');
   useEffect(() => {setPanel(inlineSource ? 'pdf' : 'table');}, [inlineSource?.url, inlineSource?.page]);
   const hasFilters = Boolean(filters.q || filters.changed || filters.region);
@@ -654,6 +744,26 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
     ['Matched-pair total movement', comparison.rows.reduce((s, r) => s + (r.columns.total.difference ?? 0), 0),
       `${comparison.changed.length} pairs with revised records · see Analysis › Adjustments for the record-grain bridge`],
   ];
+  const pageSize = 50;
+  const facilityPage = sortedFacilityRows.slice((page - 1) * pageSize, page * pageSize);
+  const pageCount = sortedFacilityRows.length;
+  const renderPairIdentity = r => <>
+    <button className="project-record-title" onClick={() => {window.location.hash = routeHref('house', {node: r.house.id, view: 'tree'});}}>{r.house.title}</button>
+    <small>{r.house_scope.region} · {r.house_scope.province}</small>
+    <small>NEP: {r.nep.title}</small>
+    {r.changed && <small className="normalized-match-badge">Revised records — same line items, different amounts</small>}
+    {!r.changed && r.columns.total.difference != null && r.columns.total.difference !== 0
+      && <small className="normalized-match-badge">Totals differ with no revised record — added/dropped line items (column switch)</small>}
+  </>;
+  const renderMatch = r => r.similarity < 1
+    ? <span className="diff-tag diff-tag-identity" title={`Title similarity ${Math.round(r.similarity * 100)}% — verify before treating as one facility`}>match {Math.round(r.similarity * 100)}%</span>
+    : <span title="Identical normalized title in the same region and province">100%</span>;
+  const renderSources = r => <>
+    <button className="source-link" aria-pressed={false} onClick={() => onPdf(r.house.source, 'house')}>House p.{r.house.source.pdf_page}</button>
+    <button className="source-link" aria-pressed={false} onClick={() => onPdf(r.nep.source, 'nep')}>NEP p.{r.nep.source.pdf_page}</button>
+  </>;
+  const emptyGroup = (group, labels) => labels.map(label =>
+    <td key={label} className={`num col-${group} col-empty`} data-label={label}>—</td>);
   return <>
     <section className="hero hero-compact">
       <p className="eyebrow">DOH HFEP · FY2027</p>
@@ -669,11 +779,13 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
       <p><a href={siteUrl('other-analysis/data/hfep_workbench.json')} download>Download the HFEP workbench dataset (JSON)</a></p>
     </details>
     <nav className="view-tabs" aria-label="Comparison tables">
-      {[['columns', 'Column reconciliation'], ['pairs', 'Line-item pairs']].map(([key, name]) =>
+      {[['columns', 'Column reconciliation'], ['pairs', 'Funding Records']].map(([key, name]) =>
         <button key={key} aria-pressed={tab === key} onClick={() => navigate(route, {view: key === 'columns' ? null : key, page: null})}>{name}</button>)}
     </nav>
-    <p className="comparison-scope">Amounts in PHP · Difference = NEP − House · Pairs require ≥0.95 title similarity within the same region and province.
-      {tab === 'pairs' && ' Select a row title to jump to its source tree evidence.'}</p>
+    <p className="comparison-scope">Amounts in PHP · Pairs require ≥0.95 title similarity within the same region and province.
+      {tab === 'pairs'
+        ? ' Facility grand totals and funding-column records are separate column groups. Sorting a record column keeps each facility group intact, orders groups by that group’s lowest (asc) or highest (desc) printed record, and reorders records inside the group the same way. Δ HGAB = House − NEP.'
+        : ' Difference = NEP − House on the column-reconciliation tab.'}</p>
     {inlineSource && <div className="workspace-switch" aria-label="Workspace panels">
       <button aria-pressed={panel === 'table'} onClick={() => setPanel('table')}>Table</button>
       <button aria-pressed={panel === 'pdf'} onClick={() => setPanel('pdf')}>PDF source</button>
@@ -700,12 +812,18 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
         {params.changed === 'changed' && <p className="muted">Revision review: these pairs carry at least one funding-column record printed in both annexes with different amounts. Totals that differ without a revised record are column switches, shown separately in Analysis › Adjustments.</p>}
         {tab === 'pairs' && <div className="mobile-sort">
           <label>Sort pairs<select aria-label="Sort pairs" value={sortKey} onChange={e => setSort(e.target.value)}>
-            {[['title', 'Facility pair'], ['house', 'House GAB'], ['nep', 'DBM NEP'], ['delta', 'NEP − House'], ['region', 'Region'], ['match', 'Match']].map(([v, n]) => <option key={v} value={v}>{n}</option>)}
+            {[['title', 'Facility pair'], ['total_nep', 'Facility NEP'], ['total_hgab', 'Facility HGAB'], ['total_delta', 'Facility Δ HGAB'],
+              ['record_nep', 'Record NEP (group min/max)'], ['record_hgab', 'Record HGAB (group min/max)'],
+              ['record_delta', 'Record Δ HGAB (group min/max)'], ['region', 'Region'], ['match', 'Match']]
+              .map(([v, n]) => <option key={v} value={v}>{n}</option>)}
           </select></label>
           <button onClick={() => navigate(route, {dir: sortDir === 'asc' ? 'desc' : null, page: null})}>{sortDir === 'asc' ? 'Ascending ↑' : 'Descending ↓'}</button>
         </div>}
         <div className="results-toolbar">
-          <p className="result-count" aria-live="polite">{tab === 'columns' ? `${FUND_COLUMNS.length} funding columns` : `${rows.length.toLocaleString()} of ${comparison.rows.length.toLocaleString()} pairs`}{rows.filter(r => r.changed).length ? ` · ${rows.filter(r => r.changed).length} with revised records` : ''}</p>
+          <p className="result-count" aria-live="polite">{tab === 'columns'
+            ? `${FUND_COLUMNS.length} funding columns`
+            : `${rows.length.toLocaleString()} of ${comparison.rows.length.toLocaleString()} pairs`}
+            {tab === 'pairs' && rows.filter(r => r.changed).length ? ` · ${rows.filter(r => r.changed).length} with revised records` : ''}</p>
           <ShareLink/>
           {tab === 'pairs' && <button disabled={!rows.length} onClick={() => download('hfep-comparison-pairs.csv', comparisonCsv(rows))}>Export CSV</button>}
         </div>
@@ -714,10 +832,6 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
             <thead><tr><th scope="col">Funding column</th><th scope="col">House GAB</th><th scope="col">DBM NEP</th><th scope="col">NEP − House</th><th scope="col">Matched-pair movement</th></tr></thead>
             <tbody>{FUND_COLUMNS.map(column => {
               const t = comparison.column_totals[column];
-              // Record-grain movement on matched pairs: revised (both printed)
-              // + added (NEP-only record) − dropped (House-only record). For
-              // the component columns this is the honest movement; the total
-              // row then reconciles to the sum of the three above.
               const net = comparison.rows.reduce((s, r) => {
                 const cell = r.columns[column];
                 if (cell.difference != null) return s + cell.difference;
@@ -734,39 +848,71 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
             </tbody></table></div>
           <p className="muted">The NEP − House gap mixes the national-side share with per-row reallocation on matched LGU rows. The movement column decomposes what changed on the {comparison.rows.length} matched pairs at record grain — revised cells plus added records minus dropped records; blank cells never count as zero. Analysis › Adjustments carries the full bridge.</p>
         </> : <>
-          <div className="table-scroll" tabIndex={0} role="region" aria-label="Matched line-item pairs"><table>
-            <thead><tr>{sortHeader('Facility pair', 'title')}{sortHeader('House GAB', 'house')}{sortHeader('DBM NEP', 'nep')}{sortHeader('NEP − House', 'delta')}{sortHeader('Region', 'region')}{sortHeader('Match', 'match')}<th scope="col">Source evidence</th></tr></thead>
-            <tbody>{sortedRows.slice((page - 1) * 50, page * 50).map(r =>
-              <tr key={r.id}>
-                <th scope="row">
-                  <button className="project-record-title" onClick={() => {window.location.hash = routeHref('house', {node: r.house.id, view: 'tree'});}}>{r.house.title}</button>
-                  <small>{r.house_scope.region} · {r.house_scope.province}</small>
-                  <small>NEP: {r.nep.title}</small>
-                  {r.changed && <small className="normalized-match-badge">Revised records — same line items, different amounts</small>}
-                  {!r.changed && r.columns.total.difference != null && r.columns.total.difference !== 0
-                    && <small className="normalized-match-badge">Totals differ with no revised record — added/dropped line items (column switch)</small>}
-                </th>
-                <MoneyCell value={r.columns.total.house} caption="House GAB"/>
-                <MoneyCell value={r.columns.total.nep} caption="DBM NEP" prior={r.columns.total.house}/>
-                <td className={`num ${r.columns.total.difference > 0 ? 'up' : r.columns.total.difference < 0 ? 'down' : ''}`} data-label="NEP − House">
-                  {r.columns.total.difference == null ? '—' : r.columns.total.difference === 0 ? 'same' : `${r.columns.total.difference > 0 ? '+' : ''}${money(r.columns.total.difference)}`}</td>
-                <td data-label="Region">{r.house_scope.region}</td>
-                <td className="num" data-label="Match">{r.similarity < 1
-                  ? <span className="diff-tag diff-tag-identity" title={`Title similarity ${Math.round(r.similarity * 100)}% — verify before treating as one facility`}>match {Math.round(r.similarity * 100)}%</span>
-                  : <span title="Identical normalized title in the same region and province">100%</span>}</td>
-                <td data-label="Source evidence">
-                  <button className="source-link" aria-pressed={false} onClick={() => onPdf(r.house.source)}>House p.{r.house.source.pdf_page}</button>
-                  <button className="source-link" aria-pressed={false} onClick={() => onPdf(r.nep.source)}>NEP p.{r.nep.source.pdf_page}</button>
-                </td>
-              </tr>)}
-            </tbody></table></div>
+          <div className="table-scroll" tabIndex={0} role="region" aria-label="Funding records"><table className="hfep-pairs-table">
+            <thead>
+              <tr className="pair-group-row">
+                <th scope="col" rowSpan={2} className="col-name"
+                  aria-sort={sortKey === 'title' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}>{sortButton('Facility pair names', 'title')}</th>
+                <th scope="colgroup" colSpan={3} className="col-totals">Facility grand totals</th>
+                <th scope="colgroup" colSpan={3} className="col-records">Funding-column records</th>
+                <th scope="col" rowSpan={2}
+                  aria-sort={sortKey === 'region' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}>{sortButton('Region', 'region')}</th>
+                <th scope="col" rowSpan={2}
+                  aria-sort={sortKey === 'match' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}>{sortButton('Match', 'match')}</th>
+                <th scope="col" rowSpan={2}>Source evidence</th>
+              </tr>
+              <tr className="pair-subhead-row">
+                {sortHeader('NEP', 'total_nep', 'totals', 'Facility NEP')}
+                {sortHeader('HGAB', 'total_hgab', 'totals', 'Facility HGAB')}
+                {sortHeader('Δ HGAB', 'total_delta', 'totals', 'Facility Δ HGAB')}
+                {sortHeader('NEP', 'record_nep', 'records', 'Record NEP')}
+                {sortHeader('HGAB', 'record_hgab', 'records', 'Record HGAB')}
+                {sortHeader('Δ HGAB', 'record_delta', 'records', 'Record Δ HGAB')}
+              </tr>
+            </thead>
+            <tbody>
+              {facilityPage.map(r => {
+                const printedRecords = printedRecordsForPair(r, sortKey, sortDir);
+                const totalDelta = hgabDelta(r.columns.total);
+                return <React.Fragment key={r.id}>
+                  <tr className="pair-facility-row">
+                    <th scope="row" className="col-name">{renderPairIdentity(r)}
+                      <small>{printedRecords.length} printed funding-column record{printedRecords.length === 1 ? '' : 's'}</small></th>
+                    <td className="num col-totals" data-label="Facility NEP">{money(r.columns.total.nep)}</td>
+                    <td className="num col-totals" data-label="Facility HGAB">{money(r.columns.total.house)}</td>
+                    <DeltaCell value={totalDelta} caption="Facility Δ HGAB" group="totals"/>
+                    {emptyGroup('records', ['Record NEP', 'Record HGAB', 'Record Δ HGAB'])}
+                    <td data-label="Region">{r.house_scope.region}</td>
+                    <td className="num" data-label="Match">{renderMatch(r)}</td>
+                    <td data-label="Source evidence">{renderSources(r)}</td>
+                  </tr>
+                  {printedRecords.map(column => {
+                    const cell = r.columns[column];
+                    return <tr key={`${r.id}|${column}`} className={`pair-record-row event-${cell.event}`}>
+                      <th scope="row" className="col-name">
+                        <span className="pair-record-label">{COLUMN_LABELS[column]}</span>
+                        <small className="normalized-match-badge">{RECORD_EVENT_LABELS[cell.event]}</small>
+                      </th>
+                      {emptyGroup('totals', ['Facility NEP', 'Facility HGAB', 'Facility Δ HGAB'])}
+                      <td className="num col-records" data-label="Record NEP">{cell.nep == null ? '—' : money(cell.nep)}</td>
+                      <td className="num col-records" data-label="Record HGAB">{cell.house == null ? '—' : money(cell.house)}</td>
+                      <DeltaCell value={hgabDelta(cell)} caption="Record Δ HGAB" group="records"/>
+                      <td data-label="Region">{r.house_scope.region}</td>
+                      <td data-label="Match"/>
+                      <td data-label="Source evidence"/>
+                    </tr>;
+                  })}
+                </React.Fragment>;
+              })}
+            </tbody>
+          </table></div>
           {!rows.length && <p>No pairs match these filters.</p>}
           <div className="pager">
             <button disabled={page === 1} onClick={() => changeFilters(route, {page: page > 2 ? String(page - 1) : null})}>Previous</button>
-            <span>{rows.length ? `${(page - 1) * 50 + 1}–${Math.min(page * 50, rows.length)}` : '0'} / {rows.length.toLocaleString()}</span>
-            <button disabled={page * 50 >= rows.length} onClick={() => changeFilters(route, {page: String(page + 1)})}>Next</button>
+            <span>{pageCount ? `${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, pageCount)}` : '0'} / {pageCount.toLocaleString()} pairs</span>
+            <button disabled={page * pageSize >= pageCount} onClick={() => changeFilters(route, {page: String(page + 1)})}>Next</button>
           </div>
-          <p className="muted">Pairs are suggestions: verify the two printed rows before treating them as one facility. Pairs never alter either document's ledger; House-only and NEP-only rows stay unmatched rather than zero.</p>
+          <p className="muted">Facility grand totals are row controls (sum of printed funding-column records). Funding-column records are the granular infra / med-equip / motor-vehicle cells. Sorting a record column keeps each facility group intact, orders groups by that group’s lowest (asc) or highest (desc) printed record, and reorders the records inside each group the same way. Δ HGAB = House − NEP.</p>
         </>}
       </section>
       {inlineSource && <aside className="source-pane" aria-label="PDF source pane">
@@ -776,14 +922,6 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
       </aside>}
     </div>
   </>;
-}
-
-function MoneyCell({value, caption, prior}) {
-  const delta = prior != null && value != null ? value - prior : null;
-  return <td className="num" data-label={caption} title={value == null ? 'No amount recorded' : `${value.toLocaleString('en-PH')} PHP`}>
-    <strong>{money(value)}</strong>
-    {delta != null && delta !== 0 && <small className={`delta ${delta > 0 ? 'up' : 'down'}`}>Δ {delta > 0 ? '+' : ''}{money(delta)}</small>}
-  </td>;
 }
 
 function AgencyCheck({check, stage, onPdf}) {
@@ -912,17 +1050,21 @@ export default function HfepApp({initialData = null} = {}) {
   const titleFor = key => hfepTabs.find(t => t[0] === key)?.[1] || 'Unknown page';
   useEffect(() => {document.title = `${titleFor(route.key)} · DOH HFEP FY2027`;}, [route.key]);
   const indexes = useMemo(() => data ? {house: buildStageIndex(data.stages.house), nep: buildStageIndex(data.stages.nep)} : null, [data]);
-  // The pdf param carries the stage key; the page number rides along. The
-  // resolver maps key → preview document, so deep links stay short and the
-  // OCR-JSON→PDF indirection lives in one place (pdfPathFor).
-  const onPdf = source => {
-    const pdfStage = [data?.stages.house, data?.stages.nep].find(s => s && pdfPathFor(s, source) === s.preview_pdf);
-    navigate(route, {pdf: pdfStage?.key || null, pdfPage: source.pdf_page});
+  // The pdf param carries the stage key; the page number rides along. Prefer an
+  // explicit stage key from the click site; otherwise resolve from row id /
+  // source path (JSON OCR artifacts must not match every stage's preview).
+  const onPdf = (source, stageKey) => {
+    const pdfStage = resolvePdfStage(data, source, stageKey);
+    const agencyPdf = pdfStage?.agency_check?.source?.source_pdf;
+    const key = agencyPdf && source.source_pdf === agencyPdf && agencyPdf !== pdfStage.preview_pdf
+      ? `${pdfStage.key}-agency` : pdfStage?.key;
+    navigate(route, {pdf: key || null, pdfPage: source.pdf_page});
   };
   const pdfKey = route.params.get('pdf'), pageNumber = Number(route.params.get('pdfPage'));
-  const pdfStage = data && [data.stages.house, data.stages.nep].find(s => pdfKey === s.key);
+  const pdfStage = data && [data.stages.house, data.stages.nep].find(s => pdfKey === s.key || pdfKey === `${s.key}-agency`);
+  const pdfDocument = pdfStage && (pdfKey.endsWith('-agency') ? pdfStage.agency_check.source.source_pdf : pdfStage.preview_pdf);
   const source = pdfStage && Number.isInteger(pageNumber) && pageNumber > 0
-    ? {url: siteUrl(pdfStage.preview_pdf), document: pdfStage.preview_pdf.split('/').pop(), title: `${pdfStage.label} · source page`, page: pageNumber} : null;
+    ? {url: siteUrl(pdfDocument), document: pdfDocument.split('/').pop(), title: `${pdfStage.label} · source page`, page: pageNumber} : null;
   const inlineSource = source && ['house', 'nep', 'compare'].includes(route.key) ? source : null;
   const mainRef = useRef(null);
   return <><a className="fmr-skip" href="#hfep-content" onClick={e => {e.preventDefault(); document.getElementById('hfep-content')?.focus();}}>Skip to content</a>

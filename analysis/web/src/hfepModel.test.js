@@ -15,6 +15,20 @@ const payload = JSON.parse(fs.readFileSync(new URL('../../../other-analysis/data
 const house = buildStageIndex(payload.stages.house);
 const nep = buildStageIndex(payload.stages.nep);
 
+test('every HFEP browser source opens its annex volume at the printed page', () => {
+  for (const [index, pdf, offset, first, last] of [
+    [house, 'HB_BUDGET/2 - HB 10858 VOL IB.pdf', 20, 877, 893],
+    [nep, 'dbm-nep-data/NEP-2027-VOLUME-2A_OCR.pdf', 8, 727, 739],
+  ]) {
+    assert.equal(index.stage.preview_pdf, pdf);
+    for (const [id, node] of index.byId) {
+      assert.equal(node.source.source_pdf, pdf, id);
+      assert.equal(node.source.pdf_page, node.source.printed_page + offset, id);
+      assert.ok(node.source.pdf_page >= first && node.source.pdf_page <= last, id);
+    }
+  }
+});
+
 const synthetic = () => buildStageIndex({
   key: 'syn', label: 'Synthetic annex', preview_pdf: 'syn.pdf', root: {id: 'r', label: 'Program', amounts_php: {total: 300}, source: {}},
   grand_total: {id: 'gt', label: 'Grand Total', amounts_php: {total: 300}, source: {}},
@@ -181,7 +195,7 @@ test('real payload: both stage indexes partition and the ledgers reconcile', () 
 
 test('comparison: pairs are unique, scoped and never alter either ledger', () => {
   const comparison = comparisonIndex(payload);
-  assert.equal(comparison.counts.pairs, 133);
+  assert.equal(comparison.counts.pairs, 341);
   assert.equal(comparison.counts.pairs + comparison.counts.house_only, house.stage.facilities.length);
   assert.equal(comparison.counts.pairs + comparison.counts.nep_only, nep.stage.facilities.length);
   assert.equal(new Set(comparison.rows.map(r => r.house.id)).size, comparison.rows.length);
@@ -261,23 +275,31 @@ test('line-item records: grain, events and the conservation bridge', () => {
     assert.ok(['revised', 'added', 'dropped', 'same', 'unmatched'].includes(r.event));
     assert.ok(r.house_value != null || r.nep_value != null);
   }
-  // Record counts by event from the retained FY2027 ledgers.
-  assert.equal(aggregates.byEvent.revised.count, 10);
-  assert.equal(aggregates.byEvent.added.count, 12);
-  assert.equal(aggregates.byEvent.dropped.count, 1);
-  assert.equal(aggregates.byEvent.same.count, 131);
-  assert.equal(aggregates.byEvent.unmatched.count, 893);
+  // Record counts by event from the retained FY2027 ledgers (after repairing
+  // the Clark OCR garble and matching short-path NEP categories by path tail).
+  assert.equal(aggregates.byEvent.revised.count, 82);
+  assert.equal(aggregates.byEvent.added.count, 58);
+  assert.equal(aggregates.byEvent.dropped.count, 17);
+  assert.equal(aggregates.byEvent.same.count, 281);
+  assert.equal(aggregates.byEvent.unmatched.count, 387);
   // Conservation bridge: revised net + added − dropped equals the total-column
-  // movement on matched pairs (669,480,000) that the old grain reported alone.
-  assert.equal(aggregates.bridge.total_net, 669480000);
+  // movement on matched pairs.
+  assert.equal(aggregates.bridge.total_net, 180122000);
   // The West Visayas pair must NOT classify as revised: House infra ₱200M vs
   // NEP med-equip ₱100M is one dropped + one added record, not a revision.
   const wvsu = comparison.rows.find(r => r.house.title.startsWith('West Visayas State University Medical Center'));
   assert.ok(wvsu && !wvsu.changed);
   assert.equal(wvsu.columns.infrastructure.event, 'dropped');
   assert.equal(wvsu.columns.medical_equipment.event, 'added');
+  // Clark Multi-Specialty was OCR-garbled as "cYao 80,000,000 。" on NEP p9;
+  // after repair it pairs with the House counterpart and revises infrastructure.
+  const clark = comparison.rows.find(r => r.nep.id === 'nep_hfep:p9:r37');
+  assert.ok(clark);
+  assert.match(clark.nep.title, /Clark Multi-Specialty Medical Center/);
+  assert.equal(clark.columns.infrastructure.event, 'revised');
+  assert.equal(clark.columns.infrastructure.difference, 50000000);
   // Filters narrow by event, column and search; CSV exports carry sources.
-  assert.equal(filterRecords(records, {event: 'revised'}).length, 10);
+  assert.equal(filterRecords(records, {event: 'revised'}).length, 82);
   assert.ok(filterRecords(records, {column: 'medical_equipment'}).length > 0);
   assert.ok(filterRecords(records, {q: 'navotas'}).every(r => r.title.toLowerCase().includes('navotas')));
   const recordCsv = recordsCsv(records);

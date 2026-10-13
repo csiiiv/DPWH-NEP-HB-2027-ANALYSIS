@@ -312,8 +312,10 @@ def build_tree(rows):
         if role not in kind_map or not row["label_raw"].strip():
             continue
         kind = kind_map[role]
+        repair = next((r for r in LABEL_REPAIRS if row["id"] in r["affects_ids"]), None)
+        display_label = repair["corrected"] if repair else " ".join(row["label_raw"].split())
         node = {"id": row["id"], "kind": kind, "parent_id": None, "child_ids": [],
-                "label": " ".join(row["label_raw"].split()),
+                "label": display_label,
                 "label_raw": row["label_raw"],
                 "printed_amounts_php": dict(row["amounts_php"]),
                 "printed_amounts_raw": dict(row["amounts_raw"]),
@@ -625,6 +627,18 @@ LABEL_QUIRKS = [
      "note": "missing space after comma as printed"},
 ]
 
+# PP-StructureV3 OCR failures that are not printable labels — repaired from the
+# PDF native text layer / Volume II-A OCR while keeping label_raw as the
+# pipeline reading. Distinct from LABEL_QUIRKS (printed/OCR spellings kept).
+LABEL_REPAIRS = [
+    {"id": "label_ocr_garbled_clark", "affects_ids": ["nep_hfep:p9:r37"],
+     "raw": "cYao 80,000,000 。",
+     "corrected": "Central Luzon Center for Health Development (Clark Multi-Specialty Medical Center)",
+     "note": "PP-StructureV3 OCR garbled the facility name into amount fragments; "
+             "repaired from HFEP_2.pdf native text (printed page 727 / PDF page 9) "
+             "and the House annex counterpart title"},
+]
+
 # Non-round printed amounts individually verified against the rendered page
 # and the Volume II-A OCR text layer before accepting.
 VERIFIED_ODD_AMOUNTS = [
@@ -684,6 +698,7 @@ def mark_provenance(tree, rows):
             continuation_ids.add(n["id"])
 
     quirk_ids = {qid: q for q in LABEL_QUIRKS for qid in q["affects_ids"]}
+    repair_ids = {rid: r for r in LABEL_REPAIRS for rid in r["affects_ids"]}
     odd_by_row = {v["row_id"]: v for v in VERIFIED_ODD_AMOUNTS}
     disc_nodes = {nid: d for d in PRINTED_DISCREPANCIES for nid in d["node_ids"]}
 
@@ -696,6 +711,11 @@ def mark_provenance(tree, rows):
             prov["normalizations"].append(
                 {"type": "label_whitespace_collapse", "from": raw_label,
                  "to": " ".join(raw_label.split())})
+        if n["id"] in repair_ids:
+            repair = repair_ids[n["id"]]
+            prov["normalizations"].append(
+                {"type": "label_ocr_repair", "from": repair["raw"],
+                 "to": repair["corrected"]})
         # amount lineage from the source row's interpretations
         if row:
             for col, interp in (row.get("amount_interpretations") or {}).items():
@@ -707,6 +727,10 @@ def mark_provenance(tree, rows):
             q = quirk_ids[n["id"]]
             prov["flags"].append({"flag": "ocr_suspect_label", "id": q["id"],
                                   "raw": q["raw"], "note": q["note"]})
+        if n["id"] in repair_ids:
+            repair = repair_ids[n["id"]]
+            prov["flags"].append({"flag": "ocr_suspect_label", "id": repair["id"],
+                                  "raw": repair["raw"], "note": repair["note"]})
         if n["id"] in odd_by_row:
             v = odd_by_row[n["id"]]
             prov["flags"].append({"flag": "verified_odd_amount", "id": v["id"],
@@ -910,6 +934,7 @@ def consolidated_json(tree, audit, metadata):
                                   if k != "amount_conflicts"},
                 "findings": audit["printed_discrepancies"],
                 "label_quirks": LABEL_QUIRKS,
+                "label_repairs": LABEL_REPAIRS,
                 "verified_odd_amounts": VERIFIED_ODD_AMOUNTS,
             },
         },

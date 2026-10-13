@@ -1,6 +1,6 @@
 # HFEP analysis
 
-Extraction and reconciliation of **FY 2027 Health Facilities Enhancement Program (HFEP)** data from two documents: the HB 10858 House bill copy (HGAB, Volume I-B) and the FY 2027 NEP executive proposal annex. Each document has its own extraction and artifacts; cross-document comparison is a separate future pass.
+Extraction and reconciliation of **FY 2027 Health Facilities Enhancement Program (HFEP)** data from two documents: the HB 10858 House bill copy (HGAB, Volume I-B) and the FY 2027 NEP executive proposal annex. Each document has its own extraction and artifacts; the combined workbench provides a separate, provisional cross-document comparison.
 
 ## HGAB HFEP (House bill, Volume I-B)
 
@@ -32,7 +32,8 @@ analysis-hfep/
 - Four funding columns: Infrastructure, Medical Equipment, Motor Vehicle, Total. Components sum to Total on every row and recursively on every control (NEP exception: the documented ₱140k defect chain).
 - Facility identity has not been matched to any external registry. IDs are source-artifact-local.
 - No coordinates are printed in these annexes, so no coordinate review applies.
-- **Per-document outputs only.** NEP↔HGAB comparison is deliberately a separate future analysis pass over the `*_data_list.json` artifacts.
+- **Per-document accounting stays separate.** The workbench compares printed controls and proposes title-similarity pairs within the same region and province. Its 341 candidate pairs, 172 unmatched House facilities and 123 unmatched NEP facilities do not establish insertions or deletions. Analysis counts individual printed funding-column records; facility totals remain row controls.
+- NEP browser evidence opens Volume II-A PDF pages 727–739 (printed 719–731); extraction artifacts retain standalone annex page numbers and raw OCR provenance. The repaired Clark Multi-Specialty Medical Center label retains its original OCR text, amounts and repair history.
 
 ## Rebuild
 

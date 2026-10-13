@@ -215,16 +215,19 @@ def check(base):
             page.evaluate("window.location.hash = '#highlights'")
             expect(page.get_by_role('dialog')).to_have_count(0)
             assert page.evaluate('document.body.style.overflow') == ''
-            # Candidate tables open the exact filters, including suggested deletions and FAP deltas.
+            # Headline drilldowns reproduce each published candidate subset,
+            # keeping unresolved insertion/deletion counterparts held out.
             page.goto(base + '#highlights', wait_until='networkidle')
-            for index, query in [(1, 'flag=nep_only_all'), (3, 'flag=amount_decrease')]:
+            for index, query in [(0, 'match=no_match'), (1, 'flag=nep_only'), (3, 'flag=amount_decrease')]:
                 href = page.get_by_role('region', name='HGAB 3rd versus NEP candidate changes').locator('tbody tr').first.locator('td').nth(index).locator('a').get_attribute('href')
                 assert query in href
                 assert 'region_match=ignore' in href
-            page.get_by_role('region', name='HGAB 3rd versus NEP candidate changes').locator('tbody tr').first.locator('td').nth(1).locator('a').click()
-            expect(page.locator('.result-count')).to_contain_text(f"{data['changes']['deletions']['comparison_rows']:,} of", timeout=30000)
-            expect(page.get_by_role('button', name='Remove flag filter')).to_contain_text('NEP only · all candidates')
-            page.go_back(wait_until='networkidle')
+            for index, key in enumerate(['insertions', 'deletions', 'increased', 'decreased']):
+                page.get_by_role('region', name='HGAB 3rd versus NEP candidate changes').locator('tbody tr').first.locator('td').nth(index).locator('a').click()
+                expect(page.locator('.result-count')).to_contain_text(f"{data['changes'][key]['comparison_rows']:,} of", timeout=30000)
+                if key == 'deletions':
+                    expect(page.get_by_role('button', name='Remove flag filter')).to_contain_text('NEP only candidate')
+                page.go_back(wait_until='networkidle')
             page.get_by_role('link', name='Analysis', exact=True).click()
             expect(page.get_by_role('heading', name='Analysis', exact=True)).to_be_visible()
             page.go_back(wait_until='networkidle')

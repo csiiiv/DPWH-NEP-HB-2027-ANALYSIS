@@ -76,15 +76,33 @@ def main():
                             page.screenshot(path=str(captures / f'{route.replace("?", "-").replace("=", "-")}-{width}.png'))
                     print(f'{width}px: all main and analysis views render without overflow', flush=True)
 
+                    # Agency controls use their own document: House Volume I-A
+                    # rather than the Volume I-B facility annex.
+                    goto('highlights?story=agency-check')
+                    story = page.get_by_role('dialog', name=re.compile('^Highlight evidence:'))
+                    for stage in ['nep', 'house']:
+                        source = data['stages'][stage]['agency_check']['source']
+                        story.get_by_role('button', name=f'Agency row · PDF p. {source["pdf_page"]}').click()
+                        modal = page.get_by_role('dialog', name='HFEP PDF source', exact=True)
+                        expect(modal.locator('canvas')).to_be_visible(timeout=60000)
+                        expect(modal.get_by_label('PDF page', exact=True)).to_have_value(str(source['pdf_page']))
+                        expect(modal.get_by_role('link', name='Download source PDF')).to_have_attribute(
+                            'href', re.compile(re.escape(Path(source['source_pdf']).name).replace(r'\ ', '(?: |%20)')))
+                        modal.get_by_role('button', name='Close PDF').click()
+                        expect(modal).not_to_be_visible()
+                        expect(story).to_be_visible()
+                    story.get_by_role('button', name='Close evidence').click()
+                    print(f'{width}px: agency controls open the correct PDF volumes', flush=True)
+
                     # Cross-document analysis: insertions, deletions, adjustments.
                     goto('analysis?view=insertions')
-                    expect(page.get_by_role('region', name='Top insertion candidates')).to_be_visible()
-                    expect(page.locator('.fmr-stats')).to_contain_text('380')
-                    expect(page.locator('.fmr-notice').first).to_contain_text('review candidates, not confirmed insertions')
+                    expect(page.get_by_role('region', name='Top unmatched House records')).to_be_visible()
+                    expect(page.locator('.fmr-stats')).to_contain_text('184')
+                    expect(page.locator('.fmr-notice').first).to_contain_text('line-item record grain')
                     no_overflow()
                     goto('analysis?view=deletions')
-                    expect(page.get_by_role('region', name='Top deletion candidates')).to_be_visible()
-                    expect(page.locator('.fmr-stats')).to_contain_text('331')
+                    expect(page.get_by_role('region', name='Top unmatched NEP records')).to_be_visible()
+                    expect(page.locator('.fmr-stats')).to_contain_text('203')
                     no_overflow()
                     goto('analysis?view=adjustments')
                     expect(page.get_by_role('region', name='Revised line-item Records')).to_be_visible()
@@ -94,12 +112,12 @@ def main():
                     pairs_table = page.get_by_role('region', name='Revised line-item Records')
                     expect(pairs_table.locator('tbody tr').first).to_contain_text('₱')
                     # Every record table in analysis carries PDF page references.
-                    for view, name in [('adjustments', 'Revised line-item Records'), ('deletions', 'Top deletion candidates'),
-                                       ('insertions', 'Top insertion candidates')]:
+                    for view, name in [('adjustments', 'Revised line-item Records'), ('deletions', 'Top unmatched NEP records'),
+                                       ('insertions', 'Top unmatched House records')]:
                         if view != 'adjustments':
                             goto(f'analysis?view={view}')
                         page.get_by_role('region', name=name).get_by_role(
-                            'button', name=re.compile(r'^(PDF|House|NEP) p\.')).first.click()
+                            'button', name=re.compile(r'^(PDF|House|NEP|Vol I-B|Vol II-A) p\.')).first.click()
                         modal = page.get_by_role('dialog', name='HFEP PDF source')
                         expect(modal.locator('canvas')).to_be_visible(timeout=60000)
                         modal.get_by_role('button', name='Close PDF').click()
@@ -115,37 +133,76 @@ def main():
                     expect(page.locator('.hero')).to_contain_text('Compare budget stages')
                     expect(page.locator('.stage-totals')).to_contain_text('10,021,659,000')
                     expect(page.get_by_role('region', name='Column reconciliation')).to_contain_text('4,451,000,000')
-                    expect(page.get_by_role('region', name='Column reconciliation')).to_contain_text('669,480,000')
+                    expect(page.get_by_role('region', name='Column reconciliation')).to_contain_text('180,122,000')
                     no_overflow()
                     page.screenshot(path=str(captures / f'compare-columns-{width}.png'))
                     goto('compare?view=pairs')
-                    expect(page.get_by_role('region', name='Matched line-item pairs')).to_be_visible()
-                    expect(page.locator('.result-count')).to_contain_text('133 pairs')
+                    expect(page.get_by_role('button', name='Funding Records')).to_have_attribute('aria-pressed', 'true')
+                    expect(page.get_by_role('region', name='Funding records')).to_be_visible()
+                    expect(page.locator('.result-count')).to_contain_text('341 pairs')
+                    # Grouped headers split facility totals from funding-column records.
+                    expect(page.get_by_role('region', name='Funding records')).to_contain_text('Facility grand totals')
+                    expect(page.get_by_role('region', name='Funding records')).to_contain_text('Funding-column records')
+                    expect(page.get_by_role('region', name='Funding records')).to_contain_text('printed funding-column record')
                     # Filtering to revised pairs narrows the review scope.
                     page.get_by_label('Pair status').select_option(label='With revised records')
-                    expect(page.locator('.result-count')).to_contain_text('10 of 133 pairs')
+                    expect(page.locator('.result-count')).to_contain_text('78 of 341 pairs')
                     no_overflow()
-                    # Sorting pairs re-orders rows; mobile gets the dropdown control.
-                    pairs_region = page.get_by_role('region', name='Matched line-item pairs')
-                    first_before = pairs_region.locator('tbody tr').first.inner_text()
+                    # Sorting pairs re-orders facility rows; mobile gets the dropdown control.
+                    pairs_region = page.get_by_role('region', name='Funding records')
+                    first_before = pairs_region.locator('tbody tr.pair-facility-row').first.inner_text()
                     if width == 390:
-                        page.get_by_label('Sort pairs').select_option('nep')
+                        page.get_by_label('Sort pairs').select_option('total_nep')
                         page.get_by_role('button', name=re.compile(r'^Ascending')).click()
                     else:
-                        page.get_by_role('button', name='Sort by DBM NEP').click()
-                    expect(page.locator('.result-count')).to_contain_text('10 of 133 pairs')
-                    first_after = pairs_region.locator('tbody tr').first.inner_text()
+                        page.get_by_role('button', name='Sort by Facility NEP').click()
+                    expect(page.locator('.result-count')).to_contain_text('78 of 341 pairs')
+                    first_after = pairs_region.locator('tbody tr.pair-facility-row').first.inner_text()
                     assert first_before != first_after, 'pair sort reorders rows'
                     if width == 390:  # flip direction via the same dropdown control
                         page.get_by_role('button', name=re.compile(r'^Descending')).click()
                     else:
-                        page.get_by_role('button', name='Sort by DBM NEP').click()  # toggle to descending
-                    assert pairs_region.locator('tbody tr').first.inner_text() != first_after, 'second click flips direction'
+                        page.get_by_role('button', name='Sort by Facility NEP').click()  # toggle to descending
+                    assert pairs_region.locator('tbody tr.pair-facility-row').first.inner_text() != first_after, 'second click flips direction'
+                    # Record-column sort keeps facility hierarchy; groups reorder by min/max record.
+                    first_facility = pairs_region.locator('tbody tr.pair-facility-row').first
+                    baseline = first_facility.inner_text()
+                    if width == 390:
+                        page.get_by_label('Sort pairs').select_option('record_delta')
+                    else:
+                        page.get_by_role('button', name=re.compile(r'Sort by Record .+ HGAB')).click()
+                    expect(page.locator('.result-count')).to_contain_text('78 of 341 pairs')
+                    expect(first_facility).not_to_have_text(baseline, timeout=5000)
+                    expect(pairs_region.locator('tbody tr.pair-record-row').first).to_be_visible()
+                    # Within the first facility group, record rows follow the same asc order.
+                    within_group = pairs_region.locator('tbody').evaluate('''tbody => {
+                      const rows = [...tbody.querySelectorAll('tr')];
+                      const start = rows.findIndex(r => r.classList.contains('pair-facility-row'));
+                      const records = [];
+                      for (let i = start + 1; i < rows.length; i++) {
+                        if (rows[i].classList.contains('pair-facility-row')) break;
+                        if (!rows[i].classList.contains('pair-record-row')) continue;
+                        const cell = rows[i].querySelector('[data-label="Record Δ HGAB"]');
+                        const text = (cell?.textContent || '').replace(/[₱,]/g, '').trim();
+                        if (text && text !== '—' && text !== 'same') records.push(Number(text));
+                      }
+                      return records;
+                    }''')
+                    assert len(within_group) >= 1, 'facility group still nests record rows'
+                    assert within_group == sorted(within_group), 'records inside group follow record sort'
+                    first_by_record = first_facility.inner_text()
+                    if width == 390:
+                        page.get_by_role('button', name=re.compile(r'^Ascending|^Descending')).click()
+                    else:
+                        page.get_by_role('button', name=re.compile(r'Sort by Record .+ HGAB')).click()
+                    expect(first_facility).not_to_have_text(first_by_record, timeout=5000)
+                    expect(pairs_region.locator('tbody tr.pair-facility-row').first).to_be_visible()
+                    expect(pairs_region.locator('tbody tr.pair-record-row').first).to_be_visible()
                     page.screenshot(path=str(captures / f'compare-pairs-sorted-{width}.png'))
                     no_overflow()
                     print(f'{width}px: compare stages reconciles columns and reviews pairs', flush=True)
-                    # A pair row links both source documents; the PDF opens in the side pane.
-                    row = page.get_by_role('region', name='Matched line-item pairs').locator('tbody tr').first
+                    # A pair facility row links both source documents; the PDF opens in the side pane.
+                    row = page.get_by_role('region', name='Funding records').locator('tbody tr.pair-facility-row').first
                     row.get_by_role('button', name='House p.').click()
                     pane = page.get_by_role('complementary', name='PDF source pane')
                     expect(pane.locator('canvas')).to_be_visible(timeout=60000)

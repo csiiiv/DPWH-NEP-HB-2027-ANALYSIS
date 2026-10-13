@@ -254,3 +254,19 @@ def test_hgab_data_list_parity():
     assert set(hg["items"][0]["provenance"]) == set(nep["items"][0]["provenance"])
     assert set(hg["items"][0]["hierarchy"]) == set(nep["items"][0]["hierarchy"])
     assert set(hg["controls"][0]) == set(nep["controls"][0])
+
+
+def test_repaired_clark_label_keeps_raw_ocr_and_amounts():
+    data = json.loads((DATA / "nep_hfep_data_list.json").read_text())
+    rows = json.loads((DATA / "nep_hfep_source_rows.json").read_text())["rows"]
+    item = next(i for i in data["items"] if i["id"] == "nep_hfep:p9:r37")
+    source = next(r for r in rows if r["id"] == item["id"])
+    repair = data["document"]["verification"]["label_repairs"][0]
+    assert item["label"] == repair["corrected"]
+    assert item["label_raw"] == source["label_raw"] == repair["raw"]
+    assert item["amounts_php"] == source["amounts_php"]
+    assert item["hierarchy"]["region"] == "Region III"
+    assert item["hierarchy"]["province"] == "Pampanga"
+    assert any(n["type"] == "label_ocr_repair" and n["from"] == repair["raw"]
+               and n["to"] == repair["corrected"]
+               for n in item["provenance"]["normalizations"])

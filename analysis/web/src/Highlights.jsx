@@ -51,7 +51,7 @@ function CoverageTable({data}){
 }
 
 function ChangesTable({data}){
- const columns=[['insertions','Insertion candidates',false,compare({flag:'house_only'})],['deletions','Deletion candidates',false,compare({flag:'nep_only_all'})],['increased','Increase of existing candidates',true,compare({flag:'amount_increase'})],['decreased','Decrease of existing candidates',true,compare({flag:'amount_decrease'})]];
+ const columns=[['insertions','Insertion candidates',false,compare({flag:'house_only',match:'no_match'})],['deletions','Deletion candidates',false,compare({flag:'nep_only'})],['increased','Increase of existing candidates',true,compare({flag:'amount_increase'})],['decreased','Decrease of existing candidates',true,compare({flag:'amount_decrease'})]];
  return <section className="analysis-section highlights-table-section" aria-labelledby="changes-heading">
   <h2 id="changes-heading">HGAB 3rd vs. NEP: candidate changes</h2>
   <p>House-only and NEP-only records, plus amount differences on attached candidate pairs. Select a DPWH figure to review the underlying records.</p>
