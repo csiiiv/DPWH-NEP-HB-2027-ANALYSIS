@@ -62,7 +62,7 @@ def main():
                         assert '/app/?preview=fmr#fmr/nep' in page.url
                     goto('home')
                     tabs = page.get_by_role('navigation', name='Workbench pages')
-                    assert tabs.locator('a').all_text_contents() == ['Home', 'Highlights', 'Compare Stages', 'Analysis', 'Map', 'House GAB', 'DBM NEP']
+                    assert tabs.locator('a').all_text_contents() == ['Home', 'Highlights', 'Compare stages', 'Analysis', 'Map', 'House GAB', 'DBM NEP']
                     # The FMR map tab renders MapLibre over hosted tiles; segment
                     # lines come from the committed payload.
                     goto('map')

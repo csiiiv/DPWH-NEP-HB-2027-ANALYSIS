@@ -37,8 +37,6 @@
   .nia-analysis-ledger .sortable-table { overflow:visible; padding:0 12px; }
   .nia-comparison .sortable-table td.num,.nia-analysis-ledger td.num { text-align:left; }
   .nia-comparison .view-tabs { flex-wrap:wrap; }
-  .nia-analysis .analysis-subtabs { gap:0; }
-  .nia-analysis .analysis-subtabs button { font-size:12px; padding:8px 10px; }
   .nia-comparison .comparison-table tbody tr:has(td[colspan]) { display:block; }
   .nia-analysis-ledger tbody tr:has(td[colspan]) { display:block; }
   .nia-main .fmr-stat strong { font-size:16px; white-space:nowrap; }

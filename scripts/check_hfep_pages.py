@@ -55,7 +55,7 @@ def main():
 
                     goto('home')
                     tabs = page.get_by_role('navigation', name='Workbench pages')
-                    assert tabs.locator('a').all_text_contents() == ['Home', 'Highlights', 'Compare Stages', 'Analysis', 'House GAB', 'DBM NEP']
+                    assert tabs.locator('a').all_text_contents() == ['Home', 'Highlights', 'Compare stages', 'Analysis', 'House GAB', 'DBM NEP']
                     # The workspace selector exposes all three registered workspaces.
                     workspaces = page.get_by_role('navigation', name='Workbench workspaces')
                     assert workspaces.locator('a').all_text_contents() == ['DPWH', 'DA Farm-to-Market Roads', 'DOH Health Facilities', 'NIA Irrigation']

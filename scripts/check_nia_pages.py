@@ -88,7 +88,7 @@ def main():
 
                     for view, expected_count, side in [('insertions', 319, 'house'), ('deletions', 282, 'nep'), ('adjustments', 4, None)]:
                         goto('analysis?view=' + view)
-                        expect(page.get_by_role('tab', name=view.title(), exact=True)).to_have_attribute('aria-selected', 'true')
+                        expect(page.get_by_role('link', name=view.title(), exact=True)).to_have_attribute('aria-current', 'page')
                         expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text(f'{expected_count} rows')
                         with page.expect_download() as result:
                             page.get_by_role('button', name='Export filtered CSV', exact=True).click()
@@ -112,11 +112,11 @@ def main():
                     goto('analysis?view=deletions&ranking=ambiguous&dim=program')
                     ambiguous = [r for r in data['comparison'] if r['status'] == 'nep_only' and r.get('ambiguous_title')]
                     expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text(f'{len(ambiguous)} rows')
-                    page.get_by_role('tab', name='Insertions', exact=True).click()
+                    page.get_by_role('link', name='Insertions', exact=True).click()
                     expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('319 rows')
                     goto('home')
                     assert page.get_by_role('navigation', name='Workbench pages').locator('a').all_text_contents() == [
-                        'Home', 'Highlights', 'Compare Stages', 'Analysis', 'House GAB', 'DBM NEP']
+                        'Home', 'Highlights', 'Compare stages', 'Analysis', 'House GAB', 'DBM NEP']
                     page.screenshot(path=str(captures / f'home-{width}.png'))
 
                     for side in ('nep', 'house'):

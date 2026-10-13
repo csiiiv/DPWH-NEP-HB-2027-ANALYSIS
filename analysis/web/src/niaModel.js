@@ -5,7 +5,7 @@ import {compactMoney, money, pctChange, signedMoney, signedPct, sortRows, csvTex
 
 export const niaTabs = [
   ['home', 'Home', '#nia/home'], ['highlights', 'Highlights', '#nia/highlights'],
-  ['compare', 'Compare Stages', '#nia/compare'], ['analysis', 'Analysis', '#nia/analysis'],
+  ['compare', 'Compare stages', '#nia/compare'], ['analysis', 'Analysis', '#nia/analysis'],
   ['house', 'House GAB', '#nia/house'], ['nep', 'DBM NEP', '#nia/nep'],
 ];
 export const statusLabels = {paired: 'Candidate pair', house_only: 'House only', nep_only: 'NEP only'};

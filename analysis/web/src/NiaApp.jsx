@@ -65,11 +65,11 @@ function ScopeNote() {
     <a href={siteUrl('analysis-nia/README.md')}>Read source methodology</a>
   </details>;
 }
-function Tabs({route, items, param = 'view', defaultKey}) {
+function Tabs({route, items, param = 'view', defaultKey, reset = {}, ariaLabel}) {
   const current = route.params.get(param) || defaultKey || items[0][0];
-  return <nav className="view-tabs fmr-view-tabs" aria-label={`${param === 'stage' ? 'Source stage' : 'View'} options`}>
+  return <nav className="view-tabs fmr-view-tabs" aria-label={ariaLabel || `${param === 'stage' ? 'Source stage' : 'View'} options`}>
     {items.map(([key, label]) => <a key={key} aria-current={current === key ? 'page' : undefined}
-      href={href(route.key, {...paramsOf(route), [param]: key, page: '', node: '', pair: '', records: ''})}>{label}</a>)}
+      href={href(route.key, {...paramsOf(route), [param]: key, page: '', node: '', pair: '', records: '', ...reset})}>{label}</a>)}
   </nav>;
 }
 function Filters({route, subprograms, comparison = false, controls = false, status = true, clearButton = true, className = 'fmr-filters'}) {
@@ -354,7 +354,7 @@ function CandidateAnalysis({data, route, rows, onPdf, view}) {
       ]}/></div>}
     <h3>{adjustment ? 'Changed pairs' : 'Ranked candidate records'}</h3>
     <div className="comparison-table nia-analysis-ledger"><ComparisonTable rows={filtered} route={route} onPdf={onPdf} initialSort={initialSort}/></div>
-    <p><a href={href('compare', {view: 'projects', q: p.q || '', subprogram: p.subprogram || '', status: adjustment ? 'changed' : `${side}_only`})}>Continue in Compare Stages →</a></p>
+    <p><a href={href('compare', {view: 'projects', q: p.q || '', subprogram: p.subprogram || '', status: adjustment ? 'changed' : `${side}_only`})}>Continue in Compare stages →</a></p>
     {p.group && <Dialog label="NIA analysis group records" onClose={() => navigate(route, {group: null})}>
       {group ? <><h3>{group.label}</h3><p>{group.count} {adjustment ? 'changed pairs' : 'source rows'} · {adjustment ? signedMoney(group.amount_php) : money(group.amount_php)}</p>
         <div className="comparison-table nia-analysis-ledger"><ComparisonTable rows={groupedRows} route={route} onPdf={onPdf} initialSort={initialSort}/></div></>
@@ -374,8 +374,8 @@ function Analysis({data, route, rows, onPdf}) {
     <div className="hero-actions">{['overview', 'stats'].includes(view) ? <label className="hero-source">Budget source<select aria-label="Analysis budget source" value={stageKey}
       onChange={e => navigate(route, {stage: e.target.value, page: null})}>{Object.entries(stageLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
       : <span className="nia-analysis-basis">{view === 'insertions' ? 'House GAB · unmatched source rows' : view === 'deletions' ? 'DBM NEP · unmatched source rows' : view === 'controls' ? 'House agency table' : 'House GAB ↔ DBM NEP'}</span>}<ShareLink/></div></section>
-    <nav className="analysis-subtabs" role="tablist" aria-label="Analysis views">{views.map(([key, label]) => <button key={key} role="tab" aria-selected={view === key}
-      onClick={() => navigate(route, {view: key, status: null, direction: null, ranking: null, page: null, sort: null, dir: null, group: null, pair: null})}>{label}</button>)}</nav>
+    <Tabs route={route} defaultKey="overview" items={views} ariaLabel="Analysis views"
+      reset={{status: null, direction: null, ranking: null, sort: null, dir: null, group: null, pair: null}}/>
     {['overview', 'stats'].includes(view) ? <><Filters route={route} subprograms={stage.subprograms}/>
       <div className="fmr-stats"><Stat label="Filtered allocation" value={money(stats.total)} detail={`${stats.count} source rows`}/>
         <Stat label="Median" value={money(stats.median)}/><Stat label="Mean" value={money(stats.mean == null ? null : Math.round(stats.mean))} detail="Nearest peso"/>

@@ -54,7 +54,7 @@ export const workspaces = {
     pages: [
       ["home", "Home"],
       ["highlights", "Highlights"],
-      ["compare", "Compare Stages"],
+      ["compare", "Compare stages"],
       ["analysis", "Analysis"],
       ["map", "Map"],
       ["house", "House GAB"],
@@ -67,7 +67,7 @@ export const workspaces = {
     pages: [
       ["home", "Home"],
       ["highlights", "Highlights"],
-      ["compare", "Compare Stages"],
+      ["compare", "Compare stages"],
       ["analysis", "Analysis"],
       ["house", "House GAB"],
       ["nep", "DBM NEP"],
@@ -79,7 +79,7 @@ export const workspaces = {
     pages: [
       ["home", "Home"],
       ["highlights", "Highlights"],
-      ["compare", "Compare Stages"],
+      ["compare", "Compare stages"],
       ["analysis", "Analysis"],
       ["house", "House GAB"],
       ["nep", "DBM NEP"],

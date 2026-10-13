@@ -5,9 +5,9 @@
 import {compactMoney, csvText, medianNumber, money, signedMoney, sortRows} from './fmrModel.js';
 
 export const hfepTabs = [
-  ['home', 'Home', '#hfep/home'], ['house', 'House GAB', '#hfep/house'],
-  ['nep', 'DBM NEP', '#hfep/nep'], ['analysis', 'Analysis', '#hfep/analysis'],
-  ['highlights', 'Highlights', '#hfep/highlights'],
+  ['home', 'Home', '#hfep/home'], ['highlights', 'Highlights', '#hfep/highlights'],
+  ['compare', 'Compare stages', '#hfep/compare'], ['analysis', 'Analysis', '#hfep/analysis'],
+  ['house', 'House GAB', '#hfep/house'], ['nep', 'DBM NEP', '#hfep/nep'],
 ];
 // The House annex was verified text-identical between the supplied 2nd-reading
 // copy and the 3rd-reading printing across all 17 annex pages.

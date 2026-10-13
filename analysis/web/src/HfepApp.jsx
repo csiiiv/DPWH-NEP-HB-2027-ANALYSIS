@@ -1,9 +1,9 @@
 // DOH HFEP workspace: per-document source verification for the FY2027 Health
 // Facilities Enhancement Program annexes. Both stages are presented side by
-// side but never paired: the House annex covers LGU-side capital outlays
-// while the NEP annex covers all capital outlays, so no cross-document
-// candidate matching is performed and no compare view exists (see the
-// payload's matching_note). The skeleton mirrors FmrApp.jsx.
+// side with title-matched review pairs, never merged: the House annex covers
+// LGU-side capital outlays while the NEP annex covers all capital outlays,
+// so pairs are evidence pointers, not identity claims (see the payload's
+// matching_note). The skeleton mirrors FmrApp.jsx.
 import React, {lazy, Suspense, useEffect, useMemo, useRef, useState} from 'react';
 import WorkbenchHeader from './WorkbenchHeader.jsx';
 import SortableTable from './SortableTable.jsx';
@@ -19,7 +19,7 @@ import {
   normalizationLabel, NORMALIZATION_INFO, filterFacilities, provenanceOptions, reviewCategories,
   matchesReviewCategory, bandRows, roundingLadder, repeatedAmounts, facilityCsv,
   HFEP_BANDS, columnAmount, columnSum, isInterpreted,
-  comparisonIndex, filterComparisons, comparisonCsv,
+  comparisonIndex, filterComparisons, comparisonCsv, hfepTabs,
 } from './hfepModel.js';
 import './Fmr.css';
 
@@ -873,7 +873,7 @@ export default function HfepApp({initialData = null} = {}) {
       .then(d => {if (d.schema_version !== 1) throw Error('Unsupported HFEP dataset'); setData(d);})
       .catch(e => {if (e.name !== 'AbortError') setError(e.message);});
     return () => controller.abort();}, []);
-  const titleFor = key => ({home: 'Home', house: 'House GAB', nep: 'DBM NEP', compare: 'Compare Stages', analysis: 'Analysis', highlights: 'Highlights'}[key] || 'Unknown page');
+  const titleFor = key => hfepTabs.find(t => t[0] === key)?.[1] || 'Unknown page';
   useEffect(() => {document.title = `${titleFor(route.key)} · DOH HFEP FY2027`;}, [route.key]);
   const indexes = useMemo(() => data ? {house: buildStageIndex(data.stages.house), nep: buildStageIndex(data.stages.nep)} : null, [data]);
   // The pdf param carries the stage key; the page number rides along. The

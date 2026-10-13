@@ -1,6 +1,6 @@
 export const fmrTabs = [
   ['home', 'Home', '#fmr/home'], ['highlights', 'Highlights', '#fmr/highlights'],
-  ['compare', 'Compare Stages', '#fmr/compare'], ['analysis', 'Analysis', '#fmr/analysis'],
+  ['compare', 'Compare stages', '#fmr/compare'], ['analysis', 'Analysis', '#fmr/analysis'],
   ['map', 'Map', '#fmr/map'], ['house', 'House GAB', '#fmr/house'], ['nep', 'DBM NEP', '#fmr/nep'],
 ];
 // Verified 12 October 2026: the FMR annex (House Volume I-B, PDF pages
