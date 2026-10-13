@@ -87,14 +87,14 @@ def main():
                     expect(page.locator('.fmr-stats')).to_contain_text('331')
                     no_overflow()
                     goto('analysis?view=adjustments')
-                    expect(page.get_by_role('region', name='Adjusted pairs')).to_be_visible()
-                    expect(page.locator('.fmr-stats')).to_contain_text('11')
-                    expect(page.get_by_role('region', name='Net movement by funding column')).to_contain_text('669,480,000')
-                    # Per-column deltas render with signs on adjusted pairs.
-                    pairs_table = page.get_by_role('region', name='Adjusted pairs')
+                    expect(page.get_by_role('region', name='Revised line-item Records')).to_be_visible()
+                    expect(page.locator('.fmr-stats').nth(0)).to_contain_text('Revised records')
+                    expect(page.locator('.fmr-notice')).to_contain_text('West Visayas State University Medical Center')
+                    # Per-column deltas render with signs on revised records.
+                    pairs_table = page.get_by_role('region', name='Revised line-item Records')
                     expect(pairs_table.locator('tbody tr').first).to_contain_text('₱')
                     # Every record table in analysis carries PDF page references.
-                    for view, name in [('adjustments', 'Adjusted pairs'), ('deletions', 'Top deletion candidates'),
+                    for view, name in [('adjustments', 'Revised line-item Records'), ('deletions', 'Top deletion candidates'),
                                        ('insertions', 'Top insertion candidates')]:
                         if view != 'adjustments':
                             goto(f'analysis?view={view}')
@@ -121,9 +121,9 @@ def main():
                     goto('compare?view=pairs')
                     expect(page.get_by_role('region', name='Matched line-item pairs')).to_be_visible()
                     expect(page.locator('.result-count')).to_contain_text('133 pairs')
-                    # Filtering to changed pairs narrows the review scope.
-                    page.get_by_label('Pair status').select_option(label='Amounts changed')
-                    expect(page.locator('.result-count')).to_contain_text('11 of 133 pairs')
+                    # Filtering to revised pairs narrows the review scope.
+                    page.get_by_label('Pair status').select_option(label='With revised records')
+                    expect(page.locator('.result-count')).to_contain_text('10 of 133 pairs')
                     no_overflow()
                     # Sorting pairs re-orders rows; mobile gets the dropdown control.
                     pairs_region = page.get_by_role('region', name='Matched line-item pairs')
@@ -133,7 +133,7 @@ def main():
                         page.get_by_role('button', name=re.compile(r'^Ascending')).click()
                     else:
                         page.get_by_role('button', name='Sort by DBM NEP').click()
-                    expect(page.locator('.result-count')).to_contain_text('11 of 133 pairs')
+                    expect(page.locator('.result-count')).to_contain_text('10 of 133 pairs')
                     first_after = pairs_region.locator('tbody tr').first.inner_text()
                     assert first_before != first_after, 'pair sort reorders rows'
                     if width == 390:  # flip direction via the same dropdown control

@@ -340,6 +340,14 @@ export {compactMoney, csvText, medianNumber, money, signedMoney, sortRows};
 // The builder matches House↔NEP rows by normalized-title similarity within
 // (region, province) blocks. Pairs are suggestions: the UI shows both rows,
 // the score, and per-column deltas, and links both source pages.
+//
+// A "line-item record" is one (facility row, funding column) cell that is
+// actually printed. The revision assessment runs at that grain: a component
+// cell revised means both annexes print it with different amounts; a cell the
+// NEP prints but the House leaves blank is an added record; a House-printed
+// cell with no NEP counterpart is a dropped record. Blank stays blank — never
+// zero — so a pair whose totals differ only because money moved between
+// columns (House infra ↔ NEP med equip) is two grain events, not a revision.
 
 export function comparisonIndex(data) {
   const stageHouse = data.stages.house, stageNep = data.stages.nep;
@@ -351,16 +359,22 @@ export function comparisonIndex(data) {
     const columns = Object.fromEntries(FUND_COLUMNS.map(column => {
       const hv = columnAmount(house?.amounts_php, column) ?? null;
       const nv = columnAmount(nep?.amounts_php, column) ?? null;
-      return [column, {house: hv, nep: nv, difference: hv == null || nv == null ? null : nv - hv}];
+      // Component-grain events: revised (both printed, differing), added
+      // (NEP-only), dropped (House-only). difference stays null when either
+      // side is blank — there is no comparable printed record to subtract.
+      const event = hv == null && nv == null ? 'none'
+        : hv == null ? 'added' : nv == null ? 'dropped' : hv === nv ? 'same' : 'revised';
+      return [column, {house: hv, nep: nv, difference: event === 'revised' || event === 'same' ? nv - hv : null, event}];
     }));
     return {id: `${pair.house_id}~${pair.nep_id}`, similarity: pair.similarity,
       house, nep, columns,
       house_scope: house ? facilityScope(houseIndex, house) : null,
       nep_scope: nep ? facilityScope(nepIndex, nep) : null,
-      // "Changed" means a comparable column actually differs. Rows whose
-      // component cells are blank on either side stay unchanged until a
-      // human verifies them.
-      changed: FUND_COLUMNS.some(c => columns[c].difference != null && columns[c].difference !== 0)};
+      // "Changed" at the record grain: at least one printed component cell
+      // was revised. Total-only movement (money reshuffled between columns)
+      // does not make a pair changed — it surfaces in the added/dropped
+      // records instead.
+      changed: COMPONENT_COLUMNS.some(c => columns[c].event === 'revised')};
   });
   // Unmatched rows keep their full record: an insertion/deletion candidate is
   // a review suggestion reflecting grain differences, never a confirmed add.
@@ -411,4 +425,102 @@ export function comparisonCsvRows(rows) {
 }
 export function comparisonCsv(rows) {
   return csvText(COMPARISON_CSV_HEADERS, comparisonCsvRows(rows));
+}
+
+// ── Line-item records: the (facility row, funding column) grain ──
+// Every printed component cell on a matched pair becomes one record with its
+// cross-document event; unmatched facility rows contribute their printed
+// component cells as unmatched records on their own side. The total column is
+// deliberately excluded: it is a row control, not a line item, and assessing
+// totals would re-create the grand-total illusion this grain exists to avoid.
+
+export function lineItemRecords(comparison) {
+  const records = [];
+  const push = (facility, column, side, event, counterpart, pairRow) => records.push({
+    id: `${facility.id}|${column}`, facility_id: facility.id, title: facility.title, column,
+    column_label: COLUMN_LABELS[column], side, event,
+    house_value: side === 'house' || event === 'dropped' ? columnAmount(facility.amounts_php, column) : null,
+    nep_value: side === 'nep' || event === 'added' ? columnAmount(facility.amounts_php, column) : null,
+    difference: event === 'revised' || event === 'same' ? pairRow.columns[column].difference : null,
+    similarity: pairRow?.similarity ?? null,
+    region: pairRow ? pairRow.house_scope?.region : facility.scope?.region,
+    province: pairRow ? pairRow.house_scope?.province : facility.scope?.province,
+    house_source: side === 'house' || event === 'dropped' ? facility.source : counterpart?.source ?? null,
+    nep_source: side === 'nep' || event === 'added' ? facility.source : counterpart?.source ?? null,
+    pair_id: pairRow?.id ?? null,
+  });
+  for (const row of comparison.rows)
+    for (const column of COMPONENT_COLUMNS) {
+      const event = row.columns[column].event;
+      // Push every paired record (including unchanged) so that the total
+      // record count equals printed-cells on both sides, and the 'same'
+      // population describes the baseline review scope.
+      if (event === 'none') continue;
+      // For revised: emit once on the House side carrying the delta.
+      if (event === 'revised') push(row.house, column, 'house', event, row.nep, row);
+      else if (event === 'same') push(row.house, column, 'house', event, row.nep, row);
+      else if (event === 'added') push(row.nep, column, 'nep', event, row.house, row);
+      else if (event === 'dropped') push(row.house, column, 'house', event, row.nep, row);
+    }
+  // Unmatched facility rows: printed component cells stay whole records on
+  // their side. The event stays 'unmatched' — never inferred as added or
+  // dropped, because no counterpart pairing exists to compare against.
+  for (const facility of comparison.house_only_rows)
+    for (const column of COMPONENT_COLUMNS)
+      if (columnAmount(facility.amounts_php, column) != null)
+        push(facility, column, 'house', 'unmatched', null, null);
+  for (const facility of comparison.nep_only_rows)
+    for (const column of COMPONENT_COLUMNS)
+      if (columnAmount(facility.amounts_php, column) != null)
+        push(facility, column, 'nep', 'unmatched', null, null);
+  return records;
+}
+
+export const RECORD_EVENT_LABELS = {
+  revised: 'Revised record', added: 'Added record (NEP prints, House blank)',
+  dropped: 'Dropped record (House prints, NEP blank)', same: 'Unchanged record', unmatched: 'Unmatched row record',
+};
+
+export function filterRecords(records, {q = '', event = '', column = '', region = ''} = {}) {
+  const terms = q.toLocaleLowerCase().trim().split(/\s+/).filter(Boolean);
+  return records.filter(r => {
+    if (event && r.event !== event) return false;
+    if (column && r.column !== column) return false;
+    if (region && r.region !== region) return false;
+    if (terms.length) {
+      const haystack = `${r.title} ${r.column_label} ${r.region ?? ''} ${r.province ?? ''}`.toLocaleLowerCase();
+      if (!terms.every(t => haystack.includes(t))) return false;
+    }
+    return true;
+  });
+}
+
+// Record-grain aggregates: counts and pesos per event, per funding column,
+// with the conservation bridge the total-grain number must reconcile to.
+export function recordAggregates(records) {
+  const byEvent = Object.fromEntries(['revised', 'added', 'dropped', 'same', 'unmatched']
+    .map(event => [event, {count: 0, net: 0}]));
+  const byColumn = Object.fromEntries(COMPONENT_COLUMNS.map(column => [column,
+    {revised: 0, added: 0, dropped: 0, revised_net: 0, added_sum: 0, dropped_sum: 0}]));
+  for (const r of records) {
+    byEvent[r.event].count++;
+    if (r.event === 'revised') {byEvent.revised.net += r.difference; byColumn[r.column].revised++; byColumn[r.column].revised_net += r.difference;}
+    else if (r.event === 'added') {byEvent.added.net += r.nep_value; byColumn[r.column].added++; byColumn[r.column].added_sum += r.nep_value;}
+    else if (r.event === 'dropped') {byEvent.dropped.net -= r.house_value; byColumn[r.column].dropped++; byColumn[r.column].dropped_sum += r.house_value;}
+  }
+  // Bridge on matched pairs: revised net + added − dropped reconciles the
+  // per-pair total-column movement (the number the old grain showed alone).
+  const bridge = {revised_net: byEvent.revised.net, added: byEvent.added.net, dropped: -byEvent.dropped.net};
+  bridge.total_net = bridge.revised_net + bridge.added - Math.abs(byEvent.dropped.net);
+  return {byEvent, byColumn, bridge};
+}
+
+export const RECORD_CSV_HEADERS = ['event', 'column', 'facility_id', 'title', 'region', 'province',
+  'similarity', 'house_value_php', 'nep_value_php', 'difference_php',
+  'house_source_pdf', 'house_pdf_page', 'nep_source_pdf', 'nep_pdf_page'];
+export function recordsCsv(records) {
+  return csvText(RECORD_CSV_HEADERS, records.map(r => [r.event, r.column, r.facility_id, r.title, r.region, r.province,
+    r.similarity ?? '', r.house_value ?? '', r.nep_value ?? '', r.difference ?? '',
+    r.house_source?.source_pdf ?? '', r.house_source?.pdf_page ?? '',
+    r.nep_source?.source_pdf ?? '', r.nep_source?.pdf_page ?? '']));
 }

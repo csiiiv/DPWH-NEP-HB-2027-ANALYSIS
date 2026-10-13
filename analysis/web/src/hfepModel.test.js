@@ -6,6 +6,7 @@ import {
   filterFacilities, flagLabel, isFlagged, isInterpreted, lineageLabel, matchesReviewCategory, nodePath,
   normalizationLabel, provenanceOptions, repeatedAmounts, reviewCategories, roundingLadder, scopeRows,
   comparisonIndex, filterComparisons, comparisonCsv,
+  COMPONENT_COLUMNS, lineItemRecords, filterRecords, recordAggregates, recordsCsv,
 } from './hfepModel.js';
 
 // Tests run against the real built payload (prebuild regenerates it), plus a
@@ -190,12 +191,21 @@ test('comparison: pairs are unique, scoped and never alter either ledger', () =>
     assert.ok(row.similarity >= 0.95);
     assert.equal(row.house_scope.region, row.nep_scope.region);
     assert.equal(row.house_scope.province, row.nep_scope.province);
-    // Per-column deltas conserve the row identity on both sides.
+    // Per-column deltas conserve the row identity on both sides, and the
+    // event classifies the record grain: blank cells never fake a zero delta.
     for (const column of ['infrastructure', 'medical_equipment', 'motor_vehicle', 'total']) {
       const h = columnAmount(row.house.amounts_php, column);
       const n = columnAmount(row.nep.amounts_php, column);
-      assert.equal(row.columns[column].difference, h == null || n == null ? null : n - h);
+      const cell = row.columns[column];
+      if (h == null || n == null) assert.equal(cell.difference, null);
+      else assert.equal(cell.difference, n - h);
+      assert.equal(cell.event, h == null && n == null ? 'none' : h == null ? 'added'
+        : n == null ? 'dropped' : h === n ? 'same' : 'revised');
     }
+    // "Changed" now means a printed component record was revised; a total
+    // that differs only via column switches must NOT count as changed.
+    assert.equal(row.changed, ['infrastructure', 'medical_equipment', 'motor_vehicle']
+      .some(c => row.columns[c].event === 'revised'));
   }
   // Column totals reconcile to the printed controls.
   assert.equal(comparison.column_totals.total.house_php, 10021659000);
@@ -238,4 +248,39 @@ test('comparison: filters and CSV keep the review workflow honest', () => {
     assert.ok(header.includes(column), column);
   }
   assert.equal(csv.trimEnd().split('\r\n').length - 1, comparison.rows.length);
+});
+
+test('line-item records: grain, events and the conservation bridge', () => {
+  const comparison = comparisonIndex(payload);
+  const records = lineItemRecords(comparison);
+  const aggregates = recordAggregates(records);
+  // Every record is a component cell (never the total column) with a value on
+  // at least one side, and matched-pair records classify into an event.
+  for (const r of records) {
+    assert.ok(['infrastructure', 'medical_equipment', 'motor_vehicle'].includes(r.column));
+    assert.ok(['revised', 'added', 'dropped', 'same', 'unmatched'].includes(r.event));
+    assert.ok(r.house_value != null || r.nep_value != null);
+  }
+  // Record counts by event from the retained FY2027 ledgers.
+  assert.equal(aggregates.byEvent.revised.count, 10);
+  assert.equal(aggregates.byEvent.added.count, 12);
+  assert.equal(aggregates.byEvent.dropped.count, 1);
+  assert.equal(aggregates.byEvent.same.count, 131);
+  assert.equal(aggregates.byEvent.unmatched.count, 893);
+  // Conservation bridge: revised net + added − dropped equals the total-column
+  // movement on matched pairs (669,480,000) that the old grain reported alone.
+  assert.equal(aggregates.bridge.total_net, 669480000);
+  // The West Visayas pair must NOT classify as revised: House infra ₱200M vs
+  // NEP med-equip ₱100M is one dropped + one added record, not a revision.
+  const wvsu = comparison.rows.find(r => r.house.title.startsWith('West Visayas State University Medical Center'));
+  assert.ok(wvsu && !wvsu.changed);
+  assert.equal(wvsu.columns.infrastructure.event, 'dropped');
+  assert.equal(wvsu.columns.medical_equipment.event, 'added');
+  // Filters narrow by event, column and search; CSV exports carry sources.
+  assert.equal(filterRecords(records, {event: 'revised'}).length, 10);
+  assert.ok(filterRecords(records, {column: 'medical_equipment'}).length > 0);
+  assert.ok(filterRecords(records, {q: 'navotas'}).every(r => r.title.toLowerCase().includes('navotas')));
+  const recordCsv = recordsCsv(records);
+  assert.equal(recordCsv.trimEnd().split('\r\n').length - 1, records.length);
+  assert.ok(recordCsv.split('\r\n')[0].includes('house_pdf_page'));
 });

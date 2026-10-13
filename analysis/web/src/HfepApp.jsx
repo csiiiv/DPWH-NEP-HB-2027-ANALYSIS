@@ -20,6 +20,7 @@ import {
   matchesReviewCategory, bandRows, roundingLadder, repeatedAmounts, facilityCsv,
   HFEP_BANDS, columnAmount, columnSum, isInterpreted,
   comparisonIndex, filterComparisons, comparisonCsv, hfepTabs,
+  COMPONENT_COLUMNS, lineItemRecords, filterRecords, recordAggregates, RECORD_EVENT_LABELS, recordsCsv,
 } from './hfepModel.js';
 import './Fmr.css';
 
@@ -463,35 +464,55 @@ function Deletions({comparison, route, onPdf, data}) {
   </>;
 }
 function Adjustments({comparison, route, onPdf, data}) {
-  const changed = comparison.rows.filter(r => r.changed);
-  const columnNet = Object.fromEntries(FUND_COLUMNS.map(c => [c, changed.reduce((s, r) => s + (r.columns[c].difference ?? 0), 0)]));
+  const records = useMemo(() => lineItemRecords(comparison), [comparison]);
+  const aggregates = useMemo(() => recordAggregates(records), [records]);
+  const params = routeParams(route.params);
+  const filtered = useMemo(() => filterRecords(records, {q: params.q || '', event: params.event || '', column: params.column || ''}),
+    [records, params.q, params.event, params.column]);
+  const revised = records.filter(r => r.event === 'revised');
   return <>
     <div className="fmr-stats">
-      <Stat label="Adjusted pairs" value={changed.length} detail={`of ${comparison.rows.length} matched pairs`}/>
-      <Stat label="Net total movement" value={<Amount value={columnNet.total} signed exact/>} detail="NEP → House on matched rows"/>
-      <Stat label="Columns reallocated" value={FUND_COLUMNS.filter(c => c !== 'total' && columnNet[c] !== 0).length} detail="infra / med equip / motor veh"/>
-      <Stat label="Unchanged pairs" value={comparison.rows.length - changed.length} detail="identical amounts in both annexes"/>
+      <Stat label="Revised records" value={aggregates.byEvent.revised.count} detail={`net ${money(aggregates.byEvent.revised.net)} · both annexes print differing amounts`}/>
+      <Stat label="Added records" value={aggregates.byEvent.added.count} detail={`₱${aggregates.byEvent.added.net.toLocaleString('en-PH')} · NEP prints, House blank`}/>
+      <Stat label="Dropped records" value={aggregates.byEvent.dropped.count} detail={`₱${Math.abs(aggregates.byEvent.dropped.net).toLocaleString('en-PH')} · House prints, NEP blank`}/>
+      <Stat label="Unchanged records" value={aggregates.byEvent.same.count} detail="printed identically in both annexes"/>
     </div>
-    <p className="fmr-notice">These pairs carry different per-column amounts in the two annexes under a ≥0.95 title match. This is cross-document reallocation, not a House reading change: identity is proposed by title similarity and is not certified. The NEP − House delta on each pair is shown per funding column; the House reallocated money between infrastructure, medical equipment, and motor vehicles on LGU rows.</p>
-    <section className="fmr-section"><h3>Net movement by funding column</h3>
-      <SortableTable rows={FUND_COLUMNS.map(c => ({column: c, net: columnNet[c],
-        changed_rows: changed.filter(r => r.columns[c].difference != null && r.columns[c].difference !== 0).length}))} ariaLabel="Net movement by funding column" columns={[
+    <p className="fmr-notice">A record is one funding-column line item on one facility row (infrastructure, medical equipment or motor vehicle — totals are row controls, not records). A revision means both annexes print that record with different amounts. Money that switches column between the annexes (House infrastructure ↔ NEP medical equipment) is not a revision: it is one dropped and one added record, as in the West Visayas State University Medical Center pair.</p>
+    <section className="fmr-section"><h3>Revision bridge on matched pairs</h3>
+      <p className="fmr-muted">Revised {money(aggregates.bridge.revised_net)} + added {money(aggregates.bridge.added)} − dropped {money(Math.abs(aggregates.bridge.dropped))} = <strong>{money(aggregates.bridge.total_net)}</strong> total-column movement on the {comparison.rows.length} matched pairs. The old total-grain view showed only the right-hand number, mixing revisions with column switches.</p>
+    </section>
+    <section className="fmr-section"><h3>Revised records by funding column</h3>
+      <SortableTable rows={COMPONENT_COLUMNS.map(c => ({column: c, ...aggregates.byColumn[c]}))} ariaLabel="Revised records by funding column" columns={[
         {key: 'column', label: 'Funding column', scope: 'row', render: r => COLUMN_LABELS[r.column]},
-        {key: 'net', label: 'Net movement (PHP)', align: 'num', render: r => <Amount value={r.net} signed exact/>},
-        {key: 'changed_rows', label: 'Pairs changed', align: 'num'},
+        {key: 'revised', label: 'Revised', align: 'num'},
+        {key: 'revised_net', label: 'Net revision (PHP)', align: 'num', render: r => <Amount value={r.revised_net} signed exact/>},
+        {key: 'added', label: 'Added', align: 'num'},
+        {key: 'dropped', label: 'Dropped', align: 'num'},
       ]}/></section>
-    <section className="fmr-section"><h3>Adjusted pairs</h3>
-      <SortableTable rows={changed.map(r => ({...r, total_delta: r.columns.total.difference ?? 0}))} ariaLabel="Adjusted pairs" initialSort={{key: 'total_delta', direction: 'desc'}} pageSize={25} columns={[
-        {key: 'title', label: 'Facility pair', scope: 'row', render: r => <a href={routeHref('house', {node: r.house.id, view: 'tree'})}>{r.house.title}</a>},
-        {key: 'region', label: 'Region', value: r => r.house_scope?.region, render: r => r.house_scope?.region},
-        {key: 'infra', label: 'Δ Infra', align: 'num', value: r => r.columns.infrastructure.difference ?? 0, render: r => <Amount value={r.columns.infrastructure.difference} signed/>},
-        {key: 'med', label: 'Δ Med equip', align: 'num', value: r => r.columns.medical_equipment.difference ?? 0, render: r => <Amount value={r.columns.medical_equipment.difference} signed/>},
-        {key: 'veh', label: 'Δ Motor veh', align: 'num', value: r => r.columns.motor_vehicle.difference ?? 0, render: r => <Amount value={r.columns.motor_vehicle.difference} signed/>},
-        {key: 'total_delta', label: 'Δ Total', align: 'num', render: r => <Amount value={r.total_delta} signed exact/>},
+    <section className="fmr-section"><h3>Revised line-item records</h3>
+      <div className="fmr-result-bar">
+        <span>{filtered.length} of {records.length} records</span>
+        <label>Event<select aria-label="Record event" value={params.event || ''} onChange={e => changeFilters(route, {event: e.target.value})}>
+          <option value="">All events</option>{['revised', 'added', 'dropped', 'same'].map(ev => <option key={ev} value={ev}>{RECORD_EVENT_LABELS[ev]}</option>)}
+        </select></label>
+        <label>Funding column<select aria-label="Funding column" value={params.column || ''} onChange={e => changeFilters(route, {column: e.target.value})}>
+          <option value="">All columns</option>{COMPONENT_COLUMNS.map(c => <option key={c} value={c}>{COLUMN_LABELS[c]}</option>)}
+        </select></label>
+        <label>Search<input data-hfep-search type="search" placeholder="Facility or region" value={params.q || ''} onChange={e => changeFilters(route, {q: e.target.value})}/></label>
+        <button onClick={() => download('hfep-line-item-records.csv', recordsCsv(records))}>Export all records CSV</button>
+      </div>
+      <SortableTable rows={filtered} ariaLabel="Revised line-item records" initialSort={{key: 'difference', direction: 'desc'}} pageSize={25} columns={[
+        {key: 'title', label: 'Facility record', scope: 'row', render: r => <>{r.title}<small>{r.column_label} · {r.region}{r.province ? ` · ${r.province}` : ''}</small></>},
+        {key: 'event', label: 'Event', render: r => RECORD_EVENT_LABELS[r.event]},
+        {key: 'house_value', label: 'House (PHP)', align: 'num', render: r => <Amount value={r.house_value} exact/>},
+        {key: 'nep_value', label: 'NEP (PHP)', align: 'num', render: r => <Amount value={r.nep_value} exact/>},
+        {key: 'difference', label: 'Δ (PHP)', align: 'num', value: r => r.difference ?? Number.NaN, render: r => <Amount value={r.difference} signed exact/>},
         {key: 'source', label: 'Source', sortable: false, render: r => <>
-          <SourceButton stage={data.stages.house} source={r.house.source} onPdf={onPdf} label={`House p. ${r.house.source.pdf_page}`}/>
-          <SourceButton stage={data.stages.nep} source={r.nep.source} onPdf={onPdf} label={`NEP p. ${r.nep.source.pdf_page}`}/></>},
-        {key: 'review', label: 'Review', sortable: false, render: r => <a href={routeHref('compare', {view: 'pairs', q: r.house.title.slice(0, 40)})}>Compare pair</a>},
+          {r.house_source && r.event !== 'added' && <SourceButton stage={data.stages.house} source={r.house_source} onPdf={onPdf} label={`House p. ${r.house_source.pdf_page}`}/>}
+          {r.nep_source && r.event !== 'dropped' && <SourceButton stage={data.stages.nep} source={r.nep_source} onPdf={onPdf} label={`NEP p. ${r.nep_source.pdf_page}`}/>}</>},
+        {key: 'review', label: 'Review', sortable: false, render: r => r.pair_id
+          ? <a href={routeHref('compare', {view: 'pairs', q: r.title.slice(0, 40)})}>Compare pair</a>
+          : <a href={routeHref(r.side, {q: r.title.slice(0, 40)})}>Search {r.side === 'house' ? 'House' : 'NEP'} annex</a>},
       ]}/></section>
   </>;
 }
@@ -517,7 +538,7 @@ function Analysis({indexes, route, onPdf, data}) {
   const questions = {overview: 'How are HFEP capital outlays distributed across regions and categories?',
     insertions: 'Which House rows have no NEP counterpart at line-item grain?',
     deletions: 'Which NEP rows have no House counterpart at line-item grain?',
-    adjustments: 'Which matched pairs changed amounts between the annexes?',
+    adjustments: 'Which line-item records were revised, added or dropped between the annexes?',
     categories: 'Which facility categories and subcategories does this annex fund?',
     stats: 'Which allocation patterns describe this facility population?',
     review: 'Which extraction findings and interpretation rules remain open?'};
@@ -630,7 +651,8 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
     ['House GAB · Volume I-B', comparison.column_totals.total?.house_php ?? 0, `${data.stages.house.facilities.length} facilities · LGU-side capital outlays`],
     ['DBM NEP · Volume II-A', comparison.column_totals.total?.nep_php ?? 0, `${data.stages.nep.facilities.length} facilities · all capital outlays`],
     ['NEP − House', comparison.column_totals.total?.difference_php ?? 0, 'national-side share + per-row reallocation'],
-    ['Matched pairs changed', comparison.changed.length ? comparison.rows.filter(r => r.changed).reduce((s, r) => s + (r.columns.total.difference ?? 0), 0) : 0, `${comparison.rows.filter(r => r.changed).length} of ${comparison.rows.length} pairs reallocated across columns`],
+    ['Matched-pair total movement', comparison.rows.reduce((s, r) => s + (r.columns.total.difference ?? 0), 0),
+      `${comparison.changed.length} pairs with revised records · see Analysis › Adjustments for the record-grain bridge`],
   ];
   return <>
     <section className="hero hero-compact">
@@ -667,15 +689,15 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
             {regions.map(r => <option key={r} value={r}>{r}</option>)}</select></label>
           {tab === 'pairs' && <label>Pair status
             <select aria-label="Pair status" value={params.changed || ''} onChange={e => changeFilters(route, {changed: e.target.value})}>
-              <option value="">All pairs</option><option value="changed">Amounts changed</option><option value="same">Amounts identical</option>
+              <option value="">All pairs</option><option value="changed">With revised records</option><option value="same">Without revised records</option>
             </select></label>}
         </div>
         {hasFilters && <div className="active-filters" aria-label="Active filters">
           {[['query', params.q], ['region', params.region], ['pair status', params.changed]].filter(([, v]) => v).map(([key, v]) =>
-            <button key={key} aria-label={`Remove ${key} filter`} onClick={() => changeFilters(route, {[key === 'query' ? 'q' : key === 'pair status' ? 'changed' : key]: null})}>{key === 'pair status' && v === 'changed' ? 'Amounts changed' : key === 'pair status' && v === 'same' ? 'Amounts identical' : v} ×</button>)}
+            <button key={key} aria-label={`Remove ${key} filter`} onClick={() => changeFilters(route, {[key === 'query' ? 'q' : key === 'pair status' ? 'changed' : key]: null})}>{key === 'pair status' && v === 'changed' ? 'With revised records' : key === 'pair status' && v === 'same' ? 'Without revised records' : v} ×</button>)}
           <button onClick={() => changeFilters(route, {q: null, region: null, changed: null})}>Clear filters</button>
         </div>}
-        {params.changed === 'changed' && <p className="muted">Reallocation review: these pairs carry different amounts in the two annexes. Differences are printed values from each document; neither side is corrected.</p>}
+        {params.changed === 'changed' && <p className="muted">Revision review: these pairs carry at least one funding-column record printed in both annexes with different amounts. Totals that differ without a revised record are column switches, shown separately in Analysis › Adjustments.</p>}
         {tab === 'pairs' && <div className="mobile-sort">
           <label>Sort pairs<select aria-label="Sort pairs" value={sortKey} onChange={e => setSort(e.target.value)}>
             {[['title', 'Facility pair'], ['house', 'House GAB'], ['nep', 'DBM NEP'], ['delta', 'NEP − House'], ['region', 'Region'], ['match', 'Match']].map(([v, n]) => <option key={v} value={v}>{n}</option>)}
@@ -683,7 +705,7 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
           <button onClick={() => navigate(route, {dir: sortDir === 'asc' ? 'desc' : null, page: null})}>{sortDir === 'asc' ? 'Ascending ↑' : 'Descending ↓'}</button>
         </div>}
         <div className="results-toolbar">
-          <p className="result-count" aria-live="polite">{tab === 'columns' ? `${FUND_COLUMNS.length} funding columns` : `${rows.length.toLocaleString()} of ${comparison.rows.length.toLocaleString()} pairs`}{rows.filter(r => r.changed).length ? ` · ${rows.filter(r => r.changed).length} with amount changes` : ''}</p>
+          <p className="result-count" aria-live="polite">{tab === 'columns' ? `${FUND_COLUMNS.length} funding columns` : `${rows.length.toLocaleString()} of ${comparison.rows.length.toLocaleString()} pairs`}{rows.filter(r => r.changed).length ? ` · ${rows.filter(r => r.changed).length} with revised records` : ''}</p>
           <ShareLink/>
           {tab === 'pairs' && <button disabled={!rows.length} onClick={() => download('hfep-comparison-pairs.csv', comparisonCsv(rows))}>Export CSV</button>}
         </div>
@@ -692,8 +714,17 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
             <thead><tr><th scope="col">Funding column</th><th scope="col">House GAB</th><th scope="col">DBM NEP</th><th scope="col">NEP − House</th><th scope="col">Matched-pair movement</th></tr></thead>
             <tbody>{FUND_COLUMNS.map(column => {
               const t = comparison.column_totals[column];
-              const changedRows = comparison.rows.filter(r => r.changed);
-              const net = changedRows.reduce((s, r) => s + (r.columns[column].difference ?? 0), 0);
+              // Record-grain movement on matched pairs: revised (both printed)
+              // + added (NEP-only record) − dropped (House-only record). For
+              // the component columns this is the honest movement; the total
+              // row then reconciles to the sum of the three above.
+              const net = comparison.rows.reduce((s, r) => {
+                const cell = r.columns[column];
+                if (cell.difference != null) return s + cell.difference;
+                if (cell.event === 'added') return s + cell.nep;
+                if (cell.event === 'dropped') return s - cell.house;
+                return s;
+              }, 0);
               return <tr key={column}><th scope="row">{COLUMN_LABELS[column]}</th>
                 <td className="num" data-label="House GAB">{money(t?.house_php)}</td>
                 <td className="num" data-label="DBM NEP">{money(t?.nep_php)}</td>
@@ -701,7 +732,7 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
                 <td className={`num ${net > 0 ? 'up' : net < 0 ? 'down' : ''}`} data-label="Matched-pair movement">{net === 0 ? '—' : money(net)}</td>
               </tr>;})}
             </tbody></table></div>
-          <p className="muted">The NEP − House gap mixes the national-side share with per-row reallocation on matched LGU rows. The movement column isolates what changed on the {comparison.rows.length} matched pairs; the remainder of the gap is scope, not change.</p>
+          <p className="muted">The NEP − House gap mixes the national-side share with per-row reallocation on matched LGU rows. The movement column decomposes what changed on the {comparison.rows.length} matched pairs at record grain — revised cells plus added records minus dropped records; blank cells never count as zero. Analysis › Adjustments carries the full bridge.</p>
         </> : <>
           <div className="table-scroll" tabIndex={0} role="region" aria-label="Matched line-item pairs"><table>
             <thead><tr>{sortHeader('Facility pair', 'title')}{sortHeader('House GAB', 'house')}{sortHeader('DBM NEP', 'nep')}{sortHeader('NEP − House', 'delta')}{sortHeader('Region', 'region')}{sortHeader('Match', 'match')}<th scope="col">Source evidence</th></tr></thead>
@@ -711,7 +742,9 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
                   <button className="project-record-title" onClick={() => {window.location.hash = routeHref('house', {node: r.house.id, view: 'tree'});}}>{r.house.title}</button>
                   <small>{r.house_scope.region} · {r.house_scope.province}</small>
                   <small>NEP: {r.nep.title}</small>
-                  {r.changed && <small className="normalized-match-badge">Amounts differ between annexes</small>}
+                  {r.changed && <small className="normalized-match-badge">Revised records — same line items, different amounts</small>}
+                  {!r.changed && r.columns.total.difference != null && r.columns.total.difference !== 0
+                    && <small className="normalized-match-badge">Totals differ with no revised record — added/dropped line items (column switch)</small>}
                 </th>
                 <MoneyCell value={r.columns.total.house} caption="House GAB"/>
                 <MoneyCell value={r.columns.total.nep} caption="DBM NEP" prior={r.columns.total.house}/>
