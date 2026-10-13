@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  HUB_COLOR, MARKER_RADIUS, buildMapOverlay, coordKey, filterOverlayByObjects,
+  HUB_COLOR, PAIRED_COLOR, RED_FLAG_COLOR, MARKER_RADIUS, buildMapOverlay, coordKey, filterOverlayByObjects,
   normalizedPointCoordinates, offsetLine, stackForFeature,
 } from './fmrMapModel.js';
 
@@ -114,7 +114,7 @@ test('paired exact coordinates merge to one purple overlay at true geometry', ()
   assert.equal(paired.length, 1);
   assert.equal(paired[0].properties.titleDiffers, true);
   assert.equal(paired[0].properties.houseTitle, 'Road A House');
-  assert.equal(paired[0].properties.color, '#7a4fb8');
+  assert.equal(paired[0].properties.color, PAIRED_COLOR);
   assert.deepEqual(paired[0].geometry.coordinates, coords);
   assert.equal(JSON.parse(paired[0].properties.trueCoordinates).length, 2);
   const offset = lines.features.filter(f => f.properties.offset);
@@ -165,6 +165,23 @@ test('multi-segment projects emit a multi_segment marker', () => {
   assert.equal(multis.features[0].properties.segmentCount, 2);
 });
 
+test('NEP, House and paired markers remain independent from segment visibility', () => {
+  const full = buildMapOverlay(dataFixture());
+  const markersOnly = filterOverlayByObjects(full, {nep_only:false, house_only:false, paired:false});
+  assert.equal(markersOnly.lines.features.length, 0);
+  assert.equal(markersOnly.markers.features.length, full.lines.features.length);
+  assert.equal(markersOnly.selectionLines.features.length, full.lines.features.length);
+  assert.ok(markersOnly.markers.features.every(f => f.geometry.type === 'Point'));
+  const segmentsOnly = filterOverlayByObjects(full, {nep_marker:false, house_marker:false, paired_marker:false});
+  assert.equal(segmentsOnly.lines.features.length, full.lines.features.length);
+  assert.equal(segmentsOnly.markers.features.length, 0);
+  for (const [marker, matchKind] of [['nep_marker','nep_only'],['house_marker','house_only'],['paired_marker','paired']]) {
+    const hidden = filterOverlayByObjects(full, {[marker]:false});
+    assert.equal(hidden.lines.features.length, full.lines.features.length);
+    assert.equal(hidden.markers.features.some(f => f.properties.matchKind === matchKind), false);
+  }
+});
+
 test('Normalized undoes accepted digit repairs; Reviewed keeps them', () => {
   const reviewed = buildMapOverlay(dataFixture(), {coordBasis: 'reviewed'});
   const normalized = buildMapOverlay(dataFixture(), {coordBasis: 'normalized'});
@@ -193,4 +210,71 @@ test('marker radius ramp is shared', () => {
 
 test('coordKey is stable for identical arrays', () => {
   assert.equal(coordKey(coords), coordKey([[120.1, 18.1], [120.2, 18.2]]));
+});
+
+test('review markers retain a single printed point with no drawable road', () => {
+  const data = dataFixture();
+  const p = data.stages.house.projects.find(p => p.id === 'house_b');
+  p.status = 'needs_review';
+  p.review_flags = ['single_point_without_endpoint_roles'];
+  p.segments = [];
+  p.points = [point('house_b:point', 120.1, 18.1, '18.1, 120.1')];
+  const overlay = buildMapOverlay(data);
+  assert.equal(overlay.lines.features.some(f => f.properties.projectId === p.id), false);
+  const review = overlay.flags.features.find(f => f.properties.objectKind === 'coordinate_review' && f.properties.projectId === p.id);
+  assert.ok(review);
+  assert.deepEqual(review.geometry.coordinates, [120.1, 18.1]);
+  assert.equal(review.properties.houseId, p.id);
+  assert.equal(review.properties.color, '#0369a1');
+  assert.equal(filterOverlayByObjects(overlay, {coordinate_review: false}).flags.features.some(f => f.properties.objectKind === 'coordinate_review'), false);
+  assert.ok(filterOverlayByObjects(overlay, {red_flag: false}).flags.features.some(f => f.properties.objectKind === 'coordinate_review'));
+  assert.equal(filterOverlayByObjects(overlay, {red_flag: false}).summary.visible_flags, 0);
+});
+
+test('resolved historical flags do not emit red flags; unlocatable reviews are counted', () => {
+  const data = dataFixture();
+  const p = data.stages.house.projects.find(p => p.id === 'house_b');
+  p.original_review_flags = ['source_numeric_repair_candidate'];
+  assert.equal(buildMapOverlay(data).flags.features.filter(f => f.properties.objectKind === 'coordinate_review').length, 0);
+  p.review_flags = ['missing_or_ambiguous_segment_endpoint'];
+  p.segments = [];
+  p.points = [point('house_b:point', null, null, 'unreadable')];
+  const overlay = buildMapOverlay(data);
+  assert.equal(overlay.flags.features.some(f => f.properties.projectId === p.id), false);
+  assert.equal(overlay.summary.unmapped_flags, 1);
+  assert.equal(buildMapOverlay(data, {status: 'paired'}).summary.unmapped_flags, 0);
+});
+
+
+test('analytical markers use source-wide calculations and remain independent of coordinate reviews', () => {
+  const data = dataFixture();
+  const p = data.stages.house.projects.find(p => p.id === 'house_b');
+  p.segments[0].straight_line_distance_km = .05;
+  const overlay = buildMapOverlay(data,{project:p.id});
+  const flag = overlay.flags.features.find(f => f.properties.objectKind === 'red_flag' && f.properties.projectId === p.id);
+  assert.ok(flag);assert.equal(flag.properties.color,RED_FLAG_COLOR);
+  assert.ok(JSON.parse(flag.properties.analyticalFlags).some(f => f.id === 'short_span'));
+  assert.ok(!overlay.flags.features.some(f => f.properties.objectKind === 'coordinate_review'));
+  assert.equal(filterOverlayByObjects(overlay,{red_flag:false}).flags.features.length,0);
+  assert.ok(!JSON.parse(buildMapOverlay(data,{project:p.id,rf_short_m:20}).flags.features.find(f => f.properties.projectId === p.id)?.properties.analyticalFlags || '[]').some(f => f.id === 'short_span'));
+});
+
+test('map focus matches exact source and candidate IDs', () => {
+  const data = dataFixture();
+  assert.equal(buildMapOverlay(data,{project:'missing'}).summary.projects,0);
+  const full = buildMapOverlay(data);
+  const id = data.comparison[0].id;
+  assert.equal(buildMapOverlay(data,{pair:id}).summary.candidates,1);
+  assert.ok(full.summary.candidates > 1);
+});
+
+
+test('co-located analytical flag stacks retain the selected source first and exclude review markers',()=>{
+  const data=dataFixture(), overlay=buildMapOverlay(data);
+  const flag=overlay.flags.features.find(f=>f.properties.objectKind==='red_flag');
+  assert.ok(flag);
+  const other={...flag,id:'other',properties:{...flag.properties,projectId:'other'}};
+  const review={...flag,id:'review',properties:{...flag.properties,objectKind:'coordinate_review'}};
+  const stack=stackForFeature({features:[other,review,flag]},flag);
+  assert.deepEqual(stack.map(f=>f.id),[flag.id,'other']);
 });

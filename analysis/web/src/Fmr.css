@@ -230,3 +230,16 @@ dialog.fmr-dialog { width:min(1100px,calc(100vw - 32px)); max-height:90vh; borde
   .fmr-comparison-workspace.panel-results>.fmr-workspace-pdf { display:none; }
   .fmr-main:has(.fmr-comparison-workspace) .fmr-mobile-panels { display:flex; }
 }
+
+/* Source-backed review diagnostics in Analysis; derived annotations only. */
+.fmr-redflag-tags { display:flex; flex-wrap:wrap; gap:4px; min-width:150px; }
+.fmr-redflag-tags span { background:#fff1f2; color:#9f1239; border:1px solid #fecdd3; border-radius:6px; padding:3px 6px; font-size:11px; }
+.fmr-redflag-links { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.fmr-redflags td small { display:block; white-space:normal; color:#526780; font-size:11px; }
+.fmr-redflag-dialog { width:min(850px,96vw); max-height:90vh; overflow:auto; }
+.fmr-redflag-metrics { display:grid; grid-template-columns:minmax(150px,1fr) 2fr; gap:8px 16px; }
+.fmr-redflag-metrics dt { color:#526780; }
+.fmr-redflag-metrics dd { margin:0; overflow-wrap:anywhere; }
+.fmr-redflag-findings { display:grid; gap:16px; padding-left:20px; }
+.fmr-redflag-findings p { margin:6px 0; }
+@media (max-width:700px) { .fmr-redflag-metrics { grid-template-columns:1fr; gap:4px; } .fmr-redflag-metrics dd { margin-bottom:10px; } }

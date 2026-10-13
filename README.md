@@ -1,7 +1,7 @@
 # FY2027 Budget Workbenches
 
 The React workbench includes DPWH, the Department of Agriculture's locally funded
-farm-to-market road annex, and the NIA irrigation schedules. Switch workspaces
+farm-to-market road annex, DOH health facilities, and the NIA irrigation schedules. Switch workspaces
 in the shared header; each retains its own routes, data, and source evidence.
 
 The annex tabs are **Home · Highlights · Compare Stages · Analysis · House GAB ·
@@ -47,26 +47,30 @@ python scripts/serve_pages.py --port 8000
 
 Open `http://127.0.0.1:8000/`. The generated `dist/`, browser payload, and `_site/`
 are git-ignored. Vite's standalone preview does not include the retained evidence;
-use the packaged preview above. The packager includes all three workspaces.
+use the packaged preview above. The packager includes all four workspaces.
 
 ## Guides and validation
 
 - [FMR workbench guide](other-analysis/FMR_WORKBENCH.md): routes, matching, evidence, and checks.
 - [Source analysis](other-analysis/README.md): extraction and coordinate review artifacts.
 - [NIA irrigation analysis](analysis-nia/README.md): HB 10858 irrigation annex extraction (828 projects, ₱17,999,305,000).
+- [DOH health facilities analysis](analysis-hfep/README.md): retained HFEP schedules, source controls, and evidence limits; open `#hfep/home` in the workbench.
 - [Frontend guide](analysis/web/README.md): shared components and local workflow.
 - [Earlier DPWH analysis](analysis/README.md): retained source work and modules from the original workbench.
 
 ```sh
 python -m unittest discover -s other-analysis/tests -v
 python -m unittest discover -s analysis-nia/tests -v
+python -m unittest discover -s analysis-hfep/tests -v
 npm test --prefix analysis/web
 python other-analysis/build_fmr_workbench.py --check
 python analysis-nia/build_nia_workbench.py --check
+python other-analysis/build_hfep_workbench.py --check
 python scripts/check_fmr_pages.py
 python scripts/check_nia_pages.py
+python scripts/check_hfep_pages.py
 ```
 
 Browser checks require Playwright and Chromium and run after packaging. The
-branch workflow validates the DPWH, FMR, and NIA workbenches; automatic Pages deployment remains
+branch workflow validates the DPWH, FMR, HFEP, and NIA workbenches; automatic Pages deployment remains
 restricted to `main`. This branch has not been published.

@@ -16,12 +16,13 @@
 .fmr-objects-actions button {
   border: 0; background: transparent; color: #2a4a78; font-size: 12px; cursor: pointer; padding: 2px 0;
 }
-.fmr-objects-option {
-  display: flex; align-items: flex-start; gap: 8px; padding: 5px 6px; border-radius: 6px;
-  font-size: 13px; cursor: pointer;
+.fmr-objects-menu .fmr-objects-option {
+  display: flex; flex-direction: row; align-items: center; flex: none; min-width: 0;
+  gap: 8px; padding: 5px 6px; border-radius: 6px;
+  font-size: 13px; white-space: nowrap; cursor: pointer;
 }
 .fmr-objects-option:hover { background: #f3f6fa; }
-.fmr-objects-option input { margin-top: 2px; }
+.fmr-objects-menu .fmr-objects-option input { width: auto; flex: 0 0 auto; margin: 0; }
 .fmr-map-shell { position: relative; border: 1px solid #d9e2ed; border-radius: 10px; overflow: hidden; background: #eef2f7; }
 .fmr-map-canvas { width: 100%; height: min(72vh, 760px); }
 .fmr-map-canvas .maplibregl-ctrl-attrib { font-size: 10px; }
@@ -30,6 +31,7 @@
 .fmr-map-legend { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: #526780; }
 .fmr-map-legend i { width: 14px; height: 4px; border-radius: 2px; display: inline-block; }
 .fmr-map-legend-arrow { font-size: 11px; line-height: 1; font-weight: 700; }
+.fmr-map-legend-icon { width: 16px; height: 16px; flex: 0 0 16px; }
 .fmr-map-warning { position: absolute; top: 10px; left: 10px; z-index: 5; margin: 0; background: #fffdf3; border: 1px solid #e5d9a8; border-radius: 8px; padding: 8px 12px; font-size: 12px; max-width: 70%; }
 .fmr-map-info { position: absolute; top: 10px; right: 10px; z-index: 5; width: min(380px, calc(100% - 20px)); max-height: calc(100% - 20px); overflow: auto; background: white; border: 1px solid #d9e2ed; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 6px 24px #182f4b22; }
 .fmr-map-info-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; justify-content: space-between; }
@@ -57,4 +59,55 @@
 .fmr-map-stack { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 12px; background: #f7f9fc; border: 1px solid #e5ebf2; border-radius: 8px; padding: 6px 8px; }
 .fmr-provenance-dialog { width: min(720px, 96vw); max-height: 90vh; }
 .fmr-provenance-dialog .fmr-dialog-body { overflow: auto; max-height: calc(90vh - 80px); }
-@media (max-width: 700px) { .fmr-map-canvas { height: 60vh; } .fmr-map-info { position: static; border-radius: 0; border-width: 1px 0; max-height: none; } }
+@media (max-width: 700px) {
+  .fmr-objects-filter { min-width: 15rem; }
+  .fmr-objects-menu { left: auto; right: 0; min-width: 100%; }
+  .fmr-map-canvas { height: 60vh; }
+  .fmr-map-info { position: static; border-radius: 0; border-width: 1px 0; max-height: none; }
+}
+
+.fmr-map-info { gap: 12px; width: min(360px, calc(100% - 20px)); }
+.fmr-map-info-head .fmr-eyebrow { margin: 0; flex: 1; }
+.fmr-map-close { min-width: 32px; min-height: 32px; padding: 0; font-size: 23px; line-height: 1; }
+.fmr-map-project-title { margin: 0; font-size: 16px; line-height: 1.45; overflow-wrap: anywhere; }
+.fmr-map-project-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: #526780; }
+.fmr-map-info .fmr-map-budget { padding: 10px 0; border-block: 1px solid #e5ebf2; gap: 8px 12px; }
+.fmr-map-budget dd { font-variant-numeric: tabular-nums; }
+.fmr-map-budget dd small { display: block; }
+.fmr-map-review-summary { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 10px; background: #fff7ed; border: 1px solid #fed7aa; color: #7c2d12; font-size: 12px; border-radius: 8px; }
+.fmr-map-review-action { font-weight: 600; margin-top: 2px; }
+.fmr-map-details-dialog { width: min(780px, 96vw); max-height: 90vh; overflow: auto; }
+.fmr-map-details-dialog .fmr-dialog-heading { position: sticky; top: 0; background: white; z-index: 1; padding-bottom: 12px; border-bottom: 1px solid #e5ebf2; }
+.fmr-map-details-dialog .fmr-dialog-heading h2 { font-size: 18px; }
+.fmr-map-details-dialog section { margin-block: 22px; }
+.fmr-map-source-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(240px,100%),1fr)); gap: 12px; }
+.fmr-map-source-cards article { border: 1px solid #d9e2ed; border-radius: 8px; padding: 14px; background: #f8fafc; }
+.fmr-map-source-cards h4 { margin: 0; }
+.fmr-map-source-cards small { display: block; overflow-wrap: anywhere; margin-bottom: 12px; color: #526780; }
+.fmr-map-findings { padding-left: 20px; }
+.fmr-map-findings li { margin-bottom: 16px; }
+.fmr-map-findings li p { margin-block: 6px; }
+@media (max-width: 700px) {
+  .fmr-map-info { width: 100%; }
+  .fmr-map-info-actions > a.primary, .fmr-map-info-actions > button { min-height: 38px; }
+}
+
+.fmr-map-info { width: min(420px, calc(100% - 20px)); }
+.fmr-map-locality { margin: 0; font-size: 12px; color: #526780; }
+.fmr-map-info h3 { font-size: 13px; margin: 0 0 10px; }
+.fmr-map-spending, .fmr-map-citizen-review { padding: 12px; border-radius: 8px; border: 1px solid #d9e2ed; background: #f8fafc; }
+.fmr-map-scale-source + .fmr-map-scale-source { margin-top: 12px; padding-top: 10px; border-top: 1px solid #d9e2ed; }
+.fmr-map-scale-source > strong { display: block; margin-bottom: 8px; font-size: 12px; }
+.fmr-map-spending dl { grid-template-columns: minmax(0,1fr) minmax(0,1fr); font-size: 12px; gap: 10px; }
+.fmr-map-spending dd small { display: block; font-weight: 400; margin-top: 3px; }
+.fmr-map-small-note { font-size: 11px; line-height: 1.5; color: #526780; margin: 8px 0 0; }
+.fmr-map-citizen-review.has-findings { background: #fff7ed; border-color: #fed7aa; }
+.fmr-map-citizen-review ul { padding-left: 16px; margin: 0; }
+.fmr-map-citizen-review li + li { margin-top: 10px; }
+.fmr-map-citizen-review li strong { font-size: 12px; }
+.fmr-map-citizen-review p { font-size: 12px; line-height: 1.5; margin: 4px 0 0; }
+.fmr-map-citizen-review .fmr-map-small-note { font-size: 11px; margin-top: 10px; }
+.fmr-map-coordinate-summary { font-size: 12px; margin-top: 10px; }
+.fmr-map-quick-sources { display: flex; flex-wrap: wrap; gap: 8px; }
+.fmr-map-quick-sources button { font-size: 12px; }
+@media (max-width: 700px) { .fmr-map-info { width: 100%; } }

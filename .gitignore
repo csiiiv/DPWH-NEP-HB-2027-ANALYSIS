@@ -52,6 +52,8 @@ analysis/data/highlights_details_2027.json
 # Rebuilt from retained FMR trees and normalization audits.
 other-analysis/data/fmr_workbench.json
 analysis-nia/data/nia_workbench.json
+# Rebuilt from retained HFEP trees and audits.
+other-analysis/data/hfep_workbench.json
 # Per-document FMR final datasets (rebuilt from retained normalized layers).
 other-analysis/data/hgab_fmr_final_dataset.json
 other-analysis/data/nep_fmr_final_dataset.json

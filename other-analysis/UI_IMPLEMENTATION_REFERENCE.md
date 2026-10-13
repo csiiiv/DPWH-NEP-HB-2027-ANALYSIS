@@ -494,3 +494,62 @@ Nothing is published by these commands.
 | `other-analysis/tests/` | Python regressions (63) |
 | `scripts/build_fmr_pages.py`, `serve_pages.py`, `check_fmr_pages.py` | Packaging, local preview, browser QA |
 | `analysis/web/src/Analysis.jsx`, `Comparison.jsx`, `Highlights.jsx`, `HighlightModal.jsx`, `SourceWorkspace.jsx` | DPWH baseline components worth reading before porting |
+
+
+## 12. FMR analytical review flags
+
+`#fmr/analysis?view=red_flags&stage=house` opens the source-level review table.
+The pure model in `analysis/web/src/fmrRedFlags.js` derives annotations without
+changing retained records. `FmrRedFlags.jsx` supplies editable URL-persisted
+thresholds, overlapping category counts, evidence dialogs and filtered CSV/JSON.
+
+Initial screens: positive section spans below 100 m, collapsed endpoints, spans
+above 10 km, high allocation per endpoint meter, incomplete/unresolved geometry,
+printed-point PSGC versus parsed-title province disagreements, exact shared
+footprints within one source, repeated sections within one project, and candidate
+allocation increases of at least 25% on unchanged coordinate footprints. These
+are review leads, not determinations of impropriety or engineering standards.
+
+Endpoint distance is not measured road length. The allocation proxy divides the
+project allocation once by the sum of complete positive spans; partial, repeated,
+zero-length and unresolved geometry cannot supply a proxy denominator. High
+proxies must exceed both 3 times the peer median and Q3 + 3 IQR. Regional peer
+cohorts need at least 20 eligible projects, otherwise the full selected source
+is used (also minimum 20). Display filters never recalculate peer baselines.
+Cross-document footprint repetition is excluded from duplicate screening.
+Candidate increases still require project identity and scope verification.
+
+Analysis project tables, review evidence and Compare project rows/cards offer
+“View on map” links using exact source or candidate IDs. Linked map views fit
+the retained geometry and select its evidence; red-flag links carry the editable
+Analysis thresholds. Map analytical markers use the same full-source calculations
+as Analysis (coordinate_review is displayed separately). Literal red flags and
+blue magnifying glasses identify analytical leads and unresolved coordinate
+reviews respectively, with independent Objects toggles. Neither layer invents
+geometry for unmappable records; those remain in the source review tables.
+
+Map filters are URL state: search, region, candidate/coordinate status, advanced
+comparison/provenance filters, coordinate basis, focused source/candidate IDs,
+review thresholds, Objects visibility and basemap restore on reload and browser
+navigation. `fmrMapRoute.js` parses/serializes these settings. Default settings
+are omitted; `objects=none` explicitly hides all objects. The shared Copy link
+control copies the current URL. Panning and zooming remain local camera actions.
+
+
+The selected map project is a compact, nonmodal region: title, source/region,
+section context, allocation (both budgets and candidate change for pairs),
+review counts, overlap navigation, source/Compare link and Details & evidence.
+The evidence dialog groups source records, analytical/coordinate findings and
+Analysis links; geometry is collapsed initially. Source PDFs and provenance
+open in stacked dialogs with Escape dismissal and focus restoration. Titles
+remain readable in full; duplicate PDF actions and raw coordinates are removed
+from the summary card. Mobile cards sit below the map rather than covering it.
+
+Citizen review balance: the selection card also exposes parsed title locality,
+whole-project endpoint span and section count, shortest section, allocation per
+endpoint-meter proxy, peer-median multiple/cohort, and the first three specific
+analytical findings plus unresolved-coordinate explanations. Additional findings
+remain accessible through the evidence dialog. Direct PDF buttons verify the
+printed allocation without navigating away. Missing denominators are explained;
+no-flags messaging does not certify value or completion. These budget annexes do
+not establish actual spending, contractor, delivered road scope or beneficiaries.

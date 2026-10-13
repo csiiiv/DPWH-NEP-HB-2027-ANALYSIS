@@ -8,11 +8,12 @@ import DpwhApp from "./DpwhApp.jsx";
 import { readWorkspace } from "./routes.js";
 
 const FmrApp = lazy(() => import("./FmrApp.jsx"));
+const HfepApp = lazy(() => import("./HfepApp.jsx"));
 const NiaApp = lazy(() => import("./NiaApp.jsx"));
 
 // Lazy loaders per registered workspace key. DPWH is statically imported as
 // the default workspace; each annex app is code-split behind its prefix.
-const lazyApps = { fmr: FmrApp, nia: NiaApp };
+const lazyApps = { fmr: FmrApp, hfep: HfepApp, nia: NiaApp };
 
 export default function Workbench() {
   const [workspace, setWorkspace] = useState(() => readWorkspace());

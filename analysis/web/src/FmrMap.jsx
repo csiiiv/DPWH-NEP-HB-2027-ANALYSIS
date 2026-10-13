@@ -4,7 +4,10 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import {openModalDialog} from './modalLifecycle.js';
 import {siteUrl} from './data.js';
-import {routeHref} from './routes.js';
+import {routeHref, readRoute} from './routes.js';
+import ShareLink from './ShareLink.jsx';
+import {readMapState, patchMapParams, mapObjectsParam} from './fmrMapRoute.js';
+import {buildFmrRedFlags, RED_FLAG_RULES, RED_FLAG_MEASUREMENT_NOTE} from './fmrRedFlags.js';
 import {
   comparisonFilterLabels, comparisonRows, flagLabel, flagWhy, formatKm, money, methodLabels, pctChange,
   provenanceOptionLists, signedMoney, signedPct, statusLabels,
@@ -12,7 +15,7 @@ import {
 import {CoordinateProvenance} from './FmrProvenance.jsx';
 import {
   STAGE_COLORS, PAIRED_COLOR, HUB_COLOR, INCREASE_COLOR, DECREASE_COLOR,
-  MULTI_SEGMENT_COLOR, MARKER_RADIUS, COORD_BASIS_OPTIONS,
+  MULTI_SEGMENT_COLOR, RED_FLAG_COLOR, COORD_BASIS_OPTIONS,
   MAP_OBJECT_OPTIONS, DEFAULT_MAP_OBJECTS,
   buildMapOverlay, filterOverlayByObjects, stackForFeature,
 } from './fmrMapModel.js';
@@ -33,6 +36,7 @@ const HUBS_ID = 'fmr-shared-hubs';
 const INC_ID = 'fmr-pair-increases';
 const DEC_ID = 'fmr-pair-decreases';
 const MULTI_ID = 'fmr-multi-segments';
+const FLAGS_ID = 'fmr-review-flags';
 const LINE_ID = 'fmr-segments-line';
 const HALO_ID = 'fmr-segments-halo';
 const DOT_ID = 'fmr-segments-dot';
@@ -40,53 +44,87 @@ const HUB_LAYER = 'fmr-shared-hub';
 const INC_LAYER = 'fmr-pair-increase';
 const DEC_LAYER = 'fmr-pair-decrease';
 const MULTI_LAYER = 'fmr-multi-segment';
+const INSERTION_LAYER = 'fmr-house-only-insertion';
+const NEP_LAYER = 'fmr-nep-only';
+const PAIRED_LAYER = 'fmr-paired';
+const FLAG_LAYER = 'fmr-review-flag';
 
-const MARKER_PAINT = {
-  'circle-radius': MARKER_RADIUS,
-  'circle-opacity': 0.95,
-  'circle-stroke-color': '#ffffff',
-  'circle-stroke-width': 2.2,
-};
-const INC_ICON = 'fmr-arrow-up';
-const DEC_ICON = 'fmr-arrow-down';
-const ARROW_ICON_SIZE = ['interpolate', ['linear'], ['zoom'], 4, 0.55, 8, 0.85, 12, 1.15];
+// Match the original circle diameters: 11px, 18px, and 26px at zooms 4, 8, 12.
+const MARKER_ICON_SIZE = ['interpolate', ['linear'], ['zoom'], 4, 11 / 52, 8, 18 / 52, 12, 26 / 52];
+const ICONS = {nep: 'fmr-trash', house: 'fmr-peso', paired: 'fmr-linked', shared: 'fmr-shared',
+  increase: 'fmr-arrow-up', decrease: 'fmr-arrow-down', flag: 'fmr-red-flag', review: 'fmr-review-search'};
+const countIcon = count => `fmr-segment-count-${count}`;
+const circlePath = (x, y, r) => `M${x-r} ${y}a${r} ${r} 0 1 0 ${2*r} 0a${r} ${r} 0 1 0 ${-2*r} 0`;
 
-/** Filled chevron arrow with white stroke for MapLibre symbol layers. */
-function arrowIconImage(direction, fill) {
-  const size = 64;
-  const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext('2d');
-  const cx = size / 2;
-  const tipY = direction === 'up' ? 10 : 54;
-  const baseY = direction === 'up' ? 50 : 14;
-  const wing = 22;
-  ctx.beginPath();
-  ctx.moveTo(cx, tipY);
-  ctx.lineTo(cx + wing, baseY);
-  ctx.lineTo(cx + 8, baseY);
-  ctx.lineTo(cx + 8, direction === 'up' ? 56 : 8);
-  ctx.lineTo(cx - 8, direction === 'up' ? 56 : 8);
-  ctx.lineTo(cx - 8, baseY);
-  ctx.lineTo(cx - wing, baseY);
-  ctx.closePath();
-  ctx.fillStyle = fill;
-  ctx.fill();
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineJoin = 'round';
-  ctx.stroke();
-  return {
-    width: size,
-    height: size,
-    data: new Uint8Array(ctx.getImageData(0, 0, size, size).data.buffer),
-  };
+/** The legend and MapLibre sprites share the same artwork. */
+function markerArtwork(kind, count = 3) {
+  const shape = (d, fill, stroke = '#ffffff', width = 3, halo = false) => ({d, fill, stroke, width, halo});
+  if (kind === 'house') return {shapes: [], text: '₱', color: STAGE_COLORS.house, fontSize: 52, outline: true};
+  if (kind === 'nep') return {shapes: [
+    shape('M17 22H47L44 55H20Z', STAGE_COLORS.nep),
+    shape('M12 18H52M24 17V10H40V17', 'none', STAGE_COLORS.nep, 5, true),
+    shape('M27 29V47M37 29V47', 'none', '#ffffff', 3),
+  ]};
+  if (kind === 'paired') return {shapes: [
+    shape('M28 35L20 43A9 9 0 0 1 7 30L20 17A9 9 0 0 1 33 30', 'none', PAIRED_COLOR, 6, true),
+    shape('M36 29L44 21A9 9 0 0 1 57 34L44 47A9 9 0 0 1 31 34M23 41L41 23', 'none', PAIRED_COLOR, 6, true),
+  ]};
+  if (kind === 'shared') return {shapes: [
+    shape('M16 15H48L32 49Z', 'none', HUB_COLOR, 5, true),
+    ...[[16,15],[48,15],[32,49]].map(([x,y]) => shape(circlePath(x,y,8), HUB_COLOR)),
+  ]};
+  if (kind === 'multi') return {shapes: [shape(circlePath(32,32,25), MULTI_SEGMENT_COLOR)],
+    text: String(count), color: '#ffffff', fontSize: String(count).length > 2 ? 24 : 34};
+  if (kind === 'review') return {shapes:[shape(circlePath(27,26,17), 'none', '#0369a1', 6, true), shape('M40 39L57 56', 'none', '#0369a1', 7, true)]};
+  if (kind === 'flag') return {shapes: [
+    shape('M14 56V9', 'none', RED_FLAG_COLOR, 5, true),
+    shape('M17 10H53L43 22L53 34H17Z', RED_FLAG_COLOR),
+  ]};
+  return {shapes: [shape(kind === 'increase'
+    ? 'M32 8L54 46H40V56H24V46H10Z'
+    : 'M32 56L54 18H40V8H24V18H10Z', kind === 'increase' ? INCREASE_COLOR : DECREASE_COLOR)]};
 }
 
-function ensureArrowIcons(instance) {
-  if (!instance.hasImage(INC_ICON)) instance.addImage(INC_ICON, arrowIconImage('up', INCREASE_COLOR));
-  if (!instance.hasImage(DEC_ICON)) instance.addImage(DEC_ICON, arrowIconImage('down', DECREASE_COLOR));
+function markerIconImage(kind, count) {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+  ctx.lineJoin = ctx.lineCap = 'round';
+  const art = markerArtwork(kind, count);
+  for (const {d, fill, stroke, width, halo} of art.shapes) {
+    const path = new Path2D(d);
+    if (halo) {ctx.strokeStyle = '#ffffff'; ctx.lineWidth = width + 4; ctx.stroke(path);}
+    if (fill !== 'none') {ctx.fillStyle = fill; ctx.fill(path);}
+    ctx.strokeStyle = stroke; ctx.lineWidth = width; ctx.stroke(path);
+  }
+  if (art.text) {
+    ctx.font = `bold ${art.fontSize}px Arial, sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    if (art.outline) {ctx.lineWidth = 5; ctx.strokeStyle = '#ffffff'; ctx.strokeText(art.text, 32, 34);}
+    ctx.fillStyle = art.color; ctx.fillText(art.text, 32, 34);
+  }
+  return {width: 64, height: 64, data: new Uint8Array(ctx.getImageData(0, 0, 64, 64).data.buffer)};
+}
+
+function MarkerIcon({kind, count}) {
+  const art = markerArtwork(kind, count);
+  return <svg className="fmr-map-legend-icon" viewBox="0 0 64 64" aria-hidden="true">
+    {art.shapes.map(({d, fill, stroke, width, halo}, i) => <React.Fragment key={i}>
+      {halo && <path d={d} fill="none" stroke="#ffffff" strokeWidth={width+4} strokeLinejoin="round" strokeLinecap="round"/>}
+      <path d={d} fill={fill} stroke={stroke} strokeWidth={width} strokeLinejoin="round" strokeLinecap="round"/>
+    </React.Fragment>)}
+    {art.text && <text x="32" y="34" textAnchor="middle" dominantBaseline="central" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize={art.fontSize}
+      fill={art.color} stroke={art.outline ? '#ffffff' : undefined} strokeWidth={art.outline ? 5 : undefined} paintOrder="stroke">{art.text}</text>}
+  </svg>;
+}
+
+function ensureMarkerIcons(instance, multis) {
+  for (const [kind, id] of Object.entries(ICONS)) {
+    if (!instance.hasImage(id)) instance.addImage(id, markerIconImage(kind));
+  }
+  for (const count of new Set((multis?.features || []).map(f => f.properties.segmentCount))) {
+    if (!instance.hasImage(countIcon(count))) instance.addImage(countIcon(count), markerIconImage('multi', count));
+  }
 }
 
 const COORDINATE_OPTIONS = [
@@ -102,11 +140,7 @@ const COORD_SIDE_OPTIONS = [
 ];
 const CANDIDATE_STATUS_OPTIONS = Object.entries(comparisonFilterLabels)
   .filter(([k]) => !['increased', 'decreased', 'unchanged'].includes(k));
-const FILTER_DEFAULTS = {
-  q: '', region: '', status: '', coordinate: '', direction: '', method: '',
-  coord_side: '', extraction: '', rule: '', review_flag: '', text_basis: '',
-  coordBasis: 'reviewed',
-};
+
 
 function parseCoords(value, fallback) {
   if (Array.isArray(value)) return value;
@@ -116,24 +150,11 @@ function parseCoords(value, fallback) {
   return fallback;
 }
 
-function midpointCollection(collection) {
-  return {
-    type: 'FeatureCollection',
-    features: collection.features.map(f => {
-      const coords = parseCoords(f.properties.trueCoordinates, f.geometry.coordinates);
-      const a = coords[0], b = coords[coords.length - 1];
-      return {
-        type: 'Feature', id: f.id, properties: f.properties,
-        geometry: {type: 'Point', coordinates: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]},
-      };
-    }),
-  };
-}
-
 function syncLayers(instance, overlay) {
-  if (!instance || !instance.isStyleLoaded()) return;
-  const {lines, hubs, increases, decreases, multis} = overlay;
-  const points = midpointCollection(lines);
+  // The style can accept overlays while its basemap tiles are still loading.
+  if (!instance?.getStyle()) return;
+  const {lines, hubs, increases, decreases, multis, flags} = overlay;
+  const points = overlay.markers || {type: 'FeatureCollection', features: []};
   const ensure = (id, spec) => {if (!instance.getSource(id)) instance.addSource(id, spec); else instance.getSource(id).setData(spec.data);};
   ensure(SOURCE_ID, {type: 'geojson', data: lines, generateId: false});
   ensure(POINTS_ID, {type: 'geojson', data: points, generateId: false});
@@ -141,6 +162,7 @@ function syncLayers(instance, overlay) {
   ensure(INC_ID, {type: 'geojson', data: increases, generateId: false});
   ensure(DEC_ID, {type: 'geojson', data: decreases, generateId: false});
   ensure(MULTI_ID, {type: 'geojson', data: multis || {type: 'FeatureCollection', features: []}, generateId: false});
+  ensure(FLAGS_ID, {type: 'geojson', data: flags || {type: 'FeatureCollection', features: []}, generateId: false});
   if (!instance.getLayer(HALO_ID)) {
     instance.addLayer({
       id: HALO_ID, type: 'line', source: SOURCE_ID,
@@ -158,6 +180,7 @@ function syncLayers(instance, overlay) {
   if (!instance.getLayer(DOT_ID)) {
     instance.addLayer({
       id: DOT_ID, type: 'circle', source: POINTS_ID,
+      filter: ['==', ['get', 'matchKind'], 'single'],
       paint: {
         'circle-color': ['get', 'color'],
         'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 3.2, 7, 2.2, 9, 0],
@@ -167,32 +190,25 @@ function syncLayers(instance, overlay) {
       },
     });
   }
-  ensureArrowIcons(instance);
-  const circleMarkers = [
-    [HUB_LAYER, HUBS_ID, HUB_COLOR],
-    [MULTI_LAYER, MULTI_ID, MULTI_SEGMENT_COLOR],
+  ensureMarkerIcons(instance, multis);
+  const symbolMarkers = [
+    [NEP_LAYER, POINTS_ID, ICONS.nep, ['==', ['get', 'matchKind'], 'nep_only']],
+    [INSERTION_LAYER, POINTS_ID, ICONS.house, ['==', ['get', 'matchKind'], 'house_only']],
+    [PAIRED_LAYER, POINTS_ID, ICONS.paired, ['==', ['get', 'matchKind'], 'paired']],
+    [HUB_LAYER, HUBS_ID, ICONS.shared],
+    [INC_LAYER, INC_ID, ICONS.increase],
+    [DEC_LAYER, DEC_ID, ICONS.decrease],
+    [MULTI_LAYER, MULTI_ID, ['concat', 'fmr-segment-count-', ['to-string', ['get', 'segmentCount']]], null, [22, 22]],
+    [FLAG_LAYER, FLAGS_ID, ['case', ['==', ['get','objectKind'],'coordinate_review'], ICONS.review, ICONS.flag], null, [22, -24]],
   ];
-  for (const [layerId, sourceId, color] of circleMarkers) {
-    if (!instance.getLayer(layerId)) {
-      instance.addLayer({
-        id: layerId, type: 'circle', source: sourceId,
-        paint: {'circle-color': color, ...MARKER_PAINT},
-      });
-    }
-  }
-  const arrowMarkers = [
-    [INC_LAYER, INC_ID, INC_ICON],
-    [DEC_LAYER, DEC_ID, DEC_ICON],
-  ];
-  for (const [layerId, sourceId, icon] of arrowMarkers) {
+  for (const [layerId, sourceId, icon, filter, offset = [0, 0]] of symbolMarkers) {
     if (!instance.getLayer(layerId)) {
       instance.addLayer({
         id: layerId, type: 'symbol', source: sourceId,
+        ...(filter ? {filter} : {}),
         layout: {
-          'icon-image': icon,
-          'icon-size': ARROW_ICON_SIZE,
-          'icon-allow-overlap': true,
-          'icon-ignore-placement': true,
+          'icon-image': icon, 'icon-size': MARKER_ICON_SIZE, 'icon-offset': layerId === FLAG_LAYER ? ['case', ['==', ['get','objectKind'],'coordinate_review'], ['literal',[-22,-24]], ['literal',offset]] : offset,
+          'icon-allow-overlap': true, 'icon-ignore-placement': true,
         },
         paint: {'icon-opacity': 0.95},
       });
@@ -216,6 +232,8 @@ function projectById(data, id) {
 }
 
 function MatchBadge({kind}) {
+  if (kind === 'red_flag') return <span className="fmr-badge review">Analytical red flags</span>;
+  if (kind === 'coordinate_review') return <span className="fmr-badge review">Coordinate review</span>;
   if (kind === 'paired') return <span className="fmr-badge interpreted">{statusLabels.paired}</span>;
   if (kind === 'house_only') return <span className="fmr-badge review">{statusLabels.house_only}</span>;
   if (kind === 'nep_only') return <span className="fmr-badge review">{statusLabels.nep_only}</span>;
@@ -263,85 +281,125 @@ function ObjectsFilter({objects, onChange}) {
       </div>
       {MAP_OBJECT_OPTIONS.map(([id, label]) => <label key={id} className="fmr-objects-option" role="option" aria-selected={objects[id]}>
         <input type="checkbox" checked={Boolean(objects[id])} onChange={() => toggle(id)}/>
+        <ObjectIcon object={id}/>
         <span>{label}</span>
       </label>)}
     </div>}
   </div>;
 }
 
-function MapSelectionCard({data, feature, stack, stackIndex, onStack, onClose, onPdf, onProvenance, onShowNepTitle, showNepTitle}) {
-  const p = feature.properties;
-  const paired = p.matchKind === 'paired' || p.objectKind === 'paired' || p.objectKind === 'pair_increase' || p.objectKind === 'pair_decrease';
-  const house = projectById(data, p.houseId);
-  const nep = projectById(data, p.nepId);
-  const solo = !paired ? projectById(data, p.projectId) : null;
-  const reviewProjects = paired
-    ? [{side: 'NEP', project: nep}, {side: 'House', project: house}].filter(r => r.project)
-    : [{side: p.stageLabel || (p.stageKey === 'house' ? 'House' : 'NEP'), project: solo || house || nep}].filter(r => r.project);
-  const primaryHref = paired && p.pairId
-    ? routeHref('compare', {view: 'projects', pair: p.pairId})
-    : routeHref(p.stageKey === 'house' || house ? 'house' : 'nep', {node: p.projectId});
-  const trueCoords = parseCoords(p.trueCoordinates, feature.geometry.coordinates);
-  const endpoints = Array.isArray(trueCoords?.[0])
-    ? trueCoords.map(c => c.map(v => Number(v).toFixed(6)).join(', ')).join(' ↔ ')
-    : '—';
-
-  return <aside className="fmr-map-info" role="dialog" aria-label="Segment details">
-    <div className="fmr-map-info-head">
-      <strong>{showNepTitle && p.nepTitle ? p.nepTitle : (p.houseTitle || p.title)}</strong>
-      <MatchBadge kind={paired ? 'paired' : p.matchKind}/>
-    </div>
-    {p.titleDiffers && !showNepTitle && <button type="button" className="fmr-map-chip" onClick={onShowNepTitle}>NEP title differs</button>}
-    {showNepTitle && p.titleDiffers && <p className="fmr-muted">Showing NEP title. House title: {p.houseTitle}</p>}
-    <ReviewFlagChips projects={reviewProjects}/>
-    <small>{p.regionKey}{p.segmentIndex != null ? ` · Segment ${p.segmentIndex}` : ''}
-      {p.segmentCount > 1 ? ` · ${p.segmentCount} segments` : ''}
-      {p.distanceKm != null ? ` · ${formatKm(p.distanceKm)}` : ''}
-      {p.coordinateBasis === 'normalized' ? ' · normalized (pre-review)' : ' · reviewed'}
-      {p.offset ? ' · display offset (shared printed location marked)' : ''}
-      {paired && p.method ? ` · ${methodLabels[p.method] || p.method}` : ''}
-      {p.objectKind === 'pair_increase' ? ' · amount increase' : ''}
-      {p.objectKind === 'pair_decrease' ? ' · amount decrease' : ''}
-      {p.objectKind === 'multi_segment' ? ' · multi-segment project' : ''}</small>
-
-    {stack.length > 1 && <div className="fmr-map-stack" aria-label="Overlapping projects at this location">
-      <span>{stackIndex + 1} of {stack.length} at this printed location</span>
-      <button type="button" disabled={stackIndex === 0} onClick={() => onStack(stackIndex - 1)}>Previous</button>
-      <button type="button" disabled={stackIndex >= stack.length - 1} onClick={() => onStack(stackIndex + 1)}>Next</button>
-    </div>}
-
-    <dl>
-      {paired ? <>
-        <dt>NEP allocation</dt><dd>{money(p.nepPhp)}</dd>
-        <dt>House allocation</dt><dd>{money(p.housePhp)}</dd>
-        <dt>Paired difference</dt><dd>{signedMoney(p.deltaPhp)} · {signedPct(pctChange(p.housePhp, p.nepPhp))}</dd>
-      </> : <>
-        <dt>Allocation</dt><dd>{money(p.amountPhp)}</dd>
-        <dt>Stage</dt><dd>{p.stageLabel}</dd>
-      </>}
-      <dt>Printed endpoints</dt><dd>{endpoints}</dd>
-      <dt>Coordinates</dt><dd>{[p.nepStatus, p.houseStatus].filter(Boolean).map(s => s === 'needs_review' ? 'Needs review' : 'Normalized').join(' · ') || (p.status === 'needs_review' ? 'Needs review' : 'Normalized')}</dd>
-      {(house || nep) && <><dt>PSGC vs title</dt><dd>{[house, nep].filter(Boolean).map(proj => proj.location_agreement?.replaceAll('_', ' ') || '—').join(' · ')}</dd></>}
-    </dl>
-
-    <div className="fmr-map-info-actions">
-      <a className="primary" href={primaryHref}>{paired ? 'Open in Compare →' : 'Open in source tree →'}</a>
-      {paired && <>
-        <a href={routeHref('nep', {node: p.nepId})}>NEP tree</a>
-        <a href={routeHref('house', {node: p.houseId})}>House tree</a>
-      </>}
-      {nep?.source && <button type="button" onClick={() => onPdf(previewSource(nep.source, 'DBM NEP'))}>NEP PDF p. {nep.source.pdf_page}</button>}
-      {house?.source && <button type="button" onClick={() => onPdf(previewSource(house.source, 'House GAB'))}>House PDF p. {house.source.pdf_page}</button>}
-      {!paired && projectById(data, p.projectId)?.source && <button type="button" onClick={() => onPdf(previewSource(projectById(data, p.projectId).source, p.stageLabel))}>PDF p. {projectById(data, p.projectId).source.pdf_page}</button>}
-      {nep && <button type="button" onClick={() => onProvenance(nep)}>NEP provenance</button>}
-      {house && <button type="button" onClick={() => onProvenance(house)}>House provenance</button>}
-      {!paired && !nep && !house && projectById(data, p.projectId) && <button type="button" onClick={() => onProvenance(projectById(data, p.projectId))}>Provenance</button>}
-      <button type="button" onClick={onClose}>Close</button>
-    </div>
-  </aside>;
+function ObjectIcon({object}) {
+  const segmentColor = {nep_only: STAGE_COLORS.nep, house_only: STAGE_COLORS.house, paired: PAIRED_COLOR}[object];
+  if (segmentColor) return <svg className="fmr-map-legend-icon" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M8 32H56" stroke={segmentColor} strokeWidth="10" strokeLinecap="round"/>
+  </svg>;
+  const kind = {nep_marker:'nep', house_marker:'house', paired_marker:'paired', shared_marker:'shared',
+    pair_increase:'increase', pair_decrease:'decrease', multi_segment:'multi', red_flag:'flag', coordinate_review:'review'}[object];
+  return <MarkerIcon kind={kind}/>;
 }
 
-export default function FmrMap({data}) {
+function MapSelectionCard({data, feature, stack, stackIndex, onStack, onClose, onPdf, onProvenance, reviewThresholds = {}}) {
+  const p = feature.properties;
+  const [detailsOpen,setDetailsOpen] = useState(false);
+  useEffect(() => setDetailsOpen(false),[feature.id]);
+  const paired = p.matchKind === 'paired' || ['paired','pair_increase','pair_decrease'].includes(p.objectKind);
+  const sourceProjects = paired
+    ? [{key:'nep',project:projectById(data,p.nepId)},{key:'house',project:projectById(data,p.houseId)}].filter(item => item.project)
+    : [{key:p.stageKey || (p.houseId ? 'house' : 'nep'),project:projectById(data,p.projectId)}].filter(item => item.project);
+  const thresholdKey = JSON.stringify(reviewThresholds);
+  const assessments = useMemo(() => new Map(['nep','house'].flatMap(key => buildFmrRedFlags(data,key,{
+    shortMeters:reviewThresholds.rf_short_m,longKm:reviewThresholds.rf_long_km,
+    costMultiple:reviewThresholds.rf_cost_multiple,increasePercent:reviewThresholds.rf_increase_pct,
+  }).rows.map(row => [row.id,row]))),[data,thresholdKey]);
+  const findings = sourceProjects.flatMap(({key,project}) => (assessments.get(project.id)?.flags || [])
+    .filter(flag => flag.id !== 'coordinate_review').map(flag => ({...flag,sourceKey:key,project})));
+  const primaryProject = sourceProjects.find(item => item.key === 'house')?.project || sourceProjects[0]?.project;
+  const titleLocation = primaryProject?.title_locality;
+  const locality = [titleLocation?.municipality,titleLocation?.province].filter(Boolean).join(', ');
+  const number = value => value == null ? 'Unavailable' : value.toLocaleString('en-PH',{maximumFractionDigits:1});
+  const reviewCount = sourceProjects.reduce((count,{project}) => count + (project.review_flags || []).length,0);
+  const needsReview = sourceProjects.some(({project}) => project.status === 'needs_review' || (project.review_flags || []).length);
+  const primaryHref = paired && p.pairId ? routeHref('compare',{view:'projects',pair:p.pairId})
+    : routeHref(sourceProjects[0]?.key || 'house',{node:p.projectId});
+  const coords = parseCoords(p.trueCoordinates,feature.geometry.coordinates);
+  const endpoints = Array.isArray(coords?.[0]) ? coords : [coords];
+  return <>
+    <aside className="fmr-map-info" role="region" aria-label="Selected map project">
+      <div className="fmr-map-info-head"><span className="fmr-eyebrow">{paired ? 'Candidate pair' : data.stages[sourceProjects[0]?.key]?.label || p.stageLabel} · {p.regionKey}</span>
+        <button className="fmr-map-close" type="button" onClick={onClose} aria-label="Close project selection">×</button></div>
+      <h2 className="fmr-map-project-title">{p.houseTitle || p.title}</h2>
+      <div className="fmr-map-project-meta"><MatchBadge kind={['red_flag','coordinate_review'].includes(p.objectKind) ? p.objectKind : paired ? 'paired' : p.matchKind}/>
+        <span>{p.segmentIndex != null ? `Section ${p.segmentIndex}` : `${p.segmentCount ?? 0} section(s)`}{p.distanceKm != null ? ` · ${formatKm(p.distanceKm)} endpoint span` : ''}</span></div>
+      {locality && <p className="fmr-map-locality"><strong>Location in title:</strong> {locality}</p>}
+      <dl className="fmr-map-budget">
+        {paired ? <><dt>NEP</dt><dd>{money(p.nepPhp)}</dd><dt>House</dt><dd>{money(p.housePhp)}</dd>
+          <dt>Candidate change</dt><dd>{signedMoney(p.deltaPhp)} <small>{signedPct(pctChange(p.housePhp,p.nepPhp))}</small></dd></>
+          : <><dt>Project allocation</dt><dd>{money(p.amountPhp)}</dd></>}
+      </dl>
+      <section className={`fmr-map-citizen-review ${findings.length || needsReview ? 'has-findings' : ''}`} aria-label="Reasons to examine this project">
+        <h3>{findings.length || needsReview ? 'What deserves a closer look?' : 'What do the checks show?'}</h3>
+        {findings.length > 0 && <ul>{findings.slice(0,3).map(flag => <li key={`${flag.project.id}:${flag.id}`}><strong>{paired ? `${flag.sourceKey==='house'?'House':'NEP'} · ` : ''}{RED_FLAG_RULES.find(rule=>rule.id===flag.id)?.label}</strong><p>{flag.detail}</p></li>)}</ul>}
+        {needsReview && <div className="fmr-map-coordinate-summary"><strong>Unresolved coordinates · {reviewCount || 1} finding(s)</strong>
+          {sourceProjects.flatMap(({key,project}) => (project.review_flags || []).map(flag => ({key,flag}))).slice(0,2).map(({key,flag}) => <p key={`${key}:${flag}`}>{paired ? `${key==='house'?'House':'NEP'}: ` : ''}{flagWhy(flag)}</p>)}
+        </div>}
+        {!findings.length && !needsReview && <p>No flags under these screening rules. This does not establish value for money or confirm project completion.</p>}
+        {(findings.length > 3 || reviewCount > 2) && <button onClick={() => setDetailsOpen(true)}>See all {findings.length + reviewCount} findings &amp; evidence →</button>}
+        {(findings.length > 0 || needsReview) && <p className="fmr-map-small-note">These are reasons to verify the source, project scope and location—not proof of waste or wrongdoing.</p>}
+      </section>
+      <section className="fmr-map-spending" aria-label="Project scale and allocation comparison">
+        <h3>Project scale &amp; allocation</h3>
+        {paired && <p className="fmr-map-small-note">{sourceProjects.map(({key,project}) => {const assessed=assessments.get(project.id);return `${key==='house'?'House':'NEP'}: ${assessed?.meters == null ? 'incomplete geometry' : `${number(assessed.meters)} m endpoint span`} across ${project.segment_count} section(s)`;}).join(' · ')}</p>}
+        {sourceProjects.map(({key,project}) => {const assessed=assessments.get(project.id);return <div key={project.id} className="fmr-map-scale-source">
+          {paired && <strong>{key==='house'?'House':'NEP'}</strong>}
+          <dl>{!paired && <><dt>Whole-project endpoint span</dt><dd>{assessed?.meters == null ? 'Incomplete geometry' : `${number(assessed.meters)} m`}<small>{project.segment_count} section(s){assessed?.shortestMeters != null ? ` · shortest ${number(assessed.shortestMeters)} m` : ''}</small></dd></>}
+            <dt>Allocation / endpoint meter</dt><dd>{assessed?.proxyPhpPerMeter == null ? 'Not calculated' : `${money(assessed.proxyPhpPerMeter)} / m`}</dd>
+            <dt>Compared with peers</dt><dd>{assessed?.peerMultiple == null ? 'Unavailable' : `${number(assessed.peerMultiple)}× peer median`}
+              {assessed?.peerMultiple != null && <small>{assessed.benchmark.scope} · {assessed.benchmark.count} eligible projects</small>}</dd>
+          </dl>
+          {assessed?.proxyPhpPerMeter == null && <p className="fmr-map-small-note">A reliable proxy needs complete, positive, resolved geometry without repeated sections.</p>}
+        </div>})}
+        <p className="fmr-map-small-note">{p.coordinateBasis==='normalized' ? 'Metrics use reviewed coordinates; the map shows pre-review coordinates. ' : ''}Straight-line endpoint spans, not measured road lengths. The per-meter figure is an allocation proxy, not construction cost; peers may have different scope or terrain.</p>
+      </section>
+      <p className="fmr-map-small-note"><strong>Budget record, not reported spending.</strong> Assessing value also needs the actual road scope, contractor, completion status and who benefits; those are not established by this annex.</p>
+      <div className="fmr-map-quick-sources" aria-label="Check printed project allocations">{sourceProjects.map(({key,project}) => project.source && <button key={project.id} onClick={() => onPdf(previewSource(project.source,data.stages[key].label))}>Check {key==='house'?'House':'NEP'} PDF · p. {project.source.pdf_page}</button>)}</div>
+      {stack.length > 1 && <div className="fmr-map-stack" aria-label="Overlapping projects at this location"><span>Project {stackIndex+1} of {stack.length}</span>
+        <button disabled={stackIndex===0} onClick={() => onStack(stackIndex-1)}>Previous</button><button disabled={stackIndex>=stack.length-1} onClick={() => onStack(stackIndex+1)}>Next</button></div>}
+      <div className="fmr-map-info-actions"><a className="primary" href={primaryHref}>{paired ? 'Open in Compare →' : 'Open source record →'}</a>
+        <button onClick={() => setDetailsOpen(true)}>Details &amp; evidence</button></div>
+    </aside>
+    {detailsOpen && <Dialog label="Map project details" className="fmr-map-details-dialog" onClose={() => setDetailsOpen(false)}>
+      <div className="fmr-dialog-heading"><h2>Project details &amp; evidence</h2><button onClick={() => setDetailsOpen(false)}>Close details</button></div>
+      <div className="fmr-dialog-body">
+        <h3>{p.houseTitle || p.title}</h3>
+        {p.titleDiffers && <p><strong>NEP title:</strong> {p.nepTitle}</p>}
+        {paired && <p>Provisional counterpart · {methodLabels[p.method] || p.method}. Verify project identity and scope in Compare.</p>}
+        <section aria-label="Source documents"><h3>Source records</h3><div className="fmr-map-source-cards">{sourceProjects.map(({key,project}) => <article key={project.id}>
+          <h4>{data.stages[key].label}</h4><p>{money(project.amount_php)} · {project.segment_count} section(s)</p><small>{project.id}</small>
+          <div className="fmr-map-info-actions"><a href={routeHref(key,{node:project.id})}>Source tree →</a>
+            {project.source && <button onClick={() => onPdf(previewSource(project.source,data.stages[key].label))}>PDF p. {project.source.pdf_page}</button>}
+            <button onClick={() => onProvenance(project)}>Coordinate provenance</button></div>
+        </article>)}</div></section>
+        <section aria-label="Review findings"><h3>Review findings</h3>
+          {needsReview && <><h4>Unresolved coordinates</h4><ReviewFlagChips projects={sourceProjects.map(({key,project}) => ({side:key==='house'?'House':'NEP',project}))}/></>}
+          {findings.length > 0 ? <><p className="fmr-muted">{RED_FLAG_MEASUREMENT_NOTE} These are review leads, not determinations of impropriety.</p>
+            <ul className="fmr-map-findings">{findings.map(flag => <li key={`${flag.project.id}:${flag.id}`}><strong>{flag.sourceKey==='house'?'House':'NEP'} · {RED_FLAG_RULES.find(rule => rule.id===flag.id)?.label}</strong><p>{flag.detail}</p></li>)}</ul>
+            <div className="fmr-map-info-actions">{sourceProjects.map(({key,project}) => <a key={project.id} href={routeHref('analysis',{view:'red_flags',stage:key,rf_project:project.id,...reviewThresholds})}>Review {key==='house'?'House':'NEP'} in Analysis →</a>)}</div>
+          </> : <p>No analytical leads under the current screening thresholds.</p>}
+          {!needsReview && <p>No unresolved coordinate findings.</p>}
+        </section>
+        <details className="fmr-method"><summary>Selected map geometry</summary>
+          <p>{p.coordinateBasis==='normalized'?'Normalized (before accepted digit repairs)':'Reviewed (accepted coordinate repairs)'}{p.offset ? ' · line display offset at a shared printed location' : ''}.</p>
+          <p className="fmr-muted">Endpoint spans are straight-line distances. Project allocation is counted once across its sections.</p>
+          <ol>{endpoints.map((point,index) => <li key={index}><code>{Array.isArray(point) ? point.map(value=>Number(value).toFixed(6)).join(', ') : 'Unavailable'}</code></li>)}</ol>
+          <p>Province agreement and repair history are available in each source’s Coordinate provenance.</p>
+        </details>
+      </div>
+    </Dialog>}
+  </>;
+}
+
+export default function FmrMap({data, route}) {
+  const routeKey = route?.params.toString() || '';
   const container = useRef(null);
   const map = useRef(null);
   const overlayRef = useRef({
@@ -350,25 +408,27 @@ export default function FmrMap({data}) {
     increases: {type: 'FeatureCollection', features: []},
     decreases: {type: 'FeatureCollection', features: []},
     multis: {type: 'FeatureCollection', features: []},
+    flags: {type: 'FeatureCollection', features: []},
   });
   const appliedStyle = useRef('light');
-  const [style, setStyle] = useState('light');
+  const {filters,objects,style} = useMemo(() => readMapState(route?.params),[routeKey]);
+  const updateRoute = patch => {
+    const current = readRoute();
+    const params = patchMapParams(current.params,patch);
+    window.location.hash = routeHref('map',Object.fromEntries(params),'fmr');
+  };
+  const setStyle = value => updateRoute({basemap:value});
+  const setObjects = value => updateRoute({objects:mapObjectsParam(value)});
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState('');
-  const [filters, setFilters] = useState(FILTER_DEFAULTS);
-  const [objects, setObjects] = useState({...DEFAULT_MAP_OBJECTS});
   const [selected, setSelected] = useState(null);
   const [stackIndex, setStackIndex] = useState(0);
-  const [showNepTitle, setShowNepTitle] = useState(false);
   const [pdfSource, setPdfSource] = useState(null);
   const [provenanceProject, setProvenanceProject] = useState(null);
 
-  const setFilter = (key, value) => setFilters(prev => ({...prev, [key]: value}));
-  const clearFilters = () => {
-    setFilters({...FILTER_DEFAULTS});
-    setObjects({...DEFAULT_MAP_OBJECTS});
-    setSelected(null);
-  };
+  useEffect(() => {setSelected(null);setStackIndex(0);},[routeKey]);
+  const setFilter = (key,value) => updateRoute({[key]:value});
+  const clearFilters = () => {window.location.hash = routeHref('map',{},'fmr');setSelected(null);};
 
   const allProjects = useMemo(
     () => comparisonRows(data).flatMap(r => [r.nep, r.house].filter(Boolean)),
@@ -377,12 +437,13 @@ export default function FmrMap({data}) {
   const provenance = useMemo(() => provenanceOptionLists(allProjects), [allProjects]);
   const overlay = useMemo(() => filterOverlayByObjects(buildMapOverlay(data, filters), objects), [data, filters, objects]);
   overlayRef.current = overlay;
-  const stack = selected ? stackForFeature(overlay.lines, selected) : [];
+  const stack = selected ? stackForFeature(['red_flag','coordinate_review'].includes(selected.properties.objectKind) ? overlay.flags : overlay.selectionLines, selected) : [];
   const active = stack[stackIndex] || selected;
   const advancedOpen = ['direction', 'method', 'coord_side', 'extraction', 'rule', 'review_flag', 'text_basis']
     .some(k => filters[k]);
 
   const pickFeature = (hit, lines) => {
+    if (hit.layer.id === FLAG_LAYER) return {type: 'Feature', id: hit.id, properties: hit.properties, geometry: hit.geometry};
     if (hit.layer.id === HUB_LAYER) {
       return lines.find(f => f.properties.hubKey === hit.properties.hubKey);
     }
@@ -424,15 +485,14 @@ export default function FmrMap({data}) {
     instance.on('style.load', onStyle);
     instance.on('error', e => setFailed(String(e?.error?.message ?? e)));
 
-    const pickLayers = [LINE_ID, DOT_ID, HUB_LAYER, INC_LAYER, DEC_LAYER, MULTI_LAYER];
+    const pickLayers = [LINE_ID, DOT_ID, HUB_LAYER, INC_LAYER, DEC_LAYER, MULTI_LAYER, INSERTION_LAYER, NEP_LAYER, PAIRED_LAYER, FLAG_LAYER];
     const pick = e => {
       const hits = instance.queryRenderedFeatures(e.point, {layers: pickLayers});
       if (!hits.length) return;
-      const feature = pickFeature(hits[0], overlayRef.current.lines.features);
+      const feature = pickFeature(hits[0], overlayRef.current.selectionLines?.features || []);
       if (!feature) return;
       setSelected(feature);
       setStackIndex(0);
-      setShowNepTitle(false);
     };
     for (const id of pickLayers) {
       instance.on('click', id, pick);
@@ -464,15 +524,26 @@ export default function FmrMap({data}) {
     for (const feature of overlay.lines.features) {
       for (const c of parseCoords(feature.properties.trueCoordinates, feature.geometry.coordinates)) {bounds.extend(c); count++;}
     }
+    for (const feature of overlay.flags?.features || []) {bounds.extend(feature.geometry.coordinates); count++;}
+    for (const feature of overlay.markers?.features || []) {bounds.extend(feature.geometry.coordinates); count++;}
     if (count) instance.fitBounds(bounds, {padding: 60, maxZoom: 9, duration: 600});
   }, [ready, fitSignature, overlay]);
+
+  useEffect(() => {
+    if (!ready || (!filters.project && !filters.pair)) return;
+    const feature = filters.focus === 'red_flag'
+      ? overlay.flags.features.find(f => f.properties.objectKind === 'red_flag' && f.properties.projectId === filters.project)
+      : overlay.selectionLines.features.find(f => !filters.project || [f.properties.projectId,f.properties.nepId,f.properties.houseId].includes(filters.project));
+    setSelected(feature || overlay.flags.features[0] || null);setStackIndex(0);
+  },[ready,overlay,filters.project,filters.pair,filters.focus]);
 
   const select = (key, label, options) => options?.length ? <label>{label}<select aria-label={label} value={filters[key] || ''} onChange={e => setFilter(key, e.target.value)}>
     <option value="">All {label.toLowerCase()}</option>{options.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></label> : null;
 
   return <section className="fmr-map" aria-label="FMR segment map">
     <div className="fmr-page-title"><div><p className="fmr-eyebrow">FY2027 · Geographic view</p><h1>FMR segment map</h1>
-      <p>Default geometry uses Reviewed coordinates (accepted digit repairs). Switch to Normalized to compare pre-review printed pairs. Unmatched overlaps are offset; markers share one size.</p></div></div>
+      <p>Default geometry uses Reviewed coordinates (accepted digit repairs). Switch to Normalized to compare pre-review printed pairs. Distinct symbols identify source-only projects, candidate pairs, shared locations, segment counts, and unresolved review flags.</p></div></div>
+    <ShareLink/>
     <div className="fmr-filters">
       <label>Search<input type="search" placeholder="Title, place, source ID or flag" value={filters.q} onChange={e => setFilter('q', e.target.value)}/></label>
       <label>Region<select value={filters.region} onChange={e => setFilter('region', e.target.value)}>
@@ -497,31 +568,27 @@ export default function FmrMap({data}) {
       </div>
       <p className="fmr-muted">Provenance filters match the selected source side (default: either side). Candidate identity and coordinate interpretation are separate checks — same ledger as Compare → project records.</p>
     </details>
-    <div className="fmr-result-bar"><span>{overlay.summary.drawn.toLocaleString()} overlays · {overlay.summary.paired.toLocaleString()} paired · {overlay.summary.offset.toLocaleString()} offset · {(overlay.summary.visible_hubs ?? overlay.summary.hubs).toLocaleString()} shared · {(overlay.summary.visible_increases ?? overlay.summary.increases).toLocaleString()} ↑ · {(overlay.summary.visible_decreases ?? overlay.summary.decreases).toLocaleString()} ↓ · {(overlay.summary.visible_multis ?? overlay.summary.multis).toLocaleString()} multi · {overlay.summary.candidates.toLocaleString()} candidates · {filters.coordBasis === 'normalized' ? 'normalized' : 'reviewed'}</span>
+    {(filters.project || filters.pair) && <p className="fmr-notice">Showing map records for {filters.project || filters.pair}. <button onClick={clearFilters}>Show all projects</button>{!overlay.lines.features.length && !overlay.flags.features.length && ' No mappable coordinates are available for this record.'}</p>}
+    <div className="fmr-result-bar"><span>{overlay.summary.drawn.toLocaleString()} overlays · {overlay.summary.visible_markers.toLocaleString()} markers · {overlay.summary.paired.toLocaleString()} paired · {overlay.summary.offset.toLocaleString()} offset · {(overlay.summary.visible_hubs ?? overlay.summary.hubs).toLocaleString()} shared · {(overlay.summary.visible_increases ?? overlay.summary.increases).toLocaleString()} ↑ · {(overlay.summary.visible_decreases ?? overlay.summary.decreases).toLocaleString()} ↓ · {(overlay.summary.visible_multis ?? overlay.summary.multis).toLocaleString()} multi · {(overlay.summary.visible_flags ?? overlay.summary.flags).toLocaleString()} red flags · {(overlay.summary.visible_reviews ?? overlay.summary.reviews).toLocaleString()} unresolved reviews · {overlay.summary.candidates.toLocaleString()} candidates · {filters.coordBasis === 'normalized' ? 'normalized' : 'reviewed'}</span>
       <span className="fmr-map-controls"><label>Basemap<select aria-label="Basemap style" value={style} onChange={e => setStyle(e.target.value)}><option value="light">Light</option><option value="dark">Dark</option></select></label>
-      <span className="fmr-map-legend"><i style={{background: STAGE_COLORS.nep}}/> NEP only</span>
-      <span className="fmr-map-legend"><i style={{background: STAGE_COLORS.house}}/> House only</span>
-      <span className="fmr-map-legend"><i style={{background: PAIRED_COLOR}}/> Paired</span>
-      <span className="fmr-map-legend"><i style={{background: HUB_COLOR, borderRadius: '50%', width: 10, height: 10}}/> Shared</span>
-      <span className="fmr-map-legend"><span className="fmr-map-legend-arrow" style={{color: INCREASE_COLOR}} aria-hidden="true">▲</span> Increase</span>
-      <span className="fmr-map-legend"><span className="fmr-map-legend-arrow" style={{color: DECREASE_COLOR}} aria-hidden="true">▼</span> Decrease</span>
-      <span className="fmr-map-legend"><i style={{background: MULTI_SEGMENT_COLOR, borderRadius: '50%', width: 10, height: 10}}/> Multi-segment</span>
+      {[['nep','NEP only'],['house','House-only insertion candidates'],['paired','Candidate pair'],['shared','Shared location'],
+        ['increase','Increase'],['decrease','Decrease'],['multi','Segment count'],['flag','Analytical red flags'],['review','Unresolved review']].map(([kind,label]) =>
+        <span key={kind} className="fmr-map-legend"><MarkerIcon kind={kind}/>{label}</span>)}
       </span></div>
     <div className="fmr-map-shell">
       <div ref={container} className="fmr-map-canvas" aria-label="Interactive FMR segment map" role="application"/>
       {failed && <p className="fmr-map-warning" role="alert">Basemap tiles failed to load: {failed}. Segment overlays come from this site’s data and stay available once the style loads.</p>}
       {!ready && !failed && <p className="fmr-map-warning" role="status">Loading basemap…</p>}
       {active && <MapSelectionCard
-        data={data} feature={active} stack={stack} stackIndex={stackIndex}
+        reviewThresholds={Object.fromEntries(Object.entries(filters).filter(([key]) => key.startsWith('rf_')))} data={data} feature={active} stack={stack} stackIndex={stackIndex}
         onStack={setStackIndex}
-        onClose={() => {setSelected(null); setShowNepTitle(false);}}
+        onClose={() => setSelected(null)}
         onPdf={setPdfSource}
         onProvenance={setProvenanceProject}
-        onShowNepTitle={() => setShowNepTitle(true)}
-        showNepTitle={showNepTitle}
       />}
     </div>
-    <p className="fmr-muted">Purple lines are exact-coordinate candidate pairs drawn once. Unmatched overlaps offset ~45&nbsp;m with a shared pair marker on the true midpoint. Reviewed is the accepted geometry (including PSGC-supported off-by-one digit repairs). Normalized undoes those repairs so you can compare the pre-review printed pairs. Multi-segment markers sit at the centroid of a project’s drawable sections.</p>
+    <p className="fmr-muted">Purple lines are exact-coordinate candidate pairs drawn once. Unmatched overlaps offset ~45&nbsp;m with a shared pair marker on the true midpoint. Reviewed is the accepted geometry (including PSGC-supported off-by-one digit repairs). Normalized undoes those repairs so you can compare the pre-review printed pairs. Numbered badges show the project’s segment count. Red flags show analytical review leads using the Analysis thresholds. Magnifying glasses identify unresolved coordinate reviews, including single-point records. Endpoint spans and allocation-per-meter proxies are screening measures, not measured road lengths or construction unit costs.</p>
+    {overlay.summary.unmapped_flags > 0 && <p className="fmr-muted">{overlay.summary.unmapped_flags} flagged projects have no mappable coordinates; inspect their records in Analysis or the source review queue.</p>}
 
     {pdfSource && <Dialog label="FMR PDF source" className="fmr-pdf-dialog" onClose={() => setPdfSource(null)}>
       <Suspense fallback={<p role="status">Loading PDF viewer…</p>}>

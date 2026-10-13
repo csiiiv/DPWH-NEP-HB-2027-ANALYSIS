@@ -61,6 +61,18 @@ export const workspaces = {
       ["nep", "DBM NEP"],
     ],
   },
+  hfep: {
+    label: "DOH Health Facilities",
+    prefix: "hfep",
+    pages: [
+      ["home", "Home"],
+      ["highlights", "Highlights"],
+      ["compare", "Compare Stages"],
+      ["analysis", "Analysis"],
+      ["house", "House GAB"],
+      ["nep", "DBM NEP"],
+    ],
+  },
   nia: {
     label: "NIA Irrigation",
     prefix: "nia",
@@ -77,6 +89,7 @@ export const workspaces = {
 // Tab list exports kept for existing consumers (WorkbenchHeader, tests).
 export const dpwhPages = workspaces.dpwh.pages;
 export const fmrPages = workspaces.fmr.pages;
+export const hfepPages = workspaces.hfep.pages;
 export const workspaceLabels = Object.fromEntries(
   Object.entries(workspaces).map(([key, ws]) => [key, ws.label]),
 );
