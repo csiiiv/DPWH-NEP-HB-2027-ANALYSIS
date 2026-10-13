@@ -150,22 +150,24 @@ def main():
                     no_overflow()
                     # Sorting pairs re-orders facility rows; mobile gets the dropdown control.
                     pairs_region = page.get_by_role('region', name='Funding records')
-                    first_before = pairs_region.locator('tbody tr.pair-facility-row').first.inner_text()
+                    first_facility = pairs_region.locator('tbody tr.pair-facility-row').first
+                    first_before = first_facility.inner_text()
                     if width == 390:
                         page.get_by_label('Sort pairs').select_option('total_nep')
                         page.get_by_role('button', name=re.compile(r'^Ascending')).click()
                     else:
                         page.get_by_role('button', name='Sort by Facility NEP').click()
                     expect(page.locator('.result-count')).to_contain_text('78 of 341 pairs')
-                    first_after = pairs_region.locator('tbody tr.pair-facility-row').first.inner_text()
-                    assert first_before != first_after, 'pair sort reorders rows'
+                    # Hash navigation renders asynchronously; wait for the row
+                    # order itself, since the filtered count stays unchanged.
+                    expect(first_facility).not_to_have_text(first_before)
+                    first_after = first_facility.inner_text()
                     if width == 390:  # flip direction via the same dropdown control
                         page.get_by_role('button', name=re.compile(r'^Descending')).click()
                     else:
                         page.get_by_role('button', name='Sort by Facility NEP').click()  # toggle to descending
-                    assert pairs_region.locator('tbody tr.pair-facility-row').first.inner_text() != first_after, 'second click flips direction'
+                    expect(first_facility).not_to_have_text(first_after)
                     # Record-column sort keeps facility hierarchy; groups reorder by min/max record.
-                    first_facility = pairs_region.locator('tbody tr.pair-facility-row').first
                     baseline = first_facility.inner_text()
                     if width == 390:
                         page.get_by_label('Sort pairs').select_option('record_delta')
