@@ -1,34 +1,23 @@
 import React from "react";
 import "../../viewers/page_navigation.css";
-import { fmrPages, routeHref, workspaceHref, workspaceLabels } from "./routes.js";
-
-const pages = [
-  ["home", "Home", "#home"],
-  ["highlights", "Highlights", "#highlights"],
-  ["compare", "Compare stages", "#compare"],
-  ["analysis", "Analysis", "#analysis"],
-  ["house", "House GAB", "#house"],
-  ["nep", "DBM NEP", "#nep"],
-  ["transparency", "DPWH Transparency NEP", "#transparency"],
-  ["resources", "Resources", "#resources"],
-  ["about", "About", "#about"],
-];
+import { routeHref, workspaceHref, workspaces } from "./routes.js";
 
 // The header selects the workspace; the tab row shows that workspace's pages.
-// FMR reuses the same six tab keys under an #fmr/ prefix, so switching
-// workspaces keeps the reader on the analogous page.
+// Workspaces register in routes.js; the selector and tab row render whatever
+// the registry contains, so a new annex workspace appears automatically.
 export default function WorkbenchHeader({ route, workspace = "dpwh", items }) {
-  const tabs = items ?? (workspace === "fmr"
-    ? fmrPages.map(([key, label]) => [key, label, routeHref(key, {}, "fmr")])
-    : pages);
+  const registered = Object.keys(workspaces);
+  const tabs = items ?? (workspace in workspaces
+    ? workspaces[workspace].pages.map(([key, label]) => [key, label, routeHref(key, {}, workspace)])
+    : []);
   return (
     <header className="shell">
       <nav className="page-tabs workspace-tabs" aria-label="Workbench workspaces">
-        {["dpwh", "fmr"].map((key) => (
+        {registered.map((key) => (
           <a key={key} href={workspaceHref(key, { key: route })}
             aria-current={workspace === key ? "page" : undefined}
             className="workspace-tab">
-            {key === "fmr" ? "DA Farm-to-Market Roads" : "DPWH"}
+            {workspaces[key].label}
           </a>
         ))}
       </nav>

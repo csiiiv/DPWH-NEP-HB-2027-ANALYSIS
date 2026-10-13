@@ -113,6 +113,7 @@ def validate_site():
         workbench_readmes = {
             'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/README.md',
             'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/other-analysis/README.md',
+            'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis-hfep/README.md',
         }
         if repository_readme not in parser.links or not workbench_readmes.intersection(parser.links):
             raise ValueError(f'Missing repository/workbench README links: {file}')
@@ -180,6 +181,51 @@ def package_fmr():
     (fmr_root / 'index.html').write_text(fmr_app_redirect('../app/', 'home'))
     (OUTPUT / 'fmr.html').write_text(fmr_app_redirect('app/', 'home'))
     print(f'Packaged FMR workbench evidence and PDFs for {len(pdfs)} source documents')
+
+
+def hfep_app_redirect(destination, route):
+    """HFEP workspace entry points redirect into the SPA at #hfep/<route>."""
+    return ('<!doctype html><html lang="en"><meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<title>DOH Health Facilities workbench</title>'
+            '<p><a href="' + destination + '#hfep/' + route + '">Open the HFEP workbench</a></p>'
+            '<a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/README.md">Repository README</a> '
+            '<a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis-hfep/README.md">HFEP source README</a>'
+            '<script>const fragment=location.hash.slice(1);location.replace(' + json.dumps(destination) +
+            '+"#hfep/"+(fragment || ' + json.dumps(route) + '));</script></html>')
+
+
+def package_hfep():
+    """Package the HFEP workspace dataset, docs, and source PDFs beside FMR."""
+    dataset_path = ROOT / 'other-analysis/data/hfep_workbench.json'
+    data = json.loads(dataset_path.read_text())
+    if data.get('schema_version') != 1:
+        raise ValueError('Unsupported HFEP dataset schema')
+    hfep_root = OUTPUT / 'hfep'
+    hfep_root.mkdir()
+    # Preserve original document paths: the annex PDFs (HB_BUDGET Volume I-B,
+    # HFEP_2.pdf) and the agency-control volumes the evidence buttons cite.
+    pdfs = {s['preview_pdf'] for s in data['stages'].values()}
+    pdfs |= {s['agency_check']['source']['source_pdf'] for s in data['stages'].values()}
+    for path in sorted(pdfs):
+        destination = OUTPUT / path
+        if destination.is_file():
+            continue
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / path, destination)
+    # The payload lives under other-analysis/data; docs under analysis-hfep/.
+    evidence = OUTPUT / 'other-analysis'
+    if not evidence.is_dir():
+        evidence.mkdir()
+    shutil.copy2(dataset_path, evidence / 'data' / dataset_path.name)
+    docs = OUTPUT / 'analysis-hfep'
+    docs.mkdir()
+    for path in (ROOT / 'analysis-hfep').iterdir():
+        if path.is_file() and path.suffix in ('.md', '.csv', '.json'):
+            shutil.copy2(path, docs / path.name)
+    (hfep_root / 'index.html').write_text(hfep_app_redirect('../app/', 'home'))
+    (OUTPUT / 'hfep.html').write_text(hfep_app_redirect('app/', 'home'))
+    print(f'Packaged HFEP workbench evidence and PDFs for {len(pdfs)} source documents')
 
 
 def main(with_react=True):
@@ -263,6 +309,7 @@ def main(with_react=True):
         (OUTPUT / 'pdfs').mkdir()
         shutil.copyfile(pdf, OUTPUT / 'pdfs' / pdf.name)
         package_fmr()
+        package_hfep()
     validate_site()
     print(f'Prepared and checked {len(VIEWER_NAMES)} dashboards in {OUTPUT}')
 

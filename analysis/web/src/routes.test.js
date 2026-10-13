@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { routes, legacyRoutes, readRoute, readWorkspace, routeHref, workspaceHref, fmrPages } from './routes.js';
+import { routes, legacyRoutes, readRoute, readWorkspace, routeHref, workspaceHref, fmrPages, workspaces, workspaceLabels, dpwhPages } from './routes.js';
 
 test('all six historical viewers map to an existing SPA route', () => {
   assert.equal(Object.keys(legacyRoutes).length, 7);
@@ -46,4 +46,41 @@ test('workspace switching keeps analogous tabs and falls back home', () => {
     if (key === 'map') assert.equal(workspaceHref('dpwh', readRoute(`#fmr/${key}`)), '#home');
     else assert.ok(routes[key]);
   }
+});
+test('hfep workspace routes are prefixed and stay out of DPWH route keys', () => {
+  assert.equal(readWorkspace('#hfep/home'), 'hfep');
+  const route = readRoute('#hfep/nep?view=tree&node=nep_hfep%3Ap1%3Ar5');
+  assert.equal(route.workspace, 'hfep');
+  assert.equal(route.key, 'nep');
+  assert.equal(route.params.get('node'), 'nep_hfep:p1:r5');
+  assert.equal(readRoute('#hfep').key, 'home');
+  // The compare tab exists: cross-document comparison is offered with
+  // reviewable pairs (the populations stay unmerged).
+  assert.equal(readRoute('#hfep/compare?view=pairs').key, 'compare');
+  assert.equal(workspaceHref('hfep', readRoute('#compare?view=projects')), '#hfep/compare');
+  assert.equal(workspaceHref('fmr', readRoute('#hfep/analysis?view=stats')), '#fmr/analysis');
+  assert.equal(routeHref('nep', {view: 'review'}, 'hfep'), '#hfep/nep?view=review');
+});
+test('unregistered hash prefixes fall back to the DPWH workspace', () => {
+  // An unknown prefix (e.g. a future annex not yet registered) must not
+  // crash routing or leak its prefix into DPWH route keys.
+  assert.equal(readWorkspace('#unknown/tab'), 'dpwh');
+  const route = readRoute('#unknown/nep?view=tree');
+  assert.equal(route.workspace, 'dpwh');
+  assert.equal(route.key, 'unknown/nep');
+});
+test('the workspace registry exposes consistent labels, prefixes and pages', () => {
+  // Every workspace needs a label, at least one tab, and a unique prefix.
+  assert.deepEqual(workspaceLabels, {dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities'});
+  assert.deepEqual(Object.keys(workspaces), ['dpwh', 'fmr', 'hfep']);
+  const prefixes = Object.values(workspaces).map(ws => ws.prefix);
+  assert.equal(new Set(prefixes).size, prefixes.length, 'prefixes must be unique');
+  for (const ws of Object.values(workspaces)) {
+    assert.ok(ws.label);
+    assert.ok(ws.pages.length >= 1);
+    for (const [key] of ws.pages) assert.equal(typeof key, 'string');
+  }
+  // DPWH keeps the empty prefix; annexes each own one hash segment.
+  assert.equal(workspaces.dpwh.prefix, '');
+  assert.ok(dpwhPages.length >= fmrPages.length);
 });
