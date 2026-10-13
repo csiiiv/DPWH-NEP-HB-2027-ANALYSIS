@@ -1,14 +1,15 @@
 // Map overlay geometry: paired merge at true coords, perpendicular offset for
 // unmatched overlaps, and shared hub markers so the printed location stays visible.
 import {comparisonRows, filterComparisons} from './fmrModel.js';
+import {buildFmrRedFlags} from './fmrRedFlags.js';
 
-export const STAGE_COLORS = {nep: '#1a7f4b', house: '#245fa8'};
-export const PAIRED_COLOR = '#7a4fb8';
-/** Deep alarm red for shared printed-location markers. */
-export const HUB_COLOR = '#9f1239';
+export const STAGE_COLORS = {nep: '#0f766e', house: '#2563eb'};
+export const PAIRED_COLOR = '#7c3aed';
+export const HUB_COLOR = '#b45309';
 export const INCREASE_COLOR = '#15803d';
 export const DECREASE_COLOR = '#c2410c';
-export const MULTI_SEGMENT_COLOR = '#b45309';
+export const MULTI_SEGMENT_COLOR = '#334155';
+export const RED_FLAG_COLOR = '#dc2626';
 /** Metres of lateral separation between unmatched overlapping segments. */
 export const OVERLAP_OFFSET_M = 45;
 /** Shared MapLibre radius ramp for every map marker (hubs, deltas, multi-seg). */
@@ -16,12 +17,17 @@ export const MARKER_RADIUS = ['interpolate', ['linear'], ['zoom'], 4, 5.5, 8, 9,
 
 export const MAP_OBJECT_OPTIONS = [
   ['nep_only', 'NEP Only Segment'],
+  ['nep_marker', 'NEP Only Marker'],
   ['house_only', 'House Only Segment'],
+  ['house_marker', 'House Only Marker'],
   ['paired', 'Paired Segment'],
+  ['paired_marker', 'Paired Marker'],
   ['shared_marker', 'Shared Pair Marker'],
   ['pair_increase', 'Pair Increase Marker'],
   ['pair_decrease', 'Pair Decrease Marker'],
   ['multi_segment', 'Multi Segment Marker'],
+  ['red_flag', 'Analytical Red Flags'],
+  ['coordinate_review', 'Unresolved Review Marker'],
 ];
 export const DEFAULT_MAP_OBJECTS = Object.fromEntries(MAP_OBJECT_OPTIONS.map(([id]) => [id, true]));
 
@@ -247,6 +253,40 @@ function multiSegmentMarkers(rows, basis) {
   return markers;
 }
 
+/** One review marker per project; single printed points need no invented line. */
+function redFlagMarkers(rows, basis, assessments) {
+  const features = [];
+  let unmapped = 0;
+  for (const {project, stageKey, stageLabel} of rows) {
+    const review = project.status === 'needs_review' || (project.review_flags || []).length > 0;
+    const findings = (assessments.get(project.id)?.flags || []).filter(f => f.id !== 'coordinate_review');
+    if (!review && !findings.length) continue;
+    const segments = drawableSegments(project, basis);
+    const coordinates = (segments.length
+      ? segments.flatMap(segment => segment.coordinates)
+      : (project.points || []).map(point => pointCoordinates(point, basis)).filter(Boolean))
+      .filter(([lon, lat]) => Math.abs(lon) <= 180 && Math.abs(lat) <= 90);
+    if (!coordinates.length) {unmapped++; continue;}
+    const center = coordinates.reduce((sum, [lon, lat]) => [sum[0] + lon, sum[1] + lat], [0, 0])
+      .map(value => value / coordinates.length);
+    for (const kind of [...(findings.length ? ['red_flag'] : []), ...(review ? ['coordinate_review'] : [])]) features.push({
+      type: 'Feature', id: `${kind}:${project.id}`,
+      properties: {
+        projectId: project.id, title: project.title, regionKey: project.region_key,
+        amountPhp: project.amount_php, stageKey, stageLabel, status: project.status,
+        segmentCount: project.segment_count || (project.segments || []).length,
+        coordinateBasis: basis, objectKind: kind, color: kind === 'red_flag' ? RED_FLAG_COLOR : '#0369a1',
+        analyticalFlags: JSON.stringify(findings),
+        trueCoordinates: JSON.stringify(coordinates),
+        nepId: stageKey === 'nep' ? project.id : null,
+        houseId: stageKey === 'house' ? project.id : null,
+      },
+      geometry: {type: 'Point', coordinates: center},
+    });
+  }
+  return {features, unmapped};
+}
+
 /**
  * Build map GeoJSON from the same filtered comparison ledger as Compare →
  * project records. Paired exact-coord matches become one purple line; remaining
@@ -259,7 +299,9 @@ export function buildMapOverlay(data, filters = {}) {
   const rawBasis = filters.coordBasis || 'reviewed';
   const coordBasis = rawBasis === 'original' ? 'reviewed' : rawBasis;
   const {coordBasis: _ignored, ...comparisonFilters} = filters;
-  const filtered = filterComparisons(comparisonRows(data), comparisonFilters);
+  const filtered = filterComparisons(comparisonRows(data), comparisonFilters).filter(row =>
+    (!filters.project || row.nep_id === filters.project || row.house_id === filters.project)
+    && (!filters.pair || row.id === filters.pair));
   const {byNep, byHouse} = comparisonIndexes(filtered);
   const nepIds = new Set(filtered.map(r => r.nep_id).filter(Boolean));
   const houseIds = new Set(filtered.map(r => r.house_id).filter(Boolean));
@@ -364,6 +406,10 @@ export function buildMapOverlay(data, filters = {}) {
     else if (feature.properties.deltaPhp < 0) decreases.push(deltaMarker(feature, 'decrease'));
   }
   const multis = multiSegmentMarkers(rows, coordBasis);
+  const assessments = new Map(['nep','house'].flatMap(stage => buildFmrRedFlags(data, stage, {
+    shortMeters:filters.rf_short_m,longKm:filters.rf_long_km,costMultiple:filters.rf_cost_multiple,increasePercent:filters.rf_increase_pct,
+  }).rows.map(row => [row.id,row])));
+  const flags = redFlagMarkers(rows, coordBasis, assessments);
 
   return {
     lines: {type: 'FeatureCollection', features},
@@ -371,6 +417,7 @@ export function buildMapOverlay(data, filters = {}) {
     increases: {type: 'FeatureCollection', features: increases},
     decreases: {type: 'FeatureCollection', features: decreases},
     multis: {type: 'FeatureCollection', features: multis},
+    flags: {type: 'FeatureCollection', features: flags.features},
     summary: {
       drawn: features.length,
       paired: features.filter(f => f.properties.objectKind === 'paired').length,
@@ -381,6 +428,9 @@ export function buildMapOverlay(data, filters = {}) {
       increases: increases.length,
       decreases: decreases.length,
       multis: multis.length,
+      flags: flags.features.filter(f => f.properties.objectKind === 'red_flag').length,
+      reviews: flags.features.filter(f => f.properties.objectKind === 'coordinate_review').length,
+      unmapped_flags: flags.unmapped,
       projects: rows.length,
       candidates: filtered.length,
       coordBasis,
@@ -391,7 +441,20 @@ export function buildMapOverlay(data, filters = {}) {
 /** Apply Objects checklist visibility without rebuilding geometry. */
 export function filterOverlayByObjects(overlay, objects = DEFAULT_MAP_OBJECTS) {
   const on = {...DEFAULT_MAP_OBJECTS, ...objects};
+  const markers = overlay.lines.features.flatMap(feature => {
+    const p = feature.properties;
+    const markerKind = p.matchKind === 'paired' ? 'paired_marker'
+      : p.matchKind === 'nep_only' ? 'nep_marker'
+      : p.matchKind === 'house_only' ? 'house_marker'
+      : p.stageKey === 'nep' ? 'nep_marker' : 'house_marker';
+    return on[markerKind] ? [{
+      ...feature, properties: {...p, markerKind},
+      geometry: {type: 'Point', coordinates: midpoint(feature.geometry.coordinates)},
+    }] : [];
+  });
   return {
+    selectionLines: overlay.lines,
+    markers: {type: 'FeatureCollection', features: markers},
     lines: {
       type: 'FeatureCollection',
       features: overlay.lines.features.filter(f => on[f.properties.objectKind]),
@@ -412,19 +475,31 @@ export function filterOverlayByObjects(overlay, objects = DEFAULT_MAP_OBJECTS) {
       type: 'FeatureCollection',
       features: on.multi_segment ? (overlay.multis?.features || []) : [],
     },
+    flags: {
+      type: 'FeatureCollection',
+      features: (overlay.flags?.features || []).filter(f => on[f.properties.objectKind]),
+    },
     summary: {
       ...overlay.summary,
       drawn: overlay.lines.features.filter(f => on[f.properties.objectKind]).length,
+      visible_markers: markers.length,
       visible_hubs: on.shared_marker ? overlay.hubs.features.length : 0,
       visible_increases: on.pair_increase ? overlay.increases.features.length : 0,
       visible_decreases: on.pair_decrease ? overlay.decreases.features.length : 0,
       visible_multis: on.multi_segment ? (overlay.multis?.features || []).length : 0,
+      visible_flags: on.red_flag ? (overlay.flags?.features || []).filter(f => f.properties.objectKind === 'red_flag').length : 0,
+      visible_reviews: on.coordinate_review ? (overlay.flags?.features || []).filter(f => f.properties.objectKind === 'coordinate_review').length : 0,
     },
   };
 }
 
 export function stackForFeature(lines, feature) {
   if (!feature) return [];
+  if (['red_flag','coordinate_review'].includes(feature.properties.objectKind)) {
+    return [feature, ...lines.features.filter(candidate => candidate.id !== feature.id
+      && candidate.properties.objectKind === feature.properties.objectKind
+      && JSON.stringify(candidate.geometry.coordinates) === JSON.stringify(feature.geometry.coordinates))];
+  }
   const hubKey = feature.properties.hubKey;
   if (hubKey) {
     return lines.features.filter(f => f.properties.hubKey === hubKey);
