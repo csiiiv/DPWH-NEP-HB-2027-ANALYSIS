@@ -80,7 +80,7 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
       <button onClick={() => onExportJSON('fmr-red-flags-filtered.json',{stage:stage.key,document:stage.label,measurement_note:analysis.measurementNote,
         config:analysis.config,benchmark_population:'Full selected source, independent of display filters',rows})}>Export review JSON</button>
     </div>
-    <SortableTable rows={rows} ariaLabel="FMR red-flag projects" pageSize={25} page={page} onPageChange={page => onChange({page})}
+    <SortableTable tableId="red-flags-records" rows={rows} ariaLabel="FMR red-flag projects" pageSize={25} page={page} onPageChange={page => onChange({page})}
       sort={sort} onSortChange={next => {const updated=typeof next === 'function' ? next(sort) : next;change({rf_sort:updated.key,rf_dir:updated.direction});}}
       empty="No projects match these review flags and filters." columns={[
         {key:'title',label:'Project',sortable:false,render:row => <button className="fmr-text-button" onClick={() => onChange({rf_project:row.id})}>{row.project.title}<small>{row.project.region} · {row.id}</small></button>},

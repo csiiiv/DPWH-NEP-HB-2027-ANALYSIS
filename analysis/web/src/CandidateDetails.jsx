@@ -18,7 +18,7 @@ export default function CandidateDetails({row,onPreview}){
       <td className="candidate-project"><div className="candidate-project-title">{record.title}</div><div className="candidate-assignment"><small>{record.region||'No recorded region'} · {record.office||'No recorded office'}</small><small>{[record.program,record.pap].filter(Boolean).join(' · ')||'No recorded PAP'}</small></div></td><td className="candidate-amount">{money(record.amount_php)}</td>
       <td>{source.suggested ? <><small>vs HGAB2: {row.second?money(record.amount_php-row.second.amount_php):'Unavailable'}</small><small>vs HGAB3: {row.third?money(record.amount_php-row.third.amount_php):'Unavailable'}</small></>:'—'}</td>
       <td><small>ID: {record.native_node_id||record.id}</small><small>PDF page: {(record.pdf_pages||[record.pdf_page]).filter(Number.isInteger).join(', ')||'Unavailable'}</small><small>Amount evidence: {record.evidence||'Unavailable'}</small>
-       {source.suggested && <><a href={routeHref('nep',{node:record.native_node_id||record.id})}>Open suggested NEP entry in source tree →</a>{Number.isInteger(record.pdf_page) && <button className="source-link" onClick={()=>onPreview?.(record)}>Preview suggested NEP PDF p.{record.pdf_page}</button>}</>}
+       {source.suggested && <><a href={routeHref('nep',{node:record.native_node_id||record.id})}>Open suggested NEP entry in source tree →</a>{Number.isInteger(record.pdf_page) && <button className="source-link" onClick={()=>onPreview?.(record)}>Preview suggested NEP PDF p. {record.pdf_page}</button>}</>}
       </td>
      </tr>;
     })}</tbody>

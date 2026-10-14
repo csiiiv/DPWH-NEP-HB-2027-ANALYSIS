@@ -1,13 +1,14 @@
 // DOH HFEP workspace: per-document source verification for the FY2027 Health
 // Facilities Enhancement Program annexes. Both stages are presented side by
-// side with title-matched review pairs, never merged: the House annex covers
-// LGU-side capital outlays while the NEP annex covers all capital outlays,
+// side with title-matched review pairs, never merged. Both annexes include
+// national and LGU capital outlays, with different category allocations,
 // so pairs are evidence pointers, not identity claims (see the payload's
 // matching_note). The skeleton mirrors FmrApp.jsx.
 import React, {lazy, Suspense, useEffect, useMemo, useRef, useState} from 'react';
 import WorkbenchHeader from './WorkbenchHeader.jsx';
 import SortableTable from './SortableTable.jsx';
 import ShareLink from './ShareLink.jsx';
+import AnalysisValue from './AnalysisValue.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {readRoute, routeHref} from './routes.js';
 import {siteUrl} from './data.js';
@@ -50,7 +51,7 @@ function Amount({value, exact = false, title}) {
 function ViewTabs({route, views, defaultView}) {
   const selected = route.params.get('view') || defaultView;
   return <nav className="view-tabs fmr-view-tabs" aria-label="Workspace views">{views.map(([key, label]) =>
-    <a key={key} href={routeHref(route.key, {...routeParams(route.params), view: key, page: '1', sort: '', dir: '', node: null})}
+    <a key={key} href={routeHref(route.key, {...routeParams(route.params), view: key, page: '1', sort: '', dir: '', node: null, ...(route.key === 'analysis' ? {table:null,records:null,group:null,pair:null,dim:null,event:null,column:null,pdf:null,pdfPage:null,category:null,subcategory:null,status:null,flag:null,lineage:null,minAmount:null,maxAmount:null} : {})})}
       aria-current={selected === key ? 'page' : undefined}>{label}</a>)}</nav>;
 }
 function Dialog({label, onClose, children, className = ''}) {
@@ -92,7 +93,7 @@ function volumeLabel(stage) {
 }
 function SourceButton({stage, source, onPdf, label}) {
   return <button className="fmr-source-button" onClick={() => onPdf(source, stage?.key)}>
-    {label || `${volumeLabel(stage)} p. ${source.pdf_page}`}<small>Printed p. {source.printed_page}</small></button>;
+    {label || `${volumeLabel(stage)} p. ${source.pdf_page}`}{source.printed_page != null && <small>Printed p. {source.printed_page}</small>}</button>;
 }
 function PdfPane({source, onClose}) {
   const ref = useRef(null);
@@ -299,7 +300,7 @@ function Evidence({index, id, onPdf}) {
 }
 function onSelectRoot(index) {window.location.hash = routeHref(index.stage.key, {node: index.stage.root.id, view: 'tree'});}
 
-function FacilityTable({index, facilities, onSelect, onPdf}) {
+function FacilityTable({index, facilities, onSelect, onPdf, tableId}) {
   const columns = [
     {key: 'title', label: 'Facility', render: f => <button className="fmr-text-button" onClick={() => onSelect(f.id)}>{f.title}</button>},
     {key: 'region', label: 'Region', value: f => facilityScope(index, f).region},
@@ -317,7 +318,7 @@ function FacilityTable({index, facilities, onSelect, onPdf}) {
       : <span className="fmr-badge balanced">{statusLabels.clean}</span>},
     {key: 'source', label: 'Source', value: f => f.source.pdf_page, render: f => <SourceButton stage={index.stage} source={f.source} onPdf={onPdf}/>},
   ];
-  return <SortableTable rows={facilities} columns={columns} initialSort={{key: 'title', direction: 'asc'}} ariaLabel="HFEP facilities" pageSize={25}/>;
+  return <SortableTable tableId={tableId} rows={facilities} columns={columns} initialSort={{key: 'title', direction: 'asc'}} ariaLabel="HFEP facilities" pageSize={25}/>;
 }
 
 function SourceWorkspace({index, route, onPdf, inlineSource}) {
@@ -383,9 +384,9 @@ function SourceWorkspace({index, route, onPdf, inlineSource}) {
   </>;
 }
 
-function ScopeTable({rows, onDrill, route}) {
+function ScopeTable({rows, onDrill, route, tableId}) {
   const sort = routeSort(route, ['label', 'count', 'infrastructure', 'medical_equipment', 'motor_vehicle', 'total', 'median', 'flagged']);
-  return <SortableTable rows={rows} sort={sort} onSortChange={update => routeSetSort(route, update, sort)} ariaLabel="HFEP regional allocation" initialSort={{key: 'total', direction: 'desc'}} columns={[
+  return <SortableTable tableId={tableId} rows={rows} sort={sort} onSortChange={update => routeSetSort(route, update, sort)} ariaLabel="HFEP regional allocation" initialSort={{key: 'total', direction: 'desc'}} columns={[
     {key: 'label', label: 'Region', scope: 'row', render: r => <button className="fmr-text-button" onClick={() => onDrill(r.label)}>{r.label} → records</button>},
     {key: 'count', label: 'Facilities', align: 'num'},
     {key: 'province_count', label: 'Provinces', align: 'num'},
@@ -407,7 +408,7 @@ function routeSetSort(route, update, sort) {
 }
 
 // Cross-document analysis views. A "record" here is a line-item pair (or a
-// single unmatched row): the House annex records LGU-side rows and the NEP
+// single unmatched row): both annexes retain national and LGU facilities. The NEP
 // annex records all rows, so insertion/deletion candidates reflect grain and
 // scope differences between the two annexes, not confirmed legislative edits.
 function aggregateBy(rows, key) {
@@ -425,21 +426,58 @@ function aggregateBy(rows, key) {
   }
   return [...groups.values()].sort((a, b) => b.amount_php - a.amount_php || a.label.localeCompare(b.label));
 }
-function CrossDocAggregate({title, groups, drillKey, route}) {
-  if (!groups.length) return null;
-  return <div className="fmr-section"><h3>{title} · {groups.length} groups</h3>
-    <SortableTable rows={groups} ariaLabel={title} initialSort={{key: 'amount_php', direction: 'desc'}} columns={[
-      {key: 'label', label: 'Group', scope: 'row', render: r => <a href={routeHref('compare', {view: 'pairs', [drillKey]: r.label})}>{r.label}</a>},
-      {key: 'rows', label: 'Rows', align: 'num'},
-      {key: 'amount_php', label: 'Allocation (PHP)', align: 'num', render: r => <Amount value={r.amount_php} exact/>},
-    ]}/></div>;
+function LineItemTable({records, route, onPdf, data, tableId, side, label='HFEP group line-item records'}) {
+  const initialSort={key:side ? 'amount' : 'difference',direction:'desc'};
+  const sort=routeSort(route,['title','event','amount','house_value','nep_value','difference'],initialSort.key);
+  const page=Math.min(Math.max(1,Number(route.params.get('page')) || 1),Math.max(1,Math.ceil(records.length/25)));
+  return <SortableTable tableId={tableId} rows={records} ariaLabel={label} sort={sort} onSortChange={update => routeSetSort(route,update,sort)} page={page} onPageChange={update => navigate(route,{page:typeof update === 'function' ? update(page) : update})} initialSort={initialSort} pageSize={25} columns={[
+        ...(side ? [{key:'amount',label:`${side === 'house' ? 'House' : 'NEP'} allocation (PHP)`,align:'num',value:r => r[`${side}_value`],render:r => <AnalysisValue value={r[`${side}_value`]}/>}] : []),
+        {key: 'title', label: 'Facility record', scope: 'row', render: r => <>{r.title}<small>{r.column_label} · {r.region}{r.province ? ` · ${r.province}` : ''}</small></>},
+        {key: 'event', label: 'Event', render: r => RECORD_EVENT_LABELS[r.event]},
+        {key: 'house_value', label: 'House (PHP)', align: 'num', render: r => <AnalysisValue value={r.house_value}/>},
+        {key: 'nep_value', label: 'NEP (PHP)', align: 'num', render: r => <AnalysisValue value={r.nep_value}/>},
+        {key: 'difference', label: 'NEP − House (PHP)', align: 'num', value: r => r.difference, render: r => <AnalysisValue value={r.difference} signed/>},
+        {key: 'source', label: 'Source', sortable: false, render: r => <>
+          {r.house_source && r.event !== 'added' && <SourceButton stage={data.stages.house} source={r.house_source} onPdf={onPdf} label={`${volumeLabel(data.stages.house)} p. ${r.house_source.pdf_page}`}/>}
+          {r.nep_source && r.event !== 'dropped' && <SourceButton stage={data.stages.nep} source={r.nep_source} onPdf={onPdf} label={`${volumeLabel(data.stages.nep)} p. ${r.nep_source.pdf_page}`}/>}</>},
+        {key: 'review', label: 'Review', sortable: false, render: r => r.pair_id
+          ? <a href={routeHref('compare', {view: 'pairs', q: r.title.slice(0, 40)})}>Compare pair</a>
+          : <a href={routeHref(r.side, {q: r.title.slice(0, 40)})}>Search {r.side === 'house' ? 'House' : 'NEP'} annex</a>},
+      ]}/>;
+}
+function RecordGroupDialog({records, route, onPdf, data, dim, side, label}) {
+  const group=route.params.get('group');
+  const members=records.filter(r => (r[dim] || '(Not printed)') === group);
+  const close=() => navigate(route,{group:null,table:null,page:null});
+  return <Dialog label="HFEP analysis group records" onClose={close}>
+    <div className="fmr-dialog-heading"><h2>{group}</h2><button onClick={close}>Close records</button></div>
+    <div className="fmr-chips" aria-label="Record scope"><span className="fmr-chip">Dimension: {dim}</span><span className="fmr-chip">Population: {label}</span>{(side ? ['q','region','column','event'] : []).filter(k => route.params.get(k)).map(k => <span className="fmr-chip" key={k}>{k}: {route.params.get(k)}</span>)}</div>
+    {members.length ? <><p>{members.length.toLocaleString('en-PH')} funding-column records · {side ? money(members.reduce((sum,r) => sum+r[`${side}_value`],0)) : 'revised, added and dropped records'}</p>
+      <button onClick={() => download('hfep-group-records.csv',recordsCsv(members))}>Export group CSV</button>
+      <LineItemTable tableId={`${route.params.get('view')}-group-records`} records={members} route={route} onPdf={onPdf} data={data} side={side}/>
+      <p><a href={routeHref('compare',{view:'pairs',region:dim === 'region' ? group : route.params.get('region'),q:route.params.get('q')})}>Continue in Compare stages →</a></p></>
+      : <p role="alert">Unknown analysis group or no records in the current scope. Close records and select a group from the table.</p>}
+  </Dialog>;
+}
+function CrossDocAggregate({title, records, route, tableId, onPdf, data, side}) {
+  const params=routeParams(route.params), dim=['overall','region','province','category','subcategory','column'].includes(params.dim) ? params.dim : 'region';
+  const groups=aggregateBy(records,r => r[dim] || '(Not printed)');
+  return <><div className="dimension-chips" role="group" aria-label="Break down by">{[['overall','Overall'],['region','Region'],['province','Province'],['category','Category'],['subcategory','Subcategory'],['column','Funding column']].map(([key,label]) => <button key={key} className={dim===key?'active':''} aria-pressed={dim===key} onClick={() => navigate(route,{dim:key,group:null,table:null,page:null})}>{label}</button>)}</div>
+    {dim !== 'overall' && <div className="fmr-section aggregate-table"><h3>{title.replace('by region',`by ${dim}`)} · {groups.length} groups</h3>
+      <SortableTable tableId={tableId.replace('region',dim)} rows={groups} ariaLabel={title.replace('by region',`by ${dim}`)} initialSort={{key:'amount_php',direction:'desc'}} empty="No unmatched records in this scope." columns={[
+        {key:'label',label:'Group',scope:'row',render:r => <button className="group-open" onClick={() => navigate(route,{group:r.label,page:null,table:null})}>{dim === 'column' ? COLUMN_LABELS[r.label] || r.label : r.label}</button>},
+        {key:'rows',label:'Funding-column records',align:'num'},
+        {key:'amount_php',label:'Allocation (PHP)',align:'num',render:r => <AnalysisValue value={r.amount_php}/>},
+      ]}/></div>}
+    {params.group && <RecordGroupDialog records={records} route={route} onPdf={onPdf} data={data} dim={dim} side={side} label={side === 'house' ? 'House-only candidates' : 'NEP-only candidates'}/>}
+  </>;
 }
 function unmatchedRecords(comparison, side) {
   return lineItemRecords(comparison).filter(r => r.event === 'unmatched' && r.side === side);
 }
 function Insertions({comparison, route, onPdf, data}) {
   const houseStage = data.stages.house;
-  const records = useMemo(() => unmatchedRecords(comparison, 'house'), [comparison]);
+  const records = filterRecords(unmatchedRecords(comparison, 'house'),routeParams(route.params));
   const facilities = comparison.house_only_rows;
   const total = records.reduce((s, r) => s + (r.house_value || 0), 0);
   return <>
@@ -449,10 +487,10 @@ function Insertions({comparison, route, onPdf, data}) {
       <Stat label="Matched pairs" value={comparison.rows.length} detail={`of ${comparison.rows.length + facilities.length} House rows`}/>
       <Stat label="Rest matches" value={`${Math.round(comparison.rows.length / (comparison.rows.length + facilities.length) * 100)}%`} detail="at ≥0.95 title similarity"/>
     </div>
-    <p className="fmr-notice">These are review candidates at line-item record grain (infrastructure, medical equipment or motor vehicle on an unmatched House facility), not confirmed insertions. An unmatched House record usually means the NEP lists the same money at a different grain (lumped, split, retitled or under another funding column) — not that the House added a facility. Verify against the NEP annex before claiming an insertion.</p>
-    <CrossDocAggregate title="Unmatched House records by region" groups={aggregateBy(records, r => r.region)} drillKey="region" route={route}/>
-    <section className="fmr-section"><h3>Top unmatched House records</h3>
-      <SortableTable rows={[...records].sort((a, b) => (b.house_value || 0) - (a.house_value || 0)).slice(0, 150)
+    <p className="fmr-notice">These are review candidates at funding-column record grain (infrastructure, medical equipment or motor vehicle on an unmatched House facility), not confirmed insertions. An unmatched House record can reflect a different title, grouping or funding column. Verify against the NEP annex before claiming an insertion.</p>
+    <CrossDocAggregate tableId="insertions-by-region" title="Unmatched House records by region" records={records} side="house" route={route} data={data} onPdf={onPdf}/>
+    <section className="fmr-section"><h3>Top unmatched House records</h3><button onClick={() => download('hfep-house-unmatched-records.csv',recordsCsv(records))}>Export filtered records CSV</button>
+      <SortableTable tableId="insertions-records" rows={[...records].sort((a, b) => (b.house_value || 0) - (a.house_value || 0)).slice(0, 150)
         .map((r, i) => ({...r, rank: i + 1}))} ariaLabel="Top unmatched House records" initialSort={{key: 'rank', direction: 'asc'}} pageSize={25} columns={[
         {key: 'rank', label: '#', value: r => r.rank},
         {key: 'title', label: 'House record', scope: 'row', render: r => <><a href={routeHref('house', {node: r.facility_id, view: 'tree'})}>{r.title}</a><small>{r.column_label}</small></>},
@@ -467,20 +505,20 @@ function Insertions({comparison, route, onPdf, data}) {
 }
 function Deletions({comparison, route, onPdf, data}) {
   const nepStage = data.stages.nep;
-  const records = useMemo(() => unmatchedRecords(comparison, 'nep'), [comparison]);
+  const records = filterRecords(unmatchedRecords(comparison, 'nep'),routeParams(route.params));
   const facilities = comparison.nep_only_rows;
   const total = records.reduce((s, r) => s + (r.nep_value || 0), 0);
   return <>
     <div className="fmr-stats">
       <Stat label="Unmatched NEP records" value={records.length} detail={`${facilities.length} facility rows · one record per printed funding column`}/>
-      <Stat label="NEP-only allocation" value={<Amount value={total} exact/>} detail="includes national-side items"/>
+      <Stat label="NEP-only allocation" value={<Amount value={total} exact/>} detail="unmatched printed component allocations"/>
       <Stat label="Matched pairs" value={comparison.rows.length} detail={`of ${comparison.rows.length + facilities.length} NEP rows`}/>
       <Stat label="Rest matches" value={`${Math.round(comparison.rows.length / (comparison.rows.length + facilities.length) * 100)}%`} detail="at ≥0.95 title similarity"/>
     </div>
-    <p className="fmr-notice">These are review candidates at line-item record grain, not confirmed deletions. The NEP annex covers national and LGU capital outlays while the House annex covers LGU-side rows only, so most unmatched NEP records are national-side items that cannot appear in the House annex by scope. Verify the scope labels before claiming a deletion.</p>
-    <CrossDocAggregate title="Unmatched NEP records by region" groups={aggregateBy(records, r => r.region)} drillKey="region" route={route}/>
-    <section className="fmr-section"><h3>Top unmatched NEP records</h3>
-      <SortableTable rows={[...records].sort((a, b) => (b.nep_value || 0) - (a.nep_value || 0)).slice(0, 150)
+    <p className="fmr-notice">These are review candidates at funding-column record grain, not confirmed deletions. Both annexes list national and LGU facilities. Title changes, split or grouped allocations, and funding-column differences can prevent pairing. Verify the source records before claiming a deletion.</p>
+    <CrossDocAggregate tableId="deletions-by-region" title="Unmatched NEP records by region" records={records} side="nep" route={route} data={data} onPdf={onPdf}/>
+    <section className="fmr-section"><h3>Top unmatched NEP records</h3><button onClick={() => download('hfep-nep-unmatched-records.csv',recordsCsv(records))}>Export filtered records CSV</button>
+      <SortableTable tableId="deletions-records" rows={[...records].sort((a, b) => (b.nep_value || 0) - (a.nep_value || 0)).slice(0, 150)
         .map((r, i) => ({...r, rank: i + 1}))} ariaLabel="Top unmatched NEP records" initialSort={{key: 'rank', direction: 'asc'}} pageSize={25} columns={[
         {key: 'rank', label: '#', value: r => r.rank},
         {key: 'title', label: 'NEP record', scope: 'row', render: r => <><a href={routeHref('nep', {node: r.facility_id, view: 'tree'})}>{r.title}</a><small>{r.column_label}</small></>},
@@ -509,16 +547,19 @@ function Adjustments({comparison, route, onPdf, data}) {
     </div>
     <p className="fmr-notice">A record is one funding-column line item on one facility row (infrastructure, medical equipment or motor vehicle — totals are row controls, not records). A revision means both annexes print that record with different amounts. Money that switches column between the annexes (House infrastructure ↔ NEP medical equipment) is not a revision: it is one dropped and one added record, as in the West Visayas State University Medical Center pair.</p>
     <section className="fmr-section"><h3>Revision bridge on matched pairs</h3>
-      <p className="fmr-muted">Revised {money(aggregates.bridge.revised_net)} + added {money(aggregates.bridge.added)} − dropped {money(Math.abs(aggregates.bridge.dropped))} = <strong>{money(aggregates.bridge.total_net)}</strong> total-column movement on the {comparison.rows.length} matched pairs. The old total-grain view showed only the right-hand number, mixing revisions with column switches.</p>
+      <p className="fmr-muted">Basis: NEP minus House, following the record-event ledger. Revised {money(aggregates.bridge.revised_net)} + added {money(aggregates.bridge.added)} − dropped {money(Math.abs(aggregates.bridge.dropped))} = <strong>{money(aggregates.bridge.total_net)}</strong> total-column movement on the {comparison.rows.length} matched pairs. The old total-grain view showed only the right-hand number, mixing revisions with column switches.</p>
     </section>
     <section className="fmr-section"><h3>Revised records by funding column</h3>
-      <SortableTable rows={COMPONENT_COLUMNS.map(c => ({column: c, ...aggregates.byColumn[c]}))} ariaLabel="Revised records by funding column" columns={[
-        {key: 'column', label: 'Funding column', scope: 'row', render: r => COLUMN_LABELS[r.column]},
+      <SortableTable tableId="adjustments-by-column" rows={COMPONENT_COLUMNS.map(c => ({column: c, ...aggregates.byColumn[c]}))} ariaLabel="Revised records by funding column" columns={[
+        {key: 'column', label: 'Funding column', scope: 'row', render: r => <button className="group-open" onClick={() => navigate(route,{group:r.column,dim:'column',page:null,table:null})}>{COLUMN_LABELS[r.column]}</button>},
         {key: 'revised', label: 'Revised', align: 'num'},
-        {key: 'revised_net', label: 'Net revision (PHP)', align: 'num', render: r => <Amount value={r.revised_net} signed exact/>},
+        {key: 'revised_increased', label: 'Increased · NEP above House (PHP)', align: 'num', render: r => <AnalysisValue value={r.revised_increased} signed/>},
+        {key: 'revised_decreased', label: 'Decreased · NEP below House (PHP)', align: 'num', render: r => <AnalysisValue value={r.revised_decreased} signed/>},
+        {key: 'revised_net', label: 'Net revision (PHP)', align: 'num', render: r => <AnalysisValue value={r.revised_net} signed/>},
         {key: 'added', label: 'Added', align: 'num'},
         {key: 'dropped', label: 'Dropped', align: 'num'},
       ]}/></section>
+    {params.group && <RecordGroupDialog records={records.filter(r => ['revised','added','dropped'].includes(r.event))} route={route} onPdf={onPdf} data={data} dim="column" label="Matched-pair movement records"/>}
     <section className="fmr-section"><h3>Revised line-item records</h3>
       <div className="fmr-result-bar">
         <span>{filtered.length} of {records.length} records</span>
@@ -529,21 +570,9 @@ function Adjustments({comparison, route, onPdf, data}) {
           <option value="">All columns</option>{COMPONENT_COLUMNS.map(c => <option key={c} value={c}>{COLUMN_LABELS[c]}</option>)}
         </select></label>
         <label>Search<input data-hfep-search type="search" placeholder="Facility or region" value={params.q || ''} onChange={e => changeFilters(route, {q: e.target.value})}/></label>
-        <button onClick={() => download('hfep-line-item-records.csv', recordsCsv(records))}>Export all records CSV</button>
+        <button onClick={() => download('hfep-line-item-records.csv', recordsCsv(records))}>Export all records CSV</button><button onClick={() => download('hfep-filtered-line-item-records.csv', recordsCsv(filtered))}>Export filtered CSV</button>
       </div>
-      <SortableTable rows={filtered} ariaLabel="Revised line-item records" initialSort={{key: 'difference', direction: 'desc'}} pageSize={25} columns={[
-        {key: 'title', label: 'Facility record', scope: 'row', render: r => <>{r.title}<small>{r.column_label} · {r.region}{r.province ? ` · ${r.province}` : ''}</small></>},
-        {key: 'event', label: 'Event', render: r => RECORD_EVENT_LABELS[r.event]},
-        {key: 'house_value', label: 'House (PHP)', align: 'num', render: r => <Amount value={r.house_value} exact/>},
-        {key: 'nep_value', label: 'NEP (PHP)', align: 'num', render: r => <Amount value={r.nep_value} exact/>},
-        {key: 'difference', label: 'Δ (PHP)', align: 'num', value: r => r.difference ?? Number.NaN, render: r => <Amount value={r.difference} signed exact/>},
-        {key: 'source', label: 'Source', sortable: false, render: r => <>
-          {r.house_source && r.event !== 'added' && <SourceButton stage={data.stages.house} source={r.house_source} onPdf={onPdf} label={`Vol I-B p. ${r.house_source.pdf_page}`}/>}
-          {r.nep_source && r.event !== 'dropped' && <SourceButton stage={data.stages.nep} source={r.nep_source} onPdf={onPdf} label={`Vol II-A p. ${r.nep_source.pdf_page}`}/>}</>},
-        {key: 'review', label: 'Review', sortable: false, render: r => r.pair_id
-          ? <a href={routeHref('compare', {view: 'pairs', q: r.title.slice(0, 40)})}>Compare pair</a>
-          : <a href={routeHref(r.side, {q: r.title.slice(0, 40)})}>Search {r.side === 'house' ? 'House' : 'NEP'} annex</a>},
-      ]}/></section>
+      <LineItemTable tableId="adjustments-records" records={filtered} route={route} onPdf={onPdf} data={data} label="Revised line-item records"/></section>
   </>;
 }
 
@@ -556,7 +585,7 @@ function Analysis({indexes, route, onPdf, data}) {
   const facilities = useMemo(() => filterFacilities(stage.facilities, params),
     [stage, params.q, params.category, params.subcategory, params.region, params.province, params.status, params.flag, params.lineage, params.minAmount, params.maxAmount]);
   const stats = facilityStats(facilities);
-  const regions = useMemo(() => scopeRows(index, 'region'), [index]);
+  const regions = useMemo(() => scopeRows(index, 'region', facilities), [index, facilities]);
   const recordKey = params.records;
   let records = facilities, recordLabel = 'Filtered facilities';
   if (recordKey?.startsWith('region:')) {records = facilities.filter(f => facilityScope(index, f).region === recordKey.slice(7)); recordLabel = `Region ${recordKey.slice(7)}`;}
@@ -598,12 +627,12 @@ function Analysis({indexes, route, onPdf, data}) {
     : view === 'adjustments' && comparison ? <Adjustments comparison={comparison} route={route} onPdf={onPdf} data={data}/>
     : view === 'overview' ? <>
       <section className="fmr-section"><h3>Regional distribution</h3>
-        <p className="fmr-muted">Region labels aggregate facilities across subcategory blocks; printed region controls appear in the source trees at their own grain.</p>
-        <ScopeTable rows={regions.filter(r => !params.region || r.label === params.region)} route={route}
+        <p className="fmr-muted">Region labels aggregate the filtered facilities across subcategory blocks; printed region controls appear in the source trees at their own grain. This Overview presents one source at a time. Both schedules retain national and LGU facilities, with different category allocations and provisional title matches. Allocation patterns do not establish implementation or misconduct.</p>
+        <ScopeTable tableId="overview-distribution" rows={regions.filter(r => !params.region || r.label === params.region)} route={route}
           onDrill={label => drill(`region:${label}`)}/></section>
     </> : view === 'categories' ? <>
       <section className="fmr-section"><h3>Category controls</h3>
-        <SortableTable rows={stage.categories} ariaLabel="HFEP category controls" initialSort={{key: 'label', direction: 'asc'}} columns={[
+        <SortableTable tableId="categories-controls" rows={stage.categories} ariaLabel="HFEP category controls" initialSort={{key: 'label', direction: 'asc'}} columns={[
           {key: 'label', label: 'Category', scope: 'row', render: c => <a href={routeHref(stage.key, {node: c.id, view: 'tree'})}>{c.label}</a>},
           {key: 'infra', label: 'Infra (PHP)', align: 'num', value: c => columnAmount(c.amounts_php, 'infrastructure'), render: c => <Amount value={columnAmount(c.amounts_php, 'infrastructure')}/>},
           {key: 'med', label: 'Med equip (PHP)', align: 'num', value: c => columnAmount(c.amounts_php, 'medical_equipment'), render: c => <Amount value={columnAmount(c.amounts_php, 'medical_equipment')}/>},
@@ -612,34 +641,34 @@ function Analysis({indexes, route, onPdf, data}) {
           {key: 'facilities', label: 'Facilities', align: 'num', value: c => index.rollup.get(c.id).count},
         ]}/></section>
       <section className="fmr-section"><h3>Subcategory populations</h3>
-        <SortableTable rows={stage.subcategories} ariaLabel="HFEP subcategory populations" pageSize={25} initialSort={{key: 'label', direction: 'asc'}} columns={[
+        <SortableTable tableId="categories-subcategories" rows={stage.subcategories} ariaLabel="HFEP subcategory populations" pageSize={25} initialSort={{key: 'label', direction: 'asc'}} columns={[
           {key: 'label', label: 'Subcategory', scope: 'row', render: s => <a href={routeHref(stage.key, {node: s.id, view: 'tree'})}>{s.label}</a>},
           {key: 'count', label: 'Facilities', align: 'num', value: s => index.rollup.get(s.id).count},
           {key: 'total', label: 'Total (PHP)', align: 'num', value: s => index.rollup.get(s.id).amounts_php.total, render: s => <Amount value={index.rollup.get(s.id).amounts_php.total}/>},
         ]}/></section>
     </> : view === 'stats' ? <>
       <p className="fmr-notice">These are descriptive patterns in recorded allocations. Repeated amounts and rounding do not establish procurement, implementation, or pricing.</p>
-      <section className="fmr-section"><h3>Allocation bands</h3><SortableTable rows={bandRows(facilities)} ariaLabel="HFEP allocation bands" columns={[
+      <section className="fmr-section"><h3>Allocation bands</h3><SortableTable tableId="statistics-bands" rows={bandRows(facilities)} ariaLabel="HFEP allocation bands" columns={[
         {key: 'label', label: 'Allocation band', scope: 'row', render: r => <button className="fmr-text-button" onClick={() => drill(`band:${r.id.slice(5)}`)}>{r.label} → records</button>},
         {key: 'facilities', label: 'Facilities', align: 'num'},
         {key: 'total_php', label: 'Allocation (PHP)', align: 'num', render: r => <Amount value={r.total_php} exact/>},
         {key: 'share', label: 'Allocation share', align: 'num', value: r => stats.total ? r.total_php / stats.total : 0, render: r => `${stats.total ? (r.total_php / stats.total * 100).toFixed(1) : '0.0'}%`},
       ]}/></section>
-      <section className="fmr-section"><h3>Rounding pattern</h3><SortableTable rows={roundingLadder(facilities)} ariaLabel="HFEP rounding ladder" initialSort={{key: 'step', direction: 'desc'}} columns={[
+      <section className="fmr-section"><h3>Rounding pattern</h3><SortableTable tableId="statistics-rounding" rows={roundingLadder(facilities)} ariaLabel="HFEP rounding ladder" initialSort={{key: 'step', direction: 'desc'}} columns={[
         {key: 'label', label: 'Coarsest matching granularity', scope: 'row'},
         {key: 'facilities', label: 'Facilities', align: 'num'},
         {key: 'total_php', label: 'Allocation (PHP)', align: 'num', render: r => <Amount value={r.total_php}/>},
         {key: 'share', label: 'Facility share', align: 'num', render: r => `${(r.share * 100).toFixed(1)}%`},
       ]}/></section>
       <section className="fmr-section"><h3>Repeated exact allocations</h3><p className="fmr-muted">Amounts appearing on at least five facilities.</p>
-        <SortableTable rows={repeatedAmounts(facilities)} ariaLabel="HFEP repeated amounts" initialSort={{key: 'total_php', direction: 'desc'}} columns={[
+        <SortableTable tableId="statistics-repeated" rows={repeatedAmounts(facilities)} ariaLabel="HFEP repeated amounts" initialSort={{key: 'total_php', direction: 'desc'}} columns={[
           {key: 'amount_php', label: 'Exact amount (PHP)', align: 'num', render: r => <button className="fmr-text-button" onClick={() => drill(`amount:${r.amount_php}`)}>{money(r.amount_php)} → records</button>},
           {key: 'facilities', label: 'Facilities', align: 'num'},
           {key: 'total_php', label: 'Combined (PHP)', align: 'num', render: r => <Amount value={r.total_php}/>},
         ]}/></section>
     </> : view === 'review' ? <section className="fmr-section"><h3>Extraction findings</h3>
       <p className="fmr-muted">Flags are pre-acceptance suspicions recorded during extraction; interpretation rules document how ambiguous printed cells were read. Neither alters a printed value, and none of these findings affect control arithmetic.</p>
-      <SortableTable rows={reviewCategories(facilities)} ariaLabel="HFEP extraction findings" columns={[
+      <SortableTable tableId="review-findings" rows={reviewCategories(facilities)} ariaLabel="HFEP extraction findings" columns={[
         {key: 'label', label: 'Finding', scope: 'row'},
         {key: 'count', label: 'Facilities', align: 'num'},
       ]}/></section> : <p>Unknown view. <a href={routeHref('analysis', {}, undefined)}>Open Overview</a>.</p>}
@@ -648,7 +677,7 @@ function Analysis({indexes, route, onPdf, data}) {
       <div className="fmr-dialog-heading"><h2>{stage.label} · {recordLabel}</h2><button onClick={() => navigate(route, {records: null})}>Close records</button></div>
       <div className="fmr-result-bar"><span>{records.length} facilities · <Amount value={columnSum(records, 'total')} exact/></span>
         <button onClick={() => download(`hfep-${stage.key}-records.csv`, facilityCsv(records, index))}>Export filtered CSV</button></div>
-      <FacilityTable index={index} facilities={records} onSelect={id => {window.location.hash = routeHref(stage.key, {node: id, view: 'tree'});}} onPdf={onPdf}/>
+      <FacilityTable tableId={`${view}-group-records`} index={index} facilities={records} onSelect={id => {window.location.hash = routeHref(stage.key, {node: id, view: 'tree'});}} onPdf={onPdf}/>
     </Dialog>}
   </>;
 }
@@ -738,9 +767,9 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
   useEffect(() => {setPanel(inlineSource ? 'pdf' : 'table');}, [inlineSource?.url, inlineSource?.page]);
   const hasFilters = Boolean(filters.q || filters.changed || filters.region);
   const stageCards = [
-    ['House GAB · Volume I-B', comparison.column_totals.total?.house_php ?? 0, `${data.stages.house.facilities.length} facilities · LGU-side capital outlays`],
+    ['House GAB · Volume I-B', comparison.column_totals.total?.house_php ?? 0, `${data.stages.house.facilities.length} facilities · HFEP capital outlays`],
     ['DBM NEP · Volume II-A', comparison.column_totals.total?.nep_php ?? 0, `${data.stages.nep.facilities.length} facilities · all capital outlays`],
-    ['NEP − House', comparison.column_totals.total?.difference_php ?? 0, 'national-side share + per-row reallocation'],
+    ['NEP − House', comparison.column_totals.total?.difference_php ?? 0, 'printed control difference across retained schedules'],
     ['Matched-pair total movement', comparison.rows.reduce((s, r) => s + (r.columns.total.difference ?? 0), 0),
       `${comparison.changed.length} pairs with revised records · see Analysis › Adjustments for the record-grain bridge`],
   ];
@@ -759,8 +788,8 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
     ? <span className="diff-tag diff-tag-identity" title={`Title similarity ${Math.round(r.similarity * 100)}% — verify before treating as one facility`}>match {Math.round(r.similarity * 100)}%</span>
     : <span title="Identical normalized title in the same region and province">100%</span>;
   const renderSources = r => <>
-    <button className="source-link" aria-pressed={false} onClick={() => onPdf(r.house.source, 'house')}>House p.{r.house.source.pdf_page}</button>
-    <button className="source-link" aria-pressed={false} onClick={() => onPdf(r.nep.source, 'nep')}>NEP p.{r.nep.source.pdf_page}</button>
+    <button className="source-link" aria-pressed={false} onClick={() => onPdf(r.house.source, 'house')}>House p. {r.house.source.pdf_page}</button>
+    <button className="source-link" aria-pressed={false} onClick={() => onPdf(r.nep.source, 'nep')}>NEP p. {r.nep.source.pdf_page}</button>
   </>;
   const emptyGroup = (group, labels) => labels.map(label =>
     <td key={label} className={`num col-${group} col-empty`} data-label={label}>—</td>);
@@ -768,7 +797,7 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
     <section className="hero hero-compact">
       <p className="eyebrow">DOH HFEP · FY2027</p>
       <h1>Compare budget stages</h1>
-      <p>Per-column control reconciliation and reviewable line-item pairs across the House Volume I-B annex (LGU-side capital outlays) and the NEP Volume II-A annex (all capital outlays). Pairs are title-similarity suggestions and never certify identity.</p>
+      <p>Per-column control reconciliation and reviewable line-item pairs across the House Volume I-B annex (HFEP capital outlays) and the NEP Volume II-A annex (all capital outlays). Pairs are title-similarity suggestions and never certify identity.</p>
     </section>
     <details className="comparison-context"><summary>Source scopes, matching method and downloads</summary>
       <p className="notice comparison-notice">The annex populations are complementary, not paired. Column totals compare printed controls; line-item pairs are ≥0.95 title-similarity suggestions for human review, never merged rows.</p>
@@ -846,7 +875,7 @@ function Compare({data, indexes, route, onPdf, inlineSource}) {
                 <td className={`num ${net > 0 ? 'up' : net < 0 ? 'down' : ''}`} data-label="Matched-pair movement">{net === 0 ? '—' : money(net)}</td>
               </tr>;})}
             </tbody></table></div>
-          <p className="muted">The NEP − House gap mixes the national-side share with per-row reallocation on matched LGU rows. The movement column decomposes what changed on the {comparison.rows.length} matched pairs at record grain — revised cells plus added records minus dropped records; blank cells never count as zero. Analysis › Adjustments carries the full bridge.</p>
+          <p className="muted">The NEP − House gap combines unmatched allocations and movement on provisional facility pairs. The movement column decomposes what changed on the {comparison.rows.length} matched pairs at record grain — revised cells plus added records minus dropped records; blank cells never count as zero. Analysis › Adjustments carries the full bridge.</p>
         </> : <>
           <div className="table-scroll" tabIndex={0} role="region" aria-label="Funding records"><table className="hfep-pairs-table">
             <thead>
@@ -946,14 +975,14 @@ function Home({data, indexes}) {
     <section className="hero">
       <p className="fmr-eyebrow">FY2027 · Health Facilities Enhancement Program</p>
       <h1>Follow the HFEP capital outlays</h1>
-      <p>Two annexes, two populations: the House Volume I-B annex lists LGU-side capital outlays while the DBM NEP Volume II-A annex covers all HFEP capital outlays. This workbench presents each document's own controls and evidence, plus a <strong>review-only comparison</strong>: per-column reconciliation and title-matched pairs that are suggestions to verify, never merged rows.</p>
+      <p>Two retained HFEP schedules: both the House Volume I-B and DBM NEP Volume II-A annexes list national and LGU facilities, with different category allocations. This workbench presents each document's own controls and evidence, plus a <strong>review-only comparison</strong>: per-column reconciliation and title-matched pairs that are suggestions to verify, never merged rows.</p>
       <div className="hero-actions"><a className="primary" href={routeHref('nep', {view: 'tree'})}>Open NEP source tree</a>
         <a className="secondary" href={routeHref('house', {view: 'tree'})}>Open House source tree</a>
         <a className="secondary" href={routeHref('compare')}>Compare stages</a>
         <a className="secondary" href={routeHref('analysis')}>Explore analysis</a><ShareLink/></div>
     </section>
     <div className="fmr-stats">
-      <Stat label="House GAB annex control" value={<Amount value={columnAmount(house.annex_control, 'total')} exact/>} detail={`${house.facilities.length} LGU facilities · ${house.audit_summary.internal_control_checks} balanced controls`}/>
+      <Stat label="House GAB annex control" value={<Amount value={columnAmount(house.annex_control, 'total')} exact/>} detail={`${house.facilities.length} facilities · ${house.audit_summary.internal_control_checks} balanced controls`}/>
       <Stat label="DBM NEP annex control" value={<Amount value={columnAmount(nep.annex_control, 'total')} exact/>} detail={`${nep.facilities.length} facilities (national + LGU) · ${nep.audit_summary.internal_control_checks} balanced controls`}/>
       <Stat label="NEP facility ledger" value={<Amount value={columnAmount(nep.facility_ledger, 'total')} exact/>} detail="₱140,000 below the printed control — documented Metro Manila omission"/>
       <Stat label="Cross-stage comparison" value="Review only" detail="Column reconciliation + 0.95-confidence title pairs"/>
@@ -962,7 +991,7 @@ function Home({data, indexes}) {
     <h2>Workbench directory</h2>
     <ul className="home-directory">
       <li><a href={routeHref('nep')}><strong>DBM NEP →</strong><span>Executive proposal annex: all HFEP capital outlays with per-column controls and OCR provenance.</span></a></li>
-      <li><a href={routeHref('house')}><strong>House GAB →</strong><span>Volume I-B annex: LGU-side capital outlays from the House bill.</span></a></li>
+      <li><a href={routeHref('house')}><strong>House GAB →</strong><span>Volume I-B annex: HFEP capital outlays from the House bill.</span></a></li>
       <li><a href={routeHref('analysis')}><strong>Analysis →</strong><span>Regional, category and allocation-pattern views per stage.</span></a></li>
       <li><a href={routeHref('highlights')}><strong>Highlights →</strong><span>Key findings with their supporting records.</span></a></li>
     </ul>
@@ -987,8 +1016,8 @@ function Highlights({data, indexes, route, onPdf}) {
     {id: 'nep-defect', title: 'A ₱140,000 ghost in the NEP controls', body: 'The published NEP Metro Manila block omits one ₱140,000 medical-equipment row that its controls still count. The facility ledger lands ₱140,000 below the printed grand total on medical equipment and total.',
       prompt: 'Follow the documented overhang from the Metro Manila province control up to the annex title row.',
       href: routeHref('nep', {node: 'nep_hfep:p2:r47', view: 'tree'}), stage: 'nep'},
-    {id: 'lgu-split', title: 'Two annexes, two populations', body: `The House annex carries ${house.facilities.length} LGU facilities (₱${(columnAmount(house.annex_control, 'total') / 1e9).toFixed(2)}B); the NEP annex carries ${nep.facilities.length} facilities (₱${(columnAmount(nep.annex_control, 'total') / 1e9).toFixed(2)}B) covering national and LGU capital outlays. Compare stages offers column reconciliation and reviewable title-matched pairs — the ledgers themselves are never merged.`,
-      prompt: 'How much of the gap is national-side share, and how much is per-row reallocation?',
+    {id: 'lgu-split', title: 'Two retained HFEP schedules', body: `The House annex carries ${house.facilities.length} facilities (₱${(columnAmount(house.annex_control, 'total') / 1e9).toFixed(2)}B); the NEP annex carries ${nep.facilities.length} facilities (₱${(columnAmount(nep.annex_control, 'total') / 1e9).toFixed(2)}B) covering national and LGU capital outlays. Compare stages offers column reconciliation and reviewable title-matched pairs — the ledgers themselves are never merged.`,
+      prompt: 'Which category allocations and candidate counterpart amounts differ between the schedules?',
       href: routeHref('compare')},
     {id: 'house-balance', title: 'House controls reconcile to the peso', body: `All ${house.audit_summary.internal_control_checks} internal controls reconcile recursively on all four funding columns, and the flat facility ledger independently reproduces the grand total.`,
       prompt: 'Inspect any control: printed amounts equal facility sums on every column.',

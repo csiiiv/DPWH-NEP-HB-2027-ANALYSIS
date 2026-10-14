@@ -10,6 +10,13 @@ Analysis heroes share one source-selector/basis-label/Share pattern; docs
 updated. Remaining phases (exports/mobile parity audit, record/evidence
 displays, page-specific gaps) are still unstarted.
 
+NIA additions preserve the existing FMR/DPWH page format and Analysis views:
+Overview adds allocation shares; Candidates adds funding reconciliation and
+pairing coverage; Statistics adds top-ten concentration with source evidence.
+Home, Compare and source-page layouts retain their established structure.
+AI monitoring is an additional NIA Analysis tab using the same source selector,
+filters, tables, CSV and PDF evidence, with whole-project allocation scope.
+
 ## Outcome
 
 A citizen can move between DPWH, FMR, NIA and HFEP without relearning how to
@@ -38,24 +45,27 @@ routes and packaged annex entry points are part of the navigation audit.
 | Workspace | Registered pages |
 | --- | --- |
 | DPWH | Home, Highlights, Compare stages, Analysis, House GAB, DBM NEP, Transparency NEP, Resources, About |
-| FMR | Home, Highlights, Compare Stages, Analysis, Map, House GAB, DBM NEP |
-| NIA | Home, Highlights, Compare Stages, Analysis, House GAB, DBM NEP |
-| HFEP | Home, Highlights, Compare Stages, Analysis, House GAB, DBM NEP |
+| FMR | Home, Highlights, Compare stages, Analysis, Map, House GAB, DBM NEP |
+| NIA | Home, Highlights, Compare stages, Analysis, House GAB, DBM NEP |
+| HFEP | Home, Highlights, Compare stages, Analysis, House GAB, DBM NEP |
 
-Confirmed in source:
+Confirmed in source (starting inventory; several items below are already fixed
+in the landed batches):
 
-- `routes.js` and `WorkbenchHeader.jsx` share the workspace/page shell; the
-  Compare label's capitalization differs between DPWH and the annex apps.
+- `routes.js` and `WorkbenchHeader.jsx` share the workspace/page shell; Compare
+  stages is now sentence case across registries.
 - `SortableTable.jsx`, `PdfPreview.jsx`, `ShareLink.jsx` and `modalLifecycle.js`
   already provide shared behavior. Use these before creating alternatives.
-- FMR/HFEP render link-based view navigation; NIA Analysis uses a button tablist.
-  Review keyboard semantics and URL behavior before standardizing presentation.
-- Share actions occupy different locations. NIA's Hero includes sharing; FMR's
-  Analysis hero currently provides a source selector without that action.
+- Annex Analysis/Compare view tabs use link navigation with `aria-current`.
+- Share actions occupy different locations. The three annex Analysis heroes now
+  share one source-selector/basis-label/Share pattern; other pages still vary.
 - HFEP and NIA Compare expose active-filter chips; FMR's general filter toolbar
   has a different presentation. Audit equivalent behavior, not just appearance.
 - Source buttons, heroes, statistics and dialogs are implemented in multiple
   apps. Extract common UI only where semantics and behavior truly agree.
+- NIA retains Overview / Insertions / Deletions / Adjustments / Statistics /
+  Candidates / Agency controls and adds AI monitoring; additional analysis uses
+  the existing tables and evidence dialogs. Irrigation has no coordinate diagnostics.
 - Separate browser suites exist for DPWH, FMR, NIA and HFEP. A shared acceptance
   matrix should cover equivalent journeys and the merged workspace shell.
 

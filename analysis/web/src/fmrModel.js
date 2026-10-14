@@ -1,3 +1,8 @@
+// Canonical percent-change helpers live in pctChange.js (R44). Import for
+// local use in this module; re-export so existing `from './fmrModel.js'`
+// imports keep working.
+import {pctChange, signedPct} from './pctChange.js';
+export {pctChange, signedPct};
 export const fmrTabs = [
   ['home', 'Home', '#fmr/home'], ['highlights', 'Highlights', '#fmr/highlights'],
   ['compare', 'Compare stages', '#fmr/compare'], ['analysis', 'Analysis', '#fmr/analysis'],
@@ -16,8 +21,6 @@ export const comparisonFilterLabels = {...statusLabels, changed: 'Pairs with an 
 export const money = value => value == null ? '—' : `₱${value.toLocaleString('en-PH')}`;
 export const compactMoney = value => value == null ? '—' : Math.abs(value) >= 1e9 ? `₱${(value / 1e9).toLocaleString('en-PH', {maximumFractionDigits: 4})}B` : Math.abs(value) >= 1e6 ? `₱${(value / 1e6).toLocaleString('en-PH', {maximumFractionDigits: 3})}M` : money(value);
 export const signedMoney = value => value == null ? '—' : `${value > 0 ? '+' : ''}${money(value)}`;
-export const pctChange = (current, prior) => current == null || prior == null || !Number.isFinite(current) || !Number.isFinite(prior) || prior === 0 ? null : (current - prior) / Math.abs(prior) * 100;
-export const signedPct = value => value == null ? '—' : `${value > 0 ? '+' : ''}${value.toFixed(1)}%`;
 export const formatKm = km => km == null ? '—' : `${km.toLocaleString('en-PH', {maximumFractionDigits: 3})} km`;
 export function medianNumber(values) {
   const sorted = [...values].sort((a, b) => a - b);
@@ -180,7 +183,8 @@ export function allocationStats(projects) {
     review: projects.filter(p => p.status === 'needs_review').length, multi: projects.filter(p => p.segment_count > 1).length};
 }
 export function overviewRegionRows(regions) {
-  return regions.map(r => ({...r, id: r.id || r.key, delta_projects: r.house_count - r.nep_count, pct_alloc: pctChange(r.house_php, r.nep_php)}));
+  return regions.map(r => ({...r, id: r.id || r.key, delta_projects: r.house_count - r.nep_count,
+    pct_records: pctChange(r.house_count, r.nep_count), pct_alloc: pctChange(r.house_php, r.nep_php)}));
 }
 // Straight-line endpoint distance is the only length the source coordinates
 // support: segments contribute their endpoint distance, never road chainage.

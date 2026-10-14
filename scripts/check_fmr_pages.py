@@ -13,6 +13,7 @@ import threading
 from urllib.parse import urlencode
 from playwright.sync_api import expect, sync_playwright
 from serve_pages import RangeHandler
+from analysis_checks import check_analysis_links, check_banded_overview, check_candidate_group
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -60,6 +61,16 @@ def main():
                     if not external:
                         page.goto(base.replace('/app/', '/') + '?preview=fmr#fmr/nep', wait_until='networkidle')
                         assert '/app/?preview=fmr#fmr/nep' in page.url
+                    check_analysis_links(page, goto, 'insertions', 'insertions-by-region', tabs='Workspace views')
+                    check_banded_overview(page, goto, 'overview-comparison')
+                    for view in ('insertions', 'deletions', 'adjustments'):
+                        check_candidate_group(page, goto, view, f'{view}-by-region', 'Source records / changed pairs', 'Analysis source records', 'Export filtered CSV')
+                    check_candidate_group(page, goto, 'insertions', 'insertions-by-region', 'Source records / changed pairs', 'Analysis source records', 'Export filtered CSV', query='road')
+                    # Old candidate keys still resolve to an active canonical link.
+                    goto('analysis?view=house_candidates')
+                    expect(page.get_by_role('link', name='Insertions', exact=True)).to_have_attribute('aria-current', 'page')
+                    goto('analysis?view=insertions&records=candidate-region:missing')
+                    expect(page.get_by_role('dialog', name='Analysis source records').get_by_role('alert')).to_contain_text('Unknown analysis group')
                     goto('home')
                     tabs = page.get_by_role('navigation', name='Workbench pages')
                     assert tabs.locator('a').all_text_contents() == ['Home', 'Highlights', 'Compare stages', 'Analysis', 'Map', 'House GAB', 'DBM NEP']
@@ -71,7 +82,7 @@ def main():
                     expect(page.get_by_label('Coordinate basis', exact=True)).to_have_value('reviewed')
                     no_overflow()
                     expect(page.get_by_role('link', name='Map', exact=True)).to_have_attribute('aria-current', 'page')
-                    for route in ['home', 'highlights', 'compare', 'compare?view=projects', 'analysis', 'analysis?view=house_candidates', 'analysis?view=nep_candidates', 'analysis?view=adjustments', 'analysis?view=coordinates', 'analysis?view=stats']:
+                    for route in ['home', 'highlights', 'compare', 'compare?view=projects', 'analysis', 'analysis?view=insertions', 'analysis?view=deletions', 'analysis?view=adjustments', 'analysis?view=coordinates', 'analysis?view=stats']:
                         goto(route)
                         no_overflow()
                         if route in ['home', 'highlights', 'compare?view=projects', 'analysis']:

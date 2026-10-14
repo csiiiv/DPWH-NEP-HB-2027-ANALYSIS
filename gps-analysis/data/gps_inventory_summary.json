@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "generator": "gps-analysis/scan_gps_inventory.py",
+  "records_scanned": {
+    "hgab_fmr": 964,
+    "nep_fmr": 704,
+    "dpwh_comparison_2027": 17613,
+    "hb_dpwh_leaves_v5": 16148,
+    "nep_2027_source_projects": 11420,
+    "chainage_units_2027": 12243,
+    "hgab_nia": 828,
+    "nep_nia_projects": 791,
+    "hgab_hfep": 513,
+    "nep_hfep": 464
+  },
+  "records_with_gps": {
+    "hgab_fmr": 964,
+    "nep_fmr": 704,
+    "dpwh_comparison_2027": 2350,
+    "hb_dpwh_leaves_v5": 2215,
+    "nep_2027_source_projects": 610,
+    "chainage_units_2027": 128,
+    "hgab_nia": 1,
+    "nep_nia_projects": 1
+  },
+  "status_by_dataset": {
+    "hgab_fmr": {
+      "parsed": 957,
+      "parsed_with_issues": 7
+    },
+    "nep_fmr": {
+      "parsed": 686,
+      "parsed_with_issues": 17,
+      "unparsed_candidate": 1
+    },
+    "dpwh_comparison_2027": {
+      "parsed": 2346,
+      "parsed_with_issues": 3,
+      "hint_only": 1
+    },
+    "hb_dpwh_leaves_v5": {
+      "parsed": 2212,
+      "parsed_with_issues": 2,
+      "hint_only": 1
+    },
+    "nep_2027_source_projects": {
+      "parsed": 607,
+      "parsed_with_issues": 2,
+      "hint_only": 1
+    },
+    "chainage_units_2027": {
+      "parsed": 125,
+      "parsed_with_issues": 3
+    },
+    "hgab_nia": {
+      "parsed": 1
+    },
+    "nep_nia_projects": {
+      "parsed": 1
+    },
+    "hgab_hfep": {},
+    "nep_hfep": {}
+  },
+  "totals": {
+    "records_scanned": 61688,
+    "records_with_gps": 6973,
+    "parsed": 6935,
+    "parsed_with_issues": 34,
+    "unparsed_candidate": 1,
+    "hint_only": 3,
+    "points_parsed": 9827,
+    "with_amount": 6973,
+    "by_change_type": {
+      "insertion": 1719,
+      "no_change": 471,
+      "adjustment_increased": 35,
+      "unknown": 12,
+      "adjustment_decreased": 6,
+      "deletion": 107
+    }
+  },
+  "source_files": {
+    "other-analysis/data/hgab_fmr_tree.json": "a9e9271963ac4e7cb05209f44222475012a8ec7059822bb4f57d89b5a8a89be1",
+    "other-analysis/data/nep_fmr_tree.json": "182b67acb063cc0c3501bcbb2f56f0b8e2014105ecae2df3c1a87c4372cb3e62",
+    "analysis/data/comparison_projects_2027.json": "ca1f4f8e71d80941f2fc3a26c1efad7df37ade95d44701dc5c7331c5423acee1",
+    "analysis/data/hb_dpwh_leaves_corrected_v5.json": "8e60d400ebbcf4139bcf05dfed4e20d55efac2a4d879924cc08a6e65b3edc668",
+    "analysis/data/nep_2027_source_projects.json": "2d58683888ae697c4506544b48d30ed4b6f6cfa9e796f7328ca4e4b9075423cf",
+    "analysis/data/chainage_units_2027.json": "745397373b162fef4fd9ff3efb0a66cf96245f0d4e51366672272f6383e5b036",
+    "analysis-nia/data/hgab_nia_tree.json": "22980945447bc5331f727bea6b0a3b7490f012acbf7e589f8a4bcbe5018c1bfe",
+    "analysis-nia/data/nep_nia_dataset.json": "685dabfc819030a02d6e53b43a038bea59b11dd872e9a4bb262cf13e8a4aa50c",
+    "analysis-hfep/data/hgab_hfep_data_list.json": "ea84b0d6eaeee9786a1275952a5a342727f0149a76a69e4128af6f93f7f3a1ba",
+    "analysis-hfep/data/nep_hfep_data_list.json": "3edd1cdb8cc62c4ef4e17a9a18f93862222a3e01ad5c94cfffd0f66b0864b74d"
+  }
+}

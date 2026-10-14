@@ -111,3 +111,127 @@
 .fmr-map-quick-sources { display: flex; flex-wrap: wrap; gap: 8px; }
 .fmr-map-quick-sources button { font-size: 12px; }
 @media (max-width: 700px) { .fmr-map-info { width: 100%; } }
+
+/* Geolocation workspace: amount line, change badge, checkbox filter groups. */
+.fmr-map-amount { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin: 0; font-size: 13px; }
+.fmr-map-amount strong { font-size: 17px; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.fmr-map-amount-delta { font-size: 11px; font-weight: 650; color: #526780; font-variant-numeric: tabular-nums; }
+.fmr-map-amount-delta.up { color: #15803d; }
+.fmr-map-amount-delta.down { color: #b91c1c; }
+.fmr-badge.change-insertion { background: #dcfce7; border-color: #86efac; color: #166534; }
+.fmr-badge.change-deletion { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+.fmr-badge.change-adjustment_increased { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
+.fmr-badge.change-adjustment_decreased { background: #fef3c7; border-color: #fcd34d; color: #92400e; }
+.fmr-badge.change-no_change { background: #eef2f7; border-color: #c5d0de; color: #334155; }
+.fmr-badge.change-unknown { background: #f3e8ff; border-color: #d8b4fe; color: #6b21a8; }
+
+.geo-filter-search { align-items: center; }
+.geo-filter-search label { flex: 1 1 20rem; }
+.geo-filter-search button { align-self: flex-end; }
+.geo-filter-bar { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 14px; align-items: flex-start; }
+/* Floating popover: the menu is out of flow so opening a facet never reflows
+   the result bar, legend or map underneath. */
+.geo-filter-group { position: relative; flex: 1 1 11rem; min-width: 0; }
+.geo-filter-trigger {
+  width: 100%; appearance: none; text-align: left; cursor: pointer; font: inherit;
+  border: 1px solid #c5d0de; background: #fff; border-radius: 8px; padding: 8px 10px;
+  display: flex; align-items: center; gap: 8px; color: #203147; font-size: 13px;
+}
+.geo-filter-trigger:hover, .geo-filter-trigger[aria-expanded="true"] { border-color: #8aa0bb; background: #f7f9fc; }
+.geo-filter-trigger[data-active="true"] { border-color: #245fa8; background: #eef4fc; }
+.geo-filter-label { font-weight: 650; }
+.geo-filter-count {
+  flex: 1; min-width: 0; font-size: 11px; color: #526780;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.geo-filter-caret { flex: 0 0 auto; font-size: 10px; color: #8aa0bb; }
+.geo-filter-menu {
+  position: absolute; top: calc(100% + 4px); left: 0; z-index: 20;
+  width: max(16rem, 100%); max-width: min(22rem, calc(100vw - 32px));
+  background: #fff; border: 1px solid #d9e2ed; border-radius: 8px; padding: 8px;
+  box-shadow: 0 8px 24px #182f4b22;
+}
+/* Keep the last facet's menu on screen when the bar wraps to the right edge. */
+.geo-filter-group:last-child .geo-filter-menu { left: auto; right: 0; }
+.geo-filter-bulk { display: flex; gap: 8px; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid #eef2f7; }
+.geo-filter-bulk button {
+  flex: 1; border: 0; background: transparent; color: #2a4a78; font-size: 11px; font-weight: 650;
+  cursor: pointer; padding: 3px 0; border-radius: 4px;
+}
+.geo-filter-bulk button:hover:not(:disabled) { background: #eef3f9; }
+.geo-filter-bulk button:disabled { color: #a8b6c8; cursor: default; }
+.geo-filter-menu ul { list-style: none; margin: 0; padding: 0; max-height: 15rem; overflow: auto; overscroll-behavior: contain; }
+.geo-filter-menu li + li { border-top: 1px solid #f1f5f9; }
+.geo-filter-menu label {
+  display: flex; align-items: center; gap: 8px; padding: 5px 4px; font-size: 12.5px;
+  cursor: pointer; border-radius: 5px; min-width: 0; flex: none;
+}
+.geo-filter-menu label:hover { background: #f3f6fa; }
+.geo-filter-menu input[type="checkbox"] { width: auto; flex: 0 0 auto; margin: 0; }
+.geo-filter-menu label > span { flex: 1; min-width: 0; overflow-wrap: anywhere; white-space: normal; }
+.geo-filter-menu label > small { color: #526780; font-variant-numeric: tabular-nums; flex: 0 0 auto; }
+
+@media (max-width: 700px) {
+  .geo-filter-bar { flex-direction: column; }
+  .geo-filter-group { flex-basis: auto; width: 100%; }
+  .geo-filter-menu { width: 100%; max-width: 100%; }
+  .geo-filter-group:last-child .geo-filter-menu { left: 0; right: 0; }
+  .geo-filter-menu ul { max-height: 12rem; }
+}
+
+/* Legend glyphs share artwork with the map sprites (geoMapStyle.js), so the
+   marker silhouette and the line swatch together explain both geometries a
+   grouping can draw. */
+.geo-legend-icon { width: 19px; height: 19px; flex: 0 0 19px; }
+.geo-legend-line { width: 14px; height: 14px; flex: 0 0 14px; margin-left: -4px; }
+
+/* Cluster key: states the encoding the bubbles carry, which the group legend
+   alone cannot express (homogeneity, member count, review issues). */
+.geo-cluster-key {
+  display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center;
+  margin: 0 0 14px; padding: 8px 12px; border: 1px solid #d9e2ed;
+  border-radius: 8px; background: #f7f9fc; font-size: 12px; color: #526780;
+}
+.geo-cluster-key b { color: #203147; font-weight: 650; }
+.geo-key-swatch {
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.geo-key-dot {
+  width: 14px; height: 14px; border-radius: 50%; flex: 0 0 14px;
+  background: #475569; border: 2px solid #ffffff; box-shadow: 0 0 0 1px #c5d0de;
+}
+.geo-key-dot.issue { border-color: #dc2626; box-shadow: 0 0 0 1px #dc2626; }
+.geo-key-dot.lg { width: 20px; height: 20px; flex-basis: 20px; }
+/* Four small dots side by side, so "one grouping" reads as "any group's colour"
+   rather than implying homogeneous clusters are always blue. */
+.geo-key-dot.sm { width: 9px; height: 9px; flex: 0 0 9px; border-width: 1px; }
+.geo-key-dot-row { display: inline-flex; align-items: center; gap: 2px; flex: 0 0 auto; }
+/* Badge glyphs shown in the key for "badges" mode, reusing the legend icon size. */
+.geo-key-icon-row { display: inline-flex; align-items: center; gap: 3px; flex: 0 0 auto; }
+.geo-key-icon-row .geo-legend-icon { width: 17px; height: 17px; flex: 0 0 17px; }
+
+/* Marker-view segmented control. Three mutually exclusive readings of the same
+   points; a segmented control keeps all three visible so the trade-off is
+   legible without opening a menu. */
+.geo-marker-modes { display: inline-flex; border: 1px solid #c5d0de; border-radius: 7px; overflow: hidden; }
+.geo-marker-modes button {
+  padding: 4px 11px; font-size: 12px; line-height: 1.4; cursor: pointer;
+  background: #ffffff; color: #526780; border: 0; border-right: 1px solid #d9e2ed;
+  font: inherit; font-weight: 600;
+}
+.geo-marker-modes button:last-child { border-right: 0; }
+.geo-marker-modes button:hover { background: #eef4fc; color: #203147; }
+.geo-marker-modes button.on { background: #203147; color: #ffffff; }
+.geo-marker-modes button:focus-visible { outline: 2px solid #2563eb; outline-offset: -2px; }
+
+/* Per-mode explanation, muted so it reads as guidance under the swatches. */
+.geo-mode-hint { color: #6b7c93; font-style: italic; flex-basis: 100%; }
+
+/* Discloses that some plotted coordinates sit outside the Philippine envelope
+   and were therefore left out of the automatic camera fit. Muted and
+   underline-dotted so it reads as a caveat, not an error. */
+.geo-bounds-note {
+  font-size: 12px; color: #6b7c93;
+  text-decoration: underline dotted #b6c2d2; text-underline-offset: 3px;
+  cursor: help;
+}

@@ -6,7 +6,7 @@ import {
   filterFacilities, flagLabel, isFlagged, isInterpreted, lineageLabel, matchesReviewCategory, nodePath,
   normalizationLabel, provenanceOptions, repeatedAmounts, reviewCategories, roundingLadder, scopeRows,
   comparisonIndex, filterComparisons, comparisonCsv,
-  COMPONENT_COLUMNS, lineItemRecords, filterRecords, recordAggregates, recordsCsv,
+  COMPONENT_COLUMNS, lineItemRecords, filterRecords, recordAggregates, recordsCsv, recordColumnAmount,
 } from './hfepModel.js';
 
 // Tests run against the real built payload (prebuild regenerates it), plus a
@@ -14,6 +14,23 @@ import {
 const payload = JSON.parse(fs.readFileSync(new URL('../../../other-analysis/data/hfep_workbench.json', import.meta.url), 'utf8'));
 const house = buildStageIndex(payload.stages.house);
 const nep = buildStageIndex(payload.stages.nep);
+
+test('derived zero blanks do not become printed funding records; explicit zeros and recovered positive amounts remain', () => {
+  const lineage = [{column: 'motor_vehicle', rule: 'derived_from_row_identity_total_minus_components'}];
+  const blank = {amounts_php: {motor_vehicle: 0}, amount_lineage: lineage};
+  assert.equal(recordColumnAmount(blank, 'motor_vehicle'), null);
+  assert.equal(blank.amounts_php.motor_vehicle, 0);
+  assert.equal(recordColumnAmount({amounts_php: {motor_vehicle: 0}}, 'motor_vehicle'), 0);
+  assert.equal(recordColumnAmount({amounts_php: {motor_vehicle: 20}, amount_lineage: lineage}, 'motor_vehicle'), 20);
+  assert.equal(recordColumnAmount({}, 'motor_vehicle'), null);
+  const all = lineItemRecords(comparisonIndex(payload));
+  for (const side of ['house', 'nep']) {
+    const printed = payload.stages[side].facilities.flatMap(f => COMPONENT_COLUMNS.map(c => recordColumnAmount(f,c))).filter(v => v != null);
+    const represented = all.filter(r => r[`${side}_value`] != null);
+    assert.equal(represented.length, printed.length);
+    assert.equal(represented.reduce((s,r) => s+r[`${side}_value`],0),printed.reduce((s,v) => s+v,0));
+  }
+});
 
 test('every HFEP browser source opens its annex volume at the printed page', () => {
   for (const [index, pdf, offset, first, last] of [
@@ -143,6 +160,10 @@ test('regional scope rows aggregate facilities by label across subcategory block
   assert.equal(total, columnAmount(nep.stage.facility_ledger, 'total'));
   const car = rows.find(r => r.label === 'CAR');
   assert.equal(car.count, car.facilities?.length ?? car.count);
+  const filtered=filterFacilities(nep.stage.facilities,{q:'Hospital'});
+  const scoped=scopeRows(nep,'region',filtered);
+  assert.equal(scoped.reduce((sum,r)=>sum+r.count,0),filtered.length);
+  assert.equal(scoped.reduce((sum,r)=>sum+r.total,0),facilityStats(filtered).total);
 });
 
 test('allocation stats: bands partition, ladder shares sum to one, repeats need five', () => {
@@ -208,8 +229,8 @@ test('comparison: pairs are unique, scoped and never alter either ledger', () =>
     // Per-column deltas conserve the row identity on both sides, and the
     // event classifies the record grain: blank cells never fake a zero delta.
     for (const column of ['infrastructure', 'medical_equipment', 'motor_vehicle', 'total']) {
-      const h = columnAmount(row.house.amounts_php, column);
-      const n = columnAmount(row.nep.amounts_php, column);
+      const h = recordColumnAmount(row.house, column);
+      const n = recordColumnAmount(row.nep, column);
       const cell = row.columns[column];
       if (h == null || n == null) assert.equal(cell.difference, null);
       else assert.equal(cell.difference, n - h);
@@ -274,17 +295,27 @@ test('line-item records: grain, events and the conservation bridge', () => {
     assert.ok(['infrastructure', 'medical_equipment', 'motor_vehicle'].includes(r.column));
     assert.ok(['revised', 'added', 'dropped', 'same', 'unmatched'].includes(r.event));
     assert.ok(r.house_value != null || r.nep_value != null);
+    if (['revised', 'same'].includes(r.event)) {
+      const pair=comparison.rows.find(p=>p.id===r.pair_id);
+      assert.equal(r.house_value,pair.columns[r.column].house);
+      assert.equal(r.nep_value,pair.columns[r.column].nep);
+    }
   }
   // Record counts by event from the retained FY2027 ledgers (after repairing
   // the Clark OCR garble and matching short-path NEP categories by path tail).
   assert.equal(aggregates.byEvent.revised.count, 82);
-  assert.equal(aggregates.byEvent.added.count, 58);
+  assert.equal(aggregates.byEvent.added.count, 19);
   assert.equal(aggregates.byEvent.dropped.count, 17);
   assert.equal(aggregates.byEvent.same.count, 281);
-  assert.equal(aggregates.byEvent.unmatched.count, 387);
+  assert.equal(aggregates.byEvent.unmatched.count, 347);
   // Conservation bridge: revised net + added − dropped equals the total-column
   // movement on matched pairs.
   assert.equal(aggregates.bridge.total_net, 180122000);
+  for (const column of Object.values(aggregates.byColumn)) {
+    assert.ok(column.revised_increased >= 0);
+    assert.ok(column.revised_decreased <= 0);
+    assert.equal(column.revised_increased + column.revised_decreased,column.revised_net);
+  }
   // The West Visayas pair must NOT classify as revised: House infra ₱200M vs
   // NEP med-equip ₱100M is one dropped + one added record, not a revision.
   const wvsu = comparison.rows.find(r => r.house.title.startsWith('West Visayas State University Medical Center'));

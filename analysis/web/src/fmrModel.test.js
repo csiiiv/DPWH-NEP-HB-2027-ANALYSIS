@@ -88,6 +88,7 @@ test('overview regions derive project deltas and allocation percent', () => {
   const rows = overviewRegionRows([{id:'I',label:'Region I',nep_php:100,house_php:150,nep_count:3,house_count:4}]);
   assert.equal(rows[0].delta_projects,1);
   assert.equal(rows[0].pct_alloc,50);
+  assert.equal(rows[0].pct_records.toFixed(1),'33.3');
 });
 test('rounding ladder shares sum to one and repeated amounts need five repeats', () => {
   const mixed = [{amount_php:5e6},{amount_php:5e6},{amount_php:1e7},{amount_php:15e6},{amount_php:123}];

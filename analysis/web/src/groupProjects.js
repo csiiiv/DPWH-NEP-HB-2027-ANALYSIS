@@ -2,11 +2,6 @@ import {recordedOffice} from '../../viewers/project_offices.mjs';
 import {regionCandidates} from './regionCandidates.js';
 import {suggestedCounterparts} from './suggestedCounterparts.js';
 
-const DIFFERENCE_TRACES=new Set([
- 'candidate_increase','candidate_decrease',
- 'transparency_gap_then_candidate_increase','transparency_gap_then_candidate_decrease',
-]);
-
 // Same classification as headlineStats rankings for the selected House reading.
 export function matchesInsertionRanking(row,reading,ranking){
  if(!row[reading])return false;
@@ -17,7 +12,8 @@ export function matchesInsertionRanking(row,reading,ranking){
 }
 
 export function matchesDifferenceScope(row){
- return DIFFERENCE_TRACES.has(row.trace);
+ const house=row.third??row.second;
+ return Boolean(row.nep && house && house.amount_php !== row.nep.amount_php);
 }
 
 // Same classification as headlineStats deletions: NEP-only rows split by

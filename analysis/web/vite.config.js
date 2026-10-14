@@ -41,6 +41,7 @@ function retainedFiles() {
           ["/other-analysis/", [root + "/other-analysis"]],
           ["/analysis-nia/", [root + "/analysis-nia"]],
           ["/analysis-hfep/", [root + "/analysis-hfep"]],
+          ["/gps-analysis/", [root + "/gps-analysis"]],
           ["/dbm-other-nep-line-data/", [root + "/dbm-other-nep-line-data"]],
           ["/dbm-nep-data/", [root + "/dbm-nep-data"]],
           [

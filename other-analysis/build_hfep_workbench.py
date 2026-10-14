@@ -2,7 +2,7 @@
 
 Two per-document stages (House Volume I-B annex; NEP executive-proposal annex)
 are joined into one payload, plus a reviewable cross-document comparison. The
-stages are never merged row-to-row: the House annex covers only LGU-side
+stages are never merged row-to-row: the House annex includes national and LGU
 capital outlays while the NEP annex covers all capital outlays, so the
 comparison section offers (a) per-column printed-control reconciliation and
 (b) title-similarity pairs (>=0.95 within the same region and province) that
@@ -370,8 +370,8 @@ def build():
         'funding_columns': list(FUND_COLUMNS),
         'matching_note': (
             'Per-document stages with a reviewable cross-document comparison. The House Volume I-B '
-            'annex covers LGU-side HFEP capital outlays while the NEP Volume II-A annex covers all '
-            'HFEP capital outlays (national and LGU); the populations are complementary, not paired, '
+            'annex and the NEP Volume II-A annex both include national and LGU facilities. Compare '
+            'HFEP capital-outlay schedules at their retained funding-column grain; pairings are provisional, '
             'so rows are matched only as reviewable title-similarity suggestions and never merged.'),
         'compare_note': (
             'Column reconciliation compares printed per-column annex controls (always meaningful). '
@@ -387,8 +387,8 @@ def build():
 def build_comparison(house, nep):
     """Cross-document comparison: column reconciliation plus reviewable pairs.
 
-    The two annexes cover different scopes (House: LGU-side capital outlays;
-    NEP: all capital outlays), so rows are never auto-merged. Instead:
+    Both annexes include national and LGU capital outlays, with differing
+    category allocations. Rows are never auto-merged. Instead:
       * column_controls: per-column printed-control gaps (always meaningful);
       * pairs: title-matched House↔NEP rows at >=0.95 similarity within the
         same (region, province) block, each carrying the similarity score and

@@ -2,6 +2,7 @@ import React, {lazy, Suspense, useEffect, useMemo, useRef, useState} from 'react
 import WorkbenchHeader from './WorkbenchHeader.jsx';
 import SortableTable from './SortableTable.jsx';
 import ShareLink from './ShareLink.jsx';
+import AnalysisValue from './AnalysisValue.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {readRoute, routeHref} from './routes.js';import {siteUrl} from './data.js';
 import {allocationStats, bandRows, compactMoney, comparisonRows, comparisonExportRows, comparisonFilterLabels, csvText,
@@ -71,7 +72,7 @@ function Dialog({label, onClose, children, className = ''}) {
   return <dialog ref={ref} className={`fmr-dialog ${className}`} aria-label={label} onCancel={e => {e.preventDefault(); onClose();}}>{children}</dialog>;
 }
 function SourceButton({source, onPdf, label}) {
-  return <button className="fmr-source-button" onClick={() => onPdf(source)}>{label || `PDF p. ${source.pdf_page}`}<small>Printed p. {source.printed_page}</small></button>;
+  return <button className="fmr-source-button" onClick={() => onPdf(source)}>{label || `PDF p. ${source.pdf_page}`}{source.printed_page != null && <small>Printed p. {source.printed_page}</small>}</button>;
 }
 const FILTER_KEYS = ['q','region','status','direction','method','coordinate','coord_side','extraction','rule','review_flag','text_basis','category','amount','minAmount','maxAmount'];
 // Chips and selects share one label source so a filter always reads the same way.
@@ -122,9 +123,9 @@ function Filters({route, regions, coordinate = false, comparison = false, review
     return <span className="fmr-chip" key={k}>{FILTER_LABELS[k] || k}: {value}<button aria-label={`Remove ${FILTER_LABELS[k] || k} filter`} onClick={() => changeFilters(route,{[k]:null})}>×</button></span>;
   })}</div></>;
 }
-function ViewTabs({route, views, defaultView}) {
-  const selected=route.params.get('view') || defaultView;
-  return <nav className="view-tabs fmr-view-tabs" aria-label="Workspace views">{views.map(([key,label]) => <a key={key} href={routeHref(route.key,{...routeParams(route.params),view:key,page:'1',sort:'',dir:'',...(route.key === 'analysis' ? {status:'',category:'',records:'',rf_project:''} : key === 'review' ? {status:''} : {})})} aria-current={selected === key ? 'page' : undefined}>{label}</a>)}</nav>;
+function ViewTabs({route, views, defaultView, selectedView}) {
+  const selected=selectedView || route.params.get('view') || defaultView;
+  return <nav className="view-tabs fmr-view-tabs" aria-label="Workspace views">{views.map(([key,label]) => <a key={key} href={routeHref(route.key,{...routeParams(route.params),view:key,page:'1',sort:'',dir:'',...(route.key === 'analysis' ? {status:'',category:'',records:'',rf_project:'',group:'',dim:'',table:'',pair:'',direction:'',ranking:'',pdf:'',pdfPage:''} : key === 'review' ? {status:''} : {})})} aria-current={selected === key ? 'page' : undefined}>{label}</a>)}</nav>;
 }
 // PSGC: every project carries whole-corpus reverse-geocodes (PSA 2023) plus
 // optional authored repair candidates on needs_review rows.
@@ -161,7 +162,7 @@ function PsgcPanel({project}) {
     {repairs.length > 0 && <p className="fmr-muted">Repairs are authored hypotheses tied to this printed point; they are proposals, not accepted corrections.</p>}
   </div>;
 }
-function ProjectTable({projects, onSelect, onPdf, exact = false, label = 'FMR projects'}) {
+function ProjectTable({projects, onSelect, onPdf, exact = false, label = 'FMR projects', tableId}) {
   const columns = [
     {key:'title', label:'Project', render:p => <button className="fmr-text-button" onClick={() => onSelect(p.id)}>{p.title}</button>},
     {key:'region', label:'Region'},
@@ -170,7 +171,7 @@ function ProjectTable({projects, onSelect, onPdf, exact = false, label = 'FMR pr
     {key:'map', label:'Map', sortable:false, render:p => <a href={routeHref('map',{project:p.id})}>View on map</a>},
     {key:'source', label:'Source', value:p => p.source.pdf_page, render:p => <SourceButton source={p.source} onPdf={onPdf}/>},
   ];
-  return <SortableTable rows={projects} columns={columns} initialSort={{key:'title',direction:'asc'}} ariaLabel={label} pageSize={25}/>;
+  return <SortableTable tableId={tableId} rows={projects} columns={columns} initialSort={{key:'title',direction:'asc'}} ariaLabel={label} pageSize={25}/>;
 }
 // Compact metadata panel shown inside a dialog when a finding needs evidence context.
 function FactPanel({facts}) {
@@ -321,7 +322,7 @@ function exportComparison(rows,format) {
       r.house?.source.source_pdf,r.house?.source.pdf_page,r.house?.source.printed_page,
       r.delta_php,pctChange(r.house_php,r.nep_php)]));
 }
-function ComparisonResults({rows, route, onPdf}) {
+function ComparisonResults({rows, route, onPdf, tableId}) {
   const sort=routeSort(route,COMPARISON_COLUMNS.map(([k]) => k)), size=50;
   const sorted=sortRows(rows,r => comparisonValue(r,sort?.key),sort);
   const count=Math.max(1,Math.ceil(rows.length/size)), page=Math.min(Math.max(1,Math.floor(Number(route.params.get('page')) || 1)),count);
@@ -332,7 +333,7 @@ function ComparisonResults({rows, route, onPdf}) {
   return <>
     <div className="fmr-result-bar"><span>{rows.length.toLocaleString()} candidate / source-only rows</span><button onClick={() => exportComparison(rows,'csv')}>Export filtered CSV</button><button onClick={() => exportComparison(rows,'json')}>Export filtered JSON</button></div>
     <div className="fmr-mobile-sort"><label>Sort by<select aria-label="Sort by" value={sort?.key || 'none'} onChange={e => setSort(e.target.value === 'none' ? null : {key:e.target.value,direction:sort?.direction || 'desc'})}><option value="none">Source order</option>{COMPARISON_COLUMNS.map(([k,l]) => <option key={k} value={k}>{l}</option>)}</select></label><button onClick={() => setSort({key:sort?.key || 'delta_php',direction:sort?.direction === 'asc' ? 'desc' : 'asc'})}>{sort?.direction === 'asc' ? 'Ascending ↑' : 'Descending ↓'}</button></div>
-    <div className="fmr-mobile-table"><div className="fmr-table-desktop"><SortableTable rows={rows} sort={sort} onSortChange={setSort} page={page} onPageChange={setPage} pageSize={size} ariaLabel="FMR project candidates" columns={[
+    <div className="fmr-mobile-table" tabIndex={-1}><div className="fmr-table-desktop"><SortableTable tableId={tableId} rows={rows} sort={sort} onSortChange={setSort} page={page} onPageChange={setPage} pageSize={size} ariaLabel="FMR project candidates" columns={[
       {key:'title',label:'Project',render:r => <button className="fmr-text-button" onClick={() => navigate(route,{pair:r.id})}>{r.title}<small>{r.nep_id || 'No NEP counterpart'} · {r.house_id || 'No House counterpart'}</small></button>},
       {key:'map',label:'Map',sortable:false,render:r => <a href={routeHref('map',{pair:r.id})}>View on map</a>},
       {key:'region_key',label:'Region'}, {key:'status',label:'Status / method',render:r => <>{statusLabels[r.status]}<small>{methodLabels[r.method] || (r.ambiguous_title ? 'Repeated title; no unique counterpart' : 'No unique counterpart')}</small></>},
@@ -347,17 +348,18 @@ function ComparisonResults({rows, route, onPdf}) {
     </article>)}{!paged.length && <p>No candidate rows match these filters.</p>}<Pagination page={page} count={count} total={rows.length} onPage={setPage} label="FMR project candidates"/></div></div>
   </>;
 }
-function RegionalTable({regions, onPdf, route}) {
-  const rows=overviewRegionRows(regions), sort=route ? routeSort(route,['label','nep_php','house_php','delta_php','pct_alloc','nep_count','house_count','delta_projects']) : undefined;
-  return <SortableTable rows={rows} sort={sort} onSortChange={route ? update => {const next=typeof update === 'function' ? update(sort) : update;navigate(route,{sort:next?.key || 'none',dir:next?.direction || null,page:null});} : undefined} ariaLabel="FMR regional stage comparison" initialSort={{key:'delta_php',direction:'desc'}} columns={[
-    {key:'label',label:'Region',scope:'row',render:r => <a href={routeHref('compare',{view:'projects',region:r.id})}>{r.label}</a>},
-    {key:'nep_count',label:'NEP',band:'records',bandLabel:'Source project counts',align:'num'},
-    {key:'house_count',label:'House',band:'records',bandLabel:'Source project counts',align:'num'},
-    {key:'delta_projects',label:'Difference',band:'records',bandLabel:'Source project counts',align:'num'},
-    {key:'nep_php',label:'NEP (PHP)',divider:true,band:'allocations',bandLabel:'FMR allocations',align:'num',render:r => <div className="fmr-amount-stack"><Amount value={r.nep_php}/><SourceButton source={r.nep_source} onPdf={onPdf}/></div>},
-    {key:'house_php',label:'House (PHP)',band:'allocations',bandLabel:'FMR allocations',align:'num',render:r => <div className="fmr-amount-stack"><Amount value={r.house_php}/><SourceButton source={r.house_source} onPdf={onPdf}/></div>},
-    {key:'delta_php',label:'Difference',band:'allocations',bandLabel:'FMR allocations',align:'num',render:r => <Amount value={r.delta_php} signed/>},
-    {key:'pct_alloc',label:'% change',band:'allocations',bandLabel:'FMR allocations',align:'num',render:r => signedPct(r.pct_alloc)},
+function RegionalTable({regions, onPdf, route, tableId, onOpenGroup}) {
+  const rows=overviewRegionRows(regions), sort=route ? routeSort(route,['label','nep_php','house_php','delta_php','pct_alloc','nep_count','house_count','delta_projects','pct_records']) : undefined;
+  return <SortableTable tableId={tableId} rows={rows} sort={sort} onSortChange={route ? update => {const next=typeof update === 'function' ? update(sort) : update;navigate(route,{sort:next?.key || 'none',dir:next?.direction || null,page:null});} : undefined} ariaLabel="FMR regional stage comparison" initialSort={{key:'delta_php',direction:'desc'}} columns={[
+    {key:'label',label:'Region',scope:'row',render:r => onOpenGroup ? <button className="group-open" onClick={() => onOpenGroup(r.id)}>{r.label}</button> : <a href={routeHref('compare',{view:'projects',region:r.id})}>{r.label}</a>},
+    {key:'nep_count',label:'NEP records',band:'records',bandLabel:'Records',align:'num'},
+    {key:'house_count',label:'House records',band:'records',align:'num'},
+    {key:'delta_projects',label:'Δ records',band:'records',align:'num',render:r => <AnalysisValue value={r.delta_projects} signed/>},
+    {key:'pct_records',label:'% records',band:'records',align:'num',render:r => <AnalysisValue value={r.pct_records} percent/>},
+    {key:'nep_php',label:'NEP (PHP)',divider:true,band:'allocations',bandLabel:'Allocations',align:'num',render:r => <div className="fmr-amount-stack"><AnalysisValue value={r.nep_php}/><SourceButton source={r.nep_source} onPdf={onPdf}/></div>},
+    {key:'house_php',label:'House (PHP)',band:'allocations',bandLabel:'Allocations',align:'num',render:r => <div className="fmr-amount-stack"><AnalysisValue value={r.house_php}/><SourceButton source={r.house_source} onPdf={onPdf}/></div>},
+    {key:'delta_php',label:'Δ allocation (PHP)',band:'allocations',bandLabel:'Allocations',align:'num',render:r => <AnalysisValue value={r.delta_php} signed/>},
+    {key:'pct_alloc',label:'% change',band:'allocations',bandLabel:'Allocations',align:'num',render:r => <AnalysisValue value={r.pct_alloc} percent/>},
   ]}/>;
 }
 function FilteredAnalytics({rows}) {
@@ -461,49 +463,76 @@ function Highlights({data, route, onPdf}) {
     {params.story && !story && <p role="alert">Finding not found. <button onClick={close}>Clear story selection</button></p>}
   </>;
 }
-const analysisViews=[['overview','Overview'],['red_flags','Red flags'],['house_candidates','House-only candidates'],['nep_candidates','NEP-only candidates'],['adjustments','Adjustments'],['coordinates','Coordinates'],['stats','Allocation statistics']];
-const analysisQuestions={overview:'How are FMR allocations distributed across regions?',red_flags:'Which source projects warrant closer geometry, allocation and locality review?',house_candidates:'Which allocations have no unique NEP counterpart?',nep_candidates:'Which allocations have no unique House counterpart?',adjustments:'Which candidate pairs changed allocation?',coordinates:'Which coordinate interpretations still need review?',stats:'Which allocation patterns describe this source population?'};
+// Tab registry uses the canonical cross-workspace keys/labels (rules R8):
+// insertions / deletions / adjustments. Legacy FMR keys (house_candidates,
+// nep_candidates, statistics, chainage) remain as read-only aliases so old
+// links keep resolving; canonical keys render canonical labels.
+const analysisViews=[['overview','Overview'],['insertions','Insertions'],['deletions','Deletions'],['adjustments','Adjustments'],['red_flags','Red flags'],['coordinates','Coordinates'],['stats','Allocation statistics']];
+const analysisQuestions={overview:'How are FMR allocations distributed across regions?',red_flags:'Which source projects warrant closer geometry, allocation and locality review?',insertions:'Which allocations have no unique NEP counterpart?',deletions:'Which allocations have no unique House counterpart?',adjustments:'Which candidate pairs changed allocation?',coordinates:'Which coordinate interpretations still need review?',stats:'Which allocation patterns describe this source population?'};
 function Analysis({data, route, onPdf}) {
-  const params=routeParams(route.params), aliases={insertions:'house_candidates',deletions:'nep_candidates',statistics:'stats',chainage:'coordinates'};
+  const params=routeParams(route.params), aliases={house_candidates:'insertions',nep_candidates:'deletions',statistics:'stats',chainage:'coordinates'};
   const view=aliases[params.view] || params.view || 'overview';
-  const key=view === 'house_candidates' ? 'house' : view === 'nep_candidates' ? 'nep' : params.stage === 'house' ? 'house' : 'nep', stage=data.stages[key];
+  const key=view === 'insertions' ? 'house' : view === 'deletions' ? 'nep' : params.stage === 'house' ? 'house' : 'nep', stage=data.stages[key];
   const projects=useMemo(() => filterProjects(stage.projects,params),
     [stage,params.q,params.region,params.status,params.category,params.extraction,params.rule,params.review_flag,params.text_basis,params.amount,params.minAmount,params.maxAmount]);
   const stats=allocationStats(projects), regional=regionAllocationRows(projects,stage.regions);
   const allRows=useMemo(() => comparisonRows(data),[data]);
-  const candidateStatus=view === 'house_candidates' ? 'house_only' : view === 'nep_candidates' ? 'nep_only' : 'changed';
+  const candidateStatus=view === 'insertions' ? 'house_only' : view === 'deletions' ? 'nep_only' : 'changed';
   const candidateRows=useMemo(() => filterComparisons(allRows,{...params,status:candidateStatus}),
     [allRows,candidateStatus,params.q,params.region,params.direction,params.method,params.coordinate,params.coord_side,params.extraction,params.rule,params.review_flag,params.text_basis]);
-  const candidateView=['house_candidates','nep_candidates','adjustments'].includes(view);
+  const candidateView=['insertions','deletions','adjustments'].includes(view);
   const provenance=useMemo(() => provenanceOptionLists(candidateView
     ? allRows.flatMap(r => [r.nep, r.house].filter(Boolean))
     : stage.projects),[candidateView,allRows,stage]);
   const bands=bandRows(projects,'amount_php',AMOUNT_BANDS), repeats=repeatedAmounts(projects);
   const recordKey=params.records;
+  const candidateRegion=recordKey?.startsWith('candidate-region:') ? recordKey.slice(17) : null;
+  const comparisonRegion=recordKey?.startsWith('compare-region:') ? recordKey.slice(15) : null;
+  const comparisonDrill=Boolean(candidateRegion || comparisonRegion);
+  const drillRows=candidateRegion ? candidateRows.filter(r => r.region_key === candidateRegion)
+    : comparisonRegion ? filterComparisons(allRows,{region:comparisonRegion}) : [];
+  const drillRegion=candidateRegion || comparisonRegion;
+  const drillLabel=data.regions.find(r => r.id === drillRegion)?.label || drillRegion;
+  const dim=params.dim === 'overall' ? 'overall' : 'region';
+  const candidateGroups=data.regions.map(r => {
+    const rows=candidateRows.filter(p => p.region_key === r.id), agg=candidateAggregates(rows);
+    return {id:r.id,label:r.label,count:rows.length,
+      total:rows.reduce((sum,p) => sum+(candidateStatus === 'changed' ? p.delta_php : p[`${key}_php`]),0),
+      increased:agg.increased.amount,decreased:-agg.decreased.amount};
+  }).filter(r => r.count);
   let records=projects, recordLabel='Filtered source projects';
   if(recordKey?.startsWith('region:')) {const region=recordKey.slice(7);records=projects.filter(p => p.region_key === region);recordLabel=stage.regions.find(r => r.key === region)?.label || region;}
   if(recordKey?.startsWith('band:')) {const band=AMOUNT_BANDS[Number(recordKey.slice(5))];records=band ? projects.filter(p => p.amount_php >= band[0] && p.amount_php < band[1]) : [];recordLabel=band?.[2] || 'Unknown amount band';}
   if(recordKey?.startsWith('amount:')) {const amount=Number(recordKey.slice(7));records=projects.filter(p => p.amount_php === amount);recordLabel=money(amount);}
+  const knownRecord=recordKey === 'all' || recordKey?.startsWith('region:') || recordKey?.startsWith('band:') || recordKey?.startsWith('amount:') || comparisonDrill;
   const distributionMax=Math.max(1,...regional.map(r => r.total));
   const drill=records => navigate(route,{records});
   const measured=projects.filter(p => p.status === 'normalized' && p.segments.every(s => Number.isFinite(s.straight_line_distance_km)) && projectLengthKm(p) > 0).map(p => ({...p,distance:projectLengthKm(p)}));
   return <>
     <Hero title="Analysis" actions={candidateView
-      ? <span className="hero-source">{view === 'house_candidates' ? 'House GAB · unmatched source rows' : view === 'nep_candidates' ? 'DBM NEP · unmatched source rows' : 'House GAB ↔ DBM NEP'}</span>
+      ? <span className="hero-source">{view === 'insertions' ? 'House GAB · unmatched source rows' : view === 'deletions' ? 'DBM NEP · unmatched source rows' : 'House GAB ↔ DBM NEP'}</span>
       : <label className="hero-source">Budget source<select value={key} onChange={e => navigate(route,{stage:e.target.value,records:null,category:null,page:null,rf_project:null})}><option value="nep">DBM NEP</option><option value="house">House GAB</option></select></label>}><p>Choose an analytical question, inspect its population, and follow aggregates into source records.</p></Hero>
-    <ViewTabs route={route} defaultView="overview" views={analysisViews}/><h2 className="fmr-question">{analysisQuestions[view] || 'Source records'}</h2>
+    <ViewTabs route={route} selectedView={view} defaultView="overview" views={analysisViews}/><h2 className="fmr-question">{analysisQuestions[view] || 'Source records'}</h2>
     <Filters route={route} regions={candidateView ? data.regions : stage.regions} coordinate={!candidateView} comparison={candidateView} fixedStatus={candidateView ? candidateStatus : undefined} provenance={provenance}/>
     {candidateView ? <><p className="fmr-muted">{candidateStatus === 'changed' ? 'Changed candidate pairs; source amounts and paired differences remain distinct.' : `Unmatched ${stage.label} source rows are candidates, not certified ${key === 'house' ? 'insertions' : 'deletions'}.`}</p>
-      <FilteredAnalytics rows={candidateRows}/><section className="fmr-section"><h3>Regional candidate ranking</h3><SortableTable rows={data.regions.map(r => {const group=candidateRows.filter(p => p.region_key === r.id);return {id:r.id,label:r.label,count:group.length,total:group.reduce((s,p) => s+(candidateStatus === 'changed' ? p.delta_php : p[`${key}_php`]),0)};}).filter(r => r.count)} ariaLabel="FMR candidate regional ranking" initialSort={{key:'total',direction:'desc'}} columns={[
-        {key:'label',label:'Region',scope:'row',render:r => <button className="fmr-text-button" onClick={() => changeFilters(route,{region:r.id})}>{r.label}</button>},{key:'count',label:'Candidate rows',align:'num'},
-        {key:'total',label:candidateStatus === 'changed' ? 'Net paired difference (PHP)' : 'Unmatched allocation (PHP)',align:'num',render:r => <Amount value={r.total} signed={candidateStatus === 'changed'}/>},
-      ]}/></section><ComparisonResults rows={candidateRows} route={route} onPdf={onPdf}/></> : <>
+      <p className="fmr-notice">Each record is one printed project row. Title and scope matching is provisional; OCR, retitling and coordinate differences can prevent pairing. Candidate status does not certify an insertion, deletion or project identity. Adjustments compare proposed House GAB and DBM NEP pairs.</p>
+      <div className="dimension-chips" role="group" aria-label="Break down by">{[['overall','Overall'],['region','Region']].map(([id,label]) => <button key={id} className={dim===id?'active':''} aria-pressed={dim===id} onClick={() => navigate(route,{dim:id,records:null,page:null,table:null})}>{label}</button>)}</div>
+      <FilteredAnalytics rows={candidateRows}/>{dim !== 'overall' && <section className="fmr-section aggregate-table"><h3>Regional candidate ranking</h3><SortableTable tableId={`${view}-by-region`} rows={candidateGroups} ariaLabel="FMR candidate regional ranking" initialSort={{key:'total',direction:'desc'}} columns={[
+        {key:'label',label:'Region',scope:'row',render:r => <button className="group-open" onClick={() => navigate(route,{records:`candidate-region:${r.id}`,page:null,table:null})}>{r.label}</button>},
+        {key:'count',label:'Source records / changed pairs',align:'num'},
+        ...(candidateStatus === 'changed' ? [
+          {key:'increased',label:'Increased (PHP)',align:'num',render:r => <AnalysisValue value={r.increased} signed/>},
+          {key:'decreased',label:'Decreased (PHP)',align:'num',render:r => <AnalysisValue value={r.decreased} signed/>},
+        ] : []),
+        {key:'total',label:candidateStatus === 'changed' ? 'Net paired difference (PHP)' : 'Unmatched allocation (PHP)',align:'num',render:r => <AnalysisValue value={r.total} signed={candidateStatus === 'changed'}/>},
+      ]}/></section>}<ComparisonResults tableId={`${view}-records`} rows={candidateRows} route={route} onPdf={onPdf}/></> : <>
       <div className="fmr-stats"><Stat label="Filtered allocation" value={<Amount value={stats.total}/>} detail={`${stats.count} source projects`}/><Stat label="Median allocation" value={<Amount value={stats.median}/>}/><Stat label="Mean allocation" value={<Amount value={stats.mean == null ? null : Math.round(stats.mean)}/>} detail="Rounded to nearest peso"/><Stat label="Coordinate review" value={stats.review} detail={`${stats.multi} multi-segment projects`}/></div>
       <div className="fmr-result-bar"><span>{stage.label} · {projects.length} matching source projects</span>{view !== 'red_flags' && <><button onClick={() => exportProjects(projects,key)}>Export filtered CSV</button><button onClick={() => drill('all')}>Inspect source records</button></>}</div>
+      {view === 'overview' && <p className="fmr-notice">Distributions describe retained source allocations. Title matching remains provisional; allocation patterns do not establish implementation or misconduct.</p>}
       {view === 'red_flags' ? <FmrRedFlags data={data} stage={stage} projects={projects} route={route} onChange={patch => navigate(route,patch)} onPdf={onPdf} onExportCSV={download} onExportJSON={jsonDownload}/> : view === 'overview' ? <>
-        <section className="fmr-section"><h3>Regional stage comparison</h3><RegionalTable regions={data.regions.filter(r => !params.region || r.id === params.region)} onPdf={onPdf}/><p className="fmr-muted">Printed regional controls retain their full amounts. The selected-source distribution below uses every active project filter.</p></section>
+        <section className="fmr-section"><h3>Regional stage comparison</h3><RegionalTable route={route} tableId="overview-comparison" onOpenGroup={region => navigate(route,{records:`compare-region:${region}`,page:null,table:null})} regions={data.regions.filter(r => !params.region || r.id === params.region)} onPdf={onPdf}/><p className="fmr-muted">Printed regional controls retain their full amounts. The selected-source distribution below uses every active project filter.</p></section>
         <section className="fmr-section"><h3>{stage.label}: filtered allocation distribution</h3><div className="fmr-distribution">{regional.map(r => <button key={r.key} onClick={() => drill(`region:${r.key}`)}><span>{r.label}</span><span className="fmr-bar-track"><span style={{width:`${r.total/distributionMax*100}%`}}/></span><strong><Amount value={r.total}/></strong><small>{r.count} projects · {stats.total ? (r.total/stats.total*100).toFixed(1) : '0.0'}%</small></button>)}</div>
-        <SortableTable rows={regional} ariaLabel="FMR allocation overview" initialSort={{key:'total',direction:'desc'}} columns={[
+        <SortableTable tableId="overview-distribution" rows={regional} ariaLabel="FMR allocation overview" initialSort={{key:'total',direction:'desc'}} columns={[
           {key:'label',label:'Region',scope:'row',render:r => <button className="fmr-text-button" onClick={() => drill(`region:${r.key}`)}>{r.label} → records</button>},
           {key:'count',label:'Projects',align:'num'},{key:'total',label:'Allocation (PHP)',align:'num',render:r => <Amount value={r.total}/>},
           {key:'median',label:'Median (PHP)',align:'num',render:r => <Amount value={r.median}/>},{key:'min',label:'Smallest (PHP)',align:'num',render:r => <Amount value={r.min}/>},{key:'max',label:'Largest (PHP)',align:'num',render:r => <Amount value={r.max}/>},
@@ -511,30 +540,39 @@ function Analysis({data, route, onPdf}) {
         ]}/></section>
       </> : view === 'stats' ? <>
         <p className="fmr-notice">These are descriptive patterns in recorded allocations. Repeated amounts and rounding do not establish pricing, implementation, or misconduct.</p>
-        <section className="fmr-section"><h3>Allocation bands</h3><SortableTable rows={bands} ariaLabel="FMR allocation bands" columns={[
+        <section className="fmr-section"><h3>Allocation bands</h3><SortableTable tableId="statistics-bands" rows={bands} ariaLabel="FMR allocation bands" columns={[
           {key:'label',label:'Allocation band',scope:'row',render:r => <button className="fmr-text-button" onClick={() => drill(`band:${r.id.slice(5)}`)}>{r.label} → records</button>},
           {key:'projects',label:'Source projects',align:'num'},{key:'total_php',label:'Allocation (PHP)',align:'num',render:r => <Amount value={r.total_php}/>},
           {key:'share',label:'Allocation share',align:'num',value:r => stats.total ? r.total_php/stats.total : 0,render:r => `${stats.total ? (r.total_php/stats.total*100).toFixed(1) : '0.0'}%`},
         ]}/></section>
-        <section className="fmr-section"><h3>Rounding pattern</h3><SortableTable rows={roundingLadder(projects)} ariaLabel="Rounding ladder" initialSort={{key:'step',direction:'desc'}} columns={[
+        <section className="fmr-section"><h3>Rounding pattern</h3><SortableTable tableId="statistics-rounding" rows={roundingLadder(projects)} ariaLabel="Rounding ladder" initialSort={{key:'step',direction:'desc'}} columns={[
           {key:'label',label:'Coarsest matching granularity',scope:'row'},{key:'projects',label:'Source projects',align:'num'},{key:'total_php',label:'Allocation (PHP)',align:'num',render:r => <Amount value={r.total_php}/>},{key:'share',label:'Project share',align:'num',render:r => `${(r.share*100).toFixed(1)}%`},
         ]}/></section>
-        <section className="fmr-section"><h3>Repeated exact allocations</h3><p className="fmr-muted">Amounts appearing on at least five source projects.</p><SortableTable rows={repeats} ariaLabel="Repeated amounts" initialSort={{key:'total_php',direction:'desc'}} columns={[
+        <section className="fmr-section"><h3>Repeated exact allocations</h3><p className="fmr-muted">Amounts appearing on at least five source projects.</p><SortableTable tableId="statistics-repeated" rows={repeats} ariaLabel="Repeated amounts" initialSort={{key:'total_php',direction:'desc'}} columns={[
           {key:'amount_php',label:'Exact amount (PHP)',align:'num',render:r => <button className="fmr-text-button" onClick={() => drill(`amount:${r.amount_php}`)}>{money(r.amount_php)} → records</button>},{key:'projects',label:'Source projects',align:'num'},{key:'total_php',label:'Combined allocation (PHP)',align:'num',render:r => <Amount value={r.total_php}/>},
         ]}/></section>
-        <section className="fmr-section"><h3>Largest allocations</h3><p>{stats.total ? (sortRows(projects,p => p.amount_php,{key:'amount_php',direction:'desc'}).slice(0,10).reduce((s,p) => s+p.amount_php,0)/stats.total*100).toFixed(1) : '0.0'}% of this population’s allocation is in its ten largest source projects.</p><ProjectTable projects={sortRows(projects,p => p.amount_php,{key:'amount_php',direction:'desc'}).slice(0,10)} onSelect={id => {window.location.hash=routeHref(key,{node:id});}} onPdf={onPdf}/></section>
+        <section className="fmr-section"><h3>Largest allocations</h3><p>{stats.total ? (sortRows(projects,p => p.amount_php,{key:'amount_php',direction:'desc'}).slice(0,10).reduce((s,p) => s+p.amount_php,0)/stats.total*100).toFixed(1) : '0.0'}% of this population’s allocation is in its ten largest source projects.</p><ProjectTable tableId={`${view}-records`} projects={sortRows(projects,p => p.amount_php,{key:'amount_php',direction:'desc'}).slice(0,10)} onSelect={id => {window.location.hash=routeHref(key,{node:id});}} onPdf={onPdf}/></section>
       </> : view === 'coordinates' ? <>
         <section className="fmr-section"><h3>Coordinate population</h3><div className="fmr-stats"><Stat label="Normalized projects" value={projects.length-stats.review}/><Stat label="Flagged projects" value={stats.review}/><Stat label="Segments" value={projects.reduce((s,p) => s+p.segment_count,0)}/><Stat label="Points" value={projects.reduce((s,p) => s+p.point_count,0)}/></div><p>{stage.summary.original_flagged_projects_resolved ?? stage.summary.original_83_flagged_projects_resolved} originally flagged projects resolved by interpretation across the full stage; {stage.summary.image_reviewed_projects || 0} projects received rendered-cell review.</p>
         <div className="fmr-chips">{coordinateCategories(projects).map(c => <a className="secondary" key={c.id} href={routeHref(key,{view:'review',region:params.region || '',category:c.id})}>{c.label} · {c.count}</a>)}</div><a href={routeHref(key,{view:'review',region:params.region || ''})}>Open scoped coordinate review queue →</a></section>
         <p className="fmr-notice">Coordinates yield straight-line endpoint distances, not road chainage or constructed road length. No construction cost/km is calculated. Flagged coordinate interpretations are excluded from the distance diagnostics; point-only or missing endpoint pairs remain unavailable. The source does not state a datum.</p>
-        <section className="fmr-section"><h3>Endpoint distance diagnostics</h3><p>{measured.length} normalized projects have measurable endpoint pairs; {projects.length-measured.length} projects are excluded. Multiple segments are summed per project solely for this diagnostic.</p><SortableTable rows={measured} ariaLabel="Endpoint distance diagnostics" pageSize={25} initialSort={{key:'distance',direction:'desc'}} columns={[
+        <section className="fmr-section"><h3>Endpoint distance diagnostics</h3><p>{measured.length} normalized projects have measurable endpoint pairs; {projects.length-measured.length} projects are excluded. Multiple segments are summed per project solely for this diagnostic.</p><SortableTable tableId="coordinates-distances" rows={measured} ariaLabel="Endpoint distance diagnostics" pageSize={25} initialSort={{key:'distance',direction:'desc'}} columns={[
           {key:'title',label:'Project',render:p => <a href={routeHref(key,{node:p.id})}>{p.title}</a>},{key:'distance',label:'Summed endpoint distance',align:'num',render:p => formatKm(p.distance)},{key:'segment_count',label:'Segments',align:'num'},
           {key:'amount_php',label:'Project allocation (PHP)',align:'num',render:p => <Amount value={p.amount_php}/>},{key:'map',label:'Map',sortable:false,render:p => <a href={routeHref('map',{project:p.id})}>View on map</a>},{key:'source',label:'Source',value:p => p.source.pdf_page,render:p => <SourceButton source={p.source} onPdf={onPdf}/>},
         ]}/></section>
-      </> : view === 'projects' ? <ProjectTable projects={projects} onSelect={id => {window.location.hash=routeHref(key,{node:id});}} onPdf={onPdf}/> : <p>Unknown view. <a href={routeHref('analysis')}>Open Overview</a>.</p>}
+      </> : view === 'projects' ? <ProjectTable tableId={`${view}-records`} projects={projects} onSelect={id => {window.location.hash=routeHref(key,{node:id});}} onPdf={onPdf}/> : <p>Unknown view. <a href={routeHref('analysis')}>Open Overview</a>.</p>}
     </>}
     <ReadingNote/>
-    {recordKey && <Dialog label="Analysis source records" onClose={() => navigate(route,{records:null})}><div className="fmr-dialog-heading"><h2>{stage.label} · {recordLabel}</h2><button onClick={() => navigate(route,{records:null})}>Close records</button></div><div className="fmr-result-bar"><span>{records.length} source projects · <Amount value={allocationStats(records).total}/></span><button onClick={() => exportProjects(records,key)}>Export filtered CSV</button><a href={routeHref('compare',{view:'projects',region:recordKey.startsWith('region:') ? recordKey.slice(7) : params.region || '',q:params.q || ''})}>Continue in Compare</a></div><ProjectTable projects={records} onSelect={id => {window.location.hash=routeHref(key,{node:id});}} onPdf={onPdf}/></Dialog>}
+    {recordKey && <Dialog label="Analysis source records" onClose={() => navigate(route,{records:null,table:null})}>
+      <div className="fmr-dialog-heading"><h2>{comparisonDrill ? drillLabel : `${stage.label} · ${recordLabel}`}</h2><button onClick={() => navigate(route,{records:null,table:null})}>Close records</button></div>
+      <div className="fmr-chips" aria-label="Record scope"><span className="fmr-chip">Dimension: region</span><span className="fmr-chip">Population: {candidateRegion ? analysisQuestions[view] : comparisonRegion ? 'Both stages · printed regional controls' : stage.label}</span>
+        {candidateRegion && FILTER_KEYS.filter(k => params[k]).map(k => <span className="fmr-chip" key={k}>{FILTER_LABELS[k]}: {params[k]}</span>)}</div>
+      {!knownRecord || (comparisonDrill && !data.regions.some(r => r.id === drillRegion)) ? <p role="alert">Unknown analysis group. Close records and select a group from the table.</p>
+        : comparisonDrill ? <><p>{drillRows.length.toLocaleString('en-PH')} comparison rows · one printed project record per attached side. {comparisonRegion && 'This group uses the full printed regional scope; project filters apply only to the selected-source distribution.'}</p>
+          <ComparisonResults tableId={`${view}-group-records`} rows={drillRows} route={route} onPdf={onPdf}/>
+          <p><a href={routeHref('compare',{...(candidateRegion ? params : {}),view:'projects',region:drillRegion,status:candidateRegion ? candidateStatus : null,records:null,table:null,page:null,sort:null,dir:null,dim:null,pdf:null,pdfPage:null})}>Continue in Compare stages →</a></p></>
+        : <><div className="fmr-result-bar"><span>{records.length} source projects · <Amount value={allocationStats(records).total}/></span><button onClick={() => exportProjects(records,key)}>Export filtered CSV</button><a href={routeHref('compare',{view:'projects',region:recordKey.startsWith('region:') ? recordKey.slice(7) : params.region || '',q:params.q || ''})}>Continue in Compare stages →</a></div><ProjectTable tableId={`${view}-group-records`} projects={records} onSelect={id => {window.location.hash=routeHref(key,{node:id});}} onPdf={onPdf}/></>}
+    </Dialog>}
   </>;
 }
 

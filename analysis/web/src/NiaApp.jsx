@@ -2,13 +2,15 @@ import React, {lazy, Suspense, useEffect, useMemo, useRef, useState} from 'react
 import WorkbenchHeader from './WorkbenchHeader.jsx';
 import SortableTable from './SortableTable.jsx';
 import ShareLink from './ShareLink.jsx';
+import AnalysisValue from './AnalysisValue.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {readRoute, routeHref} from './routes.js';
 import {siteUrl} from './data.js';
+import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringLabels, aiMonitoringProjects, concentration, concentrationRows, fundingGroups, fundingSummary, share} from './niaAnalysis.js';
 import {allocationStats, analysisCandidateRows, bandRows, candidateAggregates, candidateGroupRows, comparisonRows, comparisonFilterLabels,
   csvText, filterComparisons, filterProjects, flagLabels, money, signedMoney, signedPct, pctChange, niaTabs,
   repeatedAmounts, roundingLadder, sourceArithmetic, sourceNode, sourcePath,
-  stageLabels, statusLabels, subprogramAllocationRows, REVIEW_CATEGORIES} from './niaModel.js';
+  stageLabels, statusLabels, subprogramAllocationRows, overviewComparisonRows, overviewGroupRows, REVIEW_CATEGORIES} from './niaModel.js';
 import './Fmr.css';
 import './Nia.css';
 
@@ -27,10 +29,12 @@ function download(name, value, json = false) {
   const a = document.createElement('a'); a.href = url; a.download = name; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-function exportProjects(projects, stage) {
+function exportProjects(projects, stage, aiMonitoring = false) {
   const keys = ['source_id', 'subprogram', 'title', 'amount_php', 'extraction_flags', 'source_pdf', 'pdf_page', 'printed_page'];
-  download(`nia-${stage}-filtered.csv`, csvText(keys, projects.map(p => [p.id, p.subprogram_label, p.title,
-    p.amount_php, (p.extraction_flags || []).join(';'), p.source.source_pdf, p.source.pdf_page, p.source.printed_page])));
+  if (aiMonitoring) keys.push('ai_monitoring_basis');
+  download(`nia-${stage}-${aiMonitoring ? 'ai-monitoring-' : ''}filtered.csv`, csvText(keys, projects.map(p => [p.id, p.subprogram_label, p.title,
+    p.amount_php, (p.extraction_flags || []).join(';'), p.source.source_pdf, p.source.pdf_page, p.source.printed_page,
+    ...(aiMonitoring ? [aiMonitoringBasis(p)] : [])])));
 }
 function exportComparisons(rows) {
   const keys = ['candidate_id', 'status', 'subprogram', 'ambiguous_title', 'delta_php'];
@@ -88,7 +92,7 @@ function Filters({route, subprograms, comparison = false, controls = false, stat
     {clearButton && <button onClick={() => filterChange(route, {q: null, subprogram: null, status: null, minAmount: null, maxAmount: null})}>Clear filters</button>}
   </div>;
 }
-function Table({route, rows, columns, label, paginate = false, initialSort, responsive = false}) {
+function Table({route, rows, columns, label, paginate = false, initialSort, responsive = false, tableId}) {
   const defaultSort = initialSort || {key: columns[0].key, direction: 'asc'};
   const requested = route.params.get('sort');
   const sort = requested === 'none' ? null : columns.some(c => c.key === requested && c.sortable !== false)
@@ -100,7 +104,7 @@ function Table({route, rows, columns, label, paginate = false, initialSort, resp
     <label>Sort results<select aria-label="Sort results" value={sort?.key || 'none'} onChange={e => changeSort(e.target.value === 'none' ? null : {key: e.target.value, direction: sort?.direction || 'desc'})}>
       <option value="none">Source order</option>{columns.filter(c => c.sortable !== false).map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
     </select></label><button disabled={!sort} onClick={() => changeSort({...sort, direction: sort.direction === 'asc' ? 'desc' : 'asc'})}>{sort?.direction === 'asc' ? 'Ascending ↑' : 'Descending ↓'}</button>
-  </div>}<SortableTable rows={rows} columns={columns} ariaLabel={label} sort={sort}
+  </div>}<SortableTable tableId={tableId || (route.key === 'analysis' ? label.toLowerCase().replace(/[^a-z0-9]+/g,'-') : undefined)} rows={rows} columns={columns} ariaLabel={label} sort={sort}
     onSortChange={update => {const next = typeof update === 'function' ? update(sort) : update;
       changeSort(next);}}
     pageSize={paginate ? 50 : undefined} page={page}
@@ -136,11 +140,12 @@ function Home({data, route, onPdf}) {
     <ScopeNote/><section className="fmr-section"><h2>Sub-program controls</h2><Controls data={data} route={route} onPdf={onPdf}/></section>
   </>;
 }
-function ProjectTable({projects, route, stage, onPdf, onSelect}) {
-  return <Table route={route} rows={projects} label="NIA projects" paginate initialSort={{key: 'amount_php', direction: 'desc'}} columns={[
+function ProjectTable({projects, route, stage, onPdf, onSelect, aiMonitoring = false, tableId}) {
+  return <Table tableId={tableId} route={route} rows={projects} label="NIA projects" paginate initialSort={{key: 'amount_php', direction: 'desc'}} columns={[
     {key: 'title', label: 'Project', render: p => onSelect ? <button className="fmr-text-button" onClick={() => onSelect(p.id)}>{p.title}<small>{p.id}</small></button>
       : <a href={href(stage, {node: p.id})}>{p.title}<small className="nia-id">{p.id}</small></a>},
     {key: 'subprogram_label', label: 'Sub-program'},
+    ...(aiMonitoring ? [{key: 'ai_monitoring_basis', label: 'Title basis', value: p => aiMonitoringBasis(p), render: p => aiMonitoringLabels[aiMonitoringBasis(p)]}] : []),
     {key: 'amount_php', label: 'Allocation (PHP)', align: 'num', render: p => money(p.amount_php)},
     {key: 'flags', label: 'Review', sortable: false, render: p => <>{(p.extraction_flags || []).map(f => <span className="fmr-badge" key={f}>{flagLabels[f] || f}</span>)}
       {p.repeated_title && <span className="fmr-badge">Repeated title</span>}{p.numeric_title_tokens?.length > 0 && <span className="fmr-badge">Title numbers</span>}</>},
@@ -229,9 +234,9 @@ function ComparisonToolbar({rows, total, onCsv, name = 'nia-comparison-filtered'
     <ShareLink/><button aria-label="Export filtered CSV" onClick={onCsv}>Export CSV</button>
     <button aria-label="Export filtered JSON" onClick={() => download(`${name}.json`, rows, true)}>Export JSON</button></div>;
 }
-function ComparisonTable({rows, route, onPdf, total, toolbar = true, initialSort}) {
+function ComparisonTable({rows, route, onPdf, total, toolbar = true, initialSort, tableId}) {
   return <>{toolbar && <ComparisonToolbar rows={rows} total={total} onCsv={() => exportComparisons(rows)}/>}
-    <Table route={route} rows={rows} label="NIA project candidates" paginate responsive initialSort={initialSort || {key: 'house_php', direction: 'desc'}} columns={[
+    <Table tableId={tableId} route={route} rows={rows} label="NIA project candidates" paginate responsive initialSort={initialSort || {key: 'house_php', direction: 'desc'}} columns={[
       {key: 'title', label: 'Project', scope: 'row', render: r => <><button className="fmr-text-button" onClick={() => navigate(route, {pair: r.id})}>{r.title}</button>
         <small>{r.subprogram_key}</small><span className="fmr-badge">{statusLabels[r.status]}{r.ambiguous_title && ' · repeated-title ambiguity'}</span></>},
       ...['nep', 'house'].map(side => ({key: `${side}_php`, label: `${side === 'nep' ? 'DBM NEP' : 'House GAB'} (PHP)`, align: 'num', render: r => <>
@@ -273,13 +278,13 @@ function Compare({data, route, rows, onPdf, inlineSource, clearPdf}) {
           <div className={`filters advanced-filters ${moreFilters ? 'open' : ''}`}><label>Candidate status<select aria-label="Candidate status" value={p.status || ''} onChange={e => filterChange(route, {status: e.target.value})}>
             <option value="">All rows</option>{Object.entries(comparisonFilterLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
           </select></label></div></>}
-        {(p.q || p.subprogram || p.status) && <div className="active-filters" aria-label="Active filters">
-          {[['q', 'search'], ['subprogram', 'sub-program'], ...(view === 'projects' ? [['status', 'candidate status']] : [])].filter(([k]) => p[k]).map(([k, name]) => {
+        {(p.q || p.subprogram || p.status || p.program || p.ranking) && <div className="active-filters" aria-label="Active filters">
+          {[['q', 'search'], ['subprogram', 'sub-program'], ...(view === 'projects' ? [['status', 'candidate status'],['program','program group'],['ranking','candidate group']] : [])].filter(([k]) => p[k]).map(([k, name]) => {
             const value = k === 'status' ? comparisonFilterLabels[p[k]] || p[k]
               : k === 'subprogram' ? data.stages.house.subprograms.find(s => s.key === p[k])?.label || p[k] : p[k];
             return <button key={k} aria-label={`Remove ${name} filter`} onClick={() => filterChange(route, {[k]: null})}>{value} ×</button>;
           })}
-          <button onClick={() => filterChange(route, {q: null, subprogram: null, status: null})}>Clear filters</button></div>}
+          <button onClick={() => filterChange(route, {q: null, subprogram: null, status: null,program:null,ranking:null})}>Clear filters</button></div>}
         {view === 'projects' ? <><details className="nia-candidate-summary"><summary>Candidate counts and funding reconciliation</summary>
           <p>{agg.counts.paired} candidate pairs · {agg.counts.house_only} House-only · {agg.counts.nep_only} NEP-only observations.</p>
           <p>Paired difference {signedMoney(agg.paired_delta_php)} + House-only {money(agg.house_only_php)} − NEP-only {money(agg.nep_only_php)} = {signedMoney(agg.net_delta_php)}.</p>
@@ -294,6 +299,7 @@ function Compare({data, route, rows, onPdf, inlineSource, clearPdf}) {
 }
 function Highlights({data, route, rows, onPdf}) {
   const agg = candidateAggregates(rows);
+  const coverage = fundingSummary(rows).sources;
   return <><Hero title="NIA highlights"><p>Findings bounded to the retained irrigation schedules.</p></Hero>
     <section className="fmr-section"><h2>Annex funding rises by {money(data.comparison_summary.delta_php)}</h2>
       <p>NEP has {data.stages.nep.projects.length} project rows; the supplied House annex has {data.stages.house.projects.length}. The controls below account for the full difference.</p>
@@ -303,6 +309,8 @@ function Highlights({data, route, rows, onPdf}) {
         OCR/title changes and repeated titles can leave rows unmatched.</p>
       <a href={href('compare', {view: 'projects', status: 'changed'})}>Inspect changed pairs →</a>
       <p>Paired difference {signedMoney(agg.paired_delta_php)} + House-only {money(agg.house_only_php)} − NEP-only {money(agg.nep_only_php)} = {signedMoney(agg.net_delta_php)}.</p>
+      <p>The provisional pairs cover {(coverage.nep.allocation_share * 100).toFixed(1)}% of NEP allocation and {(coverage.house.allocation_share * 100).toFixed(1)}% of House allocation.
+        {' '}<a href={href('analysis', {view: 'candidates'})}>See funding reconciliation and pairing coverage →</a></p>
       <a href={href('compare', {view: 'projects'})}>Inspect all candidate observations →</a></section>
     <section className="fmr-section"><h2>Agency scope extends beyond the annex</h2>
       <p>The House agency table adds a CARP-linked ₱698,067,000 row to Operations. Its ₱45,172,024,000 agency total covers a broader scope.</p>
@@ -350,21 +358,164 @@ function CandidateAnalysis({data, route, rows, onPdf, view}) {
     <p className="notice">{adjustment ? 'These are amount differences between provisional House and NEP pairs. NIA has one retained House schedule; this view does not establish changes between House readings.'
       : `${side === 'house' ? 'House rows without a unique NEP counterpart are insertion candidates' : 'NEP rows without a unique House counterpart are deletion candidates'}. Title differences, OCR, and repeated titles can prevent pairing. Candidate status does not certify ${side === 'house' ? 'an insertion' : 'a deletion'}.`}</p>
     {dim !== 'overall' && <div className="aggregate-table"><h3>Totals by {dim === 'program' ? 'program' : 'sub-program'}</h3>
-      <Table route={route} rows={groups} label="NIA candidate group totals" initialSort={{key: 'amount_php', direction: 'desc'}} columns={[
+      <Table tableId={`${view}-by-${dim}`} route={route} rows={groups} label="NIA candidate group totals" initialSort={{key: 'amount_php', direction: 'desc'}} columns={[
         {key: 'label', label: 'Group', scope: 'row', render: g => <button className="group-open" onClick={() => navigate(route, {group: g.id, page: null})}>{g.label}</button>},
         {key: 'count', label: adjustment ? 'Changed pairs' : 'Source rows', align: 'num'},
-        {key: 'amount_php', label: adjustment ? 'Net paired difference (PHP)' : 'Source allocation (PHP)', align: 'num', value: g => Math.abs(g.amount_php), render: g => adjustment ? signedMoney(g.amount_php) : money(g.amount_php)},
+        ...(adjustment ? [
+          {key:'increased_php',label:'Increased (PHP)',align:'num',render:g => <AnalysisValue value={g.increased_php} signed/>},
+          {key:'decreased_php',label:'Decreased (PHP)',align:'num',render:g => <AnalysisValue value={g.decreased_php} signed/>},
+        ] : []),
+        {key: 'amount_php', label: adjustment ? 'Net paired difference (PHP)' : 'Source allocation (PHP)', align: 'num', value: g => Math.abs(g.amount_php), render: g => <AnalysisValue value={g.amount_php} signed={adjustment}/>},
         {key: 'records', label: 'Supporting records', sortable: false, render: g => <button className="group-open" onClick={() => navigate(route, {group: g.id, page: null})}>Show {g.count} rows</button>},
       ]}/></div>}
     <h3>{adjustment ? 'Changed pairs' : 'Ranked candidate records'}</h3>
-    <div className="comparison-table nia-analysis-ledger"><ComparisonTable rows={filtered} route={route} onPdf={onPdf} initialSort={initialSort}/></div>
+    <div className="comparison-table nia-analysis-ledger"><ComparisonTable tableId={`${view}-records`} rows={filtered} route={route} onPdf={onPdf} initialSort={initialSort}/></div>
     <p><a href={href('compare', {view: 'projects', q: p.q || '', subprogram: p.subprogram || '', status: adjustment ? 'changed' : `${side}_only`})}>Continue in Compare stages →</a></p>
     {p.group && <Dialog label="NIA analysis group records" onClose={() => navigate(route, {group: null})}>
-      {group ? <><h3>{group.label}</h3><p>{group.count} {adjustment ? 'changed pairs' : 'source rows'} · {adjustment ? signedMoney(group.amount_php) : money(group.amount_php)}</p>
-        <div className="comparison-table nia-analysis-ledger"><ComparisonTable rows={groupedRows} route={route} onPdf={onPdf} initialSort={initialSort}/></div></>
+      {group ? <><h3>{group.label}</h3><div className="fmr-chips" aria-label="Record scope"><span className="fmr-chip">Dimension: {dim}</span><span className="fmr-chip">Population: {view}</span><span className="fmr-chip">Ranking: {p.ranking || p.direction || 'all'}</span>{['q','subprogram'].filter(k => p[k]).map(k => <span className="fmr-chip" key={k}>{k}: {p[k]}</span>)}</div><p>{group.count} {adjustment ? 'changed pairs' : 'source rows'} · {adjustment ? signedMoney(group.amount_php) : money(group.amount_php)}</p>
+        <div className="comparison-table nia-analysis-ledger"><ComparisonTable tableId={`${view}-group-records`} rows={groupedRows} route={route} onPdf={onPdf} initialSort={initialSort}/></div><p><a href={href('compare', {view:'projects',q:p.q,subprogram:dim === 'subprogram' ? group.id : p.subprogram,program:dim === 'program' ? group.id : null,status:adjustment ? p.direction === 'increased' ? 'increased' : p.direction === 'decreased' ? 'decreased' : 'changed' : `${side}_only`,ranking:p.ranking})}>Continue in Compare stages →</a></p></>
         : <p role="alert">Unknown analysis group or no records in the current filter scope.</p>}
     </Dialog>}
   </section>;
+}
+function FundingAnalysis({data, rows, route}) {
+  const summary = fundingSummary(rows), groups = fundingGroups(rows, data.subprogram_controls);
+  const coverage = Object.entries(summary.sources).map(([id, source]) => ({id, label: stageLabels[id], ...source}));
+  const percent = value => value == null ? '—' : `${(value * 100).toFixed(1)}%`;
+  return <><section className="fmr-section"><h2>Funding reconciliation</h2>
+    <p>For the filtered observations: paired difference {signedMoney(summary.paired_delta_php)} + House-only {money(summary.house_only_php)} − NEP-only {money(summary.nep_only_php)} = {signedMoney(summary.net_delta_php)}.</p>
+    <p>Source-only amounts remain unmatched allocations; they are not confirmed additions or removals.</p>
+    <Table route={route} rows={groups} label="NIA funding reconciliation" initialSort={{key: 'delta_php', direction: 'desc'}} columns={[
+      {key: 'label', label: 'Sub-program', scope: 'row'},
+      {key: 'nep_php', label: 'NEP (PHP)', align: 'num', render: g => money(g.nep_php)},
+      {key: 'house_php', label: 'House (PHP)', align: 'num', render: g => money(g.house_php)},
+      {key: 'paired_delta_php', label: 'Paired difference (PHP)', align: 'num', render: g => signedMoney(g.paired_delta_php)},
+      {key: 'house_only_php', label: 'House-only (PHP)', align: 'num', render: g => money(g.house_only_php)},
+      {key: 'nep_only_php', label: 'NEP-only (PHP)', align: 'num', render: g => money(g.nep_only_php)},
+      {key: 'delta_php', label: 'Net difference (PHP)', align: 'num', render: g => signedMoney(g.delta_php)},
+    ]}/></section>
+    <section className="fmr-section"><h2>Pairing coverage</h2>
+      <p>Coverage uses the filtered source rows and their allocations. A provisional title pair does not certify project identity.</p>
+      <Table route={route} rows={coverage} label="NIA pairing coverage" columns={[
+        {key: 'label', label: 'Source', scope: 'row'},
+        {key: 'count', label: 'Source rows', align: 'num'},
+        {key: 'paired_count', label: 'Paired rows', align: 'num'},
+        {key: 'row_share', label: 'Row coverage', align: 'num', render: r => percent(r.row_share)},
+        {key: 'total', label: 'Allocation (PHP)', align: 'num', render: r => money(r.total)},
+        {key: 'paired_amount_php', label: 'Paired allocation (PHP)', align: 'num', render: r => money(r.paired_amount_php)},
+        {key: 'allocation_share', label: 'Allocation coverage', align: 'num', render: r => percent(r.allocation_share)},
+      ]}/></section></>;
+}
+function ConcentrationAnalysis({projects, stage, route, onPdf}) {
+  const overall = concentration(projects), groups = concentrationRows(projects, stage.subprograms);
+  const selected = route.params.get('records');
+  const group = selected === 'top10' ? overall : groups.find(g => `top10:${g.id}` === selected);
+  const percent = value => value == null ? '—' : `${(value * 100).toFixed(1)}%`;
+  return <section className="fmr-section"><h2>Largest-project concentration</h2>
+    <p>The largest {overall.top.length} filtered source rows account for {money(overall.top_amount_php)} ({percent(overall.top_share)} of the filtered allocation).
+      {' '}<button className="group-open" onClick={() => navigate(route, {records: 'top10'})}>Inspect largest rows</button></p>
+    <p>Each sub-program below uses its own largest ten rows, or all rows when fewer than ten remain. Concentration describes allocation, not implementation or service area.</p>
+    <Table route={route} rows={groups} label="NIA allocation concentration" initialSort={{key: 'top_share', direction: 'desc'}} columns={[
+      {key: 'label', label: 'Sub-program', scope: 'row'},
+      {key: 'count', label: 'Source rows', align: 'num'},
+      {key: 'total', label: 'Allocation (PHP)', align: 'num', render: g => money(g.total)},
+      {key: 'top_amount_php', label: 'Largest ten allocation (PHP)', align: 'num', render: g => money(g.top_amount_php)},
+      {key: 'top_share', label: 'Allocation share', align: 'num', render: g => percent(g.top_share)},
+      {key: 'records', label: 'Supporting records', sortable: false, render: g => <button className="group-open" onClick={() => navigate(route, {records: `top10:${g.id}`})}>Show {g.top.length} rows</button>},
+    ]}/>
+    {selected?.startsWith('top10') && <Dialog label="NIA concentration records" onClose={() => navigate(route, {records: null})}>
+      {group ? <><h3>{group.label || 'Largest filtered source allocations'}</h3>
+        <p>{money(group.top_amount_php)} · {percent(group.top_share)} of {money(group.total)}</p>
+        <button onClick={() => exportProjects(group.top, stage.key)}>Export largest rows CSV</button>
+        <ProjectTable tableId="statistics-group-records" projects={group.top} stage={stage.key} route={route} onPdf={onPdf}/></>
+        : <p role="alert">No concentration records in the current filter scope.</p>}
+    </Dialog>}
+  </section>;
+}
+function AiMonitoringAnalysis({data, stage, rows, route, onPdf}) {
+  const p = paramsOf(route), projects = aiMonitoringProjects(filterProjects(stage.projects, p), p);
+  const stats = allocationStats(projects), annexTotal = allocationStats(stage.projects).total;
+  const variants = projects.filter(project => aiMonitoringBasis(project) === 'ocr_variant');
+  const insertions = aiMonitoringInsertions(rows, p), insertionStats = allocationStats(insertions.map(r => r.house));
+  const houseStats = allocationStats(aiMonitoringProjects(filterProjects(data.stages.house.projects, p), p));
+  const percent = (value, total) => total ? `${(value / total * 100).toFixed(1)}%` : '—';
+  const sourceRows = Object.values(data.stages).map(s => {
+    const scoped = aiMonitoringProjects(filterProjects(s.projects, p), p), totals = allocationStats(scoped);
+    return {id: s.key, label: s.label, count: totals.count, total_php: totals.total,
+      annex_share: share(totals.total, allocationStats(s.projects).total)};
+  });
+  return <><section className="analysis-section"><h2>AI monitoring systems related allocations</h2>
+    <p>Projects whose titles mention AI monitoring or AI satellite-assisted monitoring. Amounts cover the whole irrigation project; the schedules do not itemize the monitoring component.</p>
+    <Filters route={route} subprograms={stage.subprograms} clearButton={false}/>
+    <div className="analysis-controls"><label>Title basis<select aria-label="AI monitoring title basis" value={p.aiBasis || 'all'}
+      onChange={e => filterChange(route, {aiBasis: e.target.value})}>
+      <option value="all">All AI monitoring related rows</option>{Object.entries(aiMonitoringLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+    </select></label><button onClick={() => filterChange(route, {q: null, subprogram: null, status: null, aiBasis: null, minAmount: null, maxAmount: null})}>Clear filters</button></div>
+    <div className="fmr-stats"><Stat label="Related project allocation" value={money(stats.total)} detail={`${stats.count} filtered source rows`}/>
+      <Stat label="Share of source annex" value={annexTotal ? `${(stats.total / annexTotal * 100).toFixed(1)}%` : '—'} detail="Full annex allocation denominator"/>
+      <Stat label="Explicit AI wording" value={projects.length - variants.length} detail="Includes satellite-assisted monitoring"/>
+      <Stat label="NEP OCR variants" value={variants.length} detail={money(allocationStats(variants).total)}/></div>
+    <details className="fmr-method"><summary>Title inclusion and source evidence</summary>
+      <p>Include explicit AI monitoring wording, including satellite-assisted titles. The 59 retained NEP titles with “Al”, “AL” or “AT” before “Monitoring” read “AI” in the rendered annex. They are included and labeled separately; original titles and candidate pairings remain intact.</p>
+      <p>Remote monitoring, intermediate monitoring, gauges, sensors and CCTV without AI wording are outside this view. Source links below open the original records and PDF pages.</p>
+    </details>
+  </section>
+  <section className="fmr-section" aria-label="AI monitoring insertion summary"><h2>House AI monitoring insertion candidates</h2>
+    <p>House-only AI monitoring rows under the current filters, regardless of the selected budget source. OCR/title differences and repeated titles can prevent a NEP counterpart from pairing; these remain provisional insertion candidates.</p>
+    <div className="fmr-stats"><Stat label="Insertion candidates" value={insertionStats.count} detail="Unmatched House project rows"/>
+      <Stat label="Candidate House allocation" value={money(insertionStats.total)} detail="Whole project allocations"/>
+      <Stat label="Share of House AI projects" value={percent(insertionStats.count, houseStats.count)} detail={`Of ${houseStats.count} filtered House AI rows`}/>
+      <Stat label="Share of House AI allocation" value={percent(insertionStats.total, houseStats.total)} detail={`Of ${money(houseStats.total)}`}/></div>
+    <p>{insertions.filter(r => r.ambiguous_title).length} candidates have repeated-title ambiguity.</p>
+    <button className="group-open" onClick={() => navigate(route, {records: 'ai_insertions', page: null})}>Inspect insertion candidates</button>
+    {p.records === 'ai_insertions' && <Dialog label="NIA AI monitoring insertion candidates" onClose={() => navigate(route, {records: null})}>
+      <p>{insertionStats.count} House-only candidates · {money(insertionStats.total)} in whole project allocations.</p>
+      <div className="comparison-table nia-analysis-ledger"><ComparisonTable rows={insertions} route={route} onPdf={onPdf} initialSort={{key: 'house_php', direction: 'desc'}}/></div>
+    </Dialog>}
+  </section>
+  <section className="fmr-section"><h2>AI monitoring related allocations by source</h2>
+    <p>Both schedules use the current filters. These are totals of related project allocations in each source.</p>
+    <Table route={route} rows={sourceRows} label="NIA AI monitoring source totals" columns={[
+      {key: 'label', label: 'Source', scope: 'row'}, {key: 'count', label: 'Projects', align: 'num'},
+      {key: 'total_php', label: 'Project allocation (PHP)', align: 'num', render: r => money(r.total_php)},
+      {key: 'annex_share', label: 'Share of source annex', align: 'num', render: r => r.annex_share == null ? '—' : `${(r.annex_share * 100).toFixed(1)}%`},
+    ]}/></section>
+  <section className="fmr-section"><h2>Supporting AI monitoring project records</h2>
+    <div className="fmr-result-bar"><span>{stats.count} matching rows · {money(stats.total)}</span>
+      <button onClick={() => exportProjects(projects, stage.key, true)}>Export filtered CSV</button></div>
+    <ProjectTable projects={projects} route={route} stage={stage.key} onPdf={onPdf} aiMonitoring/>
+  </section></>;
+}
+function OverviewComparison({data, route, rows, onPdf, stage, projects}) {
+  const p=paramsOf(route), dim=['overall','subprogram','program'].includes(p.dim) ? p.dim : 'subprogram';
+  const groups=overviewComparisonRows(rows,p,data.stages.house.subprograms,dim);
+  const comparisonGroup=p.group?.startsWith('overview:') ? groups.find(g => g.id === p.group.slice(9)) : null;
+  const sourceKey=p.records?.startsWith('overview-source:') ? p.records.slice(16) : null;
+  const sourceGroup=sourceKey && stage.subprograms.find(s => s.key === sourceKey);
+  const sourceRows=sourceGroup ? projects.filter(r => r.subprogram_key === sourceKey) : [];
+  const close=() => navigate(route,{group:null,records:null,table:null});
+  return <><section className="fmr-section"><h2>NEP → House by {dim === 'program' ? 'program group' : dim === 'overall' ? 'all records' : 'sub-program'}</h2>
+    <div className="dimension-chips" role="group" aria-label="Break down by">{[['overall','Overall'],['subprogram','Sub-program'],['program','Program']].map(([id,label]) => <button key={id} className={dim===id?'active':''} aria-pressed={dim===id} onClick={() => navigate(route,{dim:id,group:null,records:null,page:null,sort:null,dir:null,table:null})}>{label}</button>)}</div>
+    <p className="fmr-notice">This distribution uses project records from the comparison ledger, with the same source filters on both stages. Each side counts under its own printed group. Proposed title matches do not certify identity; allocation patterns do not establish implementation or misconduct.</p>
+    <Table tableId={`overview-comparison-${dim}`} route={route} rows={groups} label="NIA stage allocation distribution" initialSort={{key:'delta_php',direction:'desc'}} columns={[
+      {key:'label',label:'Group',scope:'row',render:g => <button className="group-open" onClick={() => navigate(route,{group:`overview:${g.id}`,records:null,page:null,table:null})}>{g.label}</button>},
+      {key:'nep_count',label:'NEP records',band:'records',bandLabel:'Records',align:'num'},
+      {key:'house_count',label:'House records',band:'records',align:'num'},
+      {key:'delta_records',label:'Δ records',band:'records',align:'num',render:g => <AnalysisValue value={g.delta_records} signed/>},
+      {key:'pct_records',label:'% records',band:'records',align:'num',render:g => <AnalysisValue value={g.pct_records} percent/>},
+      {key:'nep_php',label:'NEP allocation (PHP)',band:'allocations',bandLabel:'Allocations',divider:true,align:'num',render:g => <AnalysisValue value={g.nep_php}/>},
+      {key:'house_php',label:'House allocation (PHP)',band:'allocations',align:'num',render:g => <AnalysisValue value={g.house_php}/>},
+      {key:'delta_php',label:'Δ allocation (PHP)',band:'allocations',align:'num',render:g => <AnalysisValue value={g.delta_php} signed/>},
+      {key:'pct_alloc',label:'% allocation',band:'allocations',align:'num',render:g => <AnalysisValue value={g.pct_alloc} percent/>},
+    ]}/></section>
+    {(p.group?.startsWith('overview:') || sourceKey) && <Dialog label="NIA overview records" onClose={close}>
+      <div className="fmr-chips" aria-label="Record scope"><span className="fmr-chip">Dimension: {sourceKey ? 'sub-program' : dim}</span><span className="fmr-chip">Population: {sourceKey ? stageLabels[stage.key] : 'NEP ↔ House source records'}</span>{['q','subprogram','status','minAmount','maxAmount'].filter(k => p[k]).map(k => <span className="fmr-chip" key={k}>{k}: {p[k]}</span>)}</div>
+      {sourceGroup ? <><h3>{sourceGroup.label}</h3><p>{sourceRows.length.toLocaleString('en-PH')} printed project records · {money(allocationStats(sourceRows).total)}</p><button onClick={() => exportProjects(sourceRows,stage.key)}>Export group CSV</button><ProjectTable tableId="overview-group-records" projects={sourceRows} stage={stage.key} route={route} onPdf={onPdf}/></>
+        : comparisonGroup ? <><h3>{comparisonGroup.label}</h3><p>Only source records counted in this group's filtered distribution appear. Counterparts outside this group are omitted.</p><ComparisonTable tableId="overview-group-records" rows={overviewGroupRows(rows,p,dim,comparisonGroup.id)} route={route} onPdf={onPdf}/></>
+        : <p role="alert">Unknown overview group or no records in the current filter scope. Close and choose a group from the table.</p>}
+      {(sourceGroup || comparisonGroup) && <p><a href={href('compare',{view:'projects',q:p.q,subprogram:sourceKey || (dim === 'subprogram' ? comparisonGroup.id : p.subprogram),program:dim === 'program' ? comparisonGroup?.id : null})}>Continue in Compare stages →</a></p>}
+    </Dialog>}
+  </>;
 }
 function Analysis({data, route, rows, onPdf}) {
   const p = paramsOf(route), stageKey = p.stage === 'house' ? 'house' : 'nep', stage = data.stages[stageKey];
@@ -372,27 +523,36 @@ function Analysis({data, route, rows, onPdf}) {
   const subprograms = subprogramAllocationRows(projects, stage.subprograms);
   const max = Math.max(1, ...subprograms.map(s => s.total));
   const views = [['overview', 'Overview'], ['insertions', 'Insertions'], ['deletions', 'Deletions'], ['adjustments', 'Adjustments'],
-    ['stats', 'Statistics'], ['candidates', 'Candidates'], ['controls', 'Agency controls']];
+    ['stats', 'Statistics'], ['ai_monitoring', 'AI monitoring'], ['candidates', 'Candidates'], ['controls', 'Agency controls']];
   return <div className="headline-analysis nia-analysis"><section className="hero"><p className="eyebrow">NIA · FY2027</p><h1>NIA allocation analysis</h1>
     <p>Recorded allocations, candidate insertions and deletions, and paired amount adjustments.</p>
-    <div className="hero-actions">{['overview', 'stats'].includes(view) ? <label className="hero-source">Budget source<select aria-label="Analysis budget source" value={stageKey}
+    <div className="hero-actions">{['overview', 'stats', 'ai_monitoring'].includes(view) ? <label className="hero-source">Budget source<select aria-label="Analysis budget source" value={stageKey}
       onChange={e => navigate(route, {stage: e.target.value, page: null})}>{Object.entries(stageLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
       : <span className="nia-analysis-basis">{view === 'insertions' ? 'House GAB · unmatched source rows' : view === 'deletions' ? 'DBM NEP · unmatched source rows' : view === 'controls' ? 'House agency table' : 'House GAB ↔ DBM NEP'}</span>}<ShareLink/></div></section>
     <Tabs route={route} defaultKey="overview" items={views} ariaLabel="Analysis views"
-      reset={{status: null, direction: null, ranking: null, sort: null, dir: null, group: null, pair: null}}/>
+      reset={{status: null, direction: null, ranking: null, aiBasis: null, sort: null, dir: null, group: null, pair: null, dim: null, table: null, pdf: null, pdfPage: null}}/>
+    <h2 className="fmr-question">{{overview:'How are recorded NIA allocations distributed across sub-programs?',
+      insertions:'Which House project records have no unique NEP counterpart?',
+      deletions:'Which NEP project records have no unique House counterpart?',
+      adjustments:'Which provisional pairs have different House and NEP allocations?',
+      stats:'Which descriptive allocation patterns appear in this source?',
+      ai_monitoring:'Which project records explicitly fund AI monitoring?',
+      candidates:'How does provisional pairing explain the annex funding difference?',
+      controls:'How does the House annex reconcile with agency controls?'}[view] || 'Source records'}</h2>
     {['overview', 'stats'].includes(view) ? <><Filters route={route} subprograms={stage.subprograms}/>
       <div className="fmr-stats"><Stat label="Filtered allocation" value={money(stats.total)} detail={`${stats.count} source rows`}/>
         <Stat label="Median" value={money(stats.median)}/><Stat label="Mean" value={money(stats.mean == null ? null : Math.round(stats.mean))} detail="Nearest peso"/>
         <Stat label="Largest" value={money(stats.max)}/></div>
-      {view === 'overview' ? <section className="fmr-section"><h2>Allocation by sub-program</h2>
-        <div className="fmr-distribution">{subprograms.map(s => <a className="nia-distribution-row" key={s.key} href={href(stageKey, {...p, subprogram: s.key, stage: '', view: 'projects', page: '', sort: '', dir: ''})}>
+      {view === 'overview' ? <><OverviewComparison data={data} route={route} rows={rows} onPdf={onPdf} stage={stage} projects={projects}/><section className="fmr-section"><h2>Allocation by sub-program</h2>
+        <div className="fmr-distribution">{subprograms.map(s => <button className="nia-distribution-row" key={s.key} onClick={() => navigate(route,{records:`overview-source:${s.key}`,group:null,page:null,table:null})}>
           <span>{s.label}</span><span className="fmr-bar-track"><span style={{width: `${s.total / max * 100}%`}}/></span>
-          <strong>{money(s.total)}</strong><small>{s.count} source rows</small></a>)}</div>
-        <Table route={route} rows={subprograms} label="NIA allocation overview" columns={[
-          {key: 'label', label: 'Sub-program'}, {key: 'count', label: 'Projects', align: 'num'},
+          <strong>{money(s.total)}</strong><small>{s.count} source rows</small></button>)}</div>
+        <Table tableId="overview-distribution" route={route} rows={subprograms} label="NIA allocation overview" columns={[
+          {key: 'label', label: 'Sub-program',scope:'row',render:s => <button className="group-open" onClick={() => navigate(route,{records:`overview-source:${s.key}`,group:null,page:null,table:null})}>{s.label}</button>}, {key: 'count', label: 'Projects', align: 'num'},
           {key: 'total', label: 'Allocation (PHP)', align: 'num', render: s => money(s.total)},
+          {key: 'share', label: 'Allocation share', align: 'num', value: s => share(s.total, stats.total), render: s => `${(share(s.total, stats.total) * 100).toFixed(1)}%`},
           {key: 'median', label: 'Median (PHP)', align: 'num', render: s => money(s.median)},
-        ]}/></section> : <>
+        ]}/></section></> : <>
         <p className="fmr-notice">Allocation patterns describe the recorded budget. Repeated amounts and rounding do not establish pricing, implementation, or misconduct.</p>
         <section className="fmr-section"><h2>Allocation bands</h2><Table route={route} rows={bandRows(projects)} label="NIA allocation bands" columns={[
           {key: 'label', label: 'Band'}, {key: 'projects', label: 'Projects', align: 'num'},
@@ -407,7 +567,8 @@ function Analysis({data, route, rows, onPdf}) {
           <Table route={route} rows={repeatedAmounts(projects)} label="NIA repeated amounts" columns={[
             {key: 'amount_php', label: 'Amount (PHP)', align: 'num', render: r => money(r.amount_php)},
             {key: 'projects', label: 'Projects', align: 'num'}, {key: 'total_php', label: 'Combined allocation (PHP)', align: 'num', render: r => money(r.total_php)},
-          ]}/></section></>}
+          ]}/></section>
+        <ConcentrationAnalysis projects={projects} stage={stage} route={route} onPdf={onPdf}/></>}
       {view === 'overview' && <section className="analysis-section"><h2>Explore further</h2><div className="analysis-crosslinks">
         <a href={href('analysis', {view: 'insertions', subprogram: p.subprogram || ''})}>Insertion candidates · unmatched House records →</a>
         <a href={href('analysis', {view: 'deletions', subprogram: p.subprogram || ''})}>Deletion candidates · unmatched NEP records →</a>
@@ -415,9 +576,11 @@ function Analysis({data, route, rows, onPdf}) {
       </div></section>}
       <section className="fmr-section"><h2>Supporting source records</h2><button onClick={() => exportProjects(projects, stageKey)}>Export filtered CSV</button>
         <ProjectTable projects={projects} route={route} stage={stageKey} onPdf={onPdf}/></section>
-    </> : ['insertions', 'deletions', 'adjustments'].includes(view) ? <CandidateAnalysis data={data} route={route} rows={rows} onPdf={onPdf} view={view}/>
+    </> : view === 'ai_monitoring' ? <AiMonitoringAnalysis data={data} stage={stage} rows={rows} route={route} onPdf={onPdf}/>
+      : ['insertions', 'deletions', 'adjustments'].includes(view) ? <CandidateAnalysis data={data} route={route} rows={rows} onPdf={onPdf} view={view}/>
       : view === 'candidates' ? <><Filters route={route} subprograms={stage.subprograms} comparison/>
-      <p>{data.matching_note}</p><div className="comparison-table nia-analysis-ledger"><ComparisonTable rows={filterComparisons(rows, p)} total={rows.length} route={route} onPdf={onPdf}/></div></>
+      <p>{data.matching_note}</p><FundingAnalysis data={data} rows={filterComparisons(rows, p)} route={route}/>
+      <div className="comparison-table nia-analysis-ledger"><ComparisonTable rows={filterComparisons(rows, p)} total={rows.length} route={route} onPdf={onPdf}/></div></>
       : view === 'controls' ? <section className="fmr-section"><h2>House agency-table reconciliation</h2>
         <p>Agency controls provide scope context. Development and Operations include the agency-only CARP row. Context-only rows have no annex difference.</p>
         <Table route={route} rows={data.agency_controls.map((c, i) => ({...c, id: i}))} label="NIA agency controls" columns={[
@@ -462,8 +625,10 @@ export default function NiaApp() {
   const onPdf = source => navigate(route, {pdf: source.source_pdf, pdfPage: source.pdf_page, pair: null, group: null,
     ...(route.key === 'compare' ? {panel: 'pdf'} : {})});
   const pdf = route.params.get('pdf'), page = Number(route.params.get('pdfPage'));
-  const knownPdf = data && Object.values(data.documents).some(d => d.path === pdf);
-  const validPdf = knownPdf && Number.isInteger(page) && page > 0 && page <= (pdf === data.documents.nep.path ? 30 : 982);
+  const knownDoc = data && Object.values(data.documents).find(d => d.path === pdf);
+  // Page bounds come from the documents registry (page_count), not literals.
+  const validPdf = knownDoc && Number.isInteger(page) && page > 0
+    && page <= (knownDoc.page_count ?? Infinity);
   const clearPdf = () => navigate(route, {pdf: null, pdfPage: null, panel: null});
   const inlineSource = validPdf && route.key === 'compare' ? {source_pdf: pdf, pdf_page: page} : null;
   return <><a className="fmr-skip" href="#nia-content" onClick={e => {e.preventDefault(); document.getElementById('nia-content')?.focus();}}>Skip to content</a>

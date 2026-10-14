@@ -1,6 +1,7 @@
 import {recordedOffice} from '../../viewers/project_offices.mjs';
 import {regionCandidates} from './regionCandidates.js';
 import {suggestedCounterparts} from './suggestedCounterparts.js';
+import {matchesDifferenceScope} from './groupProjects.js';
 export const programBuckets=['Asset Preservation Program','Network Development Program','Bridge Program','Flood Management Program','Convergence and Special Support Program','Local Program','National Building Program','Foreign-assisted projects'];
 export function officeKind(value){
  const office=String(value??'').trim().replace(/\s+/g,' ');
@@ -175,7 +176,7 @@ export function revisionSets(rows){
      second_php:r.second?.amount_php??null,third_php:r.third?.amount_php??null,
      reading_delta_php:r.reading_delta_php,reading_status:r.reading_status}));
  const delta=reading.reduce((sum,r)=>sum+(r.reading_delta_php??0),0);
- const cross=rows.filter(r=>['candidate_increase','candidate_decrease','transparency_gap_then_candidate_increase','transparency_gap_then_candidate_decrease'].includes(r.trace));
+ const cross=rows.filter(matchesDifferenceScope);
  const summary=sign=>{
   let rowsCount=0,amount_php=0,nep_php=0,house_php=0;
   for(const row of cross){

@@ -56,11 +56,11 @@ DBM NEP**.
 - **Highlights:** stage coverage and candidate funding-change tables above the
   existing eight findings. `story=` opens dedicated fact panels and filterable,
   exportable records/control evidence with source PDFs and onward links.
-- **Analysis:** Overview, House-only candidates, NEP-only candidates,
-  Adjustments, Coordinates, and Allocation statistics. Regional distributions,
+- **Analysis:** Overview, Insertions, Deletions, Adjustments, Coordinates, and
+  Allocation statistics. Regional distributions,
   candidate rankings, amount bands, rounding, repeated allocations, and largest
-  amounts lead to source record drill-downs. `insertions`, `deletions`,
-  `chainage`, and `statistics` links remain supported aliases. Endpoint distances
+  amounts lead to source record drill-downs. Legacy `house_candidates`,
+  `nep_candidates`, `chainage`, and `statistics` links remain supported aliases. Endpoint distances
   are diagnostic checks; they do not establish road length or construction
   cost/km. Flagged coordinate interpretations are excluded from diagnostics.
 

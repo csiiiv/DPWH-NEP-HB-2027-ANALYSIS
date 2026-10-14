@@ -101,9 +101,11 @@ export function comparisonRows(data) {
     return {...row, nep, house, title: house?.title || nep?.title, nep_php: nep?.amount_php ?? null, house_php: house?.amount_php ?? null};
   });
 }
-export function filterComparisons(rows, {q = '', subprogram = '', status = ''} = {}) {
+export function filterComparisons(rows, {q = '', subprogram = '', program = '', ranking = 'all', status = ''} = {}) {
   const terms = q.toLocaleLowerCase().trim().split(/\s+/).filter(Boolean);
-  return rows.filter(r => (!subprogram || r.subprogram_key === subprogram) && (!status ||
+  return rows.filter(r => (!subprogram || r.subprogram_key === subprogram) &&
+    (!program || [r.nep, r.house].some(p => p?.program_group === program)) &&
+    (ranking === 'ambiguous' ? r.ambiguous_title : ranking === 'unambiguous' ? !r.ambiguous_title : true) && (!status ||
       (status === 'changed' ? r.status === 'paired' && r.delta_php !== 0
         : status === 'increased' ? r.status === 'paired' && r.delta_php > 0
         : status === 'decreased' ? r.status === 'paired' && r.delta_php < 0
@@ -145,14 +147,52 @@ export function candidateGroupRows(rows, view, dim = 'subprogram', subprograms =
   for (const r of rows) {
     const key = dim === 'program' ? (r.house || r.nep).program_group : r.subprogram_key;
     const group = groups.get(key) || {id: key, label: dim === 'program' ? key : labels.get(key) || key,
-      count: 0, amount_php: 0, nep_php: 0, house_php: 0};
+      count: 0, amount_php: 0, nep_php: 0, house_php: 0, increased_php: 0, decreased_php: 0};
     group.count++;
     group.nep_php += r.nep_php || 0;
     group.house_php += r.house_php || 0;
     group.amount_php += view === 'adjustments' ? r.delta_php : view === 'deletions' ? r.nep_php : r.house_php;
+    if (view === 'adjustments') {
+      group.increased_php += Math.max(0, r.delta_php);
+      group.decreased_php += Math.min(0, r.delta_php);
+    }
     groups.set(key, group);
   }
   return [...groups.values()].sort((a, b) => Math.abs(b.amount_php) - Math.abs(a.amount_php));
+}
+// Overview counts and sums source records in the comparison ledger once per
+// side. Each side uses its own printed group; matching never relocates money.
+// The same source filters govern the selected-source distribution and these
+// presentation rollups. Controls are not re-summed as records.
+export function overviewComparisonRows(rows, params = {}, subprograms = [], dim = 'subprogram') {
+  const labels = new Map(subprograms.map(s => [s.key, s.label]));
+  const groups = new Map();
+  for (const side of ['nep', 'house']) {
+    const projects = filterProjects(rows.map(r => r[side]).filter(Boolean), params);
+    for (const project of projects) {
+      const id = dim === 'overall' ? 'overall' : dim === 'program' ? project.program_group : project.subprogram_key;
+      const group = groups.get(id) || {id, label: dim === 'overall' ? 'All filtered records' : dim === 'program' ? id : labels.get(id) || id,
+        nep_count: 0, house_count: 0, nep_php: 0, house_php: 0};
+      group[`${side}_count`]++;
+      group[`${side}_php`] += project.amount_php;
+      groups.set(id, group);
+    }
+  }
+  return [...groups.values()].map(g => ({...g, delta_records: g.house_count - g.nep_count,
+    pct_records: pctChange(g.house_count, g.nep_count), delta_php: g.house_php - g.nep_php,
+    pct_alloc: pctChange(g.house_php, g.nep_php)}));
+}
+export function overviewGroupRows(rows, params, dim, groupId) {
+  const ids = Object.fromEntries(['nep', 'house'].map(side => [side, new Set(
+    filterProjects(rows.map(r => r[side]).filter(Boolean), params).filter(p =>
+      dim === 'overall' || (dim === 'program' ? p.program_group : p.subprogram_key) === groupId).map(p => p.id))]));
+  return rows.map(row => {
+    const nep = ids.nep.has(row.nep?.id) ? row.nep : undefined;
+    const house = ids.house.has(row.house?.id) ? row.house : undefined;
+    return {...row, nep, house, title: house?.title || nep?.title, nep_id: nep?.id ?? null, house_id: house?.id ?? null,
+      nep_php: nep?.amount_php ?? null, house_php: house?.amount_php ?? null,
+      delta_php: nep && house ? house.amount_php - nep.amount_php : null};
+  }).filter(r => r.nep || r.house);
 }
 // Sub-program rollups for whichever project population is in view.
 export function subprogramAllocationRows(projects, subprograms) {

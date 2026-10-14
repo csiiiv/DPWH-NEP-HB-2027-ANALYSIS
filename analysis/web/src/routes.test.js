@@ -7,6 +7,7 @@ test('all six historical viewers map to an existing SPA route', () => {
   for (const key of Object.values(legacyRoutes)) assert.ok(routes[key]);
 });
 test('hash routes preserve review and entity parameters and accept slash links', () => {
+  assert.equal(readRoute('').workspace, 'overview');
   assert.equal(readRoute('').key, 'home');
   const route = readRoute('#/nep?view=review&node=p195%3Ar4');
   assert.equal(route.key, 'nep');
@@ -19,7 +20,7 @@ test('hash routes preserve review and entity parameters and accept slash links',
 test('fmr workspace routes are prefixed and keep their query params', () => {
   assert.equal(readWorkspace('#fmr/home'), 'fmr');
   assert.equal(readWorkspace('#compare?view=projects'), 'dpwh');
-  assert.equal(readWorkspace(''), 'dpwh');
+  assert.equal(readWorkspace(''), 'overview');
   const route = readRoute('#fmr/nep?view=tree&node=nep_fmr%3Ap1%3Ar5');
   assert.equal(route.workspace, 'fmr');
   assert.equal(route.key, 'nep');
@@ -71,8 +72,8 @@ test('unregistered hash prefixes fall back to the DPWH workspace', () => {
 });
 test('the workspace registry exposes consistent labels, prefixes and pages', () => {
   // Every workspace needs a label, at least one tab, and a unique prefix.
-  assert.deepEqual(workspaceLabels, {dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities', nia: 'NIA Irrigation'});
-  assert.deepEqual(Object.keys(workspaces), ['dpwh', 'fmr', 'hfep', 'nia']);
+  assert.deepEqual(workspaceLabels, {overview: 'Overview', dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities', nia: 'NIA Irrigation', geo: 'Geolocation'});
+  assert.deepEqual(Object.keys(workspaces), ['overview', 'dpwh', 'fmr', 'hfep', 'nia', 'geo']);
   const prefixes = Object.values(workspaces).map(ws => ws.prefix);
   assert.equal(new Set(prefixes).size, prefixes.length, 'prefixes must be unique');
   for (const ws of Object.values(workspaces)) {
@@ -84,6 +85,16 @@ test('the workspace registry exposes consistent labels, prefixes and pages', () 
   assert.equal(workspaces.dpwh.prefix, '');
   assert.ok(dpwhPages.length >= fmrPages.length);
 });
+test('Overview is the default landing page while historical workspace routes remain explicit', () => {
+  for (const href of ['', '#', '#/', '#overview', '#overview?exact=1']) assert.equal(readWorkspace(href), 'overview');
+  assert.equal(readRoute('#home').workspace, 'dpwh');
+  assert.equal(readRoute('#overview?exact=1').params.get('exact'), '1');
+  assert.equal(routeHref('home', {exact: '1'}, 'overview'), '#overview?exact=1');
+  assert.equal(workspaceHref('overview', readRoute('#nia/analysis?view=insertions')), '#overview');
+  assert.equal(workspaceHref('dpwh', readRoute('#overview')), '#home');
+  assert.equal(workspaceHref('nia', readRoute('#overview')), '#nia/home');
+  assert.equal(readRoute('#nia/analysis?view=overview').workspace, 'nia');
+});
 test('NIA deep links and analogous workspace switches preserve source selections', () => {
   const route = readRoute('#nia/house?node=ib%3Ap896%3Ar2');
   assert.equal(route.workspace, 'nia');
@@ -93,6 +104,19 @@ test('NIA deep links and analogous workspace switches preserve source selections
   assert.equal(routeHref('compare', {view: 'projects'}, 'nia'), '#nia/compare?view=projects');
   assert.equal(workspaceHref('nia', readRoute('#fmr/house?node=x')), '#nia/house');
   assert.equal(workspaceHref('nia', readRoute('#fmr/map')), '#nia/home');
+});
+
+test('geo workspace routes stay prefixed and deep-link the map', () => {
+  assert.equal(readWorkspace('#geo/home'), 'geo');
+  assert.equal(readRoute('#geo').key, 'home');
+  const route = readRoute('#geo/map?dataset=hgab_fmr&status=parsed_with_issues');
+  assert.equal(route.workspace, 'geo');
+  assert.equal(route.key, 'map');
+  assert.equal(route.params.get('dataset'), 'hgab_fmr');
+  assert.equal(routeHref('map', {dataset: 'hgab_fmr'}, 'geo'), '#geo/map?dataset=hgab_fmr');
+  // Geolocation has only Home/Map: other tabs fall back to home.
+  assert.equal(workspaceHref('geo', readRoute('#nia/analysis')), '#geo/home');
+  assert.equal(workspaceHref('nia', readRoute('#geo/map')), '#nia/home');
 });
 
 

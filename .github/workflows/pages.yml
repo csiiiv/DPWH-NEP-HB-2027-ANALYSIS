@@ -8,6 +8,7 @@ on:
       - 'other-analysis/**'
       - 'analysis-nia/**'
       - 'analysis-hfep/**'
+      - 'gps-analysis/**'
       - 'dpwh_coor2psgc_geomapping'
       - '.gitmodules'
       - 'site/**'
@@ -28,6 +29,7 @@ on:
       - 'other-analysis/**'
       - 'analysis-nia/**'
       - 'analysis-hfep/**'
+      - 'gps-analysis/**'
       - 'dpwh_coor2psgc_geomapping'
       - '.gitmodules'
       - 'site/**'
@@ -144,6 +146,7 @@ jobs:
             python3 -m playwright install --with-deps chromium
           fi
           python3 scripts/check_react_pages.py
+          python3 scripts/check_overview_pages.py
           python3 scripts/check_comparison_workspace.py
           python3 scripts/check_analysis_page.py
           python3 scripts/check_highlights_page.py

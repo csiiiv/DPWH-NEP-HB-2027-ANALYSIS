@@ -21,6 +21,14 @@ export const COLUMN_LABELS = {
 };
 // Blank printed cells stay null: a blank is a printing statement, not zero.
 export const columnAmount = (amounts, column) => amounts?.[column] ?? null;
+// Row-identity zeros represent blank cells, not independent printed money
+// records. Keep retained amounts unchanged and exclude only those derived
+// zeros from the comparison's funding-column record grain.
+export function recordColumnAmount(facility, column) {
+  const amount = columnAmount(facility?.amounts_php, column);
+  return amount === 0 && facility?.amount_lineage?.some(s => s.column === column &&
+    s.rule === 'derived_from_row_identity_total_minus_components') ? null : amount;
+}
 export const columnSum = (rows, column) => rows.reduce((sum, row) => sum + (columnAmount(row.amounts_php, column) || 0), 0);
 
 // Provenance vocabulary (from analysis-hfep/NEP_HFEP_EXTRACTION.md). Unknown
@@ -183,9 +191,9 @@ export function controlArithmetic(index, id) {
 // Unique region/province labels with facility-aggregated stats. Region
 // controls in the source are printed per subcategory; this analytical view
 // aggregates facilities by label and states that grain.
-export function scopeRows(index, level) {
+export function scopeRows(index, level, facilities = index.stage.facilities) {
   const groups = new Map();
-  for (const facility of index.stage.facilities) {
+  for (const facility of facilities) {
     const scope = facilityScope(index, facility);
     const key = scope[level];
     if (!key) continue;
@@ -365,8 +373,8 @@ export function comparisonIndex(data) {
   const rows = (data.comparison?.pairs || []).map(pair => {
     const house = houseById.get(pair.house_id), nep = nepById.get(pair.nep_id);
     const columns = Object.fromEntries(FUND_COLUMNS.map(column => {
-      const hv = columnAmount(house?.amounts_php, column) ?? null;
-      const nv = columnAmount(nep?.amounts_php, column) ?? null;
+      const hv = recordColumnAmount(house, column);
+      const nv = recordColumnAmount(nep, column);
       // Component-grain events: revised (both printed, differing), added
       // (NEP-only), dropped (House-only). difference stays null when either
       // side is blank — there is no comparable printed record to subtract.
@@ -447,12 +455,16 @@ export function lineItemRecords(comparison) {
   const push = (facility, column, side, event, counterpart, pairRow) => records.push({
     id: `${facility.id}|${column}`, facility_id: facility.id, title: facility.title, column,
     column_label: COLUMN_LABELS[column], side, event,
-    house_value: side === 'house' || event === 'dropped' ? columnAmount(facility.amounts_php, column) : null,
-    nep_value: side === 'nep' || event === 'added' ? columnAmount(facility.amounts_php, column) : null,
+    house_value: ['revised', 'same'].includes(event) ? pairRow.columns[column].house
+      : side === 'house' || event === 'dropped' ? recordColumnAmount(facility, column) : null,
+    nep_value: ['revised', 'same'].includes(event) ? pairRow.columns[column].nep
+      : side === 'nep' || event === 'added' ? recordColumnAmount(facility, column) : null,
     difference: event === 'revised' || event === 'same' ? pairRow.columns[column].difference : null,
     similarity: pairRow?.similarity ?? null,
     region: pairRow ? pairRow.house_scope?.region : facility.scope?.region,
     province: pairRow ? pairRow.house_scope?.province : facility.scope?.province,
+    category: pairRow ? pairRow.house_scope?.category : facility.scope?.category,
+    subcategory: pairRow ? pairRow.house_scope?.subcategory : facility.scope?.subcategory,
     house_source: side === 'house' || event === 'dropped' ? facility.source : counterpart?.source ?? null,
     nep_source: side === 'nep' || event === 'added' ? facility.source : counterpart?.source ?? null,
     pair_id: pairRow?.id ?? null,
@@ -475,11 +487,11 @@ export function lineItemRecords(comparison) {
   // dropped, because no counterpart pairing exists to compare against.
   for (const facility of comparison.house_only_rows)
     for (const column of COMPONENT_COLUMNS)
-      if (columnAmount(facility.amounts_php, column) != null)
+      if (recordColumnAmount(facility, column) != null)
         push(facility, column, 'house', 'unmatched', null, null);
   for (const facility of comparison.nep_only_rows)
     for (const column of COMPONENT_COLUMNS)
-      if (columnAmount(facility.amounts_php, column) != null)
+      if (recordColumnAmount(facility, column) != null)
         push(facility, column, 'nep', 'unmatched', null, null);
   return records;
 }
@@ -509,10 +521,12 @@ export function recordAggregates(records) {
   const byEvent = Object.fromEntries(['revised', 'added', 'dropped', 'same', 'unmatched']
     .map(event => [event, {count: 0, net: 0}]));
   const byColumn = Object.fromEntries(COMPONENT_COLUMNS.map(column => [column,
-    {revised: 0, added: 0, dropped: 0, revised_net: 0, added_sum: 0, dropped_sum: 0}]));
+    {revised: 0, added: 0, dropped: 0, revised_net: 0, revised_increased: 0, revised_decreased: 0, added_sum: 0, dropped_sum: 0}]));
   for (const r of records) {
     byEvent[r.event].count++;
-    if (r.event === 'revised') {byEvent.revised.net += r.difference; byColumn[r.column].revised++; byColumn[r.column].revised_net += r.difference;}
+    if (r.event === 'revised') {byEvent.revised.net += r.difference; byColumn[r.column].revised++; byColumn[r.column].revised_net += r.difference;
+      byColumn[r.column].revised_increased += Math.max(0, r.difference);
+      byColumn[r.column].revised_decreased += Math.min(0, r.difference);}
     else if (r.event === 'added') {byEvent.added.net += r.nep_value; byColumn[r.column].added++; byColumn[r.column].added_sum += r.nep_value;}
     else if (r.event === 'dropped') {byEvent.dropped.net -= r.house_value; byColumn[r.column].dropped++; byColumn[r.column].dropped_sum += r.house_value;}
   }

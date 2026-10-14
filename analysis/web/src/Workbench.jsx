@@ -4,16 +4,18 @@
 // its routes open. Workspaces register in routes.js; this shell never grows
 // a per-annex branch.
 import React, { lazy, Suspense, useEffect, useState } from "react";
-import DpwhApp from "./DpwhApp.jsx";
 import { readWorkspace } from "./routes.js";
 
 const FmrApp = lazy(() => import("./FmrApp.jsx"));
+const DpwhApp = lazy(() => import("./DpwhApp.jsx"));
+const MainOverview = lazy(() => import("./MainOverview.jsx"));
 const HfepApp = lazy(() => import("./HfepApp.jsx"));
 const NiaApp = lazy(() => import("./NiaApp.jsx"));
+const GeoApp = lazy(() => import("./GeoApp.jsx"));
 
 // Lazy loaders per registered workspace key. DPWH is statically imported as
 // the default workspace; each annex app is code-split behind its prefix.
-const lazyApps = { fmr: FmrApp, hfep: HfepApp, nia: NiaApp };
+const lazyApps = { overview: MainOverview, fmr: FmrApp, hfep: HfepApp, nia: NiaApp, geo: GeoApp };
 
 export default function Workbench() {
   const [workspace, setWorkspace] = useState(() => readWorkspace());

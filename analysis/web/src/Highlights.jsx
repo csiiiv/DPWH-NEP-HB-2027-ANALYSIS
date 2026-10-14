@@ -167,7 +167,7 @@ export default function Highlights({route}){
     <article><p className="eyebrow">{story.label}</p><h3>{story.title}</h3><p>{story.evidence}</p><div className="highlight-prompt"><strong>Investigate</strong><p>{story.prompt}</p></div>
      <div className="highlight-links"><button className="highlight-open" aria-haspopup="dialog" onClick={()=>{window.location.hash=routeHref('highlights',{story:story.id});}}>Explore this highlight →</button><a href={routeHref('highlights',{story:story.id})}>Link to this highlight</a>
       {story.example&&[['nep',story.example.nep_page,'NEP'],['house-third',story.example.house_page,'HGAB3']].map(([key,page,label])=>{
-       const ref=sourceReference(key,page,story.example.title);return <PdfSourceLink key={key} source={ref}>{label} PDF p.{page}</PdfSourceLink>;
+       const ref=sourceReference(key,page,story.example.title);return <PdfSourceLink key={key} source={ref}>{label} PDF p. {page}</PdfSourceLink>;
       })}
      </div>
     </article>

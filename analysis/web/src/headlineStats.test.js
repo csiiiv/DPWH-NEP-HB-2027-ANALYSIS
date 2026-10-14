@@ -91,3 +91,14 @@ test('office labels do not infer DEOs from region or missing assignments',()=>{
  assert.equal(officeKind('BARMM'),'Other recorded offices');
  assert.equal(officeKind(''),'No recorded office');
 });
+test('adjustment headlines include attached NEP pairs outside the Transparency scope and never infer a missing-side delta', () => {
+ const fixture=[
+  {id:'fap',trace:'outside_api_then_candidate_decrease',title:'Loan project',zone:'fap',nep:{id:'n',amount_php:100,title:'Loan project',zone:'fap'},third:{id:'h',amount_php:30,title:'Loan project',zone:'fap'}},
+  {id:'same',trace:'amount_same',title:'Same',nep:{id:'n2',amount_php:20,title:'Same'},third:{id:'h2',amount_php:20,title:'Same'}},
+  {id:'unmatched',trace:'house_only_candidate',title:'New',third:{id:'h3',amount_php:15,title:'New'}},
+ ];
+ const stats=headlineStats(fixture);
+ assert.equal(stats.revisionSets.cross_summary.reduced.rows,1);
+ assert.equal(stats.revisionSets.cross_summary.reduced.amount_php,70);
+ assert.equal(stats.revisionSets.cross_summary.increased.rows,0);
+});

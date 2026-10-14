@@ -7,7 +7,7 @@ import { routeHref, workspaceHref, workspaces } from "./routes.js";
 // the registry contains, so a new annex workspace appears automatically.
 export default function WorkbenchHeader({ route, workspace = "dpwh", items }) {
   const registered = Object.keys(workspaces);
-  const tabs = items ?? (workspace in workspaces
+  const tabs = items ?? (workspace !== 'overview' && workspace in workspaces
     ? workspaces[workspace].pages.map(([key, label]) => [key, label, routeHref(key, {}, workspace)])
     : []);
   return (
@@ -21,12 +21,12 @@ export default function WorkbenchHeader({ route, workspace = "dpwh", items }) {
           </a>
         ))}
       </nav>
-      <nav className="page-tabs" aria-label="Workbench pages">
+      {tabs.length > 0 && <nav className="page-tabs" aria-label="Workbench pages">
         {tabs.map(([key, label, destination]) => (
           <a key={key} href={destination}
             aria-current={route === key ? "page" : undefined}>{label}</a>
         ))}
-      </nav>
+      </nav>}
     </header>
   );
 }

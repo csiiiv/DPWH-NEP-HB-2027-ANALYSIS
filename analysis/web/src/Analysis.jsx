@@ -1,6 +1,7 @@
 import React,{lazy,Suspense,useEffect,useMemo,useRef,useState} from 'react';
 import {loadData} from './data.js';
 import {hydrateProjects} from './comparisonData.js';
+import {matchesDifferenceScope} from './groupProjects.js';
 import {amount} from './model.js';
 import {routeHref} from './routes.js';
 import ShareLink from './ShareLink.jsx';
@@ -14,6 +15,7 @@ import {formatLengthKm,formatSignedKm} from './chainageDisplay.js';
 import {officeName,regionName} from './regionNames.js';
 import {openModalDialog} from './modalLifecycle.js';
 import LoadingModal from './LoadingModal.jsx';
+import {pctChange as percentChange} from './pctChange.js';
 const GroupProjectsModal=lazy(()=>import('./GroupProjectsModal.jsx'));
 const names={third:'HGAB3 · 3rd reading',second:'HGAB2 · 2nd reading',nep:'DBM NEP',api:'DPWH Transparency NEP'};
 const labels={'Bridge Program':'Bridges','Convergence and Special Support Program':'CSSP','Foreign-assisted projects':'FAPs'};
@@ -21,6 +23,13 @@ const short=value=>labels[value]??value;
 const modes={no_suggestion:'House-only · no NEP suggestion',unresolved:'Unresolved NEP suggestions',third_only:'New 3rd-reading records'};
 const deletionModes={no_suggestion:'No House record · no suggestion',suggested:'Possible replacements · House rows suggest this NEP item',second_only:'HGAB2 only · dropped in HGAB3'};
 const views=[['overview','Overview'],['insertions','Insertions'],['deletions','Deletions'],['adjustments','Adjustments'],['chainage','Chainage'],['roadgroups','Groupings'],['statistics','Statistics']];
+const questions={overview:'How are recorded DPWH allocations distributed across offices and programs?',
+ insertions:'Which House allocation records have no NEP counterpart?',
+ deletions:'Which NEP allocation records have no House counterpart?',
+ adjustments:'Which proposed pairs have different allocations, and what changed between House readings?',
+ chainage:'Which recorded lengths and allocations changed across stages?',
+ roadgroups:'Which same-road groups retain unmatched allocation records?',
+ statistics:'Which descriptive allocation patterns appear in the retained records?'};
 const dimensions=[['overall','Overall'],['region','Region'],['office','District office'],['program','Category'],['pap','PAP']];
 const pick=(params,key,allowed,fallback)=>allowed.includes(params.get(key))?params.get(key):fallback;
 const dimensionTitle=dim=>dim==='office'?'district office':dim==='pap'?'PAP':dim;
@@ -33,12 +42,11 @@ const fmtPctBinEdge=edge=>edge===200?'> +200%':edge===-100?'−100%':`${fmtSigne
 // Signed amounts color green when positive, red when negative.
 const signedCell=value=><span className={value>0?'up':value<0?'down':''} title={(value?.toLocaleString('en-PH')??'')+' PHP'}>{value>0?'+':''}{amount(value)}</span>;
 const signedCount=value=><span className={value>0?'up':value<0?'down':''}>{value>0?'+':''}{(value??0).toLocaleString()}</span>;
+// Colored span wrapper around the shared pctChange number; FMR/NIA use the
+// plain-string signedPct from pctChange.js / fmrModel.js instead.
 const signedPercent=value=>value==null?<span>n/a</span>
  :<span className={value>0?'up':value<0?'down':''}>{value>0?'+':''}{value.toFixed(1)}%</span>;
-function percentChange(current,prior){
- if(current==null||prior==null||!Number.isFinite(current)||!Number.isFinite(prior)||prior===0)return null;
- return (current-prior)/Math.abs(prior)*100;
-}
+
 export default function Analysis({route}){
  const [data,setData]=useState(null),[detail,setDetail]=useState(null),[error,setError]=useState(''),[benchmark,setBenchmark]=useState(null);
  const view=pick(route.params,'view',views.map(v=>v[0]),'overview');
@@ -96,29 +104,14 @@ export default function Analysis({route}){
    .then(payload=>setRoadGroups(payload)).catch(e=>{if(e.name!=='AbortError')setError(e.message);});
   return()=>c.abort();
  },[view,roadGroups]);
- // Table deep link: scroll the targeted table into view when the table=
- // param arrives (initial open or link navigation) and flash its highlight.
- // Re-runs as lazy payloads (detail rows, groupings sidecar) land because
- // the target table may not exist on first paint.
- const tableTarget=route.params.get('table');
- useEffect(()=>{
-  if(!tableTarget||!data)return;
-  const id=`table-${tableTarget}`;
-  const t=setTimeout(()=>{
-   const element=document.getElementById(id);
-   if(!element)return;
-   element.scrollIntoView({behavior:'smooth',block:'start'});
-   element.focus({preventScroll:true});
-  },80);
-  return ()=>clearTimeout(t);
- },[tableTarget,data,detail,roadGroups]);
- function change(key,value){const params=Object.fromEntries(route.params);params[key]=value;
-  // View switches start the new view from its own defaults: a degenerate
-  // dim=overall would otherwise ride along and pin the one-row overview
-  // table (or hide aggregates) on every tab. Modal and deep-link params
-  // belong to the old view and never survive a tab change.
-  if(key==='view'){if(params.dim==='overall')delete params.dim;for(const stale of ['drill','axis','table'])delete params[stale];}
-  window.location.hash=routeHref('analysis',params);}
+ function changedParams(key,value){const params=Object.fromEntries(route.params);params[key]=value;
+  if(key==='view'){
+   if(params.dim==='overall')delete params.dim;
+   for(const stale of ['drill','axis','table','group','g','shell','side','zone','pap','region','page','sort','dir','ranking','direction','focus','stage','scope','pdf','pdfPage'])delete params[stale];
+  }
+  return params;
+ }
+ function change(key,value){window.location.hash=routeHref('analysis',changedParams(key,value));}
  // Modal open/close writes the modal params into the hash — shareable links,
  // and the browser back button closes the dialog.
  function openModal(params){const next=Object.fromEntries(route.params);Object.assign(next,params);window.location.hash=routeHref('analysis',next);}
@@ -140,8 +133,9 @@ export default function Analysis({route}){
     <ShareLink />
    </div>
   </section>
-  <nav className="analysis-subtabs" role="tablist" aria-label="Analysis views">{views.map(([key,title])=>
-   <button key={key} role="tab" aria-selected={view===key} onClick={()=>change('view',key)}>{title}</button>)}</nav>
+  <nav className="analysis-subtabs" aria-label="Analysis views">{views.map(([key,title])=>
+   <a key={key} aria-current={view===key?'page':undefined} href={routeHref('analysis',changedParams('view',key))}>{title}</a>)}</nav>
+  <h2 className="fmr-question">{questions[view]}</h2>
   <p className="notice">Counts refer to source allocation records, including grouped members, rather than unique projects across stages. Office assignments come from the selected source; missing assignments are shown separately. Scope: operations, including local and foreign-assisted projects. Transparency reflects its retained listing. Tables sort on any column. Click a group name to list its comparison rows.</p>
   {needsDetail&&<p role="status">Loading per-record data…</p>}
   {view==='overview'&&<Overview stats={stats} source={source} headlines={data.headlines} dim={overviewDim} change={change} onOpenGroup={openGroup} drill={drill} onOpenDrill={d=>openModal({drill:d.label,axis:d.axis})} onCloseDrill={closeModal}/>}
@@ -332,7 +326,7 @@ function AggregateTable({title,groups,dim,onOpenGroup,tableId}){
  </div>;
 }
 function Adjustments({detail,revisionSets,dim,direction,change,onOpenGroup}){
- const cross=useMemo(()=>detail.filter(r=>['candidate_increase','candidate_decrease','transparency_gap_then_candidate_increase','transparency_gap_then_candidate_decrease'].includes(r.trace))
+ const cross=useMemo(()=>detail.filter(matchesDifferenceScope)
   .map(r=>{const house=r.third??r.second,gap=houseMinusNep(r);
    return {...r,gap,house_php:house?.amount_php??null,nep_php:r.nep?.amount_php??null,
     pct:percentChange(house?.amount_php,r.nep?.amount_php)};}).filter(r=>r.gap!==null),[detail]);

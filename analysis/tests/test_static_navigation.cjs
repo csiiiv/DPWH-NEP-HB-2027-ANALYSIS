@@ -17,7 +17,7 @@ function redirected(file, hash, search = '') {
   return new URL(destination, 'https://example.test/project/' + file);
 }
 test('root preserves SPA routes under the GitHub project prefix', () => {
-  assert.equal(redirected('index.html', '').href, 'https://example.test/project/app/#home');
+  assert.equal(redirected('index.html', '').href, 'https://example.test/project/app/#overview');
   assert.equal(redirected('index.html', '#nep?view=review').href,
     'https://example.test/project/app/#nep?view=review');
   assert.equal(redirected('index.html', '#fmr/nep', '?preview=fmr').href,

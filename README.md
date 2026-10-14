@@ -4,6 +4,11 @@ The React workbench includes DPWH, the Department of Agriculture's locally funde
 farm-to-market road annex, DOH health facilities, and the NIA irrigation schedules. Switch workspaces
 in the shared header; each retains its own routes, data, and source evidence.
 
+**Overview** is the default landing page. It summarizes insertion/deletion
+candidates and paired allocation adjustments for each funding workspace, with
+source totals, record-grain labels and links to the supporting analysis.
+Explicit workspace deep links remain available.
+
 The annex tabs are **Home · Highlights · Compare stages · Analysis · House GAB ·
 DBM NEP**; FMR also has a Map. FMR sources use program → region → project trees;
 NIA uses the printed heading → sub-program → project hierarchy.
@@ -16,7 +21,12 @@ NIA uses the printed heading → sub-program → project hierarchy.
 The NIA workspace (`#nia/home`) covers **791 NEP rows (₱17,598,181,000)** and
 **828 House rows (₱17,999,305,000)** under six sub-programs. The difference is
 **₱401,124,000**. Its 509 unique-title candidate pairs remain provisional;
-319 House-only and 282 NEP-only rows are source observations. See the
+319 House-only and 282 NEP-only rows are source observations. Current pairs
+cover about half of each annex's pesos. Analysis retains its allocation,
+insertion/deletion candidate, adjustment and statistics views, adding
+sub-program allocation shares, funding reconciliation, pairing coverage and
+top-ten concentration. An additional AI monitoring tab shows related whole-project
+allocations with source evidence. See the
 [NIA workbench guide](analysis-nia/NIA_WORKBENCH.md).
 
 House legislative reading is not independently authenticated. Project pairings

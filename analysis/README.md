@@ -58,9 +58,13 @@ is preserved; two archived helpers still support active House repairs. See the
 | `#house-nep` | Printed budgets, local/FAP program controls, House extraction gaps, and candidates |
 | `#nep-detail` | Detailed expense/program tree and native-text evidence |
 
-The shared header links the workspaces; the former header README links now
-live on `#about`, which also links the DA/DOH/NIA orientation notes under
-`other-analysis/`. Hash routes support refresh and history;
+The shared header also switches into the FMR (`#fmr/`), NIA (`#nia/`), and HFEP
+(`#hfep/`) annex workspaces. NIA Analysis retains the shared page format and
+adds allocation shares, funding reconciliation, pairing coverage and top-ten
+concentration within its existing views; see
+[NIA_WORKBENCH.md](../analysis-nia/NIA_WORKBENCH.md). The former header README
+links now live on `#about`, which also links the DA/DOH/NIA orientation notes
+under `other-analysis/`. Hash routes support refresh and history;
 former viewer URLs redirect into the corresponding route when packaged.
 `#nep?view=review` opens the source queue. Verification routes accept `node`
 for a recorded entity ID; `section` preserves former in-page anchors.
@@ -194,6 +198,9 @@ separately; see [archive commands](archive/README.md).
 - [Codebase reassessment](docs/codebase_reassessment.md)
 - [Source-verification workflow](docs/source_hierarchy_verification.md)
 - [Dataset structure and comparison gate](docs/data_structure_and_crosscheck_design.md)
+- [Analysis tab framework (Overview, Insertions, Deletions, Adjustments) across workspaces](docs/analysis_tabs_framework.md)
+- [Analysis tab rules and guidelines (normative standard across datasets)](docs/analysis_tabs_rules.md)
+- [Analysis tab consistency todo list](docs/analysis_tabs_todo.md)
 - [Native I-B processing](docs/hb_native_full_processing.md) and [rollup checks](docs/hb_native_ib_rollup_checks.md)
 - [Native I-C detail and title-ownership checks](docs/hb_native_ic_rollup_checks.md)
 - [Native/v5 reconciliation](docs/hb_native_v5_reconciliation.md)

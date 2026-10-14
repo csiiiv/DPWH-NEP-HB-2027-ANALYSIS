@@ -8,7 +8,8 @@ for the other retained project data (NIA, HFEP, and any future annex).
 
 Companion documents: [DPWH UI/UX baseline review](FMR_DPWH_UI_UX_REVIEW.md)
 (what the original app does, tab by tab) · [FMR workbench guide](FMR_WORKBENCH.md)
-(data scope and matching limits) · [app README](../analysis/web/README.md).
+(data scope and matching limits) · [NIA workbench guide](../analysis-nia/NIA_WORKBENCH.md)
+· [app README](../analysis/web/README.md).
 
 ---
 
@@ -221,9 +222,20 @@ copied link reproduces the exact view.
 | `#fmr/home` | — |
 | `#fmr/highlights` | `story=<finding-id>`, story filters |
 | `#fmr/compare` | `view=regions\|projects`, `region`, `q`, `status`, `direction`, `method`, `coordinate`, `coord_side`, `pair`, `sort`, `dir`, `page`, `extraction`, `rule`, `review_flag`, `text_basis` |
-| `#fmr/analysis` | `stage`, `view=overview\|house_candidates\|nep_candidates\|adjustments\|coordinates\|stats`, `records=region:<key>\|band:<i>\|amount:<pesos>\|all` |
+| `#fmr/analysis` | `stage`, `view=overview\|insertions\|deletions\|adjustments\|coordinates\|stats` (legacy `house_candidates`\|`nep_candidates`\|`statistics`\|`chainage` still resolve), `records=region:<key>\|band:<i>\|amount:<pesos>\|all` |
 | `#fmr/house`, `#fmr/nep` | `view=tree\|projects\|review`, `node`, `q`, `region`, `status`, `category`, provenance filters |
+| `#nia/analysis` | `view=overview\|insertions\|deletions\|adjustments\|stats\|ai_monitoring\|candidates\|controls`; Overview/Statistics/AI monitoring: `stage=house\|nep`; AI monitoring: `aiBasis=all\|explicit\|ocr_variant`; candidate views: `dim`, `ranking`, `direction`, `group`; supporting records: `records=top10`, `top10:<sub-program-key>` or `ai_insertions`; shared `q`, `subprogram`, `status`, sort/dir/page |
+| `#nia/house`, `#nia/nep` | `view=tree\|projects\|review`, `node`, `q`, `subprogram`, `status` |
 | any | `pdf`, `pdfPage` |
+
+NIA follows the FMR/DPWH Analysis pattern: source-specific Overview and
+Statistics, separate Insertions/Deletions/Adjustments, Candidates and Agency
+controls. Additional analysis uses the existing tables and evidence dialogs:
+Overview adds allocation shares; Candidates adds per-sub-program funding
+reconciliation and row/peso pairing coverage; Statistics adds overall and
+within-sub-program top-ten concentration with original source records. An
+additional AI monitoring tab follows the same pattern for related whole-project
+allocations, retaining raw titles and labeling NEP OCR variants separately.
 
 Implementation notes worth repeating:
 
@@ -273,9 +285,13 @@ job; keep them distinct.
    explanation, sortable/exportable supporting records, PDF links, and an onward
    link into the filtered workbench. Don't manufacture a fixed number of stories;
    each needs a real question and real evidence.
-5. **Analysis** — question-oriented views over a source selector: overview,
-   per-stage candidate rankings, adjustments, coordinates, allocation statistics.
-   Every aggregate can open its underlying record population (`records=…`).
+5. **Analysis** — question-oriented views. FMR uses a source selector with
+   overview, per-stage candidate rankings, adjustments, coordinates, and
+   allocation statistics; every aggregate can open its underlying record
+   population (`records=…`). NIA keeps the same format with Overview,
+   Insertions, Deletions, Adjustments, Statistics, Candidates and Agency
+   controls (see route table above and `NIA_WORKBENCH.md`). Additional
+   analyses fit inside those views; irrigation has no coordinate diagnostics.
 6. **Map** *(FMR-specific addition)* — plots normalized coordinates. Worth
    noting but **not** part of the generalizable skeleton: it only exists because
    FMR rows carry coordinates. NIA/HFEP have no comparable geometry, so don't
@@ -421,55 +437,60 @@ Nothing is published by these commands.
 
 ---
 
-## 10. Checklist for the next annex (NIA / HFEP)
+## 10. Checklist for the next annex (NIA / HFEP landed; keep for future schedules)
+
+NIA and HFEP workspaces are live under `#nia/` and `#hfep/`. Keep this checklist
+for any future annex. NIA Analysis intentionally diverged from FMR's
+house_candidates/coordinates shape — see `#nia/analysis` in the route table and
+[NIA_WORKBENCH.md](../analysis-nia/NIA_WORKBENCH.md).
 
 **Data**
-- [ ] Extraction produces a tree + audit + per-row CSV, with source PDF hash,
+- [x] Extraction produces a tree + audit + per-row CSV, with source PDF hash,
       PDF page, printed page, table row, and bbox on every row.
-- [ ] Distinguish control/total rows from named item rows; record both. Verify
+- [x] Distinguish control/total rows from named item rows; record both. Verify
       page offsets per annex — FMR is printed+16, HFEP +20, NIA +22, and these
       do **not** extrapolate.
-- [ ] Normalization layer keeps raw text immutable, records applied rules, and
+- [x] Normalization layer keeps raw text immutable, records applied rules, and
       keeps flags for anything it can't prove.
-- [ ] Builder enforces exact partition, printed-vs-child arithmetic, and the
+- [x] Builder enforces exact partition, printed-vs-child arithmetic, and the
       money identity; all with `raise`, all re-verifiable via `--check`.
-- [ ] Any attached evidence layer is hash-anchored and its freshness re-checked
+- [x] Any attached evidence layer is hash-anchored and its freshness re-checked
       at build time.
-- [ ] Derived payload git-ignored; source trees and audits retained.
+- [x] Derived payload git-ignored; source trees and audits retained.
 
 **App**
-- [ ] Add a workspace prefix and `<domain>Pages` tab list in `routes.js`; a lazy
+- [x] Add a workspace prefix and `<domain>Pages` tab list in `routes.js`; a lazy
       branch in `Workbench.jsx`; a header entry. Reuse tab keys where an analogy
       exists so workspace switching stays sensible.
-- [ ] One builder → one payload → `schema_version` check → explicit load/error
+- [x] One builder → one payload → `schema_version` check → explicit load/error
       states.
-- [ ] All computation in a pure `<domain>Model.js`; unit-test every formatter,
+- [x] All computation in a pure `<domain>Model.js`; unit-test every formatter,
       filter, aggregate, and exporter. Mirror `SortableTable`'s comparator.
-- [ ] Port `SourceWorkspace` (or the equivalent single-document view) before
+- [x] Port `SourceWorkspace` (or the equivalent single-document view) before
       building comparison/analysis tabs — verification is the core task.
-- [ ] Route-back every filter, sort, page, and selection; sort the full filtered
+- [x] Route-back every filter, sort, page, and selection; sort the full filtered
       result before paginating; export all filtered rows; reset page on filter
       change.
-- [ ] Label every count with its grain; keep the four status axes separate;
+- [x] Label every count with its grain; keep the four status axes separate;
       render missing counterparts as unavailable.
-- [ ] Add only the controls the data supports. No chainage without chainage; no
+- [x] Add only the controls the data supports. No chainage without chainage; no
       reading toggle without an authenticated reading; no map without geometry.
-- [ ] CSV injection guard + BOM in every exporter.
-- [ ] Mobile: explicit panel switcher, row cards, dedicated sort control,
+- [x] CSV injection guard + BOM in every exporter.
+- [x] Mobile: explicit panel switcher, row cards, dedicated sort control,
       stacked PDF with a reveal action. Re-measure control position after layout
       changes.
-- [ ] A11y: skip link, `aria-sort`/`aria-pressed`/`aria-live`, focus restoration,
+- [x] A11y: skip link, `aria-sort`/`aria-current`/`aria-live`, focus restoration,
       `/` search, tree keyboard nav, empty/error states with recovery actions.
 
 **Verify & ship**
-- [ ] Node tests, render smoke, Python tests, every `--check`, then build.
-- [ ] Playwright QA at 390px and 1440px: no overflow, no console errors, no
+- [x] Node tests, render smoke, Python tests, every `--check`, then build.
+- [x] Playwright QA at 390px and 1440px: no overflow, no console errors, no
       failed requests, exports, dialogs (including stacked dismissal), and PDF
       range rendering for every referenced document.
-- [ ] Package with original document paths preserved and a query/hash-preserving
+- [x] Package with original document paths preserved and a query/hash-preserving
       root redirect; preview locally under both a domain root and a project
       prefix.
-- [ ] Document scope and limits in the annex README — what was checked, what was
+- [x] Document scope and limits in the annex README — what was checked, what was
       not, and which labels remain provisional.
 
 ---
@@ -482,17 +503,21 @@ Nothing is published by these commands.
 | `analysis/web/src/routes.js` | Route keys, workspace prefix, `routeHref`, legacy map |
 | `analysis/web/src/WorkbenchHeader.jsx` | Shared header + workspace selector |
 | `analysis/web/src/DpwhApp.jsx` | Baseline workspace (reference implementation) |
-| `analysis/web/src/FmrApp.jsx` | FMR workspace: all tabs (605 lines) |
-| `analysis/web/src/fmrModel.js` | Pure model layer (282 lines) |
+| `analysis/web/src/FmrApp.jsx` | FMR workspace: all tabs |
+| `analysis/web/src/fmrModel.js` | Pure FMR model layer |
+| `analysis/web/src/NiaApp.jsx` | NIA workspace: Home/Highlights/Compare/Analysis/sources |
+| `analysis/web/src/niaModel.js` | Pure NIA model: filters, comparison rows, exports |
+| `analysis/web/src/niaAnalysis.js` | Additional NIA analysis: funding reconciliation, pairing coverage, concentration, AI monitoring classification |
 | `analysis/web/src/SortableTable.jsx` | Shared table primitive, internal + controlled modes |
 | `analysis/web/src/PdfPreview.jsx`, `ShareLink.jsx`, `modalLifecycle.js` | Shared PDF/link/dialog behavior |
-| `analysis/web/src/styles.css`, `Fmr.css` | Shared visual language + scoped layer |
+| `analysis/web/src/styles.css`, `Fmr.css`, `Nia.css` | Shared visual language + scoped layers |
 | `analysis/web/src/fmrSmoke.mjs` | Render smoke check |
 | `analysis/web/vite.config.js` | Dev middleware: retained files, ranges, legacy redirects |
 | `other-analysis/build_fmr_workbench.py` | Builder: stages, matching, invariants, `--check` |
+| `analysis-nia/build_nia_workbench.py` | NIA builder: stages, unique-title pairs, money identity, `--check` |
 | `other-analysis/extract_*.py`, `normalize_*.py`, `validate_*.py`, `build_fmr_final_dataset.py` | Data pipeline stages |
-| `other-analysis/tests/` | Python regressions (63) |
-| `scripts/build_fmr_pages.py`, `serve_pages.py`, `check_fmr_pages.py` | Packaging, local preview, browser QA |
+| `other-analysis/tests/`, `analysis-nia/tests/` | Python regressions |
+| `scripts/build_pages.py`, `serve_pages.py`, `check_fmr_pages.py`, `check_nia_pages.py`, `check_hfep_pages.py` | Packaging, local preview, browser QA |
 | `analysis/web/src/Analysis.jsx`, `Comparison.jsx`, `Highlights.jsx`, `HighlightModal.jsx`, `SourceWorkspace.jsx` | DPWH baseline components worth reading before porting |
 
 

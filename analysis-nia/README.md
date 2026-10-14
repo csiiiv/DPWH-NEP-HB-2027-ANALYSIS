@@ -6,6 +6,11 @@ Built on **12 October 2026** from the supplied **HB 10858 FY 2027 Volume I-B** i
 
 **Interactive workbench:** [NIA routes, comparison rules, evidence, and checks](NIA_WORKBENCH.md).
 Open `#nia/home` in the shared React app to explore both retained schedules.
+Analysis (`#nia/analysis`) retains the FMR/DPWH page pattern, with allocation
+shares in Overview, funding reconciliation and pairing coverage in Candidates,
+and top-ten concentration with source-record drilldowns in Statistics. The
+additional AI monitoring tab isolates related whole-project allocations and
+labels the NEP OCR variants separately, with original titles and PDF evidence.
 
 The extraction recovers **828 printed project line items** under **six sub-program controls** and one printed program heading, totalling **₱17,999,305,000**. Every sub-program project sum reconciles. All six sub-program amounts and both program-level totals also agree with the independently read NIA agency table on Volume I-B printed 559–564 (PDF 567–572), including the agency-only CARP-linked row of **₱698,067,000** that the annex does not print.
 

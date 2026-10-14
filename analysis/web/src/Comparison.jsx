@@ -97,6 +97,13 @@ export default function Comparison({ route }) {
   useEffect(()=>{
     if (data && readings && (tab!=='projects' || projects) && page > Math.max(0,Math.ceil(filtered.length/50)-1)) setPage(Math.max(0,Math.ceil(filtered.length/50)-1));
   },[data,readings,filtered.length,page]);
+  // Deep links (e.g. from the Geolocation workspace) select a record that may
+  // sit on a later page of the 50-row table; jump to its page once loaded.
+  useEffect(()=>{
+    if (tab!=='projects' || !projects || !finding.record) return;
+    const index = filtered.findIndex(r => r.id === finding.record);
+    if (index >= 0 && (index < page*50 || index >= (page+1)*50)) setPage(Math.floor(index/50));
+  },[tab,projects,finding.record,filtered,page]);
   useEffect(() => {
     if (!menu) return;
     const outside = (e) => {
@@ -194,7 +201,7 @@ export default function Comparison({ route }) {
         key={kind + p}
         onClick={() => open(kind, p, title)}
       >
-        {sourceReference(kind, p, title)?.pageLabel} p.{p}
+        {sourceReference(kind, p, title)?.pageLabel} p. {p}
       </button>
     ));
   if (error || unified.error)

@@ -33,6 +33,7 @@ export const legacyRoutes = Object.fromEntries([
 // `label` appears in the header's workspace selector, `pages` is the tab
 // list. Workbench.jsx maintains the lazy loaders so annex bundles stay code-split.
 export const workspaces = {
+  overview: { label: "Overview", prefix: "overview", pages: [["home", "Overview"]] },
   dpwh: {
     label: "DPWH",
     prefix: "",
@@ -85,6 +86,14 @@ export const workspaces = {
       ["nep", "DBM NEP"],
     ],
   },
+  geo: {
+    label: "Geolocation",
+    prefix: "geo",
+    pages: [
+      ["home", "Home"],
+      ["map", "Map"],
+    ],
+  },
 };
 // Tab list exports kept for existing consumers (WorkbenchHeader, tests).
 export const dpwhPages = workspaces.dpwh.pages;
@@ -103,6 +112,7 @@ export function readWorkspace(hash) {
     .replace(/^#\/?/, "")
     .split("?")[0];
   const first = path.split("/")[0];
+  if (!path) return "overview";
   return workspaceByPrefix[first] ?? "dpwh";
 }
 export function readRoute(hash = location.hash) {
@@ -114,16 +124,17 @@ export function readRoute(hash = location.hash) {
     if (['null','undefined'].includes(params.get(key))) params.delete(key);
   }
   const segments = path.split("/").filter(Boolean);
-  const workspace = workspaceByPrefix[segments[0]] ?? "dpwh";
+  const workspace = readWorkspace(hash);
   if (workspace !== "dpwh")
     return { workspace, key: segments.slice(1).join("/") || "home", params };
   return { workspace, key: path || "home", params };
 }
 // Links keep the active workspace unless a caller explicitly passes one, so
 // any component can emit routeHref(key, params) and stay in its workspace.
-export function routeHref(key, params = {}, workspace = readWorkspace()) {
+export function routeHref(key, params = {}, workspace = typeof location === 'undefined' ? 'dpwh' : readWorkspace()) {
   const entries = params instanceof URLSearchParams ? [...params] : Object.entries(params);
   const query = new URLSearchParams(entries.filter(([,value]) => value != null && value !== '')).toString();
+  if (workspace === 'overview' && key === 'home') return `#overview${query ? '?' + query : ''}`;
   const prefix = workspaces[workspace]?.prefix ? `${workspaces[workspace].prefix}/` : "";
   return `#${prefix}${key}${query ? "?" + query : ""}`;
 }
@@ -132,6 +143,7 @@ export function routeHref(key, params = {}, workspace = readWorkspace()) {
 // to Home). Query params stay behind — each workspace interprets its own
 // filters.
 export function workspaceHref(target, route = readRoute()) {
+  if (target === 'overview') return '#overview';
   const targetPages = workspaces[target]?.pages ?? [];
   const currentKey = route.key;
   const key = targetPages.some(([k]) => k === currentKey)

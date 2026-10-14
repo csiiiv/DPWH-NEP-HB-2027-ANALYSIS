@@ -410,11 +410,13 @@ def build(write_output=True):
                 'path': 'HB_BUDGET/2 - HB 10858 VOL IB.pdf',
                 'label': 'House · Volume I-B (supplied copy)',
                 'pages': 'annex 896–941 · agency table 568/570',
+                'page_count': 982,
             },
             'nep': {
                 'path': 'dbm-other-nep-line-data/NIA.pdf',
                 'label': 'DBM NEP · standalone NIA annex',
                 'pages': '30 pages, scanned',
+                'page_count': 30,
             },
         },
     }

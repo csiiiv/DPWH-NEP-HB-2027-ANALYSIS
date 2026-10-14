@@ -11,6 +11,7 @@ from urllib.parse import unquote, urlsplit
 
 from validate_current_pages import validate_current_pages
 from package_nia import package_nia
+from package_geo import package_geo
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / '_site'
@@ -33,12 +34,12 @@ def app_redirect(destination, route, root=False):
     """Keep historical entry points and fragments working on project hosting."""
     return ('<!doctype html><html lang="en"><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width,initial-scale=1">'
-            '<title>DPWH workbench</title><p><a href="' + destination + '#' + route + '">Open workbench</a></p>'
+            '<title>FY2027 budget workbenches</title><p><a href="' + destination + '#' + ('overview' if root else route) + '">Open workbench</a></p>'
             '<a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/README.md">Repository README</a> '
             '<a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/README.md">Workbench README</a>'
             '<script>const fragment=location.hash.slice(1);location.replace(' + json.dumps(destination) +
             ('+(location.search || "")' if root else '') +
-            '+"#"+' + ('(fragment || "home")' if root else json.dumps(route) +
+            '+"#"+' + ('(fragment || "overview")' if root else json.dumps(route) +
                          '+(fragment ? "?"+(fragment==="review" ? "view=review" : "section="+encodeURIComponent(fragment)) : "")') +
             ');</script></html>')
 DOWNLOADS = [
@@ -77,9 +78,9 @@ def hosted_report_links(text, source):
 def hosted_viewer(name, text):
     text = hosted_report_links(text, VIEWERS / name)
     if name in ('hb_native_verification.html', 'nep_source_verification.html', 'dpwh_nep_api_verification.html'):
-        text = text.replace('<head>', '<head><script>window.SITE_CONFIG={hosted:true,housePdf:"../HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf",reportBase:"' + REPO + 'docs/"};</script>', 1)
+        text = text.replace('<head>', '<head><script>window.SITE_CONFIG={hosted:true,nepPdf:"../pdfs/NEP-2027-VOLUME-2B_OCR.pdf",housePdf:"../HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf",reportBase:"' + REPO + 'docs/"};</script>', 1)
     if name == 'nep_2027_tree.html':
-        text = text.replace('<head>', '<head><script>window.SITE_CONFIG={sourcePdf:null};</script>', 1)
+        text = text.replace('<head>', '<head><script>window.SITE_CONFIG={sourcePdf:"../pdfs/NEP-2027-VOLUME-2B_OCR.pdf"};</script>', 1)
     text = text.replace('href="../site/index.html"', 'href="../index.html"')
     text = text.replace('href="../../site/index.html"', 'href="../index.html"')
     # Local regroup uses ../data and ../docs; packaged site flattens JSON beside viewers.
@@ -116,6 +117,7 @@ def validate_site():
             'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/other-analysis/README.md',
             'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis-nia/README.md',
             'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis-hfep/README.md',
+            'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/gps-analysis/README.md',
         }
         if repository_readme not in parser.links or not workbench_readmes.intersection(parser.links):
             raise ValueError(f'Missing repository/workbench README links: {file}')
@@ -313,6 +315,9 @@ def main(with_react=True):
         package_fmr()
         package_hfep()
         package_nia(OUTPUT)
+        package_geo(OUTPUT)
+        subprocess.run(['node', str(ROOT / 'analysis/web/buildMainOverview.mjs')], check=True, cwd=ROOT)
+        shutil.copyfile(DATA / 'main_overview_2027.json', target / 'main_overview_2027.json')
     validate_site()
     print(f'Prepared and checked {len(VIEWER_NAMES)} dashboards in {OUTPUT}')
 

@@ -1,18 +1,18 @@
-import React,{useEffect,useMemo,useState} from 'react';
+import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {readRoute,routeHref} from './routes.js';
 // Sortable data table used across Analysis views. Header cells are buttons
 // with aria-sort; rows re-sort client-side without touching the data arrays.
 // `columns`: [{key,label,align:'num'|null,sortable=true,render(row),value(row),
 //              title}]; default sort falls back to column order.
 // `tableId`: stable slug for deep links — renders a # anchor that adds
-// table=<id> to the URL; Analysis scrolls the target into view on open.
+// table=<id> to the URL; the mounted table scrolls/focuses itself on open.
 // Missing values render as an em dash; numbers get grouped thousands.
 // Controlled mode: pass `sort` + `onSortChange` and/or `page` + `onPageChange`
 // to back sorting/pagination with route state (FMR tabs do this so a copied
 // link restores the exact view). Without them, state stays internal (DPWH).
 function formatCell(value){
  if(value==null||value==='')return '—';
- if(typeof value==='number')return value.toLocaleString('en-US');
+ if(typeof value==='number')return value.toLocaleString('en-PH');
  return value;
 }
 export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,tableId,pageSize,sort:controlledSort,onSortChange,page:controlledPage,onPageChange}){
@@ -73,7 +73,21 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,
  };
  const linked=Boolean(tableId);
  const targeted=linked&&readRoute().params.get('table')===tableId;
- return <><div id={linked?`table-${tableId}`:undefined} className={`sortable-table${bandHeader?' has-bands':''}${targeted?' table-target':''}`} role="region" aria-label={ariaLabel} tabIndex={0}>
+ const tableRef=useRef(null);
+ // Mounted targets handle their own deep links, including tables in lazy
+ // views and dialogs across every workspace.
+ useEffect(()=>{
+  if(!targeted)return;
+  const timer=setTimeout(()=>{
+   const table=tableRef.current;
+   const element=table?.getClientRects().length ? table : table?.closest('.fmr-mobile-table');
+   if(!element||!element.getClientRects().length)return;
+   element.scrollIntoView({behavior:'smooth',block:'start'});
+   element.focus({preventScroll:true});
+  },80);
+  return()=>clearTimeout(timer);
+ },[targeted,tableId]);
+ return <><div ref={tableRef} id={linked?`table-${tableId}`:undefined} className={`sortable-table${bandHeader?' has-bands':''}${targeted?' table-target':''}`} role="region" aria-label={ariaLabel} tabIndex={0}>
   <table>
    <thead>
     {bandHeader&&<tr className="band-row">

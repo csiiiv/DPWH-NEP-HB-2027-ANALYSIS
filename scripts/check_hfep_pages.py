@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Exercise loaded HFEP views, provenance exports, routing and inline PDF review."""
+import csv
+from io import StringIO
 from functools import partial
 from http.server import ThreadingHTTPServer
 import os
@@ -9,6 +11,7 @@ import threading
 from pathlib import Path
 from playwright.sync_api import expect, sync_playwright
 from serve_pages import RangeHandler
+from analysis_checks import check_analysis_links, check_banded_overview, check_candidate_group
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -58,7 +61,7 @@ def main():
                     assert tabs.locator('a').all_text_contents() == ['Home', 'Highlights', 'Compare stages', 'Analysis', 'House GAB', 'DBM NEP']
                     # The workspace selector exposes all three registered workspaces.
                     workspaces = page.get_by_role('navigation', name='Workbench workspaces')
-                    assert workspaces.locator('a').all_text_contents() == ['DPWH', 'DA Farm-to-Market Roads', 'DOH Health Facilities', 'NIA Irrigation']
+                    assert workspaces.locator('a').all_text_contents() == ['Overview', 'DPWH', 'DA Farm-to-Market Roads', 'DOH Health Facilities', 'NIA Irrigation', 'Geolocation']
                     expect(page.locator('main')).to_contain_text('10,021,659,000')
                     no_overflow()
                     page.screenshot(path=str(captures / f'home-{width}.png'))
@@ -95,14 +98,26 @@ def main():
                     print(f'{width}px: agency controls open the correct PDF volumes', flush=True)
 
                     # Cross-document analysis: insertions, deletions, adjustments.
+                    check_analysis_links(page, goto, 'insertions', 'insertions-by-region', tabs='Workspace views')
+                    for view in ('insertions', 'deletions'):
+                        check_candidate_group(page, goto, view, f'{view}-by-region', 'Funding-column records', 'HFEP analysis group records', 'Export group CSV')
+                        goto(f'analysis?view={view}')
+                        # This export covers all records, including those beyond the top-150 table.
+                        with page.expect_download() as result:
+                            page.get_by_role('button', name='Export filtered records CSV', exact=True).click()
+                        exported = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
+                        assert len(exported) == (184 if view == 'insertions' else 163)
+                    check_candidate_group(page, goto, 'insertions', 'insertions-by-region', 'Funding-column records', 'HFEP analysis group records', 'Export group CSV', query='Hospital')
+                    goto('analysis?view=deletions&group=missing')
+                    expect(page.get_by_role('dialog', name='HFEP analysis group records').get_by_role('alert')).to_contain_text('Unknown analysis group')
                     goto('analysis?view=insertions')
                     expect(page.get_by_role('region', name='Top unmatched House records')).to_be_visible()
                     expect(page.locator('.fmr-stats')).to_contain_text('184')
-                    expect(page.locator('.fmr-notice').first).to_contain_text('line-item record grain')
+                    expect(page.locator('.fmr-notice').first).to_contain_text('funding-column record grain')
                     no_overflow()
                     goto('analysis?view=deletions')
                     expect(page.get_by_role('region', name='Top unmatched NEP records')).to_be_visible()
-                    expect(page.locator('.fmr-stats')).to_contain_text('203')
+                    expect(page.locator('.fmr-stats')).to_contain_text('163')
                     no_overflow()
                     goto('analysis?view=adjustments')
                     expect(page.get_by_role('region', name='Revised line-item Records')).to_be_visible()
@@ -110,7 +125,8 @@ def main():
                     expect(page.locator('.fmr-notice')).to_contain_text('West Visayas State University Medical Center')
                     # Per-column deltas render with signs on revised records.
                     pairs_table = page.get_by_role('region', name='Revised line-item Records')
-                    expect(pairs_table.locator('tbody tr').first).to_contain_text('₱')
+                    expect(pairs_table.locator('thead')).to_contain_text('(PHP)')
+                    expect(pairs_table.locator('tbody [data-label="NEP − House (PHP)"] .up').first).to_contain_text('+')
                     # Every record table in analysis carries PDF page references.
                     for view, name in [('adjustments', 'Revised line-item Records'), ('deletions', 'Top unmatched NEP records'),
                                        ('insertions', 'Top unmatched House records')]:

@@ -25,7 +25,7 @@ Initial check: **12 October 2026**. Source: the local PDFs in [`HB_BUDGET/`](../
 
 **PSGC validation worklog:** [what was tried, issues, fixes, and pivots](FMR_PSGC_VALIDATION_WORKLOG.md) — the session record for the flagged-coordinate evidence layer and the per-document final datasets, including the reusable checklist and title-parsing heuristics.
 
-**UI implementation reference:** [building a source-verification workbench](UI_IMPLEMENTATION_REFERENCE.md) — how the FMR pages reused the DPWH baseline: the carried-over components, the workspace-prefix routing pattern, the builder/payload data contract and its enforced invariants, the pure model layer, route-backed state, the tab skeleton, the close-review checklist, the verification loop, and a port checklist for the next annex (NIA/HFEP).
+**UI implementation reference:** [building a source-verification workbench](UI_IMPLEMENTATION_REFERENCE.md) — how the FMR pages reused the DPWH baseline: the carried-over components, the workspace-prefix routing pattern, the builder/payload data contract and its enforced invariants, the pure model layer, route-backed state, the tab skeleton, the close-review checklist, the verification loop, and the NIA/HFEP port notes (including additional NIA analysis within the existing page format).
 
 **All three detailed schedules are in Volume I-B.** NIA also has named projects in its main agency appropriation section. The locations below distinguish actual project/facility rows from program totals, special provisions, contents entries, and performance indicators.
 

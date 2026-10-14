@@ -1,7 +1,7 @@
 # NIA irrigation workbench
 
 The shared React site registers NIA under `#nia/`. Home, Highlights, Compare
-Stages, Analysis, House GAB, and DBM NEP use the retained extractions. The
+stages, Analysis, House GAB, and DBM NEP use the retained extractions. The
 datasets contain 828 House rows (₱17,999,305,000) and 791 NEP rows
 (₱17,598,181,000). All six printed sub-program controls reconcile.
 
@@ -13,12 +13,13 @@ datasets contain 828 House rows (₱17,999,305,000) and 791 NEP rows
 | `#nia/highlights` | Funding difference, changed candidates, agency scope, extraction review |
 | `#nia/compare?view=subprograms` | Full printed controls, filtered exports, and inline PDF evidence |
 | `#nia/compare?view=projects` | Candidate observations with source amounts, PDF references, filters, exports, and evidence dialogs |
-| `#nia/analysis?view=overview` | Filtered allocation distribution and supporting rows |
-| `#nia/analysis?view=stats` | Bands, rounding, repeated amounts, supporting rows |
+| `#nia/analysis?view=overview` | Filtered allocation distribution, allocation shares, and supporting rows |
+| `#nia/analysis?view=stats` | Bands, rounding, repeated amounts, top-ten concentration, supporting rows |
+| `#nia/analysis?view=ai_monitoring` | AI monitoring related project allocations, title-basis filters, stage totals, source records and CSV |
 | `#nia/analysis?view=insertions` | House-only insertion candidates, ranked allocations, group drilldowns |
 | `#nia/analysis?view=deletions` | NEP-only deletion candidates, ranked allocations, group drilldowns |
 | `#nia/analysis?view=adjustments` | Paired House/NEP amount changes, direction filters, group drilldowns |
-| `#nia/analysis?view=candidates` | Filtered candidate observations |
+| `#nia/analysis?view=candidates` | Filtered candidate observations, funding reconciliation, pairing coverage |
 | `#nia/analysis?view=controls` | Independent House agency-table reconciliation |
 | `#nia/house` / `#nia/nep` | Printed source tree and selected arithmetic with an inline PDF |
 
@@ -38,9 +39,48 @@ labeled cards with a sort control; Table/PDF controls switch the active pane.
 `pdf`, `pdfPage`, and `panel=table|pdf` restore selected evidence on reload.
 
 Analysis uses DPWH's hero and view tabs. Its `stage=house|nep` selector (default
-NEP) applies to Overview and Statistics. Insertions always use unmatched House
+NEP) applies to Overview, Statistics and AI monitoring. Insertions always use unmatched House
 records, Deletions unmatched NEP records, and Adjustments pairs with an amount
 change. The fixed source basis is displayed on those views.
+
+Additional analysis stays within those existing views. Overview adds each
+sub-program's share of the filtered allocation. Statistics adds overall and
+within-sub-program top-ten concentration, with original source records and CSV
+exports via `records=top10` or `records=top10:<sub-program-key>`. Search,
+sub-program and extraction-review filters apply to these source statistics.
+Candidates adds per-sub-program funding reconciliation and row/peso pairing
+coverage using its current search, sub-program and candidate-status filters.
+The full population reconciles the annex increase of ₱401,124,000; the 509
+provisional pairs cover 53.3% of NEP allocation and 47.5% of House allocation.
+Highlights links to this coverage detail. Pairing rules are unchanged.
+
+AI monitoring is an additional Analysis tab using the same source selector,
+filters, sortable tables, pagination, CSV exports and PDF evidence. It includes
+explicit AI monitoring and AI satellite-assisted monitoring titles. All 59
+retained NEP `Al`/`AL`/`AT Monitoring` variants (54 Al/AL and 5 AT) were checked
+against rendered PDF rows and read AI. Original titles, amounts and provisional
+pairings remain intact. `aiBasis=all|explicit|ocr_variant` exposes that distinction
+in the filtered table and its CSV `ai_monitoring_basis` column. Other project
+filters continue to apply; the two-source summary uses the same filters.
+
+The full related population is 327 NEP projects (₱7,015,950,000; 268 explicit
+and 59 OCR variants) and 299 House projects (₱6,341,950,000, including ten
+satellite-assisted rows). All belong to Establishment of Pump Irrigation.
+These are whole project allocations: the schedules do not itemize AI monitoring
+costs. Generic remote/intermediate monitoring, gauges, sensors and CCTV without
+AI wording are excluded.
+
+The tab also reports House-only AI monitoring insertion candidates under the
+current filters, independently of the selected source stage. The full population
+has 123 candidates totaling ₱2,626,950,000: 41.1% of the 299 House AI monitoring
+projects and 41.4% of their allocation. Four have repeated-title ambiguity.
+`records=ai_insertions` opens the supporting comparison rows and their CSV
+export, including candidate status, both source IDs/titles/amounts and PDFs.
+Search, sub-program, review category and title-basis filters apply to the House
+rows used for these figures. OCR variants selected in the NEP title-basis filter
+have no House rows, so that scope yields zero insertion candidates. Source-only
+status remains provisional; OCR/title differences can prevent an existing NEP
+counterpart from pairing. The monitoring component cost is not itemized.
 
 Candidate views accept `dim=overall|subprogram|program`, `ranking=all|unambiguous|ambiguous`
 for source-only candidates, and `direction=all|increased|decreased` for adjustments.
