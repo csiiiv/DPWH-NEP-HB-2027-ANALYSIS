@@ -26,8 +26,12 @@ with tempfile.TemporaryDirectory() as folder:
                 page.goto(base+'#analysis',wait_until='networkidle')
                 expect(page.get_by_role('heading',name='Analysis',exact=True)).to_be_visible()
                 expect(page.get_by_role('link',name='Analysis',exact=True)).to_have_attribute('aria-current','page')
+                # Main subtabs are deep-linkable anchors (aria-current=page)
+                # rather than role=tab buttons; scope to the Analysis views
+                # nav because the workspace tab bar also has an Overview link.
+                subnav=page.get_by_role('navigation',name='Analysis views',exact=True)
                 for tab in ['Overview','Insertions','Deletions','Adjustments','Chainage','Groupings','Statistics']:
-                    expect(page.get_by_role('tab',name=tab,exact=True)).to_be_visible()
+                    expect(subnav.get_by_role('link',name=tab,exact=True)).to_be_visible()
                 office=page.get_by_role('region',name='Central Office vs DEOs',exact=True)
                 expect(office).to_contain_text(f"{data['sources']['third']['offices']['Central Office']['records']:,}")
                 expect(office).to_contain_text('No recorded office')
@@ -126,7 +130,7 @@ with tempfile.TemporaryDirectory() as folder:
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 page.screenshot(path=f'/tmp/analysis-overview-{width}.png')
                 # Insertions subtab: dimension chips, candidate groups, review links.
-                page.get_by_role('tab',name='Insertions',exact=True).click()
+                subnav.get_by_role('link',name='Insertions',exact=True).click()
                 page.get_by_label('Analysis candidate group',exact=True).select_option('third_only')
                 expect(page.get_by_role('region',name='Top insertion candidates',exact=True).locator('tbody tr')).to_have_count(5)
                 page.get_by_role('button',name='PAP',exact=True).click()
@@ -141,7 +145,7 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(dialog).to_have_count(0)
                 expect(page.get_by_role('button',name='District office',exact=True)).to_be_visible()
                 page.reload(wait_until='networkidle')
-                expect(page.get_by_role('tab',name='Insertions',exact=True)).to_have_attribute('aria-selected','true')
+                expect(subnav.get_by_role('link',name='Insertions',exact=True)).to_have_attribute('aria-current','page')
                 expect(page.get_by_label('Analysis candidate group',exact=True)).to_have_value('third_only')
                 link=page.get_by_role('link',name='Review comparison',exact=True).first
                 href=link.get_attribute('href');assert 'record=' in href and 'region_match=ignore' in href
@@ -171,7 +175,7 @@ with tempfile.TemporaryDirectory() as folder:
                 dialog.get_by_role('button',name='Close group records',exact=True).click()
                 expect(dialog).to_have_count(0)
                 page.reload(wait_until='networkidle')
-                expect(page.get_by_role('tab',name='Deletions',exact=True)).to_have_attribute('aria-selected','true')
+                expect(subnav.get_by_role('link',name='Deletions',exact=True)).to_have_attribute('aria-current','page')
                 expect(page.get_by_label('Analysis deletion group',exact=True)).to_have_value('suggested')
                 page.screenshot(path=f'/tmp/analysis-deletions-{width}.png')
                 # Adjustments subtab: reading ledger plus cross-document differences (lazy detail).
@@ -206,7 +210,7 @@ with tempfile.TemporaryDirectory() as folder:
                 # Chainage subtab: scope split (all data vs revised pairs) ×
                 # stages — overview/benchmark for all, patterns/records for
                 # the matched-pair subset.
-                page.get_by_role('tab',name='Chainage',exact=True).click()
+                subnav.get_by_role('link',name='Chainage',exact=True).click()
                 expect(page.get_by_role('heading',name='Chainage amendments',exact=True)).to_be_visible(timeout=60000)
                 # Default scope: all chainage data → population overview.
                 scopes=page.get_by_role('tablist',name='Chainage scope',exact=True)
@@ -256,7 +260,7 @@ with tempfile.TemporaryDirectory() as folder:
                 page.screenshot(path=f'/tmp/analysis-chainage-{width}.png')
                 page.get_by_label('Chainage focus',exact=True).select_option('all')
                 # Groupings subtab: shell clusters with URL-routed member modal.
-                page.get_by_role('tab',name='Groupings',exact=True).click()
+                subnav.get_by_role('link',name='Groupings',exact=True).click()
                 expect(page.get_by_role('heading',name=re.compile(r'^Groupings'),exact=False)).to_be_visible(timeout=60000)
                 expect(page.get_by_role('region',name='Insertion region rollup',exact=True)).to_be_visible()
                 insertions=page.get_by_role('region',name='Insertion candidate groups',exact=True)
@@ -285,11 +289,11 @@ with tempfile.TemporaryDirectory() as folder:
                 assert 'table=groupings-insertions' in page.url,(page.url,)
                 expect(page.locator('#table-groupings-insertions')).to_have_class(re.compile(r'table-target'))
                 page.goto(base+'#analysis?view=roadgroups&table=groupings-deletions',wait_until='networkidle')
-                expect(page.get_by_role('tab',name='Groupings',exact=True)).to_have_attribute('aria-selected','true')
+                expect(subnav.get_by_role('link',name='Groupings',exact=True)).to_have_attribute('aria-current','page')
                 expect(page.locator('#table-groupings-deletions')).to_have_class(re.compile(r'table-target'),timeout=60000)
                 page.screenshot(path=f'/tmp/analysis-groupings-{width}.png')
                 # Statistics subtab: descriptive lenses render from the same lazy payload.
-                page.get_by_role('tab',name='Statistics',exact=True).click()
+                subnav.get_by_role('link',name='Statistics',exact=True).click()
                 expect(page.get_by_role('heading',name='Benford first-digit',exact=True)).to_be_visible(timeout=60000)
                 expect(page.get_by_role('heading',name='Rounding pattern',exact=True)).to_be_visible()
                 expect(page.get_by_role('region',name='Rounding pattern',exact=True)).to_contain_text('₱1.000M')

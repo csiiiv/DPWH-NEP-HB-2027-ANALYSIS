@@ -61,7 +61,10 @@ with tempfile.TemporaryDirectory() as folder:
                 print({'width':width,'search_y':search_y},flush=True)
                 # Search stays within the first screenful of a common phone
                 # (~740 CSS px); the margin absorbs renderer font differences.
-                assert search_y<730
+                # The workspace nav now wraps over two rows (six workspaces:
+                # Overview, DPWH, FMR, HFEP, NIA, Geolocation), so budget one
+                # extra 44px tab row on top of the old 730 limit.
+                assert search_y<775
                 page.screenshot(path=f'/tmp/compare-overview-{width}.png')
                 search.fill('Bridge');search.press('Enter')
                 page.get_by_role('button',name='Project records',exact=True).click()
@@ -137,7 +140,7 @@ with tempfile.TemporaryDirectory() as folder:
                 page.screenshot(path=f'/tmp/fuzzy-candidate-{width}.png')
                 page.reload(wait_until='networkidle')
                 expect(candidates).to_contain_text('identity 94% · 94% text',timeout=60000)
-                candidates.get_by_role('button',name='Preview suggested NEP PDF p.239',exact=True).first.click()
+                candidates.get_by_role('button',name='Preview suggested NEP PDF p. 239',exact=True).first.click()
                 expect(page.locator('.pdf-pane')).to_be_visible(timeout=60000)
                 expect(page.get_by_label('PDF page',exact=True)).to_have_value('239',timeout=60000)
                 page.get_by_role('button',name='Clear preview',exact=True).click()

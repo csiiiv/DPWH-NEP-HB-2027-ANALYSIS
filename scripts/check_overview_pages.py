@@ -7,6 +7,7 @@ from io import StringIO
 import json
 import os
 from pathlib import Path
+import re
 import tempfile
 import threading
 
@@ -51,8 +52,15 @@ def main():
                     expect(page.locator('.overview-workspace-card')).to_have_count(4)
                     assert not any(name in url for url in requests for name in ['comparison_projects_2027.json','fmr_workbench.json','hfep_workbench.json','nia_workbench.json','gps_workbench.json','pdf.worker'])
                     assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
-                    page.get_by_label('Show exact pesos',exact=True).check()
-                    assert 'exact=1' in page.url
+                    # click + explicit wait rather than .check(): the checkbox is
+                    # React-controlled and its checked prop is derived from the
+                    # URL hash, so on a slow runner Playwright's built-in
+                    # post-click state verification can race the hashchange
+                    # re-render ("Clicking the checkbox did not change its
+                    # state") even though the navigation succeeded.
+                    page.get_by_label('Show exact pesos',exact=True).click()
+                    expect(page).to_have_url(re.compile(r'exact=1'))
+                    expect(page.get_by_label('Show exact pesos',exact=True)).to_be_checked()
                     for w in data['workspaces']:
                         card = page.get_by_role('article',name=w['label']+' →',exact=True)
                         expect(card).to_contain_text(f"{w['insertions']['count']:,} {w['count_unit']}")
