@@ -17,8 +17,6 @@ export const routes = {
   house: { label: "House GAB", file: "hb_native_verification.html" },
   nep: { label: "DBM NEP", file: "nep_source_verification.html" },
   transparency: { label: "DPWH Transparency NEP", file: "dpwh_nep_api_verification.html" },
-  resources: { label: "Resources" },
-  about: { label: "About" },
   "house-nep": { label: "House / NEP detail", file: "source_comparison_2027.html" },
   "nep-detail": { label: "NEP detail", file: "nep_2027_tree.html" },
 };
@@ -45,8 +43,6 @@ export const workspaces = {
       ["house", "House GAB"],
       ["nep", "DBM NEP"],
       ["transparency", "DPWH Transparency NEP"],
-      ["resources", "Resources"],
-      ["about", "About"],
     ],
   },
   fmr: {
@@ -95,6 +91,7 @@ export const workspaces = {
     ],
   },
   sources: { label: "Sources", prefix: "sources", pages: [["home", "Datasets"]] },
+  about: { label: "About", prefix: "about", pages: [["home", "About this workbench"]] },
 };
 // Tab list exports kept for existing consumers (WorkbenchHeader, tests).
 export const dpwhPages = workspaces.dpwh.pages;
@@ -112,7 +109,10 @@ export function readWorkspace(hash) {
   const path = (hash ?? (typeof location === "undefined" ? "" : location.hash))
     .replace(/^#\/?/, "")
     .split("?")[0];
-  const first = path.split("/")[0];
+  let first = path.split("/")[0];
+  // The DPWH Resources tab was folded into the Sources workspace; keep its
+  // historical links working.
+  if (first === "resources") return "sources";
   if (!path) return "overview";
   return workspaceByPrefix[first] ?? "dpwh";
 }
@@ -137,6 +137,7 @@ export function routeHref(key, params = {}, workspace = typeof location === 'und
   const query = new URLSearchParams(entries.filter(([,value]) => value != null && value !== '')).toString();
   if (workspace === 'overview' && key === 'home') return `#overview${query ? '?' + query : ''}`;
   if (workspace === 'sources' && key === 'home') return `#sources${query ? '?' + query : ''}`;
+  if (workspace === 'about' && key === 'home') return `#about${query ? '?' + query : ''}`;
   const prefix = workspaces[workspace]?.prefix ? `${workspaces[workspace].prefix}/` : "";
   return `#${prefix}${key}${query ? "?" + query : ""}`;
 }
@@ -147,6 +148,7 @@ export function routeHref(key, params = {}, workspace = typeof location === 'und
 export function workspaceHref(target, route = readRoute()) {
   if (target === 'overview') return '#overview';
   if (target === 'sources') return '#sources';
+  if (target === 'about') return '#about';
   const targetPages = workspaces[target]?.pages ?? [];
   const currentKey = route.key;
   const key = targetPages.some(([k]) => k === currentKey)

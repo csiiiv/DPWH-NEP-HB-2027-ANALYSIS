@@ -59,7 +59,9 @@ function annex(data, key, label, scope, matching) {
     grain: 'One printed project allocation record', count_unit: 'project records', matching, ...result,
     controls: {house_php: result.sources.house.amount_php, nep_php: result.sources.nep.amount_php, residual_php: 0},
     links: {home: `#${key}/home`, insertions: analysis(key, 'insertions'), deletions: analysis(key, 'deletions'),
-      adjustments: analysis(key, 'adjustments'), house: `#${key}/house`, nep: `#${key}/nep`,
+      adjustments: analysis(key, 'adjustments'), increases: analysis(key, 'adjustments', '&direction=increased'),
+      decreases: analysis(key, 'adjustments', '&direction=decreased'),
+      house: `#${key}/house`, nep: `#${key}/nep`,
       compare: `#${key}/compare`, highlights: `#${key}/highlights`}};
 }
 
@@ -73,6 +75,10 @@ export function dpwhSummary(overview, detail) {
     ensure(result.sources[side].amount_php === headlines.sources[key].amount_php, 'DPWH headline amount');
     ensure(result.sources[side].count === headlines.sources[key].records, 'DPWH headline record count');
   }
+  // The landing-page coverage table also shows the 2nd House reading; carry
+  // its published headline total so the page never loads the detail payload.
+  const second = headlines.sources.second;
+  ensure(Number.isSafeInteger(second.amount_php) && second.records > 0, 'DPWH 2nd-reading headline unavailable');
   ensure(result.insertions.amount_php === headlines.rankings.third.no_suggestion.amount_php +
     headlines.rankings.third.unresolved.amount_php, 'DPWH insertion membership differs from Analysis');
   ensure(result.deletions.amount_php === headlines.deletions.no_suggestion.amount_php +
@@ -83,12 +89,14 @@ export function dpwhSummary(overview, detail) {
     basis: 'HGAB3 · 3rd reading ↔ DBM NEP · region-difference candidates included',
     grain: 'Source allocation records; grouped members counted individually', count_unit: 'allocation records',
     matching: 'Retained NEP/Transparency anchors and provisional title/scope matches; fuzzy suggestions stay unmatched.', ...result,
+    readings: {second: {count: second.records, amount_php: second.amount_php}},
     controls: {house_php: overview.readingSummary.third.new_appropriations,
       nep_php: overview.summary.stages.official_nep.new_appropriations_php,
       residual_php: null, note: 'Agency new appropriations include allocations outside the operations comparison ledger.'},
     links: {home: '#home', insertions: '#compare?view=projects&region_match=ignore&flag=house_only',
       deletions: '#compare?view=projects&region_match=ignore&flag=nep_only_all', adjustments: analysis('dpwh', 'adjustments'),
-      house: '#house?reading=third', nep: '#nep', compare: '#compare', highlights: '#highlights'}};
+      increases: '#compare?view=projects&region_match=ignore&flag=amount_increase', decreases: '#compare?view=projects&region_match=ignore&flag=amount_decrease',
+      house: '#house?reading=third', house_second: '#house?reading=second', nep: '#nep', compare: '#compare', highlights: '#highlights'}};
 }
 
 export function hfepSummary(data) {
@@ -129,7 +137,9 @@ export function hfepSummary(data) {
     sources, insertions, deletions, adjustments, delta_php: ledgerDelta, controls,
     direction_note: 'Here changes are House minus NEP; HFEP Analysis displays NEP minus House. Paired column additions/drops remain in adjustments.',
     links: {home: '#hfep/home', insertions: analysis('hfep', 'insertions'), deletions: analysis('hfep', 'deletions'),
-      adjustments: analysis('hfep', 'adjustments'), house: '#hfep/house', nep: '#hfep/nep', compare: '#hfep/compare', highlights: '#hfep/highlights'}};
+      adjustments: analysis('hfep', 'adjustments'), increases: analysis('hfep', 'adjustments', '&event=revised'),
+      decreases: analysis('hfep', 'adjustments', '&event=revised'),
+      house: '#hfep/house', nep: '#hfep/nep', compare: '#hfep/compare', highlights: '#hfep/highlights'}};
 }
 
 export function overviewSummary({dpwhOverview, dpwhDetail, fmr, nia, hfep}, builtAt) {

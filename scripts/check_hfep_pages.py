@@ -81,8 +81,9 @@ def main():
 
                     # Agency controls use their own document: House Volume I-A
                     # rather than the Volume I-B facility annex.
-                    goto('highlights?story=agency-check')
+                    goto('highlights?story=lgu-split')
                     story = page.get_by_role('dialog', name=re.compile('^Highlight evidence:'))
+                    story.get_by_text('Scope note: annex capital outlays and operating expenses', exact=True).click()
                     for stage in ['nep', 'house']:
                         source = data['stages'][stage]['agency_check']['source']
                         story.get_by_role('button', name=f'Agency row · PDF p. {source["pdf_page"]}').click()

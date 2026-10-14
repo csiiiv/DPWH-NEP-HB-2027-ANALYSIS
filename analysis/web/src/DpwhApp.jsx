@@ -26,8 +26,6 @@ const SourceWorkspace = lazy(() => import("./SourceWorkspace.jsx"));
 const Analysis = lazy(()=>import("./Analysis.jsx"));
 const Highlights = lazy(()=>import("./Highlights.jsx"));
 const Comparison = lazy(() => import("./Comparison.jsx"));
-const Resources = lazy(() => import("./Resources.jsx"));
-const About = lazy(() => import("./About.jsx"));
 export default function DpwhApp() {
   const [route, setRoute] = useState(readRoute);
   useEffect(() => {
@@ -53,7 +51,7 @@ export default function DpwhApp() {
       <WorkbenchHeader route={route.key} />
       <main id="main" tabIndex={-1} className="shell">
         <Suspense fallback={<p role="status">Loading workspace…</p>}>
-          {route.key === "highlights" ? <Highlights route={route} /> : route.key === "analysis" ? <Analysis route={route} /> : route.key === "compare" ? <Comparison route={route} /> : route.key === "home" ? <Home /> : route.key === "resources" ? <Resources /> : route.key === "about" ? <About /> : routes[route.key] ?
+          {route.key === "highlights" ? <Highlights route={route} /> : route.key === "analysis" ? <Analysis route={route} /> : route.key === "compare" ? <Comparison route={route} /> : route.key === "home" ? <Home /> : routes[route.key] ?
             <SourceWorkspace key={route.key} route={route} /> :
             <section><h1>Page not found</h1><p>This workbench route is unavailable.</p><a href="#home">Return home</a></section>}
         </Suspense>
@@ -79,8 +77,6 @@ const workspaces = [
   {href: "#house", title: "House GAB", body: "Native I-B hierarchy with PS/MOOE/CO controls; switch to I-C project trees and both readings."},
   {href: "#nep", title: "DBM NEP", body: "Canonical NEP tree, expenditure classes, source review queue, and II-B PDF preview."},
   {href: "#transparency", title: "DPWH Transparency NEP", body: "Retained Transparency listing hierarchy and snapshot checks."},
-  {href: "#resources", title: "Resources", body: "Direct links to retained JSON datasets, audits, and method docs."},
-  {href: "#about", title: "About", body: "What this workbench covers, how it is built, and where the project documentation lives."},
 ];
 
 function Home() {

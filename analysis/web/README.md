@@ -102,6 +102,27 @@ Highlights accepts `story=<finding-id>` and story filters. Coverage and candidat
 funding-change tables appear first. Each of the eight findings opens its own
 fact panel, supporting records/controls, exports, PDF evidence and onward link.
 
+HFEP and FMR highlight actions are contextual buttons with three source-derived
+key figures, an investigation question and evidence limits. Counts follow the
+available findings. Existing `story` IDs remain shareable.
+HFEP's funding story reconciles printed columns and category controls, while
+House balance exposes every internal control. `evidenceNode` selects a House
+control or a reviewed NEP facility within its highlight dialog. The extraction
+population includes both flagged and interpreted facilities, counted once.
+The `hospital-priorities` story asks why DOH hospital allocations fall while
+LGU hospital allocations rise, with the two printed category controls and both
+hospital source populations. `evidenceStage=nep|house` selects a source and
+`evidenceNode` restores the selected hospital record. The former `agency-check`
+story link remains an alias. Annex/MOOE reconciliation is now a collapsed scope
+note within the capital-outlay reduction story (`lgu-split`).
+FMR funding stories include regional bridges and supporting candidate records;
+`evidenceProject` selects coordinate/segment evidence within a source story.
+`evidencePopulation=open|history` separates remaining coordinate findings from
+original extraction flags, including NEP's empty open population.
+Run `python scripts/check_annex_highlights.py` after packaging to validate these
+actions on desktop and mobile. See [highlight evidence review](../docs/highlights_evidence_review.md)
+for the findings and editorial review notes.
+
 `readingNote` links the bounded House comparison: extracted text is identical on
 all 60 FMR annex pages (PDF 667–726) in the retained 2nd/3rd-reading copies. The
 app still uses the normalized working-copy ledger; it does not fabricate a

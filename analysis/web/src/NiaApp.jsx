@@ -6,7 +6,7 @@ import AnalysisValue from './AnalysisValue.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {readRoute, routeHref} from './routes.js';
 import {siteUrl} from './data.js';
-import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringLabels, aiMonitoringProjects, concentration, concentrationRows, fundingGroups, fundingSummary, share} from './niaAnalysis.js';
+import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringLabels, aiMonitoringProjects, aiMonitoringReconciliation, concentration, concentrationRows, fundingGroups, fundingSummary, highlightsCards, share} from './niaAnalysis.js';
 import {allocationStats, analysisCandidateRows, bandRows, candidateAggregates, candidateGroupRows, comparisonRows, comparisonFilterLabels,
   csvText, filterComparisons, filterProjects, flagLabels, money, signedMoney, signedPct, pctChange, niaTabs,
   repeatedAmounts, roundingLadder, sourceArithmetic, sourceNode, sourcePath,
@@ -170,7 +170,7 @@ function Evidence({stage, id, route, onPdf}) {
   return <section className="fmr-evidence fmr-selected-evidence" aria-label="Selected source evidence">
     <nav className="fmr-breadcrumbs" aria-label="Source breadcrumbs">{sourcePath(stage, id).map((n, i) => <React.Fragment key={n.id}>
       {i > 0 && <span className="sep">/</span>}{n.id.startsWith('heading:') ? <span>{n.label}</span>
-        : <a href={href(route.key, {...paramsOf(route), node: n.id})}>{n.label}</a>}
+        : <a href={route.key === 'highlights' ? href(stage.key, {node: n.id}) : href(route.key, {...paramsOf(route), node: n.id})}>{n.label}</a>}
     </React.Fragment>)}</nav>
     <span className="fmr-badge">{node.is_root ? 'Derived annex total' : node.is_subprogram ? 'Printed sub-program control' : 'Project leaf'}</span>
     <h2>{node.label}</h2><p className="fmr-evidence-amount">{money(node.amount_php)}</p>
@@ -302,32 +302,164 @@ function Compare({data, route, rows, onPdf, inlineSource, clearPdf}) {
     </div>
   </div>;
 }
-function Highlights({data, route, rows, onPdf}) {
+function CoverageTables({data, rows, route, onPdf}) {
   const agg = candidateAggregates(rows);
-  const coverage = fundingSummary(rows).sources;
-  return <><Hero title="NIA highlights"><p>Findings bounded to the retained irrigation schedules.</p></Hero>
-    <section className="fmr-section"><h2>Annex funding rises by {money(data.comparison_summary.delta_php)}</h2>
-      <p>NEP has {data.stages.nep.projects.length} project rows; the supplied House annex has {data.stages.house.projects.length}. The controls below account for the full difference.</p>
-      <Controls data={data} route={route} onPdf={onPdf}/></section>
-    <section className="fmr-section"><h2>{agg.counts.paired} candidate pairs; {data.comparison_summary.changed_pairs} have different amounts</h2>
-      <p>{agg.unchanged} pairs have equal allocations. Unique canonical titles within the same sub-program form candidates;
-        OCR/title changes and repeated titles can leave rows unmatched.</p>
-      <a href={href('compare', {view: 'projects', status: 'changed'})}>Inspect changed pairs →</a>
-      <p>Paired difference {signedMoney(agg.paired_delta_php)} + House-only {money(agg.house_only_php)} − NEP-only {money(agg.nep_only_php)} = {signedMoney(agg.net_delta_php)}.</p>
-      <p>The provisional pairs cover {(coverage.nep.allocation_share * 100).toFixed(1)}% of NEP allocation and {(coverage.house.allocation_share * 100).toFixed(1)}% of House allocation.
-        {' '}<a href={href('analysis', {view: 'candidates'})}>See funding reconciliation and pairing coverage →</a></p>
-      <a href={href('compare', {view: 'projects'})}>Inspect all candidate observations →</a></section>
-    <section className="fmr-section"><h2>Agency scope extends beyond the annex</h2>
-      <p>The House agency table adds a CARP-linked ₱698,067,000 row to Operations. Its ₱45,172,024,000 agency total covers a broader scope.</p>
-      <SourceButton source={data.agency_controls.find(c => c.agency_only).source} onPdf={onPdf} label="Agency PAP controls"/>
-      <SourceButton source={data.agency_controls.find(c => c.label === 'TOTAL NEW APPROPRIATIONS').source} onPdf={onPdf} label="Agency total and CARP provision"/>
-    </section>
-    <section className="fmr-section"><h2>Extraction review remains traceable</h2>
-      {Object.values(data.stages).map(s => <p key={s.key}>{s.label}: {s.projects.filter(p => p.extraction_flags?.length).length} extraction-flagged rows;
-        {' '}{s.projects.filter(p => p.repeated_title).length} rows with repeated exact titles.
-        {' '}<a href={href(s.key, {view: 'review'})}>Inspect source review →</a></p>)}
-      <p>Repeated titles remain separate printed allocations. Selected NEP rows retain rendered adjudication crops.</p>
-    </section><ScopeNote/>
+  const changes = [
+    {id: 'increased', label: 'Paired increases', count: agg.increased.count, php: agg.increased.amount, status: 'increased'},
+    {id: 'decreased', label: 'Paired reductions', count: agg.decreased.count, php: -agg.decreased.amount, status: 'decreased'},
+    {id: 'house_only', label: 'House-only allocations', count: agg.counts.house_only, php: agg.house_only_php, status: 'house_only'},
+    {id: 'nep_only', label: 'NEP-only allocations', count: agg.counts.nep_only, php: -agg.nep_only_php, status: 'nep_only'},
+    {id: 'unchanged', label: 'Unchanged candidate pairs', count: agg.unchanged, php: 0, status: 'unchanged'},
+  ];
+  return <><section className="fmr-section nia-highlight-coverage"><h2>Budget coverage by stage</h2>
+    <p className="fmr-muted">Six detailed Irrigation Program sub-programs on both stages. The supplied House copy's legislative stage is not independently authenticated; NIA has no separate 2nd/3rd-reading annex.</p>
+    <Table route={route} rows={['nep', 'house'].map(key => ({id: key, stage: data.stages[key], label: stageLabels[key]}))}
+      label="NIA budget coverage by stage" initialSort={{key: 'id', direction: 'desc'}} columns={[
+      {key: 'label', label: 'Budget stage', scope: 'row', render: r => <a href={href(r.id)}>{r.label}</a>},
+      {key: 'projects', label: 'Source rows', align: 'num', value: r => r.stage.projects.length},
+      {key: 'amount', label: 'Annex allocation (PHP)', align: 'num', value: r => allocationStats(r.stage.projects).total, render: r => money(allocationStats(r.stage.projects).total)},
+      {key: 'controls', label: 'Balanced controls', align: 'num', value: r => r.stage.audit_summary.internal_control_checks ?? data.subprogram_controls.length},
+      {key: 'flagged', label: 'Extraction-flagged rows', align: 'num', value: r => r.stage.projects.filter(p => (p.extraction_flags || []).length).length},
+    ]}/></section>
+    <section className="fmr-section nia-highlight-coverage"><h2>House GAB vs. DBM NEP: candidate changes</h2>
+      <p className="fmr-muted">Counts describe comparison observations. Funding effects reconcile the independent stage totals; unmatched rows remain candidate observations, not certified changes.</p>
+      <Table route={route} rows={changes} label="NIA candidate funding changes" initialSort={{key: 'php', direction: 'desc'}} columns={[
+        {key: 'label', label: 'Candidate population', scope: 'row', render: r => <a href={href('compare', {view: 'projects', status: r.status})}>{r.label}</a>},
+        {key: 'count', label: 'Comparison rows', align: 'num'},
+        {key: 'php', label: 'Funding effect (PHP)', align: 'num', render: r => <AnalysisValue value={r.php} signed/>},
+      ]}/>
+      <p className="fmr-funding-bridge">Net funding change: <AnalysisValue value={agg.paired_delta_php} signed/> paired + <AnalysisValue value={agg.house_only_php}/> House only − <AnalysisValue value={agg.nep_only_php}/> NEP only = <strong><AnalysisValue value={agg.net_delta_php} signed/></strong>.</p>
+    </section></>;
+}
+function HighlightMetrics({story}) {
+  return <section className="nia-highlight-metrics" aria-label="Highlight key figures">{story.metrics.map(m =>
+    <Stat key={m.label} label={m.label} value={m.format === 'signed' ? signedMoney(m.value) : m.format === 'money' ? money(m.value)
+      : typeof m.value === 'number' ? m.value.toLocaleString('en-PH') : m.value}/>)}</section>;
+}
+function HighlightGroups({story, rows, data, route}) {
+  const side = story.id === 'deletions' ? 'nep' : 'house';
+  const groups = candidateGroupRows(rows, story.id, 'subprogram', data.stages.house.subprograms);
+  return <section><h3>Unmatched allocations by sub-program</h3>
+    <Table route={route} rows={groups} label="NIA unmatched allocations by sub-program" initialSort={{key: 'amount_php', direction: 'desc'}} columns={[
+      {key: 'label', label: 'Sub-program', scope: 'row'}, {key: 'count', label: 'Source rows', align: 'num'},
+      {key: 'amount_php', label: `${stageLabels[side]} allocation (PHP)`, align: 'num', render: g => money(g.amount_php)},
+    ]}/></section>;
+}
+function HighlightAiEvidence({story, data, route, onPdf}) {
+  const p = paramsOf(route), side = p.evidenceStage === 'house' ? 'house' : 'nep';
+  const insertions = p.evidenceStage === 'insertions';
+  const projects = aiMonitoringProjects(filterProjects(story.projects[side], {...p, status: ''}), p);
+  const candidates = aiMonitoringInsertions(story.rows, {...p, status: ''});
+  return <section aria-label="AI monitoring source evidence">
+    <h3>Allocations whose titles mention AI monitoring</h3>
+    <Tabs route={route} param="evidenceStage" defaultKey="nep" ariaLabel="AI evidence populations"
+      items={[[ 'nep', 'NEP AI rows'], ['house', 'House AI rows'], ['insertions', 'Unmatched House AI rows']]}
+      reset={{sort: null, dir: null, pair: null}}/>
+    <Filters route={route} subprograms={data.stages.house.subprograms} status={false}/>
+    <label className="nia-ai-basis">Title basis<select aria-label="AI evidence title basis" value={p.aiBasis || 'all'}
+      onChange={e => filterChange(route, {aiBasis: e.target.value})}><option value="all">All AI titles</option>
+      {Object.entries(aiMonitoringLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
+    <p>NEP Al/AL/AT OCR variants were checked against rendered pages and read AI; original extracted titles are retained.</p>
+    <div className="fmr-result-bar"><span>{insertions ? candidates.length : projects.length} supporting {insertions ? 'House-only candidate' : stageLabels[side]} rows · {money(allocationStats(insertions ? candidates.map(r => r.house) : projects).total)} in whole-project allocations</span>
+      <button onClick={() => insertions ? exportComparisons(candidates) : exportProjects(projects, side, true)}>Export filtered CSV</button></div>
+    {insertions ? <div className="comparison-table nia-analysis-ledger"><ComparisonTable tableId="highlights-ai-insertions" rows={candidates} route={route} onPdf={onPdf} toolbar={false}/></div>
+      : <ProjectTable tableId={`highlights-ai-${side}`} projects={projects} route={route} stage={side} onPdf={onPdf} aiMonitoring/>}
+  </section>;
+}
+function Highlights({data, route, rows, onPdf}) {
+  const cards = useMemo(() => highlightsCards(data, rows), [data, rows]);
+  const story = cards.find(c => c.id === route.params.get('story'));
+  const p = paramsOf(route);
+  const filteredControls = story?.controls
+    ? story.controls.filter(s => (!p.subprogram || s.key === p.subprogram) &&
+        (p.q || '').toLocaleLowerCase().trim().split(/\s+/).filter(Boolean)
+          .every(t => `${s.label} ${s.program_group}`.toLocaleLowerCase().includes(t)))
+    : [];
+  // Control-story search targets printed headings, so its bridge and records
+  // follow the selected controls rather than searching unrelated project titles.
+  const controlKeys = new Set(filteredControls.map(control => control.key));
+  const bridgeRows = story?.controls ? rows.filter(row => controlKeys.has(row.subprogram_key))
+    : filterComparisons(story?.rows || rows, {...p, status: ''});
+  const filteredRows = story?.rows ? story.controls
+    ? story.rows.filter(row => controlKeys.has(row.subprogram_key)) : filterComparisons(story.rows, p) : [];
+  const reset = {sort: null, dir: null, page: null, q: null, subprogram: null, status: null, pair: null,
+    evidenceStage: null, evidenceProject: null, aiBasis: null, table: null};
+  const close = () => navigate(route, {story: null, ...reset});
+  return <><Hero title="NIA highlights"><p>Findings bounded to the retained irrigation schedules, each opening its supporting records and printed evidence.</p></Hero><ScopeNote/>
+    <CoverageTables data={data} rows={rows} route={route} onPdf={onPdf}/>
+    <h2>Findings to investigate</h2>
+    <p className="muted">Each finding opens its supporting records and printed evidence. Counts are source rows; candidate status never certifies insertions or deletions.</p>
+    <div className="fmr-highlight-grid">{cards.map((card, i) => <article key={card.id} className="fmr-highlight">
+      <p className="fmr-eyebrow">{String(i + 1).padStart(2, '0')} · {card.kind}</p>
+      <h3>{card.title}</h3>
+      {card.value != null && <strong>{card.signed ? signedMoney(card.value) : card.money ? money(card.value) : typeof card.value === 'number' ? card.value.toLocaleString('en-PH') : card.value}</strong>}
+      <p>{card.body}</p>
+      <p className="fmr-story-prompt">{card.prompt}</p>
+      <div className="highlight-links">
+        <button type="button" className="nia-highlight-open" aria-haspopup="dialog" onClick={() => navigate(route, {...reset, story: card.id})}>{card.actionLabel} →</button>
+        <a href={card.params ? href(card.href, card.params) : href(card.href)}>Open in workbench →</a>
+      </div>
+    </article>)}</div>
+    {story && <Dialog key={story.id} label={`Highlight evidence: ${story.title}`} title={story.title} closeLabel="Close evidence" className="nia-highlight-dialog fmr-story-dialog" onClose={close}>
+      <div className="fmr-dialog-body">
+      <HighlightMetrics story={story}/>
+      <p className="muted">Key figures cover the full finding. Filters below narrow the supporting records.</p>
+      <div className="fmr-story-facts"><h3>What to examine</h3><dl>
+        <div><dt>Evidence basis</dt><dd>{story.takeaway}</dd></div>
+        <div><dt>Investigation question</dt><dd>{story.prompt}</dd></div>
+      </dl></div>
+      <p className="nia-evidence-limit">{story.limit}</p>
+      <div className="fmr-story-actions">
+        <a className="secondary" href={story.params ? href(story.href, story.params) : href(story.href)}>Continue in the workbench</a>
+        <ShareLink/>
+        {['nep', 'house'].map(side => <a key={side} href={siteUrl(data.stages[side].metadata.source_pdf)} download>Download {stageLabels[side]} PDF</a>)}
+      </div>
+      {story.controls && <section><h3>Printed sub-program movements</h3>
+        <Filters route={route} subprograms={story.controls} status={false} controls/>
+        <div className="fmr-result-bar"><span>{filteredControls.length} supporting printed controls</span><button onClick={() => exportControls(filteredControls)}>Export controls CSV</button></div>
+        <Controls data={data} route={route} onPdf={onPdf} rows={filteredControls}/></section>}
+      {['annex-increase', 'subprogram-shift', 'pairing-coverage'].includes(story.id) && <FundingAnalysis data={data} route={route}
+        rows={bridgeRows}/>}
+      {story.id === 'ai-monitoring' && <HighlightAiEvidence story={story} data={data} route={route} onPdf={onPdf}/>}
+      {story.rows && story.id !== 'ai-monitoring' && <section><h3>Supporting comparison records</h3>
+        {!story.controls && <Filters route={route} subprograms={data.stages.house.subprograms} comparison status={false}/>}
+        {['insertions', 'deletions'].includes(story.id) && <HighlightGroups story={story} rows={filteredRows} data={data} route={route}/>}
+        <div className="fmr-result-bar"><span>{filteredRows.length.toLocaleString()} supporting comparison rows · {signedMoney(candidateAggregates(filteredRows).net_delta_php)} in the funding bridge</span>
+          <button onClick={() => exportComparisons(filteredRows)}>Export filtered CSV</button></div>
+        <div className="comparison-table nia-analysis-ledger"><ComparisonTable tableId="highlights-records" rows={filteredRows} route={route} onPdf={onPdf} toolbar={false}
+          initialSort={story.id === 'deletions' ? {key: 'nep_php', direction: 'desc'} : story.id === 'changed-pairs' ? {key: 'delta_php', direction: 'asc'} : undefined}/></div>
+        <p className="muted">Pairings are provisional; unmatched rows remain candidate observations, not certified insertions or deletions.</p></section>}
+      {story.agency && <div className="fmr-source-audits"><section className="fmr-panel"><h3>House agency-table reconciliation</h3>
+        <p className="nia-scope-equation">Annex {money(allocationStats(data.stages.house.projects).total)} + agency-only CARP {money(story.agency.find(c => c.agency_only)?.total_php)} = Operations {money(story.agency.find(c => c.label === 'Sub-total, Operations')?.total_php)}.</p>
+        <p>Agency controls provide scope context. Development and Operations include the agency-only CARP row. Context-only rows have no annex difference.</p>
+        <Table route={route} rows={story.agency.map((c, i) => ({...c, id: i}))} label="NIA agency controls" columns={[
+          {key: 'label', label: 'Agency row'},
+          {key: 'total_php', label: 'Agency total (PHP)', align: 'num', render: c => money(c.total_php)},
+          {key: 'annex_total_php', label: 'Reconciliation basis (PHP)', align: 'num', render: c => money(c.annex_total_php)},
+          {key: 'difference_php', label: 'Difference (PHP)', align: 'num', render: c => money(c.difference_php)},
+          {key: 'scope_note', label: 'Scope note'},
+          {key: 'source', label: 'Evidence', sortable: false, render: c => <SourceButton source={c.source} onPdf={onPdf}/>},
+        ]}/></section></div>}
+      {story.review && <><section className="fmr-panel"><h3>Rendered evidence for flagged NEP rows</h3>
+        <label>Select flagged NEP row<select aria-label="Flagged NEP evidence" value={p.evidenceProject || story.review.flagged[0]?.id || ''}
+          onChange={e => navigate(route, {evidenceProject: e.target.value})}>
+          {story.review.flagged.map(project => <option key={project.id} value={project.id}>{project.title}</option>)}
+        </select></label>
+        {story.review.flagged.some(project => project.id === (p.evidenceProject || story.review.flagged[0]?.id))
+          ? <Evidence stage={data.stages.nep} id={p.evidenceProject || story.review.flagged[0]?.id} route={route} onPdf={onPdf}/>
+          : <p role="alert">Select a retained flagged row to inspect its evidence.</p>}
+      </section><div className="fmr-pair-evidence">
+        {[['NEP extraction-flagged rows', story.review.flagged, 'nep'],
+          ['NEP repeated exact titles', story.review.repeatedNep, 'nep'],
+          ['House repeated exact titles', story.review.repeatedHouse, 'house']].map(([label, projects, stage]) =>
+          <section key={label} className="fmr-panel"><h3>{label}</h3>
+            <p>{projects.length} rows · {money(allocationStats(projects).total)}</p>
+            <ProjectTable tableId={`highlights-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} projects={projects} route={route} stage={stage} onPdf={onPdf}
+              onSelect={label === 'NEP extraction-flagged rows' ? id => navigate(route, {evidenceProject: id}) : undefined}/></section>)}
+      </div></>}
+      </div>
+    </Dialog>}
+    {route.params.get('story') && !story && <p role="alert">Finding not found. <button onClick={close}>Clear story selection</button></p>}
   </>;
 }
 function CandidateAnalysis({data, route, rows, onPdf, view}) {
@@ -442,6 +574,7 @@ function AiMonitoringAnalysis({data, stage, rows, route, onPdf}) {
   const stats = allocationStats(projects), annexTotal = allocationStats(stage.projects).total;
   const variants = projects.filter(project => aiMonitoringBasis(project) === 'ocr_variant');
   const insertions = aiMonitoringInsertions(rows, p), insertionStats = allocationStats(insertions.map(r => r.house));
+  const recon = aiMonitoringReconciliation(rows);
   const houseStats = allocationStats(aiMonitoringProjects(filterProjects(data.stages.house.projects, p), p));
   const percent = (value, total) => total ? `${(value / total * 100).toFixed(1)}%` : '—';
   const sourceRows = Object.values(data.stages).map(s => {
@@ -472,6 +605,7 @@ function AiMonitoringAnalysis({data, stage, rows, route, onPdf}) {
       <Stat label="Share of House AI projects" value={percent(insertionStats.count, houseStats.count)} detail={`Of ${houseStats.count} filtered House AI rows`}/>
       <Stat label="Share of House AI allocation" value={percent(insertionStats.total, houseStats.total)} detail={`Of ${money(houseStats.total)}`}/></div>
     <p>{insertions.filter(r => r.ambiguous_title).length} candidates have repeated-title ambiguity.</p>
+    <p className="muted">Reading note (full AI population, before filters): candidate allocations are a matching residual, not the source difference. Paired AI titles print identical amounts, so the whole NEP → House movement of {signedMoney(recon.net_delta_php)} (₱{(recon.nep_php / 1e9).toFixed(3)}B → ₱{(recon.house_php / 1e9).toFixed(3)}B) comes from unmatched rows — ₱{(recon.candidate_php / 1e9).toFixed(2)}B House-only against ₱{(recon.nep_only_php / 1e9).toFixed(2)}B NEP-only. {recon.twin_count} of {recon.candidate_count} candidates ({money(recon.twin_php)}) have an unpaired same-sub-program, same-amount NEP row, which marks a reworded or OCR-variant title rather than a certified new work; counterpart review may reclassify them.</p>
     <button className="group-open" onClick={() => navigate(route, {records: 'ai_insertions', page: null})}>Inspect insertion candidates</button>
     {p.records === 'ai_insertions' && <Dialog label="NIA AI monitoring insertion candidates" onClose={() => navigate(route, {records: null})}>
       <p>{insertionStats.count} House-only candidates · {money(insertionStats.total)} in whole project allocations.</p>
@@ -597,11 +731,11 @@ function Analysis({data, route, rows, onPdf}) {
     <ScopeNote/>
   </div>;
 }
-function Dialog({label, onClose, children}) {
+function Dialog({label, title = label, closeLabel = 'Close', className = '', onClose, children}) {
   const ref = useRef(null);
   useEffect(() => openModalDialog(ref.current), []);
-  return <dialog ref={ref} className="fmr-dialog" aria-label={label} onCancel={e => {e.preventDefault(); onClose();}}>
-    <div className="fmr-dialog-heading"><h2>{label}</h2><button onClick={onClose}>Close</button></div>{children}</dialog>;
+  return <dialog ref={ref} className={`fmr-dialog ${className}`} aria-label={label} onCancel={e => {e.preventDefault(); onClose();}}>
+    <div className="fmr-dialog-heading"><h2>{title}</h2><button onClick={onClose}>{closeLabel}</button></div>{children}</dialog>;
 }
 function CandidateEvidence({rows, route, onPdf}) {
   const id = route.params.get('pair');

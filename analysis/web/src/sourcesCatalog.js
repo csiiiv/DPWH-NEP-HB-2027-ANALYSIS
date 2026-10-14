@@ -30,6 +30,14 @@ export const sourceGroups = [
           "Agency-to-project paths, funding partitions, edge cases, source evidence, and rebuild commands, with House and NEP worked examples.",
       },
       {
+        label: "Shareable searches and comparison findings",
+        kind: "doc",
+        path: "analysis/docs/shareable_findings.md",
+        purpose: "URL settings for searches, filters, expanded records and source paths",
+        coverage:
+          "Includes optional region-independent candidates, with original source assignments flagged and strict matching as the default.",
+      },
+      {
         label: "Conventions and caveats",
         kind: "text",
         purpose: "Reading the catalogs below safely",
@@ -106,6 +114,53 @@ export const sourceGroups = [
         path: "analysis/data/house_reading_changes_2027.json",
         purpose: "Second- vs third-reading House project amount differences",
         coverage: "Includes the ₱134M Caloocan reallocation with per-project before/after amounts.",
+      },
+      {
+        label: "NEP tree validation and repair ledger",
+        kind: "repo",
+        path: "analysis/data/nep_2027_tree_validation.json",
+        purpose: "Provenance, historical extraction repairs, and check results for the canonical NEP tree",
+        coverage:
+          "54 historical extraction repairs. Arithmetic balance alone does not certify OCR amounts.",
+      },
+      {
+        label: "NEP native amount audit",
+        kind: "repo",
+        path: "analysis/data/nep_2027_native_amount_audit.json",
+        purpose: "Per-item native-text amount audit against the OCR PDF",
+        coverage:
+          "Supports the review queue after the per-item column reassessment.",
+      },
+      {
+        label: "NEP review queue",
+        kind: "repo",
+        path: "analysis/data/nep_2027_native_amount_review.json",
+        purpose: "Actionable source checks still open for human review",
+        coverage:
+          "3,193 actionable checks plus two informational derived groups. Pending checks, not confirmed errors.",
+      },
+      {
+        label: "House native I-B/I-C audits",
+        kind: "doc",
+        path: "analysis/docs/hb_native_ib_rollup_checks.md",
+        purpose: "Human-readable rollup, repair, and cross-volume check reports for both native House trees",
+        coverage:
+          "I-B: 660/660 internal nodes balance, 1,746 leaves reproduce ₱654.102015B. I-C: 2,686/2,686 internals balance, documents repair of the former ₱5.596B OCR-era Convergence shortfall. Machine-audit JSONs sit beside each.",
+      },
+      {
+        label: "GAB reference cross-check",
+        kind: "doc",
+        path: "analysis/docs/gab_fy2027_reference_crosscheck.md",
+        purpose: "How the external GAB dataset compares to native House readings",
+        coverage:
+          "22 exact control agreements per reading, plus the ₱134M third-reading reallocation checks.",
+      },
+      {
+        label: "Source verification overview",
+        kind: "data",
+        path: "analysis/source_verification_overview.json",
+        purpose: "Home-page status cards for each independent source",
+        coverage: "Rollup check counts, totals, and native I-C project-detail summary.",
       },
     ],
   },
@@ -305,6 +360,53 @@ export const sourceGroups = [
         path: "analysis/road_group_candidates_2027.json",
         purpose: "Same-shell groups with unpaired House (insertion) and unpaired NEP (deletion) candidates",
         coverage: "₱23.4B insertion candidates · ₱12.2B deletion candidates across 627 shells. Powers Analysis → Groupings.",
+      },
+    ],
+  },
+  {
+    id: "references",
+    title: "Referenced repositories",
+    blurb:
+      "Pinned external sources used for cross-checks. Public pages and APIs can change; retained commits and snapshots identify what was actually used.",
+    items: [
+      {
+        label: "kimileeee/gab-fy2027-dataset",
+        kind: "external",
+        path: "https://github.com/kimileeee/gab-fy2027-dataset/tree/1de94242a1342c7174a9efdce71301538dcf43e0",
+        purpose: "Independent House GAB appropriation and drill-down extract used for cross-check",
+        coverage:
+          "Pinned commit 1de94242. Corroborates native 2nd/3rd-reading controls; does not replace the native House baselines. See the GAB cross-check report above.",
+      },
+      {
+        label: "ajamontesa/ph-budget-analysis",
+        kind: "external",
+        path: "https://github.com/ajamontesa/ph-budget-analysis/tree/558a56311dc510b513af2b18b13a49d55d501c02",
+        purpose: "Pinned Philippine budget analysis submodule under reference/",
+        coverage:
+          "Commit 558a5631. Contextual only; does not determine the canonical NEP tree.",
+      },
+      {
+        label: "csiiiv/dpwh-transparency-data-api-scraper",
+        kind: "external",
+        path: "https://github.com/csiiiv/dpwh-transparency-data-api-scraper/tree/de96ab393a069792964b086a7d155e7801909c2a",
+        purpose: "Supplementary DPWH Transparency API scraper checkout",
+        coverage:
+          "Pinned commit de96ab39. The BetterGov NEP snapshot used here is fetched by this repo's dpwh-transparency-nep-data scripts.",
+      },
+      {
+        label: "BetterGov DPWH NEP API (FY2027 listing)",
+        kind: "external",
+        path: "https://api.dpwh.bettergov.ph/nep/projects?fiscalYear=2027&page=1&limit=100",
+        purpose: "Live project-list endpoint behind the retained Transparency snapshot",
+        coverage:
+          "Comparisons use the committed fy2027-combined.json snapshot, not a live query. Incomplete vs full NEP budget.",
+      },
+      {
+        label: "DBM · official NEP 2027 publication page",
+        kind: "external",
+        path: "https://www.dbm.gov.ph/wp-content/uploads/NEP2027/DPWH/DPWH.pdf",
+        purpose: "Official DPWH department summary extract",
+        coverage: "Different pagination from the retained Volume II-B OCR file.",
       },
     ],
   },

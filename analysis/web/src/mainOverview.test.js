@@ -51,6 +51,20 @@ test('DPWH expands grouped members and includes foreign-assisted paired reductio
   assert.notEqual(w.sources.house.amount_php,w.controls.house_php);
   assert.ok(w.links.deletions.includes('flag=nep_only_all'));
 });
+test('Coverage and change tables carry every workspace with its own grain and per-population links', () => {
+  const byKey = Object.fromEntries(data.workspaces.map(w => [w.key, w]));
+  // DPWH 2nd-reading headline rides along for the coverage table.
+  assert.equal(byKey.dpwh.readings.second.count,16270);
+  assert.equal(byKey.dpwh.readings.second.amount_php,586941661000);
+  assert.equal(byKey.dpwh.links.house_second,'#house?reading=second');
+  // Every workspace exposes the cell links the Overview tables render.
+  for (const w of data.workspaces) for (const key of ['insertions','deletions','increases','decreases'])
+    assert.ok(w.links[key].startsWith('#'), `${w.key} ${key} link`);
+  assert.ok(byKey.fmr.links.increases.includes('direction=increased'));
+  assert.ok(byKey.hfep.links.increases.includes('event=revised'));
+  assert.ok(byKey.nia.links.decreases.includes('direction=decreased'));
+  assert.ok(byKey.dpwh.links.increases.includes('flag=amount_increase'));
+});
 test('HFEP uses printed component records and reverses its local direction without changing source amounts', () => {
   const w = data.workspaces.find(w => w.key === 'hfep');
   assert.equal(w.sources.house.count,564); assert.equal(w.sources.nep.count,545);

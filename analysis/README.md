@@ -53,18 +53,20 @@ is preserved; two archived helpers still support active House repairs. See the
 | `#house` | House GAB I-B hierarchy, rollups, and embedded I-B PDF |
 | `#nep` | DBM NEP hierarchy, expenditure classes, source review, and embedded II-B PDF |
 | `#transparency` | DPWH Transparency NEP snapshot hierarchy |
-| `#resources` | Direct links to the latest workable JSON datasets and audit docs |
-| `#about` | Workbench overview, build model, and rendered project documentation |
 | `#house-nep` | Printed budgets, local/FAP program controls, House extraction gaps, and candidates |
 | `#nep-detail` | Detailed expense/program tree and native-text evidence |
 
 The shared header also switches into the FMR (`#fmr/`), NIA (`#nia/`), and HFEP
-(`#hfep/`) annex workspaces. NIA Analysis retains the shared page format and
-adds allocation shares, funding reconciliation, pairing coverage and top-ten
-concentration within its existing views; see
-[NIA_WORKBENCH.md](../analysis-nia/NIA_WORKBENCH.md). The former header README
-links now live on `#about`, which also links the DA/DOH/NIA orientation notes
-under `other-analysis/`. Hash routes support refresh and history;
+(`#hfep/`) annex workspaces, plus the shared Overview (`#overview`), Sources
+(`#sources`) and About (`#about`) workspaces. NIA Analysis retains the shared
+page format and adds allocation shares, funding reconciliation, pairing
+coverage and top-ten concentration within its existing views; see
+[NIA_WORKBENCH.md](../analysis-nia/NIA_WORKBENCH.md). The former DPWH
+Resources tab folded into the Sources workspace (`#resources` redirects
+there); its dataset, audit, review-queue and reference-repo entries now live
+in that catalog. The former `#about` sub-tab is now the top-level About
+workspace, which links the DA/DOH/NIA orientation notes under
+`other-analysis/`. Hash routes support refresh and history;
 former viewer URLs redirect into the corresponding route when packaged.
 `#nep?view=review` opens the source queue. Verification routes accept `node`
 for a recorded entity ID; `section` preserves former in-page anchors.

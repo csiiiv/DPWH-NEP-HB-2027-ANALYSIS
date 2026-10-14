@@ -136,6 +136,9 @@ def main():
                         originals = {x['id']: x for x in data['stages'][side]['projects']}
                         assert all(x['title'] == originals[x['source_id']]['title'] and x['source_pdf'] == originals[x['source_id']]['source']['source_pdf'] for x in exported)
                         assert sum(x['ai_monitoring_basis'] == 'ocr_variant' for x in exported) == (59 if side == 'nep' else 0)
+                    expect(insertion_summary).to_contain_text('Reading note')
+                    expect(insertion_summary).to_contain_text('₱-674,000,000')
+                    expect(insertion_summary).to_contain_text('120 of 123 candidates')
                     insertion_summary.get_by_role('button', name='Inspect insertion candidates', exact=True).click()
                     insertion_dialog = page.get_by_role('dialog', name='NIA AI monitoring insertion candidates')
                     expect(insertion_dialog).to_be_visible()
@@ -289,6 +292,115 @@ def main():
                     assert page.get_by_role('navigation', name='Workbench pages').locator('a').all_text_contents() == [
                         'Home', 'Highlights', 'Compare stages', 'Analysis', 'House GAB', 'DBM NEP']
                     page.screenshot(path=str(captures / f'home-{width}.png'))
+
+                    # Rebuilt Highlights: coverage tables, findings grid, story
+                    # dialogs with filters/exports, and recovery states.
+                    goto('highlights')
+                    expect(page.get_by_role('region', name='NIA budget coverage by stage', exact=True).locator('tbody tr')).to_have_count(2)
+                    changes_table = page.get_by_role('region', name='NIA candidate funding changes', exact=True)
+                    expect(changes_table.locator('tbody tr')).to_have_count(5)
+                    expect(page.locator('.fmr-funding-bridge')).to_contain_text('= +401,124,000')
+                    assert page.locator('.fmr-highlight-grid .fmr-highlight').count() == 9
+                    expect(page.locator('.fmr-highlight-grid button[aria-haspopup="dialog"]')).to_have_count(9)
+                    page.screenshot(path=str(captures / f'highlights-{width}.png'))
+                    # Every card opens actual scoped evidence, with focus restored
+                    # to its action button after closing the modal.
+                    evidence_regions = [
+                        'NIA sub-program stage comparison', 'NIA funding reconciliation',
+                        'NIA project candidates', 'NIA unmatched allocations by sub-program',
+                        'NIA unmatched allocations by sub-program', 'NIA pairing coverage',
+                        'AI monitoring source evidence', 'NIA agency controls', 'Selected source evidence',
+                    ]
+                    for index, evidence_region in enumerate(evidence_regions):
+                        trigger = page.locator('.fmr-highlight-grid button[aria-haspopup="dialog"]').nth(index)
+                        trigger.click()
+                        modal = page.locator('dialog.nia-highlight-dialog')
+                        expect(modal).to_be_visible()
+                        expect(modal.locator('.nia-highlight-metrics .fmr-stat')).to_have_count(3)
+                        expect(modal.get_by_role('region', name=evidence_region, exact=True)).to_be_visible()
+                        assert modal.evaluate('(el) => el.scrollWidth <= el.clientWidth'), page.url
+                        assert page.evaluate('document.body.style.overflow') == 'hidden'
+                        if index in (0, 1, 6, 8):
+                            page.screenshot(path=str(captures / f'highlight-evidence-{index}-{width}.png'))
+                        if index == 1:
+                            modal.get_by_label('Search', exact=True).fill('Other')
+                            expect(modal.get_by_role('region', name='NIA sub-program stage comparison', exact=True).locator('tbody tr')).to_have_count(1)
+                            expect(modal.get_by_role('region', name='NIA funding reconciliation', exact=True)).to_contain_text('₱-2,540,000,000')
+                            expect(modal.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('16 rows')
+                        if index == 6:
+                            expect(modal).to_contain_text('327 supporting DBM NEP rows')
+                            expect(modal).to_contain_text('₱7,015,950,000 in whole-project allocations')
+                            modal.get_by_role('link', name='House AI rows', exact=True).click()
+                            expect(modal).to_contain_text('299 supporting House GAB rows')
+                            expect(modal).to_contain_text('₱6,341,950,000 in whole-project allocations')
+                            with page.expect_download() as result:
+                                modal.get_by_role('button', name='Export filtered CSV', exact=True).click()
+                            exported_ai = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
+                            assert len(exported_ai) == 299 and sum(int(x['amount_php']) for x in exported_ai) == 6341950000
+                            modal.get_by_role('link', name='Unmatched House AI rows', exact=True).click()
+                            expect(modal.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('123 rows')
+                            expect(modal).to_contain_text('₱2,626,950,000 in whole-project allocations')
+                            page.reload(wait_until='networkidle')
+                            expect(modal.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('123 rows')
+                        if index == 8:
+                            crop = modal.get_by_role('region', name='Selected source evidence').locator('img').first
+                            expect(crop).to_be_visible()
+                            crop.scroll_into_view_if_needed()
+                            page.wait_for_function('(el) => el.complete && el.naturalWidth > 0', arg=crop.element_handle())
+                        if index == 0:
+                            modal.get_by_role('button', name='NEP control', exact=True).first.click()
+                            pdf = page.get_by_role('dialog', name='NIA PDF source', exact=True)
+                            expect(pdf.locator('canvas')).to_be_visible(timeout=60000)
+                            page.keyboard.press('Escape')
+                            expect(pdf).to_have_count(0)
+                            expect(modal).to_be_visible()
+                            assert page.evaluate('document.body.style.overflow') == 'hidden'
+                        # Native search inputs consume Escape to clear text.
+                        # Exercise the close button after the heading search.
+                        if index == 1:
+                            modal.get_by_role('button', name='Close evidence', exact=True).click()
+                        else:
+                            page.keyboard.press('Escape')
+                        expect(modal).to_have_count(0)
+                        # Reload has no connected original trigger to restore.
+                        if index != 6:
+                            expect(trigger).to_be_focused()
+                        assert page.evaluate('document.body.style.overflow') != 'hidden'
+                    goto('highlights?story=changed-pairs')
+                    story = page.get_by_role('dialog', name='Highlight evidence: 4 paired titles change amount, all reductions')
+                    expect(story).to_be_visible()
+                    expect(story.locator('.fmr-story-facts')).to_contain_text('Investigation question')
+                    expect(story.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('4 rows')
+                    with page.expect_download() as result:
+                        story.get_by_role('button', name='Export filtered CSV', exact=True).click()
+                    exported = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
+                    assert len(exported) == 4 and sum(int(x['delta_php']) for x in exported) == -830000000
+                    story.get_by_label('Sub-program', exact=True).select_option('Other Irrigation System')
+                    expect(story.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('1 rows')
+                    page.reload(wait_until='networkidle')
+                    expect(story).to_be_visible()
+                    expect(story.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('1 rows')
+                    page.keyboard.press('Escape')
+                    expect(story).to_have_count(0)
+                    for story_id, label in [('annex-increase', 'NIA sub-program stage comparison'),
+                                            ('agency-scope', 'NIA agency controls'),
+                                            ('extraction-review', 'NIA projects')]:
+                        goto(f'highlights?story={story_id}')
+                        expect(page.get_by_role('dialog', name='Highlight evidence:')).to_contain_text('Investigation question')
+                        expect(page.get_by_role('region', name=label, exact=True).first).to_be_visible()
+                        page.keyboard.press('Escape')
+                    goto('highlights?story=missing')
+                    expect(page.get_by_role('alert')).to_contain_text('Finding not found')
+                    page.get_by_role('button', name='Clear story selection', exact=True).click()
+                    expect(page.locator('.fmr-highlight-grid')).to_be_visible()
+                    goto('highlights?story=insertions')
+                    insertions_dialog = page.get_by_role('dialog', name='Highlight evidence: 319 House rows have no unique NEP title match')
+                    with page.expect_download() as result:
+                        insertions_dialog.get_by_role('button', name='Export filtered CSV', exact=True).click()
+                    exported = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
+                    assert len(exported) == 319 and all(x['house_id'] and not x['nep_id'] for x in exported)
+                    page.keyboard.press('Escape')
+                    expect(page.locator('dialog[open]')).to_have_count(0)
 
                     for side in ('nep', 'house'):
                         stage = data['stages'][side]

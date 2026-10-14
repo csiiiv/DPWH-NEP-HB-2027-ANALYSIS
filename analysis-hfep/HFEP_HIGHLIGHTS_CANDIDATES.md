@@ -1,12 +1,15 @@
 # HFEP Highlights — what we can build
 
-Planning note only. No UI or data build yet.
+Planning inventory for possible additional stories. The five existing HFEP
+highlights now have tailored evidence views; see the
+[implemented evidence review](../analysis/docs/highlights_evidence_review.md).
+The remaining proposals below are candidates for editorial review.
 
 Audience prompt: citizen-facing stories about where HFEP money goes, what
 changed between NEP and House, and what patterns deserve a closer look.
 
 Source: `other-analysis/data/hfep_workbench.json` (House I-B vs
-NEP II-A HFEP capital-outlay annexes; both include national and LGU facilities). Existing thin cards live in
+NEP II-A HFEP capital-outlay annexes; both include national and LGU facilities). Existing evidence views live in
 `analysis/web/src/HfepApp.jsx` (`Highlights`); this list is the fuller set
 the citizen prompt can support.
 
@@ -55,7 +58,8 @@ Not available today (do not plan Highlights that require them):
 
 ## Candidate story angles (ranked)
 
-Suggested 8–10. Each can get a card + unique modal per the prompt.
+Add a card only when it contributes a real question and distinct supporting
+evidence. This inventory does not set a target number of stories.
 
 ### 1. `funding-mix` — Medical equipment carries most of the annex gap
 

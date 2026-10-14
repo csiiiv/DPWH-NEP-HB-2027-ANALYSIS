@@ -168,6 +168,25 @@ Show at most one featured finding per funding workspace in v1. Each includes
 its counting unit, comparison basis, amount and a direct evidence/analysis link.
 Figures come from the same validated build as the summaries.
 
+### 4a. Cross-workspace coverage and candidate-change tables (added 15 October)
+
+Between Selected findings and the investigation directory, Overview now carries
+the two tables the DPWH Highlights page pioneered, filled with every funding
+workspace:
+
+- **Budget coverage by stage** — one row per workspace with DBM NEP, House GAB
+  and (DPWH only) HGAB 2nd counts and ledger totals. DPWH's 2nd-reading
+  headline rides in the summary payload (`readings.second`); other workspaces
+  show "Not covered" for that column rather than a zero.
+- **House vs. NEP: candidate changes** — insertion and deletion candidates with
+  their source allocations, gross paired increases/reductions, and the House
+  ledger, each cell linking into the workspace's own filtered population view
+  (per-workspace `links.increases`/`links.decreases`).
+
+Every cell states its workspace's counting unit; counts and pesos are never
+added across workspaces. The DPWH Highlights tables keep only the DPWH row and
+link to Overview for the cross-workspace view.
+
 Possible findings:
 
 - **DPWH:** a documented House-reading allocation change, clearly separated

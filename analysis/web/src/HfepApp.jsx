@@ -24,6 +24,8 @@ import {
   COMPONENT_COLUMNS, lineItemRecords, filterRecords, recordAggregates, RECORD_EVENT_LABELS, recordsCsv,
 } from './hfepModel.js';
 import './Fmr.css';
+import {hfepCategoryMovements, hfepColumnReconciliation, hfepControlEvidence, hfepHighlights} from './hfepHighlights.js';
+import {HighlightAction, HighlightSummary} from './AnnexHighlightEvidence.jsx';
 
 const PdfPreview = lazy(() => import('./PdfPreview.jsx'));
 const DATA_URL = 'other-analysis/data/hfep_workbench.json';
@@ -114,13 +116,14 @@ const FILTER_LABELS = {q: 'Search', category: 'Category', subcategory: 'Subcateg
   flag: 'Extraction flag', lineage: 'Interpretation rule', minAmount: 'Min total', maxAmount: 'Max total', province: 'Province'};
 const STATUS_OPTIONS = [['flagged', 'Flagged'], ['interpreted', 'Interpreted'], ['clean', 'Clean']];
 function changeFilters(route, patch) {navigate(route, {...patch, page: null});}
-function Filters({route, index, review = false}) {
+function Filters({route, index, review = false, categoryIds}) {
   const params = routeParams(route.params);
   const facilities = index.stage.facilities;
   const options = useMemo(() => provenanceOptions(facilities), [index]);
   const provinces = useMemo(() => [...new Set(facilities.map(f => facilityScope(index, f).province).filter(Boolean))]
     .sort((a, b) => a.localeCompare(b, 'en', {numeric: true})), [index]);
-  const categories = useMemo(() => index.stage.categories.map(c => [c.label, `${c.label} · ${index.rollup.get(c.id).count} facilities`]), [index]);
+  const categories = useMemo(() => index.stage.categories.filter(c => !categoryIds || categoryIds.includes(c.id))
+    .map(c => [c.label, `${c.label} · ${index.rollup.get(c.id).count} facilities`]), [index, categoryIds]);
   const subcategories = useMemo(() => index.stage.subcategories.map(s => s.label), [index]);
   const regions = useMemo(() => scopeRows(index, 'region').map(r => [r.label, `${r.label} · ${r.count} facilities`]), [index]);
   const clear = () => changeFilters(route, Object.fromEntries(FILTER_KEYS.map(k => [k, null])));
@@ -305,7 +308,7 @@ function Evidence({index, id, onPdf}) {
 }
 function onSelectRoot(index) {window.location.hash = routeHref(index.stage.key, {node: index.stage.root.id, view: 'tree'});}
 
-function FacilityTable({index, facilities, onSelect, onPdf, tableId}) {
+function FacilityTable({index, facilities, onSelect, onPdf, tableId, initialSort = {key: 'title', direction: 'asc'}}) {
   const columns = [
     {key: 'title', label: 'Facility', render: f => <button className="fmr-text-button" onClick={() => onSelect(f.id)}>{f.title}</button>},
     {key: 'region', label: 'Region', value: f => facilityScope(index, f).region},
@@ -323,7 +326,7 @@ function FacilityTable({index, facilities, onSelect, onPdf, tableId}) {
       : <span className="fmr-badge balanced">{statusLabels.clean}</span>},
     {key: 'source', label: 'Source', value: f => f.source.pdf_page, render: f => <SourceButton stage={index.stage} source={f.source} onPdf={onPdf}/>},
   ];
-  return <SortableTable tableId={tableId} rows={facilities} columns={columns} initialSort={{key: 'title', direction: 'asc'}} ariaLabel="HFEP facilities" pageSize={25}/>;
+  return <SortableTable tableId={tableId} rows={facilities} columns={columns} initialSort={initialSort} ariaLabel="HFEP facilities" pageSize={25}/>;
 }
 
 function SourceWorkspace({index, route, onPdf, inlineSource}) {
@@ -1014,60 +1017,147 @@ function Home({data, indexes}) {
   </>;
 }
 
+function HighlightFundingColumns({data, onPdf}) {
+  const rows = hfepColumnReconciliation(data);
+  return <section><h3>Printed funding columns and retained facility sums</h3>
+    <p>Change = House − NEP. The total row summarizes the three component columns; the NEP residual remains separate from the printed budget change.</p>
+    <div className="fmr-result-bar"><button onClick={()=>download('hfep-highlight-funding-columns.csv',csvText(
+      ['column','nep_php','house_php','house_minus_nep_php','nep_facility_sum_php','house_facility_sum_php','nep_residual_php','house_residual_php','nep_source_pdf','nep_pdf_page','house_source_pdf','house_pdf_page'],
+      rows.map(r=>[r.id,r.nep_php,r.house_php,r.delta_php,r.nep_ledger_php,r.house_ledger_php,r.nep_residual_php,r.house_residual_php,
+        ...['nep','house'].flatMap(side=>[pdfPathFor(data.stages[side],data.stages[side].root.source),data.stages[side].root.source.pdf_page])])))}>Export funding columns CSV</button>
+      {['nep','house'].map(side=><SourceButton key={side} stage={data.stages[side]} source={data.stages[side].root.source} onPdf={onPdf} label={`${side==='nep'?'NEP':'House'} annex control`}/>)}</div>
+    <SortableTable rows={rows} ariaLabel="HFEP highlight funding columns" columns={[
+      {key:'label',label:'Funding column',scope:'row'},
+      {key:'nep_php',label:'NEP printed (PHP)',align:'num',render:r=>money(r.nep_php)},
+      {key:'house_php',label:'House printed (PHP)',align:'num',render:r=>money(r.house_php)},
+      {key:'delta_php',label:'House − NEP (PHP)',align:'num',render:r=><AnalysisValue value={r.delta_php} signed/>},
+      {key:'nep_ledger_php',label:'NEP facility sum (PHP)',align:'num',render:r=>money(r.nep_ledger_php)},
+      {key:'nep_residual_php',label:'NEP control overhang (PHP)',align:'num',render:r=>money(r.nep_residual_php)},
+      {key:'house_residual_php',label:'House control overhang (PHP)',align:'num',render:r=>money(r.house_residual_php)},
+    ]}/></section>;
+}
+function HighlightCategoryMovements({data, onPdf, rows = hfepCategoryMovements(data), label = 'HFEP highlight category movements', heading = 'Movements in printed facility categories', note}) {
+  return <section><h3>{heading}</h3>
+    <p>{note || 'Printed category numbers align the controls; original labels remain separate. An absent category contributes zero to the change bridge and displays as unavailable in its source column. This does not pair individual facilities.'}</p>
+    <button onClick={()=>download('hfep-highlight-category-movements.csv',csvText(
+      ['category_number','nep_label','house_label','nep_php','house_php','house_minus_nep_php','nep_source_pdf','nep_pdf_page','house_source_pdf','house_pdf_page'],
+      rows.map(r=>[r.id,r.nep?.label,r.house?.label,r.nep_php,r.house_php,r.delta_php,
+        ...['nep','house'].flatMap(side=>[r[side] ? pdfPathFor(data.stages[side],r[side].source) : null,r[side]?.source.pdf_page])])))}>Export category movements CSV</button>
+    <SortableTable rows={rows} ariaLabel={label} initialSort={{key:'delta_php',direction:'asc'}} columns={[
+      {key:'label',label:'Category',scope:'row',render:r=><>{r.label}{r.nep && r.nep.label!==r.label && <small>NEP: {r.nep.label}</small>}</>},
+      {key:'nep_php',label:'NEP (PHP)',align:'num',render:r=>money(r.nep_php)},
+      {key:'house_php',label:'House (PHP)',align:'num',render:r=>money(r.house_php)},
+      {key:'delta_php',label:'House − NEP (PHP)',align:'num',render:r=><AnalysisValue value={r.delta_php} signed/>},
+      {key:'source',label:'Printed evidence',sortable:false,render:r=><>{['nep','house'].map(side=>r[side] && <SourceButton key={side} stage={data.stages[side]} source={r[side].source} onPdf={onPdf} label={`${side==='nep'?'NEP':'House'} category control`}/>)}</>},
+    ]}/></section>;
+}
+function HighlightHouseControls({index, route, onPdf}) {
+  const controls=useMemo(()=>hfepControlEvidence(index),[index]);
+  const p=routeParams(route.params), terms=(p.q || '').toLowerCase().trim().split(/\s+/).filter(Boolean);
+  const filtered=controls.filter(c=>terms.every(term=>`${c.label} ${c.id} ${c.kind}`.toLowerCase().includes(term)));
+  const selected=filtered.find(c=>c.id===p.evidenceNode) || filtered[0];
+  return <section><h3>Internal printed-control reconciliation</h3>
+    <p>Blank component cells remain blank in the export and contribute zero to the arithmetic.</p>
+    <label className="annex-source-select">Search controls<input type="search" aria-label="Search controls" value={p.q || ''} onChange={e=>navigate(route,{q:e.target.value,evidenceNode:null})}/></label>
+    <div className="fmr-result-bar"><span>{filtered.length} of {controls.length} internal controls · four funding columns per control</span>
+      <button onClick={()=>download('hfep-highlight-house-controls.csv',csvText(
+        ['control_id','label','kind','column','printed_php','facility_sum_php','difference_php','source_pdf','pdf_page'],
+        filtered.flatMap(c=>c.columns.map(column=>[c.id,c.label,c.kind,column.column,column.printed,column.facility_sum,column.difference,pdfPathFor(index.stage,c.source),c.source.pdf_page]))))}>Export controls CSV</button></div>
+    {selected && <div className="annex-selection"><label className="annex-source-select">Select printed control<select aria-label="House highlight control" value={selected.id} onChange={e=>navigate(route,{evidenceNode:e.target.value})}>
+      {filtered.map(c=><option key={c.id} value={c.id}>{c.kind} · {c.label}</option>)}</select></label><Evidence index={index} id={selected.id} onPdf={onPdf}/></div>}
+    <SortableTable rows={filtered} ariaLabel="HFEP House control reconciliation" pageSize={25} columns={[
+      {key:'label',label:'Printed control',scope:'row',render:c=><button className="fmr-text-button" onClick={()=>navigate(route,{evidenceNode:c.id})}>{c.label}<small>{c.id}</small></button>},
+      {key:'kind',label:'Level'}, {key:'facilities',label:'Facility rows',align:'num'},
+      {key:'printed_php',label:'Printed total (PHP)',align:'num',render:c=>money(c.printed_php)},
+      {key:'facility_sum_php',label:'Facility sum (PHP)',align:'num',render:c=>money(c.facility_sum_php)},
+      {key:'max_difference_php',label:'Largest four-column gap (PHP)',align:'num',render:c=>money(c.max_difference_php)},
+      {key:'source',label:'Printed evidence',sortable:false,render:c=><SourceButton stage={index.stage} source={c.source} onPdf={onPdf}/>},
+    ]}/></section>;
+}
+function HighlightProgramScope({data, onPdf}) {
+  return <details className="fmr-method"><summary>Scope note: annex capital outlays and operating expenses</summary>
+    <p>Each annex details the capital-outlay component of HFEP. The wider program row adds {money(data.stages.house.agency_check.mooe_php)} in Maintenance and Other Operating Expenses (MOOE), unchanged between NEP and House.</p>
+    <button onClick={()=>download('hfep-highlight-program-scope.csv',csvText(
+      ['stage','annex_capital_outlay_php','agency_capital_outlay_php','mooe_php','wider_hfep_program_php','annex_minus_agency_co_php','source_pdf','pdf_page'],
+      ['nep','house'].map(side=>{const stage=data.stages[side],check=stage.agency_check;return [side,columnAmount(stage.annex_control,'total'),check.capital_outlay_php,check.mooe_php,check.total_php,
+        columnAmount(stage.annex_control,'total')-check.capital_outlay_php,check.source.source_pdf,check.source.pdf_page];})))}>Export program scope CSV</button>
+    <div className="fmr-source-audits">{[data.stages.nep, data.stages.house].map(stage =>
+      <div key={stage.key}><h3>{stage.label}</h3><AgencyCheck check={stage.agency_check} stage={stage} onPdf={onPdf}/><SourceButton stage={stage} source={stage.root.source} onPdf={onPdf} label={`${stage.key==='nep'?'NEP':'House'} annex control`}/></div>)}</div>
+  </details>;
+}
+function HighlightHospitalPriorities({data, indexes, route, onPdf, story}) {
+  const p = routeParams(route.params), side = p.evidenceStage === 'house' ? 'house' : 'nep', index = indexes[side];
+  const facilities = filterFacilities(story.hospitals.projects[side], p).sort((a,b)=>
+    (columnAmount(b.amounts_php,'total') || 0) - (columnAmount(a.amounts_php,'total') || 0) || a.id.localeCompare(b.id));
+  const selected = facilities.find(f => f.id === p.evidenceNode) || facilities[0];
+  return <><HighlightCategoryMovements data={data} onPdf={onPdf} rows={story.hospitals.categories}
+    label="HFEP hospital category movements" heading="DOH and LGU hospital capital-outlay allocations"
+    note="Compare the printed NEP and House allocations for DOH and LGU hospitals. Open each category’s source page, then inspect the facility records below."/>
+    <section aria-label="Supporting hospital allocations"><h3>Which facilities carry these allocations?</h3>
+      <p>Review the original DOH and LGU hospital allocations in each source, largest first. Comparing these populations requires further facility counterpart review; the schedules alone do not explain service consequences.</p>
+      <label className="annex-source-select">Hospital allocation source<select aria-label="Hospital allocation source" value={side}
+        onChange={e=>navigate(route,{...Object.fromEntries(FILTER_KEYS.map(key=>[key,null])), evidenceStage:e.target.value,evidenceNode:null})}>
+        <option value="nep">DBM NEP</option><option value="house">House GAB</option></select></label>
+      <Filters route={route} index={index} categoryIds={story.hospitals.categories.map(row=>row[side].id)}/>
+      <div className="fmr-result-bar"><span>{facilities.length} supporting {side==='nep'?'NEP':'House'} hospital rows · {money(columnSum(facilities,'total'))}</span>
+        <button onClick={()=>download(`hfep-${side}-hospital-allocations.csv`,facilityCsv(facilities,index))}>Export hospital allocations CSV</button></div>
+      {selected && <div className="annex-selection"><label className="annex-source-select">Select hospital allocation<select aria-label="Hospital highlight facility" value={selected.id} onChange={e=>navigate(route,{evidenceNode:e.target.value})}>
+        {facilities.map(f=><option key={f.id} value={f.id}>{f.title}</option>)}</select></label><Evidence index={index} id={selected.id} onPdf={onPdf}/></div>}
+      <FacilityTable tableId={`highlight-hospitals-${side}`} index={index} facilities={facilities} onSelect={id=>navigate(route,{evidenceNode:id})}
+        onPdf={onPdf} initialSort={{key:'total',direction:'desc'}}/>
+    </section></>;
+}
 function Highlights({data, indexes, route, onPdf}) {
-  const nep = data.stages.nep, house = data.stages.house;
-  const nepIndex = indexes.nep;
-  const cards = [
-    {id: 'nep-defect', title: 'A ₱140,000 ghost in the NEP controls', body: 'The published NEP Metro Manila block omits one ₱140,000 medical-equipment row that its controls still count. The facility ledger lands ₱140,000 below the printed grand total on medical equipment and total.',
-      prompt: 'Follow the documented overhang from the Metro Manila province control up to the annex title row.',
-      href: routeHref('nep', {node: 'nep_hfep:p2:r47', view: 'tree'}), stage: 'nep'},
-    {id: 'lgu-split', title: 'Two retained HFEP schedules', body: `The House annex carries ${house.facilities.length} facilities (₱${(columnAmount(house.annex_control, 'total') / 1e9).toFixed(2)}B); the NEP annex carries ${nep.facilities.length} facilities (₱${(columnAmount(nep.annex_control, 'total') / 1e9).toFixed(2)}B) covering national and LGU capital outlays. Compare stages offers column reconciliation and reviewable title-matched pairs — the ledgers themselves are never merged.`,
-      prompt: 'Which category allocations and candidate counterpart amounts differ between the schedules?',
-      href: routeHref('compare')},
-    {id: 'house-balance', title: 'House controls reconcile to the peso', body: `All ${house.audit_summary.internal_control_checks} internal controls reconcile recursively on all four funding columns, and the flat facility ledger independently reproduces the grand total.`,
-      prompt: 'Inspect any control: printed amounts equal facility sums on every column.',
-      href: routeHref('house', {view: 'tree'})},
-    {id: 'ocr-flags', title: 'OCR findings stay open, not corrected', body: 'Nine NEP facilities carry extraction flags or interpretation rules — OCR-suspect labels, verified odd amounts, dash fragments read as empty cells. Printed values were never altered.',
-      prompt: 'Review each finding and its raw printed cell.',
-      href: routeHref('nep', {view: 'review'}), stage: 'nep'},
-    {id: 'agency-check', title: 'The annex is the capital-outlay component', body: 'Both annex totals match the capital-outlay component of the wider agency HFEP allocation (₱10,088,832,000 House I-A; ₱14,539,832,000 NEP II-A). The MOOE in those rows is outside these annexes.',
-      prompt: 'Compare the agency row with the annex control.',
-      href: routeHref('nep', {view: 'tree'})},
-  ];
-  const story = cards.find(c => c.id === route.params.get('story'));
+  const nep = data.stages.nep;
+  const cards = useMemo(()=>hfepHighlights(data),[data]);
+  const story = cards.find(c => c.id === route.params.get('story') || c.aliases?.includes(route.params.get('story')));
+  const p=routeParams(route.params), index=indexes.nep;
+  const review=story?.projects ? filterFacilities(story.projects,p) : [];
+  const selected=review.find(f=>f.id===p.evidenceNode) || review[0];
+  const reset={evidenceNode:null,evidenceStage:null,sort:null,dir:null,page:null,table:null,...Object.fromEntries(FILTER_KEYS.map(k=>[k,null]))};
+  const close=()=>navigate(route,{...reset,story:null});
   return <>
     <div className="fmr-page-title"><div><p className="fmr-eyebrow">FY2027 · Findings</p><h1>Highlights</h1>
       <p>Findings from the HFEP annexes with their printed evidence.</p></div><ShareLink/></div>
     <h2>Findings to investigate</h2>
     <div className="fmr-highlight-grid">{cards.map((c, i) => <article key={c.id} className="fmr-highlight">
-      <p className="fmr-eyebrow">{String(i + 1).padStart(2, '0')} · {c.stage ? 'Extraction evidence' : 'Printed controls'}</p>
+      <p className="fmr-eyebrow">{String(i + 1).padStart(2, '0')} · {c.kind}</p>
       <h3>{c.title}</h3><p>{c.body}</p><p className="fmr-story-prompt">{c.prompt}</p>
-      <a href={routeHref('highlights', {story: c.id})}>Explore evidence →</a></article>)}</div>
-    {story && <Dialog label={`Highlight evidence: ${story.title}`} className="fmr-story-dialog" onClose={() => navigate(route, {story: null})}>
-      <div className="fmr-dialog-heading"><h2>{story.title}</h2><button onClick={() => navigate(route, {story: null})}>Close evidence</button></div>
+      <HighlightAction card={c} onOpen={()=>navigate(route,{...reset,story:c.id})}/></article>)}</div>
+    {story && <Dialog key={story.id} label={`Highlight evidence: ${story.title}`} className="fmr-story-dialog annex-highlight-dialog" onClose={close}>
+      <div className="fmr-dialog-heading"><h2>{story.title}</h2><button onClick={close}>Close evidence</button></div>
       <div className="fmr-dialog-body">
-        <div className="fmr-story-facts"><h3>Evidence</h3><dl>
-          <div><dt>Finding</dt><dd>{story.body}</dd></div>
-          <div><dt>Investigation question</dt><dd>{story.prompt}</dd></div>
-        </dl></div>
-        <div className="fmr-story-actions"><a className="secondary" href={story.href}>Continue in the workbench</a><ShareLink/></div>
-        {story.id === 'nep-defect' && <div className="fmr-arithmetic">
+        <HighlightSummary card={story}/>
+        <div className="fmr-story-actions"><a className="secondary" href={routeHref(story.href,story.params)}>Continue in the workbench</a><ShareLink/>
+          {['nep','house'].map(side=><a key={side} href={siteUrl(data.stages[side].preview_pdf)} download>Download {data.stages[side].label} PDF</a>)}</div>
+        {story.id === 'nep-defect' && <section>
           <h3>Documented overhang chain ({nep.printed_defects[0].documented_defect})</h3>
+          <button onClick={()=>download('hfep-highlight-control-overhang.csv',csvText(
+            ['control_id','label','column','printed_php','facility_sum_php','difference_php','documented_defect','source_pdf','pdf_page'],
+            nep.printed_defects.map(d=>[d.node_id,d.label,d.column,d.printed_php,d.facility_sum_php,d.difference_php,d.documented_defect,
+              pdfPathFor(nep,nodeOf(indexes.nep,d.node_id).source),nodeOf(indexes.nep,d.node_id).source.pdf_page])))}>Export overhang chain CSV</button>
           <SortableTable rows={nep.printed_defects} ariaLabel="Documented NEP printed defects" pageSize={10} columns={[
             {key: 'label', label: 'Control', scope: 'row', render: d => <a href={routeHref('nep', {node: d.node_id, view: 'tree'})}>{d.label}</a>},
             {key: 'column', label: 'Column', render: d => COLUMN_LABELS[d.column]},
             {key: 'printed_php', label: 'Printed (PHP)', align: 'num', render: d => money(d.printed_php)},
             {key: 'facility_sum_php', label: 'Facility sum (PHP)', align: 'num', render: d => money(d.facility_sum_php)},
             {key: 'difference_php', label: 'Difference (PHP)', align: 'num', render: d => money(d.difference_php)},
+            {key: 'source', label: 'Printed evidence', sortable: false, render: d => <SourceButton stage={nep} source={nodeOf(indexes.nep,d.node_id).source} onPdf={onPdf}/>},
           ]}/>
-        </div>}
-        {story.id === 'agency-check' && <div className="fmr-source-audits">{[data.stages.nep, data.stages.house].map(stage =>
-          <AgencyCheck key={stage.key} check={stage.agency_check} stage={stage} onPdf={onPdf}/>)}</div>}
-        {story.id === 'ocr-flags' && <FacilityTable index={indexes.nep} facilities={indexes.nep.stage.facilities.filter(f => (f.flags || []).length > 0)}
-          onSelect={id => {window.location.hash = routeHref('nep', {node: id, view: 'tree'});}} onPdf={onPdf}/>}
+          <Evidence index={indexes.nep} id="nep_hfep:p2:r47" onPdf={onPdf}/>
+        </section>}
+        {story.id === 'lgu-split' && <><HighlightFundingColumns data={data} onPdf={onPdf}/><HighlightCategoryMovements data={data} onPdf={onPdf}/><HighlightProgramScope data={data} onPdf={onPdf}/></>}
+        {story.id === 'house-balance' && <HighlightHouseControls index={indexes.house} route={route} onPdf={onPdf}/>}
+        {story.id === 'hospital-priorities' && <HighlightHospitalPriorities data={data} indexes={indexes} route={route} onPdf={onPdf} story={story}/>}
+        {story.id === 'ocr-flags' && <section><Filters route={route} index={index} review/>
+          <div className="fmr-result-bar"><span>{review.length} supporting NEP facility rows · {money(columnSum(review,'total'))}</span>
+            <button onClick={()=>download('hfep-highlight-extraction-notes.csv',facilityCsv(review,index))}>Export filtered CSV</button></div>
+          {selected && <div className="annex-selection"><label className="annex-source-select">Select reviewed facility<select aria-label="HFEP highlight facility" value={selected.id} onChange={e=>navigate(route,{evidenceNode:e.target.value})}>
+            {review.map(f=><option key={f.id} value={f.id}>{f.title}</option>)}</select></label><Evidence index={index} id={selected.id} onPdf={onPdf}/></div>}
+          <FacilityTable tableId="highlight-extraction-facilities" index={index} facilities={review} onSelect={id=>navigate(route,{evidenceNode:id})} onPdf={onPdf}/></section>}
       </div>
     </Dialog>}
-    {route.params.get('story') && !story && <p role="alert">Finding not found. <button onClick={() => navigate(route, {story: null})}>Clear story selection</button></p>}
+    {route.params.get('story') && !story && <p role="alert">Finding not found. <button onClick={close}>Clear story selection</button></p>}
   </>;
 }
 

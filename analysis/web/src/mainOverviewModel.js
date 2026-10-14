@@ -5,6 +5,8 @@ export function validateOverview(data) {
     !Array.isArray(data.workspaces) || data.workspaces.length !== 4 || !Array.isArray(data.features)) throw new Error('Unsupported Overview summary dataset.');
   for (const w of data.workspaces) {
     if (!w.sources || !w.links || !w.controls || !w.adjustments || !w.insertions || !w.deletions) throw new Error('Incomplete Overview workspace summary.');
+    for (const key of ['insertions', 'deletions', 'adjustments', 'increases', 'decreases', 'house', 'nep'])
+      if (!w.links[key]) throw new Error('Incomplete Overview workspace links.');
     const a = w.adjustments;
     if (a.net_php !== a.increased_php - a.reduced_php || w.delta_php !==
       w.insertions.amount_php - w.deletions.amount_php + a.net_php) throw new Error('Overview funding totals do not reconcile.');

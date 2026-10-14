@@ -25,6 +25,30 @@
 .nia-candidate-analysis>.aggregate-table { margin:24px 0; }
 .nia-analysis-ledger .sortable-table { border:0; border-radius:0; }
 .nia-comparison-workspace .fmr-workspace-pdf { align-self:start; }
+.nia-main .highlight-links { display:flex; flex-direction:column; align-items:flex-start; gap:12px; margin-top:auto; }
+.nia-highlight-open { padding:10px 14px; background:#1e4b6b; color:white; border:1px solid #1e4b6b; border-radius:6px; text-align:left; cursor:pointer; font:inherit; font-weight:600; }
+.nia-highlight-open:hover { background:#163b55; }
+.nia-highlight-open:focus-visible { outline:3px solid #6398c0; outline-offset:3px; }
+.nia-highlight-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.nia-highlight-metrics .fmr-stat strong { font-size:clamp(16px,2vw,23px); }
+.nia-evidence-limit { padding:12px 16px; margin:0; border-left:3px solid #947541; background:#fcf8ef; line-height:1.6; }
+.nia-scope-equation { padding:14px; background:#eef4fc; border-radius:6px; line-height:1.7; }
+.nia-highlight-dialog .fmr-story-facts dd { font-weight:500; }
+.nia-highlight-dialog .fmr-pair-evidence>section { min-width:0; }
+.nia-highlight-dialog .fmr-source-audits { grid-template-columns:minmax(0,1fr); }
+.nia-highlight-dialog .fmr-source-audits>section { min-width:0; }
+.nia-highlight-dialog .fmr-dialog-body>section { min-width:0; }
+.nia-highlight-dialog .sortable-table table { min-width:720px; }
+.nia-highlight-coverage .sortable-table table { min-width:620px; }
+.nia-highlight-dialog select { max-width:100%; }
+.nia-ai-basis { display:flex; flex-direction:column; gap:6px; max-width:320px; }
+@media(max-width:700px) {
+  .nia-highlight-metrics { grid-template-columns:1fr; }
+  .nia-highlight-dialog .fmr-dialog-heading { align-items:flex-start; }
+  .nia-highlight-dialog .fmr-dialog-heading h2 { font-size:18px; }
+  .nia-highlight-dialog .fmr-filters { grid-template-columns:1fr; }
+  .nia-highlight-dialog .nia-analysis-ledger .sortable-table table { min-width:0; }
+}
 @media(max-width:1050px) {
   .nia-comparison-workspace.has-source { grid-template-columns:1fr; }
   .nia-comparison-workspace.table-active>.fmr-workspace-pdf { display:none; }

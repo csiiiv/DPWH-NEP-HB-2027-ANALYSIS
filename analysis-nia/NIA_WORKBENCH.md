@@ -10,7 +10,7 @@ datasets contain 828 House rows (₱17,999,305,000) and 791 NEP rows
 | Route | Content |
 |---|---|
 | `#nia/home` | Annex totals, scope, and sub-program controls |
-| `#nia/highlights` | Funding difference, changed candidates, agency scope, extraction review |
+| `#nia/highlights` | Budget coverage and candidate-change tables with the funding bridge, nine findings, and per-story evidence dialogs |
 | `#nia/compare?view=subprograms` | Full printed controls, filtered exports, and inline PDF evidence |
 | `#nia/compare?view=projects` | Candidate observations with source amounts, PDF references, filters, exports, and evidence dialogs |
 | `#nia/analysis?view=overview` | Filtered allocation distribution, allocation shares, and supporting rows |
@@ -38,6 +38,37 @@ source-record links beneath each stage's amount. On phones the rows become
 labeled cards with a sort control; Table/PDF controls switch the active pane.
 `pdf`, `pdfPage`, and `panel=table|pdf` restore selected evidence on reload.
 
+Highlights follows the shared annex pattern (FMR/HFEP): two coverage tables —
+budget coverage by stage, and House-vs-NEP candidate changes closing the
+funding bridge (paired Δ + House-only − NEP-only = annex Δ) — then nine
+numbered findings. Each opens an evidence dialog via `story=<id>` (ids:
+`annex-increase`, `subprogram-shift`, `changed-pairs`, `insertions`,
+`deletions`, `pairing-coverage`, `ai-monitoring`, `agency-scope`,
+`extraction-review`) with a fact panel, workbench cross-links, source-PDF
+downloads, and where applicable the supporting comparison rows or printed
+controls with their filters and CSV exports. Unknown story ids show a recovery
+action. Every figure in the card copy is recomputed from the retained ledgers
+by `highlightsCards` in `analysis/web/src/niaAnalysis.js`.
+
+Highlight actions are buttons with finding-specific labels and retain shareable
+`story` URLs. Each dialog shows three source-derived figures, its investigation
+question and evidence limits. Card counts follow the available questions and
+evidence; they are not padded to ten.
+
+Funding stories include the printed controls and the paired/unmatched funding
+bridge. Unmatched-row stories add ranked sub-program totals; their wording says
+there is no unique title match rather than asserting a new or cancelled project.
+AI monitoring opens both complete source populations and the unmatched House
+subset via `evidenceStage=nep|house|insertions`, with title-basis filtering,
+whole-project allocation totals and CSV exports. `aiBasis` restores the selected
+title basis. Extraction review shows an in-dialog source record and retained
+crop selected by `evidenceProject=<flagged-NEP-id>`. Agency scope shows
+annex + CARP = House Operations; it does not infer a whole-agency change.
+
+See [highlight evidence review](../analysis/docs/highlights_evidence_review.md)
+for the assessment of all four funding workspaces and the NIA editorial review
+items.
+
 Analysis uses DPWH's hero and view tabs. Its `stage=house|nep` selector (default
 NEP) applies to Overview, Statistics and AI monitoring. Insertions always use unmatched House
 records, Deletions unmatched NEP records, and Adjustments pairs with an amount
@@ -52,7 +83,8 @@ Candidates adds per-sub-program funding reconciliation and row/peso pairing
 coverage using its current search, sub-program and candidate-status filters.
 The full population reconciles the annex increase of ₱401,124,000; the 509
 provisional pairs cover 53.3% of NEP allocation and 47.5% of House allocation.
-Highlights links to this coverage detail. Pairing rules are unchanged.
+The `pairing-coverage` finding opens this reconciliation from Highlights.
+Pairing rules are unchanged.
 
 AI monitoring is an additional Analysis tab using the same source selector,
 filters, sortable tables, pagination, CSV exports and PDF evidence. It includes
@@ -81,6 +113,16 @@ rows used for these figures. OCR variants selected in the NEP title-basis filter
 have no House rows, so that scope yields zero insertion candidates. Source-only
 status remains provisional; OCR/title differences can prevent an existing NEP
 counterpart from pairing. The monitoring component cost is not itemized.
+
+A reading note reconciles the AI ledgers on the full population: paired AI
+titles print identical amounts (₱3,715,000,000 on both sides), so the whole
+NEP → House movement of −₱674,000,000 (₱7,015,950,000 → ₱6,341,950,000) comes
+from unmatched rows — ₱2,626,950,000 House-only against ₱3,300,950,000
+NEP-only. A one-to-one maximum matching pairs 120 of the 123 candidates
+(₱2,501,950,000) with an unpaired same-sub-program, same-amount NEP AI row,
+marking reworded or OCR-variant titles rather than certified new works. The
+Highlights card states the same reconciliation; both figures are recomputed
+from the retained ledgers, never restated.
 
 Candidate views accept `dim=overall|subprogram|program`, `ranking=all|unambiguous|ambiguous`
 for source-only candidates, and `direction=all|increased|decreased` for adjustments.

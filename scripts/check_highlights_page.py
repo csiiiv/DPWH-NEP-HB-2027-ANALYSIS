@@ -48,17 +48,19 @@ def check(base):
             expect(page.get_by_role('link', name='Highlights', exact=True)).to_have_attribute('aria-current', 'page')
             coverage = page.get_by_role('region', name='Budget coverage table', exact=True)
             changes = page.get_by_role('region', name='HGAB 3rd versus NEP candidate changes', exact=True)
-            expect(coverage.locator('tbody tr')).to_have_count(5)
-            expect(changes.locator('tbody tr')).to_have_count(5)
+            expect(coverage.locator('tbody tr')).to_have_count(1)
+            expect(changes.locator('tbody tr')).to_have_count(1)
             for side in ['nep', 'second', 'third']:
                 expect(coverage.locator('tbody tr').first).to_contain_text(f"{data['sources'][side]['records']:,} allocation records")
             for index, key in enumerate(['insertions', 'deletions', 'increased', 'decreased']):
                 expect(changes.locator('tbody tr').first.locator('td').nth(index)).to_contain_text(f"{data['changes'][key]['records']:,} allocation records")
-            expect(coverage.locator('.highlights-unavailable')).to_have_count(9)
-            expect(changes.locator('.highlights-unavailable')).to_have_count(15)
+            expect(coverage.locator('.highlights-unavailable')).to_have_count(0)
+            expect(changes.locator('.highlights-unavailable')).to_have_count(0)
             expect(page.locator('.highlights-stories > li')).to_have_count(10)
             expect(page.locator('#highlight-transparency-gaps')).to_have_count(0)
-            expect(page.get_by_text('Total · DPWH coverage only', exact=True)).to_have_count(2)
+            expect(coverage.locator('tbody th').first).to_have_text('DPWH operations')
+            expect(changes.locator('tbody th').first).to_have_text('DPWH operations')
+            expect(page.get_by_role('link', name='The main Overview')).to_have_count(2)
             assert not any('comparison_projects_2027.json' in url for url in requests)
             assert not any('highlights_details_2027.json' in url for url in requests)
             assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), 'Page overflows viewport'
@@ -195,14 +197,14 @@ def check(base):
             expect(page.get_by_role('dialog').get_by_role('link', name='NEP p.291').first).to_have_attribute('href', re.compile(r'#page=291$'))
             page.get_by_role('button', name='Close highlight').click()
             expect(page.get_by_role('dialog')).to_have_count(0)
-            # Standalone sources and retained controller anchors share the same viewer.
-            page.get_by_role('link', name='Resources', exact=True).click()
-            page.get_by_role('link', name='House GAB 2nd reading · Volume I-B', exact=True).click()
-            pdf = page.get_by_role('dialog', name=re.compile('^PDF source:'))
-            expect(pdf.get_by_role('status')).to_contain_text('Page 1 of', timeout=60000)
-            expect(pdf.locator('canvas')).to_be_visible()
-            page.keyboard.press('Escape')
-            assert page.evaluate('document.body.style.overflow') == ''
+            # Standalone sources open packaged PDFs in a new tab; the DPWH
+            # in-app viewer keeps serving retained controller anchors.
+            with page.context.expect_page() as new_page:
+                page.get_by_role('link', name='Sources', exact=True).click()
+                page.get_by_role('link', name='DBM NEP · Volume II-B (retained OCR)', exact=True).click()
+            pdf_tab = new_page.value
+            pdf_tab.wait_for_url(lambda url: url.endswith('.pdf'), timeout=60000)
+            pdf_tab.close()
             page.goto(base + '#house-nep', wait_until='networkidle')
             page.get_by_role('link', name='House summary PDF, page 9', exact=True).click()
             pdf = page.get_by_role('dialog', name=re.compile('^PDF source:'))

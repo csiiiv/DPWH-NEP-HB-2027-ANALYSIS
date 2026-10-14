@@ -46,7 +46,7 @@ def main():
                     assert '/app/?preview=overview#overview' in page.url
                     expect(page.get_by_role('heading', name='Budget allocation overview', exact=True)).to_be_visible()
                     nav = page.get_by_role('navigation', name='Workbench workspaces')
-                    assert nav.locator('a').all_text_contents() == ['Overview','DPWH','DA Farm-to-Market Roads','DOH Health Facilities','NIA Irrigation','Geolocation','Sources']
+                    assert nav.locator('a').all_text_contents() == ['Overview','DPWH','DA Farm-to-Market Roads','DOH Health Facilities','NIA Irrigation','Geolocation','Sources','About']
                     expect(nav.get_by_role('link',name='Overview',exact=True)).to_have_attribute('aria-current','page')
                     expect(page.get_by_role('navigation',name='Workbench pages')).to_have_count(0)
                     expect(page.locator('.overview-workspace-card')).to_have_count(4)
@@ -88,20 +88,46 @@ def main():
                     page.reload(wait_until='networkidle')
                     expect(page.get_by_label('Show exact pesos',exact=True)).to_be_checked()
                     expect(table.locator('th[aria-sort="ascending"],th[aria-sort="descending"]')).to_have_count(1)
+                    # Cross-workspace coverage and candidate-change tables.
+                    coverage = page.get_by_role('region',name='Overview budget coverage by stage',exact=True)
+                    expect(coverage.locator('tbody tr')).to_have_count(4)
+                    for w in data['workspaces']:
+                        row = coverage.locator('tbody tr').nth(['dpwh','fmr','hfep','nia'].index(w['key']))
+                        expect(row).to_contain_text(f"{w['sources']['nep']['count']:,} {w['count_unit']}")
+                        expect(row).to_contain_text(f"{w['sources']['house']['count']:,} {w['count_unit']}")
+                    dpwh = data['workspaces'][0]
+                    second = dpwh['readings']['second']
+                    expect(coverage.locator('tbody tr').first).to_contain_text(f"{second['count']:,} {dpwh['count_unit']}")
+                    expect(coverage.locator('.highlights-unavailable')).to_have_count(3)
+                    changes = page.get_by_role('region',name='Overview House versus NEP candidate changes',exact=True)
+                    expect(changes.locator('tbody tr')).to_have_count(4)
+                    for w in data['workspaces']:
+                        index = ['dpwh','fmr','hfep','nia'].index(w['key'])
+                        row = changes.locator('tbody tr').nth(index)
+                        expect(row).to_contain_text(f"{w['insertions']['count']:,} {w['count_unit']}")
+                        expect(row).to_contain_text(f"₱{w['insertions']['amount_php']:,}")
+                        expect(row).to_contain_text(f"{w['deletions']['count']:,} {w['count_unit']}")
+                        expect(row).to_contain_text(f"₱{w['deletions']['amount_php']:,}")
+                        expect(row).to_contain_text(f"{w['adjustments']['increased_count']:,}")
+                        expect(row).to_contain_text(f"{w['adjustments']['reduced_count']:,}")
+                        expect(row.get_by_role('link',name=f"{w['label']} insertion candidates",exact=True)).to_have_attribute('href',w['links']['insertions'])
+                        expect(row.get_by_role('link',name=f"{w['label']} deletion candidates",exact=True)).to_have_attribute('href',w['links']['deletions'])
+                        expect(row.get_by_role('link',name=f"{w['label']} paired increases",exact=True)).to_have_attribute('href',w['links']['increases'])
+                        expect(row.get_by_role('link',name=f"{w['label']} paired decreases",exact=True)).to_have_attribute('href',w['links']['decreases'])
                     page.screenshot(path=str(screenshots / f'overview-{width}.png'),full_page=True)
                     # Summary destinations restore the matching populations and
                     # preserve the new global entry alongside workspace pages.
-                    page.get_by_role('link',name='NIA Irrigation insertion candidates',exact=True).click()
+                    page.get_by_role('article',name='NIA Irrigation →',exact=True).get_by_role('link',name='NIA Irrigation insertion candidates',exact=True).click()
                     expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text('319 rows')
                     nav.get_by_role('link',name='Overview',exact=True).click()
                     expect(page.get_by_role('heading',name='Budget allocation overview',exact=True)).to_be_visible()
                     page.go_back(wait_until='networkidle')
                     expect(page.get_by_role('link',name='Insertions',exact=True)).to_have_attribute('aria-current','page')
                     page.goto(base+'#overview',wait_until='networkidle')
-                    page.get_by_role('link',name='DOH Health Facilities deletion candidates',exact=True).click()
+                    page.get_by_role('article',name='DOH Health Facilities →',exact=True).get_by_role('link',name='DOH Health Facilities deletion candidates',exact=True).click()
                     expect(page.locator('.fmr-stats')).to_contain_text('163')
                     page.goto(base+'#overview',wait_until='networkidle')
-                    page.get_by_role('link',name='DPWH insertion candidates',exact=True).click()
+                    page.get_by_role('article',name='DPWH →',exact=True).get_by_role('link',name='DPWH insertion candidates',exact=True).click()
                     expect(page.get_by_label('Review flags',exact=True)).to_have_value('house_only')
                     assert 'region_match=ignore' in page.url
                     page.goto(base+'#overview',wait_until='networkidle')
@@ -115,12 +141,25 @@ def main():
                     page.goto(base+'#sources',wait_until='networkidle')
                     expect(page.get_by_role('heading',name='Sources and datasets',exact=True)).to_be_visible()
                     expect(page.get_by_role('navigation',name='Workbench workspaces').get_by_role('link',name='Sources',exact=True)).to_have_attribute('aria-current','page')
-                    expect(page.locator('.resource-group')).to_have_count(8)
+                    expect(page.locator('.resource-group')).to_have_count(9)
                     nep_link=page.get_by_role('link',name='Canonical NEP tree',exact=True)
                     assert re.search(r'github\.com/.*/blob/main/analysis/data/nep_2027_tree\.json$',nep_link.get_attribute('href')),(nep_link.get_attribute('href'),)
                     fmr_bundle=page.get_by_role('link',name='FMR shareable bundle (CSV set + 7z archive)',exact=True)
                     assert fmr_bundle.get_attribute('download') == 'fmr_data.7z',(fmr_bundle.get_attribute('download'),)
                     expect(page.get_by_role('link',name='Open workspace →').first).to_have_attribute('href','#compare')
+                    assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
+                    # The former DPWH Resources route redirects into Sources,
+                    # where its catalog entries now live.
+                    page.goto(base+'#resources',wait_until='networkidle')
+                    expect(page.get_by_role('heading',name='Sources and datasets',exact=True)).to_be_visible()
+                    # About workspace: suite-level intro with per-workspace cards
+                    # and documentation links.
+                    page.goto(base+'#about',wait_until='networkidle')
+                    expect(page.get_by_role('heading',name='About this workbench',exact=True)).to_be_visible()
+                    expect(page.get_by_role('navigation',name='Workbench workspaces').get_by_role('link',name='About',exact=True)).to_have_attribute('aria-current','page')
+                    expect(page.locator('main[tabindex="-1"] > .cards').first.locator('article')).to_have_count(7)
+                    expect(page.get_by_role('region',name='Workbench workspaces covered')).to_contain_text('NIA Irrigation')
+                    expect(page.get_by_role('link',name='Repository README',exact=True)).to_have_attribute('href',re.compile(r'/README\.md$'))
                     assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
                     page.goto(base+'#overview/unknown',wait_until='networkidle')
                     expect(page.get_by_role('heading',name='Unknown Overview view',exact=True)).to_be_visible()

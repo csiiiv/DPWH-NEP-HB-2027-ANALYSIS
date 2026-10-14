@@ -62,6 +62,60 @@ function downloadSummary(data) {
   const link = document.createElement('a'); link.href = url; link.download = 'fy2027-overview-summary.csv'; link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+// Coverage and candidate-change tables follow the DPWH Highlights pattern:
+// every cell states its own counting unit, and figures come only from the
+// validated summary payload — never cross-workspace additions.
+function CoverageTables({data, exact}) {
+  const columns = [
+    ['nep', 'DBM NEP', w => w.sources.nep, w => w.links.nep],
+    ['house', 'House GAB', w => w.sources.house, w => w.links.house],
+  ];
+  const second = data.workspaces.find(w => w.key === 'dpwh')?.readings?.second;
+  return <><section className="fmr-section" aria-labelledby="overview-coverage-heading">
+    <h2 id="overview-coverage-heading">Budget coverage by stage</h2>
+    <p>Each workspace counts its own declared record grain — {data.workspaces.map(w => `${w.label.toLowerCase()} (${w.count_unit})`).join(', ')}. Counts and ledger totals come from the same validated build as the summaries; stages are counted separately and never added across workspaces.</p>
+    <div className="table-scroll" role="region" aria-label="Overview budget coverage by stage" tabIndex={0}>
+      <table className="highlights-table overview-coverage-table"><caption>Source allocation records and amounts · each workspace's retained schedules</caption>
+        <thead><tr><th scope="col">Workspace</th><th scope="col">DBM NEP</th><th scope="col">House GAB</th>{second && <th scope="col">HGAB 2nd</th>}</tr></thead>
+        <tbody>{data.workspaces.map(w => <tr key={w.key}>
+          <th scope="row"><a href={w.links.home}>{w.label}</a></th>
+          {columns.map(([key, , get, link]) => <td key={key}><a className="highlights-cell-link" href={link(w)}>
+            <strong>{number(get(w).count)} {w.count_unit}</strong>
+            <span title={money(get(w).amount_php)}>Worth <Amount value={get(w).amount_php} exact/></span></a></td>)}
+          {second && <td>{w.key === 'dpwh' ? <a className="highlights-cell-link" href={data.workspaces.find(x => x.key === 'dpwh').links.house_second}>
+            <strong>{number(second.count)} {data.workspaces.find(x => x.key === 'dpwh').count_unit}</strong>
+            <span title={money(second.amount_php)}>Worth <Amount value={second.amount_php} exact/></span></a>
+            : <span className="highlights-unavailable">Not covered</span>}</td>}
+        </tr>)}</tbody>
+      </table>
+    </div>
+    <p className="fmr-muted">DPWH covers operations only; agency controls above operations are excluded here and shown in its card. The FMR House stage is represented by the retained 2nd-reading annex whose extracted text matches the 3rd reading. Unmatched candidates between stages do not make counts comparable as projects.</p>
+  </section>
+  <section className="fmr-section" aria-labelledby="overview-changes-heading">
+    <h2 id="overview-changes-heading">House vs. NEP: candidate changes</h2>
+    <p>Insertion and deletion candidates with their allocations, plus gross movement on paired counterparts. A candidate is a matching observation, not a certified policy change; each workspace's card states its matching basis. Select a figure to review the underlying records in its workspace.</p>
+    <div className="table-scroll" role="region" aria-label="Overview House versus NEP candidate changes" tabIndex={0}>
+      <table className="highlights-table highlights-changes overview-changes-table"><caption>Candidate changes · full source allocations for insertions/deletions; gross paired movement for increases/decreases</caption>
+        <thead><tr><th scope="col">Workspace</th><th scope="col">Insertion candidates</th><th scope="col">Deletion candidates</th><th scope="col">Paired increases</th><th scope="col">Paired reductions</th><th scope="col">House ledger</th></tr></thead>
+        <tbody>{data.workspaces.map(w => <tr key={w.key}>
+          <th scope="row"><a href={w.links.home}>{w.label}</a></th>
+          {[['insertions', 'House allocation'], ['deletions', 'NEP allocation']].map(([key, note]) => <td key={key}>
+            <a className="highlights-cell-link" href={w.links[key]} aria-label={`${w.label} ${key === 'insertions' ? 'insertion' : 'deletion'} candidates`}>
+              <strong>{number(w[key].count)} {w.count_unit}</strong>
+              <span title={money(w[key].amount_php)}>{note} <Amount value={w[key].amount_php} exact/></span></a></td>)}
+          {[['increases', 'increased_php', 'increased_count'], ['decreases', 'reduced_php', 'reduced_count']].map(([key, php, cnt]) => <td key={key}>
+            <a className="highlights-cell-link" href={w.links[key]} aria-label={`${w.label} paired ${key}`}>
+              <strong>{number(w.adjustments[cnt])} {w.adjustments.count_unit.replace('changed ', '').replace('candidate ', '')}</strong>
+              <span title={money(w.adjustments[php])}>Gross <Amount value={w.adjustments[php]} exact/></span></a></td>)}
+          <td><a className="highlights-cell-link" href={w.links.house}>
+            <strong>{number(w.sources.house.count)} {w.count_unit}</strong>
+            <span title={money(w.sources.house.amount_php)}>Worth <Amount value={w.sources.house.amount_php} exact/></span></a></td>
+        </tr>)}</tbody>
+      </table>
+    </div>
+    <p className="fmr-muted">Counts use each workspace's record grain, so they are not comparable across rows. Adjustments are gross movements within pairs — {data.workspaces.map(w => `${w.label}: ${w.adjustments.count_unit}`).join('; ')}. The DPWH pair counts include region-difference candidates. HFEP paired column additions/drops sit in its adjustments; its Analysis view displays NEP minus House.</p>
+  </section></>;
+}
 export default function MainOverview() {
   const [route, setRoute] = useState(() => readRoute()), [data, setData] = useState(null), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
   useEffect(() => {const update = () => setRoute(readRoute()); window.addEventListener('hashchange', update);
@@ -108,6 +162,7 @@ export default function MainOverview() {
             <p className="fmr-eyebrow">{data.workspaces.find(w => w.key === f.key)?.label}</p><h3>{f.title}</h3>
             <strong>{f.count != null ? `${number(f.count)} candidates · ` : ''}<Amount value={f.amount_php} exact={exact}/></strong>
             <p>{f.detail}</p><a href={f.href}>Inspect supporting analysis →</a></article>)}</div></section>
+          <CoverageTables data={data} exact={exact}/>
         </>}
       <section className="fmr-section"><h2>What do you want to investigate?</h2><ul className="home-directory">
         <li><a href="#compare"><strong>Public works allocations →</strong><span>Compare retained NEP, Transparency and House-reading records.</span></a></li>

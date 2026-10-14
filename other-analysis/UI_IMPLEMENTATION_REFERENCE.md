@@ -221,6 +221,7 @@ copied link reproduces the exact view.
 |---|---|
 | `#fmr/home` | — |
 | `#fmr/highlights` | `story=<finding-id>`, story filters |
+| `#nia/highlights` | `story=<finding-id>` (`annex-increase`, `subprogram-shift`, `changed-pairs`, `insertions`, `deletions`, `pairing-coverage`, `ai-monitoring`, `agency-scope`, `extraction-review`), story filters (`q`, `subprogram`) |
 | `#fmr/compare` | `view=regions\|projects`, `region`, `q`, `status`, `direction`, `method`, `coordinate`, `coord_side`, `pair`, `sort`, `dir`, `page`, `extraction`, `rule`, `review_flag`, `text_basis` |
 | `#fmr/analysis` | `stage`, `view=overview\|insertions\|deletions\|adjustments\|coordinates\|stats` (legacy `house_candidates`\|`nep_candidates`\|`statistics`\|`chainage` still resolve), `records=region:<key>\|band:<i>\|amount:<pesos>\|all` |
 | `#fmr/house`, `#fmr/nep` | `view=tree\|projects\|review`, `node`, `q`, `region`, `status`, `category`, provenance filters |

@@ -72,8 +72,8 @@ test('unregistered hash prefixes fall back to the DPWH workspace', () => {
 });
 test('the workspace registry exposes consistent labels, prefixes and pages', () => {
   // Every workspace needs a label, at least one tab, and a unique prefix.
-  assert.deepEqual(workspaceLabels, {overview: 'Overview', dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities', nia: 'NIA Irrigation', geo: 'Geolocation', sources: 'Sources'});
-  assert.deepEqual(Object.keys(workspaces), ['overview', 'dpwh', 'fmr', 'hfep', 'nia', 'geo', 'sources']);
+  assert.deepEqual(workspaceLabels, {overview: 'Overview', dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities', nia: 'NIA Irrigation', geo: 'Geolocation', sources: 'Sources', about: 'About'});
+  assert.deepEqual(Object.keys(workspaces), ['overview', 'dpwh', 'fmr', 'hfep', 'nia', 'geo', 'sources', 'about']);
   const prefixes = Object.values(workspaces).map(ws => ws.prefix);
   assert.equal(new Set(prefixes).size, prefixes.length, 'prefixes must be unique');
   for (const ws of Object.values(workspaces)) {
@@ -101,6 +101,14 @@ test('Sources catalogs datasets behind its own workspace prefix', () => {
   assert.equal(routeHref('home', {}, 'sources'), '#sources');
   assert.equal(workspaceHref('sources', readRoute('#compare?view=projects')), '#sources');
   assert.equal(workspaceHref('dpwh', readRoute('#sources')), '#home');
+});
+test('the former DPWH Resources and About routes resolve to shared workspaces', () => {
+  // Resources folded into Sources; About is a top-level workspace.
+  assert.equal(readWorkspace('#resources'), 'sources');
+  assert.equal(readWorkspace('#about'), 'about');
+  assert.equal(readRoute('#about').key, 'home');
+  assert.equal(routeHref('home', {}, 'about'), '#about');
+  assert.equal(workspaceHref('about', readRoute('#compare?view=projects')), '#about');
 });
 test('NIA deep links and analogous workspace switches preserve source selections', () => {
   const route = readRoute('#nia/house?node=ib%3Ap896%3Ar2');

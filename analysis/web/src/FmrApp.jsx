@@ -12,6 +12,8 @@ import {allocationStats, bandRows, compactMoney, comparisonRows, comparisonExpor
   flagLabel, hadCoordinateInterpretation, provenanceOptionLists} from './fmrModel.js';
 import {CoordinateBadge, CoordinateProvenance, FlagList} from './FmrProvenance.jsx';
 import FmrRedFlags from './FmrRedFlags.jsx';
+import {fmrFundingGroups, fmrHighlights} from './fmrHighlights.js';
+import {HighlightAction, HighlightSummary} from './AnnexHighlightEvidence.jsx';
 import './Fmr.css';
 const PdfPreview = lazy(() => import('./PdfPreview.jsx'));
 const FmrMap = lazy(() => import('./FmrMap.jsx'));
@@ -327,8 +329,8 @@ function exportComparison(rows,format) {
       r.house?.source.source_pdf,r.house?.source.pdf_page,r.house?.source.printed_page,
       r.delta_php,pctChange(r.house_php,r.nep_php)]));
 }
-function ComparisonResults({rows, route, onPdf, tableId}) {
-  const sort=routeSort(route,COMPARISON_COLUMNS.map(([k]) => k)), size=50;
+function ComparisonResults({rows, route, onPdf, tableId, defaultSortKey = 'delta_php'}) {
+  const sort=routeSort(route,COMPARISON_COLUMNS.map(([k]) => k),defaultSortKey), size=50;
   const sorted=sortRows(rows,r => comparisonValue(r,sort?.key),sort);
   const count=Math.max(1,Math.ceil(rows.length/size)), page=Math.min(Math.max(1,Math.floor(Number(route.params.get('page')) || 1)),count);
   const paged=sorted.slice((page-1)*size,page*size);
@@ -440,30 +442,56 @@ function CoverageTables({data}) {
       {key:'php',label:'Funding effect (PHP)',align:'num',render:r => <Amount value={r.php} signed/>},
     ]}/><p className="fmr-funding-bridge">Net funding change: <Amount value={a.paired_delta_php} signed/> paired + <Amount value={a.house_only_php}/> House only − <Amount value={a.nep_only_php}/> NEP only = <strong><Amount value={a.net_delta_php} signed/></strong>.</p></section></>;
 }
+function HighlightFundingBridge({rows, regions}) {
+  const agg = candidateAggregates(rows), groups = fmrFundingGroups(rows, regions);
+  return <section><h3>Candidate funding reconciliation</h3>
+    <p>Paired {signedMoney(agg.paired_delta_php)} + House-only {money(agg.house_only_php)} − NEP-only {money(agg.nep_only_php)} = {signedMoney(agg.net_delta_php)}.</p>
+    <SortableTable rows={groups} ariaLabel="FMR highlight funding bridge" initialSort={{key:'net_delta_php',direction:'desc'}} columns={[
+      {key:'label',label:'Region',scope:'row'}, {key:'rows',label:'Comparison rows',align:'num'},
+      {key:'paired_delta_php',label:'Paired change (PHP)',align:'num',render:r=>signedMoney(r.paired_delta_php)},
+      {key:'house_only_php',label:'House-only (PHP)',align:'num',render:r=>money(r.house_only_php)},
+      {key:'nep_only_php',label:'NEP-only (PHP)',align:'num',render:r=>money(r.nep_only_php)},
+      {key:'net_delta_php',label:'Net change (PHP)',align:'num',render:r=>signedMoney(r.net_delta_php)},
+    ]}/></section>;
+}
 function Highlights({data, route, onPdf}) {
-  const summary=data.comparison_summary, largest=[...data.regions].sort((a,b) => b.delta_php-a.delta_php)[0], allRows=useMemo(() => comparisonRows(data),[data]);
-  const cards=[
-    {id:'control-increase',title:'FMR allocation increases',value:<Amount value={summary.delta_php} signed/>,body:'Difference between the two printed program controls.',prompt:'Which regional gains and reductions reconcile the increase?',href:routeHref('compare'),regions:data.regions},
-    {id:'regional-increase',title:'Largest regional increase',value:<Amount value={largest.delta_php} signed/>,body:largest.label,prompt:'Which project candidates account for this regional movement?',href:routeHref('compare',{view:'projects',region:largest.id}),regions:[largest]},
-    {id:'amount-changes',title:'Candidate amount changes',value:summary.changed_pairs,body:'One-to-one candidate pairs with different allocations.',prompt:'Do the titles and source pages support each candidate pairing?',href:routeHref('compare',{view:'projects',status:'changed'}),rows:filterComparisons(allRows,{status:'changed'})},
-    {id:'house-only',title:'Unmatched House rows',value:summary.counts.house_only,body:'Source-only observations; project additions remain provisional.',prompt:'Which unmatched allocations need further counterpart review?',href:routeHref('compare',{view:'projects',status:'house_only'}),rows:filterComparisons(allRows,{status:'house_only'})},
-    ...['nep','house'].map(stage => ({id:`${stage}-coordinates`,title:`${stage === 'nep' ? 'NEP' : 'House'} coordinate review`,value:data.stages[stage].summary.projects_needing_review,body:'Remaining source findings after coordinate interpretation.',prompt:'What does the printed coordinate cell say, and which reasons remain open?',href:routeHref(stage,{view:'review'}),stage,projects:data.stages[stage].projects.filter(p => p.status === 'needs_review')})),
-    ...['nep','house'].map(stage => ({id:`${stage}-segments`,title:`${stage === 'nep' ? 'NEP' : 'House'} multiple segments`,value:data.stages[stage].summary.multi_segment_projects,body:'One project allocation can cover several coordinate segments.',prompt:'How are the segments represented without duplicating funding?',href:routeHref(stage,{view:'projects',status:'multi'}),stage,projects:data.stages[stage].projects.filter(p => p.segment_count > 1)})),
-  ];
+  const allRows=useMemo(() => comparisonRows(data),[data]);
+  const cards=useMemo(() => fmrHighlights(data, allRows), [data, allRows]);
   const story=cards.find(c => c.id === route.params.get('story')), params=routeParams(route.params);
-  const supportingProjects=story?.projects ? filterProjects(story.projects,params) : [], supportingRows=story?.rows ? filterComparisons(story.rows,params) : [];
-  const supportingRegions=story?.regions?.filter(r => (!params.region || r.id === params.region) && (!params.q || r.label.toLowerCase().includes(params.q.toLowerCase()))) || [];
-  const close=() => navigate(route,{story:null,sort:null,dir:null,page:null,...Object.fromEntries(FILTER_KEYS.map(k => [k,null]))});
+  const population=story?.history ? params.evidencePopulation === 'history' ? story.history
+    : params.evidencePopulation === 'open' ? story.open : story.projects : story?.projects;
+  const supportingProjects=population ? filterProjects(population,params) : [], supportingRows=story?.rows ? filterComparisons(story.rows,params) : [];
+  const supportingRegions=story?.regions?.filter(r => (!params.region || r.id === params.region) &&
+    (story.rows || !params.q || r.label.toLowerCase().includes(params.q.toLowerCase()))) || [];
+  const regionKeys=new Set(supportingRegions.map(r=>r.id));
+  const bridgeRows=story?.bridgeRows ? story.bridgeRows.filter(r=>regionKeys.has(r.region_key)) : supportingRows;
+  const selected=supportingProjects.find(p=>p.id===params.evidenceProject) || supportingProjects[0];
+  const reset={sort:null,dir:null,page:null,pair:null,evidenceProject:null,evidencePopulation:null,table:null,...Object.fromEntries(FILTER_KEYS.map(k => [k,null]))};
+  const close=() => navigate(route,{story:null,...reset});
   return <><Hero title="Highlights"><p>Follow the budget totals into candidate records and the printed pages behind each finding.</p></Hero><ReadingNote/><CoverageTables data={data}/>
-    <h2>Findings to investigate</h2><div className="fmr-highlight-grid">{cards.map((c,i) => <article key={c.id} className="fmr-highlight"><p className="fmr-eyebrow">{String(i+1).padStart(2,'0')} · {c.regions ? 'Printed controls' : c.rows ? 'Candidate matching' : 'Coordinate evidence'}</p><h3>{c.title}</h3><strong>{c.value}</strong><p>{c.body}</p><p className="fmr-story-prompt">{c.prompt}</p><a href={routeHref('highlights',{story:c.id})}>Explore evidence →</a></article>)}</div>
-    {story && <Dialog label={`Highlight evidence: ${story.title}`} className="fmr-story-dialog" onClose={close}><div className="fmr-dialog-heading"><h2>{story.title}</h2><button onClick={close}>Close evidence</button></div><div className="fmr-dialog-body">
-      <FactPanel facts={[{label:'Key finding',value:story.value},{label:'Basis',value:story.body},{label:'Investigation question',value:story.prompt}]}/>
-      <div className="fmr-story-actions"><a className="secondary" href={story.href}>Continue in the workbench</a><ShareLink/>{story.stage && <a href={siteUrl(data.stages[story.stage].metadata.source_pdf)} download>Download source PDF</a>}{story.regions && ['nep','house'].map(stage => <a key={stage} href={siteUrl(data.stages[stage].metadata.source_pdf)} download>Download {data.stages[stage].label} PDF</a>)}</div>
-      <Filters route={route} regions={story.stage ? data.stages[story.stage].regions : data.regions} comparison={Boolean(story.rows)} coordinate={Boolean(story.projects)}
-        provenance={provenanceOptionLists(story.projects || (story.rows || []).flatMap(r => [r.nep, r.house].filter(Boolean)))}/>
-      {story.projects && <><div className="fmr-result-bar"><span>{supportingProjects.length} supporting source projects · <Amount value={allocationStats(supportingProjects).total}/></span><button onClick={() => exportProjects(supportingProjects,story.stage)}>Export filtered CSV</button></div><ProjectTable projects={supportingProjects} onSelect={id => {window.location.hash=routeHref(story.stage,{node:id});}} onPdf={onPdf}/></>}
-      {story.rows && <><FilteredAnalytics rows={supportingRows}/><ComparisonResults rows={supportingRows} route={route} onPdf={onPdf}/></>}
-      {story.regions && <><div className="fmr-result-bar"><span>{supportingRegions.length} supporting regional controls</span><button onClick={() => download('fmr-highlight-controls.csv',['region','nep_php','house_php','difference_php'],supportingRegions.map(r => [r.label,r.nep_php,r.house_php,r.delta_php]))}>Export filtered CSV</button></div><RegionalTable regions={supportingRegions} onPdf={onPdf}/></>}
+    <h2>Findings to investigate</h2><div className="fmr-highlight-grid">{cards.map((c,i) => <article key={c.id} className="fmr-highlight"><p className="fmr-eyebrow">{String(i+1).padStart(2,'0')} · {c.kind}</p><h3>{c.title}</h3><strong>{c.money ? <Amount value={c.value} signed={c.signed}/> : c.value}</strong><p>{c.body}</p><p className="fmr-story-prompt">{c.prompt}</p><HighlightAction card={c} onOpen={()=>navigate(route,{...reset,story:c.id})}/></article>)}</div>
+    {story && <Dialog key={story.id} label={`Highlight evidence: ${story.title}`} className="fmr-story-dialog annex-highlight-dialog" onClose={close}><div className="fmr-dialog-heading"><h2>{story.title}</h2><button onClick={close}>Close evidence</button></div><div className="fmr-dialog-body">
+      <HighlightSummary card={story}/>
+      <div className="fmr-story-actions"><a className="secondary" href={routeHref(story.href,story.params)}>Continue in the workbench</a><ShareLink/>{(story.stage ? [story.stage] : ['nep','house']).map(stage => <a key={stage} href={siteUrl(data.stages[stage].metadata.source_pdf)} download>Download {data.stages[stage].label} PDF</a>)}</div>
+      {story.history && <label className="annex-source-select">Coordinate evidence population<select aria-label="Coordinate evidence population"
+        value={params.evidencePopulation || (story.open.length ? 'open' : 'history')} onChange={e=>navigate(route,{evidencePopulation:e.target.value,evidenceProject:null,page:null})}>
+        <option value="open">Remaining findings ({story.open.length})</option><option value="history">Original extraction flags ({story.history.length})</option></select></label>}
+      <Filters route={route} regions={story.stage ? data.stages[story.stage].regions : story.regions || data.regions} comparison={Boolean(story.rows)} coordinate={Boolean(story.projects)}
+        fixedStatus={story.id==='amount-changes' ? 'changed' : story.id==='house-only' ? 'house_only' : undefined}
+        provenance={provenanceOptionLists(population || (story.rows || []).flatMap(r => [r.nep, r.house].filter(Boolean)))}/>
+      {story.projects && <><div className="fmr-result-bar"><span>{supportingProjects.length} supporting source projects · <Amount value={allocationStats(supportingProjects).total}/></span><button onClick={() => exportProjects(supportingProjects,story.stage)}>Export filtered CSV</button></div>
+        <section className="annex-selection" aria-label="Highlight project evidence">{selected ? <><label className="annex-source-select">Select supporting project<select aria-label="Highlight supporting project" value={selected.id} onChange={e=>navigate(route,{evidenceProject:e.target.value})}>
+          {supportingProjects.map(project=><option key={project.id} value={project.id}>{project.title}</option>)}</select></label>
+          <Evidence stage={data.stages[story.stage]} node={sourceNode(data.stages[story.stage],selected.id)} project={selected} onPdf={onPdf}/></>
+          : <p>No source projects in this evidence population and filter scope.</p>}</section>
+        <ProjectTable tableId={`highlight-${story.id}-projects`} projects={supportingProjects} onSelect={id => navigate(route,{evidenceProject:id})} onPdf={onPdf}/></>}
+      {(story.regions || story.id==='house-only') && <HighlightFundingBridge rows={bridgeRows} regions={data.regions}/>}
+      {story.id==='house-only' && <p>House-only amounts are positive in this bridge because this population contains only unmatched House records; this does not establish a confirmed addition.</p>}
+      {story.rows && <><FilteredAnalytics rows={supportingRows}/><ComparisonResults tableId={`highlight-${story.id}-records`} rows={supportingRows} route={route} onPdf={onPdf}
+        defaultSortKey={story.id==='house-only' ? 'house_php' : 'delta_php'}/></>}
+      {story.regions && <><div className="fmr-result-bar"><span>{supportingRegions.length} supporting regional controls</span><button onClick={() => download('fmr-highlight-controls.csv',
+        ['region','nep_php','house_php','difference_php','nep_source_pdf','nep_pdf_page','nep_printed_page','house_source_pdf','house_pdf_page','house_printed_page'],
+        supportingRegions.map(r => [r.label,r.nep_php,r.house_php,r.delta_php,...['nep','house'].flatMap(side=>[r[`${side}_source`].source_pdf,r[`${side}_source`].pdf_page,r[`${side}_source`].printed_page])]))}>Export regional controls CSV</button></div><RegionalTable regions={supportingRegions} onPdf={onPdf}/></>}
     </div></Dialog>}
     {params.story && !story && <p role="alert">Finding not found. <button onClick={close}>Clear story selection</button></p>}
   </>;

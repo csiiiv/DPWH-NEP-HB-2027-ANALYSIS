@@ -9,8 +9,9 @@ useful for a specific search; the files below are the citable ledgers behind
 those pages.
 
 For restoring a filtered view in the app, see
-[shareable_findings.md](shareable_findings.md). For DPWH download catalog links
-inside the SPA, open `#resources`.
+[shareable_findings.md](shareable_findings.md). For download catalog links
+inside the SPA, open `#sources` (the former DPWH `#resources` tab redirects
+there).
 
 ## Audience quick picks
 
@@ -44,7 +45,7 @@ by workspace, and Geolocation remains a per-artifact exploration tool.
 
 | Workspace | App routes | Project/facility list pages |
 | --- | --- | --- |
-| DPWH | `#home`, `#highlights`, `#compare`, `#analysis`, `#house`, `#nep`, `#transparency`, `#resources` | House I-C projects, NEP source projects, Transparency listing, Compare/Analysis populations |
+| DPWH | `#home`, `#highlights`, `#compare`, `#analysis`, `#house`, `#nep`, `#transparency` | House I-C projects, NEP source projects, Transparency listing, Compare/Analysis populations |
 | DA FMR | `#fmr/…` | House / NEP project tables, Map, Compare projects, Analysis drill-downs |
 | NIA | `#nia/…` | House / NEP irrigation annex rows, Compare projects, Analysis populations |
 | DOH HFEP | `#hfep/…` | House / NEP facility tables, Compare pairs, Analysis populations |
@@ -187,4 +188,4 @@ Orientation for the three annexes: [other-analysis/README.md](../../other-analys
 - [shareable_findings.md](shareable_findings.md) — URL parameters to reopen filtered views
 - [other-analysis/data/shareable/FMR_DATA_README.md](../../other-analysis/data/shareable/FMR_DATA_README.md) — FMR public package description
 - [UI_CONSISTENCY_PLAN.md](../UI_CONSISTENCY_PLAN.md) — shared citizen questions across pages
-- SPA Resources tab: `#resources` (DPWH catalog in [resources.js](../web/src/resources.js))
+- SPA Sources workspace: `#sources` (catalog in [sourcesCatalog.js](../web/src/sourcesCatalog.js); the former DPWH `#resources` tab folded in)

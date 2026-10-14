@@ -1,0 +1,24 @@
+.annex-highlight-open { padding:10px 14px; margin-top:auto; align-self:flex-start; background:#1e4b6b; color:white; border:1px solid #1e4b6b; border-radius:6px; text-align:left; cursor:pointer; font:inherit; font-weight:600; }
+.annex-highlight-open:hover { background:#163b55; }
+.annex-highlight-open:focus-visible { outline:3px solid #6398c0; outline-offset:3px; }
+.annex-highlight-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.annex-highlight-metrics .fmr-stat strong { font-size:clamp(16px,2vw,23px); }
+.annex-evidence-limit { padding:12px 16px; margin:0; border-left:3px solid #947541; background:#fcf8ef; line-height:1.6; }
+.annex-highlight-dialog .fmr-story-facts dd { font-weight:500; }
+.annex-highlight-dialog .fmr-dialog-body>*,.annex-highlight-dialog .fmr-source-audits>* { min-width:0; }
+.annex-highlight-dialog .sortable-table table { min-width:760px; }
+.annex-highlight-dialog .fmr-source-audits { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.annex-highlight-dialog select { max-width:100%; }
+.annex-highlight-dialog .annex-source-select { display:flex; flex-direction:column; gap:6px; margin:12px 0; }
+.annex-highlight-dialog .annex-selection { scroll-margin-top:100px; }
+.annex-highlight-dialog .annex-selection .fmr-evidence { margin:0; }
+.annex-highlight-dialog .annex-selection .fmr-arithmetic { min-width:0; }
+.annex-highlight-dialog .fmr-evidence table { width:100%; min-width:0; }
+.annex-highlight-dialog .fmr-evidence .fmr-psgc-table,.annex-highlight-dialog .fmr-evidence .fmr-provenance-table { display:block; max-width:100%; overflow-x:auto; }
+@media(max-width:700px) {
+  .annex-highlight-metrics,.annex-highlight-dialog .fmr-source-audits { grid-template-columns:minmax(0,1fr); }
+  .annex-highlight-dialog .fmr-dialog-heading { align-items:flex-start; }
+  .annex-highlight-dialog .fmr-dialog-heading h2 { font-size:18px; }
+  .annex-highlight-dialog .fmr-mobile-table .sortable-table { min-width:0; }
+  .annex-highlight-dialog .fmr-psgc-table { font-size:12px; }
+}

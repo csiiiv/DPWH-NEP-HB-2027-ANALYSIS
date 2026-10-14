@@ -14,7 +14,6 @@ const number=value=>value.toLocaleString('en-PH');
 const billion=value=>`₱${(value/1e9).toFixed(2)}B`;
 const percent=(value,base)=>base?`${(100*value/base).toFixed(1)}%`:'unavailable';
 const compare=params=>routeHref('compare',{view:'projects',region_match:'ignore',...params});
-const agencies=['DPWH','DA Farm to Market Roads','NIA Irrigation','DOH Health Facilities','Total · DPWH coverage only'];
 const exact=value=>`${number(value)} PHP`;
 const fmrHref=(key='',params={})=>routeHref(key,params,'fmr');
 
@@ -31,6 +30,9 @@ function SplitCell({value}){
  return <div className="highlights-cell-value"><strong>{number(value.comparison_rows)} comparison rows</strong><span title={exact(value.amount_php)}>Worth {amount(value.amount_php)}</span></div>;
 }
 
+// Cross-workspace coverage moved to the main Overview page; these tables keep
+// DPWH rows only, with the other agencies' figures one click away there.
+const dpwhRow=['DPWH operations'];
 function CoverageTable({data}){
  return <section className="analysis-section highlights-table-section" aria-labelledby="coverage-heading">
   <h2 id="coverage-heading">Budget coverage by stage</h2>
@@ -38,15 +40,12 @@ function CoverageTable({data}){
   <div className="table-scroll" role="region" aria-label="Budget coverage table" tabIndex={0}>
    <table className="highlights-table"><caption>Source allocation records and amounts · operations, including local and foreign-assisted projects</caption>
     <thead><tr><th scope="col">Agency / infrastructure</th><th scope="col">NEP</th><th scope="col">HGAB 2nd</th><th scope="col">HGAB 3rd</th></tr></thead>
-    <tbody>{agencies.map((agency,index)=>{
-     const covered=index===0||index===agencies.length-1;
-     return <tr key={agency} className={index===agencies.length-1?'highlights-total':''}><th scope="row">{agency}</th>
-      {['nep','second','third'].map(side=><td key={side}><AllocationCell value={covered?data.sources[side]:null}/></td>)}
-     </tr>;
-    })}</tbody>
+    <tbody>{dpwhRow.map(agency=><tr key={agency} className="highlights-total"><th scope="row">{agency}</th>
+     {['nep','second','third'].map(side=><td key={side}><AllocationCell value={data.sources[side]}/></td>)}
+    </tr>)}</tbody>
    </table>
   </div>
-  <p className="muted">Coverage is DPWH only. Other agencies are unavailable, rather than zero. Counts are source allocation records, not independently verified or deduplicated projects across stages. Funding components and parent controls are not counted again. Operations exclude the overhead controls above them: NEP {amount(data.controls.nep_php)} and HGAB3 {amount(data.controls.third_php)} of General Administration and Support plus Support to Operations sit outside these tables. Full agency new appropriations: NEP {amount(data.agency.nep_php)}; both House readings {amount(data.agency.house_php)}.</p>
+  <p className="muted">Coverage is DPWH only. Operations exclude the overhead controls above them: NEP {amount(data.controls.nep_php)} and HGAB3 {amount(data.controls.third_php)} of General Administration and Support plus Support to Operations sit outside these tables. Full agency new appropriations: NEP {amount(data.agency.nep_php)}; both House readings {amount(data.agency.house_php)}. <a href="#overview">The main Overview</a> extends this coverage table to farm-to-market roads, health facilities and irrigation with each dataset's own counting units.</p>
  </section>;
 }
 
@@ -58,16 +57,13 @@ function ChangesTable({data}){
   <div className="table-scroll" role="region" aria-label="HGAB 3rd versus NEP candidate changes" tabIndex={0}>
    <table className="highlights-table highlights-changes"><caption>Candidate changes · full allocations for insertions/deletions; absolute differences for increases/decreases</caption>
     <thead><tr><th scope="col">Agency / infrastructure</th>{columns.map(([key,label])=><th key={key} scope="col">{label}</th>)}<th scope="col">HGAB 3rd</th></tr></thead>
-    <tbody>{agencies.map((agency,index)=>{
-     const covered=index===0||index===agencies.length-1;
-     return <tr key={agency} className={index===agencies.length-1?'highlights-total':''}><th scope="row">{agency}</th>
-      {columns.map(([key,,change,href])=><td key={key}><AllocationCell value={covered?data.changes[key]:null} change={change} href={covered&&index===0?href:null}/></td>)}
-      <td><AllocationCell value={covered?data.sources.third:null}/></td>
-     </tr>;
-    })}</tbody>
+    <tbody>{dpwhRow.map(agency=><tr key={agency} className="highlights-total"><th scope="row">{agency}</th>
+     {columns.map(([key,,change,href])=><td key={key}><AllocationCell value={data.changes[key]} change={change} href={href}/></td>)}
+     <td><AllocationCell value={data.sources.third}/></td>
+    </tr>)}</tbody>
    </table>
   </div>
-  <p className="muted">Insertions mean no attached NEP record; deletions mean no attached third-reading House record. Neither is a certified policy change. Only validated candidates are counted: rows with plausible-but-unverified counterparts are held out — {number(data.unresolved_insertions)} insertion rows and {number(data.deletion_split.suggested.comparison_rows)} deletion rows. Counts include grouped allocation members.</p>
+  <p className="muted">Insertions mean no attached NEP record; deletions mean no attached third-reading House record. Neither is a certified policy change. Only validated candidates are counted: rows with plausible-but-unverified counterparts are held out — {number(data.unresolved_insertions)} insertion rows and {number(data.deletion_split.suggested.comparison_rows)} deletion rows. Counts include grouped allocation members. <a href="#overview">The main Overview</a> shows the same candidate-change columns for the other funding workspaces.</p>
   <div className="table-scroll highlights-splits" role="region" aria-label="Candidate ambiguity split" tabIndex={0}>
    <table className="highlights-table"><caption>Traceability split of the candidate columns · {number(data.traceability.rows)} rows worth {amount(data.traceability.amount_php)} cannot be matched line-to-line by title</caption>
     <thead><tr><th scope="col">Candidate column</th><th scope="col">No counterpart found</th><th scope="col">Plausible counterpart · unresolved</th><th scope="col">Total</th></tr></thead>
