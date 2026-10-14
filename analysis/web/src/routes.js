@@ -34,6 +34,7 @@ export const legacyRoutes = Object.fromEntries([
 // list. Workbench.jsx maintains the lazy loaders so annex bundles stay code-split.
 export const workspaces = {
   overview: { label: "Overview", prefix: "overview", pages: [["home", "Overview"]] },
+  sources: { label: "Sources", prefix: "sources", pages: [["home", "Datasets"]] },
   dpwh: {
     label: "DPWH",
     prefix: "",
@@ -135,6 +136,7 @@ export function routeHref(key, params = {}, workspace = typeof location === 'und
   const entries = params instanceof URLSearchParams ? [...params] : Object.entries(params);
   const query = new URLSearchParams(entries.filter(([,value]) => value != null && value !== '')).toString();
   if (workspace === 'overview' && key === 'home') return `#overview${query ? '?' + query : ''}`;
+  if (workspace === 'sources' && key === 'home') return `#sources${query ? '?' + query : ''}`;
   const prefix = workspaces[workspace]?.prefix ? `${workspaces[workspace].prefix}/` : "";
   return `#${prefix}${key}${query ? "?" + query : ""}`;
 }
@@ -144,6 +146,7 @@ export function routeHref(key, params = {}, workspace = typeof location === 'und
 // filters.
 export function workspaceHref(target, route = readRoute()) {
   if (target === 'overview') return '#overview';
+  if (target === 'sources') return '#sources';
   const targetPages = workspaces[target]?.pages ?? [];
   const currentKey = route.key;
   const key = targetPages.some(([k]) => k === currentKey)

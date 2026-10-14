@@ -46,7 +46,7 @@ def main():
                     assert '/app/?preview=overview#overview' in page.url
                     expect(page.get_by_role('heading', name='Budget allocation overview', exact=True)).to_be_visible()
                     nav = page.get_by_role('navigation', name='Workbench workspaces')
-                    assert nav.locator('a').all_text_contents() == ['Overview','DPWH','DA Farm-to-Market Roads','DOH Health Facilities','NIA Irrigation','Geolocation']
+                    assert nav.locator('a').all_text_contents() == ['Overview','Sources','DPWH','DA Farm-to-Market Roads','DOH Health Facilities','NIA Irrigation','Geolocation']
                     expect(nav.get_by_role('link',name='Overview',exact=True)).to_have_attribute('aria-current','page')
                     expect(page.get_by_role('navigation',name='Workbench pages')).to_have_count(0)
                     expect(page.locator('.overview-workspace-card')).to_have_count(4)
@@ -110,6 +110,18 @@ def main():
                     expect(page.get_by_role('heading',name='Budget stage workbench',exact=True)).to_be_visible()
                     page.goto(base+'#nia/analysis?view=overview',wait_until='networkidle')
                     expect(page.get_by_role('heading',name='NIA allocation analysis',exact=True)).to_be_visible()
+                    # Sources workspace: dataset catalog renders with repo and
+                    # packaged-site links for every workspace domain.
+                    page.goto(base+'#sources',wait_until='networkidle')
+                    expect(page.get_by_role('heading',name='Sources and datasets',exact=True)).to_be_visible()
+                    expect(page.get_by_role('navigation',name='Workbench workspaces').get_by_role('link',name='Sources',exact=True)).to_have_attribute('aria-current','page')
+                    expect(page.locator('.resource-group')).to_have_count(8)
+                    nep_link=page.get_by_role('link',name='Canonical NEP tree',exact=True)
+                    assert re.search(r'github\.com/.*/blob/main/analysis/data/nep_2027_tree\.json$',nep_link.get_attribute('href')),(nep_link.get_attribute('href'),)
+                    fmr_bundle=page.get_by_role('link',name='FMR shareable bundle (CSV set + 7z archive)',exact=True)
+                    assert fmr_bundle.get_attribute('download') == 'fmr_data.7z',(fmr_bundle.get_attribute('download'),)
+                    expect(page.get_by_role('link',name='Open workspace →').first).to_have_attribute('href','#compare')
+                    assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
                     page.goto(base+'#overview/unknown',wait_until='networkidle')
                     expect(page.get_by_role('heading',name='Unknown Overview view',exact=True)).to_be_visible()
                     page.get_by_role('link',name='Open Overview',exact=True).click()

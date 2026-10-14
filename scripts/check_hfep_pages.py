@@ -59,9 +59,9 @@ def main():
                     goto('home')
                     tabs = page.get_by_role('navigation', name='Workbench pages')
                     assert tabs.locator('a').all_text_contents() == ['Home', 'Highlights', 'Compare stages', 'Analysis', 'House GAB', 'DBM NEP']
-                    # The workspace selector exposes all three registered workspaces.
+                    # The workspace selector exposes all registered workspaces.
                     workspaces = page.get_by_role('navigation', name='Workbench workspaces')
-                    assert workspaces.locator('a').all_text_contents() == ['Overview', 'DPWH', 'DA Farm-to-Market Roads', 'DOH Health Facilities', 'NIA Irrigation', 'Geolocation']
+                    assert workspaces.locator('a').all_text_contents() == ['Overview', 'Sources', 'DPWH', 'DA Farm-to-Market Roads', 'DOH Health Facilities', 'NIA Irrigation', 'Geolocation']
                     expect(page.locator('main')).to_contain_text('10,021,659,000')
                     no_overflow()
                     page.screenshot(path=str(captures / f'home-{width}.png'))
