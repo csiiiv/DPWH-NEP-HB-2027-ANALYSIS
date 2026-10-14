@@ -30,7 +30,8 @@ test('native House source renders parent details, page reference and zero final 
   assert.match(v.el('projectDetailSummary').textContent,/2,686 internal checks · 56 independent I-B checks/);
 
   assert.match(v.el('tree').innerHTML,/#page=9/);
-  assert.match(v.el('tree').innerHTML,/House 2nd · I-B p\.9<\/a>/);
+  // Page abbreviation now carries a space ("p. 9"), matching standard typography.
+  assert.match(v.el('tree').innerHTML,/House 2nd · I-B p\. 9<\/a>/);
   assert.match(v.el('details').innerHTML,/₱654,102,015,000/);
   assert.match(v.el('details').innerHTML,/Final remaining amount: <strong>₱0/);
 });
