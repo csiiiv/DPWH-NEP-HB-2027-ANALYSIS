@@ -18,7 +18,12 @@ const PdfPreview = lazy(() => import('./PdfPreview.jsx'));
 const href = (key, params = {}) => routeHref(key, params, 'nia');
 const paramsOf = route => Object.fromEntries(route.params);
 function navigate(route, patch) {
-  const next = {...paramsOf(route), ...patch};
+  // Merge onto the *current* URL state, not the React route prop: rapid
+  // successive interactions (dialog close → clear filters → select) can
+  // outpace hashchange processing, and a stale route would resurrect
+  // params an earlier write already cleared.
+  const current = readRoute();
+  const next = {...Object.fromEntries(current.params), ...patch};
   for (const key of Object.keys(next)) if (next[key] == null || next[key] === '') delete next[key];
   window.location.hash = href(route.key, next);
 }

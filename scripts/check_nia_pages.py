@@ -162,6 +162,13 @@ def main():
                     assert len(filtered_inserted) == 1 and filtered_inserted[0]['house_id'] == first_inserted['house_id']
                     page.keyboard.press('Escape')
                     page.get_by_role('button', name='Clear filters', exact=True).click()
+                    # The search input writes location.hash on every change;
+                    # a queued write can race the Clear-filters write and
+                    # resurrect q. Wait for the cleared state to land before
+                    # switching source, or the table stays empty (0 rows).
+                    search = page.get_by_label('Search', exact=True)
+                    expect(search).to_have_value('', timeout=60000)
+                    expect(page.locator('.fmr-filter-chips, .filter-chips')).to_have_count(0)
                     page.get_by_label('Analysis budget source', exact=True).select_option('nep')
                     # Wait for the source switch to land before paginating; on
                     # slow runners the hashchange re-render can race the click
