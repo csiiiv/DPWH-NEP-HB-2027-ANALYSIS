@@ -11,6 +11,7 @@ import {
   filterRecords, parsedPoints, variationRows, recordPdfSources, recordHref,
 } from './geoModel.js';
 import './Fmr.css';
+import './Geo.css';
 
 const GeoMap = lazy(() => import('./GeoMap.jsx'));
 const PdfPreview = lazy(() => import('./PdfPreview.jsx'));
@@ -48,7 +49,7 @@ function ScopeNote() {
   </details>;
 }
 function GroupIcon({group}) {
-  return <svg className="fmr-map-legend-icon" viewBox="0 0 64 64" aria-hidden="true">
+  return <svg className="geo-group-icon" width="16" height="16" viewBox="0 0 64 64" aria-hidden="true">
     <path d="M8 32H56" stroke={GROUP_COLORS[group]} strokeWidth="10" strokeLinecap="round"/></svg>;
 }
 
@@ -87,12 +88,12 @@ function Home({data, route}) {
     </div>
     <div className="fmr-result-bar"><a className="primary" href={href('map')}>Open the map →</a></div>
     <ScopeNote/>
-    <section className="fmr-section"><h2>Records with GPS by grouping</h2>
+    <section className="fmr-section geo-wide-table"><h2>Records with GPS by grouping</h2>
       <p>Each family of sources carries coordinates differently: FMR annexes print dedicated START/END cells; DPWH
         titles embed parenthetical pairs; NIA and HFEP print none. The map and tables interpret each grouping with the
         grammar proven on FMR coordinates.</p>
       <SortableTable rows={groupRows} ariaLabel="GPS records by grouping" initialSort={{key: 'records', direction: 'desc'}} columns={[
-        {key: 'label', label: 'Grouping', scope: 'row', render: g => <><GroupIcon group={g.group}/>{g.label}</>},
+        {key: 'label', label: 'Grouping', scope: 'row', render: g => <span className="geo-group-label"><GroupIcon group={g.group}/>{g.label}</span>},
         {key: 'scanned', label: 'Records scanned', align: 'num'},
         {key: 'records', label: 'With GPS', align: 'num'},
         {key: 'share', label: 'GPS share', align: 'num', value: g => g.scanned ? g.records / g.scanned : 0,
@@ -100,7 +101,7 @@ function Home({data, route}) {
         {key: 'points', label: 'Parsed points', align: 'num'},
         {key: 'explore', label: 'Explore', sortable: false, value: g => g.records, render: g => <button className="group-open" onClick={() => openGroup(g.group)}>Show {g.records} records</button>},
       ]}/></section>
-    <section className="fmr-section"><h2>DPWH records with GPS by PAP</h2>
+    <section className="fmr-section geo-wide-table"><h2>DPWH records with GPS by PAP</h2>
       <p>The DPWH group splits further by program-of-works (PAP) label. BIP multipurpose-building titles carry a
         parenthetical pair by convention, which is why they dominate; the same PAP vocabulary is shared across the
         comparison, leaf, NEP-source and chainage artifacts, so a record can appear in several rows’ datasets.</p>

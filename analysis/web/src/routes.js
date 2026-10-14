@@ -34,7 +34,6 @@ export const legacyRoutes = Object.fromEntries([
 // list. Workbench.jsx maintains the lazy loaders so annex bundles stay code-split.
 export const workspaces = {
   overview: { label: "Overview", prefix: "overview", pages: [["home", "Overview"]] },
-  sources: { label: "Sources", prefix: "sources", pages: [["home", "Datasets"]] },
   dpwh: {
     label: "DPWH",
     prefix: "",
@@ -95,6 +94,7 @@ export const workspaces = {
       ["map", "Map"],
     ],
   },
+  sources: { label: "Sources", prefix: "sources", pages: [["home", "Datasets"]] },
 };
 // Tab list exports kept for existing consumers (WorkbenchHeader, tests).
 export const dpwhPages = workspaces.dpwh.pages;

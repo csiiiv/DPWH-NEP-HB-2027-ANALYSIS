@@ -14,12 +14,12 @@ retained datasets. Deep links are explicit (`#fmr/compare`, `#nia/analysis`, …
 | Workspace | Route | What it holds |
 |---|---|---|
 | **Overview** | `#overview` | Default landing page. Insertion/deletion candidates and paired allocation adjustments per funding workspace, source totals, record-grain labels, and links to the supporting analysis. |
-| **Sources** | `#sources` | Catalog of every shareable, normalized dataset: what it contains, where it lives in this repository (or downloads from the site), its documented limits, and an "Open workspace" link per domain. |
 | **DPWH** | `#home` … | Home · Highlights · Compare stages · Analysis · House GAB · DBM NEP · DPWH Transparency NEP · Resources · About. Native House I-C/I-B trees, canonical NEP tree, and the retained Transparency snapshot, compared stage by stage. |
 | **DA Farm-to-Market Roads** | `#fmr/…` | Home · Highlights · Compare stages · Analysis · Map · House GAB · DBM NEP. Both FMR annexes (program → region → project trees) with normalized coordinates and PSGC geocoding. |
 | **DOH Health Facilities** | `#hfep/…` | Same annex tab pattern. HFEP capital-outlay schedules from both documents with per-cell provenance and a documented printed-defect ledger. |
 | **NIA Irrigation** | `#nia/…` | Same annex tab pattern plus an AI-monitoring view. The irrigation annex under six sub-programs (printed heading → sub-program → project). |
 | **Geolocation** | `#geo/…` | Home · Map. Every GPS-bearing budget record (61,688 scanned → 6,973 with GPS → 9,827 parsed points) on one MapLibre map with grouping-encoded badges, clusters, and per-record source evidence. |
+| **Sources** | `#sources` | Catalog of every shareable, normalized dataset: what it contains, where it lives in this repository (or downloads from the site), its documented limits, and an "Open workspace" link per domain. |
 
 ### Headline numbers
 

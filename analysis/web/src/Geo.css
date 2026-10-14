@@ -1,0 +1,5 @@
+/* Home loads before the lazy map, so its icons need their own sizing. */
+.geo-group-label { display:inline-flex; align-items:center; gap:8px; }
+.geo-group-icon { width:16px; height:16px; flex:0 0 16px; }
+/* Keep the dense tables readable within their existing scroll containers. */
+.geo-wide-table .sortable-table table { min-width:640px; }

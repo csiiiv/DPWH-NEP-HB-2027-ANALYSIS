@@ -93,16 +93,29 @@ def main():
                     page.on('pageerror', lambda e: errors.append(str(e)))
                     page.on('response', lambda r: bad.append((r.url, r.status)) if r.status >= 400 else None)
 
+                    # Visit Home first: the lazy map's CSS must not be needed
+                    # to size its grouping icons or keep its rows compact.
+                    page.goto(base + '#geo/home', wait_until='networkidle')
+                    expect(page.get_by_role('heading', name='Geolocated budget records')).to_be_visible()
+                    group_table = page.get_by_role('region', name='GPS records by grouping')
+                    expect(group_table.locator('tbody tr')).to_have_count(4)
+                    icons = group_table.locator('svg')
+                    expect(icons).to_have_count(4)
+                    for icon in icons.all():
+                        box = icon.bounding_box()
+                        assert box['width'] == 16 and box['height'] == 16, box
+                    for row in group_table.locator('tbody tr').all():
+                        assert row.bounding_box()['height'] < 100, 'oversized grouping row'
+                    if width < 700:
+                        assert group_table.evaluate('e => e.scrollWidth > e.clientWidth'), 'wide table should scroll on narrow screens'
+                    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), 'Home overflows the viewport'
+                    expect(page.get_by_role('region', name='DPWH GPS records by PAP').locator('tbody tr').first).to_contain_text('Multi-Purpose Buildings')
+                    expect(page.get_by_role('region', name='Interpretation rules applied').locator('tbody tr').first).to_contain_text('Longitude-first pair reordered')
+                    page.screenshot(path=str(captures / f'geo-home-{width}.png'), full_page=True)
+
                     # Landing redirect preserves the workspace prefix.
                     page.goto(base.replace('/app/', '/geo/') + '?preview=geo#map', wait_until='networkidle')
                     assert '/app/?preview=geo#geo/map' in page.url, page.url
-
-                    # Home renders totals, groupings, PAP split and variation tables.
-                    page.goto(base + '#geo/home', wait_until='networkidle')
-                    expect(page.get_by_role('heading', name='Geolocated budget records')).to_be_visible()
-                    expect(page.get_by_role('region', name='GPS records by grouping').locator('tbody tr')).to_have_count(4)
-                    expect(page.get_by_role('region', name='DPWH GPS records by PAP').locator('tbody tr').first).to_contain_text('Multi-Purpose Buildings')
-                    expect(page.get_by_role('region', name='Interpretation rules applied').locator('tbody tr').first).to_contain_text('Longitude-first pair reordered')
 
                     # Map renders overlays and reacts to dataset and PAP filters.
                     page.goto(base + '#geo/map', wait_until='networkidle')
@@ -252,7 +265,16 @@ def main():
                     # The grouping button prints a bare integer (no thousands
                     # separator), unlike the result bar.
                     page.get_by_role('button', name=f"Show {counts['fmr_group']} records").click()
-                    expect(page.get_by_role('dialog', name='Grouping records')).to_be_visible()
+                    grouping = page.get_by_role('dialog', name='Grouping records')
+                    expect(grouping).to_be_visible()
+                    grouping.locator('.geo-evidence-buttons button').first.click()
+                    source = page.get_by_role('dialog', name='GPS record PDF source')
+                    expect(source).to_be_visible()
+                    expect(source.locator('canvas').first).to_be_visible(timeout=60000)
+                    source.get_by_role('button', name='Close', exact=True).click()
+                    expect(grouping).to_be_visible()
+                    grouping.get_by_role('button', name='Close', exact=True).click()
+                    expect(grouping).to_be_hidden()
                 browser.close()
         finally:
             server.shutdown()
