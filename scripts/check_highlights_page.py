@@ -10,7 +10,7 @@ from http.server import ThreadingHTTPServer
 from pathlib import Path
 
 from playwright.sync_api import expect, sync_playwright
-from serve_pages import RangeHandler
+from serve_pages import RangeHandler, check_widths
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -38,7 +38,7 @@ def check(base):
     errors = []
     with sync_playwright() as p:
         browser = p.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox'])
-        for width in [390, 1440]:
+        for width in check_widths():
             page = browser.new_page(viewport={'width': width, 'height': 1000}, accept_downloads=True)
             page.on('pageerror', lambda e: errors.append(str(e)))
             requests = []

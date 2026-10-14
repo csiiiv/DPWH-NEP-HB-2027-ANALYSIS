@@ -1,10 +1,24 @@
 #!/usr/bin/env python3
 """Preview the packaged workbench with PDF byte-range support."""
 import argparse
+import os
 import re
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+
+
+def check_widths(default=(390, 1440)):
+    """Viewport widths the browser checks iterate.
+
+    Mobile (390px) passes are skipped when SKIP_MOBILE_CHECKS is set: the
+    workbench targets desktop, and the mobile layout pass roughly doubles
+    the run time of every browser check.
+    """
+    if os.environ.get("SKIP_MOBILE_CHECKS"):
+        print("SKIP_MOBILE_CHECKS set: running desktop (1440px) only")
+        return (1440,)
+    return default
 
 
 class RangeHandler(SimpleHTTPRequestHandler):

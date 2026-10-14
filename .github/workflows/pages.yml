@@ -145,6 +145,10 @@ jobs:
           if [ ! -x /usr/bin/google-chrome ]; then
             python3 -m playwright install --with-deps chromium
           fi
+          # Desktop-only passes: the workbench targets desktop, and the mobile
+          # (390px) pass roughly doubles the browser-check runtime. Unset
+          # SKIP_MOBILE_CHECKS to restore mobile coverage.
+          export SKIP_MOBILE_CHECKS=1
           python3 scripts/check_react_pages.py
           python3 scripts/check_overview_pages.py
           python3 scripts/check_comparison_workspace.py

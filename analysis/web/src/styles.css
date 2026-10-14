@@ -59,6 +59,25 @@ header.shell {
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
+/* On phones the workspace/page tab bars become single-row horizontal
+   scrollers instead of wrapping into a stack of rows; with six workspaces
+   and nine page tabs the wrapped stack pushed the workbench content
+   (search, filters) below the first screenful. */
+@media (max-width: 700px) {
+  header.shell nav.page-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  header.shell nav.page-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  header.shell nav.page-tabs a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
 nav {
   display: flex;
   flex-wrap: wrap;

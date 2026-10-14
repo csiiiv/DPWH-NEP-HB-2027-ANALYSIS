@@ -12,7 +12,7 @@ import tempfile
 import threading
 
 from playwright.sync_api import expect, sync_playwright
-from serve_pages import RangeHandler
+from serve_pages import RangeHandler, check_widths
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -36,7 +36,7 @@ def main():
         try:
             with sync_playwright() as p:
                 browser = p.chromium.launch(headless=True, executable_path=os.environ.get('CHROME_BIN', '/usr/bin/google-chrome'), args=['--no-sandbox'])
-                for width in (390, 1440):
+                for width in check_widths():
                     page = browser.new_page(viewport={'width': width, 'height': 1000}, accept_downloads=True)
                     requests = []
                     page.on('pageerror', lambda e: errors.append(str(e)))

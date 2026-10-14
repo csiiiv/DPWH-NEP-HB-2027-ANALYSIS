@@ -7,7 +7,7 @@ from http.server import ThreadingHTTPServer
 from playwright.sync_api import sync_playwright,expect
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
-from serve_pages import RangeHandler
+from serve_pages import RangeHandler, check_widths
 class Quiet(RangeHandler):
     def log_message(self,*args):pass
 with tempfile.TemporaryDirectory() as folder:
@@ -20,7 +20,7 @@ with tempfile.TemporaryDirectory() as folder:
     try:
         with sync_playwright() as p:
             browser=p.chromium.launch(executable_path='/usr/bin/google-chrome',args=['--no-sandbox'])
-            for width in [390,1440]:
+            for width in check_widths():
                 page=browser.new_page(viewport={'width':width,'height':1000});page.on('pageerror',lambda e:errors.append(str(e)))
                 requests=[];page.on('request',lambda r:requests.append(r.url))
                 page.goto(base+'#analysis',wait_until='networkidle')

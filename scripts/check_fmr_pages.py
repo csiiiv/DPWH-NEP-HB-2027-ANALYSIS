@@ -12,7 +12,7 @@ import tempfile
 import threading
 from urllib.parse import urlencode
 from playwright.sync_api import expect, sync_playwright
-from serve_pages import RangeHandler
+from serve_pages import RangeHandler, check_widths
 from analysis_checks import check_analysis_links, check_banded_overview, check_candidate_group
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,7 +39,7 @@ def main():
             with sync_playwright() as p:
                 chrome = os.environ.get('CHROME_BIN') or '/usr/bin/google-chrome'
                 browser = p.chromium.launch(headless=True, executable_path=chrome, args=['--no-sandbox'])
-                for width in [390, 1440]:
+                for width in check_widths():
                     page = browser.new_page(viewport={'width': width, 'height': 1000}, accept_downloads=True)
                     page.on('pageerror', lambda e: errors.append(str(e)))
                     page.on('response', lambda r: bad.append((r.url, r.status)) if r.status >= 400 else ranges.append(r.url) if r.status == 206 else None)
