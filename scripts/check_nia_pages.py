@@ -163,6 +163,10 @@ def main():
                     page.keyboard.press('Escape')
                     page.get_by_role('button', name='Clear filters', exact=True).click()
                     page.get_by_label('Analysis budget source', exact=True).select_option('nep')
+                    # Wait for the source switch to land before paginating; on
+                    # slow runners the hashchange re-render can race the click
+                    # (Next still reflects the previous filtered state).
+                    expect(ai_pages).to_contain_text('327 rows', timeout=60000)
                     ai_pages.get_by_role('button', name='Next', exact=True).click()
                     expect(ai_pages).to_contain_text('Page 2 of')
                     page.get_by_label('AI monitoring title basis', exact=True).select_option('ocr_variant')
