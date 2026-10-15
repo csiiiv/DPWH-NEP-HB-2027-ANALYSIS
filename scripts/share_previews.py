@@ -38,7 +38,7 @@ def generate_share_pages(app_dir: Path):
 <link rel="canonical" href="{escape(canonical, quote=True)}">
 </head><body>
 <p>Opening <a href="{escape(target, quote=True)}">{escape(title)}</a> in the FY2027 Budget Workbench.</p>
-<p><a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/README.md">Repository README</a></p>
+<p><a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/README.md">Repository README</a> · <a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/README.md">DPWH workbench README</a></p>
 <script>window.location.replace({json.dumps(target)});</script>
 <noscript><p>JavaScript is required to open the interactive dashboard.</p></noscript>
 </body></html>"""
