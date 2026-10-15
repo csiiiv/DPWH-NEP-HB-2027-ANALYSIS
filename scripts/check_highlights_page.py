@@ -188,6 +188,19 @@ def check(base):
                 assert page.evaluate('document.body.style.overflow') == ''
             assert len([url for url in requests if 'highlights_details_2027.json' in url]) == 1
             assert not any('comparison_projects_2027.json' in url for url in requests)
+            # Crawlers see a static HTML page with unique metadata; browsers
+            # return to the existing hash-routed story without losing state.
+            preview = page.locator('#highlight-shorter-works').get_by_role('link', name='Share with preview')
+            expect(preview).to_have_attribute('href', base + 'share/shorter-works/')
+            metadata_response = page.request.get(base + 'share/shorter-works/')
+            assert metadata_response.status == 200
+            assert 'og:title' in metadata_response.text()
+            assert 'Shorter listed works' in metadata_response.text()
+            preview.click()
+            expect(page).to_have_url(base + '#highlights?story=shorter-works', timeout=30000)
+            expect(page.get_by_role('dialog').get_by_role('heading', name='Worked example:', exact=False)).to_be_visible(timeout=30000)
+            page.get_by_role('button', name='Close highlight').click()
+            expect(page.get_by_role('dialog')).to_have_count(0)
             # A shared story now opens the dialog directly and survives refresh.
             page.locator('#highlight-shorter-works').get_by_role('link', name='Link to this highlight').click()
             expect(page).to_have_url(base + '#highlights?story=shorter-works')
