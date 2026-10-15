@@ -23,6 +23,7 @@ def generate_share_pages(app_dir: Path):
         destination.parent.mkdir(parents=True, exist_ok=True)
         canonical = BASE + "share/" + slug + "/"
         target = BASE + "#highlights?story=" + slug
+        relative_target = "../../#highlights?story=" + slug
         full_title = title + " | FY2027 Budget Workbench"
         # No HTTP redirect: bots must be able to read the original OG metadata.
         html = f"""<!doctype html>
@@ -39,7 +40,7 @@ def generate_share_pages(app_dir: Path):
 </head><body>
 <p>Opening <a href="{escape(target, quote=True)}">{escape(title)}</a> in the FY2027 Budget Workbench.</p>
 <p><a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/README.md">Repository README</a> · <a href="https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/analysis/README.md">DPWH workbench README</a></p>
-<script>window.location.replace({json.dumps(target)});</script>
+<script>window.location.replace({json.dumps(relative_target)});</script>
 <noscript><p>JavaScript is required to open the interactive dashboard.</p></noscript>
 </body></html>"""
         destination.write_text(html, encoding="utf-8")
