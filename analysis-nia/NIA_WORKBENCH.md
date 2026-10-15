@@ -131,7 +131,10 @@ key; it does not certify an identity or absence. Group totals open shareable
 supporting-record dialogs with `group=<group-key>`. These respect search,
 sub-program and candidate filters and export their full supporting population.
 Adjustments compare the single retained House schedule with NEP; no separate
-House-reading change ledger is inferred.
+House-reading change ledger is inferred. The retained House schedule is the
+2nd-reading copy; the extractor verifies its 46 annex pages are text-identical
+to the 3rd-reading printing, so the figures state coverage for both readings
+without implying a change ledger.
 
 Tables sort the full filtered population before 50-row pagination; `sort`,
 `dir`, and `page` restore the view after sharing or reloading. Filters and

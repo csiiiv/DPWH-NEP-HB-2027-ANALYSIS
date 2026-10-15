@@ -1,10 +1,13 @@
 # FY2027 Budget Workbenches
 
+[**Live on GitHub Pages →**](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/)
+
 A React workbench for the FY2027 Philippine budget: the DPWH national pipeline
 (House GAB readings × DBM NEP × Transparency API), the Department of
 Agriculture's locally funded farm-to-market road annex, DOH health facilities,
 NIA irrigation schedules, and a cross-dataset geolocation map — each with its
 own routes, data, and source evidence, sharing one header and PDF viewer.
+Open the [deployed site](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/) or run locally (see below).
 
 ## Workspaces
 
@@ -75,6 +78,7 @@ use the packaged preview above. The packager includes all workspaces.
 - [Frontend guide](analysis/web/README.md): shared components and local workflow.
 - [Earlier DPWH analysis](analysis/README.md): retained source work and modules from the original workbench.
 - [Shareable findings](analysis/docs/shareable_findings.md): URL settings for searches, filters, expanded records, and source paths.
+- [House GAB reading comparison](analysis/docs/hgab_reading_comparison.md): full documentation of how the 2nd-reading House copy was verified identical to the 3rd-reading printing across FMR, HFEP, and NIA annex pages (60 + 17 + 46 = 123 pages, zero differences). The extractor functions embed this as `reading_comparison()`; CI runs it inside every `--check` pass and frontend tests assert the exact page counts. This verification is required before any future House bill edition so it need not be re-derived from scratch.
 
 ```sh
 python -m unittest discover -s other-analysis/tests -v
@@ -91,5 +95,5 @@ python scripts/check_hfep_pages.py
 
 Browser checks require Playwright and Chromium and run after packaging. CI runs
 them desktop-only (`SKIP_MOBILE_CHECKS=1`; unset it to restore 390px passes) and
-validates the DPWH, FMR, HFEP, and NIA workbenches; automatic Pages deployment
-remains restricted to `main` and runs only after the validation checks pass.
+validates the DPWH, FMR, HFEP, and NIA workbenches; successful pushes to `main`
+trigger an automatic GitHub Pages build at [csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/app/).

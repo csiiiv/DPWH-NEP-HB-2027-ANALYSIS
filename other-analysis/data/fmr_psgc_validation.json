@@ -2,9 +2,9 @@
  "metadata": {
   "schema_version": 1,
   "generated_utc": null,
-  "generated_date": "2026-10-13",
+  "generated_date": "2026-10-15",
   "hgab_layer": "other-analysis/data/hgab_fmr_coordinates_normalized.json",
-  "hgab_layer_sha256": "948831ad3af0d402da43077d3901545812adbddb91922bf09cd906d734bf24fb",
+  "hgab_layer_sha256": "c8c360514ad9ac908f435c7782bca879cfda01d26b102c97f2348f58dd7243c0",
   "nep_layer": "other-analysis/data/nep_fmr_coordinates_normalized.json",
   "nep_layer_sha256": "1b2d39e386886dc4f98750df7d4e1f7d35d38c673e5a53b6de146450ac534adb",
   "validator_sha256": "fadd490df5735c3f0c58ef5b37b658feb387805915950fad8a744fff5256ab67",

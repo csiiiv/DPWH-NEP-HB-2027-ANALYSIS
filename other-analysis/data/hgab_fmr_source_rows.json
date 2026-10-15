@@ -20,7 +20,7 @@
     ],
     "cross_volume_source_pdf": "HB_BUDGET/1 - HB 10858 VOL IA.pdf",
     "cross_volume_source_sha256": "6fffb251c2b98e9aefd5d3295e561780c6744e83f313507b8da0d3671cc9be13",
-    "extractor_sha256": "46b669fb56a14e1c8fc3fe2f222fe6009ef911078081cc8201011e591d273164",
+    "extractor_sha256": "bf66aff2741b1ce32efae04b34ed37532be6183467e1240e7407a550c0f1569f",
     "pymupdf_version": "1.28.2",
     "ids": "source-artifact-local page and ruled row identifiers; not cross-document project identities"
   },

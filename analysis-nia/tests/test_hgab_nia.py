@@ -21,12 +21,14 @@ class NIATests(unittest.TestCase):
             cls.rows, cls.pages = nia.extract_rows(doc)
         cls.tree = nia.build_tree(cls.rows, cls.pages[0]["annex_title"])
         cls.agency = nia.agency_controls()
+        cls.comparison = nia.reading_comparison()
 
     def audit(self, tree=None, rows=None, pages=None, agency=None):
         return nia.validate(rows if rows is not None else self.rows,
                             pages if pages is not None else self.pages,
                             tree if tree is not None else self.tree,
-                            agency if agency is not None else self.agency)
+                            agency if agency is not None else self.agency,
+                            self.comparison)
 
     def test_full_annex_and_agency_controls(self):
         audit = self.audit()

@@ -4,7 +4,7 @@
     "source_pdf": "dbm-other-nep-line-data/FMR.pdf",
     "source_pdf_sha256": "07355c115f45a84771b8a8ac22711992ea695ea28f0c9c1b2c71879d4a6dc4ba",
     "hgab_context_source_tree": "data/hgab_fmr_coordinates_normalized.json",
-    "hgab_context_sha256": "948831ad3af0d402da43077d3901545812adbddb91922bf09cd906d734bf24fb",
+    "hgab_context_sha256": "c8c360514ad9ac908f435c7782bca879cfda01d26b102c97f2348f58dd7243c0",
     "scope": "Manual review of all 23 projects initially flagged after NEP coordinate normalization; OCR corrections require rendered NEP evidence. Printed anomalies retain flags."
   },
   "reviews": [

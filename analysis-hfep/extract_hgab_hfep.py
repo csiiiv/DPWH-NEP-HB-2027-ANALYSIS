@@ -480,7 +480,8 @@ def validate(rows, pages, tree, agency, comparison):
                 "facility_ledger_motor_vehicle_php": ledger.get("motor_vehicle"),
                 "internal_control_checks": len(rollups),
                 "failed_internal_controls": sum(not c["passed"] for c in rollups),
-                "reading_comparison_identical_pages": comparison["identical_pages"]},
+                "reading_comparison_identical_pages": comparison["identical_pages"],
+                "reading_comparison_total_pages": comparison["total_pages"]},
             "rollup_checks": rollups, "agency_check": agency_check,
             "repeated_facility_groups": [{"label": label, "parent_id": parent, "facility_ids": ids}
                                          for (label, parent), ids in repeated.items() if len(ids) > 1],

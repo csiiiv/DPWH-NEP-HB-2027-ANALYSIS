@@ -55,8 +55,17 @@ function annex(data, key, label, scope, matching) {
     ensure(result.sources[side].amount_php === sum(data.stages[side].projects, p => p.amount_php), `${key} source ledger total`);
   }
   ensure(result.delta_php === data.comparison_summary.delta_php, `${key} printed comparison difference`);
-  return {key, label, scope, basis: 'House GAB ↔ DBM NEP · retained annex schedules',
+  // The retained House annex is extracted from the 2nd-reading copy; the
+  // extractor also diffed that copy against the 3rd-reading printing. Carry
+  // that verified identity so the Overview can state HGAB3 coverage exactly.
+  const audit = data.stages.house.audit_summary;
+  const identical = audit.reading_comparison_identical_pages, total = audit.reading_comparison_total_pages;
+  ensure(Number.isSafeInteger(identical) && identical === total && total > 0,
+    `${key} House annex text differs between readings; separate 3rd-reading extraction required`);
+  return {key, label, scope, basis: 'HGAB2 · 2nd reading ↔ DBM NEP · annex text identical in the 3rd reading',
     grain: 'One printed project allocation record', count_unit: 'project records', matching, ...result,
+    readings: {second: null, third: {count: result.sources.house.count, amount_php: result.sources.house.amount_php,
+      same_as_second: true, verified_identical_pages: total}},
     controls: {house_php: result.sources.house.amount_php, nep_php: result.sources.nep.amount_php, residual_php: 0},
     links: {home: `#${key}/home`, insertions: analysis(key, 'insertions'), deletions: analysis(key, 'deletions'),
       adjustments: analysis(key, 'adjustments'), increases: analysis(key, 'adjustments', '&direction=increased'),
@@ -89,7 +98,8 @@ export function dpwhSummary(overview, detail) {
     basis: 'HGAB3 · 3rd reading ↔ DBM NEP · region-difference candidates included',
     grain: 'Source allocation records; grouped members counted individually', count_unit: 'allocation records',
     matching: 'Retained NEP/Transparency anchors and provisional title/scope matches; fuzzy suggestions stay unmatched.', ...result,
-    readings: {second: {count: second.records, amount_php: second.amount_php}},
+    readings: {second: {count: second.records, amount_php: second.amount_php},
+      third: {count: result.sources.house.count, amount_php: result.sources.house.amount_php, same_as_second: false}},
     controls: {house_php: overview.readingSummary.third.new_appropriations,
       nep_php: overview.summary.stages.official_nep.new_appropriations_php,
       residual_php: null, note: 'Agency new appropriations include allocations outside the operations comparison ledger.'},
@@ -131,10 +141,17 @@ export function hfepSummary(data) {
   const controls = {house_php: data.stages.house.annex_control.total, nep_php: data.stages.nep.annex_control.total};
   controls.residual_php = (controls.house_php - controls.nep_php) - ledgerDelta;
   ensure(controls.residual_php === -140000 || controls.residual_php === 0, 'HFEP undocumented printed-control residual');
+  // Same retained-copy reading verification as the annex workbenches.
+  const audit = data.stages.house.audit_summary;
+  const identical = audit.reading_comparison_identical_pages, total = audit.reading_comparison_total_pages;
+  ensure(Number.isSafeInteger(identical) && identical === total && total > 0,
+    'HFEP House annex text differs between readings; separate 3rd-reading extraction required');
   return {key: 'hfep', label: 'DOH Health Facilities', scope: 'HFEP capital outlays: infrastructure, medical equipment and motor vehicles. Both schedules include national and LGU facilities.',
-    basis: 'House Volume I-B ↔ DBM NEP Volume II-A', grain: 'One funding-column allocation record; facility totals are controls',
+    basis: 'HGAB2 · Volume I-B ↔ DBM NEP Volume II-A · annex text identical in the 3rd reading', grain: 'One funding-column allocation record; facility totals are controls',
     count_unit: 'funding-column records', matching: 'Provisional title-similarity pairs within recorded region and province; derived zero cells excluded from record counts.',
     sources, insertions, deletions, adjustments, delta_php: ledgerDelta, controls,
+    readings: {second: null, third: {count: sources.house.count, amount_php: sources.house.amount_php,
+      same_as_second: true, verified_identical_pages: total}},
     direction_note: 'Here changes are House minus NEP; HFEP Analysis displays NEP minus House. Paired column additions/drops remain in adjustments.',
     links: {home: '#hfep/home', insertions: analysis('hfep', 'insertions'), deletions: analysis('hfep', 'deletions'),
       adjustments: analysis('hfep', 'adjustments'), increases: analysis('hfep', 'adjustments', '&event=revised'),

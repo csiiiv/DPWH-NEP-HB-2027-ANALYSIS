@@ -174,10 +174,14 @@ Between Selected findings and the investigation directory, Overview now carries
 the two tables the DPWH Highlights page pioneered, filled with every funding
 workspace:
 
-- **Budget coverage by stage** — one row per workspace with DBM NEP, House GAB
-  and (DPWH only) HGAB 2nd counts and ledger totals. DPWH's 2nd-reading
-  headline rides in the summary payload (`readings.second`); other workspaces
-  show "Not covered" for that column rather than a zero.
+- **Budget coverage by stage** — one row per workspace with DBM NEP, HGAB 2nd
+  and HGAB 3rd counts and ledger totals. DPWH retains both readings
+  (`readings.second` headline in the summary payload). Each annex workspace's
+  House ledger *is* its 2nd-reading extraction, so the HGAB 2nd cell shows its
+  own figures and the HGAB 3rd cell reads "Unchanged from HGAB 2nd" — the
+  extractors diff the annex text between the retained 2nd-reading copy and the
+  3rd-reading printing (FMR 60, HFEP 17, NIA 46 identical pages) and the
+  summary refuses to build if any page differs.
 - **House vs. NEP: candidate changes** — insertion and deletion candidates with
   their source allocations, gross paired increases/reductions, and the House
   ledger, each cell linking into the workspace's own filtered population view

@@ -22,7 +22,7 @@
       568,
       570
     ],
-    "extractor_sha256": "3f4ebe585ebb8c750ea86fe67bb6af9072fb5ca72542112ec685038c5e682dd0",
+    "extractor_sha256": "3cf37d205f780bafbffb5fb3a48bf231223d30d3148ad91f7f66a3c15e37f35f",
     "pymupdf_version": "1.28.2",
     "ids": "source-artifact-local page and layout row identifiers; not cross-document project identities"
   },

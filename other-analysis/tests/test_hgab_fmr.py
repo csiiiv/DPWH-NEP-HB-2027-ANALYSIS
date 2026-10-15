@@ -21,12 +21,14 @@ class FMRTests(unittest.TestCase):
             cls.rows, cls.pages = fmr.extract_rows(doc)
         cls.tree = fmr.build_tree(cls.rows)
         cls.cross = fmr.cross_volume_controls(cls.tree)
+        cls.comparison = fmr.reading_comparison()
 
     def audit(self, tree=None, rows=None, pages=None, cross=None):
         return fmr.validate(rows if rows is not None else self.rows,
                             pages if pages is not None else self.pages,
                             tree if tree is not None else self.tree,
-                            cross if cross is not None else self.cross)
+                            cross if cross is not None else self.cross,
+                            self.comparison)
 
     def test_full_annex_and_independent_cross_volume_controls(self):
         audit = self.audit()

@@ -26,7 +26,7 @@
         1039
       ]
     },
-    "extractor_sha256": "4534252e778d159369e1f26708d39be9bb38eb2e1b55bcb16c2bf260eb966555",
+    "extractor_sha256": "35826ba02e7463b9d8172d90e6035dfc5543d9e84b28151f0b26b894b3570e45",
     "pymupdf_version": "1.28.2",
     "ids": "source-artifact-local page and band identifiers; not cross-document facility identities"
   },

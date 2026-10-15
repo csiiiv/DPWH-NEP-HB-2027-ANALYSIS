@@ -18,6 +18,8 @@ import pymupdf
 
 ROOT = Path(__file__).resolve().parents[1]
 IB = ROOT / "HB_BUDGET/2 - HB 10858 VOL IB.pdf"
+IB_THIRD = ROOT / "HB_BUDGET_3rd_reading/2- HB 10858 FOR 3RD READING VOL I-B.pdf"
+ANNEX_FIRST, ANNEX_LAST = 667, 726
 IA = ROOT / "HB_BUDGET/1 - HB 10858 VOL IA.pdf"
 OUT = Path(__file__).resolve().parent / "data"
 AMOUNT = re.compile(r"\d{1,3}(?:,\d{3})+")
@@ -279,7 +281,7 @@ def cross_volume_controls(tree):
     return observations
 
 
-def validate(rows, pages, tree, cross_checks):
+def validate(rows, pages, tree, cross_checks, comparison):
     """Arithmetic, reachability, cell evidence, and row/token ownership checks."""
     errors, rollups = [], []
     by_id = {n["id"]: n for n in tree["nodes"]}
@@ -380,13 +382,31 @@ def validate(rows, pages, tree, cross_checks):
                 "cross_volume_control_checks": sum(c["role"] != "office_control_echo" for c in cross_checks),
                 "cross_volume_office_echo_checks": sum(c["role"] == "office_control_echo" for c in cross_checks),
                 "failed_cross_volume_checks": len(cross_failures),
-                "coordinate_review_projects": sum(bool(p["coordinate_review_flags"]) for p in projects)},
+                "coordinate_review_projects": sum(bool(p["coordinate_review_flags"]) for p in projects),
+                "reading_comparison_identical_pages": comparison["identical_pages"],
+                "reading_comparison_total_pages": comparison["total_pages"]},
             "rollup_checks": rollups, "cross_volume_checks": cross_checks,
+            "reading_comparison": comparison,
             "repeated_title_groups": [{"title": title, "project_ids": ids} for title, ids in duplicates.items() if len(ids) > 1],
             "source_evidence": {"method": "native words assigned by centres to page-specific ruled cells",
                                 "all_rows_individually_image_reviewed": False,
                                 "geographic_coordinates_certified": False,
                                 "comparison_ready": False}}
+
+
+def reading_comparison():
+    """Working-copy versus third-reading I-B annex native text comparison."""
+    with pymupdf.open(IB) as working, pymupdf.open(IB_THIRD) as third:
+        pages = []
+        for pdf_page in range(ANNEX_FIRST, ANNEX_LAST + 1):
+            a = working[pdf_page - 1].get_text()
+            b = third[pdf_page - 1].get_text()
+            pages.append({"pdf_page": pdf_page, "native_text_identical": a == b})
+    return {"method": "page.get_text() equality over PDF 667-726 of both I-B copies",
+            "identical_pages": sum(p["native_text_identical"] for p in pages),
+            "total_pages": len(pages), "pages": pages,
+            "note": "Textual identity does not authenticate the legislative stage "
+                    "of either supplied copy."}
 
 
 def csv_text(records, fields):
@@ -409,9 +429,10 @@ def build():
                 "ids": "source-artifact-local page and ruled row identifiers; not cross-document project identities"}
     with pymupdf.open(IB) as doc:
         rows, pages = extract_rows(doc)
+    comparison = reading_comparison()
     tree = build_tree(rows)
     checks = cross_volume_controls(tree)
-    audit = validate(rows, pages, tree, checks)
+    audit = validate(rows, pages, tree, checks, comparison)
     projects = [n for n in tree["nodes"] if n["kind"] == "project"]
     flat = [{"id": p["id"], "region": p["region_label"], "title": p["title"],
              "amount_php": p["printed_amount_php"], "coordinates_raw": p["coordinates_raw"],

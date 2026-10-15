@@ -312,7 +312,7 @@ function CoverageTables({data, rows, route, onPdf}) {
     {id: 'unchanged', label: 'Unchanged candidate pairs', count: agg.unchanged, php: 0, status: 'unchanged'},
   ];
   return <><section className="fmr-section nia-highlight-coverage"><h2>Budget coverage by stage</h2>
-    <p className="fmr-muted">Six detailed Irrigation Program sub-programs on both stages. The supplied House copy's legislative stage is not independently authenticated; NIA has no separate 2nd/3rd-reading annex.</p>
+    <p className="fmr-muted">Six detailed Irrigation Program sub-programs on both stages. The retained House schedule is extracted from the 2nd-reading copy; its annex text is identical to the 3rd-reading printing across all 46 NIA pages, so the figures cover both readings.</p>
     <Table route={route} rows={['nep', 'house'].map(key => ({id: key, stage: data.stages[key], label: stageLabels[key]}))}
       label="NIA budget coverage by stage" initialSort={{key: 'id', direction: 'desc'}} columns={[
       {key: 'label', label: 'Budget stage', scope: 'row', render: r => <a href={href(r.id)}>{r.label}</a>},

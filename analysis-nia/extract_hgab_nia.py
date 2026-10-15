@@ -19,6 +19,7 @@ import pymupdf
 
 ROOT = Path(__file__).resolve().parents[1]
 IB = ROOT / "HB_BUDGET/2 - HB 10858 VOL IB.pdf"
+IB_THIRD = ROOT / "HB_BUDGET_3rd_reading/2- HB 10858 FOR 3RD READING VOL I-B.pdf"
 OUT = Path(__file__).resolve().parent / "data"
 ANNEX_FIRST, ANNEX_LAST = 896, 941
 PRINTED_OFFSET = 22
@@ -323,7 +324,22 @@ def key(text):
     return " ".join(text.upper().split())
 
 
-def validate(rows, pages, tree, agency):
+def reading_comparison():
+    """Working-copy versus third-reading I-B annex native text comparison."""
+    with pymupdf.open(IB) as working, pymupdf.open(IB_THIRD) as third:
+        pages = []
+        for pdf_page in range(ANNEX_FIRST, ANNEX_LAST + 1):
+            a = working[pdf_page - 1].get_text()
+            b = third[pdf_page - 1].get_text()
+            pages.append({"pdf_page": pdf_page, "native_text_identical": a == b})
+    return {"method": "page.get_text() equality over PDF 896-941 of both I-B copies",
+            "identical_pages": sum(p["native_text_identical"] for p in pages),
+            "total_pages": len(pages), "pages": pages,
+            "note": "Textual identity does not authenticate the legislative stage "
+                    "of either supplied copy."}
+
+
+def validate(rows, pages, tree, agency, comparison):
     """Arithmetic, reachability, layout evidence, and agency control checks."""
     errors, rollups = [], []
     by_id = {n["id"]: n for n in tree["nodes"]}
@@ -494,8 +510,11 @@ def validate(rows, pages, tree, agency):
                 "agency_control_checks": len(agency_checks),
                 "failed_agency_controls": sum(not c["passed"] for c in agency_checks),
                 "agency_only_carp_rows": len(carp_rows),
-                "title_numeric_token_rows": sum(bool(r["title_numeric_tokens"]) for r in rows)},
+                "title_numeric_token_rows": sum(bool(r["title_numeric_tokens"]) for r in rows),
+                "reading_comparison_identical_pages": comparison["identical_pages"],
+                "reading_comparison_total_pages": comparison["total_pages"]},
             "rollup_checks": rollups, "agency_checks": agency_checks,
+            "reading_comparison": comparison,
             "repeated_title_groups": [{"title": title, "project_ids": ids}
                                       for title, ids in duplicates.items() if len(ids) > 1],
             "title_numeric_tokens": [{"row_id": r["id"], "tokens": r["title_numeric_tokens"]}
@@ -532,9 +551,10 @@ def build():
                        "not cross-document project identities"}
     with pymupdf.open(IB) as doc:
         rows, pages = extract_rows(doc)
+    comparison = reading_comparison()
     tree = build_tree(rows, pages[0]["annex_title"])
     agency = agency_controls()
-    audit = validate(rows, pages, tree, agency)
+    audit = validate(rows, pages, tree, agency, comparison)
     projects = [n for n in tree["nodes"] if n["kind"] == "project"]
     flat = [{"id": p["id"], "subprogram": p["subprogram_label"], "title": p["label"],
              "amount_php": p["printed_amount_php"],

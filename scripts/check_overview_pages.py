@@ -91,6 +91,7 @@ def main():
                     # Cross-workspace coverage and candidate-change tables.
                     coverage = page.get_by_role('region',name='Overview budget coverage by stage',exact=True)
                     expect(coverage.locator('tbody tr')).to_have_count(4)
+                    assert coverage.locator('thead th').all_text_contents() == ['Workspace','DBM NEP','HGAB 2nd','HGAB 3rd']
                     for w in data['workspaces']:
                         row = coverage.locator('tbody tr').nth(['dpwh','fmr','hfep','nia'].index(w['key']))
                         expect(row).to_contain_text(f"{w['sources']['nep']['count']:,} {w['count_unit']}")
@@ -98,7 +99,13 @@ def main():
                     dpwh = data['workspaces'][0]
                     second = dpwh['readings']['second']
                     expect(coverage.locator('tbody tr').first).to_contain_text(f"{second['count']:,} {dpwh['count_unit']}")
-                    expect(coverage.locator('.highlights-unavailable')).to_have_count(3)
+                    # Annexes are covered at HGAB3 through verified text identity,
+                    # not absent: three 'Unchanged from HGAB 2nd' cells.
+                    expect(coverage.locator('tbody tr',has_text='Unchanged from HGAB 2nd')).to_have_count(3)
+                    expect(coverage.locator('.highlights-unavailable')).to_have_count(0)
+                    for w in data['workspaces'][1:]:
+                        expect(coverage.locator('tbody tr').nth(['dpwh','fmr','hfep','nia'].index(w['key']))).to_contain_text(
+                            f"verified across {w['readings']['third']['verified_identical_pages']} annex pages")
                     changes = page.get_by_role('region',name='Overview House versus NEP candidate changes',exact=True)
                     expect(changes.locator('tbody tr')).to_have_count(4)
                     for w in data['workspaces']:

@@ -53,10 +53,24 @@ test('DPWH expands grouped members and includes foreign-assisted paired reductio
 });
 test('Coverage and change tables carry every workspace with its own grain and per-population links', () => {
   const byKey = Object.fromEntries(data.workspaces.map(w => [w.key, w]));
-  // DPWH 2nd-reading headline rides along for the coverage table.
+  // Reading columns: DPWH carries both readings; annexes verify their
+  // retained 2nd-reading annex text is identical to the 3rd printing.
   assert.equal(byKey.dpwh.readings.second.count,16270);
   assert.equal(byKey.dpwh.readings.second.amount_php,586941661000);
   assert.equal(byKey.dpwh.links.house_second,'#house?reading=second');
+  assert.equal(byKey.dpwh.readings.third.count,byKey.dpwh.sources.house.count);
+  assert.equal(byKey.dpwh.readings.third.same_as_second,false);
+  for (const key of ['fmr','hfep','nia']) {
+    const w = byKey[key];
+    assert.equal(w.readings.second,null,`${key} carries no separate 2nd extraction`);
+    assert.equal(w.readings.third.count,w.sources.house.count);
+    assert.equal(w.readings.third.amount_php,w.sources.house.amount_php);
+    assert.equal(w.readings.third.same_as_second,true);
+    assert.ok(w.readings.third.verified_identical_pages>0,`${key} reading verification missing`);
+  }
+  assert.equal(byKey.fmr.readings.third.verified_identical_pages,60);
+  assert.equal(byKey.hfep.readings.third.verified_identical_pages,17);
+  assert.equal(byKey.nia.readings.third.verified_identical_pages,46);
   // Every workspace exposes the cell links the Overview tables render.
   for (const w of data.workspaces) for (const key of ['insertions','deletions','increases','decreases'])
     assert.ok(w.links[key].startsWith('#'), `${w.key} ${key} link`);

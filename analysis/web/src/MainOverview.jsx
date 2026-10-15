@@ -68,28 +68,31 @@ function downloadSummary(data) {
 function CoverageTables({data, exact}) {
   const columns = [
     ['nep', 'DBM NEP', w => w.sources.nep, w => w.links.nep],
-    ['house', 'House GAB', w => w.sources.house, w => w.links.house],
+    ['second', 'HGAB 2nd', w => w.readings.second ?? {count: w.sources.house.count, amount_php: w.sources.house.amount_php}, w => w.links.house_second ?? w.links.house],
+    ['third', 'HGAB 3rd', w => w.readings.third ?? {count: w.sources.house.count, amount_php: w.sources.house.amount_php}, w => w.links.house],
   ];
-  const second = data.workspaces.find(w => w.key === 'dpwh')?.readings?.second;
   return <><section className="fmr-section" aria-labelledby="overview-coverage-heading">
     <h2 id="overview-coverage-heading">Budget coverage by stage</h2>
     <p>Each workspace counts its own declared record grain — {data.workspaces.map(w => `${w.label.toLowerCase()} (${w.count_unit})`).join(', ')}. Counts and ledger totals come from the same validated build as the summaries; stages are counted separately and never added across workspaces.</p>
     <div className="table-scroll" role="region" aria-label="Overview budget coverage by stage" tabIndex={0}>
       <table className="highlights-table overview-coverage-table"><caption>Source allocation records and amounts · each workspace's retained schedules</caption>
-        <thead><tr><th scope="col">Workspace</th><th scope="col">DBM NEP</th><th scope="col">House GAB</th>{second && <th scope="col">HGAB 2nd</th>}</tr></thead>
+        <thead><tr><th scope="col">Workspace</th><th scope="col">DBM NEP</th><th scope="col">HGAB 2nd</th><th scope="col">HGAB 3rd</th></tr></thead>
         <tbody>{data.workspaces.map(w => <tr key={w.key}>
           <th scope="row"><a href={w.links.home}>{w.label}</a></th>
-          {columns.map(([key, , get, link]) => <td key={key}><a className="highlights-cell-link" href={link(w)}>
-            <strong>{number(get(w).count)} {w.count_unit}</strong>
-            <span title={money(get(w).amount_php)}>Worth <Amount value={get(w).amount_php} exact/></span></a></td>)}
-          {second && <td>{w.key === 'dpwh' ? <a className="highlights-cell-link" href={data.workspaces.find(x => x.key === 'dpwh').links.house_second}>
-            <strong>{number(second.count)} {data.workspaces.find(x => x.key === 'dpwh').count_unit}</strong>
-            <span title={money(second.amount_php)}>Worth <Amount value={second.amount_php} exact/></span></a>
-            : <span className="highlights-unavailable">Not covered</span>}</td>}
+          {columns.map(([key, , get, link]) => <td key={key}>{(() => {
+            const value = get(w);
+            if (!value) return <span className="highlights-unavailable">Not covered</span>;
+            if (value.same_as_second) return <a className="highlights-cell-link" href={link(w)}>
+              <strong>Unchanged from HGAB 2nd</strong>
+              <span title={money(value.amount_php)}>Same {number(value.count)} {w.count_unit} · verified across {value.verified_identical_pages} annex pages</span></a>;
+            return <a className="highlights-cell-link" href={link(w)}>
+              <strong>{number(value.count)} {w.count_unit}</strong>
+              <span title={money(value.amount_php)}>Worth <Amount value={get(w).amount_php} exact/></span></a>;
+          })()}</td>)}
         </tr>)}</tbody>
       </table>
     </div>
-    <p className="fmr-muted">DPWH covers operations only; agency controls above operations are excluded here and shown in its card. The FMR House stage is represented by the retained 2nd-reading annex whose extracted text matches the 3rd reading. Unmatched candidates between stages do not make counts comparable as projects.</p>
+    <p className="fmr-muted">DPWH covers operations only; agency controls above operations are excluded here and shown in its card. DPWH retains both readings; each annex workspace retains its 2nd-reading House schedule, whose annex text was verified identical to the 3rd-reading printing — {data.workspaces.filter(w => w.readings?.third?.same_as_second).map(w => `${w.label}: ${w.readings.third.verified_identical_pages} pages`).join(', ')} — so its HGAB 2nd figures also state HGAB 3rd coverage. Unmatched candidates between stages do not make counts comparable as projects.</p>
   </section>
   <section className="fmr-section" aria-labelledby="overview-changes-heading">
     <h2 id="overview-changes-heading">House vs. NEP: candidate changes</h2>
