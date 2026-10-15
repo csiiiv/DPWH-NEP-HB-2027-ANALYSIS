@@ -1,20 +1,10 @@
 import React, {useEffect,useState} from 'react';
-
-const shareUrl = () => {
-  const current = new URL(window.location.href);
-  const hash = current.hash.replace(/^#\/?/, '');
-  const [route, query = ''] = hash.split('?');
-  const story = new URLSearchParams(query).get('story');
-  if (route === 'highlights' && story && /^[a-z0-9-]+$/.test(story)) {
-    return new URL('share/' + story + '/', current.origin + current.pathname).href;
-  }
-  return current.href;
-};
+import {currentShareUrl} from './shareUrls.js';
 
 export default function ShareLink() {
-  const [href,setHref]=useState(shareUrl), [message,setMessage]=useState('');
+  const [href,setHref]=useState(currentShareUrl), [message,setMessage]=useState('');
   useEffect(()=>{
-    const update=()=>{setHref(shareUrl());setMessage('');};
+    const update=()=>{setHref(currentShareUrl());setMessage('');};
     window.addEventListener('hashchange',update);
     window.addEventListener('findingstatechange',update);
     return ()=>{window.removeEventListener('hashchange',update);window.removeEventListener('findingstatechange',update);};
