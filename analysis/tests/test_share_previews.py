@@ -65,6 +65,7 @@ class SharePreviewTests(unittest.TestCase):
                     self.assertEqual(parser.metadata["og:url"], canonical)
                     self.assertIn("window.location.replace(" , html)
                     self.assertIn(destination, html)
+                    self.assertIn('window.location.replace("../../#highlights?story=' + slug + '")', html)
                     self.assertIn("/analysis/README.md", html)
                     titles.add(parser.title)
             self.assertEqual(len(titles), len(STORIES))
