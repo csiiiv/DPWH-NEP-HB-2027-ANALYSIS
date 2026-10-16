@@ -40,11 +40,19 @@ function partition(rows, house = 'house') {
     'unchanged pairs carry different House and NEP totals');
   const increases = sum(increased, r => r[house].amount_php - r.nep.amount_php);
   const reductions = sum(reduced, r => r.nep.amount_php - r[house].amount_php);
+  // Per-group base allocations: what the changed pairs are worth on each
+  // stage, so cards can show allocations next to the signed delta.
+  const groupBases = rows => ({nep_php: sum(rows, r => r.nep.amount_php), house_php: sum(rows, r => r[house].amount_php)});
+  const increasedBases = groupBases(increased), reducedBases = groupBases(reduced);
+  ensure(increasedBases.house_php - increasedBases.nep_php === increases, 'increased-pair bases do not tie to the gross increase');
+  ensure(reducedBases.nep_php - reducedBases.house_php === reductions, 'reduced-pair bases do not tie to the gross reduction');
   const result = {sources, insertions: population(inserted, house), deletions: population(deleted, 'nep'),
     unchanged: unchangedPopulation, paired_comparison_rows: paired.length,
     adjustments: {count: increased.length + reduced.length, count_unit: 'changed candidate pairs',
       increased_count: increased.length, reduced_count: reduced.length,
-      increased_php: increases, reduced_php: reductions, net_php: increases - reductions},
+      increased_php: increases, reduced_php: reductions, net_php: increases - reductions,
+      increased_nep_php: increasedBases.nep_php, increased_house_php: increasedBases.house_php,
+      reduced_nep_php: reducedBases.nep_php, reduced_house_php: reducedBases.house_php},
     delta_php: sources.house.amount_php - sources.nep.amount_php};
   ensure(result.delta_php === result.insertions.amount_php - result.deletions.amount_php + result.adjustments.net_php,
     'comparison funding bridge does not reconcile');
@@ -117,7 +125,7 @@ export function dpwhSummary(overview, detail) {
     links: {home: '#home', insertions: '#compare?view=projects&region_match=ignore&flag=house_only',
       deletions: '#compare?view=projects&region_match=ignore&flag=nep_only_all', adjustments: analysis('dpwh', 'adjustments'),
       increases: '#compare?view=projects&region_match=ignore&flag=amount_increase', decreases: '#compare?view=projects&region_match=ignore&flag=amount_decrease',
-      // No unchanged link: DPWH Compare has no amount_same flag yet (deferred).
+      unchanged: '#compare?view=projects&region_match=ignore&flag=amount_same',
       house: '#house?reading=third', house_second: '#house?reading=second', nep: '#nep', compare: '#compare', highlights: '#highlights'}};
 }
 
@@ -143,10 +151,20 @@ export function hfepSummary(data) {
   // landing page to House−NEP without renaming or altering retained events.
   const delta = r => r.event === 'revised' ? -r.difference : r.event === 'added' ? -r.nep_value : r.house_value;
   const increased = changes.filter(r => delta(r) > 0), reduced = changes.filter(r => delta(r) < 0);
+  // Per-group base allocations at record grain: revised records carry both
+  // values; added records exist only in NEP (House base 0), dropped only in
+  // House (NEP base 0). Bases tie to the deltas by construction.
+  const groupBases = rows => ({nep_php: sum(rows, r => r.nep_value ?? 0), house_php: sum(rows, r => r.house_value ?? 0)});
+  const increasedBases = groupBases(increased), reducedBases = groupBases(reduced);
+  ensure(increasedBases.house_php - increasedBases.nep_php === sum(increased, delta), 'HFEP increased bases do not tie');
+  ensure(reducedBases.nep_php - reducedBases.house_php === -sum(reduced, delta), 'HFEP reduced bases do not tie');
   const adjustments = {count: changes.length, count_unit: 'changed funding-column records',
     increased_count: increased.length, reduced_count: reduced.length,
     increased_php: sum(increased, delta), reduced_php: -sum(reduced, delta),
-    net_php: sum(changes, delta), events: Object.fromEntries(['revised', 'added', 'dropped'].map(e => [e, changes.filter(r => r.event === e).length]))};
+    net_php: sum(changes, delta),
+    increased_nep_php: increasedBases.nep_php, increased_house_php: increasedBases.house_php,
+    reduced_nep_php: reducedBases.nep_php, reduced_house_php: reducedBases.house_php,
+    events: Object.fromEntries(['revised', 'added', 'dropped'].map(e => [e, changes.filter(r => r.event === e).length]))};
   const insertions = unmatched('house'), deletions = unmatched('nep');
   // Unchanged at HFEP's record grain: funding-column records printed
   // identically in both annexes ('same' event). House value equals NEP value

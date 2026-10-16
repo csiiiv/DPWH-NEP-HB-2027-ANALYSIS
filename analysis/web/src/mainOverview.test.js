@@ -58,12 +58,23 @@ test('Unchanged populations pair equal allocations and complete the paired parti
   // Unchanged rows contribute zero to the funding bridge by construction.
   for (const w of data.workspaces)
     assert.ok(w.unchanged.amount_php >= 0 && Number.isSafeInteger(w.unchanged.amount_php));
+  // Per-group base allocations tie to their signed deltas, and adding the
+  // bases back reconstructs each ledger exactly.
+  for (const w of data.workspaces) {
+    const a = w.adjustments;
+    assert.equal(a.increased_house_php - a.increased_nep_php, a.increased_php, `${w.key} increased bases`);
+    assert.equal(a.reduced_nep_php - a.reduced_house_php, a.reduced_php, `${w.key} reduced bases`);
+    assert.equal(w.insertions.amount_php + w.unchanged.amount_php + a.increased_house_php + a.reduced_house_php,
+      w.sources.house.amount_php, `${w.key} House ledger reconstruction`);
+    assert.equal(w.deletions.amount_php + w.unchanged.amount_php + a.increased_nep_php + a.reduced_nep_php,
+      w.sources.nep.amount_php, `${w.key} NEP ledger reconstruction`);
+  }
   // Links: FMR/NIA unchanged status filter, HFEP same-event records; DPWH
-  // has no deep-link until Compare gains an amount_same flag (deferred).
+  // links into Compare's amount_same flag (counts verified to match the tile).
   assert.ok(byKey.fmr.links.unchanged.includes('status=unchanged'));
   assert.ok(byKey.nia.links.unchanged.includes('status=unchanged'));
   assert.ok(byKey.hfep.links.unchanged.includes('event=same'));
-  assert.equal(byKey.dpwh.links.unchanged,undefined);
+  assert.ok(byKey.dpwh.links.unchanged.includes('flag=amount_same'));
 });
 test('DPWH expands grouped members and includes foreign-assisted paired reductions outside Transparency', () => {
   const w = data.workspaces[0];
