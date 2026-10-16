@@ -37,7 +37,9 @@ def main():
             with sync_playwright() as p:
                 browser = p.chromium.launch(headless=True, executable_path=os.environ.get('CHROME_BIN', '/usr/bin/google-chrome'), args=['--no-sandbox'])
                 for width in check_widths():
-                    page = browser.new_page(viewport={'width': width, 'height': 1000}, accept_downloads=True)
+                    context = browser.new_context(viewport={'width': width, 'height': 1000}, accept_downloads=True,
+                        permissions=['clipboard-read', 'clipboard-write'])
+                    page = context.new_page()
                     requests = []
                     page.on('pageerror', lambda e: errors.append(str(e)))
                     page.on('response', lambda r: bad.append((r.url,r.status)) if r.status >= 400 else None)
@@ -75,13 +77,8 @@ def main():
                         expect(card).to_contain_text('Same Titles, decreased budget')
                         expect(card).to_contain_text(f"{w['unchanged']['count']:,} {w['count_unit']}")
                         expect(card).to_contain_text(f"₱{w['unchanged']['amount_php']:,}")
-                        for key,label in [('insertions','insertions'),('deletions','deletions')]:
+                        for key,label in [('insertions','insertions'),('deletions','deletions'),('unchanged','unchanged')]:
                             expect(card.get_by_role('link',name=w['label']+' '+label,exact=True)).to_have_attribute('href',w['links'][key])
-                        if 'unchanged' in w['links']:
-                            expect(card.get_by_role('link',name=w['label']+' unchanged',exact=True)).to_have_attribute('href',w['links']['unchanged'])
-                        else:  # DPWH: plain-text tile until Compare gains an amount_same flag.
-                            expect(card.get_by_role('link',name=w['label']+' unchanged',exact=True)).to_have_count(0)
-                            expect(card.locator('.overview-nolink')).to_contain_text('Not yet filterable in Compare')
                     hfep = page.get_by_role('article',name='DOH Health Facilities →',exact=True)
                     hfep.locator('summary').click()
                     expect(hfep).to_contain_text('₱140,000')
@@ -132,14 +129,10 @@ def main():
                         expect(row).to_contain_text(f"{w['adjustments']['reduced_count']:,}")
                         expect(row.get_by_role('link',name=f"{w['label']} insertion candidates",exact=True)).to_have_attribute('href',w['links']['insertions'])
                         expect(row.get_by_role('link',name=f"{w['label']} deletion candidates",exact=True)).to_have_attribute('href',w['links']['deletions'])
-                        # Unchanged column: linked where a filter exists; DPWH stays plain text.
+                        # Unchanged column: every workspace links into its filtered population.
                         expect(row).to_contain_text(f"{w['unchanged']['count']:,} {w['count_unit']}")
                         expect(row).to_contain_text(f"₱{w['unchanged']['amount_php']:,}")
-                        if 'unchanged' in w['links']:
-                            expect(row.get_by_role('link',name=f"{w['label']} unchanged pairs",exact=True)).to_have_attribute('href',w['links']['unchanged'])
-                        else:
-                            expect(row.get_by_role('link',name=f"{w['label']} unchanged pairs",exact=True)).to_have_count(0)
-                            expect(row).to_contain_text('not yet filterable in Compare')
+                        expect(row.get_by_role('link',name=f"{w['label']} unchanged pairs",exact=True)).to_have_attribute('href',w['links']['unchanged'])
                         expect(row.get_by_role('link',name=f"{w['label']} paired increases",exact=True)).to_have_attribute('href',w['links']['increases'])
                         expect(row.get_by_role('link',name=f"{w['label']} paired decreases",exact=True)).to_have_attribute('href',w['links']['decreases'])
                     page.screenshot(path=str(screenshots / f'overview-{width}.png'),full_page=True)
@@ -158,6 +151,11 @@ def main():
                     page.get_by_role('article',name='DPWH →',exact=True).get_by_role('link',name='DPWH insertions',exact=True).click()
                     expect(page.get_by_label('Review flags',exact=True)).to_have_value('house_only')
                     assert 'region_match=ignore' in page.url
+                    page.goto(base+'#overview',wait_until='networkidle')
+                    page.get_by_role('article',name='DPWH →',exact=True).get_by_role('link',name='DPWH unchanged',exact=True).click()
+                    expect(page.get_by_label('Review flags',exact=True)).to_have_value('amount_same')
+                    assert 'region_match=ignore' in page.url
+                    expect(page.locator('.result-count').first).to_contain_text('9,670 of',timeout=30000)
                     # Unchanged deep-links land on the filtered populations.
                     page.goto(base+'#overview',wait_until='networkidle')
                     page.get_by_role('article',name='DA Farm-to-Market Roads →',exact=True).get_by_role('link',name='DA Farm-to-Market Roads unchanged',exact=True).click()
@@ -181,13 +179,67 @@ def main():
                     page.goto(base+'#sources',wait_until='networkidle')
                     expect(page.get_by_role('heading',name='Sources and datasets',exact=True)).to_be_visible()
                     expect(page.get_by_role('navigation',name='Workbench workspaces').get_by_role('link',name='Sources',exact=True)).to_have_attribute('aria-current','page')
-                    expect(page.locator('.resource-group')).to_have_count(9)
+                    expect(page.locator('.resource-group')).to_have_count(10)
                     nep_link=page.get_by_role('link',name='Canonical NEP tree',exact=True)
                     assert re.search(r'github\.com/.*/blob/main/analysis/data/nep_2027_tree\.json$',nep_link.get_attribute('href')),(nep_link.get_attribute('href'),)
                     fmr_bundle=page.get_by_role('link',name='FMR shareable bundle (CSV set + 7z archive)',exact=True)
                     assert fmr_bundle.get_attribute('download') == 'fmr_data.7z',(fmr_bundle.get_attribute('download'),)
+                    # CSV dataset exports card: one complete CSV per dataset.
+                    csv_group = page.locator('section.resource-group').filter(has=page.get_by_role('heading',name='CSV dataset exports',exact=True))
+                    expect(csv_group.locator('.resource-list > li')).to_have_count(6)
+                    dpwh_csv = page.get_by_role('link',name='DPWH comparison · all rows (Transparency, NEP, HGAB2, HGAB3)',exact=True)
+                    assert dpwh_csv.get_attribute('download') == 'dpwh_comparison_all_2027.csv',(dpwh_csv.get_attribute('download'),)
+                    overview_csv_url = dpwh_csv.get_attribute('href')
+                    csv_response = page.request.get(overview_csv_url)
+                    assert csv_response.status == 200,(overview_csv_url,csv_response.status)
+                    csv_lines = csv_response.text().splitlines()
+                    assert len(csv_lines) == 17614,(len(csv_lines),)  # header + 17,613 rows
+                    assert csv_lines[0].startswith('"ID","Title","Program","Region"'),csv_lines[0][:80]
+                    for name in ('hgab_hfep_facilities.csv','nep_hfep_facilities.csv','hgab_hfep_controls.csv'):
+                        link = csv_group.locator(f'a[download="{name}"]')
+                        expect(link).to_have_count(1)
+                        assert page.request.get(link.get_attribute('href')).status == 200,name
                     expect(page.get_by_role('link',name='Open workspace →').first).to_have_attribute('href','#compare')
                     assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
+                    # Card share routes: section links scroll to the card,
+                    # modal links open it centered (presentation view).
+                    page.goto(base+'#overview',wait_until='networkidle')
+                    dpwh_card = page.get_by_role('article',name='DPWH →',exact=True)
+                    dpwh_card.get_by_label('Share DPWH card',exact=True).click()
+                    dpwh_card.get_by_role('menuitem',name='Link as modal',exact=True).click()
+                    expect(dpwh_card.locator('.card-share-status')).to_contain_text('Link copied')
+                    page.goto(base+'#overview?exact=1&modal=dpwh',wait_until='networkidle')
+                    modal = page.get_by_role('dialog',name='DPWH budget change summary',exact=True)
+                    expect(modal).to_be_visible()
+                    expect(modal).to_contain_text('House Only Records')
+                    expect(modal).to_contain_text(f"₱{data['workspaces'][0]['insertions']['amount_php']:,}")
+                    # Simplified Increased/Decreased presentation: pair count,
+                    # NEP→HGAB3 base allocations, signed adjustment.
+                    dpwh_adj = data['workspaces'][0]['adjustments']
+                    expect(modal).to_contain_text(f"{dpwh_adj['increased_count']:,} pairs")
+                    expect(modal).to_contain_text('NEP to HGAB3 Allocations Worth:')
+                    expect(modal).to_contain_text(f"₱{dpwh_adj['increased_nep_php']:,} → ₱{dpwh_adj['increased_house_php']:,}")
+                    expect(modal).to_contain_text(f"Adjustments worth +₱{dpwh_adj['increased_php']:,}")
+                    modal.get_by_role('button',name='Close',exact=True).click()
+                    expect(page.get_by_role('dialog')).to_have_count(0)
+                    page.goto(base+'#overview?card=fmr',wait_until='networkidle')
+                    expect(page.get_by_role('article',name='DA Farm-to-Market Roads →',exact=True)).to_be_visible()
+                    page.wait_for_timeout(400)
+                    assert 'fmr' in page.evaluate('''() => {const el = document.getElementById('overview-fmr');
+                      const r = el.getBoundingClientRect(); return (r.top >= 0 && r.top < innerHeight) ? 'fmr' : 'scrolled-away';}''')
+                    # Sources groups share the same affordances.
+                    page.goto(base+'#sources',wait_until='networkidle')
+                    csv_group_head = page.locator('.resource-group-head').filter(has=page.locator('#sources-csv-exports'))
+                    csv_group_head.get_by_label('Share CSV dataset exports card',exact=True).click()
+                    csv_group_head.get_by_role('menuitem',name='Link to section',exact=True).click()
+                    expect(csv_group_head.locator('.card-share-status')).to_contain_text('Link copied')
+                    page.goto(base+'#sources?modal=csv-exports',wait_until='networkidle')
+                    sources_modal = page.get_by_role('dialog',name='CSV dataset exports datasets',exact=True)
+                    expect(sources_modal).to_be_visible()
+                    dpwh_csv_in_modal = sources_modal.get_by_role('link',name='DPWH comparison · all rows (Transparency, NEP, HGAB2, HGAB3)',exact=True)
+                    assert dpwh_csv_in_modal.get_attribute('download') == 'dpwh_comparison_all_2027.csv',(dpwh_csv_in_modal.get_attribute('download'),)
+                    sources_modal.get_by_role('button',name='Close',exact=True).click()
+                    expect(page.get_by_role('dialog')).to_have_count(0)
                     # The former DPWH Resources route redirects into Sources,
                     # where its catalog entries now live.
                     page.goto(base+'#resources',wait_until='networkidle')
@@ -214,6 +266,7 @@ def main():
                     page.get_by_role('button',name='Retry summary',exact=True).click()
                     expect(page.locator('.overview-workspace-card')).to_have_count(4)
                     page.close()
+                    context.close()
                     print(f'{width}px: Overview routing, summaries, export and recovery pass',flush=True)
                 browser.close()
             assert not errors, errors

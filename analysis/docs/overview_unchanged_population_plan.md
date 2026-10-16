@@ -32,7 +32,7 @@ amounts, identities or matching thresholds change.
 
 | Workspace | Unchanged population at its declared grain | Existing filter/URL for the cell link |
 |---|---|---|
-| DPWH | Paired HGAB3↔NEP comparison rows (incl. region-difference candidates) where House amount equals NEP amount; grouped members counted individually, matching insertions/deletions counting | **None yet** — render as plain figures; `amount_same` compare flag is deferred (see below) |
+| DPWH | Paired HGAB3↔NEP comparison rows (incl. region-difference candidates) where House amount equals NEP amount; grouped members counted individually, matching insertions/deletions counting | `#compare?view=projects&region_match=ignore&flag=amount_same` (flag added 17 Oct 2026; count equals tile figure) |
 | DA FMR | Paired project rows with `delta_php === 0` | `#fmr/compare?view=projects&direction=unchanged` (UI-reachable Amount-direction filter; equivalently `status=unchanged` in `filterComparisons`) |
 | DOH HFEP | Funding-column records with event `'same'` (printed identically in both annexes) — same basis as the existing "Unchanged records" stat on HFEP Analysis | `#hfep/analysis?view=adjustments&event=same` (pair-grain alternative: `#hfep/compare?view=pairs&changed=same`) |
 | NIA | Paired rows with `delta_php === 0` (505 pairs on the current build) | `#nia/compare?status=unchanged` |
@@ -139,10 +139,11 @@ sum, which equals the NEP-side sum by construction (per-row delta 0).
 
 ## Deferred
 
-- **DPWH `amount_same` compare flag** (`matchFilters.js` option +
-  `#compare?view=projects&region_match=ignore&flag=amount_same` note copy) so
-  the DPWH Unchanged cell can deep-link like its siblings. Requires the new
-  flag in `FLAG_OPTIONS`/`REVIEW_FLAG_INFO` and a muted explanation line in
-  `Comparison.jsx`; deliberately out of scope for this batch per scope B.
+- ~~DPWH `amount_same` compare flag~~ — implemented 17 October 2026:
+  `FLAG_OPTIONS`/`REVIEW_FLAG_INFO` carry `amount_same` (paired rows with
+  equal amounts, delta derived from attached sides with the 3rd reading
+  preferred), and the Overview tile/cell deep-link to
+  `#compare?view=projects&region_match=ignore&flag=amount_same`. The
+  filtered count (9,670 rows) equals the Overview figure on the full basis.
 - CSV/exports inside the destination workspaces already export their filtered
   rows; no new export surface is added on Overview.

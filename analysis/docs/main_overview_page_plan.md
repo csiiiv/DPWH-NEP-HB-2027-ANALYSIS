@@ -159,11 +159,11 @@ adjustments).
 The value beside an adjustment is a **difference**, not the entire allocation
 of the paired project.
 
-Unchanged figures deep-link only where a workspace filter already exists:
-FMR and NIA `compare?…status=unchanged`, HFEP `analysis?…event=same`. The DPWH
-unchanged population is displayed as plain text with a "not yet filterable in
-Compare" note until Compare gains an `amount_same` flag; no DPWH link is
-published in the interim.
+Unchanged figures deep-link into each workspace's existing filtered
+population: FMR and NIA `compare?…status=unchanged`, HFEP
+`analysis?…event=same`, and DPWH `compare?…flag=amount_same` (the flag was
+added alongside this population; its filtered count equals the tile figure
+by construction).
 
 The primary summary represents the full retained comparison population. It
 does not silently inherit filters from a previously visited workspace. Population
