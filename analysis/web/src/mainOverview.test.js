@@ -27,7 +27,7 @@ const builtAt = '2026-10-14T00:00:00Z';
 const data = overviewSummary(inputs, builtAt);
 
 test('Overview conserves each source ledger and separates all candidate/paired movement', () => {
-  assert.equal(validateOverview(data), data);
+    assert.equal(validateOverview(data), data);
   assert.deepEqual(data.workspaces.map(w => w.key), ['dpwh','fmr','hfep','nia']);
   for (const w of data.workspaces) {
     assert.equal(w.delta_php, w.sources.house.amount_php - w.sources.nep.amount_php);
@@ -41,6 +41,29 @@ test('Overview conserves each source ledger and separates all candidate/paired m
   const fmr = data.workspaces.find(w => w.key === 'fmr');
   assert.equal(fmr.insertions.count,355); assert.equal(fmr.deletions.count,95);
   assert.equal(fmr.adjustments.increased_php,15000000); assert.equal(fmr.adjustments.reduced_php,60000000);
+});
+test('Unchanged populations pair equal allocations and complete the paired partition', () => {
+  const byKey = Object.fromEntries(data.workspaces.map(w => [w.key, w]));
+  // Stable figures from the verified 17 October build.
+  assert.equal(byKey.nia.unchanged.count,505); assert.equal(byKey.nia.unchanged.amount_php,7976655000);
+  assert.equal(byKey.fmr.unchanged.count,605); assert.equal(byKey.fmr.unchanged.amount_php,13584095000);
+  assert.equal(byKey.hfep.unchanged.count,281); assert.equal(byKey.hfep.unchanged.amount_php,3092749000);
+  assert.equal(byKey.dpwh.unchanged.count,9670); assert.equal(byKey.dpwh.unchanged.amount_php,348425553000);
+  // Pair-grain workspaces: unchanged + changed rows equal the paired rows.
+  for (const key of ['dpwh','fmr','nia']) {
+    const w = byKey[key];
+    assert.equal(w.unchanged.comparison_rows + w.adjustments.increased_count + w.adjustments.reduced_count,
+      w.paired_comparison_rows, `${key} paired partition`);
+  }
+  // Unchanged rows contribute zero to the funding bridge by construction.
+  for (const w of data.workspaces)
+    assert.ok(w.unchanged.amount_php >= 0 && Number.isSafeInteger(w.unchanged.amount_php));
+  // Links: FMR/NIA unchanged status filter, HFEP same-event records; DPWH
+  // has no deep-link until Compare gains an amount_same flag (deferred).
+  assert.ok(byKey.fmr.links.unchanged.includes('status=unchanged'));
+  assert.ok(byKey.nia.links.unchanged.includes('status=unchanged'));
+  assert.ok(byKey.hfep.links.unchanged.includes('event=same'));
+  assert.equal(byKey.dpwh.links.unchanged,undefined);
 });
 test('DPWH expands grouped members and includes foreign-assisted paired reductions outside Transparency', () => {
   const w = data.workspaces[0];
@@ -94,7 +117,10 @@ test('Summary exports retain exact PHP, basis and supporting links; topic findin
   const csv = overviewCsv(data);
   assert.equal(csv.trimEnd().split('\r\n').length,5);
   assert.ok(csv.includes('printed_vs_ledger_delta_residual_php'));
+  assert.ok(csv.includes('"unchanged_records","unchanged_php"'));
   assert.ok(csv.includes('"6196","172149788000"'));
+  assert.ok(csv.includes('"9670","348425553000"')); // DPWH unchanged count/allocation
+  assert.ok(csv.includes('#nia/compare?view=projects&status=unchanged'));
   assert.ok(csv.includes('-140000'));
   const ai = data.features.find(f => f.key === 'nia');
   assert.equal(ai.count,123); assert.equal(ai.amount_php,2626950000);
@@ -108,5 +134,11 @@ test('Adapters reject reused source rows, missing records and arithmetic drift r
   assert.throws(() => overviewSummary(missing,builtAt),/missing source rows/);
   const drift = structuredClone(data); drift.workspaces[0].adjustments.net_php++;
   assert.throws(() => validateOverview(drift),/do not reconcile/);
+  const tamperedUnchanged = structuredClone(data); tamperedUnchanged.workspaces[0].unchanged.comparison_rows--;
+  assert.throws(() => validateOverview(tamperedUnchanged),/partition/);
+  const brokenPartition = structuredClone(data);
+  brokenPartition.workspaces[0].paired_comparison_rows =
+    brokenPartition.workspaces[0].unchanged.comparison_rows + 1;
+  assert.throws(() => validateOverview(brokenPartition),/partition/);
   assert.throws(() => validateOverview({...data,schema_version:99}),/Unsupported/);
 });

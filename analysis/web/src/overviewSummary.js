@@ -29,9 +29,19 @@ function partition(rows, house = 'house') {
   }
   const increased = paired.filter(r => r[house].amount_php > r.nep.amount_php);
   const reduced = paired.filter(r => r[house].amount_php < r.nep.amount_php);
+  // Unchanged: matched pairs whose recorded allocations are equal on both
+  // stages — same population basis as insertions/deletions, zero paired
+  // movement by construction.
+  const unchanged = paired.filter(r => r[house].amount_php === r.nep.amount_php);
+  ensure(unchanged.length + increased.length + reduced.length === paired.length,
+    'paired rows do not partition into unchanged, increased and reduced');
+  const unchangedPopulation = population(unchanged, house);
+  ensure(sum(unchanged, r => r[house].amount_php) === sum(unchanged, r => r.nep.amount_php),
+    'unchanged pairs carry different House and NEP totals');
   const increases = sum(increased, r => r[house].amount_php - r.nep.amount_php);
   const reductions = sum(reduced, r => r.nep.amount_php - r[house].amount_php);
   const result = {sources, insertions: population(inserted, house), deletions: population(deleted, 'nep'),
+    unchanged: unchangedPopulation, paired_comparison_rows: paired.length,
     adjustments: {count: increased.length + reduced.length, count_unit: 'changed candidate pairs',
       increased_count: increased.length, reduced_count: reduced.length,
       increased_php: increases, reduced_php: reductions, net_php: increases - reductions},
@@ -70,6 +80,7 @@ function annex(data, key, label, scope, matching) {
     links: {home: `#${key}/home`, insertions: analysis(key, 'insertions'), deletions: analysis(key, 'deletions'),
       adjustments: analysis(key, 'adjustments'), increases: analysis(key, 'adjustments', '&direction=increased'),
       decreases: analysis(key, 'adjustments', '&direction=decreased'),
+      unchanged: `#${key}/compare?view=projects&status=unchanged`,
       house: `#${key}/house`, nep: `#${key}/nep`,
       compare: `#${key}/compare`, highlights: `#${key}/highlights`}};
 }
@@ -106,6 +117,7 @@ export function dpwhSummary(overview, detail) {
     links: {home: '#home', insertions: '#compare?view=projects&region_match=ignore&flag=house_only',
       deletions: '#compare?view=projects&region_match=ignore&flag=nep_only_all', adjustments: analysis('dpwh', 'adjustments'),
       increases: '#compare?view=projects&region_match=ignore&flag=amount_increase', decreases: '#compare?view=projects&region_match=ignore&flag=amount_decrease',
+      // No unchanged link: DPWH Compare has no amount_same flag yet (deferred).
       house: '#house?reading=third', house_second: '#house?reading=second', nep: '#nep', compare: '#compare', highlights: '#highlights'}};
 }
 
@@ -136,6 +148,18 @@ export function hfepSummary(data) {
     increased_php: sum(increased, delta), reduced_php: -sum(reduced, delta),
     net_php: sum(changes, delta), events: Object.fromEntries(['revised', 'added', 'dropped'].map(e => [e, changes.filter(r => r.event === e).length]))};
   const insertions = unmatched('house'), deletions = unmatched('nep');
+  // Unchanged at HFEP's record grain: funding-column records printed
+  // identically in both annexes ('same' event). House value equals NEP value
+  // by definition, so one allocation figure describes the population.
+  const sameRecords = records.filter(r => r.event === 'same');
+  const unchanged = {count: sameRecords.length, amount_php: sum(sameRecords, r => r.house_value)};
+  ensure(unchanged.amount_php === sum(sameRecords, r => r.nep_value),
+    'HFEP unchanged records carry different House and NEP totals');
+  // Record-grain counterpart of the paired partition: every funding-column
+  // record printed on a paired facility is unchanged or changed — enforced
+  // here so validateOverview's row-grain check stays workspace-agnostic.
+  const pairedRecords = records.filter(r => ['revised', 'added', 'dropped', 'same'].includes(r.event));
+  ensure(pairedRecords.length === unchanged.count + changes.length, 'HFEP paired-record partition');
   const ledgerDelta = sources.house.amount_php - sources.nep.amount_php;
   ensure(ledgerDelta === insertions.amount_php - deletions.amount_php + adjustments.net_php, 'HFEP funding bridge');
   const controls = {house_php: data.stages.house.annex_control.total, nep_php: data.stages.nep.annex_control.total};
@@ -149,13 +173,14 @@ export function hfepSummary(data) {
   return {key: 'hfep', label: 'DOH Health Facilities', scope: 'HFEP capital outlays: infrastructure, medical equipment and motor vehicles. Both schedules include national and LGU facilities.',
     basis: 'HGAB2 · Volume I-B ↔ DBM NEP Volume II-A · annex text identical in the 3rd reading', grain: 'One funding-column allocation record; facility totals are controls',
     count_unit: 'funding-column records', matching: 'Provisional title-similarity pairs within recorded region and province; derived zero cells excluded from record counts.',
-    sources, insertions, deletions, adjustments, delta_php: ledgerDelta, controls,
+    sources, insertions, deletions, unchanged, adjustments, delta_php: ledgerDelta, controls,
     readings: {second: null, third: {count: sources.house.count, amount_php: sources.house.amount_php,
       same_as_second: true, verified_identical_pages: total}},
     direction_note: 'Here changes are House minus NEP; HFEP Analysis displays NEP minus House. Paired column additions/drops remain in adjustments.',
     links: {home: '#hfep/home', insertions: analysis('hfep', 'insertions'), deletions: analysis('hfep', 'deletions'),
       adjustments: analysis('hfep', 'adjustments'), increases: analysis('hfep', 'adjustments', '&event=revised'),
       decreases: analysis('hfep', 'adjustments', '&event=revised'),
+      unchanged: analysis('hfep', 'adjustments', '&event=same'),
       house: '#hfep/house', nep: '#hfep/nep', compare: '#hfep/compare', highlights: '#hfep/highlights'}};
 }
 

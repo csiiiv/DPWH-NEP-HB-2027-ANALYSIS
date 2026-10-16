@@ -109,7 +109,7 @@ A short visible notice explains that allocations are budget figures and
 candidate matches remain provisional. Fiscal year and the dataset build date
 appear beside the introduction. Detailed methods can use a collapsed disclosure.
 
-### 2. Main summaries: insertions, deletions and adjustments
+### 2. Main summaries: insertions, deletions, unchanged and adjustments
 
 Use one consistently structured summary card per funding workspace. Each card
 contains:
@@ -121,26 +121,49 @@ contains:
    counts labeled separately.
 4. Insertion-candidate count and House allocation.
 5. Deletion-candidate count and NEP allocation.
-6. Adjustment counts, gross increases, gross reductions and signed net movement.
-7. A link from each population into its existing Analysis or Compare view.
+6. Unchanged count and allocation (matched House–NEP records with no change in
+   budget allocations).
+7. Adjustment counts, gross increases, gross reductions and signed net movement.
+8. A link from each population into its existing Analysis or Compare view.
+
+The five population groups carry fixed titles with literal subheaders
+(agreed 16 October 2026) so the vocabulary stays unambiguous across cards and
+tables:
+
+| Title | Subheader | Meaning |
+| --- | --- | --- |
+| Insertions | House Only Records | Allocation records matched only in the House reading |
+| Deletions | NEP Only Records | Allocation records matched only in the NEP |
+| Unchanged | Same NEP-HGAB Titles, no adjustments | Matched House-NEP records with no change in budget allocations |
+| Increased | Same Titles, increased budget | Paired counterparts whose allocation increased |
+| Decreased | Same Titles, decreased budget | Paired counterparts whose allocation decreased |
 
 Two cards per row on desktop and one per row on mobile keep these summaries
-readable. Inside each card, use concise labeled rows for the three populations;
+readable. Inside each card, use concise labeled rows for the populations;
 large figures should emphasize pesos without hiding the counts or their units.
 
 | Main summary | Population | Count | Money basis |
 | --- | --- | --- | --- |
-| Insertion candidates | House-only source allocation records | Unmatched House record count | Sum of their House allocations |
-| Deletion candidates | NEP-only source allocation records | Unmatched NEP record count | Sum of their NEP allocations |
-| Adjustments: increased | Positive movement within the paired population; component events disclosed where needed | Increased record/event count | Gross increase, House minus NEP |
-| Adjustments: reduced | Negative movement within the paired population; component events disclosed where needed | Reduced record/event count | Gross reduction, shown as a magnitude |
+| Insertions (House Only Records) | House-only source allocation records | Unmatched House record count | Sum of their House allocations |
+| Deletions (NEP Only Records) | NEP-only source allocation records | Unmatched NEP record count | Sum of their NEP allocations |
+| Unchanged (Same NEP-HGAB Titles, no adjustments) | Paired records with equal allocations on both stages | Unchanged record/pair count | Sum of the shared allocation |
+| Adjustments: increased (Same Titles, increased budget) | Positive movement within the paired population; component events disclosed where needed | Increased record/event count | Gross increase, House minus NEP |
+| Adjustments: decreased (Same Titles, decreased budget) | Negative movement within the paired population; component events disclosed where needed | Reduced record/event count | Gross reduction, shown as a magnitude |
 | Adjustments: net | Movement within the paired population | Changed record count, with event types disclosed where needed | Gross increases minus gross reductions |
 
 Gross increases and reductions remain visible alongside the net figure.
-Unchanged allocation records are excluded from changed-record counts; an
-unchanged facility total does not exclude changes between its component columns.
+Unchanged allocation records are excluded from changed-record counts — they
+form their own population — and an unchanged facility total does not exclude
+changes between its component columns (HFEP component events stay in
+adjustments).
 The value beside an adjustment is a **difference**, not the entire allocation
 of the paired project.
+
+Unchanged figures deep-link only where a workspace filter already exists:
+FMR and NIA `compare?…status=unchanged`, HFEP `analysis?…event=same`. The DPWH
+unchanged population is displayed as plain text with a "not yet filterable in
+Compare" note until Compare gains an `amount_same` flag; no DPWH link is
+published in the interim.
 
 The primary summary represents the full retained comparison population. It
 does not silently inherit filters from a previously visited workspace. Population
@@ -183,9 +206,11 @@ workspace:
   3rd-reading printing (FMR 60, HFEP 17, NIA 46 identical pages) and the
   summary refuses to build if any page differs.
 - **House vs. NEP: candidate changes** — insertion and deletion candidates with
-  their source allocations, gross paired increases/reductions, and the House
+  their source allocations, unchanged matched records with equal allocations,
+  gross paired increases/decreases, and the House
   ledger, each cell linking into the workspace's own filtered population view
-  (per-workspace `links.increases`/`links.decreases`).
+  (per-workspace `links.increases`/`links.decreases`; unchanged cells use
+  `links.unchanged` where a filter exists).
 
 Every cell states its workspace's counting unit; counts and pesos are never
 added across workspaces. The DPWH Highlights tables keep only the DPWH row and
@@ -296,6 +321,7 @@ builder during implementation:
 | --- | ---: | ---: |
 | House-only insertion candidates | 319 project records | ₱9,452,650,000 House allocation |
 | NEP-only deletion candidates | 282 project records | ₱8,221,526,000 NEP allocation |
+| Unchanged pairs | 505 project records | ₱7,976,655,000 shared allocation |
 | Increased paired adjustments | 0 pairs | ₱0 gross increase |
 | Reduced paired adjustments | 4 pairs | ₱830,000,000 gross reduction |
 | Net paired movement | 4 changed pairs | −₱830,000,000 |
@@ -326,6 +352,9 @@ Each workspace summary should carry:
 - Per-stage ledger allocation and record count; printed controls and residuals
   as separate fields where applicable.
 - Insertion/deletion record counts and their respective source allocations.
+- Unchanged record/pair counts and their equal-allocation totals, with the
+  paired partition (unchanged + increased + reduced = paired rows) enforced
+  where the workspace works at pair grain.
 - Adjustment event counts, gross increase, gross reduction and signed net
   movement, with the workspace-specific event vocabulary disclosed.
 - Supporting-route keys/parameters, methodology links and featured findings.
@@ -382,8 +411,9 @@ it does not require rebuilding all workspace page layouts.
 - Overview is the first shared tab in every workspace, including Geolocation.
 - Existing DPWH, annex and source deep links still resolve; Back/Forward and
   packaged project-path deployments preserve their destinations.
-- All four funding workspaces show insertion/deletion counts and allocations
-  and separate increased/reduced/net adjustment figures with explicit units
+- All four funding workspaces show insertion/deletion counts and allocations,
+  unchanged matched populations, and separate increased/decreased/net
+  adjustment figures with explicit units
   and comparison bases.
 - Headline values equal the full supporting populations and exported amounts,
   regardless of pagination. DPWH grouped members and HFEP component records

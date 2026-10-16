@@ -16,14 +16,24 @@ function Amount({value, exact, signed = false}) {
   return <span className={signed ? value > 0 ? 'up' : value < 0 ? 'down' : '' : ''}
     title={money(value)}>{sign}{formatted}</span>;
 }
+// Five-group vocabulary (agreed 16 October 2026): title + literal subheader.
+const POPULATION_LABELS = {
+  insertions: {title: 'Insertions', sub: 'House Only Records', note: 'House allocation'},
+  deletions: {title: 'Deletions', sub: 'NEP Only Records', note: 'NEP allocation'},
+  unchanged: {title: 'Unchanged', sub: 'Same NEP-HGAB Titles, no adjustments', note: 'Same allocation · both stages'},
+};
 function Population({workspace, kind, label, exact}) {
   const metric = workspace[kind];
-  return <a className="overview-population" href={workspace.links[kind]} aria-label={`${workspace.label} ${label.toLowerCase()}`}>
-    <strong>{label}</strong><span>{number(metric.count)} {workspace.count_unit}</span>
+  const text = POPULATION_LABELS[kind];
+  const body = <><strong>{text.title}<small className="overview-subhead">{text.sub}</small></strong>
+    <span>{number(metric.count)} {workspace.count_unit}</span>
     <b><Amount value={metric.amount_php} exact={exact}/></b>
-    <small>{kind === 'insertions' ? 'House allocation' : 'NEP allocation'}
-      {metric.comparison_rows != null && metric.comparison_rows !== metric.count ? ` · ${number(metric.comparison_rows)} comparison rows` : ''} · inspect records →</small>
-  </a>;
+    <small>{text.note}
+      {metric.comparison_rows != null && metric.comparison_rows !== metric.count ? ` · ${number(metric.comparison_rows)} comparison rows` : ''} · inspect records →</small></>;
+  return workspace.links[kind]
+    ? <a className="overview-population" href={workspace.links[kind]} aria-label={`${workspace.label} ${text.title.toLowerCase()}`}>{body}</a>
+    : <div className="overview-population" aria-label={`${workspace.label} ${text.title.toLowerCase()}`}>
+        {body}<small className="overview-nolink">Not yet filterable in Compare</small></div>;
 }
 function SummaryCard({workspace: w, exact}) {
   const a = w.adjustments;
@@ -35,12 +45,13 @@ function SummaryCard({workspace: w, exact}) {
         <dd><Amount value={w.sources[side].amount_php} exact={exact}/><small>{number(w.sources[side].count)} {w.count_unit}
           {w.sources[side].facility_count != null ? ` · ${number(w.sources[side].facility_count)} facility rows` : ''}</small></dd></div>)}
     </dl>
-    <div className="overview-populations"><Population workspace={w} kind="insertions" label="Insertion candidates" exact={exact}/>
-      <Population workspace={w} kind="deletions" label="Deletion candidates" exact={exact}/></div>
+    <div className="overview-populations"><Population workspace={w} kind="insertions" exact={exact}/>
+      <Population workspace={w} kind="deletions" exact={exact}/>
+      <Population workspace={w} kind="unchanged" exact={exact}/></div>
     <section className="overview-adjustments" aria-label={`${w.label} adjustments`}>
       <h3><a href={w.links.adjustments}>Adjustments · {number(a.count)} {a.count_unit} →</a></h3>
-      <dl><div><dt>Increased · {number(a.increased_count)}</dt><dd><Amount value={a.increased_php} exact={exact} signed/></dd></div>
-        <div><dt>Reduced · {number(a.reduced_count)}</dt><dd><Amount value={-a.reduced_php} exact={exact} signed/></dd></div>
+      <dl><div><dt>Increased<small className="overview-subhead">Same Titles, increased budget</small> · {number(a.increased_count)}</dt><dd><Amount value={a.increased_php} exact={exact} signed/></dd></div>
+        <div><dt>Decreased<small className="overview-subhead">Same Titles, decreased budget</small> · {number(a.reduced_count)}</dt><dd><Amount value={-a.reduced_php} exact={exact} signed/></dd></div>
         <div><dt>Net paired movement</dt><dd><Amount value={a.net_php} exact={exact} signed/></dd></div></dl>
       {a.events && <p>{a.events.revised} revised · {a.events.added} NEP-only columns · {a.events.dropped} House-only columns within paired facilities.</p>}
     </section>
@@ -96,16 +107,28 @@ function CoverageTables({data, exact}) {
   </section>
   <section className="fmr-section" aria-labelledby="overview-changes-heading">
     <h2 id="overview-changes-heading">House vs. NEP: candidate changes</h2>
-    <p>Insertion and deletion candidates with their allocations, plus gross movement on paired counterparts. A candidate is a matching observation, not a certified policy change; each workspace's card states its matching basis. Select a figure to review the underlying records in its workspace.</p>
+    <p>Insertion and deletion candidates with their allocations, unchanged matched records with equal allocations, and gross movement on paired counterparts. A candidate is a matching observation, not a certified policy change; each workspace's card states its matching basis. Unchanged records are matched House–NEP records with no change in budget allocations. Select a figure to review the underlying records in its workspace.</p>
     <div className="table-scroll" role="region" aria-label="Overview House versus NEP candidate changes" tabIndex={0}>
-      <table className="highlights-table highlights-changes overview-changes-table"><caption>Candidate changes · full source allocations for insertions/deletions; gross paired movement for increases/decreases</caption>
-        <thead><tr><th scope="col">Workspace</th><th scope="col">Insertion candidates</th><th scope="col">Deletion candidates</th><th scope="col">Paired increases</th><th scope="col">Paired reductions</th><th scope="col">House ledger</th></tr></thead>
+      <table className="highlights-table highlights-changes overview-changes-table"><caption>Candidate changes · full source allocations for insertions/deletions/unchanged; gross paired movement for increases/decreases</caption>
+        <thead><tr><th scope="col">Workspace</th>
+          <th scope="col">Insertions<small className="overview-subhead">House Only Records</small></th>
+          <th scope="col">Deletions<small className="overview-subhead">NEP Only Records</small></th>
+          <th scope="col">Unchanged<small className="overview-subhead">Same NEP-HGAB Titles, no adjustments</small></th>
+          <th scope="col">Increased<small className="overview-subhead">Same Titles, increased budget</small></th>
+          <th scope="col">Decreased<small className="overview-subhead">Same Titles, decreased budget</small></th>
+          <th scope="col">House ledger</th></tr></thead>
         <tbody>{data.workspaces.map(w => <tr key={w.key}>
           <th scope="row"><a href={w.links.home}>{w.label}</a></th>
           {[['insertions', 'House allocation'], ['deletions', 'NEP allocation']].map(([key, note]) => <td key={key}>
             <a className="highlights-cell-link" href={w.links[key]} aria-label={`${w.label} ${key === 'insertions' ? 'insertion' : 'deletion'} candidates`}>
               <strong>{number(w[key].count)} {w.count_unit}</strong>
               <span title={money(w[key].amount_php)}>{note} <Amount value={w[key].amount_php} exact/></span></a></td>)}
+          <td>{w.links.unchanged
+            ? <a className="highlights-cell-link" href={w.links.unchanged} aria-label={`${w.label} unchanged pairs`}>
+                <strong>{number(w.unchanged.count)} {w.count_unit}</strong>
+                <span title={money(w.unchanged.amount_php)}>Same allocation <Amount value={w.unchanged.amount_php} exact/></span></a>
+            : <><strong>{number(w.unchanged.count)} {w.count_unit}</strong>
+                <span title={money(w.unchanged.amount_php)}>Same allocation <Amount value={w.unchanged.amount_php} exact/> · not yet filterable in Compare</span></>}</td>
           {[['increases', 'increased_php', 'increased_count'], ['decreases', 'reduced_php', 'reduced_count']].map(([key, php, cnt]) => <td key={key}>
             <a className="highlights-cell-link" href={w.links[key]} aria-label={`${w.label} paired ${key}`}>
               <strong>{number(w.adjustments[cnt])} {w.adjustments.count_unit.replace('changed ', '').replace('candidate ', '')}</strong>
@@ -116,7 +139,7 @@ function CoverageTables({data, exact}) {
         </tr>)}</tbody>
       </table>
     </div>
-    <p className="fmr-muted">Counts use each workspace's record grain, so they are not comparable across rows. Adjustments are gross movements within pairs — {data.workspaces.map(w => `${w.label}: ${w.adjustments.count_unit}`).join('; ')}. The DPWH pair counts include region-difference candidates. HFEP paired column additions/drops sit in its adjustments; its Analysis view displays NEP minus House.</p>
+    <p className="fmr-muted">Counts use each workspace's record grain, so they are not comparable across rows. Adjustments are gross movements within pairs — {data.workspaces.map(w => `${w.label}: ${w.adjustments.count_unit}`).join('; ')}. The DPWH pair counts include region-difference candidates. Unchanged allocations are equal on both stages; DPWH's unchanged figures are not yet filterable in Compare. HFEP paired column additions/drops sit in its adjustments; its Analysis view displays NEP minus House.</p>
   </section></>;
 }
 export default function MainOverview() {
@@ -149,7 +172,7 @@ export default function MainOverview() {
       <p className="fmr-notice">Allocations are budget figures. Insertions and deletions are provisional candidates: title, scope and OCR differences can prevent matching. Counts use each dataset's declared record grain; each source and workspace keeps its own totals.</p>
       {error ? <section role="alert"><h2>Overview data could not load</h2><p>{error}</p><button onClick={() => setAttempt(n => n + 1)}>Retry summary</button>{' '}<a href="#home">Open DPWH</a></section>
         : !data ? <p role="status">Loading validated workspace summaries…</p> : <>
-          <section id="overview-summaries" aria-label="Budget change summaries"><h2>Insertions, deletions and adjustments</h2>
+          <section id="overview-summaries" aria-label="Budget change summaries"><h2>Insertions, deletions, unchanged records and adjustments</h2>
             <div className="cards overview-workspaces">{data.workspaces.map(w => <SummaryCard key={w.key} workspace={w} exact={exact}/>)}</div></section>
           <section className="fmr-section"><h2>Source funding snapshot</h2><p>Ledger totals use the same records as the summaries. DPWH covers operations; HFEP excludes MOOE. Printed controls and their coverage are available in each card.</p>
             <SortableTable tableId="main-overview-funding" rows={rows} ariaLabel="Overview source funding snapshot" sort={sort}

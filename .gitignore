@@ -62,3 +62,7 @@ other-analysis/data/hfep_workbench.json
 # Per-document FMR final datasets (rebuilt from retained normalized layers).
 other-analysis/data/hgab_fmr_final_dataset.json
 other-analysis/data/nep_fmr_final_dataset.json
+
+# Senate xlsx crosscheck: builder + machine audit (rebuilt from external_work/)
+analysis/builders/crosscheck_dpwh_details_xlsx.py
+analysis/data/dpwh_details_xlsx_crosscheck.json
