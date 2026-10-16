@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { repo, siteUrl } from "./data.js";
 import { routeHref } from "./routes.js";
 import WorkbenchHeader from "./WorkbenchHeader.jsx";
 import { kindLabel, sourceGroups } from "./sourcesCatalog.js";
+import { CardShareMenu, CardModal } from "./CardShare.jsx";
 
 // The Sources workspace catalogs every shareable, normalized dataset in one
 // place: what it contains, where it lives in the repository, and how it can
@@ -24,6 +25,27 @@ function itemProps(item) {
 }
 
 export default function Sources() {
+  // Re-render on hash change so shared ?card= / ?modal= links update live.
+  const [hash, setHash] = useState(window.location.hash);
+  useEffect(() => {
+    const update = () => setHash(window.location.hash);
+    window.addEventListener("hashchange", update);
+    return () => window.removeEventListener("hashchange", update);
+  }, []);
+  const modalGroup = new URLSearchParams((hash.split("?")[1] || "")).get("modal");
+  const cardTarget = new URLSearchParams((hash.split("?")[1] || "")).get("card");
+  useEffect(() => {
+    if (!cardTarget) return;
+    document.getElementById(`sources-${cardTarget}`)?.scrollIntoView({behavior: 'smooth', block: 'start'});
+  }, [cardTarget]);
+  const closeModal = () => {
+    const [path, query] = window.location.hash.slice(1).split("?");
+    const params = new URLSearchParams(query || "");
+    params.delete("modal");
+    const next = params.toString();
+    window.location.hash = `#${path}${next ? "?" + next : ""}`;
+  };
+  const group = sourceGroups.find((g) => g.id === modalGroup);
   return (
     <>
       <a className="fmr-skip" href="#sources-content" onClick={e => {e.preventDefault(); document.getElementById('sources-content')?.focus();}}>Skip to content</a>
@@ -51,6 +73,7 @@ export default function Sources() {
           <section key={group.id} className="resource-group" aria-labelledby={`sources-${group.id}`}>
             <div className="resource-group-head">
               <h2 id={`sources-${group.id}`}>{group.title}</h2>
+              <div className="overview-card-share"><CardShareMenu label={group.title} cardKey={group.id} routeBase="#sources"/></div>
               <p className="muted">{group.blurb}</p>
               {group.workspace && (
                 <a href={"#" + group.workspace}>Open workspace →</a>
@@ -76,6 +99,28 @@ export default function Sources() {
         ))}
       </div>
       </main>
+      {group && <CardModal cardKey={group.id} active label={`${group.title} datasets`} onClose={closeModal}>
+        <div className="resource-group modal-card" aria-label={`${group.title} datasets`}>
+          <p className="muted">{group.blurb}</p>
+          <ul className="resource-list">
+            {group.items.map((item) => (
+              <li key={item.path ?? item.label}>
+                {item.kind === "text" ? (
+                  <span className="resource-note">{item.label}</span>
+                ) : (
+                  <a href={itemHref(item)} {...itemProps(item)}>
+                    {item.label}
+                  </a>
+                )}
+                <span className="resource-kind">{kindLabel[item.kind] || item.kind}</span>
+                {item.purpose && <p className="resource-purpose">{item.purpose}</p>}
+                {item.coverage && <small>{item.coverage}</small>}
+              </li>
+            ))}
+          </ul>
+          <p className="muted">Single-section presentation view of the Sources catalog. <a href="#sources">Open the full catalog →</a></p>
+        </div>
+      </CardModal>}
     </>
   );
 }

@@ -17,15 +17,17 @@
 .overview-subhead { display:block; font-size:.78rem; font-weight:500; color:var(--muted,#52647a); margin-top:2px; }
 .overview-adjustments dt .overview-subhead, .overview-changes-table th .overview-subhead { display:block; margin:2px 0 0; }
 .overview-changes-table thead th .overview-subhead { font-weight:500; }
-.overview-population .overview-nolink { color:#637182; font-style:italic; }
 .overview-population:hover { background:#edf4fc; }
 .overview-population b { font-size:1.2rem; }
 .overview-population small { color:var(--muted,#52647a); }
 .overview-adjustments { margin:18px 0; }
 .overview-adjustments h3 { font-size:1rem; }
 .overview-adjustments dl { margin:0; }
-.overview-adjustments dl>div { display:flex; justify-content:space-between; gap:12px; padding:6px 0; }
+/* Adjustment rows: label + signed delta on one line, the pairs' base
+   allocations underneath so deltas can never be read as allocations. */
+.overview-adjustments dl>div { display:grid; grid-template-columns:1fr auto; gap:1px 12px; align-items:baseline; padding:6px 0; }
 .overview-adjustments dd { margin:0; font-weight:700; }
+.overview-base-alloc { grid-column:1 / -1; color:var(--muted,#52647a); font-size:.85em; }
 .overview-adjustments p { font-size:.85rem; }
 .overview-movement { border-top:1px solid #d5e1ed; padding-top:12px; }
 .overview-findings { grid-template-columns:repeat(2,minmax(0,1fr)); }
@@ -46,3 +48,35 @@
 @media(max-width:800px) { .overview-workspaces,.overview-findings { grid-template-columns:1fr; } }
 @media(max-width:420px) { .overview-population { padding:10px; } .overview-population b { font-size:1.05rem; } }
 @media(max-width:480px) { .main-overview.show-exact .overview-populations,.main-overview.show-exact .overview-stage-totals { grid-template-columns:1fr; } }
+
+/* Card share menus (Overview cards, Sources groups) and the shared
+   presentation modal. */
+.card-share { position:relative; }
+.card-share-button { font:inherit; padding:2px 10px; border:1px solid #c6d4e3; border-radius:999px; background:#fff; color:#33506e; cursor:pointer; }
+.card-share-button:hover { background:#eef4fb; }
+.card-share-menu { position:absolute; right:0; top:calc(100% + 6px); z-index:30; display:flex; flex-direction:column; gap:2px;
+  min-width:220px; padding:8px; background:#fff; border:1px solid #d5e1ed; border-radius:10px; box-shadow:0 10px 30px #182f4b26; }
+.card-share-menu button, .card-share-menu a { text-align:left; padding:7px 10px; border:0; border-radius:7px; background:none; font:inherit; color:#203147; cursor:pointer; text-decoration:none; }
+.card-share-menu button:hover, .card-share-menu a:hover { background:#eef4fb; }
+.card-share-status { padding:4px 10px; font-size:.8rem; color:#2d7d46; }
+/* Card headers get a share affordance in the top-right corner. */
+.overview-workspace-card, .resource-group { position:relative; }
+.overview-card-share { position:absolute; top:10px; right:10px; }
+/* Modal reuses the dialog chrome; the card inside drops its link navigation
+   (modal is a presentation view) and stretches to a comfortable width. */
+dialog.card-modal { width:min(1080px, calc(100vw - 32px)); max-height:88vh; overflow-y:auto; }
+.card-modal .overview-workspace-card { margin:0; box-shadow:none; }
+.card-modal .cards.overview-workspaces { grid-template-columns:repeat(2,minmax(0,1fr)); }
+/* Sources group modals reuse the same presentation chrome. */
+.card-modal .resource-group { margin:0; box-shadow:none; }
+.card-modal .fmr-dialog-heading { margin-bottom:10px; }
+.modal-card .fmr-muted:last-child { margin-bottom:0; }
+.card-share-status { display:block; margin-top:2px; font-size:.8rem; color:#2d7d46; text-align:right; }
+/* Section headings carry their share affordance inline on the right.
+   .fmr-section>h2 styles its direct child, so the wrapper repeats that
+   spacing when it stands in for the heading. */
+.section-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin:0 0 10px; }
+.section-head h2 { margin:0; }
+/* Mobile: drop the share pill so headings stay readable; shared links
+   still scroll straight to the section. */
+@media(max-width:768px) { .section-head .card-share { display:none; } }
