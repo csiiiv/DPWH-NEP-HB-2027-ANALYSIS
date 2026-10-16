@@ -33,6 +33,7 @@ export const FLAG_OPTIONS = [
   ['nep_only_suggested', 'NEP only · possible replacement'],
   ['amount_increase', 'NEP → HGAB increased'],
   ['amount_decrease', 'NEP → HGAB decreased'],
+  ['amount_same', 'NEP = HGAB (unchanged pair)'],
   ['transparency_gap', 'Transparency gap (NEP not listed)'],
   ['outside_api', 'Outside Transparency scope'],
   ['group_exhausted', 'Grouping · unpaired HGAB row (insertion candidate)'],
@@ -130,6 +131,14 @@ export function identityMatchStatus(row) {
   return 'no_match';
 }
 
+/** Paired amount delta (House − NEP) for unified comparison rows; null when
+ *  the row is not a retained candidate pair. Prefers the 3rd reading. */
+function pairedAmountDelta(row) {
+  const house = row.third ?? row.second ?? row.house;
+  if (!row.nep || !house) return null;
+  return house.amount_php - row.nep.amount_php;
+}
+
 export function rowFlags(row, counterparts = null) {
   const flags = [];
   const hasHouse = Boolean(row.second || row.third || row.house);
@@ -139,9 +148,10 @@ export function rowFlags(row, counterparts = null) {
     flags.push('nep_only');
     if (counterparts?.has(row.id)) flags.push('nep_only_suggested');
   }
-  const delta = row.house_minus_nep_php;
+  const delta = row.house_minus_nep_php ?? pairedAmountDelta(row);
   if (delta != null && delta > 0) flags.push('amount_increase');
   else if (delta != null && delta < 0) flags.push('amount_decrease');
+  else if (delta === 0) flags.push('amount_same');
   else if (typeof row.trace === 'string') {
     if (row.trace.includes('candidate_increase')) flags.push('amount_increase');
     else if (row.trace.includes('candidate_decrease')) flags.push('amount_decrease');

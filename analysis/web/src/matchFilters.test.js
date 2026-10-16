@@ -59,6 +59,17 @@ test('flags cover presence, amount deltas and Transparency coverage', () => {
     second: {id: 'h'},
     house_minus_nep_php: -1e6,
   }).includes('amount_decrease'));
+  // Unified comparison rows without house_minus_nep_php: the paired delta is
+  // derived from the attached sides (3rd reading preferred).
+  assert.ok(rowFlags({
+    nep: {id: 'n', amount_php: 5},
+    third: {id: 'h', amount_php: 5},
+  }).includes('amount_same'));
+  assert.ok(rowFlags({
+    nep: {id: 'n', amount_php: 5},
+    third: {id: 'h', amount_php: 7},
+    trace: 'exact_candidate',
+  }).includes('amount_increase'));
   assert.ok(rowFlags({
     api_presence: 'nep_not_in_transparency',
     nep: {id: 'n'},
