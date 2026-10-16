@@ -318,6 +318,13 @@ def main(with_react=True):
         package_geo(OUTPUT)
         subprocess.run(['node', str(ROOT / 'analysis/web/buildMainOverview.mjs')], check=True, cwd=ROOT)
         shutil.copyfile(DATA / 'main_overview_2027.json', target / 'main_overview_2027.json')
+        # Complete per-dataset CSV exports for the Sources workspace: the
+        # DPWH comparison CSV is built beside the overview payload; HFEP
+        # facility/controls CSVs come from the retained HFEP trees.
+        subprocess.run(['node', str(ROOT / 'analysis/web/buildCsvExports.mjs')], check=True, cwd=ROOT)
+        shutil.copyfile(DATA / 'dpwh_comparison_all_2027.csv', target / 'dpwh_comparison_all_2027.csv')
+        for name in ('hgab_hfep_facilities.csv', 'nep_hfep_facilities.csv', 'hgab_hfep_controls.csv', 'nep_hfep_controls.csv'):
+            shutil.copyfile(ROOT / 'analysis-hfep/data' / name, OUTPUT / 'analysis-hfep' / name)
     validate_site()
     print(f'Prepared and checked {len(VIEWER_NAMES)} dashboards in {OUTPUT}')
 

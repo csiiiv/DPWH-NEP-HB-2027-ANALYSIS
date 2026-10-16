@@ -21,6 +21,14 @@ test('sources catalog covers every workspace plus the folded-in DPWH resources',
   // Annex workspaces and the packaged payloads.
   assert.ok(sourceGroups.some((group) => ['fmr', 'hfep', 'nia', 'geo'].includes(group.id)));
   assert.ok(items.some((item) => item.path?.endsWith('main_overview_2027.json')));
+  // CSV dataset exports: one complete CSV per dataset, all packaged for download.
+  const csvGroup = sourceGroups.find((group) => group.id === 'csv-exports');
+  assert.ok(csvGroup, 'csv-exports group missing');
+  assert.ok(csvGroup.items.length >= 6);
+  assert.ok(csvGroup.items.every((item) => item.kind === 'data' && /\.(csv|7z)$/.test(item.path)));
+  assert.ok(csvGroup.items.some((item) => item.path.endsWith('dpwh_comparison_all_2027.csv')));
+  assert.ok(csvGroup.items.some((item) => item.path.endsWith('hgab_hfep_facilities.csv')));
+  assert.ok(csvGroup.items.some((item) => item.path.endsWith('hgab_nia_projects.csv')));
   // Source PDFs and pinned external references.
   assert.ok(sourceGroups.some((group) => group.id === 'sources'));
   assert.ok(items.some((item) => item.kind === 'external' && item.path?.includes('kimileeee/gab-fy2027-dataset')));

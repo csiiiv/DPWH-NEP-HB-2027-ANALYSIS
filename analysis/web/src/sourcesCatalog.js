@@ -364,6 +364,58 @@ export const sourceGroups = [
     ],
   },
   {
+    id: "csv-exports",
+    title: "CSV dataset exports",
+    blurb:
+      "Complete comma-separated exports of every budget dataset, one file per dataset. Rebuilt deterministically on every site build; integer Philippine pesos throughout.",
+    items: [
+      {
+        label: "DPWH comparison · all rows (Transparency, NEP, HGAB2, HGAB3)",
+        kind: "data",
+        path: "analysis/dpwh_comparison_all_2027.csv",
+        purpose:
+          "One complete CSV of the DPWH compare-stages dataset: 17,613 comparison rows with per-stage amounts, reading status, match status, and source IDs + PDF pages",
+        coverage:
+          "Row grain is comparison candidates (matched pairs, insertions, deletions, unchanged). Filtered per-population exports (insertions/deletions/unchanged/increased/decreased) are one click from each Overview card via the workspace's Export CSV button.",
+      },
+      {
+        label: "HFEP facilities · House (HGAB 3rd reading)",
+        kind: "data",
+        path: "analysis-hfep/hgab_hfep_facilities.csv",
+        purpose: "Complete House HFEP facility export: 513 facility rows with funding columns and provenance",
+        coverage: "₱10,021,659,000 capital outlays; matches the repository dataset column for column.",
+      },
+      {
+        label: "HFEP facilities · NEP",
+        kind: "data",
+        path: "analysis-hfep/nep_hfep_facilities.csv",
+        purpose: "Complete NEP HFEP facility export: 464 items with funding columns and per-cell lineage",
+        coverage: "₱14,472,659,000 printed total; the 5 control mismatches trace to the documented missing ₱140,000 row.",
+      },
+      {
+        label: "HFEP printed controls (both annexes)",
+        kind: "data",
+        path: "analysis-hfep/hgab_hfep_controls.csv",
+        purpose: "Control-level reconciliation CSVs for both HFEP annexes",
+        coverage: "311 House + 347 NEP internal controls across the four funding columns; used by the workbench's control checks.",
+      },
+      {
+        label: "FMR shareable CSV bundle",
+        kind: "data",
+        path: "other-analysis/data/shareable/fmr_data.7z",
+        purpose: "Compact 7z download of the normalized FMR layers: projects, segments, and points for both documents",
+        coverage: "Accompanied in-repo by per-file CSVs and FMR_DATA_README.md describing every column.",
+      },
+      {
+        label: "NIA projects · House and NEP",
+        kind: "data",
+        path: "analysis-nia/data/hgab_nia_projects.csv",
+        purpose: "Complete House NIA project export (828 rows) with sub-program assignments",
+        coverage: "₱17,999,305,000; the NEP counterpart (nep_nia_projects.csv, 791 rows, ₱17,598,181,000) sits in the same packaged folder.",
+      },
+    ],
+  },
+  {
     id: "references",
     title: "Referenced repositories",
     blurb:

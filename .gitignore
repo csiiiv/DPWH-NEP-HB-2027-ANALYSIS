@@ -53,6 +53,8 @@ analysis/data/comparison_overview_2027.json
 analysis/data/comparison_projects_2027.json
 analysis/data/highlights_details_2027.json
 analysis/data/main_overview_2027.json
+# Complete DPWH comparison CSV built from the comparison payload
+analysis/data/dpwh_comparison_all_2027.csv
 # Rebuilt from retained FMR trees and normalization audits.
 other-analysis/data/fmr_workbench.json
 analysis-nia/data/nia_workbench.json
