@@ -12,8 +12,10 @@ async function copyText(text, setMessage) {
  *  the item in view. `paramKey` picks the link form — `card` (default,
  *  `#…&card=<key>` scrolls to the card) or `section` (`#…&section=<key>`
  *  scrolls to a section anchor). Modal mode (`#…&modal=<key>`) opens the
- *  item centered, distraction-free. The menu closes on outside click,
- *  Escape, or focus leaving it. */
+ *  item centered, distraction-free. Copied links resolve the hash route
+ *  against the current page URL so the clipboard carries the full address,
+ *  not just the fragment. The menu closes on outside click, Escape, or
+ *  focus leaving it. */
 export function CardShareMenu({label, cardKey, routeBase, currentParams = {}, paramKey = 'card'}) {
   const [open, setOpen] = useState(false), [message, setMessage] = useState('');
   const ref = useRef(null);
@@ -35,9 +37,11 @@ export function CardShareMenu({label, cardKey, routeBase, currentParams = {}, pa
     const query = new URLSearchParams(entries).toString();
     return `${routeBase}${query ? '?' + query : ''}`;
   };
+  // Absolute address for sharing: current origin/path/query + the hash route.
+  const buildShareUrl = mode => new URL(buildHref(mode), window.location.href).href;
   const share = async mode => {
     setOpen(false);
-    await copyText(buildHref(mode), setMessage);
+    await copyText(buildShareUrl(mode), setMessage);
   };
   return <div className="card-share" ref={ref} aria-label={`Share ${label}`}>
     <button className="card-share-button" aria-expanded={open} aria-haspopup="true"

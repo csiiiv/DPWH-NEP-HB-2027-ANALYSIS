@@ -208,6 +208,8 @@ def main():
                     dpwh_card.get_by_label('Share DPWH card',exact=True).click()
                     dpwh_card.get_by_role('menuitem',name='Link as modal',exact=True).click()
                     expect(dpwh_card.locator('.card-share-status')).to_contain_text('Link copied')
+                    # Copied links carry the full page URL, not just the hash route.
+                    assert page.evaluate('navigator.clipboard.readText()') == base + '#overview?modal=dpwh',(page.evaluate('navigator.clipboard.readText()'),)
                     page.goto(base+'#overview?exact=1&modal=dpwh',wait_until='networkidle')
                     modal = page.get_by_role('dialog',name='DPWH budget change summary',exact=True)
                     expect(modal).to_be_visible()
