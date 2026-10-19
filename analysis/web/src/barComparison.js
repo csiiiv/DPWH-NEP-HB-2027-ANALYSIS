@@ -94,8 +94,8 @@ export function collapseBars(bars, {top, plural} = {}) {
 // is drawable. Every positive segment width is exactly value * scale; a
 // class absent on one side leaves a gap, keeping the other classes aligned.
 export function layoutBarChart(bars, options = {}) {
-  const {width = 1180, labelWidth = 252, valueWidth = 168, barHeight = 15,
-    barGap = 3, rowGap = 14, top = 24, bottom = 20, labelChars = 30,
+  const {width = 1180, labelWidth = 288, valueWidth = 168, barHeight = 15,
+    barGap = 3, rowGap = 14, top = 24, bottom = 20, labelChars = 26,
     maxLabelLines = 2, lineHeight = 15, segmentLabelMin = 56} = options;
   if (!Array.isArray(bars) || !bars.length) return null;
   // The scale fits the longest bar (a side total = the sum of its segments),
@@ -107,7 +107,7 @@ export function layoutBarChart(bars, options = {}) {
   const block = 2 * barHeight + barGap, pitch = block + rowGap;
   const rows = bars.map((bar, index) => {
     const y = top + index * pitch, center = y + block / 2;
-    const lines = ellipsizeLines(wrapHierarchyLabel(bar.label, labelChars), maxLabelLines, labelChars);
+    const lines = ellipsizeLines2(wrapHierarchyLabel(bar.label, labelChars), maxLabelLines, labelChars);
     const labelYs = lines.map((_, line) =>
       center - (lines.length - 1) * lineHeight / 2 + line * lineHeight + 4);
     const sides = SIDES.map(({key, label, short}, sideIndex) => {
@@ -141,4 +141,15 @@ function ellipsizeLines(lines, max, maxChars) {
   const kept = lines.slice(0, max - 1), tail = lines.slice(max - 1).join(' ');
   kept.push(tail.length > maxChars ? `${tail.slice(0, maxChars - 1).trimEnd()}…` : tail);
   return kept;
+}
+
+// Hard word-level cap: wrapHierarchyLabel cannot split a word, so a single
+// token like "Completion/Upgrading/Repair/Equipping" (37 chars) would still
+// overflow the gutter. Trim the head and ellipsize; the full label stays in
+// the row's <title> and in the exact-PHP tables.
+function capLine(line, maxChars) {
+  return line.length > maxChars ? `${line.slice(0, maxChars - 1).trimEnd()}…` : line;
+}
+function ellipsizeLines2(lines, max, maxChars) {
+  return ellipsizeLines(lines.map(l => capLine(l, maxChars)), max, maxChars);
 }

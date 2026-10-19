@@ -71,7 +71,7 @@ function BarComparisonFigure({payload, groupingKey, datasets, exact, route, setP
         shownTotals: sumBars(drawable), rollup, others};
     } catch (e) {return {error: e.message};}
   }, [payload, groupingKey, order, topParam, route]);
-  const layout = useMemo(() => result.bars ? layoutBarChart(result.bars, {labelChars: 30}) : null, [result.bars]);
+  const layout = useMemo(() => result.bars ? layoutBarChart(result.bars, {labelChars: 26}) : null, [result.bars]);
   const [exporting, setExporting] = useState(false), [exportError, setExportError] = useState('');
   const svgRef = useRef(null);
   if (result.error) return <p role="alert">Bar comparison unavailable: {result.error}</p>;

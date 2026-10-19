@@ -306,7 +306,8 @@ def main():
                     svg = page.locator('.bar-comparison-scroll svg')
                     metadata = json.loads(svg.locator('metadata').text_content())
                     max_total = max(max(b['nep'], b['hgab']) for b in metadata['bars'])
-                    track = svg.evaluate('svg => svg.viewBox.baseVal.width') - 252 - 168
+                    # Gutter (288) + value margin (168) match layoutBarChart defaults.
+                    track = svg.evaluate('svg => svg.viewBox.baseVal.width') - 288 - 168
                     scale = track / max_total
                     rendered = page.locator('.bar-comparison-bar').evaluate_all(
                         'els => els.map(el => ({side: el.dataset.side, cls: el.dataset.class, v: Number(el.dataset.value), w: Number(el.querySelector("rect").getAttribute("width")), x: Number(el.querySelector("rect").getAttribute("x")), nep: Number(el.dataset.nep), hgab: Number(el.dataset.hgab)}))')
@@ -340,6 +341,9 @@ def main():
                     # Hover tooltip names the paired amounts.
                     assert 'paired' in page.locator('.bar-comparison-bar').first.evaluate('el => el.querySelector("title").textContent')
                     # Every catalog dataset × detail level renders and conserved totals hold.
+                    # Reset top first: a leftover ?top=5 from the compact-view block would
+                    # no-op on datasets with fewer groups and change the drawn row count.
+                    page.goto(base + '#experiments?tab=bars&dataset=dpwh&detail=region', wait_until='networkidle')
                     sources = json.loads((ROOT / 'analysis/data/budget_flow_sources_2027.json').read_text())['sources']
                     for source in sources:
                         page.get_by_label('Dataset source', exact=True).select_option(source['dataset']['key'])
