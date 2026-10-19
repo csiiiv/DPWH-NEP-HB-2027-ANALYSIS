@@ -1,25 +1,25 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {allocationHierarchyGraph, hierarchyFilterOptions, HIERARCHY_STAGES} from './nepHierarchy.js';
+import {buildAllocationGraph, hierarchyOrders, hierarchyView} from './allocationHierarchy.js';
 import {layoutAllocationHierarchy, wrapHierarchyLabel} from './hierarchyLayout.js';
 import {money, compactMoney} from './fmrModel.js';
 import {hierarchySectionSvg, hierarchySectionPng, saveHierarchyImage} from './hierarchyImage.js';
 import './DpwhNepSankey.css';
 
-export default function DpwhHierarchySankey({hierarchy, exact = false, stage = 'nep', route}) {
+// Shared renderer: the source catalog supplies its own levels and vocabulary.
+export default function AllocationHierarchySankey({hierarchy, dataset, datasets, onDatasetChange, exact = false, stage = 'nep', route}) {
   const label = stage === 'hgab3' ? 'HGAB3' : 'NEP';
   const sourceName = stage === 'hgab3' ? 'HGAB3' : 'DBM NEP';
-  const captionId = `allocation-hierarchy-${stage}-caption`;
+  const captionId = `allocation-hierarchy-${dataset.key}-${stage}-caption`;
   const params = route?.params ?? new URLSearchParams();
-  const endAt = HIERARCHY_STAGES.some(s => s.key === params.get('through')) ? params.get('through') : 'pap';
-  const lastColumn = HIERARCHY_STAGES.find(s => s.key === endAt).column;
-  const category = hierarchy.categories.some(g => g.id === params.get('category')) ? params.get('category') : '';
-  const papOptions = hierarchyFilterOptions(hierarchy, category).paps;
-  const pap = lastColumn >= 2 && papOptions.includes(params.get('pap')) ? params.get('pap') : '';
-  const regionOptions = hierarchyFilterOptions(hierarchy, category, pap).regions;
-  const region = lastColumn >= 3 && regionOptions.includes(params.get('region')) ? params.get('region') : '';
-  const graph = useMemo(() => allocationHierarchyGraph(hierarchy, category, stage, {endAt, pap, region}),
-    [hierarchy, category, stage, endAt, pap, region]);
+  const view = useMemo(() => hierarchyView(hierarchy, params), [hierarchy, route]);
+  const {hierarchy: active, order, levels, endAt, lastColumn, filters, top, options} = view;
+  const graph = useMemo(() => buildAllocationGraph(active, stage, view), [active, stage, view]);
   const layout = useMemo(() => layoutAllocationHierarchy(graph), [graph]);
+  const orders = useMemo(() => hierarchyOrders(hierarchy), [hierarchy]);
+  const orderLabels = {category: 'Category', pap: 'PAP', region: 'Region', deo: 'DEO', program: 'Program',
+    subprogram: 'Sub-program', subcategory: 'Subcategory', province: 'Province',
+    facility: 'Facility', component: 'Component', project: 'Project'};
+  const orderLabel = keys => keys.map(k => orderLabels[k] || k[0].toUpperCase() + k.slice(1)).join(' → ');
   const scroll = useRef(null);
   const [exporting, setExporting] = useState(false), [exportError, setExportError] = useState('');
   useEffect(() => {
@@ -27,67 +27,78 @@ export default function DpwhHierarchySankey({hierarchy, exact = false, stage = '
     if (!el || !layout) return;
     const nodeX = layout.columnX.get(lastColumn) / layout.svgWidth * el.querySelector('svg').getBoundingClientRect().width;
     el.scrollTo({top: 0, left: lastColumn >= 3 ? Math.min(el.scrollWidth - el.clientWidth, Math.max(0, nodeX - 24)) : 0});
-  }, [layout, lastColumn, category, pap, region]);
+  }, [layout, lastColumn]);
   const setView = patch => {
     const next = new URLSearchParams(params);
     for (const [key, value] of Object.entries(patch)) {
-      if (!value || (key === 'through' && value === 'pap')) next.delete(key);
+      const level = levels.find(s => s.key === key);
+      if (level) for (const child of levels.filter(s => s.column > level.column)) next.delete(child.key);
+      if (!value || (key === 'through' && value === (active.defaultEnd || 'pap'))) next.delete(key);
       else next.set(key, value);
+      if (key === 'through' && value) {
+        const last = levels.find(s => s.key === value).column;
+        for (const hidden of levels.filter(s => s.column > last)) next.delete(hidden.key);
+      }
     }
     next.set('tab', stage);
     window.location.hash = `experiments?${next}`;
   };
   const format = exact ? money : compactMoney;
-  const axes = [{label: sourceName, column: 0}, ...HIERARCHY_STAGES.filter(s => s.column <= lastColumn)];
+  const visibleLevels = levels.filter(s => s.column <= lastColumn);
+  const axes = [{label: sourceName, column: 0}, ...visibleLevels];
   const pathLabel = axes.map(s => s.label).join(' → ');
-  const scope = `Category: ${hierarchy.categories.find(g => g.id === category)?.label || 'All categories'} · PAP: ${pap || 'All PAPs'} · Region: ${region || 'All regions'}`;
-  const note = `${label} allocations only${stage === 'hgab3' ? ' (House 3rd reading)' : ''}, from the retained DPWH comparison ledger. FAPs stay separate. Regions and offices repeat within their parent branches, using this ledger's recorded assignments. The final stage retains Central Office, regional offices and missing-office labels alongside DEOs so every peso remains accounted for.`;
-  const branchCount = (value, singular, plural = `${singular}s`) => `${value} ${value === 1 ? singular : plural}`;
+  const filterLevels = visibleLevels.filter(s => s.filter !== false);
+  const scope = filterLevels.map(level => {
+    const title = level.filterLabel.replace(/^Focus /, '');
+    const value = options[level.key].find(o => o.id === filters[level.key])?.label || level.allLabel;
+    return `${title[0].toUpperCase()}${title.slice(1)}: ${value}`;
+  }).join(' · ');
+  const note = [`${label} allocations from the retained ${dataset.label} ledger.`, dataset.scope, dataset.notes,
+    stage === 'hgab3' ? dataset.house_note : ''].filter(Boolean).join(' ');
+  const branchCount = level => `${graph.counts[level.column]} ${graph.counts[level.column] === 1 ? level.singular : level.plural}`;
+  const scopeNote = top ? `Top ${top} branches per group + ${graph.others}` : '';
+  const orderNote = order ? `Grouped ${orderLabel(order)}` : '';
   const download = async format => {
     setExportError(''); setExporting(true);
     try {
       const section = hierarchySectionSvg(scroll.current?.querySelector('svg'), {
-        title: `FY2027 · DPWH ${label} allocation hierarchy`, path: pathLabel, scope,
-        summary: [`Allocation: ${money(graph.total)}`, branchCount(graph.counts[1], 'category group'),
-          lastColumn >= 2 && branchCount(graph.counts[2], 'PAP group'),
-          lastColumn >= 3 && branchCount(graph.counts[3], 'regional branch', 'regional branches'),
-          lastColumn >= 4 && branchCount(graph.counts[4], 'office branch', 'office branches')].filter(Boolean).join(' · '),
+        title: `FY2027 · ${dataset.label} ${label} allocation hierarchy`, path: pathLabel, scope,
+        summary: [`Allocation: ${money(graph.total)}`, orderNote, scopeNote, ...visibleLevels.map(branchCount)].filter(Boolean).join(' · '),
         axes: axes.map(axis => ({label: axis.label, x: layout.columnX.get(axis.column)})), note,
       });
       const blob = format === 'png' ? await hierarchySectionPng(section) : section.blob;
-      saveHierarchyImage(blob, `dpwh-2027-${stage}-allocation-hierarchy-through-${endAt}${category || pap || region ? '-filtered' : ''}.${format}`);
+      saveHierarchyImage(blob, `${dataset.key}-2027-${stage}-allocation-hierarchy-through-${endAt}${order ? '-reordered' : ''}${Object.keys(filters).length ? '-filtered' : ''}${top ? `-top${top}` : ''}.${format}`);
     } catch (error) {setExportError(error.message);} finally {setExporting(false);}
   };
-  return <div className="nep-hierarchy" data-stage={stage} data-through={endAt}>
+  return <div className="nep-hierarchy" data-dataset={dataset.key} data-stage={stage} data-through={endAt} data-top={top || 'all'} data-order={order ? order.join(',') : 'native'}>
     <div className="nep-hierarchy-toolbar">
-      <label>Display through <select aria-label="Display through" value={endAt} onChange={e => {
-        const value = e.target.value;
-        setView({through: value, ...(value === 'category' ? {pap: '', region: ''} : value === 'pap' ? {region: ''} : {})});
-      }}>
-        {HIERARCHY_STAGES.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
+      <label>Dataset source <select aria-label="Dataset source" value={dataset.key} onChange={e => onDatasetChange(e.target.value)}>
+        {datasets.map(source => <option key={source.key} value={source.key}>{source.label}</option>)}
       </select></label>
-      <label>Focus category <select aria-label="Focus category" value={category} onChange={e => setView({category: e.target.value, pap: '', region: ''})}>
-        <option value="">All categories</option>
-        {hierarchy.categories.filter(g => g.amount_php > 0).map(g => <option key={g.id} value={g.id}>{g.label}</option>)}
+      <label>Display through <select aria-label="Display through" value={endAt} onChange={e => setView({through: e.target.value})}>
+        {levels.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
       </select></label>
-      {lastColumn >= 2 && <label>Focus PAP <select aria-label="Focus PAP" value={pap} onChange={e => setView({pap: e.target.value, region: ''})}>
-        <option value="">All PAPs</option>
-        {papOptions.map(value => <option key={value} value={value}>{value}</option>)}
-      </select></label>}
-      {lastColumn >= 3 && <label>Focus region <select aria-label="Focus region" value={region} onChange={e => setView({region: e.target.value})}>
-        <option value="">All regions</option>
-        {regionOptions.map(value => <option key={value} value={value}>{value}</option>)}
-      </select></label>}
-      <p aria-live="polite"><strong>{format(graph.total)}</strong> · {graph.counts[1]} category {graph.counts[1] === 1 ? 'group' : 'groups'}
-        {lastColumn >= 2 && <> · {graph.counts[2]} PAP {graph.counts[2] === 1 ? 'group' : 'groups'}</>}
-        {lastColumn >= 3 && <> · {graph.counts[3]} regional {graph.counts[3] === 1 ? 'branch' : 'branches'}</>}
-        {lastColumn >= 4 && <> · {graph.counts[4]} office {graph.counts[4] === 1 ? 'branch' : 'branches'}</>}
-      </p>
+      <label>Drill-down order <select aria-label="Drill-down order" value={order ? order.join(',') : ''}
+        onChange={e => setView({order: e.target.value, through: '', top: '', ...Object.fromEntries(levels.map(l => [l.key, '']))})}>
+        <option value="">{orderLabel(levels.map(l => l.key))} (native)</option>
+        {orders.map(keys => <option key={keys.join(',')} value={keys.join(',')}>{orderLabel(keys)}</option>)}
+      </select></label>
+      <label>Top branches <select aria-label="Top branches" value={top || ''} onChange={e => setView({top: e.target.value})}>
+        <option value="">All branches</option>
+        {[1, 3, 5, 10, 15, 20].map(n => <option key={n} value={n}>Top {n} + Others</option>)}
+      </select></label>
+      {filterLevels.map(level => <label key={level.key}>{level.filterLabel} <select aria-label={level.filterLabel}
+        value={filters[level.key] || ''} onChange={e => setView({[level.key]: e.target.value})}>
+        <option value="">{level.allLabel}</option>
+        {options[level.key].map(value => <option key={value.id} value={value.id}>{value.label}</option>)}
+      </select></label>)}
+      <p aria-live="polite"><strong>{format(graph.total)}</strong>{visibleLevels.map(level => <React.Fragment key={level.key}> · {branchCount(level)}</React.Fragment>)}</p>
     </div>
-    {lastColumn >= 3 && <p className="fmr-muted">Narrow the category, PAP or region to inspect a smaller branch. Scroll horizontally for later stages and vertically for more groups.</p>}
+    {(lastColumn >= 3 || graph.counts.some(count => count > 40)) && <p className="fmr-muted">Narrow the available filters to inspect a smaller branch. Scroll horizontally for later stages and vertically for more groups.</p>}
+    {top && layout && <p className="fmr-muted">Compact view: only the {top} largest {top === 1 ? 'branch' : 'branches'} under each group are drawn; the rest fold into one “{graph.others}” block per parent. Hover for exact amounts.</p>}
     {!layout ? <p role="status">No positive {label} allocations in this selection.</p> : <figure className="nep-hierarchy-figure" aria-labelledby={captionId}>
       <figcaption id={captionId}>
-        <div className="nep-hierarchy-caption">DPWH {label} allocation hierarchy <span>{pathLabel}</span><span>Ribbon width represents {label} pesos. Hover a ribbon or block for its exact allocation.</span></div>
+        <div className="nep-hierarchy-caption">{dataset.label} {label} allocation hierarchy <span>{pathLabel}</span><span>Ribbon width represents {label} pesos. Hover a ribbon or block for its exact allocation.</span></div>
         <div className="nep-hierarchy-exports" data-image-export-omit>
           <button onClick={() => download('png')} disabled={exporting}>Download section PNG</button>
           <button onClick={() => download('svg')} disabled={exporting}>Download SVG</button>
@@ -97,7 +108,7 @@ export default function DpwhHierarchySankey({hierarchy, exact = false, stage = '
       </figcaption>
       <div ref={scroll} className="nep-hierarchy-scroll" style={{'--hierarchy-width': `${layout.minWidth}px`}} role="region" aria-label={`${label} allocation Sankey through ${axes.at(-1).label}`} tabIndex={0}>
         <div className="nep-hierarchy-axes" aria-hidden="true">{axes.map(axis => <span key={axis.column} style={{left: `${layout.columnX.get(axis.column) / layout.svgWidth * 100}%`}}>{axis.label}</span>)}</div>
-        <svg viewBox={`0 0 ${layout.svgWidth} ${layout.height}`} role="img" aria-label={`DPWH ${label} ${money(graph.total)}: ${pathLabel}`}>
+        <svg viewBox={`0 0 ${layout.svgWidth} ${layout.height}`} role="img" aria-label={`${dataset.label} ${label} ${money(graph.total)}: ${pathLabel}`}>
           {layout.links.map(link => <path key={`${link.source}:${link.target}`} className="nep-hierarchy-link" d={link.d} fill={link.color} fillOpacity=".3" data-value={link.value}>
             <title>{link.sourceName} → {link.targetName}: {money(link.value)}</title>
           </path>)}

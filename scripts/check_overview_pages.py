@@ -238,7 +238,7 @@ def main():
                     # Tabs: one experiment per tab, deep-linked via ?tab=.
                     # The default tab is the 3-stage alluvial.
                     tabs = page.locator('.experiments-tabs a')
-                    expect(tabs).to_have_count(6)
+                    expect(tabs).to_have_count(7)
                     expect(page.locator('.experiments-tabs a[aria-current="page"]')).to_have_text('3-stage alluvial')
                     flow_section = page.locator('section[aria-labelledby="experiments-flow-heading"]')
                     # Custom column-flow alluvial: three fixed axes, one block

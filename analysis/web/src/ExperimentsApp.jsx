@@ -10,8 +10,9 @@ import RevisionFlowDiagram from './RevisionFlowDiagram.jsx';
 import {buildFlowFromGrouping} from './flowFromGrouping.js';
 import {categoryRecordHref} from './budgetFlowModel.js';
 import BudgetFlowExplorer from './BudgetFlowExplorer.jsx';
-import DpwhHierarchySankey from './DpwhHierarchySankey.jsx';
-import {HIERARCHY_STAGES} from './nepHierarchy.js';
+import AllocationHierarchyExplorer from './AllocationHierarchyExplorer.jsx';
+import BarComparisonExplorer from './BarComparisonExplorer.jsx';
+import {layoutPapFlow} from './papFlowLayout.js';
 import './Fmr.css';
 import './MainOverview.css';
 
@@ -27,6 +28,7 @@ const TABS = [
   {key: 'pap', label: '5-stage category alluvial', render: renderPap},
   {key: 'flows', label: 'Allocation flows', render: renderFlows},
   {key: 'budget', label: 'Budget flow', render: renderBudget},
+  {key: 'bars', label: 'Bar chart comparison', render: renderBars},
   {key: 'nep', label: 'NEP → Category → PAP', render: renderNep},
   {key: 'hgab3', label: 'HGAB3 → Category → PAP', render: renderHgab3},
 ];
@@ -49,31 +51,20 @@ const CATEGORY_FLOW_OPTIONS = {grouping: 'category', id: 'dpwh',
     additions: 'New House money', reductions: 'House Reductions', count: 'comparison rows'},
   recordHref: categoryRecordHref};
 
-function renderNep({flow, exact, route}) {
-  return renderHierarchy({flow, exact, route, stage: 'nep'});
+function renderNep({exact, route}) {
+  return <AllocationHierarchyExplorer exact={exact} route={route} stage="nep"/>;
 }
 
-function renderHgab3({flow, exact, route}) {
-  return renderHierarchy({flow, exact, route, stage: 'hgab3'});
-}
-
-function renderHierarchy({flow, exact, route, stage}) {
-  const label = stage === 'hgab3' ? 'HGAB3' : 'NEP';
-  const hierarchy = flow?.[`${stage}_hierarchy`];
-  const end = HIERARCHY_STAGES.find(s => s.key === route?.params.get('through')) ?? HIERARCHY_STAGES[1];
-  const path = [label, ...HIERARCHY_STAGES.filter(s => s.column <= end.column).map(s => s.label)].join(' → ');
-  return <section className="fmr-section" aria-labelledby={`experiments-${stage}-heading`}>
-    <h2 id={`experiments-${stage}-heading`}>DPWH · {path}</h2>
-    <p>Follow {label}{stage === 'hgab3' ? ' (House 3rd reading)' : ''} allocations through categories, Programs, Activities and Projects (PAPs), regions and DEOs. Choose the last stage to display, then focus a category, PAP or region. Groups are ordered by allocation, largest first.</p>
-    {flow?.error ? <p role="alert">{label} hierarchy data unavailable: {flow.error}.</p>
-      : hierarchy ? <DpwhHierarchySankey key={stage} hierarchy={hierarchy} exact={exact} stage={stage} route={route}/>
-      : flow ? <p role="alert">{label} hierarchy data is missing. Rebuild the experiment payload.</p>
-      : <p role="status">Loading {label} hierarchy…</p>}
-  </section>;
+function renderHgab3({exact, route}) {
+  return <AllocationHierarchyExplorer exact={exact} route={route} stage="hgab3"/>;
 }
 
 function renderBudget({exact, data, route}) {
   return <BudgetFlowExplorer exact={exact} route={route} workspaces={data.workspaces}/>;
+}
+
+function renderBars({exact, route}) {
+  return <BarComparisonExplorer exact={exact} route={route}/>;
 }
 
 function renderStages({flow, exact}) {
@@ -107,10 +98,11 @@ function CategoryFlowFigure({flow, exact}) {
     try {return buildFlowFromGrouping(flow, CATEGORY_FLOW_OPTIONS);}
     catch (error) {return {error: error.message};}
   }, [flow]);
+  const layout = useMemo(() => model && !model.error ? layoutPapFlow(model) : null, [model]);
   if (flow?.error) return <p role="alert">Category flow payload unavailable: {flow.error}. Run <code>node analysis/web/buildDpwhFlow.mjs</code>.</p>;
   if (!model) return <p role="status">Loading category revision flow…</p>;
   if (model.error) return <p role="alert">Category flow unavailable: {model.error}</p>;
-  return <div className="category-flow"><RevisionFlowDiagram model={model}
+  return <div className="category-flow"><RevisionFlowDiagram model={model} layout={layout}
     title="DPWH · NEP → Category → Revisions → Category → HGAB"
     captionDetail={` · ${flow.totals.rows.toLocaleString('en-PH')} comparison rows · PHP`}
     formatValue={exact ? money : flowMoney} formatExact={money}
@@ -139,7 +131,7 @@ export default function ExperimentsApp() {
   useEffect(() => {const controller = new AbortController(); setError('');
     loadData('main_overview_2027.json', controller.signal).then(validateOverview).then(setData)
       .catch(e => {if (e.name !== 'AbortError') setError(e.message);}); return () => controller.abort();}, [attempt]);
-  useEffect(() => {if (tab === 'budget' || flow && !flow.error) return;
+  useEffect(() => {if (!['stages', 'pap'].includes(tab) || flow && !flow.error) return;
     const controller = new AbortController();
     loadData('dpwh_flow_2027.json', controller.signal).then(setFlow)
       .catch(e => {if (e.name !== 'AbortError') setFlow({error: e.message});}); return () => controller.abort();}, [attempt, tab]);

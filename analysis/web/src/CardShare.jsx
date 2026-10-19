@@ -37,8 +37,16 @@ export function CardShareMenu({label, cardKey, routeBase, currentParams = {}, pa
     const query = new URLSearchParams(entries).toString();
     return `${routeBase}${query ? '?' + query : ''}`;
   };
-  // Absolute address for sharing: current origin/path/query + the hash route.
-  const buildShareUrl = mode => new URL(buildHref(mode), window.location.href).href;
+  // Absolute address for sharing: current origin/path + the hash route.
+  // Strips page-level query params (e.g. the legacy ?preview= launcher) so
+  // they never leak into shared links; the project base path under GitHub
+  // Pages is part of the pathname and is preserved automatically.
+  const buildShareUrl = mode => {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = buildHref(mode);
+    return url.href;
+  };
   const share = async mode => {
     setOpen(false);
     await copyText(buildShareUrl(mode), setMessage);

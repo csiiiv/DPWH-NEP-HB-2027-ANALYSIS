@@ -234,12 +234,13 @@ export default function MainOverview() {
         <p><a href={repo + 'analysis/docs/shareable_datasets_by_page.md'}>Shareable dataset guide</a>{' · '}
           <a href={repo + 'analysis/docs/analysis_tabs_framework.md'}>Analysis methods and counting units</a>{' · '}<a href="#about">About the workbench</a></p></section>
     </main>
-    {/* Modal presentations: bigger dialog width, cards shrink gracefully inside. */}
-    {modalTarget === 'summaries' && <CardModal cardKey="summaries" active label="Insertions, deletions, unchanged records and adjustments" onClose={closeModal}>
+    {/* Modal presentations: bigger dialog width, cards shrink gracefully
+        inside. Gated on data so shared modal URLs survive a cold load. */}
+    {data && modalTarget === 'summaries' && <CardModal cardKey="summaries" active label="Insertions, deletions, unchanged records and adjustments" onClose={closeModal}>
       <ModalSummaryGrid workspaceKeys={data.workspaces.map(w => w.key)} data={data} exact={exact}/>
       <p className="fmr-muted">Single-section presentation view. <a href="#overview">Return to full overview →</a></p>
     </CardModal>}
-    {modalTarget === 'funding' && <CardModal cardKey="funding" active label="Source funding snapshot" onClose={closeModal}>
+    {data && modalTarget === 'funding' && <CardModal cardKey="funding" active label="Source funding snapshot" onClose={closeModal}>
       <div className="fmr-section">
         <p>Ledger totals use the same records as the summaries. DPWH covers operations; HFEP excludes MOOE.</p>
         <SortableTable tableId="modal-funding" rows={rows} ariaLabel="Source funding snapshot" sort={sort} columns={[
@@ -253,7 +254,7 @@ export default function MainOverview() {
         <p><a href="#overview">Return to full overview →</a></p>
       </div>
     </CardModal>}
-    {modalTarget === 'findings' && <CardModal cardKey="findings" active label="Selected findings" onClose={closeModal}>
+    {data && modalTarget === 'findings' && <CardModal cardKey="findings" active label="Selected findings" onClose={closeModal}>
       <div className="fmr-section">
         <div className="cards overview-findings">{data.features.map(f => <article key={f.key}>
           <p className="fmr-eyebrow">{data.workspaces.find(w => w.key === f.key)?.label}</p><h3>{f.title}</h3>
@@ -262,11 +263,11 @@ export default function MainOverview() {
         <p><a href="#overview">Return to full overview →</a></p>
       </div>
     </CardModal>}
-    {modalTarget === 'coverage-tables' && <CardModal cardKey="coverage-tables" active label="Budget coverage by stage" onClose={closeModal}>
+    {data && modalTarget === 'coverage-tables' && <CardModal cardKey="coverage-tables" active label="Budget coverage by stage" onClose={closeModal}>
       <CoverageTables data={data} exact={exact} inModal/>
       <p><a href="#overview">Return to full overview →</a></p>
     </CardModal>}
-    {modalTarget === 'candidate-changes' && <CardModal cardKey="candidate-changes" active label="House vs. NEP: candidate changes" onClose={closeModal}>
+    {data && modalTarget === 'candidate-changes' && <CardModal cardKey="candidate-changes" active label="House vs. NEP: candidate changes" onClose={closeModal}>
       <section className="fmr-section">
         <div className="table-scroll" role="region" aria-label="Candidate changes" tabIndex={0}>
           <table className="highlights-table highlights-changes overview-changes-table"><caption>Candidate changes · Allocations Worth figures</caption>

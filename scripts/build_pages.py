@@ -325,6 +325,8 @@ def main(with_react=True):
         shutil.copyfile(DATA / 'dpwh_flow_2027.json', target / 'dpwh_flow_2027.json')
         subprocess.run(['node', str(ROOT / 'analysis/web/buildBudgetFlowSources.mjs')], check=True, cwd=ROOT)
         shutil.copyfile(DATA / 'budget_flow_sources_2027.json', target / 'budget_flow_sources_2027.json')
+        subprocess.run(['node', str(ROOT / 'analysis/web/buildHierarchySources.mjs')], check=True, cwd=ROOT)
+        shutil.copyfile(DATA / 'allocation_hierarchy_sources_2027.json', target / 'allocation_hierarchy_sources_2027.json')
         # Complete per-dataset CSV exports for the Sources workspace: the
         # DPWH comparison CSV is built beside the overview payload; HFEP
         # facility/controls CSVs come from the retained HFEP trees.

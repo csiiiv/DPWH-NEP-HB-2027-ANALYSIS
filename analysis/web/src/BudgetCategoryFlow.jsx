@@ -46,7 +46,7 @@ async function exportFigure(svg, format, filename) {
 }
 
 export default function BudgetCategoryFlow({payload, groupingKey = 'category', exact, route, workspace}) {
-  const alignment = route.params.get('align') === 'center' ? 'center' : route.params.get('align') === 'top' ? 'top' : 'midpoint';
+  const alignment = route.params.get('align') === 'center' ? 'center' : 'top';
   const compactView = route.params.get('detail') !== 'all';
   const groupParam = route.params.get('group');
   const result = useMemo(() => {
@@ -137,11 +137,10 @@ export default function BudgetCategoryFlow({payload, groupingKey = 'category', e
       </select></label>
       <label className="budget-flow-group-select">Alignment <select aria-label="Flow alignment" value={alignment} onChange={e => {
         const params = new URLSearchParams(route.params);
-        if (e.target.value === 'midpoint') params.delete('align');
-        else params.set('align', e.target.value);
+        if (e.target.value === 'center') params.set('align', 'center'); else params.delete('align');
         window.location.hash = `experiments?${params}`;
       }}>
-        <option value="midpoint">Matched to groups</option><option value="top">Top</option><option value="center">Centered</option>
+        <option value="top">Top</option><option value="center">Centered</option>
       </select></label>
       <div className="budget-flow-exports">
         <button onClick={() => download('svg')} disabled={exporting}>Download SVG</button>

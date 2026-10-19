@@ -43,7 +43,7 @@ def main():
                     page.goto(base + '#experiments?tab=budget', wait_until='networkidle')
                     expect(page.get_by_role('heading', name='DPWH · five-stage budget flow')).to_be_visible()
                     expect(page.locator('.experiments-tabs a[aria-current="page"]')).to_have_text('Budget flow')
-                    expect(page.locator('.experiments-tabs a')).to_have_count(6)
+                    expect(page.locator('.experiments-tabs a')).to_have_count(7)
                     # The default overview keeps the top three NEP categories
                     # and combines the other four without dropping any money.
                     expect(page.get_by_label('Category detail', exact=True)).to_have_value('top3')
@@ -104,27 +104,17 @@ def main():
                     }''')
                     assert page.locator('.bf-stub-band').evaluate_all("els => els.reduce((sum,el) => sum+Number(el.dataset.value),0)") == 177170632000
                     assert page.locator('[data-node="reductions"]').evaluate_all("els => els.reduce((sum,el) => sum+Number(el.dataset.value),0)") == 87348816000
-                    # The report view matches outer ledger segments to each
-                    # group by default. Top and centered remain comparison
-                    # options; all three preserve values and scale.
+                    # Top is the default. Switching alignment moves nodes and
+                    # bands without changing any amount or proportional height.
                     svg = page.locator('.revision-flow-scroll svg')
-                    expect(svg).to_have_attribute('data-alignment', 'midpoint')
-                    expect(svg.locator('rect[data-node="outer-ledger"][data-stage="A"]')).to_have_count(7)
-                    expect(svg.locator('rect[data-node="outer-ledger"][data-stage="E"]')).to_have_count(7)
-                    midpoint_y = float(svg.locator('rect[data-stage="A"]').first.get_attribute('y'))
-                    assert float(svg.locator('rect[data-stage="B"]').first.get_attribute('y')) == midpoint_y
-                    assert float(svg.locator('rect[data-stage="E"]').first.get_attribute('y')) == float(svg.locator('rect[data-stage="D"][data-node="ledger"]').first.get_attribute('y'))
-                    values = svg.locator('.bf-ribbon').evaluate_all('els => els.map(el => el.dataset.value)')
-                    scale = svg.get_attribute('data-scale')
-                    page.get_by_label('Flow alignment', exact=True).select_option('top')
                     expect(svg).to_have_attribute('data-alignment', 'top')
-                    expect(page).to_have_url(re.compile('align=top'))
-                    expect(svg.locator('rect[data-node="total-ledger"][data-stage="A"]')).to_have_count(1)
                     top_y = float(svg.locator('rect[data-stage="A"]').get_attribute('y'))
                     assert float(svg.locator('rect[data-stage="E"]').get_attribute('y')) == top_y
                     assert float(svg.locator('rect[data-stage="B"]').first.get_attribute('y')) == top_y
                     assert float(svg.locator('rect[data-stage="D"][data-node="ledger"]').first.get_attribute('y')) == top_y
                     assert float(svg.locator('.bf-revision-node').first.get_attribute('y')) == top_y
+                    values = svg.locator('.bf-ribbon').evaluate_all('els => els.map(el => el.dataset.value)')
+                    scale = svg.get_attribute('data-scale')
                     page.get_by_label('Flow alignment', exact=True).select_option('center')
                     expect(svg).to_have_attribute('data-alignment', 'center')
                     expect(page).to_have_url(re.compile('align=center'))
@@ -133,10 +123,6 @@ def main():
                     assert svg.locator('.bf-ribbon').evaluate_all('els => els.map(el => el.dataset.value)') == values
                     page.reload(wait_until='networkidle')
                     expect(page.get_by_label('Flow alignment', exact=True)).to_have_value('center')
-                    page.get_by_label('Flow alignment', exact=True).select_option('midpoint')
-                    expect(svg).to_have_attribute('data-alignment', 'midpoint')
-                    assert float(svg.locator('rect[data-stage="A"]').first.get_attribute('y')) == midpoint_y
-                    expect(page).not_to_have_url(re.compile('align='))
                     assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
                     expect(page.locator('.budget-flow-metrics')).to_contain_text('₱572.924B')
                     expect(page.locator('.budget-flow-metrics')).to_contain_text('₱587.076B')
@@ -187,7 +173,7 @@ def main():
                     assert metadata['selection'] == {'group': 'Asset Preservation Program', 'revision': 'reduced'}
                     assert metadata['grouping']['key'] == 'category'
                     assert metadata['unit'] == 'PHP' and metadata['date']
-                    assert metadata['alignment'] == 'midpoint'
+                    assert metadata['alignment'] == 'top'
                     assert metadata['source']['sha256']
                     assert 'not confirmed edits' in metadata['caveat']
                     assert '₱572,924,074,000' in ''.join(exported.itertext())
@@ -295,7 +281,152 @@ def main():
                     page.evaluate('hash => {location.hash = hash;}', '#experiments?tab=budget&group=Asset%20Preservation%20Program')
                     expect(page.get_by_label('Category detail', exact=True)).to_have_value('all')
                     expect(page.locator('.budget-flow-detail')).to_contain_text('1,675 comparison rows')
+                    # Bar chart comparison: one NEP/HGAB bar pair per detail group,
+                    # segmented by revision class with side-specific amounts.
+                    page.goto(base + '#experiments?tab=bars', wait_until='networkidle')
+                    expect(page.get_by_role('heading', name='DPWH · NEP and HGAB bar comparison')).to_be_visible()
+                    expect(page.locator('.experiments-tabs a')).to_have_count(7)
+                    expect(page.locator('.experiments-tabs a[aria-current="page"]')).to_have_text('Bar chart comparison')
+                    # The worked example: DPWH, Region detail by default.
+                    expect(page.get_by_label('Dataset source', exact=True)).to_have_value('dpwh')
+                    expect(page.get_by_label('Detail level', exact=True)).to_have_value('region')
+                    bar_rows = page.locator('.bar-comparison-row')
+                    expect(bar_rows).to_have_count(18)
+                    # NCR sorted first by NEP; its exact class amounts appear in the table.
+                    assert bar_rows.first.get_attribute('data-id') == 'NCR'
+                    table = page.locator('.budget-flow-table')
+                    expect(table).to_contain_text('34,489,249,000')
+                    expect(table).to_contain_text('13,752,034,000')
+                    expect(table).to_contain_text('118,400,203,000')
+                    # Side totals ride on the rendered bars (NCR NEP = 159,059,713,000).
+                    assert page.locator('.bar-comparison-side').first.get_attribute('data-total') == '159059713000'
+                    # One shared scale: the longest bar fills the track exactly and
+                    # every segment width is value × scale; side sums rebuild both
+                    # ledgers; paired amounts ride on every segment.
+                    svg = page.locator('.bar-comparison-scroll svg')
+                    metadata = json.loads(svg.locator('metadata').text_content())
+                    max_total = max(max(b['nep'], b['hgab']) for b in metadata['bars'])
+                    track = svg.evaluate('svg => svg.viewBox.baseVal.width') - 252 - 168
+                    scale = track / max_total
+                    rendered = page.locator('.bar-comparison-bar').evaluate_all(
+                        'els => els.map(el => ({side: el.dataset.side, cls: el.dataset.class, v: Number(el.dataset.value), w: Number(el.querySelector("rect").getAttribute("width")), x: Number(el.querySelector("rect").getAttribute("x")), nep: Number(el.dataset.nep), hgab: Number(el.dataset.hgab)}))')
+                    from collections import defaultdict
+                    sides = defaultdict(int)
+                    for seg in rendered:
+                        assert abs(seg['w'] - seg['v'] * scale) < 1e-6, 'segment width must be value × scale'
+                        sides[seg['side']] += seg['v']
+                        assert seg['nep'] >= 0 and seg['hgab'] >= 0
+                    assert sides['nep'] == metadata['totals']['nep']
+                    assert sides['hgab'] == metadata['totals']['hgab']
+                    # One-sided classes appear on exactly one side.
+                    nep_classes = {seg['cls'] for seg in rendered if seg['side'] == 'nep'}
+                    hgab_classes = {seg['cls'] for seg in rendered if seg['side'] == 'hgab'}
+                    assert 'deletion' in nep_classes and 'deletion' not in hgab_classes
+                    assert 'insertion' in hgab_classes and 'insertion' not in nep_classes
+                    # Unchanged aligns across bars by construction; later classes
+                    # carry side-specific amounts, so their start x legitimately
+                    # drifts once Increased/Decreased widths differ per side.
+                    prefix = svg.evaluate('''svg => [...svg.querySelectorAll('.bar-comparison-row')].map(row => {
+                      const get = side => {
+                        const seg = row.querySelector(`.bar-comparison-bar[data-side="${side}"][data-class="unchanged"]`);
+                        return seg ? [Number(seg.querySelector('rect').getAttribute('x')), Number(seg.dataset.value)] : null;
+                      };
+                      return [get('nep'), get('hgab')];
+                    })''')
+                    for nep_side, hgab_side in prefix:
+                        if nep_side and hgab_side:
+                            assert nep_side[0] == hgab_side[0], 'unchanged segments must start at the track on both bars'
+                            assert nep_side[1] == hgab_side[1], 'unchanged amounts are identical on both bars'
+                    # Hover tooltip names the paired amounts.
+                    assert 'paired' in page.locator('.bar-comparison-bar').first.evaluate('el => el.querySelector("title").textContent')
+                    # Every catalog dataset × detail level renders and conserved totals hold.
+                    sources = json.loads((ROOT / 'analysis/data/budget_flow_sources_2027.json').read_text())['sources']
+                    for source in sources:
+                        page.get_by_label('Dataset source', exact=True).select_option(source['dataset']['key'])
+                        expect(page.get_by_role('heading', name=f"{source['dataset']['label']} · NEP and HGAB bar comparison")).to_be_visible()
+                        expected_detail = 'region' if source['dataset']['key'] == 'dpwh' else source['dataset']['defaultGrouping']
+                        expect(page.get_by_label('Detail level', exact=True)).to_have_value(expected_detail)
+                        for grouping in source['groupings']:
+                            page.get_by_label('Detail level', exact=True).select_option(grouping)
+                            assert page.locator('.bar-comparison-row').count() == len(source['groupings'][grouping]['groups'])
+                            metadata = json.loads(svg.locator('metadata').text_content())
+                            assert metadata['dataset']['key'] == source['dataset']['key'] and metadata['grouping']['key'] == grouping
+                            assert metadata['totals']['nep'] == source['stages']['nep']['amount_php']
+                            assert metadata['totals']['hgab'] == source['stages']['third']['amount_php']
+                            assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
+                            assert svg.evaluate('''svg => {
+                              const v = svg.viewBox.baseVal;
+                              return [...svg.querySelectorAll('rect,text')].every(el => {
+                                const r = el.getBBox(); return r.x >= -1 && r.y >= -1 && r.x + r.width <= v.width + 1 && r.y + r.height <= v.height + 1;
+                              });
+                            }'''), f'{source["dataset"]["key"]}/{grouping} bar SVG clipping'
+                    # Sorting covers NEP, HGAB, net change and label; invalid values
+                    # recover to the default.
+                    page.get_by_label('Sort', exact=True).select_option('hgab')
+                    first_hgab = page.locator('.bar-comparison-row').first.get_attribute('data-id')
+                    page.get_by_label('Sort', exact=True).select_option('delta')
+                    page.get_by_label('Sort', exact=True).select_option('label')
+                    page.reload(wait_until='networkidle')
+                    expect(page.get_by_label('Sort', exact=True)).to_have_value('label')
+                    # An unknown sort value in a shared link recovers to the default.
+                    page.goto(base + '#experiments?tab=bars&sort=bogus', wait_until='networkidle')
+                    expect(page.get_by_label('Sort', exact=True)).to_have_value('nep')
+                    # Hide Central Office: offered only where such a group exists
+                    # (DPWH DEO grain today). Hiding re-fits the scale but keeps the
+                    # group in the exact table, struck through, inside the Total.
+                    page.goto(base + '#experiments?tab=bars&dataset=dpwh&detail=region', wait_until='networkidle')
+                    expect(page.get_by_role('checkbox', name='Hide Central Office')).to_be_disabled()
+                    page.goto(base + '#experiments?tab=bars&dataset=dpwh&detail=deo', wait_until='networkidle')
+                    expect(page.locator('.bar-comparison-row').first).to_have_attribute('data-id', 'Central Office')
+                    checkbox = page.get_by_role('checkbox', name='Hide Central Office')
+                    checkbox.check()
+                    assert 'hide=central_office' in page.evaluate('location.hash')
+                    expect(page.locator('.bar-comparison-row').first).not_to_have_attribute('data-id', 'Central Office')
+                    assert page.locator('.bar-comparison-row').count() == 220
+                    # The hidden group stays in the exact table, struck through,
+                    # with its per-class amounts (unchanged NEP ₱244.9B … inserted
+                    # HGAB ₱104.3B — summing to the ₱450.5B CO ledger).
+                    hidden_row = page.locator('.budget-flow-table tbody tr.is-hidden-row')
+                    expect(hidden_row).to_have_count(1)
+                    expect(hidden_row).to_contain_text('244,925,657,000')
+                    expect(hidden_row).to_contain_text('104,275,611,000')
+                    # The Total row still rebuilds the whole ledger.
+                    expect(page.locator('.budget-flow-table tfoot')).to_contain_text('572,924,074,000')
+                    # Reload keeps the scope; dataset/detail switches reset it.
+                    page.reload(wait_until='networkidle')
+                    expect(checkbox).to_be_checked()
+                    # Top branches: compact rollup for image exports. Others is
+                    # pinned last, keeps its own class cells, and the drawn set
+                    # still rebuilds both ledgers exactly.
+                    page.goto(base + '#experiments?tab=bars&dataset=dpwh&detail=region&top=5', wait_until='networkidle')
+                    expect(page.locator('.bar-comparison-row')).to_have_count(6)
+                    assert page.locator('.bar-comparison-row').last.get_attribute('data-id') == '__others__'
+                    expect(page.locator('.bar-comparison-row').last).to_contain_text('Others (13')
+                    # Drawn segments still rebuild the published ledgers.
+                    compact_metadata = json.loads(svg.locator('metadata').text_content())
+                    assert compact_metadata['rollup']['top'] == 5 and len(compact_metadata['rollup']['members']) == 13
+                    compact_sides = page.locator('.bar-comparison-side').evaluate_all('els => els.map(el => Number(el.dataset.total))')
+                    # Kept NEP bars rank largest-first; Others trails them by design.
+                    nep_sides = compact_sides[::2]
+                    assert nep_sides[:5] == sorted(nep_sides[:5], reverse=True)
+                    # Hidden CO + top-N compose; dataset/detail changes reset top.
+                    page.goto(base + '#experiments?tab=bars&dataset=dpwh&detail=deo&hide=central_office&top=5', wait_until='networkidle')
+                    expect(page.locator('.bar-comparison-row')).to_have_count(6)
+                    expect(page.get_by_role('checkbox', name='Hide Central Office')).to_be_checked()
+                    page.get_by_label('Dataset source', exact=True).select_option('fmr')
+                    assert 'top=' not in page.evaluate('location.hash')
+                    expect(page.get_by_label('Top branches', exact=True)).to_have_value('all')
+                    # All-choices and unknown values recover to the full chart.
+                    page.goto(base + '#experiments?tab=bars&top=all', wait_until='networkidle')
+                    expect(page.locator('.bar-comparison-row')).to_have_count(18)
+                    page.goto(base + '#experiments?tab=bars&top=99', wait_until='networkidle')
+                    expect(page.locator('.bar-comparison-row')).to_have_count(18)
+                    page.reload(wait_until='networkidle')
+                    expect(page.get_by_label('Top branches', exact=True)).to_have_value('all')
+                    page.screenshot(path=str(screenshots / f'bar-comparison-{width}.png'), full_page=True)
                     # Other established experiment routes still load.
+                    page.goto(base + '#experiments?tab=budget', wait_until='domcontentloaded')
+                    expect(page.locator('.experiments-tabs a')).to_have_count(7)
                     page.get_by_role('link', name='3-stage alluvial', exact=True).click()
                     expect(page.locator('#experiments-flow-heading')).to_be_visible()
                     page.get_by_role('link', name='Allocation flows', exact=True).click()

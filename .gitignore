@@ -72,3 +72,4 @@ analysis/builders/crosscheck_dpwh_details_xlsx.py
 analysis/data/dpwh_details_xlsx_crosscheck.json
 
 analysis/data/budget_flow_sources_2027.json
+analysis/data/allocation_hierarchy_sources_2027.json

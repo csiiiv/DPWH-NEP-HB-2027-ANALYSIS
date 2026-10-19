@@ -43,8 +43,9 @@ def check_graph(chart, columns, amount):
     }'''), 'labels must fit without overlap'
 
 
-def check_export(page, chart, stage, through, amount, folder, width, filtered=False, png=True):
-    name = f'dpwh-2027-{stage}-allocation-hierarchy-through-{through}{"-filtered" if filtered else ""}'
+def check_export(page, chart, stage, through, amount, folder, width, filtered=False, png=True, top=None, order=None):
+    name = (f'dpwh-2027-{stage}-allocation-hierarchy-through-{through}'
+            f'{"-reordered" if order else ""}{"-filtered" if filtered else ""}{f"-top{top}" if top else ""}')
     state = chart.locator('.nep-hierarchy-scroll').evaluate('el => [el.scrollLeft,el.scrollTop]')
     route = page.url
     with page.expect_download(timeout=60000) as result:
@@ -56,7 +57,17 @@ def check_export(page, chart, stage, through, amount, folder, width, filtered=Fa
     text = ''.join(image.itertext())
     assert f'DPWH {stage.upper()} allocation hierarchy' in text
     assert f'₱{amount:,}' in text
-    assert 'Category:' in text and 'PAP:' in text and 'Region:' in text
+    # The scope line mirrors the visible axes: later levels drop out when the
+    # figure ends at an earlier stage, and the compact top-N note appears
+    # only when the view is folded. Reordered groupings show their own axes.
+    if order:
+        assert 'Region:' in text
+    else:
+        assert 'Category:' in text and 'PAP:' in text
+        if through in ('region', 'deo'):
+            assert 'Region:' in text
+    if order:
+        assert 'Grouped Region' in text, 'reordered exports must record the grouping'
     assert 'Download section PNG' not in text and 'Preparing image' not in text
     exported = [n for n in image.iter() if n.get('class') == 'nep-hierarchy-node']
     assert len(exported) == chart.locator('.nep-hierarchy-node').count()
@@ -143,6 +154,59 @@ def main():
                         # size cap once for a complete, very tall hierarchy.
                         check_export(page, chart, stage, 'deo', data['amount_php'], screenshots, width,
                                      png=width == 1440 and stage == 'nep')
+                        # Compact top-N view: fold into Others at every depth,
+                        # conserving the ledger exactly like the full view.
+                        top_select = page.get_by_role('combobox', name='Top branches', exact=True)
+                        top_select.select_option('5')
+                        expect(chart).to_have_attribute('data-top', '5')
+                        assert 'top=5' in page.url
+                        for end, columns in (('pap', 3), ('deo', 5)):
+                            page.get_by_role('combobox', name='Display through', exact=True).select_option(end)
+                            expect(chart).to_have_attribute('data-through', end)
+                            check_graph(chart, columns, data['amount_php'])
+                            counts = chart.locator('.nep-hierarchy-node').evaluate_all(
+                                "nodes => nodes.filter(n => n.textContent.includes('Others (')).length")
+                            assert counts > 0, 'compact view must fold tail branches into Others'
+                        page.screenshot(path=str(screenshots / f'{stage}-top5-deo-{width}.png'), full_page=True)
+                        check_export(page, chart, stage, 'deo', data['amount_php'], screenshots, width, top=5,
+                                     png=width == 1440 and stage == 'nep')
+                        # Focused branches inside the tail stay visible: the
+                        # fold yields to focus filters at their own level.
+                        category = 'Local Program'
+                        page.get_by_role('combobox', name='Focus category', exact=True).select_option(category)
+                        check_graph(chart, 5, next(g for g in data['categories'] if g['id'] == category)['amount_php'])
+                        assert chart.locator('.nep-hierarchy-node').evaluate_all(
+                            "nodes => nodes.some(n => n.dataset.column === '1' && n.textContent.includes('Local Program'))")
+                        page.get_by_role('combobox', name='Focus category', exact=True).select_option('')
+                        check_graph(chart, 5, data['amount_php'])
+                        top_select.select_option('')
+                        expect(chart).to_have_attribute('data-top', 'all')
+                        assert 'top=' not in page.url
+                        # Drill-down orders: regroup the ledger along a chosen
+                        # level order; totals and conservation still hold.
+                        order_select = page.get_by_role('combobox', name='Drill-down order', exact=True)
+                        order_select.select_option('region')
+                        expect(chart).to_have_attribute('data-order', 'region')
+                        assert 'order=region' in page.url
+                        expect(page.get_by_role('combobox', name='Display through', exact=True)).to_have_value('region')
+                        check_graph(chart, 2, data['amount_php'])
+                        assert 'pap=' not in page.url and 'top=' not in page.url
+                        page.screenshot(path=str(screenshots / f'{stage}-order-region-{width}.png'), full_page=True)
+                        # Composition: region → DEO order with compact fold.
+                        order_select.select_option('region,deo')
+                        expect(chart).to_have_attribute('data-order', 'region,deo')
+                        top_select.select_option('5')
+                        expect(page.get_by_role('combobox', name='Display through', exact=True)).to_have_value('deo')
+                        check_graph(chart, 3, data['amount_php'])
+                        check_export(page, chart, stage, 'deo', data['amount_php'], screenshots, width,
+                                     filtered=False, png=False, top=5, order='region,deo')
+                        # Returning to the native order clears every stale param.
+                        order_select.select_option('')
+                        expect(chart).to_have_attribute('data-order', 'native')
+                        assert 'order=' not in page.url and 'top=' not in page.url
+                        top_select.select_option('')
+                        page.get_by_role('combobox', name='Display through', exact=True).select_option('deo')
+                        expect(chart).to_have_attribute('data-through', 'deo')
                         # Later columns remain reachable within the diagram's scroll region.
                         chart.locator('.nep-hierarchy-scroll').evaluate('el => el.scrollLeft = el.scrollWidth')
                         expect(chart.locator('.nep-hierarchy-axes span').last).to_be_visible()

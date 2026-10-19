@@ -13,16 +13,11 @@ export function wrapFlowLabel(text, limit = 38) {
 // space so tiny values remain to scale. All five columns use the same scale.
 //
 // alignment:
-//   'top'      every column starts at its slot top; A/E tile contiguously.
-//   'center'   rows center inside their slots; A/E are single centered bars.
-//   'midpoint' rows center like 'center', and each group's A/E ledger segment
-//              floats centered on that group's matrix block, so every group
-//              reads as one horizontal band and outer ribbons stay level.
-//              Segment heights stay exactly value × scale and, because every
-//              row's body is at least as tall as its share of either ledger,
-//              adjacent segments can never overlap.
+//   'top'    every column starts at its slot top; A/E tile contiguously.
+//   'center' rows center inside their slots; A/E are single centered bars.
+// The experiments tab's matched-segment variant lives in papFlowLayout.js.
 export function layoutRevisionFlow(model, {valueHeight = 520, alignment = 'top'} = {}) {
-  if (!['top', 'center', 'midpoint'].includes(alignment)) throw new Error('Revision flow: alignment must be top, center or midpoint');
+  if (!['top', 'center'].includes(alignment)) throw new Error('Revision flow: alignment must be top or center');
   const offset = (space, size) => alignment === 'top' ? 0 : (space - size) / 2;
   const width = 1480, top = 138, groupHeading = 40;
   const graphs = model.groups.map(g => g.graph);
@@ -110,33 +105,11 @@ export function layoutRevisionFlow(model, {valueHeight = 520, alignment = 'top'}
       // enters at a stub or ends in a deletion/reduction sink.
       d: ribbonPath(source.x + source.width, y0, y0 + link.value * scale, target.x, y1, y1 + link.value * scale)});
     for (const link of links) addRibbon(link, map.get(link.source), map.get(link.target), link.sourceY, link.targetY);
-    // Outer A→B and D→E ribbons. Top/center tile the ledger contiguously and
-    // walk a cursor. Midpoint places each exact ledger segment at the same y
-    // as its B/D group node so every outer ribbon stays level.
-    if (alignment === 'midpoint') {
-      if (group.before) {
-        const segment = {y: left.y, height: group.before * scale};
-        addRibbon(model.graph.links.find(l => l.source === ledgers.before.key && l.groupId === group.id),
-          {x: ledgers.before.x, width: 18, name: model.labels.before}, {...left, name: `${group.label} · ${model.labels.intermediaryBefore}`}, segment.y, left.y);
-        positioned.push({key: `${group.id}::ledger:before`, role: 'outerLedger', side: 'before', groupId: group.id,
-          x: ledgers.before.x, y: segment.y, width: 18, height: segment.height, value: group.before,
-          name: `${model.labels.before} · ${group.label}`});
-      }
-      if (group.after) {
-        const segment = {y: right.y, height: group.after * scale};
-        addRibbon(model.graph.links.find(l => l.target === ledgers.after.key && l.groupId === group.id),
-          {...right, width: 12, name: `${group.label} · ${model.labels.intermediaryAfter}`}, {x: ledgers.after.x, name: model.labels.after}, right.y, segment.y);
-        positioned.push({key: `${group.id}::ledger:after`, role: 'outerLedger', side: 'after', groupId: group.id,
-          x: ledgers.after.x, y: segment.y, width: 18, height: segment.height, value: group.after,
-          name: `${model.labels.after} · ${group.label}`});
-      }
-    } else {
-      if (group.before) addRibbon(model.graph.links.find(l => l.source === ledgers.before.key && l.groupId === group.id),
-        {x: ledgers.before.x, width: 18, name: model.labels.before}, {...left, name: `${group.label} · ${model.labels.intermediaryBefore}`}, beforeCursor, left.y);
-      if (group.after) addRibbon(model.graph.links.find(l => l.target === ledgers.after.key && l.groupId === group.id),
-        {...right, width: 12, name: `${group.label} · ${model.labels.intermediaryAfter}`}, {x: ledgers.after.x, name: model.labels.after}, right.y, afterCursor);
-      beforeCursor += group.before * scale; afterCursor += group.after * scale;
-    }
+    if (group.before) addRibbon(model.graph.links.find(l => l.source === ledgers.before.key && l.groupId === group.id),
+      {x: ledgers.before.x, width: 18, name: model.labels.before}, {...left, name: `${group.label} · ${model.labels.intermediaryBefore}`}, beforeCursor, left.y);
+    if (group.after) addRibbon(model.graph.links.find(l => l.target === ledgers.after.key && l.groupId === group.id),
+      {...right, width: 12, name: `${group.label} · ${model.labels.intermediaryAfter}`}, {x: ledgers.after.x, name: model.labels.after}, right.y, afterCursor);
+    beforeCursor += group.before * scale; afterCursor += group.after * scale;
     positioned.push(...map.values());
     const row = {...group, y: rowY, height: plan.height, left, right, reductionSink, cells};
     rowY += plan.height;

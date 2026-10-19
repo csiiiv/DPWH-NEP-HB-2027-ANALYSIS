@@ -138,9 +138,7 @@ test('rejects ambiguous membership, unsafe values, duplicate records and aggrega
 
 test('top alignment anchors stage starts while centered alignment preserves all values and scale', () => {
   const model = inventoryFlow();
-  const top = layoutRevisionFlow(model), centered = layoutRevisionFlow(model, {alignment: 'center'}),
-    midpoint = layoutRevisionFlow(model, {alignment: 'midpoint'});
-  assert.equal(top.alignment, 'top');
+  const top = layoutRevisionFlow(model), centered = layoutRevisionFlow(model, {alignment: 'center'});
   assert.equal(top.alignment, 'top');
   assert.equal(top.ledgers.before.y, top.flowTop);
   assert.equal(top.ledgers.after.y, top.flowTop);
@@ -153,19 +151,11 @@ test('top alignment anchors stage starts while centered alignment preserves all 
   assert.equal(top.scale, centered.scale);
   assert.equal(top.height, centered.height);
   for (const list of ['ribbons', 'nodes', 'stubs', 'sinks']) {
-    assert.deepEqual(top[list].filter(n => n.role !== 'outerLedger').map(n => [n.key, n.value, n.height]),
-      centered[list].filter(n => n.role !== 'outerLedger').map(n => [n.key, n.value, n.height]));
+    assert.deepEqual(top[list].map(n => [n.key, n.value, n.height]),
+      centered[list].map(n => [n.key, n.value, n.height]));
   }
-  assert.equal(midpoint.alignment, 'midpoint');
-  const segments = midpoint.nodes.filter(n => n.role === 'outerLedger');
-  assert.equal(segments.length, model.groups.reduce((sum, group) => sum + Number(group.before > 0) + Number(group.after > 0), 0));
-  for (const segment of segments) {
-    assert.equal(segment.height, segment.value * midpoint.scale);
-    const ribbon = midpoint.ribbons.find(r => r.groupId === segment.groupId && (segment.side === 'before'
-      ? r.source === midpoint.ledgers.before.key : r.target === midpoint.ledgers.after.key));
-    assert.ok(ribbon, segment.key);
-    assert.equal(segment.side === 'before' ? ribbon.sourceY : ribbon.targetY, segment.y);
-  }
+  assert.ok(!top.nodes.some(n => n.role === 'outerLedger'), 'the shared engine draws contiguous total ledgers');
+  assert.throws(() => layoutRevisionFlow(model, {alignment: 'midpoint'}), /alignment/);
   assert.throws(() => layoutRevisionFlow(model, {alignment: 'bottom'}), /alignment/);
 });
 

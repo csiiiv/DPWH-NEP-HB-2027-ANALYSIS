@@ -16,7 +16,8 @@ export function layoutAllocationHierarchy(graph) {
   const width = 62 + (columns - 1) * 519;
   const svgWidth = width + 400;
   const maxNodes = Math.max(...graph.counts);
-  const padding = graph.lastColumn > 2 ? 54 : 38;
+  const padding = graph.longLabels ? Math.max(54, ...graph.nodes.map(n =>
+    wrapHierarchyLabel(n.name, n.column === 1 ? 38 : 51).length * 15 + 25)) : graph.lastColumn > 2 ? 54 : 38;
   // More branches add whitespace, rather than stretching the source bar's
   // pesos across thousands of office labels.
   const height = Math.max(560, Math.min(950, maxNodes * 22) + padding * (maxNodes - 1) + 44);
