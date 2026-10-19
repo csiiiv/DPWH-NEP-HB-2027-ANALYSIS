@@ -1,11 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {comparisonPayloads} from '../buildComparisonData.mjs';
+import {buildDpwhFlow} from '../buildDpwhFlow.mjs';
 import {buildFlowFromGrouping, DEFAULT_ACCESSORS} from './flowFromGrouping.js';
 import {REVISION_ORDER, REVISION_TYPES} from './revisionFlow.js';
 
 const read = name => JSON.parse(readFileSync(new URL(`../../data/${name}`, import.meta.url)));
-const payload = read('dpwh_flow_2027.json');
+const comparison = comparisonPayloads(read('stage_trace_2027.json'), read('house_reading_changes_2027.json'));
+const payload = buildDpwhFlow(comparison.detail, comparison.overview.headlines);
 
 // A second domain with none of DPWH's field names: library circulation at two
 // snapshots, grouped by branch. before 6800 -> after 7010 over 19 records.

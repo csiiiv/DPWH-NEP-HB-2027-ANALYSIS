@@ -184,22 +184,22 @@ test('Adapters reject reused source rows, missing records and arithmetic drift r
   assert.throws(() => validateOverview({...data,schema_version:99}),/Unsupported/);
 });
 test('DPWH three-stage flow strata rebuild every ledger and tie to the Overview figures', () => {
-  const detail = read('comparison_projects_2027.json');
-  const headlines = read('comparison_overview_2027.json').headlines;
+  const detail = dpwh.detail;
+  const headlines = dpwh.overview.headlines;
   const flow = buildDpwhFlow(detail, headlines);
   assert.equal(flow.schema_version,1);
   assert.equal(flow.totals.rows,17613);
   // Strata partition the rows exactly.
   assert.equal(flow.strata.reduce((t,s) => t + s.rows,0),flow.totals.rows);
-  const dpwh = data.workspaces[0];
+  const workspace = data.workspaces[0];
   // Stage ledgers tie to the published headline figures. Record counts
   // differ by grain: flow counts comparison rows; the Overview expands
   // grouped House members to source records (16,272 rows vs 16,275 records).
-  assert.equal(flow.stages.nep.amount_php,dpwh.sources.nep.amount_php);
-  assert.equal(flow.stages.third.amount_php,dpwh.sources.house.amount_php);
-  assert.equal(flow.stages.second.amount_php,dpwh.readings.second.amount_php);
-  assert.equal(flow.stages.nep.rows,dpwh.sources.nep.count);
-  assert.ok(flow.stages.third.rows <= dpwh.sources.house.count);
+  assert.equal(flow.stages.nep.amount_php,workspace.sources.nep.amount_php);
+  assert.equal(flow.stages.third.amount_php,workspace.sources.house.amount_php);
+  assert.equal(flow.stages.second.amount_php,workspace.readings.second.amount_php);
+  assert.equal(flow.stages.nep.rows,workspace.sources.nep.count);
+  assert.ok(flow.stages.third.rows <= workspace.sources.house.count);
   // Known membership shape: all-three, house-only(both readings), NEP-only, HGAB3-only.
   const byKey = Object.fromEntries(flow.strata.map(s => [s.key,s]));
   assert.equal(byKey['true/true/true'].rows,10079);
