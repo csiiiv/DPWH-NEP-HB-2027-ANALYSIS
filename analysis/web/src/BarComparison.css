@@ -9,6 +9,10 @@
 .bar-comparison-label { font-size: 13px; fill: #203147; font-weight: 600; }
 .bar-comparison-segment { font-size: 11px; pointer-events: none; paint-order: stroke; }
 .bar-comparison-total { font-size: 12px; fill: #52647a; font-variant-numeric: tabular-nums; }
+/* Export-only header text: these classes exist solely inside the composed
+   export SVG, where the page's CSS cascade is absent. */
+.bar-comparison-export-title { font-size: 17px; font-weight: 700; fill: #203147; }
+.bar-comparison-export-note { font-size: 12px; fill: #52647a; }
 .bar-comparison-bar rect { rx: 1; }
 .bar-comparison-bar:hover rect, .bar-comparison-bar:focus rect { stroke: #203147; stroke-width: 1.5; }
 .bar-comparison-bar:focus-visible { outline: none; }

@@ -89,21 +89,62 @@ function BarComparisonFigure({payload, groupingKey, datasets, exact, route, setP
   const download = async type => {
     setExportError(''); setExporting(true);
     try {
-      const copy = svgRef.current.cloneNode(true);
-      copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      // viewBox.baseVal exposes {x, y, width, height} — safer than splitting
-      // the attribute string, whose first two components are min-x/min-y.
-      const base = svgRef.current.viewBox.baseVal;
-      const [width, height] = [base.width, base.height];
-      if (!(width > 0 && height > 0)) throw new Error('PNG export could not measure the figure. Try SVG.');
-      copy.setAttribute('width', width); copy.setAttribute('height', height);
+      const chart = svgRef.current;
+      const base = chart.viewBox.baseVal;
+      const chartWidth = base.width, chartHeight = base.height;
+      if (!(chartWidth > 0 && chartHeight > 0)) throw new Error('Image export could not measure the figure. Try SVG.');
+      const SVG_NS = 'http://www.w3.org/2000/svg';
+      // Self-contained export: a header block (title, scale note, revision
+      // legend) above the chart, so the card reads standalone in a report.
+      const headerHeight = 74;
+      const width = chartWidth, height = headerHeight + chartHeight;
+      const svg = document.createElementNS(SVG_NS, 'svg');
+      svg.setAttribute('xmlns', SVG_NS);
+      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      svg.setAttribute('width', width); svg.setAttribute('height', height);
+      const title = document.createElementNS(SVG_NS, 'text');
+      title.setAttribute('x', 12); title.setAttribute('y', 24);
+      title.setAttribute('class', 'bar-comparison-export-title');
+      title.textContent = `${dataset.label} · ${grouping.label} · NEP beside HGAB, segmented by revision`;
+      svg.appendChild(title);
+      const note = document.createElementNS(SVG_NS, 'text');
+      note.setAttribute('x', 12); note.setAttribute('y', 42);
+      note.setAttribute('class', 'bar-comparison-export-note');
+      note.textContent = 'Segment width represents pesos on one shared scale. Hover a segment for its paired NEP→HGAB amounts.';
+      svg.appendChild(note);
+      let x = 12;
+      for (const item of [...legendItems, {note: legendNote}]) {
+        const entry = document.createElementNS(SVG_NS, 'text');
+        entry.setAttribute('y', 64);
+        entry.setAttribute('class', 'bar-comparison-export-note');
+        if (item.color) {
+          const swatch = document.createElementNS(SVG_NS, 'rect');
+          swatch.setAttribute('x', x); swatch.setAttribute('y', 55);
+          swatch.setAttribute('width', 12); swatch.setAttribute('height', 12);
+          swatch.setAttribute('rx', 2); swatch.setAttribute('fill', item.color);
+          svg.appendChild(swatch);
+          x += 17;
+        }
+        entry.setAttribute('x', x);
+        entry.textContent = item.color ? item.label : item.note;
+        svg.appendChild(entry);
+        x += entry.getComputedTextLength() + 18;
+      }
+      // Chart clone keeps its inline computed styles; the header carries its
+      // own classes resolved against this document's stylesheet.
+      const copy = chart.cloneNode(true);
+      const viewBox = chart.getAttribute('viewBox');
+      copy.setAttribute('xmlns', SVG_NS);
+      copy.setAttribute('viewBox', viewBox);
+      copy.setAttribute('y', headerHeight);
       const properties = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'opacity', 'font-family', 'font-size', 'font-weight', 'text-anchor', 'paint-order'];
-      const originals = [svgRef.current, ...svgRef.current.querySelectorAll('*')], clones = [copy, ...copy.querySelectorAll('*')];
+      const originals = [chart, ...chart.querySelectorAll('*')], clones = [copy, ...copy.querySelectorAll('*')];
       originals.forEach((node, index) => {
         const style = getComputedStyle(node);
         for (const property of properties) clones[index].style.setProperty(property, style.getPropertyValue(property));
       });
-      const svgBlob = new Blob([new XMLSerializer().serializeToString(copy)], {type: 'image/svg+xml;charset=utf-8'});
+      svg.appendChild(copy);
+      const svgBlob = new Blob([new XMLSerializer().serializeToString(copy.parentNode)], {type: 'image/svg+xml;charset=utf-8'});
       if (type === 'svg') return saveBlob(svgBlob, `${filename}.svg`);
       const url = URL.createObjectURL(svgBlob);
       try {
@@ -126,6 +167,8 @@ function BarComparisonFigure({payload, groupingKey, datasets, exact, route, setP
     } catch (e) {setExportError(e.message);} finally {setExporting(false);}
   };
   const barAria = bar => `${bar.label}: DBM NEP ${money(bar.nep)}, HGAB ${money(bar.hgab)}, change ${signed(bar.hgab - bar.nep)}`;
+  const legendItems = SEGMENTS.map(seg => ({color: seg.color, label: `${seg.label}${sideNote(seg.key)}`}));
+  const legendNote = `${SORTS.find(s => s.key === order)?.label} · ${result.rollup ? `Top ${result.rollup.top} + Others` : `All ${count(bars.length)} ${grouping.plural}`}`;
   return <div className="bar-comparison">
     <div className="budget-flow-metrics" aria-label="Bar comparison totals">
       {[
@@ -163,8 +206,8 @@ function BarComparisonFigure({payload, groupingKey, datasets, exact, route, setP
     <p className="fmr-muted" id="bar-comparison-help">Each bar is segmented by revision class in one shared order — Unchanged, Increased, Decreased, then Deleted (NEP) or Inserted (HGAB). Amounts are side-specific: a pair that rose ₱10M→₱15M shows ₱10M inside the NEP bar and ₱15M inside the HGAB bar, so the growth reads as the width difference between the paired segments. Both bars start with the same Unchanged width; all segments share one scale. {grouping.basis}</p>
     {hiding && <p className="bar-comparison-scope" data-image-export-omit>Shown: {count(bars.length)} of {count(bars.length + hidden.length)} {grouping.plural}. Hidden: <strong>{hidden.map(b => b.label).join(', ')}</strong> — NEP {money(hiddenTotals.nep)} → HGAB {money(hiddenTotals.hgab)} ({signed(hiddenTotals.delta)}). Hiding re-fits the shared peso scale to the visible {grouping.plural}; the exact table below keeps every row.</p>}
     <div className="bar-comparison-legend" role="group" aria-label="Revision classes">
-      {SEGMENTS.map(seg => <span key={seg.key}><i style={{background: seg.color}}/> {seg.label}{sideNote(seg.key)}</span>)}
-      <span className="bar-comparison-legend-note">{SORTS.find(s => s.key === order)?.label} · {result.rollup ? `Top ${result.rollup.top} + Others` : `All ${count(bars.length)} ${grouping.plural}`}</span>
+      {legendItems.map(item => <span key={item.label}><i style={{background: item.color}}/> {item.label}</span>)}
+      <span className="bar-comparison-legend-note">{legendNote}</span>
     </div>
     <figure className="bar-comparison-figure" aria-labelledby="bar-comparison-caption">
       <figcaption id="bar-comparison-caption">

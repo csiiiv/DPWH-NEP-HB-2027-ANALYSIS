@@ -440,10 +440,16 @@ def main():
                     with page.expect_download() as result:
                         page.get_by_role('button', name='Download SVG', exact=True).click()
                     bar_svg = ET.fromstring(Path(result.value.path()).read_text())
-                    bar_metadata = json.loads(bar_svg.find('{http://www.w3.org/2000/svg}metadata').text)
+                    bar_metadata = json.loads(bar_svg.find('.//{http://www.w3.org/2000/svg}metadata').text)
                     assert bar_metadata['dataset']['key'] == 'dpwh' and bar_metadata['grouping']['key'] == 'region'
                     assert bar_metadata['totals']['nep'] > 0 and bar_metadata['rollup'] is None
-                    assert '₱' in ''.join(bar_svg.itertext())
+                    # The export is a self-contained card: header (title, scale
+                    # note, full revision legend, sort/scope note) + the chart.
+                    bar_text = ''.join(bar_svg.itertext())
+                    for fragment in ['NEP beside HGAB, segmented by revision', 'Segment width represents pesos on one shared scale',
+                        'Unchanged', 'Increased', 'Decreased', 'Deleted · NEP side only', 'Inserted · HGAB side only', 'Largest NEP first · All 18 regions']:
+                        assert fragment in bar_text, fragment
+                    assert '₱' in bar_text
                     with page.expect_download() as result:
                         page.get_by_role('button', name='Download PNG', exact=True).click()
                     bar_png = Path(result.value.path()).read_bytes()
