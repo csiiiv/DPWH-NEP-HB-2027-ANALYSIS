@@ -433,6 +433,23 @@ def main():
                     expect(page.locator('.bar-comparison-row')).to_have_count(18)
                     page.reload(wait_until='networkidle')
                     expect(page.get_by_label('Top branches', exact=True)).to_have_value('all')
+                    # Bar-figure exports: the SVG and PNG must download with real
+                    # dimensions. This guards the viewBox parsing that once broke
+                    # PNG export (canvas sized 0×0 from min-x/min-y).
+                    page.goto(base + '#experiments?tab=bars&dataset=dpwh&detail=region', wait_until='networkidle')
+                    with page.expect_download() as result:
+                        page.get_by_role('button', name='Download SVG', exact=True).click()
+                    bar_svg = ET.fromstring(Path(result.value.path()).read_text())
+                    bar_metadata = json.loads(bar_svg.find('{http://www.w3.org/2000/svg}metadata').text)
+                    assert bar_metadata['dataset']['key'] == 'dpwh' and bar_metadata['grouping']['key'] == 'region'
+                    assert bar_metadata['totals']['nep'] > 0 and bar_metadata['rollup'] is None
+                    assert '₱' in ''.join(bar_svg.itertext())
+                    with page.expect_download() as result:
+                        page.get_by_role('button', name='Download PNG', exact=True).click()
+                    bar_png = Path(result.value.path()).read_bytes()
+                    assert bar_png[:8] == b'\x89PNG\r\n\x1a\n'
+                    bar_png_width, bar_png_height = struct.unpack('>II', bar_png[16:24])
+                    assert bar_png_width == 2360 and bar_png_height > 1500, 'PNG must carry the full viewBox size'
                     page.screenshot(path=str(screenshots / f'bar-comparison-{width}.png'), full_page=True)
                     # Other established experiment routes still load.
                     page.goto(base + '#experiments?tab=budget', wait_until='domcontentloaded')

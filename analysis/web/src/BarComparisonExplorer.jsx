@@ -91,7 +91,11 @@ function BarComparisonFigure({payload, groupingKey, datasets, exact, route, setP
     try {
       const copy = svgRef.current.cloneNode(true);
       copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      const [width, height] = svgRef.current.getAttribute('viewBox').split(' ').map(Number);
+      // viewBox.baseVal exposes {x, y, width, height} — safer than splitting
+      // the attribute string, whose first two components are min-x/min-y.
+      const base = svgRef.current.viewBox.baseVal;
+      const [width, height] = [base.width, base.height];
+      if (!(width > 0 && height > 0)) throw new Error('PNG export could not measure the figure. Try SVG.');
       copy.setAttribute('width', width); copy.setAttribute('height', height);
       const properties = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'opacity', 'font-family', 'font-size', 'font-weight', 'text-anchor', 'paint-order'];
       const originals = [svgRef.current, ...svgRef.current.querySelectorAll('*')], clones = [copy, ...copy.querySelectorAll('*')];
