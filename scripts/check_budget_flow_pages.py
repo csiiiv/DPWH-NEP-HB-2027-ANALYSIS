@@ -383,7 +383,13 @@ def main():
                     page.goto(base + '#experiments?tab=bars&dataset=dpwh&detail=deo', wait_until='networkidle')
                     expect(page.locator('.bar-comparison-row').first).to_have_attribute('data-id', 'Central Office')
                     checkbox = page.get_by_role('checkbox', name='Hide Central Office')
-                    checkbox.check()
+                    # click + explicit wait rather than .check(): the checkbox is
+                    # React-controlled from the URL hash, so on a slow runner
+                    # Playwright's post-click state verification can race the
+                    # hashchange re-render (same pattern as check_overview_pages).
+                    checkbox.click()
+                    expect(page).to_have_url(re.compile(r'hide=central_office'))
+                    expect(checkbox).to_be_checked()
                     assert 'hide=central_office' in page.evaluate('location.hash')
                     expect(page.locator('.bar-comparison-row').first).not_to_have_attribute('data-id', 'Central Office')
                     assert page.locator('.bar-comparison-row').count() == 220
