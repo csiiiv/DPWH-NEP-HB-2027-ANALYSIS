@@ -39,7 +39,7 @@ export default function Comparison({ route }) {
     [menu, setMenu] = useState(null),
     [analytics,setAnalytics]=useState(null), [projects,setProjects]=useState(null), [moreFilters,setMoreFilters]=useState(false);
   const [finding,setFinding] = useComparisonFinding(route);
-  const {tab,query,program,region,office,trace,matchStatus,flag,readingStatus,regionMatching,column,mode,direction,page} = finding;
+  const {tab,query,program,excludeFap,region,office,trace,matchStatus,flag,readingStatus,regionMatching,column,mode,direction,page} = finding;
   const setQuery=v=>setFinding('query',v), setProgram=v=>setFinding('program',v),
     setRegion=v=>setFinding('region',v), setOffice=v=>setFinding('office',v),
     setMatchStatus=v=>setFinding('matchStatus',v), setFlag=v=>setFinding('flag',v),
@@ -74,12 +74,13 @@ export default function Comparison({ route }) {
   const counterpartCounts=useMemo(()=>suggestedCounterparts(projectRows),[projectRows]);
   useEffect(()=>warmSearchIndex(projectRows),[projectRows]);
   const rows = data ? tab === 'paps' ? unified.paps : tab === 'gaps' ? data.transparency_gaps : projectRows : [];
-  const offices=useMemo(()=>officeOptions(rows.filter(r=>matchesProgram(r,program) && (!region || officeAssignments(r).some(a=>a.region===region))),region),[rows,program,region]);
+  const offices=useMemo(()=>officeOptions(rows.filter(r=>matchesProgram(r,program) && (!excludeFap || !matchesProgram(r,'fap')) && (!region || officeAssignments(r).some(a=>a.region===region))),region),[rows,program,excludeFap,region]);
   const filtered = useMemo(
     () =>
       selectRows(rows, {
         query,
         program,
+        excludeFap: tab === 'projects' && excludeFap,
         region:tab==='paps' ? '' : region,
         office:tab==='paps' ? '' : office,
         trace:tab==='projects' ? trace : '',
@@ -92,7 +93,7 @@ export default function Comparison({ route }) {
         tab,
         counterparts:tab==='projects' ? counterpartCounts : null,
       }),
-    [rows, query, program, region, office, trace, matchStatus, flag, readingStatus, column, mode, direction, tab, counterpartCounts],
+    [rows, query, program, excludeFap, region, office, trace, matchStatus, flag, readingStatus, column, mode, direction, tab, counterpartCounts],
   );
   useEffect(()=>{
     if (data && readings && (tab!=='projects' || projects) && page > Math.max(0,Math.ceil(filtered.length/50)-1)) setPage(Math.max(0,Math.ceil(filtered.length/50)-1));
@@ -216,7 +217,7 @@ export default function Comparison({ route }) {
   if (!data) return <p role="status">Loading retained comparison data…</p>;
   const maxPage=Math.max(0,Math.ceil(filtered.length/50)-1);
   const visiblePage=Math.min(page,maxPage);
-  const hasFilters=Boolean(query || program || region || office || matchStatus || flag || trace || readingStatus || regionMatching==='ignore');
+  const hasFilters=Boolean(query || program || excludeFap || region || office || matchStatus || flag || trace || readingStatus || regionMatching==='ignore');
   const stages = data.summary.stages;
   const tableNames = names;
   return (
@@ -339,7 +340,7 @@ export default function Comparison({ route }) {
               rows={rows}
               field="program"
               value={program}
-              set={(value) => { setProgram(value); setOffice(""); }}
+              set={(value) => { setProgram(value); if(value==='fap')setFinding('excludeFap',false); setOffice(""); }}
             />
             {tab !== "paps" && (
               <Filter
@@ -376,6 +377,7 @@ export default function Comparison({ route }) {
                 <option value="ignore">Allow different regions · flag candidates</option>
               </select>
             </label>}
+            {tab === "projects" && <label><input type="checkbox" checked={excludeFap} onChange={e=>setFinding('excludeFap',e.target.checked)}/> Exclude foreign-assisted projects</label>}
             {tab === "projects" && <label>Match status
               <select aria-label="Match status" value={matchStatus} onChange={e=>setMatchStatus(e.target.value)}>
                 <option value="">All identity statuses</option>
@@ -401,8 +403,8 @@ export default function Comparison({ route }) {
             Source regions, offices and programs remain recorded separately on the merged row. Duplicate titles stay separate; amounts do not determine identity. PAP totals are unchanged.
           </p>}
           {hasFilters && <div className="active-filters" aria-label="Active filters">
-            {[['query',query],['program',program],...(tab==='paps'?[]:[['region',region],['office',office]]),...(tab==='gaps'?[]:[['readingStatus',readingStatus]]),...(tab==='projects'?[['matchStatus',matchStatus],['flag',flag],['trace',trace],...(regionMatching==='ignore'?[['regionMatching','Allow different regions']]:[])]:[])].filter(([,v])=>v).map(([key,v])=><button key={key} onClick={()=>{setFinding(key,key==='regionMatching'?'strict':'');if(key==='query')setSearchDraft('');}} aria-label={`Remove ${key} filter`}>{key==='matchStatus' ? matchStatusLabel(v) : key==='flag' ? flagLabel(v) : key==='program' ? programLabel(v) : key==='region' ? displayRegion(v) : key==='office' ? displayOffice(v) : label(v)} ×</button>)}
-            <button onClick={()=>{for(const key of ['query','program','region','office','matchStatus','flag','trace','readingStatus'])setFinding(key,'');setFinding('regionMatching','strict');setSearchDraft('');}}>Clear filters</button>
+            {[['query',query],['program',program],...(tab==='paps'?[]:[['region',region],['office',office]]),...(tab==='gaps'?[]:[['readingStatus',readingStatus]]),...(tab==='projects'?[['matchStatus',matchStatus],['flag',flag],['trace',trace],['excludeFap',excludeFap ? 'Exclude FAPs' : ''],...(regionMatching==='ignore'?[['regionMatching','Allow different regions']]:[])]:[])].filter(([,v])=>v).map(([key,v])=><button key={key} onClick={()=>{setFinding(key,key==='regionMatching'?'strict':key==='excludeFap'?false:'');if(key==='query')setSearchDraft('');}} aria-label={`Remove ${key} filter`}>{key==='matchStatus' ? matchStatusLabel(v) : key==='flag' ? flagLabel(v) : key==='program' ? programLabel(v) : key==='region' ? displayRegion(v) : key==='office' ? displayOffice(v) : label(v)} ×</button>)}
+            <button onClick={()=>{for(const key of ['query','program','region','office','matchStatus','flag','trace','readingStatus'])setFinding(key,'');setFinding('regionMatching','strict');setFinding('excludeFap',false);setSearchDraft('');}}>Clear filters</button>
           </div>}
           {flag==='house_only' && <p className="muted">Insertion candidates: HGAB2 or HGAB3 records with no attached NEP or Transparency source. Unmatched records can reflect title or assignment differences; this does not confirm absence from the NEP PDF.</p>}
           {flag.startsWith('diff:') && <p className="muted">Fuzzy queue filtered by title-difference tag ({diffTagLabel(flag.slice('diff:'.length))}): rows whose NEP suggestions carry this residual difference. Tags classify the text difference only — they do not assert identity. See the expanded review table for per-suggestion tags.</p>}

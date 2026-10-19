@@ -38,6 +38,40 @@ counting units, comparison bases and supporting routes.
 Validate after packaging with `python scripts/check_overview_pages.py`.
 See [main Overview plan](../docs/main_overview_page_plan.md).
 
+The unlisted Experiments workspace includes **Budget flow** at
+`#experiments?tab=budget`: a five-stage NEP total → category groups → per-group revision cells →
+category groups → HGAB total view with side-specific bands, selection, supporting Compare
+records and SVG/PNG downloads. It reuses `dpwh_flow_2027.json`; no additional
+project payload is loaded. Insertions/deletions remain explicitly labeled
+candidates. Run `python scripts/check_budget_flow_pages.py` after packaging.
+See [category implementation notes](../../experiments/docs/Budget%20Flow%20Categories%20-%20Implementation%20Notes.md).
+
+**NEP → Category → PAP** at `#experiments?tab=nep` shows a three-column,
+amount-weighted DPWH NEP Sankey. It reuses the `nep_hierarchy` rollup in
+`dpwh_flow_2027.json`, retains every positive PAP allocation within its parent
+category, separates FAPs, and supports category focus and exact-peso labels.
+The NEP total reflects the retained comparison ledger's coverage.
+
+**HGAB3 → Category → PAP** at `#experiments?tab=hgab3` provides the matching
+House 3rd-reading hierarchy, using `hgab3_hierarchy` from the same payload.
+It uses third-reading pesos and grouping labels, includes House-only allocations,
+and shares the NEP chart's category filter and exact-peso display.
+
+Both hierarchies extend to **Category → PAP → Region → DEO / implementing office**.
+Use **Display through** to choose the final column (PAP by default), then narrow
+the category, PAP and region. Depth and filters survive reloads and sharing via
+`through=region|deo`, `category`, `pap` and `region` hash parameters. Region and
+office nodes retain their full parent paths. Office assignments come from the
+selected ledger, including Central Office, regional offices and explicit missing
+labels; grouped source records split by their own allocations without double counting.
+Validate all depths and filter restoration with `python scripts/check_hierarchy_pages.py`.
+
+**Download section PNG** and **Download SVG** export the complete allocation
+hierarchy at the selected depth and scope, including off-screen branches,
+column headings, exact total and source notes. PNG fits browser image limits;
+SVG preserves full detail for large regional and office views. Exporting leaves
+the live filters and scroll position unchanged.
+
 ## Development and packaging
 
 From the repository root, using Node 22 and Python 3:
@@ -130,6 +164,21 @@ separately extracted third-reading stage.
 
 Unknown routes and invalid evidence selections show recovery actions. PDF
 references use explicit FMR document metadata rather than the DPWH registry.
+
+## Reusable revision flows
+
+The Budget flow experiment uses a general five-stage builder:
+`Total A → Intermediary A → Revision Matrix → Intermediary B → Total B`.
+`src/revisionFlow.js` builds the validated graph, `src/revisionFlowLayout.js`
+positions it, and `src/RevisionFlowDiagram.jsx` renders it. Grouping, stage
+labels, value formatting and selection callbacks are supplied by callers.
+The Budget flow tab also offers four datasets (DPWH, FMR, HFEP, NIA) and their
+recorded intermediary fields. `buildBudgetFlowSources.mjs` builds the small
+source catalog used by both dropdowns; normal builds and static packaging
+include it automatically. Dataset/grouping choices persist in the URL and
+exports. Run `python scripts/check_flow_source_pages.py` after packaging.
+See the [API and examples](../../experiments/docs/Revision%20Flow%20Builder.md)
+and `src/revisionFlowExample.js` for inventory grouped by region or department.
 
 ## Reused and shared components
 

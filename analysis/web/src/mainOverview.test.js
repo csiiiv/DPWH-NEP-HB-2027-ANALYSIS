@@ -5,6 +5,8 @@ import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {comparisonPayloads} from '../buildComparisonData.mjs';
 import {overviewSummary} from './overviewSummary.js';
+import {flowGraph} from './overviewFlows.js';
+import {buildDpwhFlow} from '../buildDpwhFlow.mjs';
 import {overviewCsv, validateOverview} from './mainOverviewModel.js';
 
 const read = name => JSON.parse(readFileSync(new URL(`../../data/${name}`, import.meta.url)));
@@ -75,6 +77,34 @@ test('Unchanged populations pair equal allocations and complete the paired parti
   assert.ok(byKey.nia.links.unchanged.includes('status=unchanged'));
   assert.ok(byKey.hfep.links.unchanged.includes('event=same'));
   assert.ok(byKey.dpwh.links.unchanged.includes('flag=amount_same'));
+});
+test('Flow graphs conserve both ledgers and expose linked populations', () => {
+  for (const w of data.workspaces) {
+    const {nodes, links, stubs} = flowGraph(w);
+    const byKey = Object.fromEntries(nodes.map(n => [n.key, n]));
+    const inflow = key => links.filter(l => l.target === key).reduce((t, l) => t + l.value, 0);
+    const outflow = key => links.filter(l => l.source === key).reduce((t, l) => t + l.value, 0);
+    // Stage ledgers rebuild exactly from their flows.
+    assert.equal(outflow('nep'), w.sources.nep.amount_php, `${w.key} NEP out-flow`);
+    assert.equal(inflow('house'), w.sources.house.amount_php, `${w.key} House in-flow`);
+    // Middle groups conserve: in (ribbons + external stubs) = out.
+    const stubIn = key => (stubs ?? []).filter(s => s.target === key).reduce((t, s) => t + s.value, 0);
+    for (const key of ['deletions', 'insertions', 'additions', 'unchanged', 'reduced']) {
+      const node = byKey[key];
+      assert.equal(node ? outflow(key) : 0, key === 'deletions' ? 0 : node?.amount_php ?? 0, `${w.key} ${key} out-flow`);
+      if (key === 'deletions') assert.equal(inflow(key), node?.amount_php ?? 0, `${w.key} deletions in-flow`);
+      else if (node) assert.equal(inflow(key) + stubIn(key), node.amount_php, `${w.key} ${key} in-flow + stubs`);
+    }
+    // Zero-adjustment groups drop out instead of rendering zero-width nodes.
+    if (w.adjustments.increased_php === 0) assert.ok(!byKey.additions, `${w.key} zero-increase nodes dropped`);
+    if (w.insertions.amount_php === 0) assert.ok(!byKey.insertions, `${w.key} zero-insertion nodes dropped`);
+    // Every kept node deep-links somewhere.
+    for (const node of nodes) assert.ok(node.href && node.name && node.sub, `${w.key} node ${node.key} incomplete`);
+  }
+  // Tamper: a mutated adjustment breaks conservation loudly.
+  const tampered = structuredClone(data.workspaces[0]);
+  tampered.adjustments.increased_php += 1000;
+  assert.throws(() => flowGraph(tampered), /House in-flow|increased pair/);
 });
 test('DPWH expands grouped members and includes foreign-assisted paired reductions outside Transparency', () => {
   const w = data.workspaces[0];
@@ -152,4 +182,34 @@ test('Adapters reject reused source rows, missing records and arithmetic drift r
     brokenPartition.workspaces[0].unchanged.comparison_rows + 1;
   assert.throws(() => validateOverview(brokenPartition),/partition/);
   assert.throws(() => validateOverview({...data,schema_version:99}),/Unsupported/);
+});
+test('DPWH three-stage flow strata rebuild every ledger and tie to the Overview figures', () => {
+  const detail = read('comparison_projects_2027.json');
+  const headlines = read('comparison_overview_2027.json').headlines;
+  const flow = buildDpwhFlow(detail, headlines);
+  assert.equal(flow.schema_version,1);
+  assert.equal(flow.totals.rows,17613);
+  // Strata partition the rows exactly.
+  assert.equal(flow.strata.reduce((t,s) => t + s.rows,0),flow.totals.rows);
+  const dpwh = data.workspaces[0];
+  // Stage ledgers tie to the published headline figures. Record counts
+  // differ by grain: flow counts comparison rows; the Overview expands
+  // grouped House members to source records (16,272 rows vs 16,275 records).
+  assert.equal(flow.stages.nep.amount_php,dpwh.sources.nep.amount_php);
+  assert.equal(flow.stages.third.amount_php,dpwh.sources.house.amount_php);
+  assert.equal(flow.stages.second.amount_php,dpwh.readings.second.amount_php);
+  assert.equal(flow.stages.nep.rows,dpwh.sources.nep.count);
+  assert.ok(flow.stages.third.rows <= dpwh.sources.house.count);
+  // Known membership shape: all-three, house-only(both readings), NEP-only, HGAB3-only.
+  const byKey = Object.fromEntries(flow.strata.map(s => [s.key,s]));
+  assert.equal(byKey['true/true/true'].rows,10079);
+  assert.equal(byKey['false/true/true'].rows,6188);
+  assert.equal(byKey['true/false/false'].rows,1341);
+  assert.equal(byKey['false/false/true'].rows,5);
+  // The HGAB2→HGAB3 delta is the five-row ₱134M verified annex change.
+  assert.equal(flow.stages.third.amount_php - flow.stages.second.amount_php,134000000);
+  // Tamper: a dropped row breaks the external headline anchor loudly.
+  const tampered = structuredClone(detail);
+  tampered.projects.pop();
+  assert.throws(() => buildDpwhFlow(tampered, headlines),/drifts|rebuild/);
 });

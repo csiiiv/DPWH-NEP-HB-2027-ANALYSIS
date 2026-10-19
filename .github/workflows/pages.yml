@@ -157,6 +157,9 @@ jobs:
           python3 scripts/check_fmr_pages.py
           python3 scripts/check_hfep_pages.py
           python3 scripts/check_nia_pages.py
+          python3 scripts/check_budget_flow_pages.py
+          python3 scripts/check_flow_source_pages.py
+          python3 scripts/check_hierarchy_pages.py
       - name: Check root and historical route redirects under project base
         run: node --test analysis/tests/test_static_navigation.cjs
       - name: Configure Pages

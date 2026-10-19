@@ -38,6 +38,7 @@ export function comparisonState(params) {
     trace:parsed.trace,
     matchStatus,
     flag: mappedFlag,
+    excludeFap: tab === 'projects' && params.get('exclude_fap') === '1',
     regionMatching:params.get('region_match') === 'ignore' ? 'ignore' : 'strict',
     readingStatus,
     column:choice(column, tab === 'gaps' ? ['title','amount','region','pdf_page'] : ['title','0','1','2','3','reading_delta','identity_score'], 'title'),
@@ -51,6 +52,7 @@ export function comparisonParams(state) {
   if (state.regionMatching === 'ignore') p.region_match='ignore';
   if (state.matchStatus) p.match=state.matchStatus;
   if (state.flag) p.flag=state.flag;
+  if (state.tab === 'projects' && state.excludeFap) p.exclude_fap='1';
   // Legacy exact-trace deep links (unmapped compound statuses).
   if (state.trace) p.status=state.trace;
   if (state.readingStatus) p.change=state.readingStatus;

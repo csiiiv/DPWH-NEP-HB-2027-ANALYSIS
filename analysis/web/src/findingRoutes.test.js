@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {comparisonState,comparisonParams,boundedInteger,mergeFindingParams} from './findingRoutes.js';
 import {routeHref,readRoute} from './routes.js';
 test('comparison findings round trip Unicode searches, scoped offices, sorting and pagination',()=>{
- const state={tab:'projects',query:'J.P. Rizal — Barangays 34–35 & drainage',program:'Flood Management',region:'National Capital Region',office:'NCR|Metro Manila 3rd District Engineering Office',trace:'',matchStatus:'',flag:'',regionMatching:'strict',readingStatus:'third_only',column:'1',mode:'delta',direction:-1,page:3,record:'house-reading:2',pathSource:'third'};
+ const state={tab:'projects',query:'J.P. Rizal — Barangays 34–35 & drainage',program:'Flood Management',region:'National Capital Region',office:'NCR|Metro Manila 3rd District Engineering Office',trace:'',matchStatus:'',flag:'',excludeFap:false,regionMatching:'strict',readingStatus:'third_only',column:'1',mode:'delta',direction:-1,page:3,record:'house-reading:2',pathSource:'third'};
  const route=readRoute(routeHref('compare',comparisonParams(state)));
  assert.deepEqual(comparisonState(route.params),state);
 });
@@ -41,4 +41,11 @@ test('match status and flags parse from shareable URLs; legacy status maps',()=>
  const legacyHouse=comparisonState(new URLSearchParams('view=projects&change=house_records_only'));
  assert.equal(legacyHouse.flag,'house_only');
  assert.equal(legacyHouse.readingStatus,'');
+});
+test('FAP exclusion stays explicit and shareable for project drill-downs', () => {
+ const state=comparisonState(new URLSearchParams('view=projects&program=Asset+Preservation+Program&exclude_fap=1'));
+ assert.equal(state.excludeFap,true);
+ assert.deepEqual(comparisonState(new URLSearchParams(comparisonParams(state))),state);
+ assert.equal(comparisonState(new URLSearchParams('view=projects&exclude_fap=unknown')).excludeFap,false);
+ assert.equal(comparisonState(new URLSearchParams('view=paps&exclude_fap=1')).excludeFap,false);
 });

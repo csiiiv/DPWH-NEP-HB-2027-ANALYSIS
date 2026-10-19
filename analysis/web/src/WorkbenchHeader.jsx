@@ -6,7 +6,9 @@ import { routeHref, workspaceHref, workspaces } from "./routes.js";
 // Workspaces register in routes.js; the selector and tab row render whatever
 // the registry contains, so a new annex workspace appears automatically.
 export default function WorkbenchHeader({ route, workspace = "dpwh", items }) {
-  const registered = Object.keys(workspaces);
+  // Hidden workspaces (experiments) stay reachable by direct URL but never
+  // appear in the workspace nav.
+  const registered = Object.keys(workspaces).filter((key) => !workspaces[key].hidden);
   const tabs = items ?? (workspace !== 'overview' && workspace in workspaces
     ? workspaces[workspace].pages.map(([key, label]) => [key, label, routeHref(key, {}, workspace)])
     : []);

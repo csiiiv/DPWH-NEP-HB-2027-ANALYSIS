@@ -80,3 +80,38 @@ dialog.card-modal { width:min(1080px, calc(100vw - 32px)); max-height:88vh; over
 /* Mobile: drop the share pill so headings stay readable; shared links
    still scroll straight to the section. */
 @media(max-width:768px) { .section-head .card-share { display:none; } }
+
+/* Allocation-flow Sankey diagrams: one figure per workspace, stacked.
+   Ribbons are SVG paths; nodes deep-link into filtered populations. */
+.flow-sankeys { display:grid; gap:18px; }
+.flow-sankey { margin:0; border:1px solid #d9e2ed; border-radius:10px; padding:12px 14px 8px; background:#fff; min-width:0; }
+.flow-sankey figcaption { font-size:.92rem; margin-bottom:6px; }
+.flow-sankey svg { width:100%; height:auto; display:block; }
+.flow-sankey .flow-link { transition:opacity .12s ease; }
+.flow-sankey .flow-link:hover { opacity:0.85; }
+.flow-sankey .flow-node rect { cursor:pointer; }
+.flow-sankey .flow-node a { text-decoration:none; }
+.flow-sankey .flow-label .flow-name { font-size:12.5px; font-weight:600; fill:#203147; }
+.flow-sankey .flow-label .flow-amount { font-size:11.5px; fill:#52647a; font-variant-numeric:tabular-nums; }
+/* Labels cross ribbons between columns; a white halo keeps them readable. */
+.flow-sankey .flow-label { paint-order:stroke; stroke:#fff; stroke-width:3.5px; stroke-linejoin:round; }
+.flow-sankey .flow-label.left { dominant-baseline:middle; }
+.flow-sankey .flow-label.right { dominant-baseline:middle; }
+.flow-sankey .axis-caption .flow-name { font-size:12.5px; font-weight:700; fill:#203147; }
+.flow-sankey .axis-caption { letter-spacing:.02em; }
+/* Embedded ribbon values: readable without hover, haloed against fills. */
+.flow-sankey .flow-ribbon-label { font-size:10.5px; font-weight:600; fill:#1c2b3d; font-variant-numeric:tabular-nums; paint-order:stroke; stroke:#fff; stroke-width:3px; stroke-linejoin:round; pointer-events:none; }
+/* Presentation modal: charts keep their aspect and scroll if needed. */
+.card-modal .flow-sankey svg { min-width:640px; }
+.card-modal .flow-sankeys { overflow-x:auto; }
+/* Experiments tabs: one experiment per tab, deep-linked via ?tab=. */
+.experiments-tabs { display:flex; gap:4px; border-bottom:1px solid #d9e2ed; margin:14px 0 18px; flex-wrap:wrap; }
+.experiments-tabs a { padding:8px 14px; font-size:.92rem; font-weight:600; color:#3d5773; text-decoration:none; border:1px solid transparent; border-bottom:none; border-radius:8px 8px 0 0; }
+.experiments-tabs a:hover { background:#eef3f9; }
+.experiments-tabs a[aria-current="page"] { background:#fff; border-color:#d9e2ed; color:#203147; position:relative; top:1px; }
+/* Category legend for the PAP flow figure. */
+.pap-flow-legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:8px; font-size:.82rem; color:#3d5773; }
+.pap-flow-legend span { display:inline-flex; align-items:center; gap:5px; }
+.pap-flow-legend i { width:10px; height:10px; border-radius:2px; display:inline-block; }
+/* Stage-C band captions: mark each category band's top edge. */
+.pap-flow .band-caption .flow-amount { font-size:11px; fill:#52647a; }

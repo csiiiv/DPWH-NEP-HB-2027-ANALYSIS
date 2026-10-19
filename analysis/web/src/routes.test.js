@@ -72,8 +72,8 @@ test('unregistered hash prefixes fall back to the DPWH workspace', () => {
 });
 test('the workspace registry exposes consistent labels, prefixes and pages', () => {
   // Every workspace needs a label, at least one tab, and a unique prefix.
-  assert.deepEqual(workspaceLabels, {overview: 'Overview', dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities', nia: 'NIA Irrigation', geo: 'Geolocation', sources: 'Sources', about: 'About'});
-  assert.deepEqual(Object.keys(workspaces), ['overview', 'dpwh', 'fmr', 'hfep', 'nia', 'geo', 'sources', 'about']);
+  assert.deepEqual(workspaceLabels, {overview: 'Overview', dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities', nia: 'NIA Irrigation', geo: 'Geolocation', sources: 'Sources', about: 'About', experiments: 'Experiments'});
+  assert.deepEqual(Object.keys(workspaces), ['overview', 'dpwh', 'fmr', 'hfep', 'nia', 'geo', 'sources', 'about', 'experiments']);
   const prefixes = Object.values(workspaces).map(ws => ws.prefix);
   assert.equal(new Set(prefixes).size, prefixes.length, 'prefixes must be unique');
   for (const ws of Object.values(workspaces)) {
@@ -81,6 +81,10 @@ test('the workspace registry exposes consistent labels, prefixes and pages', () 
     assert.ok(ws.pages.length >= 1);
     for (const [key] of ws.pages) assert.equal(typeof key, 'string');
   }
+  // Hidden workspaces resolve in the router but never join listed nav.
+  assert.equal(workspaces.experiments.hidden, true);
+  assert.equal(readWorkspace('#experiments'), 'experiments');
+  assert.equal(readWorkspace('#experiments?chart=flow'), 'experiments');
   // DPWH keeps the empty prefix; annexes each own one hash segment.
   assert.equal(workspaces.dpwh.prefix, '');
   assert.ok(dpwhPages.length >= fmrPages.length);

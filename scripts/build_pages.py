@@ -318,6 +318,13 @@ def main(with_react=True):
         package_geo(OUTPUT)
         subprocess.run(['node', str(ROOT / 'analysis/web/buildMainOverview.mjs')], check=True, cwd=ROOT)
         shutil.copyfile(DATA / 'main_overview_2027.json', target / 'main_overview_2027.json')
+        # Three-stage membership flow powering the experiments alluvial, the
+        # category grouping contract for the five-stage revision figure, and
+        # the NEP/HGAB3 hierarchies.
+        subprocess.run(['node', str(ROOT / 'analysis/web/buildDpwhFlow.mjs')], check=True, cwd=ROOT)
+        shutil.copyfile(DATA / 'dpwh_flow_2027.json', target / 'dpwh_flow_2027.json')
+        subprocess.run(['node', str(ROOT / 'analysis/web/buildBudgetFlowSources.mjs')], check=True, cwd=ROOT)
+        shutil.copyfile(DATA / 'budget_flow_sources_2027.json', target / 'budget_flow_sources_2027.json')
         # Complete per-dataset CSV exports for the Sources workspace: the
         # DPWH comparison CSV is built beside the overview payload; HFEP
         # facility/controls CSVs come from the retained HFEP trees.

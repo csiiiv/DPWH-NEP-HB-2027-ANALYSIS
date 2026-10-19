@@ -84,6 +84,7 @@ export function selectRows(
   {
     query = "",
     program = "",
+    excludeFap = false,
     region = "",
     office = "",
     trace = "",
@@ -114,6 +115,7 @@ export function selectRows(
       (r) =>
         (!tokens.length || tokens.every(token=>searchText(r).includes(token))) &&
         matchesProgram(r,program) &&
+        (!excludeFap || !matchesProgram(r,FAP_PROGRAM)) &&
         (!region || officeAssignments(r).some(a=>a.region===region)) &&
         matchesOffice(r, office, region) &&
         (!nepOnlySplit || nepOnlySplit(r)) &&

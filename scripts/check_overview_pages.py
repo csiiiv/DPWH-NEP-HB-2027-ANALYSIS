@@ -229,6 +229,114 @@ def main():
                     page.wait_for_timeout(400)
                     assert 'fmr' in page.evaluate('''() => {const el = document.getElementById('overview-fmr');
                       const r = el.getBoundingClientRect(); return (r.top >= 0 && r.top < innerHeight) ? 'fmr' : 'scrolled-away';}''')
+                    # Experiments workspace: unlisted, direct-URL only. The
+                    # Sankey flow charts live here now, off the Overview.
+                    nav = page.get_by_role('navigation', name='Workbench workspaces')
+                    assert 'Experiments' not in nav.locator('a').all_text_contents(), 'experiments must stay hidden from nav'
+                    page.goto(base+'#experiments',wait_until='domcontentloaded')
+                    expect(page.get_by_role('heading',name='Experiments',exact=True)).to_be_visible()
+                    # Tabs: one experiment per tab, deep-linked via ?tab=.
+                    # The default tab is the 3-stage alluvial.
+                    tabs = page.locator('.experiments-tabs a')
+                    expect(tabs).to_have_count(6)
+                    expect(page.locator('.experiments-tabs a[aria-current="page"]')).to_have_text('3-stage alluvial')
+                    flow_section = page.locator('section[aria-labelledby="experiments-flow-heading"]')
+                    # Custom column-flow alluvial: three fixed axes, one block
+                    # per (stage, stratum) membership, ribbons between adjacent
+                    # axes. Filled paths carry real geometry boxes.
+                    expect(flow_section.locator('.flow-sankey')).to_have_count(1)
+                    alluvial = flow_section.locator('.flow-sankey').first
+                    expect(alluvial.locator('.flow-node rect')).to_have_count(7)
+                    expect(alluvial.locator('.flow-link')).to_have_count(3)
+                    expect(alluvial.locator('.axis-caption')).to_have_count(3)
+                    for caption in alluvial.locator('.axis-caption').all():
+                        expect(caption).to_be_visible()
+                    # Deep link straight into the PAP tab: five-stage figure
+                    # renders, other tabs' sections absent.
+                    page.goto(base+'#experiments?tab=pap',wait_until='domcontentloaded')
+                    pap_section = page.locator('section[aria-labelledby="experiments-pap-heading"]')
+                    pap_fig = pap_section.locator('.category-flow')
+                    expect(pap_fig).to_have_count(1)
+                    expect(pap_fig.locator('.flow-node rect').first).to_be_visible()
+                    expect(page.locator('#experiments-flow-heading')).to_have_count(0)
+                    expect(page.locator('.experiments-tabs a[aria-current="page"]')).to_have_text('5-stage category alluvial')
+                    # NEP-only hierarchy conserves pesos through all three columns.
+                    page.get_by_role('link', name='NEP → Category → PAP', exact=True).click()
+                    expect(page.get_by_role('heading', name='DPWH · NEP → Category Group → PAP Group', exact=True)).to_be_visible()
+                    hierarchy = page.locator('.nep-hierarchy')
+                    expect(hierarchy.locator('.nep-hierarchy-node[data-column="0"]')).to_have_count(1)
+                    expect(hierarchy.locator('.nep-hierarchy-node[data-column="1"]')).to_have_count(7)
+                    expect(hierarchy.locator('.nep-hierarchy-node[data-column="2"]')).to_have_count(46)
+                    expect(hierarchy.locator('.nep-hierarchy-link')).to_have_count(53)
+                    assert hierarchy.locator('svg').evaluate('''svg => {
+                        const labels = [...svg.querySelectorAll('.nep-hierarchy-node')].map(n => ({
+                            column: n.dataset.column, box: n.querySelector('text').getBBox()
+                        }));
+                        const {width, height} = svg.viewBox.baseVal;
+                        if (labels.some(({box:b}) => b.x < 0 || b.y < 0 || b.x+b.width > width || b.y+b.height > height)) return false;
+                        return ['1','2'].every(column => {
+                            const boxes = labels.filter(n => n.column === column).map(n => n.box).sort((a,b) => a.y-b.y);
+                            return boxes.every((b,i) => !i || boxes[i-1].y+boxes[i-1].height <= b.y);
+                        });
+                    }''')
+                    assert hierarchy.locator('.nep-hierarchy-node').evaluate_all('''nodes => {
+                        const sums = [0, 0, 0];
+                        nodes.forEach(n => sums[Number(n.dataset.column)] += Number(n.dataset.value));
+                        return sums[0] > 0 && sums.every(v => v === sums[0]);
+                    }''')
+                    page.get_by_role('combobox', name='Focus category', exact=True).select_option('fap')
+                    expect(hierarchy.locator('.nep-hierarchy-node[data-column="2"]')).to_have_count(1)
+                    expect(hierarchy).to_contain_text('1 PAP group')
+                    page.get_by_label('Show exact pesos', exact=True).check()
+                    expect(hierarchy).to_contain_text('₱117,749,011,000')
+                    page.get_by_role('combobox', name='Focus category', exact=True).select_option('')
+                    page.reload(wait_until='networkidle')
+                    expect(page.locator('.experiments-tabs a[aria-current="page"]')).to_have_text('NEP → Category → PAP')
+                    expect(hierarchy.locator('.nep-hierarchy-node[data-column="2"]')).to_have_count(46)
+                    assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
+                    page.screenshot(path=str(screenshots / f'nep-hierarchy-{width}.png'), full_page=True)
+                    # The matching hierarchy uses third-reading money only.
+                    page.get_by_role('link', name='HGAB3 → Category → PAP', exact=True).click()
+                    expect(page.get_by_role('heading', name='DPWH · HGAB3 → Category Group → PAP Group', exact=True)).to_be_visible()
+                    expect(hierarchy).to_have_attribute('data-stage', 'hgab3')
+                    expect(hierarchy.locator('.nep-hierarchy-node[data-column="1"]')).to_have_count(7)
+                    expect(hierarchy.locator('.nep-hierarchy-node[data-column="2"]')).to_have_count(45)
+                    expect(hierarchy.locator('.nep-hierarchy-link')).to_have_count(52)
+                    assert hierarchy.locator('.nep-hierarchy-node').evaluate_all('''nodes => {
+                        const sums = [0, 0, 0];
+                        nodes.forEach(n => sums[Number(n.dataset.column)] += Number(n.dataset.value));
+                        return sums.every(v => v === 587075661000);
+                    }''')
+                    page.get_by_label('Show exact pesos', exact=True).check()
+                    expect(hierarchy).to_contain_text('₱587,075,661,000')
+                    page.get_by_role('combobox', name='Focus category', exact=True).select_option('fap')
+                    expect(hierarchy.locator('.nep-hierarchy-node[data-column="2"]')).to_have_count(1)
+                    expect(hierarchy).to_contain_text('₱44,749,011,000')
+                    # Switching ledgers resets category focus, preserving all branches.
+                    page.get_by_role('link', name='NEP → Category → PAP', exact=True).click()
+                    expect(hierarchy.locator('.nep-hierarchy-node[data-column="2"]')).to_have_count(46)
+                    page.get_by_role('link', name='HGAB3 → Category → PAP', exact=True).click()
+                    page.reload(wait_until='networkidle')
+                    expect(page.locator('.experiments-tabs a[aria-current="page"]')).to_have_text('HGAB3 → Category → PAP')
+                    expect(hierarchy.locator('.nep-hierarchy-node[data-column="2"]')).to_have_count(45)
+                    assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
+                    page.screenshot(path=str(screenshots / f'hgab3-hierarchy-{width}.png'), full_page=True)
+                    # Allocation flows live on their own tab.
+                    page.goto(base+'#experiments?tab=flows',wait_until='domcontentloaded')
+                    sankey_section = page.locator('section[aria-labelledby="experiments-sankey-heading"]')
+                    expect(sankey_section.locator('.flow-sankey')).to_have_count(4)
+                    for i in range(4):
+                        chart = sankey_section.locator('.flow-sankey').nth(i)
+                        # Ribbons are filled beziers with real area; node
+                        # rects must be visible and deep-linkable.
+                        expect(chart.locator('.flow-link')).not_to_have_count(0)
+                        for ribbon in chart.locator('.flow-link').all():
+                            expect(ribbon).to_be_visible()
+                        expect(chart.locator('.flow-node rect').first).to_be_visible()
+                        expect(chart.locator('.flow-node a').first).to_have_attribute('href',re.compile(r'^#'))
+                    # The Overview no longer carries the flow section.
+                    page.goto(base+'#overview',wait_until='networkidle')
+                    expect(page.locator('.flow-sankey')).to_have_count(0)
                     # Sources groups share the same affordances.
                     page.goto(base+'#sources',wait_until='networkidle')
                     csv_group_head = page.locator('.resource-group-head').filter(has=page.locator('#sources-csv-exports'))

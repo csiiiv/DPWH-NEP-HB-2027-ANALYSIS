@@ -1,0 +1,42 @@
+.revision-flow-figure { color:#203147; }
+.revision-flow-figure :focus-visible { outline:3px solid #316db1; outline-offset:3px; }
+.revision-flow-figure { margin:12px 0; background:#fff; border:1px solid var(--bf-line, #d9e2ed); border-radius:8px; overflow:hidden; }
+.revision-flow-figure figcaption { padding:12px 16px; font-size:.95rem; font-weight:650; border-bottom:1px solid var(--bf-line, #d9e2ed); }
+.revision-flow-figure figcaption span { display:block; font-size:.8rem; color:#52647a; font-weight:400; margin-top:3px; }
+.revision-flow-scroll { overflow-x:auto; }
+.revision-flow-scroll svg { display:block; width:100%; min-width:980px; height:auto; font-family:Arial,sans-serif; }
+.bf-title { font-size:19px; font-weight:700; fill:#203147; }
+.bf-subtitle, .bf-side { font-size:12px; fill:#52647a; }
+.bf-stage { font-size:13px; font-weight:700; fill:#203147; }
+.bf-total { font-size:15px; font-weight:700; fill:#203147; }
+.bf-ribbon { cursor:pointer; transition:opacity .12s; }
+.bf-cell { cursor:pointer; transition:opacity .12s; }
+.bf-cell-bg { stroke-width:1; }
+.bf-cell.is-selected .bf-cell-bg, .bf-cell:focus .bf-cell-bg { stroke-width:3; }
+.bf-cell text { paint-order:stroke; stroke:#fff; stroke-width:3px; stroke-linejoin:round; pointer-events:none; fill:#203147; }
+.bf-cell-name { font-size:15px; font-weight:700; }
+.bf-count { font-size:11px; font-weight:400; }
+.bf-amount { font-size:13px; font-weight:650; font-variant-numeric:tabular-nums; }
+.bf-delta { font-size:12px; }
+.bf-footer { font-size:11px; fill:#52647a; }
+@media(prefers-reduced-motion:reduce) { .bf-ribbon, .bf-cell { transition:none; } }
+.revision-flow-scroll { max-height:850px; overflow:auto; position:relative; }
+.revision-flow-scroll svg { min-width:1180px; }
+.revision-flow-stage-strip { position:sticky; top:0; z-index:2; height:44px; min-width:1180px; background:#f4f7fb; border-bottom:1px solid #d9e2ed; }
+.revision-flow-stage-strip span { position:absolute; top:12px; transform:translateX(-50%); white-space:nowrap; font-size:.72rem; font-weight:700; }
+.bf-group-name { font-size:12px; font-weight:700; fill:#203147; paint-order:stroke; stroke:#fff; stroke-width:3px; }
+.bf-group-amount { font-size:12px; font-weight:600; fill:#203147; paint-order:stroke; stroke:#fff; stroke-width:3px; }
+.bf-group-row [role=button] { cursor:pointer; }
+.bf-cell-name { font-size:13px; }
+.bf-amount { font-size:12px; }
+@media(max-width:700px) { .revision-flow-scroll { max-height:680px; } }
+/* Compact alluvial axes: proportional nodes, horizontal-tangent ribbons,
+   and labels beside C instead of wide cards interrupting the bands. */
+.bf-cell .bf-revision-label { font-size:12px; font-weight:400; stroke-width:3.5px; }
+.bf-cell.is-selected .bf-revision-label { fill:#10253e; stroke-width:4px; }
+.bf-cell.is-selected .bf-revision-node, .bf-cell:focus .bf-revision-node { stroke:#203147; stroke-width:1.5px; }
+.bf-cell:focus .bf-cell-hit { stroke:#316db1; stroke-width:1px; }
+.bf-group-name { font-size:11.5px; }
+.bf-stub, .bf-reduction-sink { cursor:pointer; }
+.bf-stub-label, .bf-sink-label { font-size:11.5px; fill:#203147; paint-order:stroke; stroke:#fff; stroke-width:3.5px; stroke-linejoin:round; font-variant-numeric:tabular-nums; }
+.bf-stub-label { font-weight:700; }

@@ -55,6 +55,8 @@ analysis/data/highlights_details_2027.json
 analysis/data/main_overview_2027.json
 # Complete DPWH comparison CSV built from the comparison payload
 analysis/data/dpwh_comparison_all_2027.csv
+# Three-stage membership flow for the experiments alluvial
+analysis/data/dpwh_flow_2027.json
 # Rebuilt from retained FMR trees and normalization audits.
 other-analysis/data/fmr_workbench.json
 analysis-nia/data/nia_workbench.json
@@ -68,3 +70,5 @@ other-analysis/data/nep_fmr_final_dataset.json
 # Senate xlsx crosscheck: builder + machine audit (rebuilt from external_work/)
 analysis/builders/crosscheck_dpwh_details_xlsx.py
 analysis/data/dpwh_details_xlsx_crosscheck.json
+
+analysis/data/budget_flow_sources_2027.json
