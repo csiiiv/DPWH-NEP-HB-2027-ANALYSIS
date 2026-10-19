@@ -257,7 +257,8 @@ def main():
                     pap_section = page.locator('section[aria-labelledby="experiments-pap-heading"]')
                     pap_fig = pap_section.locator('.category-flow')
                     expect(pap_fig).to_have_count(1)
-                    expect(pap_fig.locator('.flow-node rect').first).to_be_visible()
+                    expect(pap_fig.locator('.bf-group-row')).to_have_count(7)
+                    expect(pap_fig.locator('.bf-revision-node').first).to_be_visible()
                     expect(page.locator('#experiments-flow-heading')).to_have_count(0)
                     expect(page.locator('.experiments-tabs a[aria-current="page"]')).to_have_text('5-stage category alluvial')
                     # NEP-only hierarchy conserves pesos through all three columns.
