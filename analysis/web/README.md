@@ -66,8 +66,11 @@ scale to the remaining groups; the hidden allocations stay in the exact table
 Both controls persist in the URL and exports. Backed by
 `budget_flow_sources_2027.json` (the Budget flow catalog — no extra payload).
 Group bars are drawn only after the builder reconciles both published ledgers;
-hover shows the paired NEP→HGAB amounts, and an exact-PHP per-class table
-follows the figure. SVG/PNG exports embed the rendered amounts as metadata.
+group names render in full — wrapped up to four lines, with rows growing to
+fit (only unbreakable over-long names ellipsize, keeping their full text in
+the hover and table). Hover shows the paired NEP→HGAB amounts, and an
+exact-PHP per-class table follows the figure. SVG/PNG exports embed the
+rendered amounts as metadata.
 `src/barComparison.js` holds the model/scale rules; unit tests live in
 `src/barComparison.test.js`.
 

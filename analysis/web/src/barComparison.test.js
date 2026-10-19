@@ -197,11 +197,24 @@ test('layout scales a whole catalog and conserves both ledgers per side', () => 
   }
 });
 
-test('long labels wrap to at most two lines and reserve their own space', () => {
+test('long labels wrap up to four lines and rows grow to fit them', () => {
   const long = 'Construction of Farm-to-Market Road from Barangay A to Barangay B via Sitio C Dike Section';
   const layout = layoutBarChart([{id: 'x', label: long, classes: {unchanged: {rows: 1, nep: 10, hgab: 10}}}]);
-  assert.ok(layout.rows[0].lines.length <= 2, 'at most two label lines');
+  assert.ok(layout.rows[0].lines.length <= 4, 'at most four label lines');
+  assert.ok(layout.rows[0].lines.length >= 3, 'a long label actually wraps');
   assert.ok(layout.rows[0].labelYs.every(y => y > layout.rows[0].y && y < layout.rows[0].y + layout.rows[0].height));
+  // The row is as tall as its label needs, and the bar block centers inside.
+  const block = 2 * 15 + 3;
+  assert.ok(layout.rows[0].height >= layout.rows[0].lines.length * 15);
+  const [nep, hgab] = layout.rows[0].bars;
+  const blockCenter = (nep.y + hgab.y + hgab.height) / 2;
+  assert.ok(Math.abs(blockCenter - layout.rows[0].center) < 1e-9, 'NEP/HGAB pair centers on the row');
+  assert.ok(hgab.y > nep.y, 'HGAB bar sits below NEP');
+  assert.ok(layout.rows[0].height >= block, 'a wrapped row is never shorter than the bar block');
+  // Short labels keep the compact single-block row height.
+  const short = layoutBarChart([{id: 'a', label: 'A', classes: {unchanged: {rows: 1, nep: 10, hgab: 10}}}]);
+  assert.equal(short.rows[0].lines.length, 1);
+  assert.equal(short.rows[0].height, block);
 });
 
 test('empty and negative inputs are rejected before drawing', () => {

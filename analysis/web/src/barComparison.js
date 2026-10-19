@@ -93,10 +93,12 @@ export function collapseBars(bars, {top, plural} = {}) {
 // shared peso scale, total labels reserved right. Returns null when nothing
 // is drawable. Every positive segment width is exactly value * scale; a
 // class absent on one side leaves a gap, keeping the other classes aligned.
+// Rows grow with their label: a group needs up to maxLabelLines lines, and
+// the paired bars stay vertically centered inside the taller row.
 export function layoutBarChart(bars, options = {}) {
   const {width = 1180, labelWidth = 288, valueWidth = 168, barHeight = 15,
     barGap = 3, rowGap = 14, top = 24, bottom = 20, labelChars = 26,
-    maxLabelLines = 2, lineHeight = 15, segmentLabelMin = 56} = options;
+    maxLabelLines = 4, lineHeight = 15, segmentLabelMin = 56} = options;
   if (!Array.isArray(bars) || !bars.length) return null;
   // The scale fits the longest bar (a side total = the sum of its segments),
   // so the longest bar fills the track and every segment divides it exactly.
@@ -104,14 +106,18 @@ export function layoutBarChart(bars, options = {}) {
   const usable = width - labelWidth - valueWidth;
   if (usable <= 0) throw new Error('Bar comparison layout: label and value margins exceed the figure width');
   const scale = usable / maxValue;
-  const block = 2 * barHeight + barGap, pitch = block + rowGap;
-  const rows = bars.map((bar, index) => {
-    const y = top + index * pitch, center = y + block / 2;
+  const block = 2 * barHeight + barGap;
+  const rows = [];
+  let y = top;
+  for (const bar of bars) {
     const lines = ellipsizeLines2(wrapHierarchyLabel(bar.label, labelChars), maxLabelLines, labelChars);
+    // The row is as tall as its label needs; the bar block centers inside it.
+    const height = Math.max(block, lines.length * lineHeight);
+    const center = y + height / 2;
     const labelYs = lines.map((_, line) =>
       center - (lines.length - 1) * lineHeight / 2 + line * lineHeight + 4);
     const sides = SIDES.map(({key, label, short}, sideIndex) => {
-      const sideY = y + sideIndex * (barHeight + barGap);
+      const sideY = center - block / 2 + sideIndex * (barHeight + barGap);
       let x = labelWidth;
       const segments = SEGMENTS.flatMap(seg => {
         const c = bar.classes[seg.key], value = c?.[key] ?? 0;
@@ -128,9 +134,10 @@ export function layoutBarChart(bars, options = {}) {
       return {key, label, short, y: sideY, height: barHeight, total: bar[key],
         segments, endX: x, labelX: x + 8, labelY: sideY + barHeight - 3.5};
     });
-    return {...bar, y, height: block, center, lines, labelYs, bars: sides};
-  });
-  return {width, height: top + bars.length * pitch - rowGap + bottom, top,
+    rows.push({...bar, y, height, center, lines, labelYs, bars: sides});
+    y += height + rowGap;
+  }
+  return {width, height: y - rowGap + bottom, top,
     labelWidth, valueWidth, usable, scale, maxValue, rows};
 }
 
