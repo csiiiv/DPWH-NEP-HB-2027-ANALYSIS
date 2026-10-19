@@ -38,6 +38,10 @@ async function exportFigure(svg, format, filename) {
     canvas.width = Math.floor(width * ratio); canvas.height = Math.floor(height * ratio);
     const context = canvas.getContext('2d');
     if (!context) throw new Error('Image export is unavailable in this browser. Try SVG.');
+    // Opaque white base: canvases start transparent, so the exported PNG
+    // would otherwise show the viewer's dark mode through it.
+    context.fillStyle = '#fff';
+    context.fillRect(0, 0, canvas.width, canvas.height);
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
     const png = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
     if (!png) throw new Error('PNG export failed. Try SVG.');
