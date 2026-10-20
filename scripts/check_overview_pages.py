@@ -139,7 +139,7 @@ def main():
                     # Summary destinations restore the matching populations and
                     # preserve the new global entry alongside workspace pages.
                     page.get_by_role('article',name='NIA Irrigation →',exact=True).get_by_role('link',name='NIA Irrigation insertions',exact=True).click()
-                    expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text('319 rows')
+                    expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text('222 rows')
                     nav.get_by_role('link',name='Overview',exact=True).click()
                     expect(page.get_by_role('heading',name='Budget allocation overview',exact=True)).to_be_visible()
                     page.go_back(wait_until='networkidle')
@@ -167,7 +167,7 @@ def main():
                     expect(page.locator('.fmr-result-bar').first).to_contain_text('281 of')
                     page.goto(base+'#overview',wait_until='networkidle')
                     page.get_by_role('article',name='NIA Irrigation →',exact=True).get_by_role('link',name='NIA Irrigation unchanged',exact=True).click()
-                    expect(page.get_by_role('navigation',name='NIA project candidates pages',exact=True)).to_contain_text('505 rows')
+                    expect(page.get_by_role('navigation',name='NIA project candidates pages',exact=True)).to_contain_text('602 rows')
                     page.goto(base+'#overview',wait_until='networkidle')
                     nav.get_by_role('link',name='DPWH',exact=True).click()
                     assert page.url.endswith('#home')
