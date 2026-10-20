@@ -7,10 +7,11 @@ import {openModalDialog} from './modalLifecycle.js';
 import {readRoute, routeHref} from './routes.js';
 import {siteUrl} from './data.js';
 import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringLabels, aiMonitoringProjects, aiMonitoringReconciliation, concentration, concentrationRows, fundingGroups, fundingSummary, highlightsCards, share} from './niaAnalysis.js';
-import {allocationStats, analysisCandidateRows, bandRows, candidateAggregates, candidateGroupRows, comparisonRows, comparisonFilterLabels,
+import {allocationStats, analysisCandidateRows, bandRows, candidateAggregates, candidateGroupRows, candidateResolution, comparisonFilterLabels, comparisonRows,
   csvText, filterComparisons, filterProjects, flagLabels, money, signedMoney, signedPct, pctChange, niaTabs,
-  repeatedAmounts, roundingLadder, sourceArithmetic, sourceNode, sourcePath,
-  stageLabels, statusLabels, subprogramAllocationRows, overviewComparisonRows, overviewGroupRows, REVIEW_CATEGORIES} from './niaModel.js';
+  repeatedAmounts, roundingLadder, rowsForMethod, sourceArithmetic, sourceNode, sourcePath,
+  stageLabels, statusLabels, subprogramAllocationRows, overviewComparisonRows, overviewGroupRows,
+  matchingMethodLabels, normalizeMatchingMethod, variantMarkLabels, REVIEW_CATEGORIES} from './niaModel.js';
 import './Fmr.css';
 import './Nia.css';
 
@@ -42,10 +43,11 @@ function exportProjects(projects, stage, aiMonitoring = false) {
     ...(aiMonitoring ? [aiMonitoringBasis(p)] : [])])));
 }
 function exportComparisons(rows) {
-  const keys = ['candidate_id', 'status', 'subprogram', 'ambiguous_title', 'delta_php'];
+  const keys = ['candidate_id', 'status', 'strict_status', 'subprogram', 'ambiguous_title', 'variant_mark_kind', 'counterpart_ids', 'delta_php'];
   const sideKeys = ['id', 'title', 'amount_php', 'source_pdf', 'pdf_page', 'printed_page'];
   download('nia-comparison-filtered.csv', csvText([...keys, ...['nep', 'house'].flatMap(s => sideKeys.map(k => `${s}_${k}`))],
-    rows.map(r => [r.id, r.status, r.subprogram_key, Boolean(r.ambiguous_title), r.delta_php,
+    rows.map(r => [r.id, r.status, r.strict_status || '', r.subprogram_key, Boolean(r.ambiguous_title),
+      r.variant_mark_kind || '', (r.variant_mark?.counterpart_ids || []).join(';'), r.delta_php,
       ...['nep', 'house'].flatMap(s => {const p = r[s]; return [p?.id, p?.title, p?.amount_php,
         p?.source.source_pdf, p?.source.pdf_page, p?.source.printed_page];})])));
 }
@@ -243,7 +245,8 @@ function ComparisonTable({rows, route, onPdf, total, toolbar = true, initialSort
   return <>{toolbar && <ComparisonToolbar rows={rows} total={total} onCsv={() => exportComparisons(rows)}/>}
     <Table tableId={tableId} route={route} rows={rows} label="NIA project candidates" paginate responsive initialSort={initialSort || {key: 'house_php', direction: 'desc'}} columns={[
       {key: 'title', label: 'Project', scope: 'row', render: r => <><button className="fmr-text-button" onClick={() => navigate(route, {pair: r.id})}>{r.title}</button>
-        <small>{r.subprogram_key}</small><span className="fmr-badge">{statusLabels[r.status]}{r.ambiguous_title && ' · repeated-title ambiguity'}</span></>},
+        <small>{r.subprogram_key}</small><span className="fmr-badge">{statusLabels[r.status]}{r.ambiguous_title && ' · repeated-title ambiguity'}</span>
+        {r.variant_mark_kind && r.variant_mark_kind !== 'no_counterpart' && <span className="fmr-badge">{variantMarkLabels[r.variant_mark_kind]}</span>}</>},
       ...['nep', 'house'].map(side => ({key: `${side}_php`, label: `${side === 'nep' ? 'DBM NEP' : 'House GAB'} (PHP)`, align: 'num', render: r => <>
         <strong>{money(r[`${side}_php`])}</strong>{r[side] && <><small className="nia-id">{r[side].id}</small>
           {onPdf && <SourceButton source={r[side].source} onPdf={onPdf}/>}<a className="nia-source-record" href={href(side, {node: r[side].id})}>Source record →</a></>}
@@ -293,6 +296,7 @@ function Compare({data, route, rows, onPdf, inlineSource, clearPdf}) {
         {view === 'projects' ? <><details className="nia-candidate-summary"><summary>Candidate counts and funding reconciliation</summary>
           <p>{agg.counts.paired} candidate pairs · {agg.counts.house_only} House-only · {agg.counts.nep_only} NEP-only observations.</p>
           <p>Paired difference {signedMoney(agg.paired_delta_php)} + House-only {money(agg.house_only_php)} − NEP-only {money(agg.nep_only_php)} = {signedMoney(agg.net_delta_php)}.</p>
+          {data.comparison_summaries?.strict && <p>Matching-method comparison — strict titles: {data.comparison_summaries.strict.counts.paired} pairs, {data.comparison_summaries.strict.counts.house_only} House-only (₱{(data.comparison_summaries.strict.house_only_php / 1e9).toFixed(3)}B), {data.comparison_summaries.strict.counts.nep_only} NEP-only (₱{(data.comparison_summaries.strict.nep_only_php / 1e9).toFixed(3)}B). Corrected AI titles: {data.comparison_summaries.ai_corrected.counts.paired} pairs, {data.comparison_summaries.ai_corrected.counts.house_only} House-only (₱{(data.comparison_summaries.ai_corrected.house_only_php / 1e9).toFixed(3)}B), {data.comparison_summaries.ai_corrected.counts.nep_only} NEP-only (₱{(data.comparison_summaries.ai_corrected.nep_only_php / 1e9).toFixed(3)}B). Both reconcile the same ₱{(agg.net_delta_php / 1e6).toLocaleString('en-PH')}M annex difference.</p>}
         </details><ComparisonTable rows={filtered} total={rows.length} route={route} onPdf={onPdf}/>
           <p className="muted nia-count-explanation">Comparison observations are not unique projects. Unresolved counterparts can appear separately; each source allocation is retained once.</p></>
           : view === 'subprograms' ? <><ComparisonToolbar rows={controlRows} total={data.subprogram_controls.length} onCsv={() => exportControls(controlRows)} name="nia-subprogram-controls" description="sub-program controls"/>
@@ -467,6 +471,7 @@ function CandidateAnalysis({data, route, rows, onPdf, view}) {
   const dim = ['overall', 'subprogram', 'program'].includes(p.dim) ? p.dim : 'subprogram';
   const groups = candidateGroupRows(filtered, view, dim, data.stages.house.subprograms);
   const adjustment = view === 'adjustments', side = view === 'deletions' ? 'nep' : 'house';
+  const resolutionCardLabel = 'Validated / unresolved rows';
   const title = {insertions: 'Insertion candidates', deletions: 'Deletion candidates', adjustments: 'Paired amount adjustments'}[view];
   const total = filtered.reduce((s, r) => s + (adjustment ? r.delta_php : r[`${side}_php`]), 0);
   const agg = candidateAggregates(filtered);
@@ -474,6 +479,11 @@ function CandidateAnalysis({data, route, rows, onPdf, view}) {
   const groupedRows = group ? filtered.filter(r => (dim === 'program' ? (r.house || r.nep).program_group : r.subprogram_key) === group.id) : [];
   const initialSort = adjustment ? {key: 'delta_php', direction: p.direction === 'increased' ? 'desc' : 'asc'}
     : {key: `${side}_php`, direction: 'desc'};
+  // DPWH-style validated/unresolved split over the filtered candidates.
+  const validated = filtered.filter(r => candidateResolution(r) === 'no_counterpart');
+  const unresolved = filtered.filter(r => candidateResolution(r) === 'unresolved');
+  const validatedTotal = validated.reduce((s, r) => s + r[`${side}_php`], 0);
+  const unresolvedTotal = unresolved.reduce((s, r) => s + r[`${side}_php`], 0);
   return <section className="analysis-section nia-candidate-analysis"><h2>{title}</h2>
     <div className="analysis-controls">{adjustment ? <label>Direction<select aria-label="Revision direction" value={p.direction || 'all'}
       onChange={e => filterChange(route, {direction: e.target.value, sort: null, dir: null, group: null})}>
@@ -481,6 +491,7 @@ function CandidateAnalysis({data, route, rows, onPdf, view}) {
     </select></label> : <label>Candidate group<select aria-label={`Analysis ${view === 'insertions' ? 'insertion' : 'deletion'} group`} value={p.ranking || 'all'}
       onChange={e => filterChange(route, {ranking: e.target.value, group: null})}>
       <option value="all">All {side === 'house' ? 'House' : 'NEP'}-only candidates</option>
+      <option value="validated">Validated · no counterpart found</option><option value="unresolved">Plausible counterpart · unresolved</option>
       <option value="unambiguous">Without repeated-title ambiguity</option><option value="ambiguous">Repeated-title ambiguity</option>
     </select></label>}</div>
     <div className="dimension-chips" role="group" aria-label="Break down by">{[['overall', 'Overall'], ['subprogram', 'Sub-program'], ['program', 'Program']].map(([key, label]) =>
@@ -490,10 +501,10 @@ function CandidateAnalysis({data, route, rows, onPdf, view}) {
       <p>{adjustment ? 'Both source records attached' : `${stageLabels[side]} · unmatched by unique canonical title`}</p></article>
       <article><h3>{adjustment ? 'Net paired difference' : `${stageLabels[side]} allocation`}</h3><strong className={adjustment ? total > 0 ? 'up' : total < 0 ? 'down' : '' : ''}>{adjustment ? signedMoney(total) : money(total)}</strong>
         <p>{adjustment ? 'House minus NEP · paired amounts only' : 'Exact source allocation · each row retained once'}</p></article>
-      <article><h3>{adjustment ? 'Increased / reduced pairs' : 'Repeated-title ambiguity'}</h3><strong>{adjustment ? `${agg.increased.count} / ${agg.decreased.count}` : filtered.filter(r => r.ambiguous_title).length}</strong>
-        <p>{adjustment ? `Gross increases ${money(agg.increased.amount)} · gross reductions ${money(agg.decreased.amount)}` : 'Canonical title repeated on at least one side, with a counterpart key on the other'}</p></article></div>
+      <article><h3>{adjustment ? 'Increased / reduced pairs' : resolutionCardLabel}</h3><strong>{adjustment ? `${agg.increased.count} / ${agg.decreased.count}` : `${validated.length} / ${unresolved.length}`}</strong>
+        <p>{adjustment ? `Gross increases ${money(agg.increased.amount)} · gross reductions ${money(agg.decreased.amount)}` : `Validated ${money(validatedTotal)} · unresolved ${money(unresolvedTotal)}`}</p></article></div>
     <p className="notice">{adjustment ? 'These are amount differences between provisional House and NEP pairs. NIA has one retained House schedule; this view does not establish changes between House readings.'
-      : `${side === 'house' ? 'House rows without a unique NEP counterpart are insertion candidates' : 'NEP rows without a unique House counterpart are deletion candidates'}. Title differences, OCR, and repeated titles can prevent pairing. Candidate status does not certify ${side === 'house' ? 'an insertion' : 'a deletion'}.`}</p>
+      : `${side === 'house' ? 'House rows without a unique NEP counterpart are insertion candidates' : 'NEP rows without a unique House counterpart are deletion candidates'}. Of these, ${unresolved.length} rows (${money(unresolvedTotal)}) carry a deterministic near-miss mark — a spelling, location or repeated-title variant of a plausible counterpart — and stay unresolved pending review; ${validated.length} rows (${money(validatedTotal)}) have no counterpart at all. Candidate status does not certify ${side === 'house' ? 'an insertion' : 'a deletion'}.`}</p>
     {dim !== 'overall' && <div className="aggregate-table"><h3>Totals by {dim === 'program' ? 'program' : 'sub-program'}</h3>
       <Table tableId={`${view}-by-${dim}`} route={route} rows={groups} label="NIA candidate group totals" initialSort={{key: 'amount_php', direction: 'desc'}} columns={[
         {key: 'label', label: 'Group', scope: 'row', render: g => <button className="group-open" onClick={() => navigate(route, {group: g.id, page: null})}>{g.label}</button>},
@@ -571,12 +582,19 @@ function ConcentrationAnalysis({projects, stage, route, onPdf}) {
 }
 function AiMonitoringAnalysis({data, stage, rows, route, onPdf}) {
   const p = paramsOf(route), projects = aiMonitoringProjects(filterProjects(stage.projects, p), p);
+  const method = normalizeMatchingMethod(p.match);
   const stats = allocationStats(projects), annexTotal = allocationStats(stage.projects).total;
   const variants = projects.filter(project => aiMonitoringBasis(project) === 'ocr_variant');
-  const insertions = aiMonitoringInsertions(rows, p), insertionStats = allocationStats(insertions.map(r => r.house));
-  const recon = aiMonitoringReconciliation(rows);
+  const insertions = aiMonitoringInsertions(rows, {...p, method}), insertionStats = allocationStats(insertions.map(r => r.house));
+  const recon = aiMonitoringReconciliation(rows, {method});
   const houseStats = allocationStats(aiMonitoringProjects(filterProjects(data.stages.house.projects, p), p));
   const percent = (value, total) => total ? `${(value / total * 100).toFixed(1)}%` : '—';
+  const markPool = data.ai_monitoring_summaries?.[method]?.unmatched_marks;
+  const aiSplit = data.ai_monitoring_summaries?.[method]?.candidate_split;
+  const markRows = markPool ? Object.entries(markPool).filter(([, v]) => v.house_only.count || v.nep_only.count)
+    .map(([kind, v]) => ({id: kind, label: variantMarkLabels[kind],
+      house_count: v.house_only.count, house_php: v.house_only.amount_php,
+      nep_count: v.nep_only.count, nep_php: v.nep_only.amount_php})) : [];
   const sourceRows = Object.values(data.stages).map(s => {
     const scoped = aiMonitoringProjects(filterProjects(s.projects, p), p), totals = allocationStats(scoped);
     return {id: s.key, label: s.label, count: totals.count, total_php: totals.total,
@@ -599,16 +617,35 @@ function AiMonitoringAnalysis({data, stage, rows, route, onPdf}) {
     </details>
   </section>
   <section className="fmr-section" aria-label="AI monitoring insertion summary"><h2>House AI monitoring insertion candidates</h2>
-    <p>House-only AI monitoring rows under the current filters, regardless of the selected budget source. OCR/title differences and repeated titles can prevent a NEP counterpart from pairing; these remain provisional insertion candidates.</p>
+    <div className="analysis-controls"><label>Matching method<select aria-label="AI monitoring matching method" value={method}
+      onChange={e => filterChange(route, {match: e.target.value === 'ai_corrected' ? null : e.target.value, records: null})}>
+      {method === 'strict' && <option value="strict">{matchingMethodLabels.strict}</option>}
+      {method === 'strict' && <option value="ai_corrected">{matchingMethodLabels.ai_corrected}</option>}
+      {method === 'ai_corrected' && <option value="ai_corrected">{matchingMethodLabels.ai_corrected}</option>}
+      {method === 'ai_corrected' && <option value="strict">{matchingMethodLabels.strict}</option>}
+    </select></label></div>
+    <p className="nia-method-note">{method === 'ai_corrected'
+      ? 'Corrected AI titles: matching keys normalize the verified NEP OCR readings (Al/AL/AT → AI) and treat Monitoring and Monitoring System as the same wording. Stored titles are never rewritten.'
+      : 'Strict titles: raw source titles only. OCR readings and wording differences keep rows unmatched, so candidate counts are much larger here.'}
+      {' '}House-only AI monitoring rows under the current filters and the selected method, regardless of the selected budget source.</p>
     <div className="fmr-stats"><Stat label="Insertion candidates" value={insertionStats.count} detail="Unmatched House project rows"/>
-      <Stat label="Candidate House allocation" value={money(insertionStats.total)} detail="Whole project allocations"/>
-      <Stat label="Share of House AI projects" value={percent(insertionStats.count, houseStats.count)} detail={`Of ${houseStats.count} filtered House AI rows`}/>
+      <Stat label="Validated candidates" value={aiSplit ? aiSplit.house_only.no_counterpart.count : insertionStats.count} detail={aiSplit ? `${money(aiSplit.house_only.no_counterpart.amount_php)} · no counterpart found` : 'No counterpart found'}/>
+      <Stat label="Unresolved candidates" value={aiSplit ? aiSplit.house_only.unresolved.count : 0} detail={aiSplit ? `${money(aiSplit.house_only.unresolved.amount_php)} · plausible counterpart, held out` : ''}/>
       <Stat label="Share of House AI allocation" value={percent(insertionStats.total, houseStats.total)} detail={`Of ${money(houseStats.total)}`}/></div>
-    <p>{insertions.filter(r => r.ambiguous_title).length} candidates have repeated-title ambiguity.</p>
-    <p className="muted">Reading note (full AI population, before filters): candidate allocations are a matching residual, not the source difference. Paired AI titles print identical amounts, so the whole NEP → House movement of {signedMoney(recon.net_delta_php)} (₱{(recon.nep_php / 1e9).toFixed(3)}B → ₱{(recon.house_php / 1e9).toFixed(3)}B) comes from unmatched rows — ₱{(recon.candidate_php / 1e9).toFixed(2)}B House-only against ₱{(recon.nep_only_php / 1e9).toFixed(2)}B NEP-only. {recon.twin_count} of {recon.candidate_count} candidates ({money(recon.twin_php)}) have an unpaired same-sub-program, same-amount NEP row, which marks a reworded or OCR-variant title rather than a certified new work; counterpart review may reclassify them.</p>
+    <p>{insertions.filter(r => r.ambiguous_title).length} candidates have repeated-title ambiguity.{aiSplit ? ` Only ${aiSplit.house_only.no_counterpart.count} of ${insertionStats.count} candidates (${money(aiSplit.house_only.no_counterpart.amount_php)}) have no NEP counterpart at all — the rest carry deterministic near-miss marks and stay unresolved pending review.` : ''}</p>
+    <p className="muted">Reading note (full AI population, before filters): candidate allocations are a matching residual, not the source difference. Paired AI titles print identical amounts, so the whole NEP → House movement of {signedMoney(recon.net_delta_php)} (₱{(recon.nep_php / 1e9).toFixed(3)}B → ₱{(recon.house_php / 1e9).toFixed(3)}B) comes from unmatched rows — ₱{(recon.candidate_php / 1e9).toFixed(2)}B House-only against ₱{(recon.nep_only_php / 1e9).toFixed(2)}B NEP-only under {matchingMethodLabels[method]}.{method === 'strict' && recon.twin_count ? ` ${recon.twin_count} of ${recon.candidate_count} candidates (${money(recon.twin_php)}) have an unpaired same-sub-program, same-amount NEP row, which marks a reworded or OCR-variant title rather than a certified new work; the corrected method converts those twins into pairs.` : ''}</p>
+    {markRows.length > 0 && <><h3>Unmatched rows by review mark ({matchingMethodLabels[method]})</h3>
+      <p className="muted">Deterministic near-miss marks over the selected method's unmatched AI rows. Variant marks require equal amounts and a unique one-to-one counterpart; they are review pointers, never certified pairs.</p>
+      <Table route={route} rows={markRows} label="NIA AI unmatched review marks" columns={[
+        {key: 'label', label: 'Review mark', scope: 'row'},
+        {key: 'house_count', label: 'House-only rows', align: 'num'},
+        {key: 'house_php', label: 'House allocation (PHP)', align: 'num', render: r => money(r.house_php)},
+        {key: 'nep_count', label: 'NEP-only rows', align: 'num'},
+        {key: 'nep_php', label: 'NEP allocation (PHP)', align: 'num', render: r => money(r.nep_php)},
+      ]}/></>}
     <button className="group-open" onClick={() => navigate(route, {records: 'ai_insertions', page: null})}>Inspect insertion candidates</button>
     {p.records === 'ai_insertions' && <Dialog label="NIA AI monitoring insertion candidates" onClose={() => navigate(route, {records: null})}>
-      <p>{insertionStats.count} House-only candidates · {money(insertionStats.total)} in whole project allocations.</p>
+      <p>{insertionStats.count} House-only candidates · {money(insertionStats.total)} in whole project allocations · {matchingMethodLabels[method]}.</p>
       <div className="comparison-table nia-analysis-ledger"><ComparisonTable rows={insertions} route={route} onPdf={onPdf} initialSort={{key: 'house_php', direction: 'desc'}}/></div>
     </Dialog>}
   </section>
@@ -665,11 +702,11 @@ function Analysis({data, route, rows, onPdf}) {
     ['stats', 'Statistics'], ['ai_monitoring', 'AI monitoring'], ['candidates', 'Candidates'], ['controls', 'Agency controls']];
   return <div className="headline-analysis nia-analysis"><section className="hero"><p className="eyebrow">NIA · FY2027</p><h1>NIA allocation analysis</h1>
     <p>Recorded allocations, candidate insertions and deletions, and paired amount adjustments.</p>
-    <div className="hero-actions">{['overview', 'stats', 'ai_monitoring'].includes(view) ? <label className="hero-source">Budget source<select aria-label="Analysis budget source" value={stageKey}
+    <div className="hero-actions">    {['overview', 'stats', 'ai_monitoring'].includes(view) ? <label className="hero-source">Budget source<select aria-label="Analysis budget source" value={stageKey}
       onChange={e => navigate(route, {stage: e.target.value, page: null})}>{Object.entries(stageLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
       : <span className="nia-analysis-basis">{view === 'insertions' ? 'House GAB · unmatched source rows' : view === 'deletions' ? 'DBM NEP · unmatched source rows' : view === 'controls' ? 'House agency table' : 'House GAB ↔ DBM NEP'}</span>}<ShareLink/></div></section>
     <Tabs route={route} defaultKey="overview" items={views} ariaLabel="Analysis views"
-      reset={{status: null, direction: null, ranking: null, aiBasis: null, sort: null, dir: null, group: null, pair: null, dim: null, table: null, pdf: null, pdfPage: null}}/>
+      reset={{status: null, direction: null, ranking: null, aiBasis: null, sort: null, dir: null, group: null, pair: null, dim: null, table: null, pdf: null, pdfPage: null, match: null, records: null}}/>
     <h2 className="fmr-question">{{overview:'How are recorded NIA allocations distributed across sub-programs?',
       insertions:'Which House project records have no unique NEP counterpart?',
       deletions:'Which NEP project records have no unique House counterpart?',
@@ -741,9 +778,16 @@ function CandidateEvidence({rows, route, onPdf}) {
   const id = route.params.get('pair');
   if (!id) return null;
   const row = rows.find(r => r.id === id);
+  const counterpartIds = row?.variant_mark?.counterpart_ids || [];
+  const counterpartRows = counterpartIds.map(cid => rows.find(r => r.house_id === cid || r.nep_id === cid)).filter(Boolean);
   return <Dialog label="NIA candidate evidence" onClose={() => navigate(route, {pair: null})}>
     {!row ? <p role="alert">Unknown candidate selection.</p> : <><p>{statusLabels[row.status]} · {row.subprogram_key}</p>
       <p>Paired difference: {row.delta_php == null ? 'unavailable for source-only observations' : signedMoney(row.delta_php)}.</p>
+      {row.variant_mark_kind && row.variant_mark_kind !== 'no_counterpart' && <p className="nia-variant-note">
+        <span className="fmr-badge">{variantMarkLabels[row.variant_mark_kind]}</span>{' '}
+        Deterministic review mark over equal amounts — it points at a possible counterpart but never certifies identity.
+        {counterpartRows.map(c => <button key={c.id} className="nia-inline-link" onClick={() => navigate(route, {pair: c.id})}>{c.title} · {money(c.house_php ?? c.nep_php)} →</button>)}
+      </p>}
       <div className="fmr-pair-evidence">{['nep', 'house'].map(side => <section key={side} className="fmr-panel"><h3>{stageLabels[side]}</h3>
         {row[side] ? <><p>{row[side].title}</p><strong>{money(row[side].amount_php)}</strong><p><code>{row[side].id}</code></p>
           <SourceButton source={row[side].source} onPdf={onPdf}/><p><a href={href(side, {node: row[side].id})}>Open source record →</a></p></> : <p>No unique title counterpart in this stage.</p>}

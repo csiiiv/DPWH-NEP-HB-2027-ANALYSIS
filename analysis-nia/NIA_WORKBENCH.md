@@ -103,26 +103,72 @@ costs. Generic remote/intermediate monitoring, gauges, sensors and CCTV without
 AI wording are excluded.
 
 The tab also reports House-only AI monitoring insertion candidates under the
-current filters, independently of the selected source stage. The full population
-has 123 candidates totaling ₱2,626,950,000: 41.1% of the 299 House AI monitoring
-projects and 41.4% of their allocation. Four have repeated-title ambiguity.
+current filters, independently of the selected source stage. A **Matching
+method** selector labels the two classifications: `ai_corrected` (default)
+normalizes AI-monitoring matching keys using the verified OCR readings and the
+Monitoring/Monitoring System wording equivalence; `strict` uses raw titles.
+Under the corrected method the full population has 26 candidates totaling
+₱556,000,000 (8.7% of the 299 House AI monitoring projects and 8.8% of their
+allocation); under strict titles the same population shows 123 candidates
+totaling ₱2,626,950,000. Four strict candidates have repeated-title ambiguity.
 `records=ai_insertions` opens the supporting comparison rows and their CSV
 export, including candidate status, both source IDs/titles/amounts and PDFs.
 Search, sub-program, review category and title-basis filters apply to the House
-rows used for these figures. OCR variants selected in the NEP title-basis filter
-have no House rows, so that scope yields zero insertion candidates. Source-only
-status remains provisional; OCR/title differences can prevent an existing NEP
-counterpart from pairing. The monitoring component cost is not itemized.
+rows used for these figures. Source-only status remains provisional; the
+unmatched rows below show how far title normalization already reaches.
+The monitoring component cost is not itemized.
 
-A reading note reconciles the AI ledgers on the full population: paired AI
-titles print identical amounts (₱3,715,000,000 on both sides), so the whole
-NEP → House movement of −₱674,000,000 (₱7,015,950,000 → ₱6,341,950,000) comes
-from unmatched rows — ₱2,626,950,000 House-only against ₱3,300,950,000
-NEP-only. A one-to-one maximum matching pairs 120 of the 123 candidates
-(₱2,501,950,000) with an unpaired same-sub-program, same-amount NEP AI row,
-marking reworded or OCR-variant titles rather than certified new works. The
-Highlights card states the same reconciliation; both figures are recomputed
-from the retained ledgers, never restated.
+A reading note reconciles the AI ledgers on the full population for the
+selected method: paired AI titles print identical amounts (₱5,785,950,000 on
+both sides under the corrected method; ₱3,715,000,000 under strict), so the
+whole NEP → House movement of −₱674,000,000 (₱7,015,950,000 → ₱6,341,950,000)
+comes from unmatched rows — ₱556,000,000 House-only against ₱1,230,000,000
+NEP-only corrected (₱2,626,950,000 against ₱3,300,950,000 strict). A one-to-one
+maximum matching pairs 120 of the 123 strict candidates (₱2,501,950,000) with
+an unpaired same-sub-program, same-amount NEP AI row, marking reworded or
+OCR-variant titles rather than certified new works; the corrected method
+converts those twins into pairs. The Highlights card states the same
+reconciliation; both figures are recomputed from the retained ledgers, never
+restated.
+
+**Unmatched review marks.** Every unmatched row under the corrected method
+carries a deterministic near-miss mark computed by the builder: `repeated_title`
+(equal corrected keys with colliding amounts — no distinguishable one-to-one
+counterpart), `location_variant` (unique same-amount counterpart reached by
+removing a House "in Brgy. …" qualifier), `exact_variant` (same corrected key,
+blocked only by a wider group and resolved by unique amounts),
+`spelling_variant` (unique same-amount counterpart with OCR/typo spelling
+differences, similarity ≥ 0.95 after correction), or `no_counterpart` (no
+same-amount corrected candidate remains). Marks consume counterpart rows
+one-to-one, appear as badges and CSV columns, and never create pairs or
+certify identity. For the corrected AI residual the marks resolve as: 5
+House rows / ₱100M repeated (San Juan ×2, Bakod Bayan ×2, BITOON), 5 / ₱121M
+spelling (`RM5`↔`RMS`, `Cerdeña`↔`Cerdefia`, `SPIP IV`↔`SPIP 1V`,
+`Camencita`↔`Carmencita`, `San Rogue`↔`San Roque Malbog`), 3 / ₱40M location
+(the Sta. Cruz RIS / Pila Area rows behind House-added barangay qualifiers),
+and 13 / ₱295M with no counterpart at all (nine satellite-assisted rows,
+Aliaga ₱50M, two location-specific PBRIS EXTN rows and BALAKAN ₱15M — the
+strongest genuine-insertion candidates). The AI tab renders this split as a
+table; the Compare tables show each row's mark badge and its marked
+counterpart link.
+
+**Validated vs unresolved candidates.** Following the DPWH candidate
+convention, both method summaries and the AI summaries carry a
+`*_split`/`candidate_split` separating **validated** candidates (mark
+`no_counterpart` — no plausible counterpart exists anywhere in the other
+ledger) from **unresolved** candidates (variant marks, or strict split-halves
+whose plausible counterpart is the corrected-method twin). The split is
+stated in the Insertions/Deletions headline cards, the candidate-group
+filter (`validated`/`unresolved` options), the AI tab stats, and the
+Highlights insertions/deletions cards; validated rows carry no near-miss
+mark by construction. Two invariants hold and are asserted in tests: the
+splits reconcile to the unmatched totals under each method, and the
+validated pools are identical under strict and corrected matching (176
+House / ₱6,299.8M and 138 NEP / ₱5,053.676M overall; 13 / ₱295M and
+40 / ₱954M within AI). Matching corrections therefore only move rows between
+paired and unresolved — never in or out of the validated candidate pool — so
+headline "no counterpart found" figures are stable across methods and safe
+to quote.
 
 Candidate views accept `dim=overall|subprogram|program`, `ranking=all|unambiguous|ambiguous`
 for source-only candidates, and `direction=all|increased|decreased` for adjustments.
@@ -150,26 +196,37 @@ context, outside the detailed annex project ledger.
 
 ## Matching and accounting
 
-Candidates require a canonical title that occurs exactly once on each side
-within the same sub-program. Canonicalization case-folds Unicode-normalized
-text and joins alphanumeric tokens; no fuzzy matching is applied. Repeated
-keys on either side stay unmatched, even when their amounts agree. This yields
-509 candidate pairs, 319 House-only observations, and 282 NEP-only observations.
-Four pairs have different amounts. Source-only rows are not certified
-insertions/deletions; OCR and title differences can prevent pairing.
+Two labeled matching methods share one comparison ledger. **strict** requires
+a canonical title that occurs exactly once on each side within the same
+sub-program: canonicalization case-folds Unicode-normalized text and joins
+alphanumeric tokens; no fuzzy matching is applied. Repeated keys on either
+side stay unmatched, even when their amounts agree. **ai_corrected**
+additionally normalizes AI-monitoring matching keys only — the 59 NEP
+`Al`/`AL`/`AT Monitoring` OCR readings verified against rendered pages read
+`AI`, and `… with AI Monitoring` / `… with AI Monitoring System` are the same
+project wording. Stored titles, amounts and source rows are never rewritten;
+every comparison row carries both `status` (corrected) and `strict_status`
+(`paired`, `split_pair` for corrected-only pairs, or the source-only status).
+This yields, under strict: 509 candidate pairs, 319 House-only observations,
+282 NEP-only observations, four pairs with different amounts; under
+ai_corrected: 606 pairs, 222 House-only, 185 NEP-only, the same four changed
+pairs (all strict pairs survive the correction; the builder asserts this).
+Source-only rows are not certified insertions/deletions; unmatched rows
+additionally carry the deterministic review marks described above.
 
-Every source row occurs once in the comparison partition. The money identity is:
+Every source row occurs once in the comparison partition. The money identity
+holds under both methods:
 
 ```
-paired Δ −₱830,000,000
-+ House-only ₱9,452,650,000
-− NEP-only ₱8,221,526,000
-= annex Δ ₱401,124,000
+strict:      paired Δ −₱830,000,000 + House-only ₱9,452,650,000 − NEP-only ₱8,221,526,000 = annex Δ ₱401,124,000
+ai_corrected: paired Δ −₱830,000,000 + House-only ₱7,381,700,000 − NEP-only ₱6,150,576,000 = annex Δ ₱401,124,000
 ```
 
 `build_nia_workbench.py` validates stage membership, unique IDs, each sub-program
-count and total, and the comparison partition before writing the regenerable,
-git-ignored `data/nia_workbench.json`. It retains OCR word ownership, raw amount
+count and total, the comparison partition, mark symmetry and one-to-one
+consumption, both reading-note anchors (176/123/151 and 273/26/54 AI figures),
+and the changed-pair set before writing the regenerable, git-ignored
+`data/nia_workbench.json`. It retains OCR word ownership, raw amount
 tokens, flags, source paths, page references, and evidence-crop names.
 
 ## Build and verify

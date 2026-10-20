@@ -108,7 +108,7 @@ def main():
                     page.get_by_label('Analysis budget source', exact=True).select_option('house')
                     expect(page.locator('.fmr-stats')).to_contain_text('₱17,999,305,000')
                     page.screenshot(path=str(captures / f'analysis-overview-{width}.png'))
-                    for label, expected_count in [('Insertions',319),('Deletions',282),('Adjustments',4),('Candidates',1110)]:
+                    for label, expected_count in [('Insertions',222),('Deletions',185),('Adjustments',4),('Candidates',1013)]:
                         page.get_by_role('link',name=label,exact=True).click()
                         expect(page.get_by_role('dialog',name='NIA candidate evidence')).to_have_count(0)
                         expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text(f'{expected_count:,} rows')
@@ -124,10 +124,12 @@ def main():
                         page.get_by_label('Analysis budget source', exact=True).select_option(side)
                         expect(ai_pages).to_contain_text(f'{count} rows')
                         expect(ai_stats).to_contain_text(f'₱{total:,}')
-                        expect(insertion_summary).to_contain_text('123')
-                        expect(insertion_summary).to_contain_text('₱2,626,950,000')
-                        expect(insertion_summary).to_contain_text('41.1%')
-                        expect(insertion_summary).to_contain_text('41.4%')
+                        expect(insertion_summary).to_contain_text('26')
+                        expect(insertion_summary).to_contain_text('₱0.56B')
+                        expect(insertion_summary).to_contain_text('8.8%')
+                        expect(insertion_summary).to_contain_text('Validated candidates')
+                        expect(insertion_summary).to_contain_text('₱295,000,000 · no counterpart found')
+                        expect(insertion_summary).to_contain_text('₱261,000,000 · plausible counterpart, held out')
                         with page.expect_download() as result:
                             page.get_by_role('button', name='Export filtered CSV', exact=True).click()
                         exported = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
@@ -138,24 +140,34 @@ def main():
                         assert sum(x['ai_monitoring_basis'] == 'ocr_variant' for x in exported) == (59 if side == 'nep' else 0)
                     expect(insertion_summary).to_contain_text('Reading note')
                     expect(insertion_summary).to_contain_text('₱-674,000,000')
+                    expect(insertion_summary).to_contain_text('review mark')
+                    # Strict-method view exposes the committed strict figures,
+                    # with the OCR twins held out as unresolved candidates.
+                    page.get_by_label('AI monitoring matching method', exact=True).select_option('strict')
+                    expect(insertion_summary).to_contain_text('123')
+                    expect(insertion_summary).to_contain_text('₱2.63B')
+                    expect(insertion_summary).to_contain_text('₱295,000,000 · no counterpart found')
+                    expect(insertion_summary).to_contain_text('110')
                     expect(insertion_summary).to_contain_text('120 of 123 candidates')
+                    page.get_by_label('AI monitoring matching method', exact=True).select_option('ai_corrected')
                     insertion_summary.get_by_role('button', name='Inspect insertion candidates', exact=True).click()
                     insertion_dialog = page.get_by_role('dialog', name='NIA AI monitoring insertion candidates')
                     expect(insertion_dialog).to_be_visible()
-                    expect(insertion_dialog.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('123 rows')
+                    expect(insertion_dialog.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('26 rows')
                     with page.expect_download() as result:
                         insertion_dialog.get_by_role('button', name='Export filtered CSV', exact=True).click()
                     inserted = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
-                    assert len(inserted) == 123 and sum(int(x['house_amount_php']) for x in inserted) == 2626950000
+                    assert len(inserted) == 26 and sum(int(x['house_amount_php']) for x in inserted) == 556000000
                     assert all(x['status'] == 'house_only' and x['house_id'] and not x['nep_id'] for x in inserted)
-                    assert len({x['house_id'] for x in inserted}) == 123
+                    assert len({x['house_id'] for x in inserted}) == 26
+                    assert {x['variant_mark_kind'] for x in inserted} >= {'spelling_variant', 'no_counterpart', 'repeated_title'}
                     first_inserted = inserted[0]
                     page.reload(wait_until='networkidle')
                     expect(insertion_dialog).to_be_visible()
                     page.keyboard.press('Escape')
                     expect(insertion_dialog).not_to_be_visible()
                     page.get_by_label('Search', exact=True).fill(first_inserted['house_id'])
-                    expect(insertion_summary).to_contain_text('Of 1 filtered House AI rows')
+                    expect(insertion_summary).to_contain_text('Unmatched House project rows')
                     expect(insertion_summary).to_contain_text(f'₱{int(first_inserted["house_amount_php"]):,}')
                     insertion_summary.get_by_role('button', name='Inspect insertion candidates', exact=True).click()
                     expect(insertion_dialog.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('1 rows')
@@ -205,7 +217,7 @@ def main():
                     page.get_by_label('Sub-program', exact=True).select_option('Other Irrigation System')
                     expect(ai_pages).to_contain_text('0 rows')
                     expect(ai_stats).not_to_contain_text('NaN')
-                    expect(insertion_summary).to_contain_text('Of 0 filtered House AI rows')
+                    expect(insertion_summary).to_contain_text('Insertion candidates')
                     page.get_by_role('button', name='Clear filters', exact=True).click()
                     page.screenshot(path=str(captures / f'analysis-ai-monitoring-{width}.png'))
                     page.get_by_label('AI monitoring title basis', exact=True).select_option('explicit')
@@ -217,8 +229,8 @@ def main():
                     funding = page.get_by_role('region', name='NIA funding reconciliation', exact=True)
                     coverage = page.get_by_role('region', name='NIA pairing coverage', exact=True)
                     expect(funding.locator('tbody tr')).to_have_count(6)
-                    expect(coverage).to_contain_text('53.3%')
-                    expect(coverage).to_contain_text('47.5%')
+                    expect(coverage).to_contain_text('76.6%')
+                    expect(coverage).to_contain_text('73.2%')
                     page.get_by_label('Sub-program', exact=True).select_option('Other Irrigation System')
                     expect(funding.locator('tbody tr')).to_have_count(1)
                     expect(funding).to_contain_text('₱-2,540,000,000')
@@ -259,8 +271,8 @@ def main():
                     page.screenshot(path=str(captures / f'analysis-stats-{width}.png'))
                     goto('analysis?view=insertions&pair=null&status=null')
                     expect(page.get_by_role('dialog',name='NIA candidate evidence')).to_have_count(0)
-                    expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text('319 rows')
-                    for view, expected_count, side in [('insertions', 319, 'house'), ('deletions', 282, 'nep'), ('adjustments', 4, None)]:
+                    expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text('222 rows')
+                    for view, expected_count, side in [('insertions', 222, 'house'), ('deletions', 185, 'nep'), ('adjustments', 4, None)]:
                         goto('analysis?view=' + view)
                         expect(page.get_by_role('link', name=view.title(), exact=True)).to_have_attribute('aria-current', 'page')
                         expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text(f'{expected_count:,} rows')
@@ -287,7 +299,7 @@ def main():
                     ambiguous = [r for r in data['comparison'] if r['status'] == 'nep_only' and r.get('ambiguous_title')]
                     expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text(f'{len(ambiguous)} rows')
                     page.get_by_role('link', name='Insertions', exact=True).click()
-                    expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('319 rows')
+                    expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('222 rows')
                     goto('home')
                     assert page.get_by_role('navigation', name='Workbench pages').locator('a').all_text_contents() == [
                         'Home', 'Highlights', 'Compare stages', 'Analysis', 'House GAB', 'DBM NEP']
@@ -338,10 +350,10 @@ def main():
                             exported_ai = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
                             assert len(exported_ai) == 299 and sum(int(x['amount_php']) for x in exported_ai) == 6341950000
                             modal.get_by_role('link', name='Unmatched House AI rows', exact=True).click()
-                            expect(modal.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('123 rows')
-                            expect(modal).to_contain_text('₱2,626,950,000 in whole-project allocations')
+                            expect(modal.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('26 rows')
+                            expect(modal).to_contain_text('₱556,000,000 in whole-project allocations')
                             page.reload(wait_until='networkidle')
-                            expect(modal.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('123 rows')
+                            expect(modal.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('26 rows')
                         if index == 8:
                             crop = modal.get_by_role('region', name='Selected source evidence').locator('img').first
                             expect(crop).to_be_visible()
@@ -394,11 +406,11 @@ def main():
                     page.get_by_role('button', name='Clear story selection', exact=True).click()
                     expect(page.locator('.fmr-highlight-grid')).to_be_visible()
                     goto('highlights?story=insertions')
-                    insertions_dialog = page.get_by_role('dialog', name='Highlight evidence: 319 House rows have no unique NEP title match')
+                    insertions_dialog = page.get_by_role('dialog', name='Highlight evidence: 222 House rows have no unique NEP title match')
                     with page.expect_download() as result:
                         insertions_dialog.get_by_role('button', name='Export filtered CSV', exact=True).click()
                     exported = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
-                    assert len(exported) == 319 and all(x['house_id'] and not x['nep_id'] for x in exported)
+                    assert len(exported) == 222 and all(x['house_id'] and not x['nep_id'] for x in exported)
                     page.keyboard.press('Escape')
                     expect(page.locator('dialog[open]')).to_have_count(0)
 

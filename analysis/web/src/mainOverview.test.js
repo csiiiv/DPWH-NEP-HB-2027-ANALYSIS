@@ -38,7 +38,7 @@ test('Overview conserves each source ledger and separates all candidate/paired m
     for (const key of ['insertions','deletions','adjustments']) assert.ok(w.links[key].includes('?'));
   }
   const nia = data.workspaces.find(w => w.key === 'nia');
-  assert.equal(nia.insertions.count,319); assert.equal(nia.deletions.count,282);
+  assert.equal(nia.insertions.count,222); assert.equal(nia.deletions.count,185);
   assert.equal(nia.adjustments.net_php,-830000000); assert.equal(nia.delta_php,401124000);
   const fmr = data.workspaces.find(w => w.key === 'fmr');
   assert.equal(fmr.insertions.count,355); assert.equal(fmr.deletions.count,95);
@@ -47,7 +47,7 @@ test('Overview conserves each source ledger and separates all candidate/paired m
 test('Unchanged populations pair equal allocations and complete the paired partition', () => {
   const byKey = Object.fromEntries(data.workspaces.map(w => [w.key, w]));
   // Stable figures from the verified 17 October build.
-  assert.equal(byKey.nia.unchanged.count,505); assert.equal(byKey.nia.unchanged.amount_php,7976655000);
+  assert.equal(byKey.nia.unchanged.count,602); assert.equal(byKey.nia.unchanged.amount_php,10047605000);
   assert.equal(byKey.fmr.unchanged.count,605); assert.equal(byKey.fmr.unchanged.amount_php,13584095000);
   assert.equal(byKey.hfep.unchanged.count,281); assert.equal(byKey.hfep.unchanged.amount_php,3092749000);
   assert.equal(byKey.dpwh.unchanged.count,9670); assert.equal(byKey.dpwh.unchanged.amount_php,348425553000);
@@ -164,7 +164,7 @@ test('Summary exports retain exact PHP, basis and supporting links; topic findin
   assert.ok(csv.includes('#nia/compare?view=projects&status=unchanged'));
   assert.ok(csv.includes('-140000'));
   const ai = data.features.find(f => f.key === 'nia');
-  assert.equal(ai.count,123); assert.equal(ai.amount_php,2626950000);
+  assert.equal(ai.count,26); assert.equal(ai.amount_php,556000000);
   assert.ok(ai.amount_php < data.workspaces.find(w => w.key === 'nia').insertions.amount_php);
 });
 test('Adapters reject reused source rows, missing records and arithmetic drift rather than publishing plausible totals', () => {

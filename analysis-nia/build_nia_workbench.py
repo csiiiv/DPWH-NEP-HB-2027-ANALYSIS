@@ -11,6 +11,20 @@ without a unique counterpart stay unmatched observations. The money identity
   paired Δ + house_only − nep_only = program Δ
 is asserted before anything is written.
 
+Two matching methods are emitted. "strict" is the committed default: raw
+source titles, no normalization. "ai_corrected" applies two auditable
+normalizations to the matching keys of AI-monitoring rows only — verified NEP
+OCR readings (Al/AL/AT Monitoring → AI Monitoring; the 59 variants checked
+against rendered pages) and Monitoring/Monitoring System wording equivalence
+— without rewriting any stored title. Every comparison row carries both
+statuses so the two classifications stay side by side.
+
+Unmatched rows additionally receive deterministic review marks computed from
+the corrected residual: repeated-title blocks, one-to-one spelling or
+location-suffix variants (equal amounts, accent-folded similarity), or no
+near-miss counterpart. Marks are review pointers over equal amounts; they
+never create pairs, consume counterpart rows, or certify identity.
+
 Output: analysis-nia/data/nia_workbench.json (regenerable, git-ignored).
 """
 from collections import Counter
@@ -56,17 +70,50 @@ def canonical_title(text):
     return ' '.join(re.findall(r'[a-z0-9]+', text))
 
 
-def match_projects(house_projects, nep_projects):
+# Verified NEP OCR readings: 59 titles print Al/AL/AT Monitoring where the
+# rendered annex reads AI. Matching keys may use the verified reading; stored
+# titles are never rewritten.
+OCR_AI_MONITORING = re.compile(r'\b(?:Al|AL|AT)(\s+Monitoring)')
+# Wording equivalence applied to matching keys only: the annexes print both
+# "... with AI Monitoring" and "... with AI Monitoring System" for the same
+# project wording.
+MONITORING_SYSTEM_SUFFIX = re.compile(r'(\bMonitoring)(\s+System)?\b')
+
+AI_MONITORING = re.compile(
+    r'\b(?:AI|Artificial\s+Intelligence)[\s-]*(?:Satellite[\s-]*Assisted[\s-]+)?Monitoring\b', re.I)
+
+
+def corrected_title_for_matching(project):
+    """AI-monitoring key normalization: verified OCR reading plus wording."""
+    title = project['title']
+    if project['stage'] == 'nep':
+        title = OCR_AI_MONITORING.sub(r'AI\1', title)
+    if not AI_MONITORING.search(title):
+        return title
+    def drop_system(match):
+        return match.group(1)
+    return MONITORING_SYSTEM_SUFFIX.sub(drop_system, title)
+
+
+def match_projects(house_projects, nep_projects, method='strict'):
     """Pair rows whose (sub-program, canonical title) key is unique on both sides.
 
     A key present more than once on either side is ambiguous and never pairs
     (the House annex prints repeated titles as distinct rows; see the audit's
     repeated_title_groups). Everything else stays a source-only observation.
+
+    method='strict' uses raw source titles (the committed default).
+    method='ai_corrected' additionally normalizes AI-monitoring matching keys:
+    verified NEP OCR readings (Al/AL/AT → AI) and Monitoring/Monitoring
+    System equivalence. Stored titles and amounts are never rewritten.
     """
+    if method not in ('strict', 'ai_corrected'):
+        raise ValueError(f'unknown matching method: {method}')
+    normalize = (lambda p: p['title']) if method == 'strict' else corrected_title_for_matching
     def build_index(projects):
         index = {}
         for p in projects:
-            index.setdefault((p['subprogram_key'], canonical_title(p['title'])), []).append(p)
+            index.setdefault((p['subprogram_key'], canonical_title(normalize(p))), []).append(p)
         return index
 
     house_index, nep_index = build_index(house_projects), build_index(nep_projects)
@@ -86,6 +133,103 @@ def match_projects(house_projects, nep_projects):
     house_remaining = [p for p in house_projects if p['id'] not in paired_house_ids]
     nep_remaining = [p for p in nep_projects if p['id'] not in paired_nep_ids]
     return rows, house_remaining, nep_remaining
+
+
+# Deterministic review marks over the corrected unmatched residual. Marks are
+# pointers for review, never pairs: each candidate must carry the same amount
+# and share the sub-program, and one-to-one consumption keeps marks unique on
+# both sides. Identity still requires the rendered pages.
+def _similarity(a, b):
+    from difflib import SequenceMatcher
+    return SequenceMatcher(None, a, b).ratio()
+
+
+BRGY_SUFFIX = re.compile(r'\s+in\s+Brgy\.\s+\S+.*$', re.I)
+SIMILARITY_FLOOR = 0.95
+
+
+def mark_unmatched_variants(house_remaining, nep_remaining):
+    """Mark unmatched rows with deterministic near-miss categories.
+
+    Returns (marks, pools). marks maps source id -> mark dict:
+      repeated_title   — corrected-key group where amounts collide, so no
+                         one-to-one counterpart can be distinguished
+                         (San Juan / Bakod Bayan identity review)
+      location_variant — unique same-amount counterpart whose House title
+                         only adds a trailing "in Brgy. …" qualifier
+      exact_variant    — corrected keys already equal; blocked only by a
+                         wider same-key group and resolved by a unique amount
+      spelling_variant — unique same-amount counterpart whose corrected
+                         title differs only by OCR/typo spelling
+      no_counterpart  — no same-amount corrected residual candidate remains
+    Marks consume counterpart rows one-to-one, so each mark is unique on both
+    sides. Marks never create pairs or certify identity.
+    """
+    def corrected_key(p):
+        return canonical_title(corrected_title_for_matching(p))
+
+    house_stripped = {p['id']: canonical_title(BRGY_SUFFIX.sub('', corrected_title_for_matching(p)))
+                      for p in house_remaining}
+    marks = {}
+
+    # Phase 1: corrected-key groups shared across sides (using the House key
+    # with any trailing Brgy. qualifier removed). Pair strictly by amount.
+    by_key_house, by_key_nep = {}, {}
+    for p in house_remaining:
+        by_key_house.setdefault((p['subprogram_key'], house_stripped[p['id']]), []).append(p)
+    for p in nep_remaining:
+        by_key_nep.setdefault((p['subprogram_key'], corrected_key(p)), []).append(p)
+    consumed = set()
+    for key in sorted(by_key_house.keys() & by_key_nep.keys()):
+        group_h = sorted(by_key_house[key], key=lambda p: (p['amount_php'], p['id']))
+        group_n = sorted(by_key_nep[key], key=lambda p: (p['amount_php'], p['id']))
+        amounts_h = [p['amount_php'] for p in group_h]
+        amounts_n = [p['amount_php'] for p in group_n]
+        pairable = (len(amounts_h) == len(amounts_n)
+                    and len(set(amounts_h)) == len(amounts_h)
+                    and amounts_h == amounts_n)
+        if pairable:
+            for p, n in zip(group_h, group_n):
+                kind = 'exact_variant' if corrected_key(p) == corrected_key(n) else 'location_variant'
+                marks[p['id']] = {'mark': kind, 'counterpart_ids': [n['id']]}
+                marks[n['id']] = {'mark': kind, 'counterpart_ids': [p['id']]}
+                consumed.update((p['id'], n['id']))
+        elif set(amounts_h) & set(amounts_n):
+            # Amounts collide inside the group: no distinguishable one-to-one
+            # counterpart exists on either side.
+            for p in group_h + group_n:
+                if p['id'] not in marks:
+                    marks[p['id']] = {'mark': 'repeated_title', 'counterpart_ids': []}
+        # Groups without overlapping amounts fall through to phase 2 / none.
+
+    # Phase 2: one-to-one spelling variants among the remaining rows.
+    available = {p['id']: p for p in nep_remaining
+                 if p['id'] not in marks and p['id'] not in consumed}
+    for p in sorted(house_remaining, key=lambda p: (-p['amount_php'], p['id'])):
+        if p['id'] in marks:
+            continue
+        candidates = [n for n in available.values()
+                      if n['subprogram_key'] == p['subprogram_key']
+                      and n['amount_php'] == p['amount_php']
+                      and _similarity(house_stripped[p['id']], corrected_key(n)) >= SIMILARITY_FLOOR]
+        if len(candidates) == 1:
+            n = candidates[0]
+            marks[p['id']] = {'mark': 'spelling_variant', 'counterpart_ids': [n['id']]}
+            marks[n['id']] = {'mark': 'spelling_variant', 'counterpart_ids': [p['id']]}
+            del available[n['id']]
+
+    for p in house_remaining:
+        marks.setdefault(p['id'], {'mark': 'no_counterpart', 'counterpart_ids': []})
+    for p in nep_remaining:
+        marks.setdefault(p['id'], {'mark': 'no_counterpart', 'counterpart_ids': []})
+    pools = {}
+    kinds = ('repeated_title', 'location_variant', 'exact_variant', 'spelling_variant', 'no_counterpart')
+    for side, remaining in (('house', house_remaining), ('nep', nep_remaining)):
+        pools[side] = {}
+        for kind in kinds:
+            rows = [p for p in remaining if marks[p['id']]['mark'] == kind]
+            pools[side][kind] = {'count': len(rows), 'amount_php': sum(p['amount_php'] for p in rows)}
+    return marks, pools
 
 
 def load_house():
@@ -318,27 +462,61 @@ def build(write_output=True):
         validate_stage(stage)
     house['repeated_title_groups_computed'] = mark_review_metadata(house)
     nep['repeated_title_groups_computed'] = mark_review_metadata(nep)
-    rows, house_remaining, nep_remaining = match_projects(house['projects'], nep['projects'])
-    # Every source row must appear in exactly one comparison row.
-    ids = [r['house_id'] for r in rows] + [p['id'] for p in house_remaining]
+    strict_rows, strict_house_rem, strict_nep_rem = match_projects(house['projects'], nep['projects'])
+    corr_rows, corr_house_rem, corr_nep_rem = match_projects(house['projects'], nep['projects'], method='ai_corrected')
+    # Normalization may only add pairs; a strict pair disappearing under the
+    # corrected method would mean the normalization corrupted a key.
+    strict_pair_set = {(r['house_id'], r['nep_id']) for r in strict_rows}
+    corr_pair_set = {(r['house_id'], r['nep_id']) for r in corr_rows}
+    if not strict_pair_set <= corr_pair_set:
+        raise ValueError('Corrected matching dropped a strict pair')
+    if sum(r['delta_php'] != 0 for r in corr_rows) != sum(r['delta_php'] != 0 for r in strict_rows):
+        raise ValueError('Corrected matching changed the changed-pair set')
+    marks, variant_pools = mark_unmatched_variants(corr_house_rem, corr_nep_rem)
+    # Marks must be one-to-one and symmetric.
+    used_counterparts = Counter(cid for m in marks.values() for cid in m['counterpart_ids'])
+    if any(count > 1 for count in used_counterparts.values()):
+        raise ValueError('Variant marks consumed a counterpart row twice')
+    for pid, mark in marks.items():
+        for cid in mark['counterpart_ids']:
+            if marks[cid]['counterpart_ids'] != [pid] or marks[cid]['mark'] != mark['mark']:
+                raise ValueError(f'Asymmetric variant mark: {pid}')
+
+    # The corrected partition is the master ledger; every source row appears
+    # in exactly one comparison row. strict_status recovers the strict
+    # classification per row: corrected pairs that were also strict pairs are
+    # 'paired'; corrected-only pairs are 'split_pair' (one strict house_only
+    # plus one strict nep_only observation); corrected-unmatched rows were
+    # necessarily strict-unmatched because strict pairs ⊆ corrected pairs.
+    rows = []
+    for r in corr_rows:
+        strict_status = 'paired' if (r['house_id'], r['nep_id']) in strict_pair_set else 'split_pair'
+        rows.append({**r, 'method': 'ai_corrected', 'strict_status': strict_status,
+                     'variant_mark': None, 'variant_mark_kind': None})
+    ids = [r['house_id'] for r in rows] + [p['id'] for p in corr_house_rem]
     if Counter(ids) != Counter(p['id'] for p in house['projects']):
         raise ValueError('Comparison does not partition House rows exactly once')
-    ids = [r['nep_id'] for r in rows] + [p['id'] for p in nep_remaining]
+    ids = [r['nep_id'] for r in rows] + [p['id'] for p in corr_nep_rem]
     if Counter(ids) != Counter(p['id'] for p in nep['projects']):
         raise ValueError('Comparison does not partition NEP rows exactly once')
-    for side, remaining in (('house', house_remaining), ('nep', nep_remaining)):
+    corr_other_titles = ({(p['subprogram_key'], canonical_title(corrected_title_for_matching(p)))
+                          for p in corr_nep_rem} |
+                         {(p['subprogram_key'], canonical_title(corrected_title_for_matching(p)))
+                          for p in corr_house_rem})
+    for side, remaining in (('house', corr_house_rem), ('nep', corr_nep_rem)):
         other_side = 'nep' if side == 'house' else 'house'
-        other_remaining = nep_remaining if side == 'house' else house_remaining
-        other_titles = {(p['subprogram_key'], canonical_title(p['title'])) for p in other_remaining}
         for p in remaining:
             rows.append({
                 'id': f"{side}_only:{p['id']}",
                 'subprogram_key': p['subprogram_key'],
                 'status': f'{side}_only', 'method': None,
+                'strict_status': f'{side}_only',
                 f'{side}_id': p['id'],
                 f'{other_side}_id': None,
                 'delta_php': None,
-                'ambiguous_title': (p['subprogram_key'], canonical_title(p['title'])) in other_titles,
+                'ambiguous_title': (p['subprogram_key'], canonical_title(corrected_title_for_matching(p))) in corr_other_titles,
+                'variant_mark': marks[p['id']] if marks[p['id']]['mark'] != 'no_counterpart' else None,
+                'variant_mark_kind': marks[p['id']]['mark'],
             })
     rows.sort(key=lambda r: r['id'])
 
@@ -354,6 +532,179 @@ def build(write_output=True):
     program_delta = house_root - nep_total
     if paired_delta + house_only - nep_only != program_delta:
         raise ValueError('Comparison money reconciliation failed')
+
+    # Strict classification recovered from strict_status, plus per-method
+    # summaries and the AI-monitoring breakdown under both methods. The
+    # corrected summary must exactly reproduce the AI reading-note figures:
+    # 273 pairs (₱5,785,950,000) against 26 House-only (₱556,000,000) and
+    # 54 NEP-only (₱1,230,000,000).
+    def summarize(status_field):
+        def strict_view(r):
+            if status_field != 'strict_status':
+                return r['status']
+            # split_pair rows are one strict house_only + one strict nep_only
+            return {None: r['status'], 'paired': 'paired', 'split_pair': None,
+                    'house_only': 'house_only', 'nep_only': 'nep_only'}[r['strict_status'] if status_field == 'strict_status' else None]
+        return None
+
+    def summarize_counts(status_field):
+        counts = {'paired': 0, 'house_only': 0, 'nep_only': 0}
+        for r in rows:
+            if status_field == 'status':
+                counts[r['status']] += 1
+            else:
+                if r['strict_status'] == 'paired':
+                    counts['paired'] += 1
+                elif r['strict_status'] == 'split_pair':
+                    counts['house_only'] += 1
+                    counts['nep_only'] += 1
+                else:
+                    counts[r['strict_status']] += 1
+        return counts
+
+    def summarize_side(status_field, side, status):
+        if status_field == 'status':
+            selected = [r for r in rows if r['status'] == status]
+        else:
+            if status == 'paired':
+                selected = [r for r in rows if r['strict_status'] == 'paired']
+            elif status == 'house_only':
+                selected = [r for r in rows if r['strict_status'] in ('split_pair', 'house_only')]
+            else:
+                selected = [r for r in rows if r['strict_status'] in ('split_pair', 'nep_only')]
+        if side == 'paired':
+            return (len(selected),
+                    sum(lookup['nep'][r['nep_id']]['amount_php'] for r in selected),
+                    sum(lookup['house'][r['house_id']]['amount_php'] for r in selected))
+        amount = sum(lookup[side][r[f'{side}_id']]['amount_php'] for r in selected if r[f'{side}_id'])
+        return len(selected), amount
+
+    def method_summary(status_field):
+        counts = summarize_counts(status_field)
+        paired_count, paired_nep, paired_house = summarize_side(status_field, 'paired', 'paired')
+        h_count, h_amount = summarize_side(status_field, 'house', 'house_only')
+        n_count, n_amount = summarize_side(status_field, 'nep', 'nep_only')
+        changed = [r for r in rows if r['delta_php']]
+        # DPWH-style candidate split: rows with a deterministic near-miss mark
+        # (spelling/location/repeated/exact variant) have a plausible
+        # counterpart and stay unresolved; only no_counterpart rows are
+        # validated candidates for headline counts. Under strict matching the
+        # split_pair rows (pairs created by the verified OCR correction) are
+        # equally unresolved: their plausible counterpart is the corrected
+        # twin, pending page-level verification.
+        unresolved_kinds = ('repeated_title', 'location_variant', 'exact_variant', 'spelling_variant')
+        def split(rows_subset, side, strict=False):
+            unresolved, no_counterpart = [], []
+            for r in rows_subset:
+                if (strict and r.get('strict_status') == 'split_pair') or r.get('variant_mark_kind') in unresolved_kinds:
+                    unresolved.append(r)
+                else:
+                    no_counterpart.append(r)
+            return {'unresolved': {'count': len(unresolved),
+                                   'amount_php': sum(lookup[side][r[f'{side}_id']]['amount_php'] for r in unresolved)},
+                    'no_counterpart': {'count': len(no_counterpart),
+                                       'amount_php': sum(lookup[side][r[f'{side}_id']]['amount_php'] for r in no_counterpart)}}
+        def strict_rows(status):
+            if status == 'paired':
+                return [r for r in rows if r['strict_status'] == 'paired']
+            return [r for r in rows if r['strict_status'] in ({'house_only': ('split_pair', 'house_only'),
+                                                               'nep_only': ('split_pair', 'nep_only')}[status])]
+        if status_field == 'status':
+            h_rows = [r for r in rows if r['status'] == 'house_only']
+            n_rows = [r for r in rows if r['status'] == 'nep_only']
+        else:
+            h_rows = strict_rows('house_only')
+            n_rows = strict_rows('nep_only')
+        strict_split = status_field != 'status'
+        return {'counts': counts, 'delta_php': program_delta,
+                'paired_delta_php': paired_house - paired_nep,
+                'house_only_php': h_amount, 'nep_only_php': n_amount,
+                'changed_pairs': len(changed),
+                'house_only_split': split(h_rows, 'house', strict_split),
+                'nep_only_split': split(n_rows, 'nep', strict_split)}
+
+    def ai_rows(status_field, status, side):
+        is_ai = lambda p: p and (AI_MONITORING.search(p['title'])
+                                 or (p['stage'] == 'nep' and OCR_AI_MONITORING.search(p['title'])))
+        if status_field == 'status':
+            selected = [r for r in rows if r['status'] == status]
+        else:
+            mapping = {'paired': ['paired'], 'house_only': ['split_pair', 'house_only'],
+                       'nep_only': ['split_pair', 'nep_only']}
+            selected = [r for r in rows if r['strict_status'] in mapping[status]]
+        if side != 'paired':
+            selected = [r for r in selected if r[f'{side}_id'] and is_ai(lookup[side].get(r[f'{side}_id']))]
+        else:
+            selected = [r for r in selected if r['nep_id'] and r['house_id']
+                        and is_ai(lookup['nep'].get(r['nep_id'])) and is_ai(lookup['house'].get(r['house_id']))]
+        return selected
+
+    def ai_summary(status_field):
+        paired = ai_rows(status_field, 'paired', 'paired')
+        h_only = ai_rows(status_field, 'house_only', 'house')
+        n_only = ai_rows(status_field, 'nep_only', 'nep')
+        marks_pool = {}
+        unresolved_kinds = ('repeated_title', 'location_variant', 'exact_variant', 'spelling_variant')
+        for kind in ('repeated_title', 'location_variant', 'exact_variant', 'spelling_variant', 'no_counterpart'):
+            hrows = [r for r in h_only if (r.get('variant_mark_kind') or 'no_counterpart') == kind]
+            nrows = [r for r in n_only if (r.get('variant_mark_kind') or 'no_counterpart') == kind]
+            marks_pool[kind] = {
+                'house_only': {'count': len(hrows),
+                               'amount_php': sum(lookup['house'][r['house_id']]['amount_php'] for r in hrows)},
+                'nep_only': {'count': len(nrows),
+                             'amount_php': sum(lookup['nep'][r['nep_id']]['amount_php'] for r in nrows)},
+            }
+        # DPWH-style validated/unresolved split for AI insertion candidates.
+        # Under strict matching the split_pair rows are the OCR twins: their
+        # plausible counterpart is the corrected-method pair, so they stay
+        # unresolved rather than counting as validated insertions.
+        def ai_split(rowset, side):
+            unresolved = [r for r in rowset
+                          if (status_field != 'status' and r.get('strict_status') == 'split_pair')
+                          or r.get('variant_mark_kind') in unresolved_kinds]
+            validated = [r for r in rowset if r not in unresolved]
+            return {'unresolved': {'count': len(unresolved),
+                                   'amount_php': sum(lookup[side][r[f'{side}_id']]['amount_php'] for r in unresolved)},
+                    'no_counterpart': {'count': len(validated),
+                                       'amount_php': sum(lookup[side][r[f'{side}_id']]['amount_php'] for r in validated)}}
+        candidate_split = {'house_only': ai_split(h_only, 'house'), 'nep_only': ai_split(n_only, 'nep')}
+        nep_php = sum(lookup['nep'][r['nep_id']]['amount_php'] for r in paired + n_only)
+        house_php = sum(lookup['house'][r['house_id']]['amount_php'] for r in paired + h_only)
+        return {
+            'paired_count': len(paired),
+            'paired_nep_php': sum(lookup['nep'][r['nep_id']]['amount_php'] for r in paired),
+            'paired_house_php': sum(lookup['house'][r['house_id']]['amount_php'] for r in paired),
+            'house_only_count': len(h_only),
+            'house_only_php': sum(lookup['house'][r['house_id']]['amount_php'] for r in h_only),
+            'nep_only_count': len(n_only),
+            'nep_only_php': sum(lookup['nep'][r['nep_id']]['amount_php'] for r in n_only),
+            'nep_php': nep_php, 'house_php': house_php,
+            'net_delta_php': house_php - nep_php,
+            'unmatched_marks': marks_pool,
+            'candidate_split': candidate_split,
+        }
+
+    strict_summary = method_summary('strict_status')
+    corrected_summary = method_summary('status')
+    strict_ai = ai_summary('strict_status')
+    corrected_ai = ai_summary('status')
+    # The AI reading-note anchors, asserted so both methods stay reconcilable.
+    expected_strict_ai = {'paired_count': 176, 'paired_house_php': 3_715_000_000,
+                          'house_only_count': 123, 'house_only_php': 2_626_950_000,
+                          'nep_only_count': 151, 'nep_only_php': 3_300_950_000}
+    expected_corrected_ai = {'paired_count': 273, 'paired_house_php': 5_785_950_000,
+                             'house_only_count': 26, 'house_only_php': 556_000_000,
+                             'nep_only_count': 54, 'nep_only_php': 1_230_000_000}
+    for field, value in expected_strict_ai.items():
+        if strict_ai[field] != value:
+            raise ValueError(f'Strict AI summary drifted from the reading note: {field}={strict_ai[field]}')
+    for field, value in expected_corrected_ai.items():
+        if corrected_ai[field] != value:
+            raise ValueError(f'Corrected AI summary drifted: {field}={corrected_ai[field]}')
+    if strict_summary['counts'] != {'paired': 509, 'house_only': 319, 'nep_only': 282}:
+        raise ValueError('Strict classification drifted from the committed workbench figures')
+    if corrected_summary['counts'] != {'paired': 606, 'house_only': 222, 'nep_only': 185}:
+        raise ValueError('Corrected classification counts drifted')
 
     # Sub-program comparison rows mirror the FMR regional controls.
     subprogram_controls = []
@@ -396,15 +747,27 @@ def build(write_output=True):
         'comparison': rows,
         'subprogram_controls': subprogram_controls,
         'agency_controls': agency_controls,
-        'comparison_summary': {
-            'counts': dict(Counter(r['status'] for r in rows)),
-            'delta_php': program_delta,
-            'paired_delta_php': paired_delta,
-            'house_only_php': house_only,
-            'nep_only_php': nep_only,
-            'changed_pairs': sum(r['status'] == 'paired' and r['delta_php'] != 0 for r in rows),
+        'comparison_summary': corrected_summary,
+        'comparison_summaries': {
+            'strict': strict_summary,
+            'ai_corrected': corrected_summary,
         },
-        'matching_note': 'Unique one-to-one candidates within the same sub-program by canonical title. No fuzzy matching. Source-only rows are observations, not certified insertions or deletions.',
+        'ai_monitoring_summaries': {
+            'strict': strict_ai,
+            'ai_corrected': corrected_ai,
+        },
+        'unmatched_variant_pools': variant_pools,
+        'matching_note': (
+            'Two labeled methods share one ledger. strict: unique one-to-one candidates '
+            'within the same sub-program by canonical title, no fuzzy matching. '
+            'ai_corrected: additionally normalizes AI-monitoring matching keys only '
+            '(verified NEP OCR readings Al/AL/AT→AI; Monitoring/Monitoring System '
+            'equivalence); stored titles are never rewritten. Every row carries status '
+            '(corrected) and strict_status. Unmatched rows carry deterministic variant '
+            'marks (repeated_title, location_variant, exact_variant, spelling_variant, '
+            'no_counterpart) — equal-amount review pointers that never create pairs or '
+            'certify identity. Source-only rows are observations, not certified '
+            'insertions or deletions.'),
         'documents': {
             'house': {
                 'path': 'HB_BUDGET/2 - HB 10858 VOL IB.pdf',
@@ -436,7 +799,9 @@ def main():
             raise SystemExit('NIA browser dataset is missing or stale; run analysis-nia/build_nia_workbench.py')
     else:
         OUTPUT.write_text(payload)
-    print(f"{'Checked' if args.check else 'Wrote'} {OUTPUT} · {data['comparison_summary']['counts']} · "
+    print(f"{'Checked' if args.check else 'Wrote'} {OUTPUT} · "
+          f"strict {data['comparison_summaries']['strict']['counts']} · "
+          f"corrected {data['comparison_summaries']['ai_corrected']['counts']} · "
           f"Δ {data['comparison_summary']['delta_php']:,} PHP")
 
 

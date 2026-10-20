@@ -1,4 +1,4 @@
-import {allocationStats, candidateAggregates, filterComparisons, filterProjects, signedMoney} from './niaModel.js';
+import {allocationStats, candidateAggregates, filterComparisons, filterProjects, normalizeMatchingMethod, rowsForMethod, signedMoney} from './niaModel.js';
 
 export const share = (value, total) => total ? value / total : null;
 
@@ -17,8 +17,12 @@ export function aiMonitoringProjects(projects, {aiBasis = 'all'} = {}) {
 }
 // Insertion figures always use unmatched House source rows. The source-stage
 // selector does not turn unmatched NEP rows into insertion candidates.
+// `method` selects which labeled matching classification supplies the
+// unmatched population.
 export function aiMonitoringInsertions(rows, params = {}) {
-  const candidates = rows.filter(r => r.status === 'house_only' && r.house);
+  const method = normalizeMatchingMethod(params.method);
+  const scoped = rowsForMethod(rows, method);
+  const candidates = scoped.filter(r => r.status === 'house_only' && r.house);
   const ids = new Set(aiMonitoringProjects(filterProjects(candidates.map(r => r.house), params), params).map(p => p.id));
   return candidates.filter(r => ids.has(r.house.id));
 }
@@ -29,12 +33,15 @@ export function aiMonitoringInsertions(rows, params = {}) {
 // matching residual, not the budget change. `twin_*` counts candidates that a
 // one-to-one maximum matching can pair with an unpaired same-sub-program,
 // same-amount NEP AI row — a review pointer that explains most candidates as
-// retitled continuations, never a certified pair.
-export function aiMonitoringReconciliation(rows) {
-  const candidates = aiMonitoringInsertions(rows);
-  const paired = rows.filter(r => r.status === 'paired' && r.nep && r.house
+// retitled continuations, never a certified pair. Under ai_corrected the
+// twins have already become pairs, so the twin pass reports on the strict
+// classification only.
+export function aiMonitoringReconciliation(rows, {method = 'ai_corrected'} = {}) {
+  const scoped = rowsForMethod(rows, method);
+  const candidates = aiMonitoringInsertions(rows, {method});
+  const paired = scoped.filter(r => r.status === 'paired' && r.nep && r.house
     && aiMonitoringBasis(r.nep) && aiMonitoringBasis(r.house));
-  const nepOnly = rows.filter(r => r.status === 'nep_only' && r.nep && aiMonitoringBasis(r.nep));
+  const nepOnly = scoped.filter(r => r.status === 'nep_only' && r.nep && aiMonitoringBasis(r.nep));
   const twinPool = new Map();
   for (const r of nepOnly) {
     const key = `${r.nep.subprogram_key}\u0000${r.nep.amount_php}`;
@@ -114,7 +121,8 @@ export function concentrationRows(projects, subprograms) {
 // layer owns formatting; every figure in the copy is recomputed from `rows`
 // and the workbench controls rather than restated by hand.
 export function highlightsCards(data, rows) {
-  const summary = data.comparison_summary, agg = candidateAggregates(rows);
+  const summary = data.comparison_summaries?.ai_corrected || data.comparison_summary, agg = candidateAggregates(rows);
+  const strictSummary = data.comparison_summaries?.strict;
   const coverage = fundingSummary(rows).sources;
   const bySize = [...data.subprogram_controls].sort((a, b) =>
     Math.abs(b.delta_php) - Math.abs(a.delta_php) || a.key.localeCompare(b.key));
@@ -124,8 +132,9 @@ export function highlightsCards(data, rows) {
   const insertions = rows.filter(r => r.status === 'house_only');
   const deletions = rows.filter(r => r.status === 'nep_only');
   const aiProjects = side => aiMonitoringProjects(data.stages[side].projects);
-  const aiInsertions = aiMonitoringInsertions(rows);
-  const aiRecon = aiMonitoringReconciliation(rows);
+  const aiInsertions = aiMonitoringInsertions(rows, {method: 'ai_corrected'});
+  const aiRecon = aiMonitoringReconciliation(rows, {method: 'strict'});
+  const aiCorrected = aiMonitoringReconciliation(rows, {method: 'ai_corrected'});
   const flagged = data.stages.nep.projects.filter(p => (p.extraction_flags || []).length);
   const repeated = side => data.stages[side].projects.filter(p => p.repeated_title).length;
   const agencyTotal = data.agency_controls.find(c => c.label === 'TOTAL NEW APPROPRIATIONS');
@@ -157,13 +166,13 @@ export function highlightsCards(data, rows) {
       rows: changed},
     {id: 'insertions', kind: 'Candidate matching', value: summary.counts.house_only,
       title: `${summary.counts.house_only} House rows have no unique NEP title match`,
-      body: `Unmatched House allocations total ₱${(agg.house_only_php / 1e9).toFixed(3)}B. ${insertions.filter(r => !r.ambiguous_title).length} carry no repeated-title ambiguity; ${insertions.filter(r => r.ambiguous_title).length} do.`,
+      body: `Unmatched House allocations total ₱${(agg.house_only_php / 1e9).toFixed(3)}B: ${summary.house_only_split.no_counterpart.count} rows (₱${(summary.house_only_split.no_counterpart.amount_php / 1e9).toFixed(2)}B) have no counterpart at all; ${summary.house_only_split.unresolved.count} (₱${(summary.house_only_split.unresolved.amount_php / 1e9).toFixed(2)}B) carry near-miss marks and stay unresolved.`,
       prompt: 'Which unmatched titles are new works, and which continue NEP items under reworded titles?',
       href: 'compare', params: {view: 'projects', status: 'house_only'},
       rows: insertions},
     {id: 'deletions', kind: 'Candidate matching', value: summary.counts.nep_only,
       title: `${summary.counts.nep_only} NEP rows have no unique House title match`,
-      body: `Unmatched NEP allocations total ₱${(agg.nep_only_php / 1e9).toFixed(3)}B${largestDeletion ? `; the largest is ${largestDeletion.nep.title.split(':')[0]} (₱${(largestDeletion.nep_php / 1e6).toLocaleString('en-PH')}M)` : ''}. ${deletions.filter(r => !r.ambiguous_title).length} carry no repeated-title ambiguity; ${deletions.filter(r => r.ambiguous_title).length} do.`,
+      body: `Unmatched NEP allocations total ₱${(agg.nep_only_php / 1e9).toFixed(3)}B${largestDeletion ? `; the largest is ${largestDeletion.nep.title.split(':')[0]} (₱${(largestDeletion.nep_php / 1e6).toLocaleString('en-PH')}M)` : ''}: ${summary.nep_only_split.no_counterpart.count} rows (₱${(summary.nep_only_split.no_counterpart.amount_php / 1e9).toFixed(2)}B) have no counterpart at all; ${summary.nep_only_split.unresolved.count} (₱${(summary.nep_only_split.unresolved.amount_php / 1e9).toFixed(2)}B) stay unresolved.`,
       prompt: 'Which NEP projects did the House drop, retitled, or merge into other lines?',
       href: 'compare', params: {view: 'projects', status: 'nep_only'},
       rows: deletions},
@@ -175,7 +184,7 @@ export function highlightsCards(data, rows) {
       rows},
     {id: 'ai-monitoring', kind: 'Source titles', value: allocationStats(aiProjects('nep')).total, money: true,
       title: `AI monitoring moves from ₱${(allocationStats(aiProjects('nep')).total / 1e9).toFixed(1)}B in the NEP to ₱${(allocationStats(aiProjects('house')).total / 1e9).toFixed(1)}B in the House`,
-      body: `${aiProjects('nep').length} NEP rows and ${aiProjects('house').length} House rows name AI or satellite-assisted monitoring — a net change of ${signedMoney(aiRecon.net_delta_php)}. Paired titles print identical amounts (₱${(aiRecon.paired_house_php / 1e9).toFixed(3)}B), so the movement is unmatched churn: ₱${(aiRecon.candidate_php / 1e9).toFixed(2)}B of House-only rows against ₱${(aiRecon.nep_only_php / 1e9).toFixed(2)}B of NEP-only rows. ${aiRecon.twin_count} of ${aiRecon.candidate_count} candidates (₱${(aiRecon.twin_php / 1e6).toLocaleString('en-PH')}M) have a same-sub-program, same-amount unpaired NEP twin, marking reworded titles rather than certified new works.`,
+      body: `${aiProjects('nep').length} NEP rows and ${aiProjects('house').length} House rows name AI or satellite-assisted monitoring — a net change of ${signedMoney(aiCorrected.net_delta_php)}. No reliably paired record changes amount. After verified OCR and wording normalization, ${aiCorrected.paired_count} pairs (₱${(aiCorrected.paired_house_php / 1e9).toFixed(3)}B) are unchanged, leaving ${aiCorrected.candidate_count} House-only rows (₱${(aiCorrected.candidate_php / 1e6).toLocaleString('en-PH')}M) and ${aiCorrected.nep_only_count} NEP-only rows (₱${(aiCorrected.nep_only_php / 1e6).toLocaleString('en-PH')}M) for counterpart review. Under strict titles the same residual is ${aiRecon.candidate_count} House-only (₱${(aiRecon.candidate_php / 1e9).toFixed(2)}B): ${aiRecon.twin_count} of them (₱${(aiRecon.twin_php / 1e6).toLocaleString('en-PH')}M) have a same-sub-program, same-amount unpaired NEP twin, marking reworded or OCR-variant titles rather than certified new works.`,
       prompt: 'What does the monitoring component cost, and who supplies and maintains it?',
       href: 'analysis', params: {view: 'ai_monitoring'},
       rows: aiInsertions, projects: {nep: aiProjects('nep'), house: aiProjects('house')}},
@@ -198,10 +207,10 @@ export function highlightsCards(data, rows) {
     'annex-increase': [['NEP annex', nia, 'money'], ['House annex', house, 'money'], ['Net increase', summary.delta_php, 'signed']],
     'subprogram-shift': [['NEP control', largestChange.nep_php, 'money'], ['House control', largestChange.house_php, 'money'], ['Control change', largestChange.delta_php, 'signed']],
     'changed-pairs': [['Changed pairs', changed.length], ['NEP allocation', changed.reduce((s, r) => s + r.nep_php, 0), 'money'], ['Paired change', agg.paired_delta_php, 'signed']],
-    insertions: [['Unmatched House rows', insertions.length], ['House allocation', agg.house_only_php, 'money'], ['Repeated-title ambiguity', insertions.filter(r => r.ambiguous_title).length]],
-    deletions: [['Unmatched NEP rows', deletions.length], ['NEP allocation', agg.nep_only_php, 'money'], ['Repeated-title ambiguity', deletions.filter(r => r.ambiguous_title).length]],
+    insertions: [['Unmatched House rows', insertions.length], ['House allocation', agg.house_only_php, 'money'], ['No counterpart at all', summary.house_only_split.no_counterpart.count]],
+    deletions: [['Unmatched NEP rows', deletions.length], ['NEP allocation', agg.nep_only_php, 'money'], ['No counterpart at all', summary.nep_only_split.no_counterpart.count]],
     'pairing-coverage': [['Provisional pairs', coverage.nep.paired_count], ['NEP allocation coverage', pct(coverage.nep.allocation_share)], ['House allocation coverage', pct(coverage.house.allocation_share)]],
-    'ai-monitoring': [['NEP project allocations', allocationStats(aiProjects('nep')).total, 'money'], ['House project allocations', allocationStats(aiProjects('house')).total, 'money'], ['Net change', aiRecon.net_delta_php, 'signed']],
+    'ai-monitoring': [['NEP project allocations', allocationStats(aiProjects('nep')).total, 'money'], ['House project allocations', allocationStats(aiProjects('house')).total, 'money'], ['Net change', aiCorrected.net_delta_php, 'signed']],
     'agency-scope': [['House annex', house, 'money'], ['Agency-only CARP row', carp?.total_php, 'money'], ['Whole House agency', agencyTotal?.total_php, 'money']],
     'extraction-review': [['NEP flagged rows', flagged.length], ['NEP repeated-title rows', repeated('nep')], ['House repeated-title rows', repeated('house')]],
   };

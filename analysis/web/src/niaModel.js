@@ -13,6 +13,50 @@ export const comparisonFilterLabels = {...statusLabels, changed: 'Pairs with an 
   increased: 'Paired · increased', decreased: 'Paired · decreased', unchanged: 'Paired · unchanged',
   ambiguous: 'Unmatched repeated titles'};
 export const stageLabels = {house: 'House GAB', nep: 'DBM NEP'};
+// Matching-method labels: the two labeled classifications share one ledger.
+// strict uses raw source titles; ai_corrected additionally normalizes
+// AI-monitoring keys (verified NEP OCR readings, Monitoring/Monitoring System
+// equivalence). Stored titles are never rewritten.
+export const matchingMethodLabels = {
+  strict: 'Strict titles',
+  ai_corrected: 'Corrected AI titles',
+};
+export const matchingMethods = ['strict', 'ai_corrected'];
+export function normalizeMatchingMethod(value) {
+  return matchingMethods.includes(value) ? value : 'ai_corrected';
+}
+// Deterministic near-miss marks on unmatched rows: equal-amount review
+// pointers computed by the workbench builder. They never create pairs.
+export const variantMarkLabels = {
+  repeated_title: 'Repeated-title block',
+  location_variant: 'Location-suffix counterpart',
+  exact_variant: 'Same corrected key',
+  spelling_variant: 'Spelling-variant counterpart',
+  no_counterpart: 'No near-miss counterpart',
+};
+// Derive the comparison rows for one matching method from the shared ledger.
+// Corrected rows pass through; strict rows split each corrected-only pair
+// into its two strict source-only observations, so both classifications
+// partition every source row exactly once.
+export function rowsForMethod(rows, method = 'ai_corrected') {
+  if (normalizeMatchingMethod(method) === 'ai_corrected') return rows;
+  const out = [];
+  for (const row of rows) {
+    if (row.status === 'paired' && row.strict_status === 'split_pair') {
+      // Strict halves of a corrected-only pair are unresolved candidates:
+      // their plausible counterpart is the corrected-method twin.
+      out.push({...row, status: 'house_only', delta_php: null, method: null,
+        nep_id: null, nep: undefined, nep_php: null,
+        variant_mark: null, variant_mark_kind: null, strict_unresolved: true});
+      out.push({...row, status: 'nep_only', delta_php: null, method: null,
+        house_id: null, house: undefined, house_php: null,
+        variant_mark: null, variant_mark_kind: null, strict_unresolved: true});
+    } else {
+      out.push({...row, status: row.strict_status || row.status});
+    }
+  }
+  return out;
+}
 export const flagLabels = {
   bottom_band_row: 'Bottom-band row', trailing_period_amount: 'Trailing-period amount',
   label_quirk: 'Label quirk', label_repaired: 'Label repaired',
@@ -132,6 +176,15 @@ export function candidateAggregates(rows) {
 }
 // Analysis populations share the comparison ledger: unmatched source rows
 // are candidates, and adjustments require two attached source records.
+// DPWH-style candidate resolution: rows carrying a deterministic near-miss
+// mark (spelling/location/repeated/exact variant) have a plausible
+// counterpart and stay unresolved; only no_counterpart rows are validated.
+export const unresolvedMarkKinds = ['repeated_title', 'location_variant', 'exact_variant', 'spelling_variant'];
+export function candidateResolution(row) {
+  // Under the strict projection, split halves of corrected-only pairs are
+  // unresolved too: their plausible counterpart is the corrected twin.
+  return unresolvedMarkKinds.includes(row.variant_mark_kind) || row.strict_unresolved ? 'unresolved' : 'no_counterpart';
+}
 export function analysisCandidateRows(rows, {view, q = '', subprogram = '', ranking = 'all', direction = 'all'} = {}) {
   const scoped = filterComparisons(rows, {q, subprogram});
   if (view === 'adjustments') return scoped.filter(r => r.status === 'paired' && r.delta_php !== 0 &&
@@ -139,7 +192,9 @@ export function analysisCandidateRows(rows, {view, q = '', subprogram = '', rank
   const status = {insertions: 'house_only', deletions: 'nep_only'}[view];
   if (!status) return [];
   return scoped.filter(r => r.status === status && (ranking === 'ambiguous' ? r.ambiguous_title
-    : ranking === 'unambiguous' ? !r.ambiguous_title : true));
+    : ranking === 'unambiguous' ? !r.ambiguous_title
+    : ranking === 'unresolved' ? candidateResolution(r) === 'unresolved'
+    : ranking === 'validated' ? candidateResolution(r) === 'no_counterpart' : true));
 }
 export function candidateGroupRows(rows, view, dim = 'subprogram', subprograms = []) {
   const labels = new Map(subprograms.map(s => [s.key, s.label]));

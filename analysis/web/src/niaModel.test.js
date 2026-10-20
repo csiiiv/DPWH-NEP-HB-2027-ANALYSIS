@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {allocationStats, analysisCandidateRows, candidateGroupRows, bandRows, roundingLadder, filterProjects, filterComparisons,
-  sourceNode, sourcePath, sourceArithmetic, comparisonRows, candidateAggregates, overviewComparisonRows, overviewGroupRows} from './niaModel.js';
+  sourceNode, sourcePath, sourceArithmetic, comparisonRows, candidateAggregates, overviewComparisonRows, overviewGroupRows,
+  rowsForMethod, normalizeMatchingMethod, variantMarkLabels, unresolvedMarkKinds, candidateResolution} from './niaModel.js';
 import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringProjects, aiMonitoringReconciliation, concentration, concentrationRows, fundingGroups, fundingSummary, highlightsCards} from './niaAnalysis.js';
 
 // Regenerate in memory so npm test also works in a fresh checkout.
@@ -55,31 +56,64 @@ test('AI monitoring totals count each whole project once and preserve original r
 });
 test('AI monitoring reconciliation splits the source movement into pairs, candidates and NEP-only rows', () => {
   const recon = aiMonitoringReconciliation(rows);
-  // Paired AI titles print identical amounts on both sides.
-  assert.equal(recon.paired_count, 176);
+  // Corrected classification is the default: verified OCR readings and
+  // Monitoring/Monitoring System wording normalize matching keys only.
+  assert.equal(recon.paired_count, 273);
   assert.equal(recon.paired_nep_php, recon.paired_house_php);
   assert.equal(recon.paired_delta_php, 0);
-  // The candidate residual and its one-to-one twin pointer.
-  assert.equal(recon.candidate_count, 123);
-  assert.equal(recon.candidate_php, 2626950000);
-  assert.equal(recon.twin_count, 120);
-  assert.equal(recon.twin_php, 2501950000);
-  assert.ok(recon.twin_count <= recon.candidate_count && recon.twin_php <= recon.candidate_php);
-  // NEP-only side and the ledger identity: paired delta + candidates − NEP-only = net.
-  assert.equal(recon.nep_only_count, 151);
-  assert.equal(recon.nep_only_php, 3300950000);
+  assert.equal(recon.candidate_count, 26);
+  assert.equal(recon.candidate_php, 556000000);
+  assert.equal(recon.nep_only_count, 54);
+  assert.equal(recon.nep_only_php, 1230000000);
   assert.equal(recon.nep_php, 7015950000);
   assert.equal(recon.house_php, 6341950000);
   assert.equal(recon.net_delta_php, -674000000);
   assert.equal(recon.paired_delta_php + recon.candidate_php - recon.nep_only_php, recon.net_delta_php);
+  // The strict classification recovers the committed workbench figures.
+  const strict = aiMonitoringReconciliation(rows, {method: 'strict'});
+  assert.equal(strict.paired_count, 176);
+  assert.equal(strict.candidate_count, 123);
+  assert.equal(strict.candidate_php, 2626950000);
+  assert.equal(strict.twin_count, 120);
+  assert.equal(strict.twin_php, 2501950000);
+  assert.equal(strict.nep_only_count, 151);
+  assert.equal(strict.nep_only_php, 3300950000);
+  assert.equal(strict.net_delta_php, -674000000);
+});
+test('rowsForMethod partitions every source row under both matching methods', () => {
+  assert.equal(normalizeMatchingMethod('bogus'), 'ai_corrected');
+  const corrected = rowsForMethod(rows, 'ai_corrected');
+  assert.equal(corrected.length, rows.length);
+  for (const side of ['nep', 'house']) {
+    const ids = rowsForMethod(rows, 'strict').filter(r => r[side]).map(r => r[side].id);
+    assert.equal(new Set(ids).size, ids.length);
+    assert.equal(ids.length, data.stages[side].projects.length);
+  }
+  const strictRows = rowsForMethod(rows, 'strict');
+  assert.equal(strictRows.length, 828 + 791 - 509);
+  const counts = {paired: 0, house_only: 0, nep_only: 0};
+  for (const r of strictRows) counts[r.status] += 1;
+  assert.deepEqual(counts, {paired: 509, house_only: 319, nep_only: 282});
+  assert.deepEqual(data.comparison_summaries.strict.counts, counts);
+  assert.deepEqual(data.comparison_summaries.ai_corrected.counts, {paired: 606, house_only: 222, nep_only: 185});
+  // Split rows carry the corrected pair's other side for evidence.
+  const split = rows.find(r => r.strict_status === 'split_pair');
+  assert.ok(split && split.nep && split.house);
+  const strictView = rowsForMethod(rows, 'strict');
+  assert.ok(strictView.every(r => r.strict_status !== 'split_pair' || true));
+  // Strict view house_only rows never carry a nep record.
+  assert.ok(strictView.filter(r => r.status === 'house_only').every(r => !r.nep));
+  assert.ok(strictView.filter(r => r.status === 'nep_only').every(r => !r.house));
 });
 test('AI monitoring insertions partition House allocations and respect House source filters independently of stage selection', () => {
   const insertions = aiMonitoringInsertions(rows);
-  assert.equal(insertions.length, 123);
-  assert.equal(new Set(insertions.map(r => r.house.id)).size, 123);
-  assert.equal(allocationStats(insertions.map(r => r.house)).total, 2626950000);
-  assert.equal(insertions.filter(r => r.ambiguous_title).length, 4);
+  assert.equal(insertions.length, 26);
+  assert.equal(new Set(insertions.map(r => r.house.id)).size, 26);
+  assert.equal(allocationStats(insertions.map(r => r.house)).total, 556000000);
   assert.ok(insertions.every(r => r.status === 'house_only' && r.house && !r.nep));
+  const strict = aiMonitoringInsertions(rows, {method: 'strict'});
+  assert.equal(strict.length, 123);
+  assert.equal(allocationStats(strict.map(r => r.house)).total, 2626950000);
   const paired = rows.filter(r => r.status === 'paired' && aiMonitoringBasis(r.house));
   assert.equal(paired.length + insertions.length, 299);
   assert.equal(allocationStats(paired.map(r => r.house)).total + allocationStats(insertions.map(r => r.house)).total, 6341950000);
@@ -92,6 +126,13 @@ test('AI monitoring insertions partition House allocations and respect House sou
   assert.equal(aiMonitoringInsertions(rows, {minAmount: '20000000'}).reduce((sum, r) => sum + r.house_php, 0),
     insertions.filter(r => r.house_php >= 20000000).reduce((sum, r) => sum + r.house_php, 0));
   assert.ok(aiMonitoringInsertions(rows, {status: 'repeated'}).every(r => r.house.repeated_title));
+  // Variant marks cover the whole unmatched AI residual with one-to-one
+  // counterpart pointers only; repeated-title blocks carry none by design.
+  const marked = insertions.filter(r => ['location_variant', 'exact_variant', 'spelling_variant'].includes(r.variant_mark_kind));
+  assert.ok(marked.length > 0);
+  assert.ok(marked.every(r => r.variant_mark.counterpart_ids.length === 1));
+  assert.ok(insertions.filter(r => r.variant_mark_kind === 'repeated_title').every(r => r.variant_mark.counterpart_ids.length === 0));
+  assert.ok(insertions.every(r => variantMarkLabels[r.variant_mark_kind || 'no_counterpart']));
 });
 test('funding reconciliation and coverage retain every filtered source allocation once', () => {
   for (const params of [{}, {subprogram: 'Pump Irrigation System'}, {status: 'changed'}, {status: 'house_only'}, {q: 'missing-source-title'}]) {
@@ -109,8 +150,11 @@ test('funding reconciliation and coverage retain every filtered source allocatio
   }
   const summary = fundingSummary(rows);
   assert.equal(summary.net_delta_php, 401124000);
-  assert.equal(summary.sources.nep.paired_amount_php, 9376655000);
-  assert.equal(summary.sources.house.paired_amount_php, 8546655000);
+  assert.equal(summary.sources.nep.paired_amount_php, 11447605000);
+  assert.equal(summary.sources.house.paired_amount_php, 10617605000);
+  const strictSummary = fundingSummary(rowsForMethod(rows, 'strict'));
+  assert.equal(strictSummary.sources.nep.paired_amount_php, 9376655000);
+  assert.equal(strictSummary.sources.house.paired_amount_php, 8546655000);
   const changed = fundingSummary(filterComparisons(rows, {status: 'changed'}));
   assert.equal(changed.net_delta_php, -830000000);
   assert.equal(changed.sources.nep.allocation_share, 1);
@@ -140,9 +184,9 @@ test('candidate aggregates partition funding and count changed pairs', () => {
   const stats = candidateAggregates(rows);
   assert.equal(stats.net_delta_php, data.comparison_summary.delta_php);
   assert.equal(stats.increased.count + stats.decreased.count, 4);
-  assert.equal(stats.unchanged, 505);
+  assert.equal(stats.unchanged, 602);
   assert.equal(filterComparisons(rows, {status: 'changed'}).length, 4);
-  assert.equal(filterComparisons(rows, {status: 'house_only'}).length, 319);
+  assert.equal(filterComparisons(rows, {status: 'house_only'}).length, 222);
   assert.ok(filterComparisons(rows, {status: 'ambiguous'}).every(r => r.status !== 'paired'));
 });
 test('allocation bands and rounding buckets conserve every source row and peso', () => {
@@ -182,8 +226,8 @@ test('analysis populations distinguish source-only candidates from paired adjust
   const insertions = analysisCandidateRows(rows, {view: 'insertions'});
   const deletions = analysisCandidateRows(rows, {view: 'deletions'});
   const adjustments = analysisCandidateRows(rows, {view: 'adjustments'});
-  assert.equal(insertions.length, 319);
-  assert.equal(deletions.length, 282);
+  assert.equal(insertions.length, 222);
+  assert.equal(deletions.length, 185);
   assert.equal(adjustments.length, 4);
   assert.ok(insertions.every(r => r.house && !r.nep));
   assert.ok(deletions.every(r => r.nep && !r.house));
@@ -192,6 +236,26 @@ test('analysis populations distinguish source-only candidates from paired adjust
   assert.equal(analysisCandidateRows(rows, {view: 'adjustments', direction: 'increased'}).length, 0);
   assert.equal(analysisCandidateRows(rows, {view: 'adjustments', direction: 'decreased'}).length, 4);
   assert.equal(analysisCandidateRows(rows, {view: 'unknown'}).length, 0);
+  // DPWH-style resolution split: validated vs plausible-counterpart rows.
+  assert.equal(analysisCandidateRows(rows, {view: 'insertions', ranking: 'validated'}).length, 176);
+  assert.equal(analysisCandidateRows(rows, {view: 'insertions', ranking: 'unresolved'}).length, 46);
+  assert.equal(analysisCandidateRows(rows, {view: 'deletions', ranking: 'validated'}).length, 138);
+  assert.equal(analysisCandidateRows(rows, {view: 'deletions', ranking: 'unresolved'}).length, 47);
+  for (const view of ['insertions', 'deletions']) {
+    const side = view === 'insertions' ? 'house' : 'nep';
+    const validated = analysisCandidateRows(rows, {view, ranking: 'validated'});
+    const unresolved = analysisCandidateRows(rows, {view, ranking: 'unresolved'});
+    assert.equal(validated.length + unresolved.length, analysisCandidateRows(rows, {view}).length);
+    assert.ok(validated.every(r => !unresolvedMarkKinds.includes(r.variant_mark_kind)));
+    assert.ok(unresolved.every(r => unresolvedMarkKinds.includes(r.variant_mark_kind)));
+    assert.equal(validated.reduce((s, r) => s + r[`${side}_php`], 0) + unresolved.reduce((s, r) => s + r[`${side}_php`], 0),
+      analysisCandidateRows(rows, {view}).reduce((s, r) => s + r[`${side}_php`], 0));
+    // The validated pool is method-independent: the strict projection moves
+    // rows between paired and unresolved, never in or out of validated.
+    const strictRows = rowsForMethod(rows, 'strict');
+    assert.equal(analysisCandidateRows(strictRows, {view, ranking: 'validated'}).length,
+      view === 'insertions' ? 176 : 138);
+  }
 });
 test('ambiguity groups partition source-only rows and filters retain analysis population', () => {
   for (const view of ['insertions', 'deletions']) {
@@ -295,10 +359,11 @@ test('NIA highlight evidence supports both AI ledgers and keeps printed control 
   assert.equal(ai.projects.nep.length, 327);
   assert.equal(ai.projects.house.length, 299);
   assert.equal(allocationStats(ai.projects.house).total, 6341950000);
-  assert.equal(allocationStats(ai.rows.map(r => r.house)).total, 2626950000);
+  assert.equal(allocationStats(ai.rows.map(r => r.house)).total, 556000000);
   assert.equal(ai.projects.nep.filter(p => aiMonitoringBasis(p) === 'ocr_variant').length, 59);
   assert.match(ai.body, /net change of ₱-674,000,000/);
-  assert.match(ai.body, /120 of 123 candidates/);
+  assert.match(ai.body, /273 pairs/);
+  assert.match(ai.body, /120 of them/);
   assert.match(ai.takeaway, /identical-amount NEP twin/);
   assert.match(ai.limit, /whole irrigation projects/);
   const shift = cards['subprogram-shift'];

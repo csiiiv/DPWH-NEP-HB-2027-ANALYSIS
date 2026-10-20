@@ -11,6 +11,13 @@ shares in Overview, funding reconciliation and pairing coverage in Candidates,
 and top-ten concentration with source-record drilldowns in Statistics. The
 additional AI monitoring tab isolates related whole-project allocations and
 labels the NEP OCR variants separately, with original titles and PDF evidence.
+The NEP↔House comparison carries two labeled matching methods — strict
+canonical titles and corrected AI titles (verified OCR readings plus
+Monitoring/Monitoring System wording equivalence, applied to matching keys
+only) — and every unmatched row receives a deterministic near-miss review mark
+(repeated-title block, location-suffix, exact-key or spelling-variant
+counterpart, or no counterpart) pointing at equal-amount candidates without
+creating pairs.
 
 The extraction recovers **828 printed project line items** under **six sub-program controls** and one printed program heading, totalling **₱17,999,305,000**. Every sub-program project sum reconciles. All six sub-program amounts and both program-level totals also agree with the independently read NIA agency table on Volume I-B printed 559–564 (PDF 567–572), including the agency-only CARP-linked row of **₱698,067,000** that the annex does not print.
 
@@ -97,7 +104,7 @@ Four repeated-title groups (two printed rows each) are retained as separate rows
 - Not a complete NIA inventory: the agency section's named major projects, subsidy rows, and object-of-expenditures table (in thousands) are outside scope.
 - Not geospatial: unlike FMR, the NIA annex prints no coordinates.
 - Not row-by-row image-reviewed: every row is a native-layout match with word-level ownership, but no individual rendered-row review has been performed (`comparison_ready: false`).
-- Not a certified project-identity comparison: the DBM NEP standalone NIA PDF (`dbm-other-nep-line-data/NIA.pdf`, 30 pages, OCR text layer) has a different structure, including a printed Restoration heading and NIS control of ₱4,662,231,000. Its extraction exists: see [NEP_NIA_EXTRACTION_FINDINGS.md](NEP_NIA_EXTRACTION_FINDINGS.md) (791 rows, ₱17,598,181,000, all six controls exact) and [NEP_NIA_METHODOLOGY_AND_LESSONS.md](NEP_NIA_METHODOLOGY_AND_LESSONS.md). The final dataset is [data/nep_nia_dataset.json](data/nep_nia_dataset.json); the [workbench](NIA_WORKBENCH.md) compares controls and provisional title candidates.
+- Not a certified project-identity comparison: the DBM NEP standalone NIA PDF (`dbm-other-nep-line-data/NIA.pdf`, 30 pages, OCR text layer) has a different structure, including a printed Restoration heading and NIS control of ₱4,662,231,000. Its extraction exists: see [NEP_NIA_EXTRACTION_FINDINGS.md](NEP_NIA_EXTRACTION_FINDINGS.md) (791 rows, ₱17,598,181,000, all six controls exact) and [NEP_NIA_METHODOLOGY_AND_LESSONS.md](NEP_NIA_METHODOLOGY_AND_LESSONS.md). The final dataset is [data/nep_nia_dataset.json](data/nep_nia_dataset.json); the [workbench](NIA_WORKBENCH.md) compares controls and provisional title candidates under two labeled matching methods (strict titles; corrected AI titles with deterministic near-miss marks on unmatched rows). Following the DPWH convention, unmatched candidates split into **validated** rows with no counterpart anywhere in the other ledger (176 House / ₱6,299.8M; 138 NEP / ₱5,053.676M) and **unresolved** rows with a plausible near-miss counterpart (spelling, location, repeated-title variants, or strict split-halves) that are held out of headline counts pending review.
 
 ## Rebuild and checks
 
