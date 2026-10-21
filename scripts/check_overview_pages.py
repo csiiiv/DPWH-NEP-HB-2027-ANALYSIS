@@ -135,6 +135,29 @@ def main():
                         expect(row.get_by_role('link',name=f"{w['label']} unchanged pairs",exact=True)).to_have_attribute('href',w['links']['unchanged'])
                         expect(row.get_by_role('link',name=f"{w['label']} paired increases",exact=True)).to_have_attribute('href',w['links']['increases'])
                         expect(row.get_by_role('link',name=f"{w['label']} paired decreases",exact=True)).to_have_attribute('href',w['links']['decreases'])
+                    # Totals row: pesos sum the four workspaces exactly (each
+                    # workspace's funding bridge holds), while record counts
+                    # add across different counting grains.
+                    total = changes.locator('tfoot tr')
+                    expect(total).to_have_count(1)
+                    totals = {
+                        'insertions': sum(w['insertions']['amount_php'] for w in data['workspaces']),
+                        'deletions': sum(w['deletions']['amount_php'] for w in data['workspaces']),
+                        'unchanged': sum(w['unchanged']['amount_php'] for w in data['workspaces']),
+                        'house': sum(w['sources']['house']['amount_php'] for w in data['workspaces']),
+                        'increased': sum(w['adjustments']['increased_php'] for w in data['workspaces']),
+                        'reduced': sum(w['adjustments']['reduced_php'] for w in data['workspaces']),
+                        'insertion_records': sum(w['insertions']['count'] for w in data['workspaces']),
+                        'deletion_records': sum(w['deletions']['count'] for w in data['workspaces']),
+                        'house_records': sum(w['sources']['house']['count'] for w in data['workspaces']),
+                    }
+                    total_text = total.inner_text()
+                    for key, value in totals.items():
+                        expected_text = f"{value:,}" if 'records' in key or key in ('increased','reduced') else f"₱{value:,}"
+                        assert expected_text in total_text, f'totals row missing {key}: {expected_text}'
+                    # Funding identity across the summed columns.
+                    assert totals['insertions'] - totals['deletions'] + totals['increased'] - totals['reduced'] == \
+                        totals['house'] - sum(w['sources']['nep']['amount_php'] for w in data['workspaces'])
                     page.screenshot(path=str(screenshots / f'overview-{width}.png'),full_page=True)
                     # Summary destinations restore the matching populations and
                     # preserve the new global entry alongside workspace pages.

@@ -87,6 +87,26 @@ function downloadSummary(data) {
 // Coverage and candidate-change tables follow the DPWH Highlights pattern:
 // every cell states its own counting unit, and figures come only from the
 // validated summary payload — never cross-workspace additions.
+// Totals row for the candidate-change table: pesos sum exactly because each
+// workspace's funding bridge holds (insertions − deletions + paired net =
+// House − NEP), so column sums reconcile to the summed ledgers. Record
+// counts, however, add across different grains — allocation records (DPWH),
+// project records (FMR and NIA) and funding-column records (HFEP) — so the
+// summed counts are record totals, not comparable project counts; the
+// footnote states this beside the row.
+function changesTotals(workspaces) {
+  const sumBy = pick => workspaces.reduce((total, w) => total + pick(w), 0);
+  return {
+    insertions: {count: sumBy(w => w.insertions.count), amount_php: sumBy(w => w.insertions.amount_php)},
+    deletions: {count: sumBy(w => w.deletions.count), amount_php: sumBy(w => w.deletions.amount_php)},
+    unchanged: {count: sumBy(w => w.unchanged.count), amount_php: sumBy(w => w.unchanged.amount_php)},
+    increased: {count: sumBy(w => w.adjustments.increased_count), nep_php: sumBy(w => w.adjustments.increased_nep_php),
+      house_php: sumBy(w => w.adjustments.increased_house_php), php: sumBy(w => w.adjustments.increased_php)},
+    reduced: {count: sumBy(w => w.adjustments.reduced_count), nep_php: sumBy(w => w.adjustments.reduced_nep_php),
+      house_php: sumBy(w => w.adjustments.reduced_house_php), php: sumBy(w => w.adjustments.reduced_php)},
+    house: {count: sumBy(w => w.sources.house.count), amount_php: sumBy(w => w.sources.house.amount_php)},
+  };
+}
 function CoverageTables({data, exact, inModal = false}) {
   const columns = [
     ['nep', 'DBM NEP', w => w.sources.nep, w => w.links.nep],
@@ -150,9 +170,40 @@ function CoverageTables({data, exact, inModal = false}) {
               <strong>{number(w.sources.house.count)} {w.count_unit}</strong>
               <span title={money(w.sources.house.amount_php)}>House Allocations Worth <Amount value={w.sources.house.amount_php} exact/></span></a></td>
           </tr>)}</tbody>
+          <tfoot><tr className="overview-changes-total">
+            <th scope="row">Total<small className="overview-subhead">4 workspaces · summed figures</small></th>
+            {(() => {const t = changesTotals(data.workspaces); return <><td key="insertions">
+              <span className="highlights-cell-link">
+                <strong>{number(t.insertions.count)} records</strong>
+                <span title={money(t.insertions.amount_php)}>House Allocations Worth <Amount value={t.insertions.amount_php} exact/></span></span></td>
+            <td key="deletions">
+              <span className="highlights-cell-link">
+                <strong>{number(t.deletions.count)} records</strong>
+                <span title={money(t.deletions.amount_php)}>NEP Allocations Worth <Amount value={t.deletions.amount_php} exact/></span></span></td>
+            <td key="unchanged">
+              <span className="highlights-cell-link">
+                <strong>{number(t.unchanged.count)} records</strong>
+                <span title={money(t.unchanged.amount_php)}>Unchanged Allocations Worth <Amount value={t.unchanged.amount_php} exact/></span></span></td>
+            <td key="increases">
+              <span className="highlights-cell-link">
+                <strong>{number(t.increased.count)} record pairs</strong>
+                <span title={money(t.increased.nep_php)}>NEP to HGAB3 Allocations Worth:</span>
+                <span title={money(t.increased.nep_php)}><Amount value={t.increased.nep_php} exact/> → <Amount value={t.increased.house_php} exact/></span>
+                <span title={money(t.increased.php)}>Adjustments worth: <Amount value={t.increased.php} exact signed/></span></span></td>
+            <td key="decreases">
+              <span className="highlights-cell-link">
+                <strong>{number(t.reduced.count)} record pairs</strong>
+                <span title={money(t.reduced.nep_php)}>NEP to HGAB3 Allocations Worth:</span>
+                <span title={money(t.reduced.nep_php)}><Amount value={t.reduced.nep_php} exact/> → <Amount value={t.reduced.house_php} exact/></span>
+                <span title={money(t.reduced.php)}>Adjustments worth: <Amount value={t.reduced.php} exact signed/></span></span></td>
+            <td key="house">
+              <span className="highlights-cell-link">
+                <strong>{number(t.house.count)} records</strong>
+                <span title={money(t.house.amount_php)}>House Allocations Worth <Amount value={t.house.amount_php} exact/></span></span></td>
+          </>;})()}</tr></tfoot>
         </table>
       </div>
-      <p className="fmr-muted">Counts use each workspace's record grain, so they are not comparable across rows. "Allocations Worth" figures are total allocations; "Adjustments worth" figures are signed total adjustments (+/−) within those pairs, never allocations. Adjustments are gross movements within pairs — {data.workspaces.map(w => `${w.label}: ${w.adjustments.count_unit}`).join('; ')}. The DPWH pair counts include region-difference candidates. Unchanged allocations are equal on both stages. HFEP paired column additions/drops sit in its adjustments; its Analysis view displays NEP minus House.</p>
+      <p className="fmr-muted">Counts use each workspace's record grain, so they are not comparable across rows. "Allocations Worth" figures are total allocations; "Adjustments worth" figures are signed total adjustments (+/−) within those pairs, never allocations. Adjustments are gross movements within pairs — {data.workspaces.map(w => `${w.label}: ${w.adjustments.count_unit}`).join('; ')}. The DPWH pair counts include region-difference candidates. Unchanged allocations are equal on both stages. HFEP paired column additions/drops sit in its adjustments; its Analysis view displays NEP minus House. The Total row sums the four workspaces: allocation pesos reconcile exactly — insertions − deletions + net adjustments equal House − NEP in every workspace — while record counts add across different counting grains, so treat them as record totals, not comparable project counts.</p>
     </section>
   </>;
 }
@@ -288,8 +339,25 @@ export default function MainOverview() {
                 <span title={money(delta)}>Adjustments worth: <Amount value={delta} exact signed/></span></td>;})}
               <td><strong>{number(w.sources.house.count)} {w.count_unit}</strong><br/><span title={money(w.sources.house.amount_php)}>House Allocations Worth: <Amount value={w.sources.house.amount_php} exact/></span></td>
             </tr>)}</tbody>
+            <tfoot><tr>
+              <th scope="row">Total<small className="overview-subhead">4 workspaces</small></th>
+              {(() => {const t = changesTotals(data.workspaces); return <>
+                <td><strong>{number(t.insertions.count)} records</strong><br/><span title={money(t.insertions.amount_php)}>House Allocations Worth: <Amount value={t.insertions.amount_php} exact/></span></td>
+                <td><strong>{number(t.deletions.count)} records</strong><br/><span title={money(t.deletions.amount_php)}>NEP Allocations Worth: <Amount value={t.deletions.amount_php} exact/></span></td>
+                <td><strong>{number(t.unchanged.count)} records</strong><br/><span title={money(t.unchanged.amount_php)}>Unchanged Allocations Worth: <Amount value={t.unchanged.amount_php} exact/></span></td>
+                <td><strong>{number(t.increased.count)} record pairs</strong><br/>
+                  <span title={money(t.increased.nep_php)}>NEP to HGAB3 Allocations Worth:</span><br/>
+                  <span title={money(t.increased.nep_php)}><Amount value={t.increased.nep_php} exact/> → <Amount value={t.increased.house_php} exact/></span><br/>
+                  <span title={money(t.increased.php)}>Adjustments worth: <Amount value={t.increased.php} exact signed/></span></td>
+                <td><strong>{number(t.reduced.count)} record pairs</strong><br/>
+                  <span title={money(t.reduced.nep_php)}>NEP to HGAB3 Allocations Worth:</span><br/>
+                  <span title={money(t.reduced.nep_php)}><Amount value={t.reduced.nep_php} exact/> → <Amount value={t.reduced.house_php} exact/></span><br/>
+                  <span title={money(t.reduced.php)}>Adjustments worth: <Amount value={t.reduced.php} exact signed/></span></td>
+                <td><strong>{number(t.house.count)} records</strong><br/><span title={money(t.house.amount_php)}>House Allocations Worth: <Amount value={t.house.amount_php} exact/></span></td>
+              </>;})()}</tr></tfoot>
           </table>
         </div>
+        <p className="fmr-muted">Totals sum the four workspaces. Allocation pesos reconcile exactly; record counts add across different counting grains.</p>
         <p><a href="#overview">Return to full overview →</a></p>
       </section>
     </CardModal>}

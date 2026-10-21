@@ -40,6 +40,10 @@
 .main-overview .overview-coverage-table thead th,.main-overview .overview-changes-table thead th{background:#eaf1f7;color:#183b59}
 .main-overview .overview-coverage-table tbody th,.main-overview .overview-changes-table tbody th{width:18%;background:#f8fafc}
 .main-overview .overview-coverage-table tbody th a,.main-overview .overview-changes-table tbody th a{color:inherit}
+.main-overview .overview-changes-table tfoot th,.main-overview .overview-changes-table tfoot td{background:#eef3f8;font-weight:600}
+.main-overview .overview-changes-table tfoot .overview-subhead{font-weight:500}
+.main-overview .overview-changes-table tfoot .highlights-cell-link{cursor:default}
+.main-overview .overview-changes-table tfoot .highlights-cell-link:hover{text-decoration:none}
 .main-overview .highlights-cell-link{display:flex;flex-direction:column;gap:.4rem;text-decoration:none;font-size:.86rem;min-width:0}
 .main-overview .highlights-cell-link:hover{text-decoration:underline}
 .main-overview .highlights-cell-link strong{font-weight:600}

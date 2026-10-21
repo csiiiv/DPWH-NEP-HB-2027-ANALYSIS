@@ -82,7 +82,9 @@ sum, which equals the NEP-side sum by construction (per-row delta 0).
 - Changes table (`House vs. NEP: candidate changes`): headers become the five
   literal title+subheader pairs; new **Unchanged** column between Deletion
   candidates and Paired increases (count + allocation; linked where
-  `links.unchanged` exists). Keep the House ledger column last.
+  `links.unchanged` exists). Keep the House ledger column last. A **Total**
+  footer row sums the four workspaces per column — pesos exactly (each
+  workspace's funding bridge holds), counts as record totals across grains.
 - Table footnote/muted copy: add one sentence defining Unchanged (matched
   records, no allocation change) and noting the DPWH cell is not yet
   filterable in Compare.

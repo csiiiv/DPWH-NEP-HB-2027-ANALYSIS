@@ -210,10 +210,18 @@ workspace:
   gross paired increases/decreases, and the House
   ledger, each cell linking into the workspace's own filtered population view
   (per-workspace `links.increases`/`links.decreases`; unchanged cells use
-  `links.unchanged` where a filter exists).
+  `links.unchanged` where a filter exists). A **Total** footer row sums the
+  four workspaces per column: allocation pesos reconcile exactly because each
+  workspace's funding bridge holds (insertions − deletions + paired net =
+  House − NEP), while record counts add across different counting grains —
+  allocation records (DPWH), project records (FMR, NIA) and funding-column
+  records (HFEP) — so the summed counts are record totals, not comparable
+  project counts; the table footnote states this beside the row.
 
-Every cell states its workspace's counting unit; counts and pesos are never
-added across workspaces. The DPWH Highlights tables keep only the DPWH row and
+Every cell states its workspace's counting unit; pesos are summed across
+workspaces only in the candidate-change Total row, where the funding identity
+reconciles column sums to the summed ledgers. Counts are never presented as
+comparable across rows. The DPWH Highlights tables keep only the DPWH row and
 link to Overview for the cross-workspace view.
 
 Possible findings:
