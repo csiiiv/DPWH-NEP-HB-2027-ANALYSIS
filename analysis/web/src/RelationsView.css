@@ -1,0 +1,171 @@
+/* Relations view — states, findings and cross-references.
+   Reuses the shared analytics chrome (analysis-section, sortable-table,
+   analytics-dialog) and adds only what this view needs: stat strips, a tab
+   bar, state pills on the confidence ladder, proportional bars and an
+   evidence cell. Colours follow the revision palette in revisionMatrix.js so
+   a state reads the same here as it does in the funding bridge. */
+.relations-view { --rv-line: #dce4ec; --rv-ink: #203147; --rv-muted: #52657b; }
+
+/* --- stat strip ------------------------------------------------------- */
+/* The shared .stat-strip rules are scoped to .road-groups in styles.css, so
+   this view defines its own; without them the <dl> renders as bare text. */
+.relations-view .stat-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: .5rem; margin: .85rem 0; padding: 0; }
+.relations-view .stat-strip > div { border: 1px solid var(--rv-line); border-radius: 8px; padding: .55rem .75rem; background: #f8fafc; min-width: 0; }
+.relations-view .stat-strip dt { font-size: .68rem; text-transform: uppercase; letter-spacing: .04em; color: #5b6b7c; line-height: 1.35; }
+.relations-view .stat-strip dd { margin: .2rem 0 0; font-weight: 650; font-size: 1.05rem; color: var(--rv-ink); font-variant-numeric: tabular-nums; }
+.relations-view .stat-strip dd small { display: block; font-weight: 400; font-size: .74rem; color: var(--rv-muted); }
+/* A strip that flags withheld money gets the accent treatment. */
+.relations-view .stat-strip > div.is-withheld { border-left: 3px solid #7a5ba6; }
+.relations-view .stat-strip > div.is-open { border-left: 3px solid #b0852b; }
+
+/* --- sub-view tabs ---------------------------------------------------- */
+/* .chip has no rules anywhere in the app; style the tab bar explicitly and
+   keep it on the established underline pattern (.analysis-subtabs). */
+.relations-tabs { display: flex; gap: .35rem; flex-wrap: wrap; border-bottom: 2px solid var(--rv-line); margin: 1rem 0 .9rem; }
+/* Links, not buttons: each tab changes the URL, so it must be navigable,
+   shareable and closable with the browser back button. Selectors mirror
+   .analysis-subtabs so the two strips read as the same control. */
+.relations-tabs a { background: none; border: none; border-bottom: 3px solid transparent; margin-bottom: -2px; border-radius: 0; padding: .5rem .85rem; font: inherit; font-weight: 600; color: var(--rv-muted); cursor: pointer; }
+.relations-tabs a:hover { background: #edf3fa; color: var(--rv-ink); }
+.relations-tabs a[aria-current="page"] { color: #123; border-bottom-color: #1f4d7a; background: none; }
+/* Counts ride along with each label so the reader knows the size of a
+   sub-view before paying for its sidecar. The badge is an atomic inline, so
+   the parent's underline does not propagate into it. */
+.relations-tab-count { display: inline-block; margin-left: .4rem; padding: .05rem .4rem; border-radius: 999px; background: rgba(31, 77, 122, .1); color: #1f4d7a; font-size: .7rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.relations-tabs a[aria-current="page"] .relations-tab-count { background: rgba(31, 77, 122, .16); }
+@media (max-width: 700px) {
+  .relations-tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .relations-tabs::-webkit-scrollbar { display: none; }
+  .relations-tabs a { flex: 0 0 auto; white-space: nowrap; padding: .5rem .7rem; font-size: .86rem; }
+}
+
+/* --- state pills ------------------------------------------------------ */
+/* One tint per state on the confidence ladder: committed (booked) →
+   review (withheld) → blocked/open → unmatched. Kept as modifier classes so
+   the palette stays in one place and can be audited against revisionMatrix. */
+.rv-state { display: inline-block; padding: .12rem .5rem; border-radius: 999px; font-size: .72rem; font-weight: 650; line-height: 1.5; white-space: nowrap; border: 1px solid transparent; }
+.rv-state--committed_attached { background: #e6f2ea; color: #0b6b3a; border-color: #c4e0cf; }
+.rv-state--review_attached { background: #efe9f7; color: #6a4a97; border-color: #ddd0ee; }
+.rv-state--duplicate_key { background: #fdeaea; color: #8a2a2a; border-color: #f5d0d0; }
+.rv-state--twin_cross_referenced { background: #e6f1f3; color: #22636e; border-color: #cbe3e7; }
+.rv-state--open_candidate { background: #eaf2fd; color: #1d4f8a; border-color: #d0e1f6; }
+.rv-state--unmatched_insertion { background: #faf3e2; color: #8a6516; border-color: #f0e2c0; }
+.rv-state--unmatched_deletion { background: #f0eae5; color: #6b5543; border-color: #e0d5ca; }
+/* A member row no edge ever touched: present in the shell, never consumed. */
+.rv-state--unseen { background: #eceff3; color: #5d6b7b; border-color: #dfe4ea; font-style: italic; }
+
+/* --- census ----------------------------------------------------------- */
+/* The proportional bar is the point of the States tab: it shows how little of
+   the file is actually committed versus withheld or open. Widths are set
+   inline from the census, so no client-side re-derivation of the maths. */
+.rv-census-bar { display: flex; width: 100%; height: 22px; border-radius: 6px; overflow: hidden; border: 1px solid var(--rv-line); background: #f2f5f9; margin: .6rem 0 .35rem; }
+.rv-census-seg { height: 100%; min-width: 0; border-right: 1px solid #ffffffcc; }
+.rv-census-seg:last-child { border-right: 0; }
+.rv-census-legend { display: flex; flex-wrap: wrap; gap: .35rem .85rem; margin: 0 0 .9rem; padding: 0; list-style: none; font-size: .78rem; color: var(--rv-muted); }
+.rv-census-legend li { display: flex; align-items: center; gap: .35rem; min-width: 0; }
+.rv-census-legend i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; flex: none; }
+.rv-census-legend b { font-weight: 650; color: var(--rv-ink); font-variant-numeric: tabular-nums; }
+/* Fill colours mirror the pills so a legend swatch matches its row. */
+.rv-fill--committed_attached { background: #0b6b3a; }
+.rv-fill--review_attached { background: #7a5ba6; }
+.rv-fill--duplicate_key { background: #a12020; }
+.rv-fill--twin_cross_referenced { background: #2a7d8a; }
+.rv-fill--open_candidate { background: #245fa8; }
+.rv-fill--unmatched_insertion { background: #b0852b; }
+.rv-fill--unmatched_deletion { background: #6b5543; }
+
+/* --- ratio bars (overlap spectrum) ------------------------------------ */
+/* Reuses the .fmr-bar-track geometry convention: a track plus one filled
+   span whose width is a percentage of the maximum in view. */
+.rv-bar { display: block; height: 10px; border-radius: 3px; background: #edf3fa; overflow: hidden; min-width: 54px; }
+.rv-bar > span { display: block; height: 100%; background: #3f79b8; }
+.rv-bar-cell { display: flex; flex-direction: column; gap: .22rem; align-items: flex-end; }
+.rv-bar-cell small { font-variant-numeric: tabular-nums; color: var(--rv-muted); }
+
+/* --- evidence cell ---------------------------------------------------- */
+/* .evidence-cells had no rules, so "Open shell" and the rival counts ran
+   together. Lay them out and keep the drill button visually primary. */
+.evidence-cells { display: flex; flex-direction: column; align-items: flex-start; gap: .25rem; min-width: 0; }
+.evidence-cells .rv-chipline { display: flex; flex-wrap: wrap; gap: .3rem; }
+.rv-tag { display: inline-block; padding: .05rem .42rem; border-radius: 5px; background: #edf2f8; color: #43536a; font-size: .72rem; white-space: nowrap; }
+.rv-tag--warn { background: #fdeaea; color: #8a2a2a; }
+.rv-tag--withheld { background: #efe9f7; color: #6a4a97; }
+/* The drill column is no longer align:'num', so it does not inherit that
+   class's white-space:nowrap; the button carries its own. */
+.rv-open-shell { display: inline-flex; align-items: center; gap: .3rem; margin: 0; padding: .26rem .6rem; border: 1px solid #8aa4bd; border-radius: 6px; background: linear-gradient(#fff, #eef4fa); color: #1a3f63; font: inherit; font-size: .74rem; font-weight: 650; line-height: 1.2; cursor: pointer; white-space: nowrap; box-shadow: 0 1px 0 rgba(18, 40, 66, .08); }
+.rv-open-shell:hover { border-color: #1f4d7a; background: linear-gradient(#f5f9fd, #e4eef8); color: #123; }
+.rv-open-shell:focus-visible { outline: 2px solid #1f4d7a; outline-offset: 2px; }
+
+/* --- findings --------------------------------------------------------- */
+.relations-view h3 { font-size: 1rem; margin: 1.1rem 0 .3rem; }
+.relations-view h4 { font-size: .9rem; margin: 1.2rem 0 .3rem; }
+/* At-stake money is the sort that matters; make it scannable. */
+.rv-money { font-variant-numeric: tabular-nums; font-weight: 650; }
+.rv-money--withheld { color: #6a4a97; }
+.rv-money--neg { color: #a12020; }
+.rv-money--pos { color: #0b6b3a; }
+/* Filter row: keep the result count adjacent to the controls so an empty
+   result is explained rather than looking like a broken table. */
+.relations-filters { display: flex; align-items: end; gap: 1rem; flex-wrap: wrap; }
+.relations-filters label { display: flex; flex-direction: column; gap: .3rem; font-size: .78rem; font-weight: 600; color: var(--rv-muted); }
+.relations-filters select { min-width: 200px; }
+.rv-result-count { font-size: .82rem; color: var(--rv-muted); margin: .55rem 0 0; }
+
+/* --- shell drilldown -------------------------------------------------- */
+/* The dialog is a fixed-height flex box with overflow:hidden, so the body
+   MUST live inside .analytics-content to scroll. The summary cards reuse the
+   shared .analytics-summary-cards; only the gap accent is added here. */
+/* Scoped to this view: .analytics-summary-cards is shared with
+   ProjectAnalytics, and Vite bundles every imported CSS file globally. */
+.relations-view .analytics-summary-cards article.is-gap { border-left: 3px solid #a12020; }
+/* Side-by-side ledger: the shell's whole story is whether both sides'
+   totals agree, so put them next to each other rather than in one column. */
+.rv-ledger { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 0 0 20px; }
+.rv-ledger-side { background: #fff; border: 1px solid #dce3ed; border-radius: 10px; padding: 14px 16px; min-width: 0; }
+.rv-ledger-side h4 { margin: 0 0 8px; font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; color: #5d6b7b; }
+.rv-ledger-side dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: .3rem .75rem; font-size: .85rem; }
+.rv-ledger-side dt { color: #5d6b7b; }
+.rv-ledger-side dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+.rv-unsupplied-note { border-left: 3px solid #b0852b; background: #faf7f0; padding: 8px 14px; font-size: .85rem; margin: 0 0 16px; color: #43536a; }
+.rv-edges { display: flex; flex-wrap: wrap; gap: .3rem; }
+.rv-edge-kind { display: inline-block; padding: .05rem .42rem; border-radius: 5px; background: #edf2f8; color: #43536a; font-size: .72rem; }
+/* Edge-kind tints. These chips sit in the same table row as the state pills
+   (the shell drilldown renders both), so hue is used carefully. Violet is
+   deliberately shared between the `segment_scope` edge kind and the
+   `review_attached` state: in the built data every segment_scope edge
+   produces review_attached (74 of 74), which is the pairing the colour
+   encodes. It is not a strict equivalence — review_attached can also arise
+   from a fuzzy edge (4 rows in the current build) — so the colour reads as
+   "review-only territory", not as proof. Otherwise hues are not recycled
+   between the two vocabularies, since a repeat would imply a relationship
+   the data does not assert. Raspberry is used by no state. */
+.rv-edge-kind--exact { background: #e6f2ea; color: #0b6b3a; }
+.rv-edge-kind--chainage { background: #f9eaf1; color: #9c3a6b; }
+.rv-edge-kind--segment_scope { background: #efe9f7; color: #6a4a97; }
+.rv-edge-kind--fuzzy { background: #faf3e2; color: #8a6516; }
+/* Those four cover 94.8% of rostered edges (exact 85.9%, fuzzy 8.2%,
+   chainage 4.4%, segment_scope 0.7%). The long tail — location / scope
+   amendments, ambiguous, soft_match — each sit below 0.5% and fall back to
+   the base .rv-edge-kind grey, which reads as "some other kind" rather than
+   implying a category we did not bother to colour. */
+
+/* --- pagination ------------------------------------------------------- */
+/* SortableTable emits .fmr-pagination, but Fmr.css is only loaded by the FMR
+   workspace — this view would get an unstyled pager. Restate it locally. */
+.relations-view .fmr-pagination { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 18px 0; font-size: 13px; color: var(--rv-muted); }
+
+/* --- notes ------------------------------------------------------------ */
+/* The long explanatory notes are the honesty contract of this view; give
+   them a readable measure instead of a wall of muted text. */
+.rv-note { max-width: 92ch; font-size: .86rem; line-height: 1.6; color: var(--rv-muted); background: #f8fafc; border: 1px solid var(--rv-line); border-left: 3px solid #8aa4bd; border-radius: 6px; padding: .6rem .85rem; margin: .5rem 0 .9rem; }
+.rv-loading { display: flex; align-items: center; gap: .5rem; padding: 1.4rem 0; color: var(--rv-muted); font-size: .9rem; }
+.rv-loading::before { content: ""; width: 14px; height: 14px; border: 2px solid #cbd7e5; border-top-color: #1f4d7a; border-radius: 50%; animation: rv-spin .8s linear infinite; flex: none; }
+@keyframes rv-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .rv-loading::before { animation: none; } }
+
+@media (max-width: 700px) {
+  .relations-view .stat-strip { grid-template-columns: 1fr 1fr; }
+  .rv-census-bar { height: 18px; }
+  .relations-filters select { min-width: 0; width: 100%; }
+  .rv-ledger { grid-template-columns: 1fr; }
+}

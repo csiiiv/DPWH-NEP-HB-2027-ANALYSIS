@@ -17,18 +17,20 @@ import {openModalDialog} from './modalLifecycle.js';
 import LoadingModal from './LoadingModal.jsx';
 import {pctChange as percentChange} from './pctChange.js';
 const GroupProjectsModal=lazy(()=>import('./GroupProjectsModal.jsx'));
+const RelationsView=lazy(()=>import('./RelationsView.jsx'));
 const names={third:'HGAB3 · 3rd reading',second:'HGAB2 · 2nd reading',nep:'DBM NEP',api:'DPWH Transparency NEP'};
 const labels={'Bridge Program':'Bridges','Convergence and Special Support Program':'CSSP','Foreign-assisted projects':'FAPs'};
 const short=value=>labels[value]??value;
 const modes={no_suggestion:'House-only · no NEP suggestion',unresolved:'Unresolved NEP suggestions',third_only:'New 3rd-reading records'};
 const deletionModes={no_suggestion:'No House record · no suggestion',suggested:'Possible replacements · House rows suggest this NEP item',second_only:'HGAB2 only · dropped in HGAB3'};
-const views=[['overview','Overview'],['insertions','Insertions'],['deletions','Deletions'],['adjustments','Adjustments'],['chainage','Chainage'],['roadgroups','Groupings'],['statistics','Statistics']];
+const views=[['overview','Overview'],['insertions','Insertions'],['deletions','Deletions'],['adjustments','Adjustments'],['chainage','Chainage'],['roadgroups','Groupings'],['relations','Relations'],['statistics','Statistics']];
 const questions={overview:'How are recorded DPWH allocations distributed across offices and programs?',
  insertions:'Which House allocation records have no NEP counterpart?',
  deletions:'Which NEP allocation records have no House counterpart?',
  adjustments:'Which proposed pairs have different allocations, and what changed between House readings?',
  chainage:'Which recorded lengths and allocations changed across stages?',
  roadgroups:'Which same-road groups retain unmatched allocation records?',
+ relations:'What did the matcher commit, withhold or leave open — and where should a reader look?',
  statistics:'Which descriptive allocation patterns appear in the retained records?'};
 const dimensions=[['overall','Overall'],['region','Region'],['office','District office'],['program','Category'],['pap','PAP']];
 const pick=(params,key,allowed,fallback)=>allowed.includes(params.get(key))?params.get(key):fallback;
@@ -107,7 +109,7 @@ export default function Analysis({route}){
  function changedParams(key,value){const params=Object.fromEntries(route.params);params[key]=value;
   if(key==='view'){
    if(params.dim==='overall')delete params.dim;
-   for(const stale of ['drill','axis','table','group','g','shell','side','zone','pap','region','page','sort','dir','ranking','direction','focus','stage','scope','pdf','pdfPage'])delete params[stale];
+   for(const stale of ['drill','axis','table','group','g','shell','side','zone','pap','region','page','sort','dir','ranking','direction','focus','stage','scope','pdf','pdfPage','rshell','tab'])delete params[stale];
   }
   return params;
  }
@@ -144,6 +146,7 @@ export default function Analysis({route}){
   {view==='adjustments'&&detail&&<Adjustments detail={detail} revisionSets={data.headlines.revisionSets} dim={dim} direction={direction} change={change} onOpenGroup={openGroup}/>}
   {view==='chainage'&&<Chainage detail={detail} focus={chainageFocus} change={change} benchmark={benchmark} setBenchmark={setBenchmark} stage={chainageStage} scope={chainageScope}/>}
   {view==='roadgroups'&&<RoadGroups payload={roadGroups} open={shellOpen} onOpenShell={g=>openModal({shell:g.shell,side:g.state==='nep_leftover'?'nep':'hgab',zone:g.zone||'',pap:g.pap||'',region:g.region||''})} onClose={closeModal}/>}
+  {view==='relations'&&<Suspense fallback={<p role="status" className="muted">Loading relations view…</p>}><RelationsView route={route} change={change}/></Suspense>}
   {view==='statistics'&&detail&&<Statistics detail={detail} source={source} dim={dim} change={change}/>}
   {/* Heavy-modal loading states: group records need the 50 MB per-record payload
       (plus a lazy chunk), shell members need the road-group sidecar. Until the
