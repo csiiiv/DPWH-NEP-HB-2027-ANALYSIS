@@ -1,0 +1,1768 @@
+{
+ "schemaVersion": "0.1.0",
+ "source": {
+  "file": "DPWH per district.pdf",
+  "provenance": "CamScanner scan, 9 pages, PDF 1.7, NO embedded text layer",
+  "extractionMethod": "Tesseract OCR (psm 6, 11, 4) over 300 dpi renders",
+  "status": "OCR_DERIVED_NOT_HUMAN_VERIFIED",
+  "warning": "OCR of a low-quality scan. Values MUST be cross-checked against the BetterGov transcription and/or a human read before use. Amounts are in Php '000 per the source table header."
+ },
+ "rowCountsByMode": {
+  "6": 99,
+  "11": 0,
+  "4": 192
+ },
+ "rowsByMode": {
+  "6": [
+   {
+    "page": 1,
+    "rawLine": "NCR Las Piftas-Muntinlupa [CITY OF LAS PINAS (LONE DISTRICT) 1,346,406",
+    "districtGuess": "CITY OF LAS PINAS (LONE DISTRICT)",
+    "amountThousandsPHP": 1346406
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Malabon-Navotas MALABON CITY (LONE DISTRICT) 1,387,143",
+    "districtGuess": "NCR Malabon-Navotas MALABON CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 1387143
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Malabon-Navolas NAVOTAS CITY (LONE DISTRICT) 1,609,250",
+    "districtGuess": "NCR Malabon-Navolas NAVOTAS CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 1609250
+   },
+   {
+    "page": 1,
+    "rawLine": "Metro Manila 1st DEO [CITY OF MARIKINA (FIRST DISTRICT) 630,000",
+    "districtGuess": "CITY OF MARIKINA (FIRST DISTRICT)",
+    "amountThousandsPHP": 630000
+   },
+   {
+    "page": 1,
+    "rawLine": "Metro Manila 1st DEO |PASIG CITY (LONE DISTRICT) 892,000",
+    "districtGuess": "PASIG CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 892000
+   },
+   {
+    "page": 1,
+    "rawLine": "Metro Manila 1st DEO |SAN JUAN CITY (LONE DISTRICT) 377,562",
+    "districtGuess": "SAN JUAN CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 377562
+   },
+   {
+    "page": 1,
+    "rawLine": "Metro Manila 1st DEO [TAGUIG CITY (FIRST DISTRICT) 230,000",
+    "districtGuess": "TAGUIG CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 230000
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Metro Manila 2nd CITY OF MAKATI (FIRST DISTRICT) 776,983",
+    "districtGuess": "nd CITY OF MAKATI (FIRST DISTRICT)",
+    "amountThousandsPHP": 776983
+   },
+   {
+    "page": 1,
+    "rawLine": "CALOOCAN CITY (FIRST DISTRICT) 1,560,600",
+    "districtGuess": "CALOOCAN CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 1560600
+   },
+   {
+    "page": 1,
+    "rawLine": "Metro Manila 3rd DEO|CALOOCAN CITY (THIRD DISTRICT) 720,800",
+    "districtGuess": "CALOOCAN CITY (THIRD DISTRICT)",
+    "amountThousandsPHP": 720800
+   },
+   {
+    "page": 1,
+    "rawLine": "Metro Manila 3rd DEO| VALENZUELA CITY (FIRST DISTRICT) 977,546",
+    "districtGuess": "VALENZUELA CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 977546
+   },
+   {
+    "page": 1,
+    "rawLine": "North ManilaDEO — [MANILA CITY (FIRST DISTRICT) 537,700",
+    "districtGuess": "MANILA CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 537700
+   },
+   {
+    "page": 1,
+    "rawLine": "North Manila DEO MANILA CITY (SECOND DISTRICT) 493,500",
+    "districtGuess": "North Manila DEO MANILA CITY (SECOND DISTRICT)",
+    "amountThousandsPHP": 493500
+   },
+   {
+    "page": 1,
+    "rawLine": "North ManilaDEO — | MANILA CITY (THIRD DISTRICT) 890,500",
+    "districtGuess": "MANILA CITY (THIRD DISTRICT)",
+    "amountThousandsPHP": 890500
+   },
+   {
+    "page": 1,
+    "rawLine": "North Manila DEO MANILA CITY (SIXTH DISTRICT) 342,000",
+    "districtGuess": "North Manila DEO MANILA CITY (SIXTH DISTRICT)",
+    "amountThousandsPHP": 342000
+   },
+   {
+    "page": 1,
+    "rawLine": "South ManilaDEO —_ | MANILA CITY (SIXTH DISTRICT) 1,050,400",
+    "districtGuess": "MANILA CITY (SIXTH DISTRICT)",
+    "amountThousandsPHP": 1050400
+   },
+   {
+    "page": 1,
+    "rawLine": "South Manila DEO —_|MANILA CITY (FIFTH DISTRICT) 2,765,012",
+    "districtGuess": "MANILA CITY (FIFTH DISTRICT)",
+    "amountThousandsPHP": 2765012
+   },
+   {
+    "page": 1,
+    "rawLine": "South ManilaDEQ —_|PASAY CITY (LONE DISTRICT) 905,964",
+    "districtGuess": "PASAY CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 905964
+   },
+   {
+    "page": 1,
+    "rawLine": "Quezon Cily 1st DEO [QUEZON CITY (FIRST DISTRICT) 1,290,030",
+    "districtGuess": "QUEZON CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 1290030
+   },
+   {
+    "page": 1,
+    "rawLine": "Quezon City 1st DEO |QUEZON CITY (SECOND DISTRICT) 1,594,711",
+    "districtGuess": "QUEZON CITY (SECOND DISTRICT)",
+    "amountThousandsPHP": 1594711
+   },
+   {
+    "page": 1,
+    "rawLine": "Quezon City 1st DEO [QUEZON CITY (FIFTH DISTRICT) 1,335,571",
+    "districtGuess": "QUEZON CITY (FIFTH DISTRICT)",
+    "amountThousandsPHP": 1335571
+   },
+   {
+    "page": 5,
+    "rawLine": "Rizal 2nd DEO RIZAL (THIRD DISTRICT) 500,000",
+    "districtGuess": "nd DEO RIZAL (THIRD DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 5,
+    "rawLine": "Rizal 2nd DEO RIZAL (FOURTH DISTRICT) 500,000",
+    "districtGuess": "nd DEO RIZAL (FOURTH DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 5,
+    "rawLine": "MIMAROPA Marinduque DEO MARINDUQUE (LONE DISTRICT) 1,669,934",
+    "districtGuess": "MIMAROPA Marinduque DEO MARINDUQUE (LONE DISTRICT)",
+    "amountThousandsPHP": 1669934
+   },
+   {
+    "page": 5,
+    "rawLine": "MIMAROPA Palawan 2nd DEQ — [PALAWAN (SECOND DISTRICT) 2,776,526",
+    "districtGuess": "PALAWAN (SECOND DISTRICT)",
+    "amountThousandsPHP": 2776526
+   },
+   {
+    "page": 5,
+    "rawLine": "MIMAROPA Palawan 3rd DEO PALAWAN (THIRD DISTRICT) 2,117,459",
+    "districtGuess": "rd DEO PALAWAN (THIRD DISTRICT)",
+    "amountThousandsPHP": 2117459
+   },
+   {
+    "page": 5,
+    "rawLine": "ROMBLON (LONE DISTRICT) 2,176,146",
+    "districtGuess": "ROMBLON (LONE DISTRICT)",
+    "amountThousandsPHP": 2176146
+   },
+   {
+    "page": 5,
+    "rawLine": "ALBAY (FIRST DISTRICT) 1,810,878",
+    "districtGuess": "ALBAY (FIRST DISTRICT)",
+    "amountThousandsPHP": 1810878
+   },
+   {
+    "page": 5,
+    "rawLine": "ALBAY (SECOND DISTRICT) 2,016,238",
+    "districtGuess": "ALBAY (SECOND DISTRICT)",
+    "amountThousandsPHP": 2016238
+   },
+   {
+    "page": 5,
+    "rawLine": "Albay 3rd DEO ALBAY (THIRD DISTRICT) 2,820,615",
+    "districtGuess": "rd DEO ALBAY (THIRD DISTRICT)",
+    "amountThousandsPHP": 2820615
+   },
+   {
+    "page": 5,
+    "rawLine": "CAMARINES SUR (FIRST DISTRICT) 5,986,481",
+    "districtGuess": "CAMARINES SUR (FIRST DISTRICT)",
+    "amountThousandsPHP": 5986481
+   },
+   {
+    "page": 5,
+    "rawLine": "Camarines Sur 3rd |CAMARINES SUR (THIRD DISTRICT) 2,634,906",
+    "districtGuess": "CAMARINES SUR (THIRD DISTRICT)",
+    "amountThousandsPHP": 2634906
+   },
+   {
+    "page": 5,
+    "rawLine": "Catanduanes DEO ~~ |CATANDUANES (LONE DISTRICT) 1,665,935 |",
+    "districtGuess": "CATANDUANES (LONE DISTRICT)",
+    "amountThousandsPHP": 1665935
+   },
+   {
+    "page": 5,
+    "rawLine": "MASBATE (FIRST DISTRICT) 1,110,447 |",
+    "districtGuess": "MASBATE (FIRST DISTRICT)",
+    "amountThousandsPHP": 1110447
+   },
+   {
+    "page": 5,
+    "rawLine": "Masbate 2nd DEO ~—s |MASBATE (SECOND DISTRICT) 1,849,508",
+    "districtGuess": "MASBATE (SECOND DISTRICT)",
+    "amountThousandsPHP": 1849508
+   },
+   {
+    "page": 5,
+    "rawLine": "Masbate 3rd DEO MASBATE (THIRD DISTRICT) 1,387,976",
+    "districtGuess": "rd DEO MASBATE (THIRD DISTRICT)",
+    "amountThousandsPHP": 1387976
+   },
+   {
+    "page": 5,
+    "rawLine": "Sorsogon DEO SORSOGON (FIRST DISTRICT) 1,198,993 |",
+    "districtGuess": "Sorsogon DEO SORSOGON (FIRST DISTRICT)",
+    "amountThousandsPHP": 1198993
+   },
+   {
+    "page": 5,
+    "rawLine": "Region VI Aklan DEO AKLAN (FIRST DISTRICT) 1,488,151 |",
+    "districtGuess": "Region VI Aklan DEO AKLAN (FIRST DISTRICT)",
+    "amountThousandsPHP": 1488151
+   },
+   {
+    "page": 5,
+    "rawLine": "Aklan DEO AKLAN (SECOND DISTRICT) 1,093,274 |",
+    "districtGuess": "Aklan DEO AKLAN (SECOND DISTRICT)",
+    "amountThousandsPHP": 1093274
+   },
+   {
+    "page": 5,
+    "rawLine": "Antique DEO ANTIQUE (LONE DISTRICT) 500,750",
+    "districtGuess": "Antique DEO ANTIQUE (LONE DISTRICT)",
+    "amountThousandsPHP": 500750
+   },
+   {
+    "page": 5,
+    "rawLine": "Region VI Capiz 1st DEO CAPIZ (FIRST DISTRICT) 1,614,111",
+    "districtGuess": "st DEO CAPIZ (FIRST DISTRICT)",
+    "amountThousandsPHP": 1614111
+   },
+   {
+    "page": 5,
+    "rawLine": "Capiz 2nd DEO CAPIZ (SECOND DISTRICT) 1,696,961",
+    "districtGuess": "nd DEO CAPIZ (SECOND DISTRICT)",
+    "amountThousandsPHP": 1696961
+   },
+   {
+    "page": 6,
+    "rawLine": "Guimaras DEO GUIMARAS (LONE DISTRICT) 934,600",
+    "districtGuess": "Guimaras DEO GUIMARAS (LONE DISTRICT)",
+    "amountThousandsPHP": 934600
+   },
+   {
+    "page": 6,
+    "rawLine": "lloilo 1st DEO ILOILO (FIRST DISTRICT) 2,923,040 |",
+    "districtGuess": "st DEO ILOILO (FIRST DISTRICT)",
+    "amountThousandsPHP": 2923040
+   },
+   {
+    "page": 6,
+    "rawLine": "ILOILO (FOURTH DISTRICT) 1,483,238 |",
+    "districtGuess": "ILOILO (FOURTH DISTRICT)",
+    "amountThousandsPHP": 1483238
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VI lloilo 3rd DEO ILOILO (FIFTH DISTRICT) 1,032,475 {",
+    "districtGuess": "rd DEO ILOILO (FIFTH DISTRICT)",
+    "amountThousandsPHP": 1032475
+   },
+   {
+    "page": 6,
+    "rawLine": "lloilo 4th DEO ILOILO (SECOND DISTRICT) 1,198,100 |",
+    "districtGuess": "th DEO ILOILO (SECOND DISTRICT)",
+    "amountThousandsPHP": 1198100
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VI lloilo City DEO ILOILO CITY (LONE DISTRICT) 1,326,100",
+    "districtGuess": "Region VI lloilo City DEO ILOILO CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 1326100
+   },
+   {
+    "page": 6,
+    "rawLine": "‘a Bacolod City DEO BACOLOD CITY (LONE DISTRICT) 2,278,372",
+    "districtGuess": "a Bacolod City DEO BACOLOD CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 2278372
+   },
+   {
+    "page": 6,
+    "rawLine": "= Siquijor DEO SIQUIJOR (LONE DISTRICT) 1,150,734 |",
+    "districtGuess": "Siquijor DEO SIQUIJOR (LONE DISTRICT)",
+    "amountThousandsPHP": 1150734
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VII Bohol 1st DEO BOHOL (FIRST DISTRICT) 1,137,275",
+    "districtGuess": "st DEO BOHOL (FIRST DISTRICT)",
+    "amountThousandsPHP": 1137275
+   },
+   {
+    "page": 6,
+    "rawLine": "Bohol 2nd DEO BOHOL (SECOND DISTRICT) 565,000",
+    "districtGuess": "nd DEO BOHOL (SECOND DISTRICT)",
+    "amountThousandsPHP": 565000
+   },
+   {
+    "page": 6,
+    "rawLine": "Bohol 3rd DEO BOHOL (THIRD DISTRICT) 500,000",
+    "districtGuess": "rd DEO BOHOL (THIRD DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 6,
+    "rawLine": "Region Vil CEBU (FIRST DISTRICT) 2,262,000",
+    "districtGuess": "Region Vil CEBU (FIRST DISTRICT)",
+    "amountThousandsPHP": 2262000
+   },
+   {
+    "page": 6,
+    "rawLine": "Cebu 2nd DEO CEBU (SECOND DISTRICT) 1,075,937",
+    "districtGuess": "nd DEO CEBU (SECOND DISTRICT)",
+    "amountThousandsPHP": 1075937
+   },
+   {
+    "page": 6,
+    "rawLine": "Cebu 3rd DEO CEBU (THIRD DISTRICT) 550,000 |",
+    "districtGuess": "rd DEO CEBU (THIRD DISTRICT)",
+    "amountThousandsPHP": 550000
+   },
+   {
+    "page": 6,
+    "rawLine": "Cebu 4th DEO CEBU (FOURTH DISTRICT) 565,000",
+    "districtGuess": "th DEO CEBU (FOURTH DISTRICT)",
+    "amountThousandsPHP": 565000
+   },
+   {
+    "page": 6,
+    "rawLine": "Region Vit Cebu 5th DEO CEBU (FIFTH DISTRICT) 2,236,400",
+    "districtGuess": "th DEO CEBU (FIFTH DISTRICT)",
+    "amountThousandsPHP": 2236400
+   },
+   {
+    "page": 6,
+    "rawLine": "Region Vil Cebu 6th DEO MANDAUE CITY (LONE DISTRICT) 1,283,844",
+    "districtGuess": "th DEO MANDAUE CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 1283844
+   },
+   {
+    "page": 6,
+    "rawLine": "CEBU (SIXTH DISTRICT) 1,437,000",
+    "districtGuess": "CEBU (SIXTH DISTRICT)",
+    "amountThousandsPHP": 1437000
+   },
+   {
+    "page": 6,
+    "rawLine": "Region Vil Cebu 7th DEO CEBU (SEVENTH DISTRICT) 1,523,067",
+    "districtGuess": "th DEO CEBU (SEVENTH DISTRICT)",
+    "amountThousandsPHP": 1523067
+   },
+   {
+    "page": 7,
+    "rawLine": "Cebu City DEO CEBU CITY (FIRST DISTRICT) 565,000",
+    "districtGuess": "Cebu City DEO CEBU CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 565000
+   },
+   {
+    "page": 7,
+    "rawLine": "Biliran DEO BILIRAN (LONE DISTRICT) 1,769,499",
+    "districtGuess": "Biliran DEO BILIRAN (LONE DISTRICT)",
+    "amountThousandsPHP": 1769499
+   },
+   {
+    "page": 7,
+    "rawLine": "Eastern Samar DEO EASTERN SAMAR (LONE DISTRICT) 2,989,979",
+    "districtGuess": "Eastern Samar DEO EASTERN SAMAR (LONE DISTRICT)",
+    "amountThousandsPHP": 2989979
+   },
+   {
+    "page": 7,
+    "rawLine": "Leyte 1st DEO LEYTE (FIRST DISTRICT) 924,954",
+    "districtGuess": "st DEO LEYTE (FIRST DISTRICT)",
+    "amountThousandsPHP": 924954
+   },
+   {
+    "page": 7,
+    "rawLine": "Region Vill Tacloban CityDEO LEYTE (FIRST DISTRICT) 875,000",
+    "districtGuess": "Region Vill Tacloban CityDEO LEYTE (FIRST DISTRICT)",
+    "amountThousandsPHP": 875000
+   },
+   {
+    "page": 7,
+    "rawLine": "LEYTE (SECOND DISTRICT) 2,014,249",
+    "districtGuess": "LEYTE (SECOND DISTRICT)",
+    "amountThousandsPHP": 2014249
+   },
+   {
+    "page": 7,
+    "rawLine": "Region Vill Leyte 3rd DEO LEYTE (THIRD DISTRICT) 1,307,924",
+    "districtGuess": "rd DEO LEYTE (THIRD DISTRICT)",
+    "amountThousandsPHP": 1307924
+   },
+   {
+    "page": 7,
+    "rawLine": "Region VIII Leyte 4th DEO LEYTE (FOURTH DISTRICT) 2,329,569",
+    "districtGuess": "th DEO LEYTE (FOURTH DISTRICT)",
+    "amountThousandsPHP": 2329569
+   },
+   {
+    "page": 7,
+    "rawLine": "Leyte 5th DEO LEYTE (FIFTH DISTRICT) 2,265,606 |",
+    "districtGuess": "th DEO LEYTE (FIFTH DISTRICT)",
+    "amountThousandsPHP": 2265606
+   },
+   {
+    "page": 7,
+    "rawLine": "SAMAR (FIRST DISTRICT) 2,346,580 | \\",
+    "districtGuess": "SAMAR (FIRST DISTRICT)",
+    "amountThousandsPHP": 2346580
+   },
+   {
+    "page": 7,
+    "rawLine": "Samar 2nd DEO SAMAR (SECOND DISTRICT) 5,477,600",
+    "districtGuess": "nd DEO SAMAR (SECOND DISTRICT)",
+    "amountThousandsPHP": 5477600
+   },
+   {
+    "page": 7,
+    "rawLine": "SOUTHERN LEYTE (FIRST DISTRICT) 498,800",
+    "districtGuess": "SOUTHERN LEYTE (FIRST DISTRICT)",
+    "amountThousandsPHP": 498800
+   },
+   {
+    "page": 7,
+    "rawLine": "BASILAN (LONE DISTRICT) 188,306",
+    "districtGuess": "BASILAN (LONE DISTRICT)",
+    "amountThousandsPHP": 188306
+   },
+   {
+    "page": 7,
+    "rawLine": "BASILAN (LONE DISTRICT) 205,000",
+    "districtGuess": "BASILAN (LONE DISTRICT)",
+    "amountThousandsPHP": 205000
+   },
+   {
+    "page": 7,
+    "rawLine": "TAWI-TAWI (LONE DISTRICT) 309,772",
+    "districtGuess": "TAWI-TAWI (LONE DISTRICT)",
+    "amountThousandsPHP": 309772
+   },
+   {
+    "page": 7,
+    "rawLine": "Region IX —— | SULU (SECOND DISTRICT) 395,000",
+    "districtGuess": "SULU (SECOND DISTRICT)",
+    "amountThousandsPHP": 395000
+   },
+   {
+    "page": 7,
+    "rawLine": "Zamboanga Cily 1st |ZAMBOANGA CITY (FIRST DISTRICT) 2,032,152",
+    "districtGuess": "ZAMBOANGA CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 2032152
+   },
+   {
+    "page": 7,
+    "rawLine": "LANAO DEL SUR (FIRST DISTRICT) 1,892,000",
+    "districtGuess": "LANAO DEL SUR (FIRST DISTRICT)",
+    "amountThousandsPHP": 1892000
+   },
+   {
+    "page": 8,
+    "rawLine": "Bukidnon 1st DEO BUKIDNON (SECOND DISTRICT) 6,895,000",
+    "districtGuess": "st DEO BUKIDNON (SECOND DISTRICT)",
+    "amountThousandsPHP": 6895000
+   },
+   {
+    "page": 8,
+    "rawLine": "Bukidnon 2nd DEO ~—- | BUKIDNON (THIRD DISTRICT) 4,203,160",
+    "districtGuess": "BUKIDNON (THIRD DISTRICT)",
+    "amountThousandsPHP": 4203160
+   },
+   {
+    "page": 8,
+    "rawLine": "Bukidnon 3rd DEO ~—- | BUKIDNON (FIRST DISTRICT) 1,634,000",
+    "districtGuess": "BUKIDNON (FIRST DISTRICT)",
+    "amountThousandsPHP": 1634000
+   },
+   {
+    "page": 8,
+    "rawLine": "Bukidnon 4th DEO ~—- [BUKIDNON (FOURTH DISTRICT) 1,005,483",
+    "districtGuess": "BUKIDNON (FOURTH DISTRICT)",
+    "amountThousandsPHP": 1005483
+   },
+   {
+    "page": 8,
+    "rawLine": "Camiguin DEO CAMIGUIN (LONE DISTRICT) 1,714,004",
+    "districtGuess": "Camiguin DEO CAMIGUIN (LONE DISTRICT)",
+    "amountThousandsPHP": 1714004
+   },
+   {
+    "page": 8,
+    "rawLine": "lligan City DEO ILIGAN CITY (LONE DISTRICT) 2,029,800",
+    "districtGuess": "lligan City DEO ILIGAN CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 2029800
+   },
+   {
+    "page": 8,
+    "rawLine": "Davao City DEO DAVAO CITY (FIRST DISTRICT) 500,000 |",
+    "districtGuess": "Davao City DEO DAVAO CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 8,
+    "rawLine": "Davao City 2nd DEO _|DAVAO CITY (THIRD DISTRICT) 2,500,000",
+    "districtGuess": "DAVAO CITY (THIRD DISTRICT)",
+    "amountThousandsPHP": 2500000
+   },
+   {
+    "page": 8,
+    "rawLine": "Davao City 3rd DEO ~|DAVAO CITY (SECOND DISTRICT) 500,000",
+    "districtGuess": "DAVAO CITY (SECOND DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 8,
+    "rawLine": "DAVAO DE ORO (SECOND DISTRICT) 1,519,640",
+    "districtGuess": "DAVAO DE ORO (SECOND DISTRICT)",
+    "amountThousandsPHP": 1519640
+   },
+   {
+    "page": 8,
+    "rawLine": "Region XI DAVAO DE ORO (FIRST DISTRICT) 1,611,180 |",
+    "districtGuess": "Region XI DAVAO DE ORO (FIRST DISTRICT)",
+    "amountThousandsPHP": 1611180
+   },
+   {
+    "page": 8,
+    "rawLine": "Davao del SurDEO ~=|DAVAO DEL SUR (LONE DISTRICT) 2,542,130",
+    "districtGuess": "DAVAO DEL SUR (LONE DISTRICT)",
+    "amountThousandsPHP": 2542130
+   },
+   {
+    "page": 8,
+    "rawLine": "Region XI Davao Oriental 1st DAVAO ORIENTAL (FIRST DISTRICT) 1,416,381",
+    "districtGuess": "st DAVAO ORIENTAL (FIRST DISTRICT)",
+    "amountThousandsPHP": 1416381
+   },
+   {
+    "page": 9,
+    "rawLine": "Region XIl Sarangani DEO SARANGANI (LONE DISTRICT) 460,000",
+    "districtGuess": "Region XIl Sarangani DEO SARANGANI (LONE DISTRICT)",
+    "amountThousandsPHP": 460000
+   },
+   {
+    "page": 9,
+    "rawLine": "Region XI SOUTH COTABATO (FIRST DISTRICT) 500,000",
+    "districtGuess": "Region XI SOUTH COTABATO (FIRST DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 9,
+    "rawLine": "SULTAN KUDARAT (FIRST DISTRICT) 1,920,796",
+    "districtGuess": "SULTAN KUDARAT (FIRST DISTRICT)",
+    "amountThousandsPHP": 1920796
+   },
+   {
+    "page": 9,
+    "rawLine": "Region Xill AGUSAN DEL SUR (FIRST DISTRICT) 500,000",
+    "districtGuess": "Region Xill AGUSAN DEL SUR (FIRST DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 9,
+    "rawLine": "Butuan City DEO BUTUAN CITY (LONE DISTRICT) 8,834,267",
+    "districtGuess": "Butuan City DEO BUTUAN CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 8834267
+   },
+   {
+    "page": 9,
+    "rawLine": "Region XIII Dinagat Islands DEO |DINAGAT ISLANDS (LONE DISTRICT) 1,162,605 AN",
+    "districtGuess": "DINAGAT ISLANDS (LONE DISTRICT)",
+    "amountThousandsPHP": 1162605
+   },
+   {
+    "page": 9,
+    "rawLine": "Surigao del Sur ist |SURIGAO DEL SUR (FIRST DISTRICT) 3,457,000",
+    "districtGuess": "SURIGAO DEL SUR (FIRST DISTRICT)",
+    "amountThousandsPHP": 3457000
+   }
+  ],
+  "11": [],
+  "4": [
+   {
+    "page": 1,
+    "rawLine": "NCR Las Pitas-Muntinlupa [CITY OF LAS PINAS (LONE DISTRICT) 1,346,406",
+    "districtGuess": "CITY OF LAS PINAS (LONE DISTRICT)",
+    "amountThousandsPHP": 1346406
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Malabon-Navotas MALABON CITY (LONE DISTRICT) 1,387,143",
+    "districtGuess": "NCR Malabon-Navotas MALABON CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 1387143
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Malabon-Navolas NAVOTAS CITY (LONE DISTRICT) 1,609,250",
+    "districtGuess": "NCR Malabon-Navolas NAVOTAS CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 1609250
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Metro Manila 1st DEO |CITY OF MARIKINA (FIRST DISTRICT) 630,000",
+    "districtGuess": "CITY OF MARIKINA (FIRST DISTRICT)",
+    "amountThousandsPHP": 630000
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Metro Manila 1st DEO |PASIG CITY (LONE DISTRICT) 892,000",
+    "districtGuess": "PASIG CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 892000
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Metro Manila 1st DEO |SAN JUAN CITY (LONE DISTRICT) 377,562",
+    "districtGuess": "SAN JUAN CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 377562
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Metro Manila 1st DEO | TAGUIG CITY (FIRST DISTRICT) 230,000",
+    "districtGuess": "TAGUIG CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 230000
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Metro Manila 2nd [CITY OF MAKATI (FIRST DISTRICT) 776,983",
+    "districtGuess": "CITY OF MAKATI (FIRST DISTRICT)",
+    "amountThousandsPHP": 776983
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Metro Manila 3rd DEO|CALOOCAN CITY (FIRST DISTRICT) 1,560,600",
+    "districtGuess": "CALOOCAN CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 1560600
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Metro Manila 3rd DEO|CALOOCAN CITY (THIRD DISTRICT) 720,800",
+    "districtGuess": "CALOOCAN CITY (THIRD DISTRICT)",
+    "amountThousandsPHP": 720800
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Metro Manila 3rd DEO|VALENZUELA CITY (FIRST DISTRICT) 977,546",
+    "districtGuess": "VALENZUELA CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 977546
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR North Manila DEO MANILA CITY (FIRST DISTRICT) 537,700",
+    "districtGuess": "NCR North Manila DEO MANILA CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 537700
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR North Manila DEO MANILA CITY (SECOND DISTRICT) 493,500",
+    "districtGuess": "NCR North Manila DEO MANILA CITY (SECOND DISTRICT)",
+    "amountThousandsPHP": 493500
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR North Manila DEO MANILA CITY (THIRD DISTRICT) 890,500",
+    "districtGuess": "NCR North Manila DEO MANILA CITY (THIRD DISTRICT)",
+    "amountThousandsPHP": 890500
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR North Manila DEO MANILA CITY (FOURTH DISTRICT) 553,500",
+    "districtGuess": "NCR North Manila DEO MANILA CITY (FOURTH DISTRICT)",
+    "amountThousandsPHP": 553500
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR South Manila DEO MANILA CITY (SIXTH DISTRICT) 1,050,400",
+    "districtGuess": "NCR South Manila DEO MANILA CITY (SIXTH DISTRICT)",
+    "amountThousandsPHP": 1050400
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR South Manila DEO MANILA CITY (FIFTH DISTRICT) 2,765,012",
+    "districtGuess": "NCR South Manila DEO MANILA CITY (FIFTH DISTRICT)",
+    "amountThousandsPHP": 2765012
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR South Manila DEO PASAY CITY (LONE DISTRICT) 905,964",
+    "districtGuess": "NCR South Manila DEO PASAY CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 905964
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Quezon Cily 1st DEO |QUEZON CITY (FIRST DISTRICT) 1,290,030",
+    "districtGuess": "QUEZON CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 1290030
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Quezon City 1st DEO |QUEZON CITY (SECOND DISTRICT) 1,594,711",
+    "districtGuess": "QUEZON CITY (SECOND DISTRICT)",
+    "amountThousandsPHP": 1594711
+   },
+   {
+    "page": 1,
+    "rawLine": "NCR Quezon City 1st DEO |QUEZON CITY (FIFTH DISTRICT) 1,335,571",
+    "districtGuess": "QUEZON CITY (FIFTH DISTRICT)",
+    "amountThousandsPHP": 1335571
+   },
+   {
+    "page": 2,
+    "rawLine": "NCR Quezon City 1st DEO [QUEZON CITY (SIXTH DISTRICT) 980,340",
+    "districtGuess": "QUEZON CITY (SIXTH DISTRICT)",
+    "amountThousandsPHP": 980340
+   },
+   {
+    "page": 2,
+    "rawLine": "NCR Quezon City 2nd DEO |QUEZON CITY (THIRD DISTRICT) 844,573",
+    "districtGuess": "QUEZON CITY (THIRD DISTRICT)",
+    "amountThousandsPHP": 844573
+   },
+   {
+    "page": 2,
+    "rawLine": "NCR Quezon City 2nd DEO |QUEZON CITY (FOURTH DISTRICT) 1,702,000",
+    "districtGuess": "QUEZON CITY (FOURTH DISTRICT)",
+    "amountThousandsPHP": 1702000
+   },
+   {
+    "page": 2,
+    "rawLine": "Region | llocos Norte 1st DEO [ILOCOS NORTE (FIRST DISTRICT) 3,700,000",
+    "districtGuess": "ILOCOS NORTE (FIRST DISTRICT)",
+    "amountThousandsPHP": 3700000
+   },
+   {
+    "page": 2,
+    "rawLine": "Region | llocos Norte 2nd DEO |ILOCOS NORTE (SECOND DISTRICT) 2,703,944",
+    "districtGuess": "ILOCOS NORTE (SECOND DISTRICT)",
+    "amountThousandsPHP": 2703944
+   },
+   {
+    "page": 2,
+    "rawLine": "Region | llocos Sur ist DEO —|ILOCOS SUR (FIRST DISTRICT) 505,000",
+    "districtGuess": "ILOCOS SUR (FIRST DISTRICT)",
+    "amountThousandsPHP": 505000
+   },
+   {
+    "page": 2,
+    "rawLine": "Region | llocos Sur 2nd DEQ =| ILOCOS SUR (SECOND DISTRICT) 501,816",
+    "districtGuess": "ILOCOS SUR (SECOND DISTRICT)",
+    "amountThousandsPHP": 501816
+   },
+   {
+    "page": 2,
+    "rawLine": "Region | La Union 1st DEO LA UNION (FIRST DISTRICT) 2,253,678",
+    "districtGuess": "st DEO LA UNION (FIRST DISTRICT)",
+    "amountThousandsPHP": 2253678
+   },
+   {
+    "page": 2,
+    "rawLine": "Region | La Union 2nd DEO LA UNION (SECOND DISTRICT) 2,247,896",
+    "districtGuess": "nd DEO LA UNION (SECOND DISTRICT)",
+    "amountThousandsPHP": 2247896
+   },
+   {
+    "page": 2,
+    "rawLine": "Region | Pangasinan 1st DEO |PANGASINAN (FIRST DISTRICT) 2,120,687",
+    "districtGuess": "PANGASINAN (FIRST DISTRICT)",
+    "amountThousandsPHP": 2120687
+   },
+   {
+    "page": 2,
+    "rawLine": "Region | Pangasinan 2nd DEO |PANGASINAN (SECOND DISTRICT) 1,889,222",
+    "districtGuess": "PANGASINAN (SECOND DISTRICT)",
+    "amountThousandsPHP": 1889222
+   },
+   {
+    "page": 2,
+    "rawLine": "Region | Pangasinan 2nd DEO |PANGASINAN (FOURTH DISTRICT) 1,836,393",
+    "districtGuess": "PANGASINAN (FOURTH DISTRICT)",
+    "amountThousandsPHP": 1836393
+   },
+   {
+    "page": 2,
+    "rawLine": "Region | Pangasinan 3rd DEO _|PANGASINAN (FIFTH DISTRICT) 2,116,734",
+    "districtGuess": "PANGASINAN (FIFTH DISTRICT)",
+    "amountThousandsPHP": 2116734
+   },
+   {
+    "page": 2,
+    "rawLine": "Region | Pangasinan 3rd DEO _|PANGASINAN (SIXTH DISTRICT) 2,516,086",
+    "districtGuess": "PANGASINAN (SIXTH DISTRICT)",
+    "amountThousandsPHP": 2516086
+   },
+   {
+    "page": 2,
+    "rawLine": "Region} Pangasinan 4th DEO }PANGASINAN (THIRD DISTRICT) 2,466,126",
+    "districtGuess": "PANGASINAN (THIRD DISTRICT)",
+    "amountThousandsPHP": 2466126
+   },
+   {
+    "page": 2,
+    "rawLine": "CAR Abra DEO ABRA (LONE DISTRICT) 2,190,216",
+    "districtGuess": "CAR Abra DEO ABRA (LONE DISTRICT)",
+    "amountThousandsPHP": 2190216
+   },
+   {
+    "page": 2,
+    "rawLine": "CAR Apayao 1st DEO APAYAO (LONE DISTRICT) 1,218,898",
+    "districtGuess": "st DEO APAYAO (LONE DISTRICT)",
+    "amountThousandsPHP": 1218898
+   },
+   {
+    "page": 2,
+    "rawLine": "CAR Apayao 2nd DEO APAYAO (LONE DISTRICT) 1,423,094",
+    "districtGuess": "nd DEO APAYAO (LONE DISTRICT)",
+    "amountThousandsPHP": 1423094
+   },
+   {
+    "page": 2,
+    "rawLine": "CAR Baguio City DEO BAGUIO CITY (LONE DISTRICT) 1,649,858",
+    "districtGuess": "CAR Baguio City DEO BAGUIO CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 1649858
+   },
+   {
+    "page": 2,
+    "rawLine": "CAR Benguet 1st DEO BENGUET (LONE DISTRICT) 985,237",
+    "districtGuess": "st DEO BENGUET (LONE DISTRICT)",
+    "amountThousandsPHP": 985237
+   },
+   {
+    "page": 2,
+    "rawLine": "CAR Benguet 2nd DEO BENGUET (LONE DISTRICT) 768,000",
+    "districtGuess": "nd DEO BENGUET (LONE DISTRICT)",
+    "amountThousandsPHP": 768000
+   },
+   {
+    "page": 2,
+    "rawLine": "CAR Ifugao 1st DEO IFUGAO (LONE DISTRICT) 1,042,807",
+    "districtGuess": "st DEO IFUGAO (LONE DISTRICT)",
+    "amountThousandsPHP": 1042807
+   },
+   {
+    "page": 2,
+    "rawLine": "CAR Ifugao 2nd DEO IFUGAO (LONE DISTRICT) 1,202,481",
+    "districtGuess": "nd DEO IFUGAO (LONE DISTRICT)",
+    "amountThousandsPHP": 1202481
+   },
+   {
+    "page": 2,
+    "rawLine": "CAR Lower Kalinga DEO | KALINGA (LONE DISTRICT) 1,468,363",
+    "districtGuess": "KALINGA (LONE DISTRICT)",
+    "amountThousandsPHP": 1468363
+   },
+   {
+    "page": 2,
+    "rawLine": "CAR Upper Kalinga DEO | KALINGA (LONE DISTRICT) 1,180,339",
+    "districtGuess": "KALINGA (LONE DISTRICT)",
+    "amountThousandsPHP": 1180339
+   },
+   {
+    "page": 2,
+    "rawLine": "Region || Batanes DEO BATANES (LONE DISTRICT) 906,451",
+    "districtGuess": "Batanes DEO BATANES (LONE DISTRICT)",
+    "amountThousandsPHP": 906451
+   },
+   {
+    "page": 2,
+    "rawLine": "Region I! Cagayan 1st DEO CAGAYAN (FIRST DISTRICT) 2,483,342",
+    "districtGuess": "st DEO CAGAYAN (FIRST DISTRICT)",
+    "amountThousandsPHP": 2483342
+   },
+   {
+    "page": 2,
+    "rawLine": "Region II Cagayan 2nd DEO CAGAYAN (SECOND DISTRICT) 2,599,253",
+    "districtGuess": "nd DEO CAGAYAN (SECOND DISTRICT)",
+    "amountThousandsPHP": 2599253
+   },
+   {
+    "page": 2,
+    "rawLine": "Region Il Cagayan 3rd DEO ~—— [CAGAYAN (THIRD DISTRICT) 2,407,336",
+    "districtGuess": "CAGAYAN (THIRD DISTRICT)",
+    "amountThousandsPHP": 2407336
+   },
+   {
+    "page": 3,
+    "rawLine": "Region I Isabela Ist DEO ISABELA (FIRST DISTRICT) 2,294,822",
+    "districtGuess": "Region I Isabela Ist DEO ISABELA (FIRST DISTRICT)",
+    "amountThousandsPHP": 2294822
+   },
+   {
+    "page": 3,
+    "rawLine": "Region II Isabela 2nd DEO ISABELA (FIFTH DISTRICT) 2,183,886",
+    "districtGuess": "nd DEO ISABELA (FIFTH DISTRICT)",
+    "amountThousandsPHP": 2183886
+   },
+   {
+    "page": 3,
+    "rawLine": "Region I Isabela 3rd DEO ISABELA (SECOND DISTRICT) 1,865,369",
+    "districtGuess": "rd DEO ISABELA (SECOND DISTRICT)",
+    "amountThousandsPHP": 1865369
+   },
+   {
+    "page": 3,
+    "rawLine": "Region I Isabela 3rd DEO ISABELA (THIRD DISTRICT) 1,134,816",
+    "districtGuess": "rd DEO ISABELA (THIRD DISTRICT)",
+    "amountThousandsPHP": 1134816
+   },
+   {
+    "page": 3,
+    "rawLine": "Region II Isabela 4th DEO ISABELA (FOURTH DISTRICT) 2,160,654",
+    "districtGuess": "th DEO ISABELA (FOURTH DISTRICT)",
+    "amountThousandsPHP": 2160654
+   },
+   {
+    "page": 3,
+    "rawLine": "Region II Isabela 4th DEO ISABELA (SIXTH DISTRICT) 3,689,000",
+    "districtGuess": "th DEO ISABELA (SIXTH DISTRICT)",
+    "amountThousandsPHP": 3689000
+   },
+   {
+    "page": 3,
+    "rawLine": "Region I Nueva Vizcaya DEO |NUEVA VIZCAYA (LONE DISTRICT) 1,407,852",
+    "districtGuess": "NUEVA VIZCAYA (LONE DISTRICT)",
+    "amountThousandsPHP": 1407852
+   },
+   {
+    "page": 3,
+    "rawLine": "Region II oa Vizcaya 2nd = |NUEVA VIZCAYA (LONE DISTRICT) 918,312",
+    "districtGuess": "NUEVA VIZCAYA (LONE DISTRICT)",
+    "amountThousandsPHP": 918312
+   },
+   {
+    "page": 3,
+    "rawLine": "Region Il Quirino DEO QUIRINO (LONE DISTRICT) 635,000",
+    "districtGuess": "Region Il Quirino DEO QUIRINO (LONE DISTRICT)",
+    "amountThousandsPHP": 635000
+   },
+   {
+    "page": 3,
+    "rawLine": "Region III Aurora DEO AURORA (LONE DISTRICT) 1,785,000",
+    "districtGuess": "Region III Aurora DEO AURORA (LONE DISTRICT)",
+    "amountThousandsPHP": 1785000
+   },
+   {
+    "page": 3,
+    "rawLine": "Region III Bataan 1st DEO BATAAN (FIRST DISTRICT) 2,188,716",
+    "districtGuess": "st DEO BATAAN (FIRST DISTRICT)",
+    "amountThousandsPHP": 2188716
+   },
+   {
+    "page": 3,
+    "rawLine": "Region Ill Bataan 2nd DEO BATAAN (SECOND DISTRICT) 1,402,764",
+    "districtGuess": "nd DEO BATAAN (SECOND DISTRICT)",
+    "amountThousandsPHP": 1402764
+   },
+   {
+    "page": 3,
+    "rawLine": "Region Il Bataan 3rd DEO BATAAN (THIRD DISTRICT) 1,846,829",
+    "districtGuess": "rd DEO BATAAN (THIRD DISTRICT)",
+    "amountThousandsPHP": 1846829
+   },
+   {
+    "page": 3,
+    "rawLine": "Region Ill Bulacan 1st DEO BULACAN (FIRST DISTRICT) 1,575,230",
+    "districtGuess": "st DEO BULACAN (FIRST DISTRICT)",
+    "amountThousandsPHP": 1575230
+   },
+   {
+    "page": 3,
+    "rawLine": "Region I! Bulacan 1st DEO BULACAN (SECOND DISTRICT) 1,122,308",
+    "districtGuess": "st DEO BULACAN (SECOND DISTRICT)",
+    "amountThousandsPHP": 1122308
+   },
+   {
+    "page": 3,
+    "rawLine": "Region III Bulacan 1st DEO BULACAN (FIFTH DISTRICT) 1,450,956",
+    "districtGuess": "st DEO BULACAN (FIFTH DISTRICT)",
+    "amountThousandsPHP": 1450956
+   },
+   {
+    "page": 3,
+    "rawLine": "Region II! Bulacan 2nd DEO BULACAN (FOURTH DISTRICT) 1,701,000",
+    "districtGuess": "nd DEO BULACAN (FOURTH DISTRICT)",
+    "amountThousandsPHP": 1701000
+   },
+   {
+    "page": 3,
+    "rawLine": "Region tl Bulacan 2nd DEO BULACAN (SIXTH DISTRICT) 1,557,636",
+    "districtGuess": "nd DEO BULACAN (SIXTH DISTRICT)",
+    "amountThousandsPHP": 1557636
+   },
+   {
+    "page": 3,
+    "rawLine": "Region III Bulacan 3rd DEO BULACAN (THIRD DISTRICT) 1,446,968",
+    "districtGuess": "rd DEO BULACAN (THIRD DISTRICT)",
+    "amountThousandsPHP": 1446968
+   },
+   {
+    "page": 3,
+    "rawLine": "Region II! Nueva Ecija 1st DEO |NUEVA ECIJA (FIRST DISTRICT) 3,426,750",
+    "districtGuess": "NUEVA ECIJA (FIRST DISTRICT)",
+    "amountThousandsPHP": 3426750
+   },
+   {
+    "page": 3,
+    "rawLine": "Region III Nueva Ecija 1st DEO |NUEVA ECIJA (SECOND DISTRICT) 4,757,124",
+    "districtGuess": "NUEVA ECIJA (SECOND DISTRICT)",
+    "amountThousandsPHP": 4757124
+   },
+   {
+    "page": 3,
+    "rawLine": "Region III Nueva Ecija 2nd DEO |NUEVA ECIJA (THIRD DISTRICT) 493,825",
+    "districtGuess": "NUEVA ECIJA (THIRD DISTRICT)",
+    "amountThousandsPHP": 493825
+   },
+   {
+    "page": 3,
+    "rawLine": "Region III Nueva Ecija 2nd DEO |NUEVA ECIJA (FOURTH DISTRICT) 1,824,624",
+    "districtGuess": "NUEVA ECIJA (FOURTH DISTRICT)",
+    "amountThousandsPHP": 1824624
+   },
+   {
+    "page": 3,
+    "rawLine": "Region II! Pampanga 1st DEO ~=|PAMPANGA (THIRD DISTRICT) 2,323,940",
+    "districtGuess": "PAMPANGA (THIRD DISTRICT)",
+    "amountThousandsPHP": 2323940
+   },
+   {
+    "page": 3,
+    "rawLine": "Region II! Pampanga 1st DEO ~|PAMPANGA (FOURTH DISTRICT) 1,964,619",
+    "districtGuess": "PAMPANGA (FOURTH DISTRICT)",
+    "amountThousandsPHP": 1964619
+   },
+   {
+    "page": 3,
+    "rawLine": "Region III Pampanga 2nd DEO |PAMPANGA (SECOND DISTRICT) 723,709",
+    "districtGuess": "PAMPANGA (SECOND DISTRICT)",
+    "amountThousandsPHP": 723709
+   },
+   {
+    "page": 3,
+    "rawLine": "Region III Pampanga 3rd DEO ~=|PAMPANGA (FIRST DISTRICT) 2,448,093",
+    "districtGuess": "PAMPANGA (FIRST DISTRICT)",
+    "amountThousandsPHP": 2448093
+   },
+   {
+    "page": 3,
+    "rawLine": "Region Il Tarlac DEO TARLAC (FIRST DISTRICT) 1,308,080",
+    "districtGuess": "Region Il Tarlac DEO TARLAC (FIRST DISTRICT)",
+    "amountThousandsPHP": 1308080
+   },
+   {
+    "page": 3,
+    "rawLine": "Region II! Tarlac DEO TARLAC (SECOND DISTRICT) 2,008,000",
+    "districtGuess": "Tarlac DEO TARLAC (SECOND DISTRICT)",
+    "amountThousandsPHP": 2008000
+   },
+   {
+    "page": 3,
+    "rawLine": "Region Ill Tarlac 2nd DEO TARLAC (THIRD DISTRICT) 2,240,000",
+    "districtGuess": "nd DEO TARLAC (THIRD DISTRICT)",
+    "amountThousandsPHP": 2240000
+   },
+   {
+    "page": 4,
+    "rawLine": "Region Il Zambales 1st DEO ZAMBALES (SECOND DISTRICT) 2,235,750",
+    "districtGuess": "st DEO ZAMBALES (SECOND DISTRICT)",
+    "amountThousandsPHP": 2235750
+   },
+   {
+    "page": 4,
+    "rawLine": "Region tl Zambales 2nd DEO = |ZAMBALES (FIRST DISTRICT) 2,129,276",
+    "districtGuess": "ZAMBALES (FIRST DISTRICT)",
+    "amountThousandsPHP": 2129276
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Batangas 1st DEO BATANGAS (FIRST DISTRICT) 574,000",
+    "districtGuess": "st DEO BATANGAS (FIRST DISTRICT)",
+    "amountThousandsPHP": 574000
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Batangas 2nd DEO ~— | BATANGAS (SECOND DISTRICT) 3,113,725",
+    "districtGuess": "BATANGAS (SECOND DISTRICT)",
+    "amountThousandsPHP": 3113725
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Batangas 2nd DEO ~—- | BATANGAS (FIFTH DISTRICT) 1,338,896",
+    "districtGuess": "BATANGAS (FIFTH DISTRICT)",
+    "amountThousandsPHP": 1338896
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Batangas 3rd DEO BATANGAS (THIRD DISTRICT) 2,456,604",
+    "districtGuess": "rd DEO BATANGAS (THIRD DISTRICT)",
+    "amountThousandsPHP": 2456604
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Batangas 4th DEO BATANGAS (FOURTH DISTRICT) 1,676,617",
+    "districtGuess": "th DEO BATANGAS (FOURTH DISTRICT)",
+    "amountThousandsPHP": 1676617
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Batangas 4th DEO BATANGAS (SIXTH DISTRICT) 3,316,000",
+    "districtGuess": "th DEO BATANGAS (SIXTH DISTRICT)",
+    "amountThousandsPHP": 3316000
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Cavite 1st DEO CAVITE (FIRST DISTRICT) 1,740,638",
+    "districtGuess": "st DEO CAVITE (FIRST DISTRICT)",
+    "amountThousandsPHP": 1740638
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Cavite 1st DEO CAVITE (THIRD DISTRICT) 1,353,575",
+    "districtGuess": "st DEO CAVITE (THIRD DISTRICT)",
+    "amountThousandsPHP": 1353575
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Cavite 1st DEO CAVITE (SEVENTH DISTRICT) 2,059,074",
+    "districtGuess": "st DEO CAVITE (SEVENTH DISTRICT)",
+    "amountThousandsPHP": 2059074
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Cavite 3rd DEO CAVITE (SECOND DISTRICT) 1,672,469",
+    "districtGuess": "rd DEO CAVITE (SECOND DISTRICT)",
+    "amountThousandsPHP": 1672469
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Cavite 3rd DEO CAVITE (FOURTH DISTRICT) 500,000",
+    "districtGuess": "rd DEO CAVITE (FOURTH DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Cavite 3rd DEO CAVITE (FIFTH DISTRICT) 1,377,304",
+    "districtGuess": "rd DEO CAVITE (FIFTH DISTRICT)",
+    "amountThousandsPHP": 1377304
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Laguna 1st DEO LAGUNA (FOURTH DISTRICT) 1,447,318",
+    "districtGuess": "st DEO LAGUNA (FOURTH DISTRICT)",
+    "amountThousandsPHP": 1447318
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Laguna 2nd DEO CITY OF BINAN (LONE DISTRICT) 1,240,000",
+    "districtGuess": "nd DEO CITY OF BINAN (LONE DISTRICT)",
+    "amountThousandsPHP": 1240000
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Laguna 2nd DEO CITY OF CALAMBA (LONE DISTRICT) 1,463,709",
+    "districtGuess": "nd DEO CITY OF CALAMBA (LONE DISTRICT)",
+    "amountThousandsPHP": 1463709
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Laguna 2nd DEO LAGUNA (FIRST DISTRICT) 899,271",
+    "districtGuess": "nd DEO LAGUNA (FIRST DISTRICT)",
+    "amountThousandsPHP": 899271
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Laguna 2nd DEO LAGUNA (SECOND DISTRICT) 214,874",
+    "districtGuess": "nd DEO LAGUNA (SECOND DISTRICT)",
+    "amountThousandsPHP": 214874
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Laguna 3rd DEO LAGUNA (THIRD DISTRICT) 1,710,736",
+    "districtGuess": "rd DEO LAGUNA (THIRD DISTRICT)",
+    "amountThousandsPHP": 1710736
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Quezon 1st DEO QUEZON (FIRST DISTRICT) 3,823,552",
+    "districtGuess": "st DEO QUEZON (FIRST DISTRICT)",
+    "amountThousandsPHP": 3823552
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Quezon 2nd DEO QUEZON (SECOND DISTRICT) 2,176,946",
+    "districtGuess": "nd DEO QUEZON (SECOND DISTRICT)",
+    "amountThousandsPHP": 2176946
+   },
+   {
+    "page": 4,
+    "rawLine": "Region |IV-A Quezon 31d DEO QUEZON (THIRD DISTRICT) 3,077,000",
+    "districtGuess": "d DEO QUEZON (THIRD DISTRICT)",
+    "amountThousandsPHP": 3077000
+   },
+   {
+    "page": 4,
+    "rawLine": "Region |lV-A Quezon 4th DEO QUEZON (FOURTH DISTRICT) 7,252,346",
+    "districtGuess": "th DEO QUEZON (FOURTH DISTRICT)",
+    "amountThousandsPHP": 7252346
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Rizal 1st DEO ANTIPOLO CITY (FIRST DISTRICT) 4,026,094",
+    "districtGuess": "st DEO ANTIPOLO CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 4026094
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Rizal 1st DEO ANTIPOLO CITY (SECOND DISTRICT) 4,202,550",
+    "districtGuess": "st DEO ANTIPOLO CITY (SECOND DISTRICT)",
+    "amountThousandsPHP": 4202550
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Rizal 1st DEO RIZAL (FIRST DISTRICT) 500,000",
+    "districtGuess": "st DEO RIZAL (FIRST DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 4,
+    "rawLine": "Region IV-A Rizal 2nd DEO RIZAL (SECOND DISTRICT) 500,000",
+    "districtGuess": "nd DEO RIZAL (SECOND DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 5,
+    "rawLine": "Region IV-A Rizal 2nd DEO RIZAL (THIRD DISTRICT) 500,000",
+    "districtGuess": "nd DEO RIZAL (THIRD DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 5,
+    "rawLine": "Region IV-A Rizal 2nd DEO RIZAL (FOURTH DISTRICT) 500,000",
+    "districtGuess": "nd DEO RIZAL (FOURTH DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 5,
+    "rawLine": "MIMAROPA Marinduque DEO MARINDUQUE (LONE DISTRICT) 1,669,934",
+    "districtGuess": "MIMAROPA Marinduque DEO MARINDUQUE (LONE DISTRICT)",
+    "amountThousandsPHP": 1669934
+   },
+   {
+    "page": 5,
+    "rawLine": "MIMAROPA Palawan 1st DEO PALAWAN (FIRST DISTRICT) 2,682,153",
+    "districtGuess": "st DEO PALAWAN (FIRST DISTRICT)",
+    "amountThousandsPHP": 2682153
+   },
+   {
+    "page": 5,
+    "rawLine": "MIMAROPA Palawan 2nd DEO PALAWAN (SECOND DISTRICT) 2,776,526",
+    "districtGuess": "nd DEO PALAWAN (SECOND DISTRICT)",
+    "amountThousandsPHP": 2776526
+   },
+   {
+    "page": 5,
+    "rawLine": "MIMAROPA Palawan 3rd DEO PALAWAN (THIRD DISTRICT) 2,117,459",
+    "districtGuess": "rd DEO PALAWAN (THIRD DISTRICT)",
+    "amountThousandsPHP": 2117459
+   },
+   {
+    "page": 5,
+    "rawLine": "MIMAROPA Romblon DEO ROMBLON (LONE DISTRICT) 2,176,146",
+    "districtGuess": "MIMAROPA Romblon DEO ROMBLON (LONE DISTRICT)",
+    "amountThousandsPHP": 2176146
+   },
+   {
+    "page": 5,
+    "rawLine": "Region V Albay 1st DEO ALBAY (FIRST DISTRICT) 1,810,878",
+    "districtGuess": "st DEO ALBAY (FIRST DISTRICT)",
+    "amountThousandsPHP": 1810878
+   },
+   {
+    "page": 5,
+    "rawLine": "Region V Albay 2nd DEO ALBAY (SECOND DISTRICT) 2,016,238",
+    "districtGuess": "nd DEO ALBAY (SECOND DISTRICT)",
+    "amountThousandsPHP": 2016238
+   },
+   {
+    "page": 5,
+    "rawLine": "Region V Albay 3rd DEO ALBAY (THIRD DISTRICT) 2,820,615",
+    "districtGuess": "rd DEO ALBAY (THIRD DISTRICT)",
+    "amountThousandsPHP": 2820615
+   },
+   {
+    "page": 5,
+    "rawLine": "Region V Camarines Sur 1st CAMARINES SUR (FIRST DISTRICT) 5,986,481",
+    "districtGuess": "st CAMARINES SUR (FIRST DISTRICT)",
+    "amountThousandsPHP": 5986481
+   },
+   {
+    "page": 5,
+    "rawLine": "Region V Camarines Sur 3rd |CAMARINES SUR (THIRD DISTRICT) 2,634,906",
+    "districtGuess": "CAMARINES SUR (THIRD DISTRICT)",
+    "amountThousandsPHP": 2634906
+   },
+   {
+    "page": 5,
+    "rawLine": "Region V Camarines Sur Sth = |CAMARINES SUR (FIFTH DISTRICT) 2,564,023",
+    "districtGuess": "CAMARINES SUR (FIFTH DISTRICT)",
+    "amountThousandsPHP": 2564023
+   },
+   {
+    "page": 5,
+    "rawLine": "Region V Calanduanes DEO =|CATANDUANES (LONE DISTRICT) 1,665,935",
+    "districtGuess": "CATANDUANES (LONE DISTRICT)",
+    "amountThousandsPHP": 1665935
+   },
+   {
+    "page": 5,
+    "rawLine": "Region V Masbate 1st DEO MASBATE (FIRST DISTRICT) 4,110,447",
+    "districtGuess": "st DEO MASBATE (FIRST DISTRICT)",
+    "amountThousandsPHP": 4110447
+   },
+   {
+    "page": 5,
+    "rawLine": "Region V Masbate 2nd DEO MASBATE (SECOND DISTRICT) 1,849,508",
+    "districtGuess": "nd DEO MASBATE (SECOND DISTRICT)",
+    "amountThousandsPHP": 1849508
+   },
+   {
+    "page": 5,
+    "rawLine": "Region V Masbate 3rd DEO MASBATE (THIRD DISTRICT) 1,387,976",
+    "districtGuess": "rd DEO MASBATE (THIRD DISTRICT)",
+    "amountThousandsPHP": 1387976
+   },
+   {
+    "page": 5,
+    "rawLine": "Region V Sorsogon DEO SORSOGON (FIRST DISTRICT) 4,198,993",
+    "districtGuess": "Region V Sorsogon DEO SORSOGON (FIRST DISTRICT)",
+    "amountThousandsPHP": 4198993
+   },
+   {
+    "page": 5,
+    "rawLine": "Region V Sorsogon 2ndDEO |SORSOGON (SECOND DISTRICT) 1,641,393",
+    "districtGuess": "SORSOGON (SECOND DISTRICT)",
+    "amountThousandsPHP": 1641393
+   },
+   {
+    "page": 5,
+    "rawLine": "Region VI Aklan DEO AKLAN (FIRST DISTRICT) 1,488,151",
+    "districtGuess": "Region VI Aklan DEO AKLAN (FIRST DISTRICT)",
+    "amountThousandsPHP": 1488151
+   },
+   {
+    "page": 5,
+    "rawLine": "Region VI Aklan DEO AKLAN (SECOND DISTRICT) 1,093,274",
+    "districtGuess": "Region VI Aklan DEO AKLAN (SECOND DISTRICT)",
+    "amountThousandsPHP": 1093274
+   },
+   {
+    "page": 5,
+    "rawLine": "Region VI Antique DEO ANTIQUE (LONE DISTRICT) 500,750",
+    "districtGuess": "Region VI Antique DEO ANTIQUE (LONE DISTRICT)",
+    "amountThousandsPHP": 500750
+   },
+   {
+    "page": 5,
+    "rawLine": "Region VI Capiz 1st DEO CAPIZ (FIRST DISTRICT) 1,614,111",
+    "districtGuess": "st DEO CAPIZ (FIRST DISTRICT)",
+    "amountThousandsPHP": 1614111
+   },
+   {
+    "page": 5,
+    "rawLine": "Region VI Capiz 2nd DEO CAPIZ (SECOND DISTRICT) 1,696,961",
+    "districtGuess": "nd DEO CAPIZ (SECOND DISTRICT)",
+    "amountThousandsPHP": 1696961
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VI Guimaras DEO GUIMARAS (LONE DISTRICT) 934,600",
+    "districtGuess": "Region VI Guimaras DEO GUIMARAS (LONE DISTRICT)",
+    "amountThousandsPHP": 934600
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VI lloilo 1st DEO ILOILO (FIRST DISTRICT) 2,923,040",
+    "districtGuess": "st DEO ILOILO (FIRST DISTRICT)",
+    "amountThousandsPHP": 2923040
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VI lloilo 2nd DEO ILOILO (FOURTH DISTRICT) 1,483,238",
+    "districtGuess": "nd DEO ILOILO (FOURTH DISTRICT)",
+    "amountThousandsPHP": 1483238
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VI lloilo 3rd DEO ILOILO (FIFTH DISTRICT) 1,032,475",
+    "districtGuess": "rd DEO ILOILO (FIFTH DISTRICT)",
+    "amountThousandsPHP": 1032475
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VI lloilo 4th DEO ILOILO (SECOND DISTRICT) 1,198,100",
+    "districtGuess": "th DEO ILOILO (SECOND DISTRICT)",
+    "amountThousandsPHP": 1198100
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VI Hoilo 6th DEO ILOILO (THIRD DISTRICT) 1,338,984",
+    "districtGuess": "th DEO ILOILO (THIRD DISTRICT)",
+    "amountThousandsPHP": 1338984
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VI lloilo City DEO ILOILO CITY (LONE DISTRICT) 1,326,100",
+    "districtGuess": "Region VI lloilo City DEO ILOILO CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 1326100
+   },
+   {
+    "page": 6,
+    "rawLine": "NIR Bacolod City DEO BACOLOD CITY (LONE DISTRICT) 2,278,372",
+    "districtGuess": "NIR Bacolod City DEO BACOLOD CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 2278372
+   },
+   {
+    "page": 6,
+    "rawLine": "NIR Siquijor DEO SIQUIJOR (LONE DISTRICT) 1,150,734",
+    "districtGuess": "NIR Siquijor DEO SIQUIJOR (LONE DISTRICT)",
+    "amountThousandsPHP": 1150734
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VII Bohol 1st DEO BOHOL (FIRST DISTRICT) 1,137,275",
+    "districtGuess": "st DEO BOHOL (FIRST DISTRICT)",
+    "amountThousandsPHP": 1137275
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VII Bohol 2nd DEO BOHOL (SECOND DISTRICT) 565,000",
+    "districtGuess": "nd DEO BOHOL (SECOND DISTRICT)",
+    "amountThousandsPHP": 565000
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VII Bohol 3rd DEO BOHOL (THIRD DISTRICT) 500,000",
+    "districtGuess": "rd DEO BOHOL (THIRD DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VII Cebu 1st DEO CEBU (FIRST DISTRICT) 2,262,000",
+    "districtGuess": "st DEO CEBU (FIRST DISTRICT)",
+    "amountThousandsPHP": 2262000
+   },
+   {
+    "page": 6,
+    "rawLine": "Region Vil Cebu 2nd DEO CEBU (SECOND DISTRICT) 1,075,937",
+    "districtGuess": "nd DEO CEBU (SECOND DISTRICT)",
+    "amountThousandsPHP": 1075937
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VII Cebu 3rd DEO CEBU (THIRD DISTRICT) 550,000",
+    "districtGuess": "rd DEO CEBU (THIRD DISTRICT)",
+    "amountThousandsPHP": 550000
+   },
+   {
+    "page": 6,
+    "rawLine": "Region Vil Cebu 4th DEO CEBU (FOURTH DISTRICT) 565,000",
+    "districtGuess": "th DEO CEBU (FOURTH DISTRICT)",
+    "amountThousandsPHP": 565000
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VII Cebu 5th DEO CEBU (FIFTH DISTRICT) 2,236,400",
+    "districtGuess": "th DEO CEBU (FIFTH DISTRICT)",
+    "amountThousandsPHP": 2236400
+   },
+   {
+    "page": 6,
+    "rawLine": "Region VII Cebu 6th DEO MANDAUE CITY (LONE DISTRICT) 1,283,844",
+    "districtGuess": "th DEO MANDAUE CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 1283844
+   },
+   {
+    "page": 6,
+    "rawLine": "Region Vil Cebu 6th DEO CEBU (SIXTH DISTRICT) 1,437,000",
+    "districtGuess": "th DEO CEBU (SIXTH DISTRICT)",
+    "amountThousandsPHP": 1437000
+   },
+   {
+    "page": 6,
+    "rawLine": "Region Vil Cebu 7th DEO CEBU (SEVENTH DISTRICT) 1,523,067",
+    "districtGuess": "th DEO CEBU (SEVENTH DISTRICT)",
+    "amountThousandsPHP": 1523067
+   },
+   {
+    "page": 6,
+    "rawLine": "Reglon VII Cebu City DEO CEBU CITY (SECOND DISTRICT) 2,136,200",
+    "districtGuess": "Reglon VII Cebu City DEO CEBU CITY (SECOND DISTRICT)",
+    "amountThousandsPHP": 2136200
+   },
+   {
+    "page": 7,
+    "rawLine": "Region VII Cebu City DEO CEBU CITY (FIRST DISTRICT) 565,000",
+    "districtGuess": "Region VII Cebu City DEO CEBU CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 565000
+   },
+   {
+    "page": 7,
+    "rawLine": "Region Vill Biliran DEO BILIRAN (LONE DISTRICT) 1,769,499",
+    "districtGuess": "Region Vill Biliran DEO BILIRAN (LONE DISTRICT)",
+    "amountThousandsPHP": 1769499
+   },
+   {
+    "page": 7,
+    "rawLine": "Region Vill Eastern Samar DEO |EASTERN SAMAR (LONE DISTRICT) 2,989,979",
+    "districtGuess": "EASTERN SAMAR (LONE DISTRICT)",
+    "amountThousandsPHP": 2989979
+   },
+   {
+    "page": 7,
+    "rawLine": "Region Vill Leyte 1st DEO LEYTE (FIRST DISTRICT) 924,954",
+    "districtGuess": "st DEO LEYTE (FIRST DISTRICT)",
+    "amountThousandsPHP": 924954
+   },
+   {
+    "page": 7,
+    "rawLine": "Region VIII Tacloban City DEO LEYTE (FIRST DISTRICT) 875,000",
+    "districtGuess": "Region VIII Tacloban City DEO LEYTE (FIRST DISTRICT)",
+    "amountThousandsPHP": 875000
+   },
+   {
+    "page": 7,
+    "rawLine": "Region Vill Leyte 2nd DEO LEYTE (SECOND DISTRICT) 2,014,249",
+    "districtGuess": "nd DEO LEYTE (SECOND DISTRICT)",
+    "amountThousandsPHP": 2014249
+   },
+   {
+    "page": 7,
+    "rawLine": "Region Vil Leyte 3rd DEO LEYTE (THIRD DISTRICT) 1,307,924",
+    "districtGuess": "rd DEO LEYTE (THIRD DISTRICT)",
+    "amountThousandsPHP": 1307924
+   },
+   {
+    "page": 7,
+    "rawLine": "Region VIII Leyte 4th DEO LEYTE (FOURTH DISTRICT) 2,329,569",
+    "districtGuess": "th DEO LEYTE (FOURTH DISTRICT)",
+    "amountThousandsPHP": 2329569
+   },
+   {
+    "page": 7,
+    "rawLine": "Region Vill Leyte 5th DEO LEYTE (FIFTH DISTRICT) 2,265,606",
+    "districtGuess": "th DEO LEYTE (FIFTH DISTRICT)",
+    "amountThousandsPHP": 2265606
+   },
+   {
+    "page": 7,
+    "rawLine": "Region VIII Samar 1st DEO SAMAR (FIRST DISTRICT) 2,346,580",
+    "districtGuess": "st DEO SAMAR (FIRST DISTRICT)",
+    "amountThousandsPHP": 2346580
+   },
+   {
+    "page": 7,
+    "rawLine": "Region VIII Samar 2nd DEO SAMAR (SECOND DISTRICT) 5,477,600",
+    "districtGuess": "nd DEO SAMAR (SECOND DISTRICT)",
+    "amountThousandsPHP": 5477600
+   },
+   {
+    "page": 7,
+    "rawLine": "Region Vil Southern Leyte 1st SOUTHERN LEYTE (FIRST DISTRICT) 498,800",
+    "districtGuess": "st SOUTHERN LEYTE (FIRST DISTRICT)",
+    "amountThousandsPHP": 498800
+   },
+   {
+    "page": 7,
+    "rawLine": "Region IX BARMM BASILAN (LONE DISTRICT) 188,306",
+    "districtGuess": "Region IX BARMM BASILAN (LONE DISTRICT)",
+    "amountThousandsPHP": 188306
+   },
+   {
+    "page": 7,
+    "rawLine": "Region IX Isabela City DEO BASILAN (LONE DISTRICT) 205,000",
+    "districtGuess": "Region IX Isabela City DEO BASILAN (LONE DISTRICT)",
+    "amountThousandsPHP": 205000
+   },
+   {
+    "page": 7,
+    "rawLine": "Region IX BARMM TAWI-TAWI (LONE DISTRICT) 309,772",
+    "districtGuess": "Region IX BARMM TAWI-TAWI (LONE DISTRICT)",
+    "amountThousandsPHP": 309772
+   },
+   {
+    "page": 7,
+    "rawLine": "Region IX Sulu 1st DEO SULU (FIRST DISTRICT) 385,000",
+    "districtGuess": "st DEO SULU (FIRST DISTRICT)",
+    "amountThousandsPHP": 385000
+   },
+   {
+    "page": 7,
+    "rawLine": "Region IX Sulu 2nd DEO SULU (SECOND DISTRICT) 395,000",
+    "districtGuess": "nd DEO SULU (SECOND DISTRICT)",
+    "amountThousandsPHP": 395000
+   },
+   {
+    "page": 7,
+    "rawLine": "Region IX Zamboanga Cily 1st |ZAMBOANGA CITY (FIRST DISTRICT) 2,032,152",
+    "districtGuess": "ZAMBOANGA CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 2032152
+   },
+   {
+    "page": 7,
+    "rawLine": "Region X BARMM LANAO DEL SUR (FIRST DISTRICT) 1,892,000",
+    "districtGuess": "Region X BARMM LANAO DEL SUR (FIRST DISTRICT)",
+    "amountThousandsPHP": 1892000
+   },
+   {
+    "page": 8,
+    "rawLine": "Region X Bukidnon 1st DEO BUKIDNON (SECOND DISTRICT) 6,895,000",
+    "districtGuess": "st DEO BUKIDNON (SECOND DISTRICT)",
+    "amountThousandsPHP": 6895000
+   },
+   {
+    "page": 8,
+    "rawLine": "Region X Bukidnon 2nd DEO BUKIDNON (THIRD DISTRICT) 4,203,160",
+    "districtGuess": "nd DEO BUKIDNON (THIRD DISTRICT)",
+    "amountThousandsPHP": 4203160
+   },
+   {
+    "page": 8,
+    "rawLine": "Region X Bukidnon 3rd DEO BUKIDNON (FIRST DISTRICT) 1,634,000",
+    "districtGuess": "rd DEO BUKIDNON (FIRST DISTRICT)",
+    "amountThousandsPHP": 1634000
+   },
+   {
+    "page": 8,
+    "rawLine": "Region X Bukidnon 4th DEO BUKIDNON (FOURTH DISTRICT) 1,005,483",
+    "districtGuess": "th DEO BUKIDNON (FOURTH DISTRICT)",
+    "amountThousandsPHP": 1005483
+   },
+   {
+    "page": 8,
+    "rawLine": "Region X Camiguin DEO CAMIGUIN (LONE DISTRICT) 1,714,004",
+    "districtGuess": "Region X Camiguin DEO CAMIGUIN (LONE DISTRICT)",
+    "amountThousandsPHP": 1714004
+   },
+   {
+    "page": 8,
+    "rawLine": "Region X lligan City DEO ILIGAN CITY (LONE DISTRICT) 2,029,800",
+    "districtGuess": "Region X lligan City DEO ILIGAN CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 2029800
+   },
+   {
+    "page": 8,
+    "rawLine": "Region XI Davao City DEO DAVAO CITY (FIRST DISTRICT) 500,000",
+    "districtGuess": "Region XI Davao City DEO DAVAO CITY (FIRST DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 8,
+    "rawLine": "Region XI Davao City 2nd DEO |DAVAO CITY (THIRD DISTRICT) 2,500,000",
+    "districtGuess": "DAVAO CITY (THIRD DISTRICT)",
+    "amountThousandsPHP": 2500000
+   },
+   {
+    "page": 8,
+    "rawLine": "Region XI Davao City 3rd DEO ~=|DAVAO CITY (SECOND DISTRICT) 500,000",
+    "districtGuess": "DAVAO CITY (SECOND DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 8,
+    "rawLine": "Region XI Davao de Oro 1st DAVAO DE ORO (SECOND DISTRICT) 1,519,640",
+    "districtGuess": "st DAVAO DE ORO (SECOND DISTRICT)",
+    "amountThousandsPHP": 1519640
+   },
+   {
+    "page": 8,
+    "rawLine": "Region XI Davao de Oro 2nd DAVAO DE ORO (FIRST DISTRICT) 1,611,180",
+    "districtGuess": "nd DAVAO DE ORO (FIRST DISTRICT)",
+    "amountThousandsPHP": 1611180
+   },
+   {
+    "page": 8,
+    "rawLine": "Region XI Davao del SurDEO |DAVAO DEL SUR (LONE DISTRICT) 2,542,130",
+    "districtGuess": "DAVAO DEL SUR (LONE DISTRICT)",
+    "amountThousandsPHP": 2542130
+   },
+   {
+    "page": 8,
+    "rawLine": "Region XI Davao Oriental 1st DAVAO ORIENTAL (FIRST DISTRICT) 1,416,381",
+    "districtGuess": "st DAVAO ORIENTAL (FIRST DISTRICT)",
+    "amountThousandsPHP": 1416381
+   },
+   {
+    "page": 9,
+    "rawLine": "Region XII Sarangani DEO SARANGANI (LONE DISTRICT) 460,000",
+    "districtGuess": "Region XII Sarangani DEO SARANGANI (LONE DISTRICT)",
+    "amountThousandsPHP": 460000
+   },
+   {
+    "page": 9,
+    "rawLine": "Region XI! South Cotabato 1st SOUTH COTABATO (FIRST DISTRICT) 500,000",
+    "districtGuess": "st SOUTH COTABATO (FIRST DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 9,
+    "rawLine": "Region XI! Sultan Kudarat 1st SULTAN KUDARAT (FIRST DISTRICT) 1,920,796",
+    "districtGuess": "st SULTAN KUDARAT (FIRST DISTRICT)",
+    "amountThousandsPHP": 1920796
+   },
+   {
+    "page": 9,
+    "rawLine": "Region XIII Agusan del Sur 1st AGUSAN DEL SUR (FIRST DISTRICT) 500,000",
+    "districtGuess": "st AGUSAN DEL SUR (FIRST DISTRICT)",
+    "amountThousandsPHP": 500000
+   },
+   {
+    "page": 9,
+    "rawLine": "Region Xill Butuan City DEO BUTUAN CITY (LONE DISTRICT) 8,834,267",
+    "districtGuess": "Region Xill Butuan City DEO BUTUAN CITY (LONE DISTRICT)",
+    "amountThousandsPHP": 8834267
+   },
+   {
+    "page": 9,
+    "rawLine": "Region XII! Dinagat Islands DEO |DINAGAT ISLANDS (LONE DISTRICT) 1,162,605",
+    "districtGuess": "DINAGAT ISLANDS (LONE DISTRICT)",
+    "amountThousandsPHP": 1162605
+   },
+   {
+    "page": 9,
+    "rawLine": "Region Xt Surigao de! Sur 1st SURIGAO DEL SUR (FIRST DISTRICT) 3,457,000",
+    "districtGuess": "st SURIGAO DEL SUR (FIRST DISTRICT)",
+    "amountThousandsPHP": 3457000
+   }
+  ]
+ }
+}

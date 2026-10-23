@@ -1,0 +1,2378 @@
+[
+  {
+    "region": "NCR",
+    "deo": "Las Piñas-Muntinlupa DEO",
+    "legislative_district": "CITY OF LAS PIÑAS (LONE DISTRICT)",
+    "amount_php_thousands": 1346406,
+    "amount_as_printed": "1,346,406",
+    "source_page": 1,
+    "source_row_on_page": 1
+  },
+  {
+    "region": "NCR",
+    "deo": "Las Piñas-Muntinlupa DEO",
+    "legislative_district": "CITY OF MUNTINLUPA (LONE DISTRICT)",
+    "amount_php_thousands": 968588,
+    "amount_as_printed": "968,588",
+    "source_page": 1,
+    "source_row_on_page": 2
+  },
+  {
+    "region": "NCR",
+    "deo": "Malabon-Navotas DEO",
+    "legislative_district": "MALABON CITY (LONE DISTRICT)",
+    "amount_php_thousands": 1387143,
+    "amount_as_printed": "1,387,143",
+    "source_page": 1,
+    "source_row_on_page": 3
+  },
+  {
+    "region": "NCR",
+    "deo": "Malabon-Navotas DEO",
+    "legislative_district": "NAVOTAS CITY (LONE DISTRICT)",
+    "amount_php_thousands": 1609250,
+    "amount_as_printed": "1,609,250",
+    "source_page": 1,
+    "source_row_on_page": 4
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 1st DEO",
+    "legislative_district": "CITY OF MANDALUYONG (LONE DISTRICT)",
+    "amount_php_thousands": 333675,
+    "amount_as_printed": "333,675",
+    "source_page": 1,
+    "source_row_on_page": 5
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 1st DEO",
+    "legislative_district": "CITY OF MARIKINA (FIRST DISTRICT)",
+    "amount_php_thousands": 630000,
+    "amount_as_printed": "630,000",
+    "source_page": 1,
+    "source_row_on_page": 6
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 1st DEO",
+    "legislative_district": "CITY OF MARIKINA (SECOND DISTRICT)",
+    "amount_php_thousands": 538000,
+    "amount_as_printed": "538,000",
+    "source_page": 1,
+    "source_row_on_page": 7
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 1st DEO",
+    "legislative_district": "PASIG CITY (LONE DISTRICT)",
+    "amount_php_thousands": 892000,
+    "amount_as_printed": "892,000",
+    "source_page": 1,
+    "source_row_on_page": 8
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 1st DEO",
+    "legislative_district": "SAN JUAN CITY (LONE DISTRICT)",
+    "amount_php_thousands": 377562,
+    "amount_as_printed": "377,562",
+    "source_page": 1,
+    "source_row_on_page": 9
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 1st DEO",
+    "legislative_district": "TAGUIG CITY (FIRST DISTRICT)",
+    "amount_php_thousands": 230000,
+    "amount_as_printed": "230,000",
+    "source_page": 1,
+    "source_row_on_page": 10
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 1st DEO",
+    "legislative_district": "TAGUIG CITY (SECOND DISTRICT)",
+    "amount_php_thousands": null,
+    "amount_as_printed": "-",
+    "source_page": 1,
+    "source_row_on_page": 11
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 2nd DEO",
+    "legislative_district": "CITY OF MAKATI (FIRST DISTRICT)",
+    "amount_php_thousands": 776983,
+    "amount_as_printed": "776,983",
+    "source_page": 1,
+    "source_row_on_page": 12
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 2nd DEO",
+    "legislative_district": "CITY OF MAKATI (SECOND DISTRICT)",
+    "amount_php_thousands": null,
+    "amount_as_printed": "-",
+    "source_page": 1,
+    "source_row_on_page": 13
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 2nd DEO",
+    "legislative_district": "CITY OF PARAÑAQUE (FIRST DISTRICT)",
+    "amount_php_thousands": 959595,
+    "amount_as_printed": "959,595",
+    "source_page": 1,
+    "source_row_on_page": 14
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 2nd DEO",
+    "legislative_district": "CITY OF PARAÑAQUE (SECOND DISTRICT)",
+    "amount_php_thousands": 874328,
+    "amount_as_printed": "874,328",
+    "source_page": 1,
+    "source_row_on_page": 15
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 3rd DEO",
+    "legislative_district": "CALOOCAN CITY (FIRST DISTRICT)",
+    "amount_php_thousands": 1560600,
+    "amount_as_printed": "1,560,600",
+    "source_page": 1,
+    "source_row_on_page": 16
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 3rd DEO",
+    "legislative_district": "CALOOCAN CITY (SECOND DISTRICT)",
+    "amount_php_thousands": 269650,
+    "amount_as_printed": "269,650",
+    "source_page": 1,
+    "source_row_on_page": 17
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 3rd DEO",
+    "legislative_district": "CALOOCAN CITY (THIRD DISTRICT)",
+    "amount_php_thousands": 720800,
+    "amount_as_printed": "720,800",
+    "source_page": 1,
+    "source_row_on_page": 18
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 3rd DEO",
+    "legislative_district": "VALENZUELA CITY (FIRST DISTRICT)",
+    "amount_php_thousands": 977546,
+    "amount_as_printed": "977,546",
+    "source_page": 1,
+    "source_row_on_page": 19
+  },
+  {
+    "region": "NCR",
+    "deo": "Metro Manila 3rd DEO",
+    "legislative_district": "VALENZUELA CITY (SECOND DISTRICT)",
+    "amount_php_thousands": 978275,
+    "amount_as_printed": "978,275",
+    "source_page": 1,
+    "source_row_on_page": 20
+  },
+  {
+    "region": "NCR",
+    "deo": "North Manila DEO",
+    "legislative_district": "MANILA CITY (FIRST DISTRICT)",
+    "amount_php_thousands": 537700,
+    "amount_as_printed": "537,700",
+    "source_page": 1,
+    "source_row_on_page": 21
+  },
+  {
+    "region": "NCR",
+    "deo": "North Manila DEO",
+    "legislative_district": "MANILA CITY (SECOND DISTRICT)",
+    "amount_php_thousands": 493500,
+    "amount_as_printed": "493,500",
+    "source_page": 1,
+    "source_row_on_page": 22
+  },
+  {
+    "region": "NCR",
+    "deo": "North Manila DEO",
+    "legislative_district": "MANILA CITY (THIRD DISTRICT)",
+    "amount_php_thousands": 890500,
+    "amount_as_printed": "890,500",
+    "source_page": 1,
+    "source_row_on_page": 23
+  },
+  {
+    "region": "NCR",
+    "deo": "North Manila DEO",
+    "legislative_district": "MANILA CITY (FOURTH DISTRICT)",
+    "amount_php_thousands": 553500,
+    "amount_as_printed": "553,500",
+    "source_page": 1,
+    "source_row_on_page": 24
+  },
+  {
+    "region": "NCR",
+    "deo": "North Manila DEO",
+    "legislative_district": "MANILA CITY (SIXTH DISTRICT)",
+    "amount_php_thousands": 342000,
+    "amount_as_printed": "342,000",
+    "source_page": 1,
+    "source_row_on_page": 25
+  },
+  {
+    "region": "NCR",
+    "deo": "South Manila DEO",
+    "legislative_district": "MANILA CITY (SIXTH DISTRICT)",
+    "amount_php_thousands": 1050400,
+    "amount_as_printed": "1,050,400",
+    "source_page": 1,
+    "source_row_on_page": 26
+  },
+  {
+    "region": "NCR",
+    "deo": "South Manila DEO",
+    "legislative_district": "MANILA CITY (FIFTH DISTRICT)",
+    "amount_php_thousands": 2765012,
+    "amount_as_printed": "2,765,012",
+    "source_page": 1,
+    "source_row_on_page": 27
+  },
+  {
+    "region": "NCR",
+    "deo": "South Manila DEO",
+    "legislative_district": "PASAY CITY (LONE DISTRICT)",
+    "amount_php_thousands": 905964,
+    "amount_as_printed": "905,964",
+    "source_page": 1,
+    "source_row_on_page": 28
+  },
+  {
+    "region": "NCR",
+    "deo": "Quezon City 1st DEO",
+    "legislative_district": "QUEZON CITY (FIRST DISTRICT)",
+    "amount_php_thousands": 1290030,
+    "amount_as_printed": "1,290,030",
+    "source_page": 1,
+    "source_row_on_page": 29
+  },
+  {
+    "region": "NCR",
+    "deo": "Quezon City 1st DEO",
+    "legislative_district": "QUEZON CITY (SECOND DISTRICT)",
+    "amount_php_thousands": 1594711,
+    "amount_as_printed": "1,594,711",
+    "source_page": 1,
+    "source_row_on_page": 30
+  },
+  {
+    "region": "NCR",
+    "deo": "Quezon City 1st DEO",
+    "legislative_district": "QUEZON CITY (FIFTH DISTRICT)",
+    "amount_php_thousands": 1335571,
+    "amount_as_printed": "1,335,571",
+    "source_page": 1,
+    "source_row_on_page": 31
+  },
+  {
+    "region": "NCR",
+    "deo": "Quezon City 1st DEO",
+    "legislative_district": "QUEZON CITY (SIXTH DISTRICT)",
+    "amount_php_thousands": 980340,
+    "amount_as_printed": "980,340",
+    "source_page": 2,
+    "source_row_on_page": 1
+  },
+  {
+    "region": "NCR",
+    "deo": "Quezon City 2nd DEO",
+    "legislative_district": "QUEZON CITY (THIRD DISTRICT)",
+    "amount_php_thousands": 844573,
+    "amount_as_printed": "844,573",
+    "source_page": 2,
+    "source_row_on_page": 2
+  },
+  {
+    "region": "NCR",
+    "deo": "Quezon City 2nd DEO",
+    "legislative_district": "QUEZON CITY (FOURTH DISTRICT)",
+    "amount_php_thousands": 1702000,
+    "amount_as_printed": "1,702,000",
+    "source_page": 2,
+    "source_row_on_page": 3
+  },
+  {
+    "region": "Region I",
+    "deo": "Ilocos Norte 1st DEO",
+    "legislative_district": "ILOCOS NORTE (FIRST DISTRICT)",
+    "amount_php_thousands": 3700000,
+    "amount_as_printed": "3,700,000",
+    "source_page": 2,
+    "source_row_on_page": 4
+  },
+  {
+    "region": "Region I",
+    "deo": "Ilocos Norte 2nd DEO",
+    "legislative_district": "ILOCOS NORTE (SECOND DISTRICT)",
+    "amount_php_thousands": 2703944,
+    "amount_as_printed": "2,703,944",
+    "source_page": 2,
+    "source_row_on_page": 5
+  },
+  {
+    "region": "Region I",
+    "deo": "Ilocos Sur 1st DEO",
+    "legislative_district": "ILOCOS SUR (FIRST DISTRICT)",
+    "amount_php_thousands": 505000,
+    "amount_as_printed": "505,000",
+    "source_page": 2,
+    "source_row_on_page": 6
+  },
+  {
+    "region": "Region I",
+    "deo": "Ilocos Sur 2nd DEO",
+    "legislative_district": "ILOCOS SUR (SECOND DISTRICT)",
+    "amount_php_thousands": 501816,
+    "amount_as_printed": "501,816",
+    "source_page": 2,
+    "source_row_on_page": 7
+  },
+  {
+    "region": "Region I",
+    "deo": "La Union 1st DEO",
+    "legislative_district": "LA UNION (FIRST DISTRICT)",
+    "amount_php_thousands": 2253678,
+    "amount_as_printed": "2,253,678",
+    "source_page": 2,
+    "source_row_on_page": 8
+  },
+  {
+    "region": "Region I",
+    "deo": "La Union 2nd DEO",
+    "legislative_district": "LA UNION (SECOND DISTRICT)",
+    "amount_php_thousands": 2247896,
+    "amount_as_printed": "2,247,896",
+    "source_page": 2,
+    "source_row_on_page": 9
+  },
+  {
+    "region": "Region I",
+    "deo": "Pangasinan 1st DEO",
+    "legislative_district": "PANGASINAN (FIRST DISTRICT)",
+    "amount_php_thousands": 2120687,
+    "amount_as_printed": "2,120,687",
+    "source_page": 2,
+    "source_row_on_page": 10
+  },
+  {
+    "region": "Region I",
+    "deo": "Pangasinan 2nd DEO",
+    "legislative_district": "PANGASINAN (SECOND DISTRICT)",
+    "amount_php_thousands": 1889222,
+    "amount_as_printed": "1,889,222",
+    "source_page": 2,
+    "source_row_on_page": 11
+  },
+  {
+    "region": "Region I",
+    "deo": "Pangasinan 2nd DEO",
+    "legislative_district": "PANGASINAN (FOURTH DISTRICT)",
+    "amount_php_thousands": 1836393,
+    "amount_as_printed": "1,836,393",
+    "source_page": 2,
+    "source_row_on_page": 12
+  },
+  {
+    "region": "Region I",
+    "deo": "Pangasinan 3rd DEO",
+    "legislative_district": "PANGASINAN (FIFTH DISTRICT)",
+    "amount_php_thousands": 2116734,
+    "amount_as_printed": "2,116,734",
+    "source_page": 2,
+    "source_row_on_page": 13
+  },
+  {
+    "region": "Region I",
+    "deo": "Pangasinan 3rd DEO",
+    "legislative_district": "PANGASINAN (SIXTH DISTRICT)",
+    "amount_php_thousands": 2516086,
+    "amount_as_printed": "2,516,086",
+    "source_page": 2,
+    "source_row_on_page": 14
+  },
+  {
+    "region": "Region I",
+    "deo": "Pangasinan 4th DEO",
+    "legislative_district": "PANGASINAN (THIRD DISTRICT)",
+    "amount_php_thousands": 2466126,
+    "amount_as_printed": "2,466,126",
+    "source_page": 2,
+    "source_row_on_page": 15
+  },
+  {
+    "region": "CAR",
+    "deo": "Abra DEO",
+    "legislative_district": "ABRA (LONE DISTRICT)",
+    "amount_php_thousands": 2190216,
+    "amount_as_printed": "2,190,216",
+    "source_page": 2,
+    "source_row_on_page": 16
+  },
+  {
+    "region": "CAR",
+    "deo": "Apayao 1st DEO",
+    "legislative_district": "APAYAO (LONE DISTRICT)",
+    "amount_php_thousands": 1218898,
+    "amount_as_printed": "1,218,898",
+    "source_page": 2,
+    "source_row_on_page": 17
+  },
+  {
+    "region": "CAR",
+    "deo": "Apayao 2nd DEO",
+    "legislative_district": "APAYAO (LONE DISTRICT)",
+    "amount_php_thousands": 1423094,
+    "amount_as_printed": "1,423,094",
+    "source_page": 2,
+    "source_row_on_page": 18
+  },
+  {
+    "region": "CAR",
+    "deo": "Baguio City DEO",
+    "legislative_district": "BAGUIO CITY (LONE DISTRICT)",
+    "amount_php_thousands": 1649858,
+    "amount_as_printed": "1,649,858",
+    "source_page": 2,
+    "source_row_on_page": 19
+  },
+  {
+    "region": "CAR",
+    "deo": "Benguet 1st DEO",
+    "legislative_district": "BENGUET (LONE DISTRICT)",
+    "amount_php_thousands": 985237,
+    "amount_as_printed": "985,237",
+    "source_page": 2,
+    "source_row_on_page": 20
+  },
+  {
+    "region": "CAR",
+    "deo": "Benguet 2nd DEO",
+    "legislative_district": "BENGUET (LONE DISTRICT)",
+    "amount_php_thousands": 768000,
+    "amount_as_printed": "768,000",
+    "source_page": 2,
+    "source_row_on_page": 21
+  },
+  {
+    "region": "CAR",
+    "deo": "Ifugao 1st DEO",
+    "legislative_district": "IFUGAO (LONE DISTRICT)",
+    "amount_php_thousands": 1042807,
+    "amount_as_printed": "1,042,807",
+    "source_page": 2,
+    "source_row_on_page": 22
+  },
+  {
+    "region": "CAR",
+    "deo": "Ifugao 2nd DEO",
+    "legislative_district": "IFUGAO (LONE DISTRICT)",
+    "amount_php_thousands": 1202481,
+    "amount_as_printed": "1,202,481",
+    "source_page": 2,
+    "source_row_on_page": 23
+  },
+  {
+    "region": "CAR",
+    "deo": "Lower Kalinga DEO",
+    "legislative_district": "KALINGA (LONE DISTRICT)",
+    "amount_php_thousands": 1468363,
+    "amount_as_printed": "1,468,363",
+    "source_page": 2,
+    "source_row_on_page": 24
+  },
+  {
+    "region": "CAR",
+    "deo": "Upper Kalinga DEO",
+    "legislative_district": "KALINGA (LONE DISTRICT)",
+    "amount_php_thousands": 1180339,
+    "amount_as_printed": "1,180,339",
+    "source_page": 2,
+    "source_row_on_page": 25
+  },
+  {
+    "region": "CAR",
+    "deo": "Mountain Province 1st DEO",
+    "legislative_district": "MOUNTAIN PROVINCE (LONE DISTRICT)",
+    "amount_php_thousands": 1092620,
+    "amount_as_printed": "1,092,620",
+    "source_page": 2,
+    "source_row_on_page": 26
+  },
+  {
+    "region": "CAR",
+    "deo": "Mountain Province 2nd DEO",
+    "legislative_district": "MOUNTAIN PROVINCE (LONE DISTRICT)",
+    "amount_php_thousands": 1042133,
+    "amount_as_printed": "1,042,133",
+    "source_page": 2,
+    "source_row_on_page": 27
+  },
+  {
+    "region": "Region II",
+    "deo": "Batanes DEO",
+    "legislative_district": "BATANES (LONE DISTRICT)",
+    "amount_php_thousands": 906451,
+    "amount_as_printed": "906,451",
+    "source_page": 2,
+    "source_row_on_page": 28
+  },
+  {
+    "region": "Region II",
+    "deo": "Cagayan 1st DEO",
+    "legislative_district": "CAGAYAN (FIRST DISTRICT)",
+    "amount_php_thousands": 2483342,
+    "amount_as_printed": "2,483,342",
+    "source_page": 2,
+    "source_row_on_page": 29
+  },
+  {
+    "region": "Region II",
+    "deo": "Cagayan 2nd DEO",
+    "legislative_district": "CAGAYAN (SECOND DISTRICT)",
+    "amount_php_thousands": 2599253,
+    "amount_as_printed": "2,599,253",
+    "source_page": 2,
+    "source_row_on_page": 30
+  },
+  {
+    "region": "Region II",
+    "deo": "Cagayan 3rd DEO",
+    "legislative_district": "CAGAYAN (THIRD DISTRICT)",
+    "amount_php_thousands": 2407336,
+    "amount_as_printed": "2,407,336",
+    "source_page": 2,
+    "source_row_on_page": 31
+  },
+  {
+    "region": "Region II",
+    "deo": "Isabela 1st DEO",
+    "legislative_district": "ISABELA (FIRST DISTRICT)",
+    "amount_php_thousands": 2294822,
+    "amount_as_printed": "2,294,822",
+    "source_page": 3,
+    "source_row_on_page": 1
+  },
+  {
+    "region": "Region II",
+    "deo": "Isabela 2nd DEO",
+    "legislative_district": "ISABELA (FIFTH DISTRICT)",
+    "amount_php_thousands": 2183886,
+    "amount_as_printed": "2,183,886",
+    "source_page": 3,
+    "source_row_on_page": 2
+  },
+  {
+    "region": "Region II",
+    "deo": "Isabela 3rd DEO",
+    "legislative_district": "ISABELA (SECOND DISTRICT)",
+    "amount_php_thousands": 1865369,
+    "amount_as_printed": "1,865,369",
+    "source_page": 3,
+    "source_row_on_page": 3
+  },
+  {
+    "region": "Region II",
+    "deo": "Isabela 3rd DEO",
+    "legislative_district": "ISABELA (THIRD DISTRICT)",
+    "amount_php_thousands": 1134816,
+    "amount_as_printed": "1,134,816",
+    "source_page": 3,
+    "source_row_on_page": 4
+  },
+  {
+    "region": "Region II",
+    "deo": "Isabela 4th DEO",
+    "legislative_district": "ISABELA (FOURTH DISTRICT)",
+    "amount_php_thousands": 2160654,
+    "amount_as_printed": "2,160,654",
+    "source_page": 3,
+    "source_row_on_page": 5
+  },
+  {
+    "region": "Region II",
+    "deo": "Isabela 4th DEO",
+    "legislative_district": "ISABELA (SIXTH DISTRICT)",
+    "amount_php_thousands": 3689000,
+    "amount_as_printed": "3,689,000",
+    "source_page": 3,
+    "source_row_on_page": 6
+  },
+  {
+    "region": "Region II",
+    "deo": "Nueva Vizcaya DEO",
+    "legislative_district": "NUEVA VIZCAYA (LONE DISTRICT)",
+    "amount_php_thousands": 1407852,
+    "amount_as_printed": "1,407,852",
+    "source_page": 3,
+    "source_row_on_page": 7
+  },
+  {
+    "region": "Region II",
+    "deo": "Nueva Vizcaya 2nd DEO",
+    "legislative_district": "NUEVA VIZCAYA (LONE DISTRICT)",
+    "amount_php_thousands": 918312,
+    "amount_as_printed": "918,312",
+    "source_page": 3,
+    "source_row_on_page": 8
+  },
+  {
+    "region": "Region II",
+    "deo": "Quirino DEO",
+    "legislative_district": "QUIRINO (LONE DISTRICT)",
+    "amount_php_thousands": 635000,
+    "amount_as_printed": "635,000",
+    "source_page": 3,
+    "source_row_on_page": 9
+  },
+  {
+    "region": "Region III",
+    "deo": "Aurora DEO",
+    "legislative_district": "AURORA (LONE DISTRICT)",
+    "amount_php_thousands": 1785000,
+    "amount_as_printed": "1,785,000",
+    "source_page": 3,
+    "source_row_on_page": 10
+  },
+  {
+    "region": "Region III",
+    "deo": "Bataan 1st DEO",
+    "legislative_district": "BATAAN (FIRST DISTRICT)",
+    "amount_php_thousands": 2188716,
+    "amount_as_printed": "2,188,716",
+    "source_page": 3,
+    "source_row_on_page": 11
+  },
+  {
+    "region": "Region III",
+    "deo": "Bataan 2nd DEO",
+    "legislative_district": "BATAAN (SECOND DISTRICT)",
+    "amount_php_thousands": 1402764,
+    "amount_as_printed": "1,402,764",
+    "source_page": 3,
+    "source_row_on_page": 12
+  },
+  {
+    "region": "Region III",
+    "deo": "Bataan 3rd DEO",
+    "legislative_district": "BATAAN (THIRD DISTRICT)",
+    "amount_php_thousands": 1846829,
+    "amount_as_printed": "1,846,829",
+    "source_page": 3,
+    "source_row_on_page": 13
+  },
+  {
+    "region": "Region III",
+    "deo": "Bulacan 1st DEO",
+    "legislative_district": "BULACAN (FIRST DISTRICT)",
+    "amount_php_thousands": 1575230,
+    "amount_as_printed": "1,575,230",
+    "source_page": 3,
+    "source_row_on_page": 14
+  },
+  {
+    "region": "Region III",
+    "deo": "Bulacan 1st DEO",
+    "legislative_district": "BULACAN (SECOND DISTRICT)",
+    "amount_php_thousands": 1122308,
+    "amount_as_printed": "1,122,308",
+    "source_page": 3,
+    "source_row_on_page": 15
+  },
+  {
+    "region": "Region III",
+    "deo": "Bulacan 1st DEO",
+    "legislative_district": "BULACAN (FIFTH DISTRICT)",
+    "amount_php_thousands": 1450956,
+    "amount_as_printed": "1,450,956",
+    "source_page": 3,
+    "source_row_on_page": 16
+  },
+  {
+    "region": "Region III",
+    "deo": "Bulacan 2nd DEO",
+    "legislative_district": "BULACAN (FOURTH DISTRICT)",
+    "amount_php_thousands": 1701000,
+    "amount_as_printed": "1,701,000",
+    "source_page": 3,
+    "source_row_on_page": 17
+  },
+  {
+    "region": "Region III",
+    "deo": "Bulacan 2nd DEO",
+    "legislative_district": "BULACAN (SIXTH DISTRICT)",
+    "amount_php_thousands": 1557636,
+    "amount_as_printed": "1,557,636",
+    "source_page": 3,
+    "source_row_on_page": 18
+  },
+  {
+    "region": "Region III",
+    "deo": "Bulacan 2nd DEO",
+    "legislative_district": "CITY OF SAN JOSE DEL MONTE (LONE DISTRICT)",
+    "amount_php_thousands": 1933154,
+    "amount_as_printed": "1,933,154",
+    "source_page": 3,
+    "source_row_on_page": 19
+  },
+  {
+    "region": "Region III",
+    "deo": "Bulacan 3rd DEO",
+    "legislative_district": "BULACAN (THIRD DISTRICT)",
+    "amount_php_thousands": 1446968,
+    "amount_as_printed": "1,446,968",
+    "source_page": 3,
+    "source_row_on_page": 20
+  },
+  {
+    "region": "Region III",
+    "deo": "Nueva Ecija 1st DEO",
+    "legislative_district": "NUEVA ECIJA (FIRST DISTRICT)",
+    "amount_php_thousands": 3426750,
+    "amount_as_printed": "3,426,750",
+    "source_page": 3,
+    "source_row_on_page": 21
+  },
+  {
+    "region": "Region III",
+    "deo": "Nueva Ecija 1st DEO",
+    "legislative_district": "NUEVA ECIJA (SECOND DISTRICT)",
+    "amount_php_thousands": 1757124,
+    "amount_as_printed": "1,757,124",
+    "source_page": 3,
+    "source_row_on_page": 22
+  },
+  {
+    "region": "Region III",
+    "deo": "Nueva Ecija 2nd DEO",
+    "legislative_district": "NUEVA ECIJA (THIRD DISTRICT)",
+    "amount_php_thousands": 493825,
+    "amount_as_printed": "493,825",
+    "source_page": 3,
+    "source_row_on_page": 23
+  },
+  {
+    "region": "Region III",
+    "deo": "Nueva Ecija 2nd DEO",
+    "legislative_district": "NUEVA ECIJA (FOURTH DISTRICT)",
+    "amount_php_thousands": 1824624,
+    "amount_as_printed": "1,824,624",
+    "source_page": 3,
+    "source_row_on_page": 24
+  },
+  {
+    "region": "Region III",
+    "deo": "Pampanga 1st DEO",
+    "legislative_district": "PAMPANGA (THIRD DISTRICT)",
+    "amount_php_thousands": 2323940,
+    "amount_as_printed": "2,323,940",
+    "source_page": 3,
+    "source_row_on_page": 25
+  },
+  {
+    "region": "Region III",
+    "deo": "Pampanga 1st DEO",
+    "legislative_district": "PAMPANGA (FOURTH DISTRICT)",
+    "amount_php_thousands": 1964619,
+    "amount_as_printed": "1,964,619",
+    "source_page": 3,
+    "source_row_on_page": 26
+  },
+  {
+    "region": "Region III",
+    "deo": "Pampanga 2nd DEO",
+    "legislative_district": "PAMPANGA (SECOND DISTRICT)",
+    "amount_php_thousands": 723709,
+    "amount_as_printed": "723,709",
+    "source_page": 3,
+    "source_row_on_page": 27
+  },
+  {
+    "region": "Region III",
+    "deo": "Pampanga 3rd DEO",
+    "legislative_district": "PAMPANGA (FIRST DISTRICT)",
+    "amount_php_thousands": 2448093,
+    "amount_as_printed": "2,448,093",
+    "source_page": 3,
+    "source_row_on_page": 28
+  },
+  {
+    "region": "Region III",
+    "deo": "Tarlac DEO",
+    "legislative_district": "TARLAC (FIRST DISTRICT)",
+    "amount_php_thousands": 1308080,
+    "amount_as_printed": "1,308,080",
+    "source_page": 3,
+    "source_row_on_page": 29
+  },
+  {
+    "region": "Region III",
+    "deo": "Tarlac DEO",
+    "legislative_district": "TARLAC (SECOND DISTRICT)",
+    "amount_php_thousands": 2008000,
+    "amount_as_printed": "2,008,000",
+    "source_page": 3,
+    "source_row_on_page": 30
+  },
+  {
+    "region": "Region III",
+    "deo": "Tarlac 2nd DEO",
+    "legislative_district": "TARLAC (THIRD DISTRICT)",
+    "amount_php_thousands": 2240000,
+    "amount_as_printed": "2,240,000",
+    "source_page": 3,
+    "source_row_on_page": 31
+  },
+  {
+    "region": "Region III",
+    "deo": "Zambales 1st DEO",
+    "legislative_district": "ZAMBALES (SECOND DISTRICT)",
+    "amount_php_thousands": 2235750,
+    "amount_as_printed": "2,235,750",
+    "source_page": 4,
+    "source_row_on_page": 1
+  },
+  {
+    "region": "Region III",
+    "deo": "Zambales 2nd DEO",
+    "legislative_district": "ZAMBALES (FIRST DISTRICT)",
+    "amount_php_thousands": 2129276,
+    "amount_as_printed": "2,129,276",
+    "source_page": 4,
+    "source_row_on_page": 2
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Batangas 1st DEO",
+    "legislative_district": "BATANGAS (FIRST DISTRICT)",
+    "amount_php_thousands": 574000,
+    "amount_as_printed": "574,000",
+    "source_page": 4,
+    "source_row_on_page": 3
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Batangas 2nd DEO",
+    "legislative_district": "BATANGAS (SECOND DISTRICT)",
+    "amount_php_thousands": 3113725,
+    "amount_as_printed": "3,113,725",
+    "source_page": 4,
+    "source_row_on_page": 4
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Batangas 2nd DEO",
+    "legislative_district": "BATANGAS (FIFTH DISTRICT)",
+    "amount_php_thousands": 1338896,
+    "amount_as_printed": "1,338,896",
+    "source_page": 4,
+    "source_row_on_page": 5
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Batangas 3rd DEO",
+    "legislative_district": "BATANGAS (THIRD DISTRICT)",
+    "amount_php_thousands": 2456604,
+    "amount_as_printed": "2,456,604",
+    "source_page": 4,
+    "source_row_on_page": 6
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Batangas 4th DEO",
+    "legislative_district": "BATANGAS (FOURTH DISTRICT)",
+    "amount_php_thousands": 1676617,
+    "amount_as_printed": "1,676,617",
+    "source_page": 4,
+    "source_row_on_page": 7
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Batangas 4th DEO",
+    "legislative_district": "BATANGAS (SIXTH DISTRICT)",
+    "amount_php_thousands": 3316000,
+    "amount_as_printed": "3,316,000",
+    "source_page": 4,
+    "source_row_on_page": 8
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Cavite 1st DEO",
+    "legislative_district": "CAVITE (FIRST DISTRICT)",
+    "amount_php_thousands": 1740638,
+    "amount_as_printed": "1,740,638",
+    "source_page": 4,
+    "source_row_on_page": 9
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Cavite 1st DEO",
+    "legislative_district": "CAVITE (THIRD DISTRICT)",
+    "amount_php_thousands": 1353575,
+    "amount_as_printed": "1,353,575",
+    "source_page": 4,
+    "source_row_on_page": 10
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Cavite 1st DEO",
+    "legislative_district": "CAVITE (SIXTH DISTRICT)",
+    "amount_php_thousands": 1143302,
+    "amount_as_printed": "1,143,302",
+    "source_page": 4,
+    "source_row_on_page": 11
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Cavite 1st DEO",
+    "legislative_district": "CAVITE (SEVENTH DISTRICT)",
+    "amount_php_thousands": 2059074,
+    "amount_as_printed": "2,059,074",
+    "source_page": 4,
+    "source_row_on_page": 12
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Cavite 2nd DEO",
+    "legislative_district": "CAVITE (EIGHTH DISTRICT)",
+    "amount_php_thousands": 2141676,
+    "amount_as_printed": "2,141,676",
+    "source_page": 4,
+    "source_row_on_page": 13
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Cavite 3rd DEO",
+    "legislative_district": "CAVITE (SECOND DISTRICT)",
+    "amount_php_thousands": 1672469,
+    "amount_as_printed": "1,672,469",
+    "source_page": 4,
+    "source_row_on_page": 14
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Cavite 3rd DEO",
+    "legislative_district": "CAVITE (FOURTH DISTRICT)",
+    "amount_php_thousands": 500000,
+    "amount_as_printed": "500,000",
+    "source_page": 4,
+    "source_row_on_page": 15
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Cavite 3rd DEO",
+    "legislative_district": "CAVITE (FIFTH DISTRICT)",
+    "amount_php_thousands": 1377304,
+    "amount_as_printed": "1,377,304",
+    "source_page": 4,
+    "source_row_on_page": 16
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Laguna 1st DEO",
+    "legislative_district": "LAGUNA (FOURTH DISTRICT)",
+    "amount_php_thousands": 1447318,
+    "amount_as_printed": "1,447,318",
+    "source_page": 4,
+    "source_row_on_page": 17
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Laguna 2nd DEO",
+    "legislative_district": "CITY OF BIÑAN (LONE DISTRICT)",
+    "amount_php_thousands": 1240000,
+    "amount_as_printed": "1,240,000",
+    "source_page": 4,
+    "source_row_on_page": 18
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Laguna 2nd DEO",
+    "legislative_district": "CITY OF CALAMBA (LONE DISTRICT)",
+    "amount_php_thousands": 1463709,
+    "amount_as_printed": "1,463,709",
+    "source_page": 4,
+    "source_row_on_page": 19
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Laguna 2nd DEO",
+    "legislative_district": "CITY OF STA. ROSA (LONE DISTRICT)",
+    "amount_php_thousands": 668028,
+    "amount_as_printed": "668,028",
+    "source_page": 4,
+    "source_row_on_page": 20
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Laguna 2nd DEO",
+    "legislative_district": "LAGUNA (FIRST DISTRICT)",
+    "amount_php_thousands": 899271,
+    "amount_as_printed": "899,271",
+    "source_page": 4,
+    "source_row_on_page": 21
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Laguna 2nd DEO",
+    "legislative_district": "LAGUNA (SECOND DISTRICT)",
+    "amount_php_thousands": 214874,
+    "amount_as_printed": "214,874",
+    "source_page": 4,
+    "source_row_on_page": 22
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Laguna 3rd DEO",
+    "legislative_district": "LAGUNA (THIRD DISTRICT)",
+    "amount_php_thousands": 1710736,
+    "amount_as_printed": "1,710,736",
+    "source_page": 4,
+    "source_row_on_page": 23
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Quezon 1st DEO",
+    "legislative_district": "QUEZON (FIRST DISTRICT)",
+    "amount_php_thousands": 3823552,
+    "amount_as_printed": "3,823,552",
+    "source_page": 4,
+    "source_row_on_page": 24
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Quezon 2nd DEO",
+    "legislative_district": "QUEZON (SECOND DISTRICT)",
+    "amount_php_thousands": 2176946,
+    "amount_as_printed": "2,176,946",
+    "source_page": 4,
+    "source_row_on_page": 25
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Quezon 3rd DEO",
+    "legislative_district": "QUEZON (THIRD DISTRICT)",
+    "amount_php_thousands": 3077000,
+    "amount_as_printed": "3,077,000",
+    "source_page": 4,
+    "source_row_on_page": 26
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Quezon 4th DEO",
+    "legislative_district": "QUEZON (FOURTH DISTRICT)",
+    "amount_php_thousands": 7252346,
+    "amount_as_printed": "7,252,346",
+    "source_page": 4,
+    "source_row_on_page": 27
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Rizal 1st DEO",
+    "legislative_district": "ANTIPOLO CITY (FIRST DISTRICT)",
+    "amount_php_thousands": 1026094,
+    "amount_as_printed": "1,026,094",
+    "source_page": 4,
+    "source_row_on_page": 28
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Rizal 1st DEO",
+    "legislative_district": "ANTIPOLO CITY (SECOND DISTRICT)",
+    "amount_php_thousands": 1202550,
+    "amount_as_printed": "1,202,550",
+    "source_page": 4,
+    "source_row_on_page": 29
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Rizal 1st DEO",
+    "legislative_district": "RIZAL (FIRST DISTRICT)",
+    "amount_php_thousands": 500000,
+    "amount_as_printed": "500,000",
+    "source_page": 4,
+    "source_row_on_page": 30
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Rizal 2nd DEO",
+    "legislative_district": "RIZAL (SECOND DISTRICT)",
+    "amount_php_thousands": 500000,
+    "amount_as_printed": "500,000",
+    "source_page": 4,
+    "source_row_on_page": 31
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Rizal 2nd DEO",
+    "legislative_district": "RIZAL (THIRD DISTRICT)",
+    "amount_php_thousands": 500000,
+    "amount_as_printed": "500,000",
+    "source_page": 5,
+    "source_row_on_page": 1
+  },
+  {
+    "region": "Region IV-A",
+    "deo": "Rizal 2nd DEO",
+    "legislative_district": "RIZAL (FOURTH DISTRICT)",
+    "amount_php_thousands": 500000,
+    "amount_as_printed": "500,000",
+    "source_page": 5,
+    "source_row_on_page": 2
+  },
+  {
+    "region": "MIMAROPA",
+    "deo": "Marinduque DEO",
+    "legislative_district": "MARINDUQUE (LONE DISTRICT)",
+    "amount_php_thousands": 1669934,
+    "amount_as_printed": "1,669,934",
+    "source_page": 5,
+    "source_row_on_page": 3
+  },
+  {
+    "region": "MIMAROPA",
+    "deo": "Mindoro Occidental DEO",
+    "legislative_district": "OCCIDENTAL MINDORO (LONE DISTRICT)",
+    "amount_php_thousands": 2951000,
+    "amount_as_printed": "2,951,000",
+    "source_page": 5,
+    "source_row_on_page": 4
+  },
+  {
+    "region": "MIMAROPA",
+    "deo": "Mindoro Oriental DEO",
+    "legislative_district": "ORIENTAL MINDORO (FIRST DISTRICT)",
+    "amount_php_thousands": 1968797,
+    "amount_as_printed": "1,968,797",
+    "source_page": 5,
+    "source_row_on_page": 5
+  },
+  {
+    "region": "MIMAROPA",
+    "deo": "Palawan 1st DEO",
+    "legislative_district": "PALAWAN (FIRST DISTRICT)",
+    "amount_php_thousands": 2682153,
+    "amount_as_printed": "2,682,153",
+    "source_page": 5,
+    "source_row_on_page": 6
+  },
+  {
+    "region": "MIMAROPA",
+    "deo": "Palawan 2nd DEO",
+    "legislative_district": "PALAWAN (SECOND DISTRICT)",
+    "amount_php_thousands": 2776526,
+    "amount_as_printed": "2,776,526",
+    "source_page": 5,
+    "source_row_on_page": 7
+  },
+  {
+    "region": "MIMAROPA",
+    "deo": "Palawan 3rd DEO",
+    "legislative_district": "PALAWAN (THIRD DISTRICT)",
+    "amount_php_thousands": 2117459,
+    "amount_as_printed": "2,117,459",
+    "source_page": 5,
+    "source_row_on_page": 8
+  },
+  {
+    "region": "MIMAROPA",
+    "deo": "Romblon DEO",
+    "legislative_district": "ROMBLON (LONE DISTRICT)",
+    "amount_php_thousands": 2176146,
+    "amount_as_printed": "2,176,146",
+    "source_page": 5,
+    "source_row_on_page": 9
+  },
+  {
+    "region": "MIMAROPA",
+    "deo": "Southern Mindoro DEO",
+    "legislative_district": "ORIENTAL MINDORO (SECOND DISTRICT)",
+    "amount_php_thousands": 1527015,
+    "amount_as_printed": "1,527,015",
+    "source_page": 5,
+    "source_row_on_page": 10
+  },
+  {
+    "region": "Region V",
+    "deo": "Albay 1st DEO",
+    "legislative_district": "ALBAY (FIRST DISTRICT)",
+    "amount_php_thousands": 1810878,
+    "amount_as_printed": "1,810,878",
+    "source_page": 5,
+    "source_row_on_page": 11
+  },
+  {
+    "region": "Region V",
+    "deo": "Albay 2nd DEO",
+    "legislative_district": "ALBAY (SECOND DISTRICT)",
+    "amount_php_thousands": 2016238,
+    "amount_as_printed": "2,016,238",
+    "source_page": 5,
+    "source_row_on_page": 12
+  },
+  {
+    "region": "Region V",
+    "deo": "Albay 3rd DEO",
+    "legislative_district": "ALBAY (THIRD DISTRICT)",
+    "amount_php_thousands": 2820615,
+    "amount_as_printed": "2,820,615",
+    "source_page": 5,
+    "source_row_on_page": 13
+  },
+  {
+    "region": "Region V",
+    "deo": "Camarines Norte DEO",
+    "legislative_district": "CAMARINES NORTE (FIRST DISTRICT)",
+    "amount_php_thousands": 2114233,
+    "amount_as_printed": "2,114,233",
+    "source_page": 5,
+    "source_row_on_page": 14
+  },
+  {
+    "region": "Region V",
+    "deo": "Camarines Norte Sub-DEO",
+    "legislative_district": "CAMARINES NORTE (SECOND DISTRICT)",
+    "amount_php_thousands": 1406305,
+    "amount_as_printed": "1,406,305",
+    "source_page": 5,
+    "source_row_on_page": 15
+  },
+  {
+    "region": "Region V",
+    "deo": "Camarines Sur 1st DEO",
+    "legislative_district": "CAMARINES SUR (FIRST DISTRICT)",
+    "amount_php_thousands": 5986481,
+    "amount_as_printed": "5,986,481",
+    "source_page": 5,
+    "source_row_on_page": 16
+  },
+  {
+    "region": "Region V",
+    "deo": "Camarines Sur 2nd DEO",
+    "legislative_district": "CAMARINES SUR (SECOND DISTRICT)",
+    "amount_php_thousands": 1571745,
+    "amount_as_printed": "1,571,745",
+    "source_page": 5,
+    "source_row_on_page": 17
+  },
+  {
+    "region": "Region V",
+    "deo": "Camarines Sur 3rd DEO",
+    "legislative_district": "CAMARINES SUR (THIRD DISTRICT)",
+    "amount_php_thousands": 2634906,
+    "amount_as_printed": "2,634,906",
+    "source_page": 5,
+    "source_row_on_page": 18
+  },
+  {
+    "region": "Region V",
+    "deo": "Camarines Sur 4th DEO",
+    "legislative_district": "CAMARINES SUR (FOURTH DISTRICT)",
+    "amount_php_thousands": 1989801,
+    "amount_as_printed": "1,989,801",
+    "source_page": 5,
+    "source_row_on_page": 19
+  },
+  {
+    "region": "Region V",
+    "deo": "Camarines Sur 5th DEO",
+    "legislative_district": "CAMARINES SUR (FIFTH DISTRICT)",
+    "amount_php_thousands": 2564023,
+    "amount_as_printed": "2,564,023",
+    "source_page": 5,
+    "source_row_on_page": 20
+  },
+  {
+    "region": "Region V",
+    "deo": "Catanduanes DEO",
+    "legislative_district": "CATANDUANES (LONE DISTRICT)",
+    "amount_php_thousands": 1665935,
+    "amount_as_printed": "1,665,935",
+    "source_page": 5,
+    "source_row_on_page": 21
+  },
+  {
+    "region": "Region V",
+    "deo": "Masbate 1st DEO",
+    "legislative_district": "MASBATE (FIRST DISTRICT)",
+    "amount_php_thousands": 1110447,
+    "amount_as_printed": "1,110,447",
+    "source_page": 5,
+    "source_row_on_page": 22
+  },
+  {
+    "region": "Region V",
+    "deo": "Masbate 2nd DEO",
+    "legislative_district": "MASBATE (SECOND DISTRICT)",
+    "amount_php_thousands": 1849508,
+    "amount_as_printed": "1,849,508",
+    "source_page": 5,
+    "source_row_on_page": 23
+  },
+  {
+    "region": "Region V",
+    "deo": "Masbate 3rd DEO",
+    "legislative_district": "MASBATE (THIRD DISTRICT)",
+    "amount_php_thousands": 1387976,
+    "amount_as_printed": "1,387,976",
+    "source_page": 5,
+    "source_row_on_page": 24
+  },
+  {
+    "region": "Region V",
+    "deo": "Sorsogon DEO",
+    "legislative_district": "SORSOGON (FIRST DISTRICT)",
+    "amount_php_thousands": 1198993,
+    "amount_as_printed": "1,198,993",
+    "source_page": 5,
+    "source_row_on_page": 25
+  },
+  {
+    "region": "Region V",
+    "deo": "Sorsogon 2nd DEO",
+    "legislative_district": "SORSOGON (SECOND DISTRICT)",
+    "amount_php_thousands": 1641393,
+    "amount_as_printed": "1,641,393",
+    "source_page": 5,
+    "source_row_on_page": 26
+  },
+  {
+    "region": "Region VI",
+    "deo": "Aklan DEO",
+    "legislative_district": "AKLAN (FIRST DISTRICT)",
+    "amount_php_thousands": 1488151,
+    "amount_as_printed": "1,488,151",
+    "source_page": 5,
+    "source_row_on_page": 27
+  },
+  {
+    "region": "Region VI",
+    "deo": "Aklan DEO",
+    "legislative_district": "AKLAN (SECOND DISTRICT)",
+    "amount_php_thousands": 1093274,
+    "amount_as_printed": "1,093,274",
+    "source_page": 5,
+    "source_row_on_page": 28
+  },
+  {
+    "region": "Region VI",
+    "deo": "Antique DEO",
+    "legislative_district": "ANTIQUE (LONE DISTRICT)",
+    "amount_php_thousands": 500750,
+    "amount_as_printed": "500,750",
+    "source_page": 5,
+    "source_row_on_page": 29
+  },
+  {
+    "region": "Region VI",
+    "deo": "Capiz 1st DEO",
+    "legislative_district": "CAPIZ (FIRST DISTRICT)",
+    "amount_php_thousands": 1614111,
+    "amount_as_printed": "1,614,111",
+    "source_page": 5,
+    "source_row_on_page": 30
+  },
+  {
+    "region": "Region VI",
+    "deo": "Capiz 2nd DEO",
+    "legislative_district": "CAPIZ (SECOND DISTRICT)",
+    "amount_php_thousands": 1696961,
+    "amount_as_printed": "1,696,961",
+    "source_page": 5,
+    "source_row_on_page": 31
+  },
+  {
+    "region": "Region VI",
+    "deo": "Guimaras DEO",
+    "legislative_district": "GUIMARAS (LONE DISTRICT)",
+    "amount_php_thousands": 934600,
+    "amount_as_printed": "934,600",
+    "source_page": 6,
+    "source_row_on_page": 1
+  },
+  {
+    "region": "Region VI",
+    "deo": "Iloilo 1st DEO",
+    "legislative_district": "ILOILO (FIRST DISTRICT)",
+    "amount_php_thousands": 2923040,
+    "amount_as_printed": "2,923,040",
+    "source_page": 6,
+    "source_row_on_page": 2
+  },
+  {
+    "region": "Region VI",
+    "deo": "Iloilo 2nd DEO",
+    "legislative_district": "ILOILO (FOURTH DISTRICT)",
+    "amount_php_thousands": 1483238,
+    "amount_as_printed": "1,483,238",
+    "source_page": 6,
+    "source_row_on_page": 3
+  },
+  {
+    "region": "Region VI",
+    "deo": "Iloilo 3rd DEO",
+    "legislative_district": "ILOILO (FIFTH DISTRICT)",
+    "amount_php_thousands": 1032475,
+    "amount_as_printed": "1,032,475",
+    "source_page": 6,
+    "source_row_on_page": 4
+  },
+  {
+    "region": "Region VI",
+    "deo": "Iloilo 4th DEO",
+    "legislative_district": "ILOILO (SECOND DISTRICT)",
+    "amount_php_thousands": 1198100,
+    "amount_as_printed": "1,198,100",
+    "source_page": 6,
+    "source_row_on_page": 5
+  },
+  {
+    "region": "Region VI",
+    "deo": "Iloilo 6th DEO",
+    "legislative_district": "ILOILO (THIRD DISTRICT)",
+    "amount_php_thousands": 1338984,
+    "amount_as_printed": "1,338,984",
+    "source_page": 6,
+    "source_row_on_page": 6
+  },
+  {
+    "region": "Region VI",
+    "deo": "Iloilo City DEO",
+    "legislative_district": "ILOILO CITY (LONE DISTRICT)",
+    "amount_php_thousands": 1326100,
+    "amount_as_printed": "1,326,100",
+    "source_page": 6,
+    "source_row_on_page": 7
+  },
+  {
+    "region": "NIR",
+    "deo": "Bacolod City DEO",
+    "legislative_district": "BACOLOD CITY (LONE DISTRICT)",
+    "amount_php_thousands": 2278372,
+    "amount_as_printed": "2,278,372",
+    "source_page": 6,
+    "source_row_on_page": 8
+  },
+  {
+    "region": "NIR",
+    "deo": "Negros Occidental 1st DEO",
+    "legislative_district": "NEGROS OCCIDENTAL (SECOND DISTRICT)",
+    "amount_php_thousands": 1142375,
+    "amount_as_printed": "1,142,375",
+    "source_page": 6,
+    "source_row_on_page": 9
+  },
+  {
+    "region": "NIR",
+    "deo": "Negros Occidental 1st DEO",
+    "legislative_district": "NEGROS OCCIDENTAL (THIRD DISTRICT)",
+    "amount_php_thousands": 1813000,
+    "amount_as_printed": "1,813,000",
+    "source_page": 6,
+    "source_row_on_page": 10
+  },
+  {
+    "region": "NIR",
+    "deo": "Negros Occidental 2nd DEO",
+    "legislative_district": "NEGROS OCCIDENTAL (FIFTH DISTRICT)",
+    "amount_php_thousands": 1439694,
+    "amount_as_printed": "1,439,694",
+    "source_page": 6,
+    "source_row_on_page": 11
+  },
+  {
+    "region": "NIR",
+    "deo": "Negros Occidental 3rd DEO",
+    "legislative_district": "NEGROS OCCIDENTAL (SIXTH DISTRICT)",
+    "amount_php_thousands": 1711719,
+    "amount_as_printed": "1,711,719",
+    "source_page": 6,
+    "source_row_on_page": 12
+  },
+  {
+    "region": "NIR",
+    "deo": "Negros Occidental 4th DEO",
+    "legislative_district": "NEGROS OCCIDENTAL (FOURTH DISTRICT)",
+    "amount_php_thousands": 1328920,
+    "amount_as_printed": "1,328,920",
+    "source_page": 6,
+    "source_row_on_page": 13
+  },
+  {
+    "region": "NIR",
+    "deo": "Negros Occidental 5th DEO",
+    "legislative_district": "NEGROS OCCIDENTAL (FIRST DISTRICT)",
+    "amount_php_thousands": 1355963,
+    "amount_as_printed": "1,355,963",
+    "source_page": 6,
+    "source_row_on_page": 14
+  },
+  {
+    "region": "NIR",
+    "deo": "Negros Oriental 1st DEO",
+    "legislative_district": "NEGROS ORIENTAL (FIRST DISTRICT)",
+    "amount_php_thousands": 1633187,
+    "amount_as_printed": "1,633,187",
+    "source_page": 6,
+    "source_row_on_page": 15
+  },
+  {
+    "region": "NIR",
+    "deo": "Negros Oriental 2nd DEO",
+    "legislative_district": "NEGROS ORIENTAL (SECOND DISTRICT)",
+    "amount_php_thousands": 2198225,
+    "amount_as_printed": "2,198,225",
+    "source_page": 6,
+    "source_row_on_page": 16
+  },
+  {
+    "region": "NIR",
+    "deo": "Negros Oriental 3rd DEO",
+    "legislative_district": "NEGROS ORIENTAL (THIRD DISTRICT)",
+    "amount_php_thousands": 1986210,
+    "amount_as_printed": "1,986,210",
+    "source_page": 6,
+    "source_row_on_page": 17
+  },
+  {
+    "region": "NIR",
+    "deo": "Siquijor DEO",
+    "legislative_district": "SIQUIJOR (LONE DISTRICT)",
+    "amount_php_thousands": 1150734,
+    "amount_as_printed": "1,150,734",
+    "source_page": 6,
+    "source_row_on_page": 18
+  },
+  {
+    "region": "Region VII",
+    "deo": "Bohol 1st DEO",
+    "legislative_district": "BOHOL (FIRST DISTRICT)",
+    "amount_php_thousands": 1137275,
+    "amount_as_printed": "1,137,275",
+    "source_page": 6,
+    "source_row_on_page": 19
+  },
+  {
+    "region": "Region VII",
+    "deo": "Bohol 2nd DEO",
+    "legislative_district": "BOHOL (SECOND DISTRICT)",
+    "amount_php_thousands": 565000,
+    "amount_as_printed": "565,000",
+    "source_page": 6,
+    "source_row_on_page": 20
+  },
+  {
+    "region": "Region VII",
+    "deo": "Bohol 3rd DEO",
+    "legislative_district": "BOHOL (THIRD DISTRICT)",
+    "amount_php_thousands": 500000,
+    "amount_as_printed": "500,000",
+    "source_page": 6,
+    "source_row_on_page": 21
+  },
+  {
+    "region": "Region VII",
+    "deo": "Cebu 1st DEO",
+    "legislative_district": "CEBU (FIRST DISTRICT)",
+    "amount_php_thousands": 2262000,
+    "amount_as_printed": "2,262,000",
+    "source_page": 6,
+    "source_row_on_page": 22
+  },
+  {
+    "region": "Region VII",
+    "deo": "Cebu 2nd DEO",
+    "legislative_district": "CEBU (SECOND DISTRICT)",
+    "amount_php_thousands": 1075937,
+    "amount_as_printed": "1,075,937",
+    "source_page": 6,
+    "source_row_on_page": 23
+  },
+  {
+    "region": "Region VII",
+    "deo": "Cebu 3rd DEO",
+    "legislative_district": "CEBU (THIRD DISTRICT)",
+    "amount_php_thousands": 550000,
+    "amount_as_printed": "550,000",
+    "source_page": 6,
+    "source_row_on_page": 24
+  },
+  {
+    "region": "Region VII",
+    "deo": "Cebu 4th DEO",
+    "legislative_district": "CEBU (FOURTH DISTRICT)",
+    "amount_php_thousands": 565000,
+    "amount_as_printed": "565,000",
+    "source_page": 6,
+    "source_row_on_page": 25
+  },
+  {
+    "region": "Region VII",
+    "deo": "Cebu 5th DEO",
+    "legislative_district": "CEBU (FIFTH DISTRICT)",
+    "amount_php_thousands": 2236400,
+    "amount_as_printed": "2,236,400",
+    "source_page": 6,
+    "source_row_on_page": 26
+  },
+  {
+    "region": "Region VII",
+    "deo": "Cebu 6th DEO",
+    "legislative_district": "MANDAUE CITY (LONE DISTRICT)",
+    "amount_php_thousands": 1283844,
+    "amount_as_printed": "1,283,844",
+    "source_page": 6,
+    "source_row_on_page": 27
+  },
+  {
+    "region": "Region VII",
+    "deo": "Cebu 6th DEO",
+    "legislative_district": "LAPU-LAPU CITY (OPON) (LONE DISTRICT)",
+    "amount_php_thousands": 1972537,
+    "amount_as_printed": "1,972,537",
+    "source_page": 6,
+    "source_row_on_page": 28
+  },
+  {
+    "region": "Region VII",
+    "deo": "Cebu 6th DEO",
+    "legislative_district": "CEBU (SIXTH DISTRICT)",
+    "amount_php_thousands": 1437000,
+    "amount_as_printed": "1,437,000",
+    "source_page": 6,
+    "source_row_on_page": 29
+  },
+  {
+    "region": "Region VII",
+    "deo": "Cebu 7th DEO",
+    "legislative_district": "CEBU (SEVENTH DISTRICT)",
+    "amount_php_thousands": 1523067,
+    "amount_as_printed": "1,523,067",
+    "source_page": 6,
+    "source_row_on_page": 30
+  },
+  {
+    "region": "Region VII",
+    "deo": "Cebu City DEO",
+    "legislative_district": "CEBU CITY (SECOND DISTRICT)",
+    "amount_php_thousands": 2136200,
+    "amount_as_printed": "2,136,200",
+    "source_page": 6,
+    "source_row_on_page": 31
+  },
+  {
+    "region": "Region VII",
+    "deo": "Cebu City DEO",
+    "legislative_district": "CEBU CITY (FIRST DISTRICT)",
+    "amount_php_thousands": 565000,
+    "amount_as_printed": "565,000",
+    "source_page": 7,
+    "source_row_on_page": 1
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Biliran DEO",
+    "legislative_district": "BILIRAN (LONE DISTRICT)",
+    "amount_php_thousands": 1769499,
+    "amount_as_printed": "1,769,499",
+    "source_page": 7,
+    "source_row_on_page": 2
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Eastern Samar DEO",
+    "legislative_district": "EASTERN SAMAR (LONE DISTRICT)",
+    "amount_php_thousands": 2989979,
+    "amount_as_printed": "2,989,979",
+    "source_page": 7,
+    "source_row_on_page": 3
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Leyte 1st DEO",
+    "legislative_district": "LEYTE (FIRST DISTRICT)",
+    "amount_php_thousands": 924954,
+    "amount_as_printed": "924,954",
+    "source_page": 7,
+    "source_row_on_page": 4
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Tacloban City DEO",
+    "legislative_district": "LEYTE (FIRST DISTRICT)",
+    "amount_php_thousands": 875000,
+    "amount_as_printed": "875,000",
+    "source_page": 7,
+    "source_row_on_page": 5
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Leyte 2nd DEO",
+    "legislative_district": "LEYTE (SECOND DISTRICT)",
+    "amount_php_thousands": 2014249,
+    "amount_as_printed": "2,014,249",
+    "source_page": 7,
+    "source_row_on_page": 6
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Leyte 3rd DEO",
+    "legislative_district": "LEYTE (THIRD DISTRICT)",
+    "amount_php_thousands": 1307924,
+    "amount_as_printed": "1,307,924",
+    "source_page": 7,
+    "source_row_on_page": 7
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Leyte 4th DEO",
+    "legislative_district": "LEYTE (FOURTH DISTRICT)",
+    "amount_php_thousands": 2329569,
+    "amount_as_printed": "2,329,569",
+    "source_page": 7,
+    "source_row_on_page": 8
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Leyte 5th DEO",
+    "legislative_district": "LEYTE (FIFTH DISTRICT)",
+    "amount_php_thousands": 2265606,
+    "amount_as_printed": "2,265,606",
+    "source_page": 7,
+    "source_row_on_page": 9
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Northern Samar 1st DEO",
+    "legislative_district": "NORTHERN SAMAR (FIRST DISTRICT)",
+    "amount_php_thousands": 1769408,
+    "amount_as_printed": "1,769,408",
+    "source_page": 7,
+    "source_row_on_page": 10
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Northern Samar 2nd DEO",
+    "legislative_district": "NORTHERN SAMAR (SECOND DISTRICT)",
+    "amount_php_thousands": 2086848,
+    "amount_as_printed": "2,086,848",
+    "source_page": 7,
+    "source_row_on_page": 11
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Samar 1st DEO",
+    "legislative_district": "SAMAR (FIRST DISTRICT)",
+    "amount_php_thousands": 2346580,
+    "amount_as_printed": "2,346,580",
+    "source_page": 7,
+    "source_row_on_page": 12
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Samar 2nd DEO",
+    "legislative_district": "SAMAR (SECOND DISTRICT)",
+    "amount_php_thousands": 5477600,
+    "amount_as_printed": "5,477,600",
+    "source_page": 7,
+    "source_row_on_page": 13
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Southern Leyte 1st DEO",
+    "legislative_district": "SOUTHERN LEYTE (FIRST DISTRICT)",
+    "amount_php_thousands": 498800,
+    "amount_as_printed": "498,800",
+    "source_page": 7,
+    "source_row_on_page": 14
+  },
+  {
+    "region": "Region VIII",
+    "deo": "Southern Leyte 2nd DEO",
+    "legislative_district": "SOUTHERN LEYTE (SECOND DISTRICT)",
+    "amount_php_thousands": 799178,
+    "amount_as_printed": "799,178",
+    "source_page": 7,
+    "source_row_on_page": 15
+  },
+  {
+    "region": "Region IX",
+    "deo": "BARMM",
+    "legislative_district": "BASILAN (LONE DISTRICT)",
+    "amount_php_thousands": 188306,
+    "amount_as_printed": "188,306",
+    "source_page": 7,
+    "source_row_on_page": 16
+  },
+  {
+    "region": "Region IX",
+    "deo": "Isabela City DEO",
+    "legislative_district": "BASILAN (LONE DISTRICT)",
+    "amount_php_thousands": 205000,
+    "amount_as_printed": "205,000",
+    "source_page": 7,
+    "source_row_on_page": 17
+  },
+  {
+    "region": "Region IX",
+    "deo": "BARMM",
+    "legislative_district": "TAWI-TAWI (LONE DISTRICT)",
+    "amount_php_thousands": 309772,
+    "amount_as_printed": "309,772",
+    "source_page": 7,
+    "source_row_on_page": 18
+  },
+  {
+    "region": "Region IX",
+    "deo": "Sulu 1st DEO",
+    "legislative_district": "SULU (FIRST DISTRICT)",
+    "amount_php_thousands": 385000,
+    "amount_as_printed": "385,000",
+    "source_page": 7,
+    "source_row_on_page": 19
+  },
+  {
+    "region": "Region IX",
+    "deo": "Sulu 2nd DEO",
+    "legislative_district": "SULU (SECOND DISTRICT)",
+    "amount_php_thousands": 395000,
+    "amount_as_printed": "395,000",
+    "source_page": 7,
+    "source_row_on_page": 20
+  },
+  {
+    "region": "Region IX",
+    "deo": "Zamboanga City 1st DEO",
+    "legislative_district": "ZAMBOANGA CITY (FIRST DISTRICT)",
+    "amount_php_thousands": 2032152,
+    "amount_as_printed": "2,032,152",
+    "source_page": 7,
+    "source_row_on_page": 21
+  },
+  {
+    "region": "Region IX",
+    "deo": "Zamboanga City 2nd DEO",
+    "legislative_district": "ZAMBOANGA CITY (SECOND DISTRICT)",
+    "amount_php_thousands": 1008207,
+    "amount_as_printed": "1,008,207",
+    "source_page": 7,
+    "source_row_on_page": 22
+  },
+  {
+    "region": "Region IX",
+    "deo": "Zamboanga del Norte 1st DEO",
+    "legislative_district": "ZAMBOANGA DEL NORTE (FIRST DISTRICT)",
+    "amount_php_thousands": 1787643,
+    "amount_as_printed": "1,787,643",
+    "source_page": 7,
+    "source_row_on_page": 23
+  },
+  {
+    "region": "Region IX",
+    "deo": "Zamboanga del Norte 2nd DEO",
+    "legislative_district": "ZAMBOANGA DEL NORTE (SECOND DISTRICT)",
+    "amount_php_thousands": 1893404,
+    "amount_as_printed": "1,893,404",
+    "source_page": 7,
+    "source_row_on_page": 24
+  },
+  {
+    "region": "Region IX",
+    "deo": "Zamboanga del Norte 3rd DEO",
+    "legislative_district": "ZAMBOANGA DEL NORTE (THIRD DISTRICT)",
+    "amount_php_thousands": 996571,
+    "amount_as_printed": "996,571",
+    "source_page": 7,
+    "source_row_on_page": 25
+  },
+  {
+    "region": "Region IX",
+    "deo": "Zamboanga del Norte 4th DEO",
+    "legislative_district": "ZAMBOANGA DEL NORTE (THIRD DISTRICT)",
+    "amount_php_thousands": 1555429,
+    "amount_as_printed": "1,555,429",
+    "source_page": 7,
+    "source_row_on_page": 26
+  },
+  {
+    "region": "Region IX",
+    "deo": "Zamboanga del Sur 1st DEO",
+    "legislative_district": "ZAMBOANGA DEL SUR (FIRST DISTRICT)",
+    "amount_php_thousands": 2785000,
+    "amount_as_printed": "2,785,000",
+    "source_page": 7,
+    "source_row_on_page": 27
+  },
+  {
+    "region": "Region IX",
+    "deo": "Zamboanga del Sur 2nd DEO",
+    "legislative_district": "ZAMBOANGA DEL SUR (SECOND DISTRICT)",
+    "amount_php_thousands": 2016865,
+    "amount_as_printed": "2,016,865",
+    "source_page": 7,
+    "source_row_on_page": 28
+  },
+  {
+    "region": "Region IX",
+    "deo": "Zamboanga Sibugay 1st DEO",
+    "legislative_district": "ZAMBOANGA SIBUGAY (FIRST DISTRICT)",
+    "amount_php_thousands": 1699179,
+    "amount_as_printed": "1,699,179",
+    "source_page": 7,
+    "source_row_on_page": 29
+  },
+  {
+    "region": "Region IX",
+    "deo": "Zamboanga Sibugay 2nd DEO",
+    "legislative_district": "ZAMBOANGA SIBUGAY (SECOND DISTRICT)",
+    "amount_php_thousands": 2302465,
+    "amount_as_printed": "2,302,465",
+    "source_page": 7,
+    "source_row_on_page": 30
+  },
+  {
+    "region": "Region X",
+    "deo": "BARMM",
+    "legislative_district": "LANAO DEL SUR (FIRST DISTRICT)",
+    "amount_php_thousands": 1892000,
+    "amount_as_printed": "1,892,000",
+    "source_page": 7,
+    "source_row_on_page": 31
+  },
+  {
+    "region": "Region X",
+    "deo": "BARMM",
+    "legislative_district": "LANAO DEL SUR (SECOND DISTRICT)",
+    "amount_php_thousands": 657000,
+    "amount_as_printed": "657,000",
+    "source_page": 8,
+    "source_row_on_page": 1
+  },
+  {
+    "region": "Region X",
+    "deo": "Bukidnon 1st DEO",
+    "legislative_district": "BUKIDNON (SECOND DISTRICT)",
+    "amount_php_thousands": 6895000,
+    "amount_as_printed": "6,895,000",
+    "source_page": 8,
+    "source_row_on_page": 2
+  },
+  {
+    "region": "Region X",
+    "deo": "Bukidnon 2nd DEO",
+    "legislative_district": "BUKIDNON (THIRD DISTRICT)",
+    "amount_php_thousands": 4203160,
+    "amount_as_printed": "4,203,160",
+    "source_page": 8,
+    "source_row_on_page": 3
+  },
+  {
+    "region": "Region X",
+    "deo": "Bukidnon 3rd DEO",
+    "legislative_district": "BUKIDNON (FIRST DISTRICT)",
+    "amount_php_thousands": 1634000,
+    "amount_as_printed": "1,634,000",
+    "source_page": 8,
+    "source_row_on_page": 4
+  },
+  {
+    "region": "Region X",
+    "deo": "Bukidnon 4th DEO",
+    "legislative_district": "BUKIDNON (FOURTH DISTRICT)",
+    "amount_php_thousands": 1005483,
+    "amount_as_printed": "1,005,483",
+    "source_page": 8,
+    "source_row_on_page": 5
+  },
+  {
+    "region": "Region X",
+    "deo": "Cagayan de Oro City 1st DEO",
+    "legislative_district": "CAGAYAN DE ORO CITY (FIRST DISTRICT)",
+    "amount_php_thousands": 2924000,
+    "amount_as_printed": "2,924,000",
+    "source_page": 8,
+    "source_row_on_page": 6
+  },
+  {
+    "region": "Region X",
+    "deo": "Cagayan de Oro City 2nd DEO",
+    "legislative_district": "CAGAYAN DE ORO CITY (SECOND DISTRICT)",
+    "amount_php_thousands": 3022886,
+    "amount_as_printed": "3,022,886",
+    "source_page": 8,
+    "source_row_on_page": 7
+  },
+  {
+    "region": "Region X",
+    "deo": "Camiguin DEO",
+    "legislative_district": "CAMIGUIN (LONE DISTRICT)",
+    "amount_php_thousands": 1714004,
+    "amount_as_printed": "1,714,004",
+    "source_page": 8,
+    "source_row_on_page": 8
+  },
+  {
+    "region": "Region X",
+    "deo": "Iligan City DEO",
+    "legislative_district": "ILIGAN CITY (LONE DISTRICT)",
+    "amount_php_thousands": 2029800,
+    "amount_as_printed": "2,029,800",
+    "source_page": 8,
+    "source_row_on_page": 9
+  },
+  {
+    "region": "Region X",
+    "deo": "Lanao del Norte 1st DEO",
+    "legislative_district": "LANAO DEL NORTE (FIRST DISTRICT)",
+    "amount_php_thousands": 1377851,
+    "amount_as_printed": "1,377,851",
+    "source_page": 8,
+    "source_row_on_page": 10
+  },
+  {
+    "region": "Region X",
+    "deo": "Lanao del Norte 2nd DEO",
+    "legislative_district": "LANAO DEL NORTE (SECOND DISTRICT)",
+    "amount_php_thousands": 1731068,
+    "amount_as_printed": "1,731,068",
+    "source_page": 8,
+    "source_row_on_page": 11
+  },
+  {
+    "region": "Region X",
+    "deo": "Misamis Occidental 1st DEO",
+    "legislative_district": "MISAMIS OCCIDENTAL (FIRST DISTRICT)",
+    "amount_php_thousands": 1468260,
+    "amount_as_printed": "1,468,260",
+    "source_page": 8,
+    "source_row_on_page": 12
+  },
+  {
+    "region": "Region X",
+    "deo": "Misamis Occidental 2nd DEO",
+    "legislative_district": "MISAMIS OCCIDENTAL (SECOND DISTRICT)",
+    "amount_php_thousands": 2595980,
+    "amount_as_printed": "2,595,980",
+    "source_page": 8,
+    "source_row_on_page": 13
+  },
+  {
+    "region": "Region X",
+    "deo": "Misamis Oriental 1st DEO",
+    "legislative_district": "MISAMIS ORIENTAL (FIRST DISTRICT)",
+    "amount_php_thousands": 3886637,
+    "amount_as_printed": "3,886,637",
+    "source_page": 8,
+    "source_row_on_page": 14
+  },
+  {
+    "region": "Region X",
+    "deo": "Misamis Oriental 2nd DEO",
+    "legislative_district": "MISAMIS ORIENTAL (SECOND DISTRICT)",
+    "amount_php_thousands": 5497452,
+    "amount_as_printed": "5,497,452",
+    "source_page": 8,
+    "source_row_on_page": 15
+  },
+  {
+    "region": "Region XI",
+    "deo": "Davao City DEO",
+    "legislative_district": "DAVAO CITY (FIRST DISTRICT)",
+    "amount_php_thousands": 500000,
+    "amount_as_printed": "500,000",
+    "source_page": 8,
+    "source_row_on_page": 16
+  },
+  {
+    "region": "Region XI",
+    "deo": "Davao City 2nd DEO",
+    "legislative_district": "DAVAO CITY (THIRD DISTRICT)",
+    "amount_php_thousands": 2500000,
+    "amount_as_printed": "2,500,000",
+    "source_page": 8,
+    "source_row_on_page": 17
+  },
+  {
+    "region": "Region XI",
+    "deo": "Davao City 3rd DEO",
+    "legislative_district": "DAVAO CITY (SECOND DISTRICT)",
+    "amount_php_thousands": 500000,
+    "amount_as_printed": "500,000",
+    "source_page": 8,
+    "source_row_on_page": 18
+  },
+  {
+    "region": "Region XI",
+    "deo": "Davao de Oro 1st DEO",
+    "legislative_district": "DAVAO DE ORO (SECOND DISTRICT)",
+    "amount_php_thousands": 1519640,
+    "amount_as_printed": "1,519,640",
+    "source_page": 8,
+    "source_row_on_page": 19
+  },
+  {
+    "region": "Region XI",
+    "deo": "Davao de Oro 2nd DEO",
+    "legislative_district": "DAVAO DE ORO (FIRST DISTRICT)",
+    "amount_php_thousands": 1611180,
+    "amount_as_printed": "1,611,180",
+    "source_page": 8,
+    "source_row_on_page": 20
+  },
+  {
+    "region": "Region XI",
+    "deo": "Davao del Norte DEO",
+    "legislative_district": "DAVAO DEL NORTE (FIRST DISTRICT)",
+    "amount_php_thousands": 2966040,
+    "amount_as_printed": "2,966,040",
+    "source_page": 8,
+    "source_row_on_page": 21
+  },
+  {
+    "region": "Region XI",
+    "deo": "Davao del Norte 2nd DEO",
+    "legislative_district": "DAVAO DEL NORTE (SECOND DISTRICT)",
+    "amount_php_thousands": 2109878,
+    "amount_as_printed": "2,109,878",
+    "source_page": 8,
+    "source_row_on_page": 22
+  },
+  {
+    "region": "Region XI",
+    "deo": "Davao del Sur DEO",
+    "legislative_district": "DAVAO DEL SUR (LONE DISTRICT)",
+    "amount_php_thousands": 2542130,
+    "amount_as_printed": "2,542,130",
+    "source_page": 8,
+    "source_row_on_page": 23
+  },
+  {
+    "region": "Region XI",
+    "deo": "Davao Occidental DEO",
+    "legislative_district": "DAVAO OCCIDENTAL (LONE DISTRICT)",
+    "amount_php_thousands": 494376,
+    "amount_as_printed": "494,376",
+    "source_page": 8,
+    "source_row_on_page": 24
+  },
+  {
+    "region": "Region XI",
+    "deo": "Davao Oriental 1st DEO",
+    "legislative_district": "DAVAO ORIENTAL (FIRST DISTRICT)",
+    "amount_php_thousands": 1416381,
+    "amount_as_printed": "1,416,381",
+    "source_page": 8,
+    "source_row_on_page": 25
+  },
+  {
+    "region": "Region XI",
+    "deo": "Davao Oriental 2nd DEO",
+    "legislative_district": "DAVAO ORIENTAL (SECOND DISTRICT)",
+    "amount_php_thousands": 803185,
+    "amount_as_printed": "803,185",
+    "source_page": 8,
+    "source_row_on_page": 26
+  },
+  {
+    "region": "Region XII",
+    "deo": "BARMM",
+    "legislative_district": "MAGUINDANAO DEL NORTE LONE DISTRICT",
+    "amount_php_thousands": 365500,
+    "amount_as_printed": "365,500",
+    "source_page": 8,
+    "source_row_on_page": 27
+  },
+  {
+    "region": "Region XII",
+    "deo": "BARMM",
+    "legislative_district": "MAGUINDANAO DEL SUR LONE DISTRICT",
+    "amount_php_thousands": 1015000,
+    "amount_as_printed": "1,015,000",
+    "source_page": 8,
+    "source_row_on_page": 28
+  },
+  {
+    "region": "Region XII",
+    "deo": "Cotabato 1st DEO",
+    "legislative_district": "NORTH COTABATO (FIRST DISTRICT)",
+    "amount_php_thousands": 2314804,
+    "amount_as_printed": "2,314,804",
+    "source_page": 8,
+    "source_row_on_page": 29
+  },
+  {
+    "region": "Region XII",
+    "deo": "Cotabato 2nd DEO",
+    "legislative_district": "NORTH COTABATO (SECOND DISTRICT)",
+    "amount_php_thousands": 2455991,
+    "amount_as_printed": "2,455,991",
+    "source_page": 8,
+    "source_row_on_page": 30
+  },
+  {
+    "region": "Region XII",
+    "deo": "Cotabato 3rd DEO",
+    "legislative_district": "NORTH COTABATO (THIRD DISTRICT)",
+    "amount_php_thousands": 2927562,
+    "amount_as_printed": "2,927,562",
+    "source_page": 8,
+    "source_row_on_page": 31
+  },
+  {
+    "region": "Region XII",
+    "deo": "Sarangani DEO",
+    "legislative_district": "SARANGANI (LONE DISTRICT)",
+    "amount_php_thousands": 460000,
+    "amount_as_printed": "460,000",
+    "source_page": 9,
+    "source_row_on_page": 1
+  },
+  {
+    "region": "Region XII",
+    "deo": "South Cotabato 1st DEO",
+    "legislative_district": "SOUTH COTABATO (FIRST DISTRICT)",
+    "amount_php_thousands": 500000,
+    "amount_as_printed": "500,000",
+    "source_page": 9,
+    "source_row_on_page": 2
+  },
+  {
+    "region": "Region XII",
+    "deo": "South Cotabato 1st DEO",
+    "legislative_district": "GENERAL SANTOS CITY (LONE DISTRICT)",
+    "amount_php_thousands": 500000,
+    "amount_as_printed": "500,000",
+    "source_page": 9,
+    "source_row_on_page": 3
+  },
+  {
+    "region": "Region XII",
+    "deo": "South Cotabato 2nd DEO",
+    "legislative_district": "SOUTH COTABATO (SECOND DISTRICT)",
+    "amount_php_thousands": 994613,
+    "amount_as_printed": "994,613",
+    "source_page": 9,
+    "source_row_on_page": 4
+  },
+  {
+    "region": "Region XII",
+    "deo": "South Cotabato 2nd DEO",
+    "legislative_district": "SOUTH COTABATO (THIRD DISTRICT)",
+    "amount_php_thousands": 1627879,
+    "amount_as_printed": "1,627,879",
+    "source_page": 9,
+    "source_row_on_page": 5
+  },
+  {
+    "region": "Region XII",
+    "deo": "Sultan Kudarat 1st DEO",
+    "legislative_district": "SULTAN KUDARAT (FIRST DISTRICT)",
+    "amount_php_thousands": 1920796,
+    "amount_as_printed": "1,920,796",
+    "source_page": 9,
+    "source_row_on_page": 6
+  },
+  {
+    "region": "Region XII",
+    "deo": "Sultan Kudarat 2nd DEO",
+    "legislative_district": "SULTAN KUDARAT (SECOND DISTRICT)",
+    "amount_php_thousands": 3046500,
+    "amount_as_printed": "3,046,500",
+    "source_page": 9,
+    "source_row_on_page": 7
+  },
+  {
+    "region": "Region XIII",
+    "deo": "Agusan del Norte DEO",
+    "legislative_district": "AGUSAN DEL NORTE (LONE DISTRICT)",
+    "amount_php_thousands": 483000,
+    "amount_as_printed": "483,000",
+    "source_page": 9,
+    "source_row_on_page": 8
+  },
+  {
+    "region": "Region XIII",
+    "deo": "Agusan del Sur 1st DEO",
+    "legislative_district": "AGUSAN DEL SUR (FIRST DISTRICT)",
+    "amount_php_thousands": 500000,
+    "amount_as_printed": "500,000",
+    "source_page": 9,
+    "source_row_on_page": 9
+  },
+  {
+    "region": "Region XIII",
+    "deo": "Agusan del Sur 2nd DEO",
+    "legislative_district": "AGUSAN DEL SUR (SECOND DISTRICT)",
+    "amount_php_thousands": 500000,
+    "amount_as_printed": "500,000",
+    "source_page": 9,
+    "source_row_on_page": 10
+  },
+  {
+    "region": "Region XIII",
+    "deo": "Butuan City DEO",
+    "legislative_district": "BUTUAN CITY (LONE DISTRICT)",
+    "amount_php_thousands": 8834267,
+    "amount_as_printed": "8,834,267",
+    "source_page": 9,
+    "source_row_on_page": 11
+  },
+  {
+    "region": "Region XIII",
+    "deo": "Dinagat Islands DEO",
+    "legislative_district": "DINAGAT ISLANDS (LONE DISTRICT)",
+    "amount_php_thousands": 1162605,
+    "amount_as_printed": "1,162,605",
+    "source_page": 9,
+    "source_row_on_page": 12
+  },
+  {
+    "region": "Region XIII",
+    "deo": "Surigao del Norte 1st DEO",
+    "legislative_district": "SURIGAO DEL NORTE (FIRST DISTRICT)",
+    "amount_php_thousands": 1005991,
+    "amount_as_printed": "1,005,991",
+    "source_page": 9,
+    "source_row_on_page": 13
+  },
+  {
+    "region": "Region XIII",
+    "deo": "Surigao del Norte 2nd DEO",
+    "legislative_district": "SURIGAO DEL NORTE (SECOND DISTRICT)",
+    "amount_php_thousands": 2776543,
+    "amount_as_printed": "2,776,543",
+    "source_page": 9,
+    "source_row_on_page": 14
+  },
+  {
+    "region": "Region XIII",
+    "deo": "Surigao del Sur 1st DEO",
+    "legislative_district": "SURIGAO DEL SUR (FIRST DISTRICT)",
+    "amount_php_thousands": 3457000,
+    "amount_as_printed": "3,457,000",
+    "source_page": 9,
+    "source_row_on_page": 15
+  },
+  {
+    "region": "Region XIII",
+    "deo": "Surigao del Sur 2nd DEO",
+    "legislative_district": "SURIGAO DEL SUR (SECOND DISTRICT)",
+    "amount_php_thousands": 2049506,
+    "amount_as_printed": "2,049,506",
+    "source_page": 9,
+    "source_row_on_page": 16
+  }
+]

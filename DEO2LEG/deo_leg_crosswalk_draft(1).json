@@ -1,0 +1,2982 @@
+{
+  "schemaVersion": "0.1.0",
+  "metadata": {
+    "createdAt": "2026-10-19",
+    "status": "provisional_partial_mapping",
+    "description": "Partial crosswalk transcribed from BetterGov's FY2027 congressional HTML analysis and joined to its 20th Congress roster. NOT an authoritative DEO service-area boundary dataset or project attribution table.",
+    "completeness": "incomplete; original HTML emphasizes multi-link relationships and omits many one-to-one relationships",
+    "relationshipMeaning": "A row in an undated source allocation table linked an office label and a legislative district label. This does not establish exact geographic jurisdiction, project location, legislative sponsorship, or any FY2027 amount.",
+    "source": {
+      "crosswalkHtml": "https://github.com/bettergovph/open-data-visualization/blob/main/static/nep-preview/congress.html",
+      "crosswalkHtmlBlob": "89fcbff6fdd6049adbe814078d33555052713ca2",
+      "underlyingDocument": "DPWH per district.pdf (scan mentioned in HTML; document not independently examined)",
+      "underlyingDocumentFiscalYear": null,
+      "representativeRoster": "https://github.com/bettergovph/open-data-visualization/blob/main/static/data/20th_congress_representatives.json",
+      "representativeRosterBlob": "4d8b4f642772caaad69d4e68de03c6d47a757e3f"
+    },
+    "warnings": [
+      "Representative names come from a repository roster, not an independent current membership check.",
+      "Taguig 1st, Taguig 2nd and General Santos City Lone did not strictly match roster labels; unresolved representatives are null.",
+      "The original HTML displays zero-valued amount rows as a dash. Those are represented as null source amounts, not numeric zero allocations.",
+      "BARMM is a grouped jurisdiction label, not an individual District Engineering Office."
+    ]
+  },
+  "summary": {
+    "officeOrGroupLabels": 47,
+    "legislativeDistricts": 98,
+    "sourceRelationships": 108,
+    "linkedLegDistrictsWithRosterMatch": 95,
+    "linkedLegDistrictsUnresolved": 3
+  },
+  "offices": {
+    "office:apayao-1st-deo": {
+      "name": "Apayao 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:apayao:lone"
+      ]
+    },
+    "office:apayao-2nd-deo": {
+      "name": "Apayao 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:apayao:lone"
+      ]
+    },
+    "office:barmm": {
+      "name": "BARMM",
+      "type": "regional_group",
+      "legislativeDistrictIds": [
+        "leg:basilan:lone",
+        "leg:tawi-tawi:lone",
+        "leg:lanao-del-sur:1st",
+        "leg:lanao-del-sur:2nd",
+        "leg:maguindanao-del-norte:lone",
+        "leg:maguindanao-del-sur:lone"
+      ]
+    },
+    "office:batangas-2nd-deo": {
+      "name": "Batangas 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:batangas:2nd",
+        "leg:batangas:5th"
+      ]
+    },
+    "office:batangas-4th-deo": {
+      "name": "Batangas 4th DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:batangas:4th",
+        "leg:batangas:6th"
+      ]
+    },
+    "office:benguet-1st-deo": {
+      "name": "Benguet 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:benguet:lone"
+      ]
+    },
+    "office:benguet-2nd-deo": {
+      "name": "Benguet 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:benguet:lone"
+      ]
+    },
+    "office:bulacan-1st-deo": {
+      "name": "Bulacan 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:bulacan:1st",
+        "leg:bulacan:2nd",
+        "leg:bulacan:5th"
+      ]
+    },
+    "office:bulacan-2nd-deo": {
+      "name": "Bulacan 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:bulacan:4th",
+        "leg:bulacan:6th",
+        "leg:san-jose-del-monte:lone"
+      ]
+    },
+    "office:cavite-1st-deo": {
+      "name": "Cavite 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:cavite:1st",
+        "leg:cavite:3rd",
+        "leg:cavite:6th",
+        "leg:cavite:7th"
+      ]
+    },
+    "office:cavite-3rd-deo": {
+      "name": "Cavite 3rd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:cavite:2nd",
+        "leg:cavite:4th",
+        "leg:cavite:5th"
+      ]
+    },
+    "office:cebu-6th-deo": {
+      "name": "Cebu 6th DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:mandaue:lone",
+        "leg:lapu-lapu-city:lone",
+        "leg:cebu:6th"
+      ]
+    },
+    "office:cebu-city-deo": {
+      "name": "Cebu City DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:cebu-city:1st",
+        "leg:cebu-city:2nd"
+      ]
+    },
+    "office:ifugao-1st-deo": {
+      "name": "Ifugao 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:ifugao:lone"
+      ]
+    },
+    "office:ifugao-2nd-deo": {
+      "name": "Ifugao 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:ifugao:lone"
+      ]
+    },
+    "office:isabela-3rd-deo": {
+      "name": "Isabela 3rd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:isabela:2nd",
+        "leg:isabela:3rd"
+      ]
+    },
+    "office:isabela-4th-deo": {
+      "name": "Isabela 4th DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:isabela:4th",
+        "leg:isabela:6th"
+      ]
+    },
+    "office:isabela-city-deo": {
+      "name": "Isabela City DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:basilan:lone"
+      ]
+    },
+    "office:laguna-2nd-deo": {
+      "name": "Laguna 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:binan:lone",
+        "leg:calamba:lone",
+        "leg:santa-rosa:lone",
+        "leg:laguna:1st",
+        "leg:laguna:2nd"
+      ]
+    },
+    "office:las-pinas-muntinlupa-deo": {
+      "name": "Las Piñas-Muntinlupa DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:las-pinas:lone",
+        "leg:muntinlupa:lone"
+      ]
+    },
+    "office:leyte-1st-deo": {
+      "name": "Leyte 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:leyte:1st"
+      ]
+    },
+    "office:lower-kalinga-deo": {
+      "name": "Lower Kalinga DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:kalinga:lone"
+      ]
+    },
+    "office:malabon-navotas-deo": {
+      "name": "Malabon-Navotas DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:malabon:lone",
+        "leg:navotas:lone"
+      ]
+    },
+    "office:metro-manila-1st-deo": {
+      "name": "Metro Manila 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:mandaluyong:lone",
+        "leg:marikina:1st",
+        "leg:marikina:2nd",
+        "leg:pasig:lone",
+        "leg:san-juan:lone",
+        "leg:taguig:1st",
+        "leg:taguig:2nd"
+      ]
+    },
+    "office:metro-manila-2nd-deo": {
+      "name": "Metro Manila 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:makati:1st",
+        "leg:makati:2nd",
+        "leg:paranaque:1st",
+        "leg:paranaque:2nd"
+      ]
+    },
+    "office:metro-manila-3rd-deo": {
+      "name": "Metro Manila 3rd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:caloocan:1st",
+        "leg:caloocan:2nd",
+        "leg:caloocan:3rd",
+        "leg:valenzuela:1st",
+        "leg:valenzuela:2nd"
+      ]
+    },
+    "office:mountain-province-1st-deo": {
+      "name": "Mountain Province 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:mountain-province:lone"
+      ]
+    },
+    "office:mountain-province-2nd-deo": {
+      "name": "Mountain Province 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:mountain-province:lone"
+      ]
+    },
+    "office:north-manila-deo": {
+      "name": "North Manila DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:manila:1st",
+        "leg:manila:2nd",
+        "leg:manila:3rd",
+        "leg:manila:4th",
+        "leg:manila:6th"
+      ]
+    },
+    "office:nueva-ecija-1st-deo": {
+      "name": "Nueva Ecija 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:nueva-ecija:1st",
+        "leg:nueva-ecija:2nd"
+      ]
+    },
+    "office:nueva-ecija-2nd-deo": {
+      "name": "Nueva Ecija 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:nueva-ecija:3rd",
+        "leg:nueva-ecija:4th"
+      ]
+    },
+    "office:nueva-vizcaya-2nd-deo": {
+      "name": "Nueva Vizcaya 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:nueva-vizcaya:lone"
+      ]
+    },
+    "office:nueva-vizcaya-deo": {
+      "name": "Nueva Vizcaya DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:nueva-vizcaya:lone"
+      ]
+    },
+    "office:pampanga-1st-deo": {
+      "name": "Pampanga 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:pampanga:3rd",
+        "leg:pampanga:4th"
+      ]
+    },
+    "office:pangasinan-2nd-deo": {
+      "name": "Pangasinan 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:pangasinan:2nd",
+        "leg:pangasinan:4th"
+      ]
+    },
+    "office:pangasinan-3rd-deo": {
+      "name": "Pangasinan 3rd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:pangasinan:5th",
+        "leg:pangasinan:6th"
+      ]
+    },
+    "office:quezon-city-1st-deo": {
+      "name": "Quezon City 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:2nd",
+        "leg:quezon-city:5th",
+        "leg:quezon-city:6th"
+      ]
+    },
+    "office:quezon-city-2nd-deo": {
+      "name": "Quezon City 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:4th"
+      ]
+    },
+    "office:rizal-1st-deo": {
+      "name": "Rizal 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:antipolo:1st",
+        "leg:antipolo:2nd",
+        "leg:rizal:1st"
+      ]
+    },
+    "office:rizal-2nd-deo": {
+      "name": "Rizal 2nd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:rizal:2nd",
+        "leg:rizal:3rd",
+        "leg:rizal:4th"
+      ]
+    },
+    "office:south-cotabato-1st-deo": {
+      "name": "South Cotabato 1st DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:south-cotabato:1st",
+        "leg:general-santos-city:lone"
+      ]
+    },
+    "office:south-manila-deo": {
+      "name": "South Manila DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:manila:6th",
+        "leg:manila:5th",
+        "leg:pasay:lone"
+      ]
+    },
+    "office:tacloban-city-deo": {
+      "name": "Tacloban City DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:leyte:1st"
+      ]
+    },
+    "office:tarlac-deo": {
+      "name": "Tarlac DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:tarlac:1st",
+        "leg:tarlac:2nd"
+      ]
+    },
+    "office:upper-kalinga-deo": {
+      "name": "Upper Kalinga DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:kalinga:lone"
+      ]
+    },
+    "office:zamboanga-del-norte-3rd-deo": {
+      "name": "Zamboanga del Norte 3rd DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:zamboanga-del-norte:3rd"
+      ]
+    },
+    "office:zamboanga-del-norte-4th-deo": {
+      "name": "Zamboanga del Norte 4th DEO",
+      "type": "district_engineering_office",
+      "legislativeDistrictIds": [
+        "leg:zamboanga-del-norte:3rd"
+      ]
+    }
+  },
+  "legislativeDistricts": {
+    "leg:antipolo:1st": {
+      "jurisdiction": "Antipolo",
+      "districtLabel": "1st",
+      "displayName": "Antipolo · 1st",
+      "representative": {
+        "name": "Ronaldo Puno",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:rizal-1st-deo"
+      ]
+    },
+    "leg:antipolo:2nd": {
+      "jurisdiction": "Antipolo",
+      "districtLabel": "2nd",
+      "displayName": "Antipolo · 2nd",
+      "representative": {
+        "name": "Romeo Acop",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:rizal-1st-deo"
+      ]
+    },
+    "leg:apayao:lone": {
+      "jurisdiction": "Apayao",
+      "districtLabel": "Lone",
+      "displayName": "Apayao · Lone",
+      "representative": {
+        "name": "Eleanor Begtang",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:apayao-1st-deo",
+        "office:apayao-2nd-deo"
+      ]
+    },
+    "leg:basilan:lone": {
+      "jurisdiction": "Basilan",
+      "districtLabel": "Lone",
+      "displayName": "Basilan · Lone",
+      "representative": {
+        "name": "Yusop Alano",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:barmm",
+        "office:isabela-city-deo"
+      ]
+    },
+    "leg:batangas:2nd": {
+      "jurisdiction": "Batangas",
+      "districtLabel": "2nd",
+      "displayName": "Batangas · 2nd",
+      "representative": {
+        "name": "Gerville Luistro",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:batangas-2nd-deo"
+      ]
+    },
+    "leg:batangas:4th": {
+      "jurisdiction": "Batangas",
+      "districtLabel": "4th",
+      "displayName": "Batangas · 4th",
+      "representative": {
+        "name": "Caloy Bolilia",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:batangas-4th-deo"
+      ]
+    },
+    "leg:batangas:5th": {
+      "jurisdiction": "Batangas",
+      "districtLabel": "5th",
+      "displayName": "Batangas · 5th",
+      "representative": {
+        "name": "Beverley Dimacuha",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:batangas-2nd-deo"
+      ]
+    },
+    "leg:batangas:6th": {
+      "jurisdiction": "Batangas",
+      "districtLabel": "6th",
+      "displayName": "Batangas · 6th",
+      "representative": {
+        "name": "Ryan Recto",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:batangas-4th-deo"
+      ]
+    },
+    "leg:benguet:lone": {
+      "jurisdiction": "Benguet",
+      "districtLabel": "Lone",
+      "displayName": "Benguet · Lone",
+      "representative": {
+        "name": "Eric Yap",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:benguet-1st-deo",
+        "office:benguet-2nd-deo"
+      ]
+    },
+    "leg:binan:lone": {
+      "jurisdiction": "Biñan",
+      "districtLabel": "Lone",
+      "displayName": "Biñan · Lone",
+      "representative": {
+        "name": "Arman Dimaguila",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:laguna-2nd-deo"
+      ]
+    },
+    "leg:bulacan:1st": {
+      "jurisdiction": "Bulacan",
+      "districtLabel": "1st",
+      "displayName": "Bulacan · 1st",
+      "representative": {
+        "name": "Danny Domingo",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:bulacan-1st-deo"
+      ]
+    },
+    "leg:bulacan:2nd": {
+      "jurisdiction": "Bulacan",
+      "districtLabel": "2nd",
+      "displayName": "Bulacan · 2nd",
+      "representative": {
+        "name": "Tina Pancho",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:bulacan-1st-deo"
+      ]
+    },
+    "leg:bulacan:4th": {
+      "jurisdiction": "Bulacan",
+      "districtLabel": "4th",
+      "displayName": "Bulacan · 4th",
+      "representative": {
+        "name": "Linabelle Villarica",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:bulacan-2nd-deo"
+      ]
+    },
+    "leg:bulacan:5th": {
+      "jurisdiction": "Bulacan",
+      "districtLabel": "5th",
+      "displayName": "Bulacan · 5th",
+      "representative": {
+        "name": "Agay Cruz",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:bulacan-1st-deo"
+      ]
+    },
+    "leg:bulacan:6th": {
+      "jurisdiction": "Bulacan",
+      "districtLabel": "6th",
+      "displayName": "Bulacan · 6th",
+      "representative": {
+        "name": "Salvador Pleyto",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:bulacan-2nd-deo"
+      ]
+    },
+    "leg:calamba:lone": {
+      "jurisdiction": "Calamba",
+      "districtLabel": "Lone",
+      "displayName": "Calamba · Lone",
+      "representative": {
+        "name": "Cha Hernandez",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:laguna-2nd-deo"
+      ]
+    },
+    "leg:caloocan:1st": {
+      "jurisdiction": "Caloocan",
+      "districtLabel": "1st",
+      "displayName": "Caloocan · 1st",
+      "representative": {
+        "name": "Oscar Malapitan",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-3rd-deo"
+      ]
+    },
+    "leg:caloocan:2nd": {
+      "jurisdiction": "Caloocan",
+      "districtLabel": "2nd",
+      "displayName": "Caloocan · 2nd",
+      "representative": {
+        "name": "Edgar Erice",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-3rd-deo"
+      ]
+    },
+    "leg:caloocan:3rd": {
+      "jurisdiction": "Caloocan",
+      "districtLabel": "3rd",
+      "displayName": "Caloocan · 3rd",
+      "representative": {
+        "name": "Dean Asistio",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-3rd-deo"
+      ]
+    },
+    "leg:cavite:1st": {
+      "jurisdiction": "Cavite",
+      "districtLabel": "1st",
+      "displayName": "Cavite · 1st",
+      "representative": {
+        "name": "Jolo Revilla",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:cavite-1st-deo"
+      ]
+    },
+    "leg:cavite:2nd": {
+      "jurisdiction": "Cavite",
+      "districtLabel": "2nd",
+      "displayName": "Cavite · 2nd",
+      "representative": {
+        "name": "Lani Mercado",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:cavite-3rd-deo"
+      ]
+    },
+    "leg:cavite:3rd": {
+      "jurisdiction": "Cavite",
+      "districtLabel": "3rd",
+      "displayName": "Cavite · 3rd",
+      "representative": {
+        "name": "Adrian Jay Advincula",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:cavite-1st-deo"
+      ]
+    },
+    "leg:cavite:4th": {
+      "jurisdiction": "Cavite",
+      "districtLabel": "4th",
+      "displayName": "Cavite · 4th",
+      "representative": {
+        "name": "Kiko Barzaga",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:cavite-3rd-deo"
+      ]
+    },
+    "leg:cavite:5th": {
+      "jurisdiction": "Cavite",
+      "districtLabel": "5th",
+      "displayName": "Cavite · 5th",
+      "representative": {
+        "name": "Roy Loyola",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:cavite-3rd-deo"
+      ]
+    },
+    "leg:cavite:6th": {
+      "jurisdiction": "Cavite",
+      "districtLabel": "6th",
+      "displayName": "Cavite · 6th",
+      "representative": {
+        "name": "Antonio Ferrer",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:cavite-1st-deo"
+      ]
+    },
+    "leg:cavite:7th": {
+      "jurisdiction": "Cavite",
+      "districtLabel": "7th",
+      "displayName": "Cavite · 7th",
+      "representative": {
+        "name": "Crispin Diego Remulla",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:cavite-1st-deo"
+      ]
+    },
+    "leg:cebu-city:1st": {
+      "jurisdiction": "Cebu City",
+      "districtLabel": "1st",
+      "displayName": "Cebu City · 1st",
+      "representative": {
+        "name": "Rachel del Mar",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:cebu-city-deo"
+      ]
+    },
+    "leg:cebu-city:2nd": {
+      "jurisdiction": "Cebu City",
+      "districtLabel": "2nd",
+      "displayName": "Cebu City · 2nd",
+      "representative": {
+        "name": "Eduardo Rama Jr.",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:cebu-city-deo"
+      ]
+    },
+    "leg:cebu:6th": {
+      "jurisdiction": "Cebu",
+      "districtLabel": "6th",
+      "displayName": "Cebu · 6th",
+      "representative": {
+        "name": "Daphne Lagon",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:cebu-6th-deo"
+      ]
+    },
+    "leg:general-santos-city:lone": {
+      "jurisdiction": "General Santos City",
+      "districtLabel": "Lone",
+      "displayName": "General Santos City · Lone",
+      "representative": null,
+      "officeIds": [
+        "office:south-cotabato-1st-deo"
+      ]
+    },
+    "leg:ifugao:lone": {
+      "jurisdiction": "Ifugao",
+      "districtLabel": "Lone",
+      "displayName": "Ifugao · Lone",
+      "representative": {
+        "name": "Solomon Chungalao",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:ifugao-1st-deo",
+        "office:ifugao-2nd-deo"
+      ]
+    },
+    "leg:isabela:2nd": {
+      "jurisdiction": "Isabela",
+      "districtLabel": "2nd",
+      "displayName": "Isabela · 2nd",
+      "representative": {
+        "name": "Ed Christopher Go",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:isabela-3rd-deo"
+      ]
+    },
+    "leg:isabela:3rd": {
+      "jurisdiction": "Isabela",
+      "districtLabel": "3rd",
+      "displayName": "Isabela · 3rd",
+      "representative": {
+        "name": "Ian Paul Dy",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:isabela-3rd-deo"
+      ]
+    },
+    "leg:isabela:4th": {
+      "jurisdiction": "Isabela",
+      "districtLabel": "4th",
+      "displayName": "Isabela · 4th",
+      "representative": {
+        "name": "Joseph Tan",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:isabela-4th-deo"
+      ]
+    },
+    "leg:isabela:6th": {
+      "jurisdiction": "Isabela",
+      "districtLabel": "6th",
+      "displayName": "Isabela · 6th",
+      "representative": {
+        "name": "Bojie Dy",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:isabela-4th-deo"
+      ]
+    },
+    "leg:kalinga:lone": {
+      "jurisdiction": "Kalinga",
+      "districtLabel": "Lone",
+      "displayName": "Kalinga · Lone",
+      "representative": {
+        "name": "Caroline Agyao",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:lower-kalinga-deo",
+        "office:upper-kalinga-deo"
+      ]
+    },
+    "leg:laguna:1st": {
+      "jurisdiction": "Laguna",
+      "districtLabel": "1st",
+      "displayName": "Laguna · 1st",
+      "representative": {
+        "name": "Ann Matibag",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:laguna-2nd-deo"
+      ]
+    },
+    "leg:laguna:2nd": {
+      "jurisdiction": "Laguna",
+      "districtLabel": "2nd",
+      "displayName": "Laguna · 2nd",
+      "representative": {
+        "name": "Ramil Hernandez",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:laguna-2nd-deo"
+      ]
+    },
+    "leg:lanao-del-sur:1st": {
+      "jurisdiction": "Lanao del Sur",
+      "districtLabel": "1st",
+      "displayName": "Lanao del Sur · 1st",
+      "representative": {
+        "name": "Zia Alonto Adiong",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:barmm"
+      ]
+    },
+    "leg:lanao-del-sur:2nd": {
+      "jurisdiction": "Lanao del Sur",
+      "districtLabel": "2nd",
+      "displayName": "Lanao del Sur · 2nd",
+      "representative": {
+        "name": "Yasser Balindong",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:barmm"
+      ]
+    },
+    "leg:lapu-lapu-city:lone": {
+      "jurisdiction": "Lapu-Lapu City",
+      "districtLabel": "Lone",
+      "displayName": "Lapu-Lapu City · Lone",
+      "representative": {
+        "name": "Junard Chan",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:cebu-6th-deo"
+      ]
+    },
+    "leg:las-pinas:lone": {
+      "jurisdiction": "Las Piñas",
+      "districtLabel": "Lone",
+      "displayName": "Las Piñas · Lone",
+      "representative": {
+        "name": "Mark Anthony Santos",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:las-pinas-muntinlupa-deo"
+      ]
+    },
+    "leg:leyte:1st": {
+      "jurisdiction": "Leyte",
+      "districtLabel": "1st",
+      "displayName": "Leyte · 1st",
+      "representative": {
+        "name": "Martin Romualdez",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:leyte-1st-deo",
+        "office:tacloban-city-deo"
+      ]
+    },
+    "leg:maguindanao-del-norte:lone": {
+      "jurisdiction": "Maguindanao del Norte",
+      "districtLabel": "Lone",
+      "displayName": "Maguindanao del Norte · Lone",
+      "representative": {
+        "name": "Dimple Mastura",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:barmm"
+      ]
+    },
+    "leg:maguindanao-del-sur:lone": {
+      "jurisdiction": "Maguindanao del Sur",
+      "districtLabel": "Lone",
+      "displayName": "Maguindanao del Sur · Lone",
+      "representative": {
+        "name": "Esmael Mangudadatu",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:barmm"
+      ]
+    },
+    "leg:makati:1st": {
+      "jurisdiction": "Makati",
+      "districtLabel": "1st",
+      "displayName": "Makati · 1st",
+      "representative": {
+        "name": "Monique Lagdameo",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-2nd-deo"
+      ]
+    },
+    "leg:makati:2nd": {
+      "jurisdiction": "Makati",
+      "districtLabel": "2nd",
+      "displayName": "Makati · 2nd",
+      "representative": {
+        "name": "Alden Almario",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-2nd-deo"
+      ]
+    },
+    "leg:malabon:lone": {
+      "jurisdiction": "Malabon",
+      "districtLabel": "Lone",
+      "displayName": "Malabon · Lone",
+      "representative": {
+        "name": "Antolin Oreta III",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:malabon-navotas-deo"
+      ]
+    },
+    "leg:mandaluyong:lone": {
+      "jurisdiction": "Mandaluyong",
+      "districtLabel": "Lone",
+      "displayName": "Mandaluyong · Lone",
+      "representative": {
+        "name": "Alexandria Gonzales",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-1st-deo"
+      ]
+    },
+    "leg:mandaue:lone": {
+      "jurisdiction": "Mandaue",
+      "districtLabel": "Lone",
+      "displayName": "Mandaue · Lone",
+      "representative": {
+        "name": "Emmarie Dizon",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:cebu-6th-deo"
+      ]
+    },
+    "leg:manila:1st": {
+      "jurisdiction": "Manila",
+      "districtLabel": "1st",
+      "displayName": "Manila · 1st",
+      "representative": {
+        "name": "Ernix Dionisio",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:north-manila-deo"
+      ]
+    },
+    "leg:manila:2nd": {
+      "jurisdiction": "Manila",
+      "districtLabel": "2nd",
+      "displayName": "Manila · 2nd",
+      "representative": {
+        "name": "Rolan Valeriano",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:north-manila-deo"
+      ]
+    },
+    "leg:manila:3rd": {
+      "jurisdiction": "Manila",
+      "districtLabel": "3rd",
+      "displayName": "Manila · 3rd",
+      "representative": {
+        "name": "Joel Chua",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:north-manila-deo"
+      ]
+    },
+    "leg:manila:4th": {
+      "jurisdiction": "Manila",
+      "districtLabel": "4th",
+      "displayName": "Manila · 4th",
+      "representative": {
+        "name": "Giselle Maceda",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:north-manila-deo"
+      ]
+    },
+    "leg:manila:5th": {
+      "jurisdiction": "Manila",
+      "districtLabel": "5th",
+      "displayName": "Manila · 5th",
+      "representative": {
+        "name": "Irwin Tieng",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:south-manila-deo"
+      ]
+    },
+    "leg:manila:6th": {
+      "jurisdiction": "Manila",
+      "districtLabel": "6th",
+      "displayName": "Manila · 6th",
+      "representative": {
+        "name": "Benny Abante",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:north-manila-deo",
+        "office:south-manila-deo"
+      ]
+    },
+    "leg:marikina:1st": {
+      "jurisdiction": "Marikina",
+      "districtLabel": "1st",
+      "displayName": "Marikina · 1st",
+      "representative": {
+        "name": "Marcelino Teodoro",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-1st-deo"
+      ]
+    },
+    "leg:marikina:2nd": {
+      "jurisdiction": "Marikina",
+      "districtLabel": "2nd",
+      "displayName": "Marikina · 2nd",
+      "representative": {
+        "name": "Miro Quimbo",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-1st-deo"
+      ]
+    },
+    "leg:mountain-province:lone": {
+      "jurisdiction": "Mountain Province",
+      "districtLabel": "Lone",
+      "displayName": "Mountain Province · Lone",
+      "representative": {
+        "name": "Maximo Dalog Jr.",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:mountain-province-1st-deo",
+        "office:mountain-province-2nd-deo"
+      ]
+    },
+    "leg:muntinlupa:lone": {
+      "jurisdiction": "Muntinlupa",
+      "districtLabel": "Lone",
+      "displayName": "Muntinlupa · Lone",
+      "representative": {
+        "name": "Jaime Fresnedi",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:las-pinas-muntinlupa-deo"
+      ]
+    },
+    "leg:navotas:lone": {
+      "jurisdiction": "Navotas",
+      "districtLabel": "Lone",
+      "displayName": "Navotas · Lone",
+      "representative": {
+        "name": "Toby Tiangco",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:malabon-navotas-deo"
+      ]
+    },
+    "leg:nueva-ecija:1st": {
+      "jurisdiction": "Nueva Ecija",
+      "districtLabel": "1st",
+      "displayName": "Nueva Ecija · 1st",
+      "representative": {
+        "name": "Mika Suansing",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:nueva-ecija-1st-deo"
+      ]
+    },
+    "leg:nueva-ecija:2nd": {
+      "jurisdiction": "Nueva Ecija",
+      "districtLabel": "2nd",
+      "displayName": "Nueva Ecija · 2nd",
+      "representative": {
+        "name": "Kokoy Salvador",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:nueva-ecija-1st-deo"
+      ]
+    },
+    "leg:nueva-ecija:3rd": {
+      "jurisdiction": "Nueva Ecija",
+      "districtLabel": "3rd",
+      "displayName": "Nueva Ecija · 3rd",
+      "representative": {
+        "name": "Jay Vergara",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:nueva-ecija-2nd-deo"
+      ]
+    },
+    "leg:nueva-ecija:4th": {
+      "jurisdiction": "Nueva Ecija",
+      "districtLabel": "4th",
+      "displayName": "Nueva Ecija · 4th",
+      "representative": {
+        "name": "Emeng Pascual",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:nueva-ecija-2nd-deo"
+      ]
+    },
+    "leg:nueva-vizcaya:lone": {
+      "jurisdiction": "Nueva Vizcaya",
+      "districtLabel": "Lone",
+      "displayName": "Nueva Vizcaya · Lone",
+      "representative": {
+        "name": "Tim Cayton",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:nueva-vizcaya-deo",
+        "office:nueva-vizcaya-2nd-deo"
+      ]
+    },
+    "leg:pampanga:3rd": {
+      "jurisdiction": "Pampanga",
+      "districtLabel": "3rd",
+      "displayName": "Pampanga · 3rd",
+      "representative": {
+        "name": "Mica Gonzales",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:pampanga-1st-deo"
+      ]
+    },
+    "leg:pampanga:4th": {
+      "jurisdiction": "Pampanga",
+      "districtLabel": "4th",
+      "displayName": "Pampanga · 4th",
+      "representative": {
+        "name": "Anna York Bondoc",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:pampanga-1st-deo"
+      ]
+    },
+    "leg:pangasinan:2nd": {
+      "jurisdiction": "Pangasinan",
+      "districtLabel": "2nd",
+      "displayName": "Pangasinan · 2nd",
+      "representative": {
+        "name": "Mark Cojuangco",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:pangasinan-2nd-deo"
+      ]
+    },
+    "leg:pangasinan:4th": {
+      "jurisdiction": "Pangasinan",
+      "districtLabel": "4th",
+      "displayName": "Pangasinan · 4th",
+      "representative": {
+        "name": "Gina de Venecia",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:pangasinan-2nd-deo"
+      ]
+    },
+    "leg:pangasinan:5th": {
+      "jurisdiction": "Pangasinan",
+      "districtLabel": "5th",
+      "displayName": "Pangasinan · 5th",
+      "representative": {
+        "name": "Ramon Guico Jr.",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:pangasinan-3rd-deo"
+      ]
+    },
+    "leg:pangasinan:6th": {
+      "jurisdiction": "Pangasinan",
+      "districtLabel": "6th",
+      "displayName": "Pangasinan · 6th",
+      "representative": {
+        "name": "Marlyn Primicias-Agabas",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:pangasinan-3rd-deo"
+      ]
+    },
+    "leg:paranaque:1st": {
+      "jurisdiction": "Parañaque",
+      "districtLabel": "1st",
+      "displayName": "Parañaque · 1st",
+      "representative": {
+        "name": "Eric Olivarez",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-2nd-deo"
+      ]
+    },
+    "leg:paranaque:2nd": {
+      "jurisdiction": "Parañaque",
+      "districtLabel": "2nd",
+      "displayName": "Parañaque · 2nd",
+      "representative": {
+        "name": "Brian Yamsuan",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-2nd-deo"
+      ]
+    },
+    "leg:pasay:lone": {
+      "jurisdiction": "Pasay",
+      "districtLabel": "Lone",
+      "displayName": "Pasay · Lone",
+      "representative": {
+        "name": "Antonino Calixto",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:south-manila-deo"
+      ]
+    },
+    "leg:pasig:lone": {
+      "jurisdiction": "Pasig",
+      "districtLabel": "Lone",
+      "displayName": "Pasig · Lone",
+      "representative": {
+        "name": "Roman Romulo",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-1st-deo"
+      ]
+    },
+    "leg:quezon-city:1st": {
+      "jurisdiction": "Quezon City",
+      "districtLabel": "1st",
+      "displayName": "Quezon City · 1st",
+      "representative": {
+        "name": "Arjo Atayde",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:quezon-city-1st-deo"
+      ]
+    },
+    "leg:quezon-city:2nd": {
+      "jurisdiction": "Quezon City",
+      "districtLabel": "2nd",
+      "displayName": "Quezon City · 2nd",
+      "representative": {
+        "name": "Ralph Tulfo",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:quezon-city-1st-deo"
+      ]
+    },
+    "leg:quezon-city:3rd": {
+      "jurisdiction": "Quezon City",
+      "districtLabel": "3rd",
+      "displayName": "Quezon City · 3rd",
+      "representative": {
+        "name": "Franz Pumaren",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:quezon-city-2nd-deo"
+      ]
+    },
+    "leg:quezon-city:4th": {
+      "jurisdiction": "Quezon City",
+      "districtLabel": "4th",
+      "displayName": "Quezon City · 4th",
+      "representative": {
+        "name": "Bong Suntay",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:quezon-city-2nd-deo"
+      ]
+    },
+    "leg:quezon-city:5th": {
+      "jurisdiction": "Quezon City",
+      "districtLabel": "5th",
+      "displayName": "Quezon City · 5th",
+      "representative": {
+        "name": "Patrick Michael Vargas",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:quezon-city-1st-deo"
+      ]
+    },
+    "leg:quezon-city:6th": {
+      "jurisdiction": "Quezon City",
+      "districtLabel": "6th",
+      "displayName": "Quezon City · 6th",
+      "representative": {
+        "name": "Marivic Co-Pilar",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:quezon-city-1st-deo"
+      ]
+    },
+    "leg:rizal:1st": {
+      "jurisdiction": "Rizal",
+      "districtLabel": "1st",
+      "displayName": "Rizal · 1st",
+      "representative": {
+        "name": "Mia Ynares",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:rizal-1st-deo"
+      ]
+    },
+    "leg:rizal:2nd": {
+      "jurisdiction": "Rizal",
+      "districtLabel": "2nd",
+      "displayName": "Rizal · 2nd",
+      "representative": {
+        "name": "Dino Tanjuatco",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:rizal-2nd-deo"
+      ]
+    },
+    "leg:rizal:3rd": {
+      "jurisdiction": "Rizal",
+      "districtLabel": "3rd",
+      "displayName": "Rizal · 3rd",
+      "representative": {
+        "name": "Jose Arturo Garcia Jr.",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:rizal-2nd-deo"
+      ]
+    },
+    "leg:rizal:4th": {
+      "jurisdiction": "Rizal",
+      "districtLabel": "4th",
+      "displayName": "Rizal · 4th",
+      "representative": {
+        "name": "Dennis Hernandez",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:rizal-2nd-deo"
+      ]
+    },
+    "leg:san-jose-del-monte:lone": {
+      "jurisdiction": "San Jose del Monte",
+      "districtLabel": "Lone",
+      "displayName": "San Jose del Monte · Lone",
+      "representative": {
+        "name": "Arthur Robes",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:bulacan-2nd-deo"
+      ]
+    },
+    "leg:san-juan:lone": {
+      "jurisdiction": "San Juan",
+      "districtLabel": "Lone",
+      "displayName": "San Juan · Lone",
+      "representative": {
+        "name": "Bel Zamora",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-1st-deo"
+      ]
+    },
+    "leg:santa-rosa:lone": {
+      "jurisdiction": "Santa Rosa",
+      "districtLabel": "Lone",
+      "displayName": "Santa Rosa · Lone",
+      "representative": {
+        "name": "Roy Gonzales",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:laguna-2nd-deo"
+      ]
+    },
+    "leg:south-cotabato:1st": {
+      "jurisdiction": "South Cotabato",
+      "districtLabel": "1st",
+      "displayName": "South Cotabato · 1st",
+      "representative": {
+        "name": "Ed Lumayag",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:south-cotabato-1st-deo"
+      ]
+    },
+    "leg:taguig:1st": {
+      "jurisdiction": "Taguig",
+      "districtLabel": "1st",
+      "displayName": "Taguig · 1st",
+      "representative": null,
+      "officeIds": [
+        "office:metro-manila-1st-deo"
+      ]
+    },
+    "leg:taguig:2nd": {
+      "jurisdiction": "Taguig",
+      "districtLabel": "2nd",
+      "displayName": "Taguig · 2nd",
+      "representative": null,
+      "officeIds": [
+        "office:metro-manila-1st-deo"
+      ]
+    },
+    "leg:tarlac:1st": {
+      "jurisdiction": "Tarlac",
+      "districtLabel": "1st",
+      "displayName": "Tarlac · 1st",
+      "representative": {
+        "name": "Jaime Cojuangco",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:tarlac-deo"
+      ]
+    },
+    "leg:tarlac:2nd": {
+      "jurisdiction": "Tarlac",
+      "districtLabel": "2nd",
+      "displayName": "Tarlac · 2nd",
+      "representative": {
+        "name": "Cristy Angeles",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:tarlac-deo"
+      ]
+    },
+    "leg:tawi-tawi:lone": {
+      "jurisdiction": "Tawi-Tawi",
+      "districtLabel": "Lone",
+      "displayName": "Tawi-Tawi · Lone",
+      "representative": {
+        "name": "Dimszar Sali",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:barmm"
+      ]
+    },
+    "leg:valenzuela:1st": {
+      "jurisdiction": "Valenzuela",
+      "districtLabel": "1st",
+      "displayName": "Valenzuela · 1st",
+      "representative": {
+        "name": "Kenneth Gatchalian",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-3rd-deo"
+      ]
+    },
+    "leg:valenzuela:2nd": {
+      "jurisdiction": "Valenzuela",
+      "districtLabel": "2nd",
+      "displayName": "Valenzuela · 2nd",
+      "representative": {
+        "name": "Gerald Galang",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:metro-manila-3rd-deo"
+      ]
+    },
+    "leg:zamboanga-del-norte:3rd": {
+      "jurisdiction": "Zamboanga del Norte",
+      "districtLabel": "3rd",
+      "displayName": "Zamboanga del Norte · 3rd",
+      "representative": {
+        "name": "Ian Amatong",
+        "congress": 20,
+        "rosterMatch": "unique_label_match",
+        "independentlyVerified": false
+      },
+      "officeIds": [
+        "office:zamboanga-del-norte-3rd-deo",
+        "office:zamboanga-del-norte-4th-deo"
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "officeId": "office:las-pinas-muntinlupa-deo",
+      "legislativeDistrictId": "leg:las-pinas:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 1,
+      "sourceAmount": {
+        "value": 1346406,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:las-pinas-muntinlupa-deo",
+      "legislativeDistrictId": "leg:muntinlupa:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 2,
+      "sourceAmount": {
+        "value": 968588,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:malabon-navotas-deo",
+      "legislativeDistrictId": "leg:malabon:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 3,
+      "sourceAmount": {
+        "value": 1387143,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:malabon-navotas-deo",
+      "legislativeDistrictId": "leg:navotas:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 4,
+      "sourceAmount": {
+        "value": 1609250,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-1st-deo",
+      "legislativeDistrictId": "leg:mandaluyong:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 5,
+      "sourceAmount": {
+        "value": 333675,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-1st-deo",
+      "legislativeDistrictId": "leg:marikina:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 6,
+      "sourceAmount": {
+        "value": 630000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-1st-deo",
+      "legislativeDistrictId": "leg:marikina:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 7,
+      "sourceAmount": {
+        "value": 538000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-1st-deo",
+      "legislativeDistrictId": "leg:pasig:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 8,
+      "sourceAmount": {
+        "value": 892000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-1st-deo",
+      "legislativeDistrictId": "leg:san-juan:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 9,
+      "sourceAmount": {
+        "value": 377562,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-1st-deo",
+      "legislativeDistrictId": "leg:taguig:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 10,
+      "sourceAmount": {
+        "value": 230000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-1st-deo",
+      "legislativeDistrictId": "leg:taguig:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 11,
+      "sourceAmount": {
+        "value": null,
+        "unit": "thousand_PHP",
+        "dashInSource": true
+      }
+    },
+    {
+      "officeId": "office:metro-manila-2nd-deo",
+      "legislativeDistrictId": "leg:makati:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 12,
+      "sourceAmount": {
+        "value": 776983,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-2nd-deo",
+      "legislativeDistrictId": "leg:makati:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 13,
+      "sourceAmount": {
+        "value": null,
+        "unit": "thousand_PHP",
+        "dashInSource": true
+      }
+    },
+    {
+      "officeId": "office:metro-manila-2nd-deo",
+      "legislativeDistrictId": "leg:paranaque:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 14,
+      "sourceAmount": {
+        "value": 959595,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-2nd-deo",
+      "legislativeDistrictId": "leg:paranaque:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 15,
+      "sourceAmount": {
+        "value": 874328,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-3rd-deo",
+      "legislativeDistrictId": "leg:caloocan:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 16,
+      "sourceAmount": {
+        "value": 1560600,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-3rd-deo",
+      "legislativeDistrictId": "leg:caloocan:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 17,
+      "sourceAmount": {
+        "value": 269650,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-3rd-deo",
+      "legislativeDistrictId": "leg:caloocan:3rd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 18,
+      "sourceAmount": {
+        "value": 720800,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-3rd-deo",
+      "legislativeDistrictId": "leg:valenzuela:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 19,
+      "sourceAmount": {
+        "value": 977546,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:metro-manila-3rd-deo",
+      "legislativeDistrictId": "leg:valenzuela:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 20,
+      "sourceAmount": {
+        "value": 978275,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:north-manila-deo",
+      "legislativeDistrictId": "leg:manila:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 21,
+      "sourceAmount": {
+        "value": 537700,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:north-manila-deo",
+      "legislativeDistrictId": "leg:manila:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 22,
+      "sourceAmount": {
+        "value": 493500,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:north-manila-deo",
+      "legislativeDistrictId": "leg:manila:3rd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 23,
+      "sourceAmount": {
+        "value": 890500,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:north-manila-deo",
+      "legislativeDistrictId": "leg:manila:4th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 24,
+      "sourceAmount": {
+        "value": 553500,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:north-manila-deo",
+      "legislativeDistrictId": "leg:manila:6th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 25,
+      "sourceAmount": {
+        "value": 342000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:south-manila-deo",
+      "legislativeDistrictId": "leg:manila:6th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 26,
+      "sourceAmount": {
+        "value": 1050400,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:south-manila-deo",
+      "legislativeDistrictId": "leg:manila:5th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 27,
+      "sourceAmount": {
+        "value": 2765012,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:south-manila-deo",
+      "legislativeDistrictId": "leg:pasay:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 28,
+      "sourceAmount": {
+        "value": 905964,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:quezon-city-1st-deo",
+      "legislativeDistrictId": "leg:quezon-city:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 29,
+      "sourceAmount": {
+        "value": 1290030,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:quezon-city-1st-deo",
+      "legislativeDistrictId": "leg:quezon-city:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 30,
+      "sourceAmount": {
+        "value": 1594711,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:quezon-city-1st-deo",
+      "legislativeDistrictId": "leg:quezon-city:5th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 31,
+      "sourceAmount": {
+        "value": 1335571,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:quezon-city-1st-deo",
+      "legislativeDistrictId": "leg:quezon-city:6th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 32,
+      "sourceAmount": {
+        "value": 980340,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:quezon-city-2nd-deo",
+      "legislativeDistrictId": "leg:quezon-city:3rd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 33,
+      "sourceAmount": {
+        "value": 844573,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:quezon-city-2nd-deo",
+      "legislativeDistrictId": "leg:quezon-city:4th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 34,
+      "sourceAmount": {
+        "value": 1702000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:pangasinan-2nd-deo",
+      "legislativeDistrictId": "leg:pangasinan:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 35,
+      "sourceAmount": {
+        "value": 1889222,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:pangasinan-2nd-deo",
+      "legislativeDistrictId": "leg:pangasinan:4th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 36,
+      "sourceAmount": {
+        "value": 1836393,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:pangasinan-3rd-deo",
+      "legislativeDistrictId": "leg:pangasinan:5th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 37,
+      "sourceAmount": {
+        "value": 2116734,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:pangasinan-3rd-deo",
+      "legislativeDistrictId": "leg:pangasinan:6th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 38,
+      "sourceAmount": {
+        "value": 2516086,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:bulacan-1st-deo",
+      "legislativeDistrictId": "leg:bulacan:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 39,
+      "sourceAmount": {
+        "value": 1575230,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:bulacan-1st-deo",
+      "legislativeDistrictId": "leg:bulacan:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 40,
+      "sourceAmount": {
+        "value": 1122308,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:bulacan-1st-deo",
+      "legislativeDistrictId": "leg:bulacan:5th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 41,
+      "sourceAmount": {
+        "value": 1450956,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:bulacan-2nd-deo",
+      "legislativeDistrictId": "leg:bulacan:4th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 42,
+      "sourceAmount": {
+        "value": 1701000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:bulacan-2nd-deo",
+      "legislativeDistrictId": "leg:bulacan:6th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 43,
+      "sourceAmount": {
+        "value": 1557636,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:bulacan-2nd-deo",
+      "legislativeDistrictId": "leg:san-jose-del-monte:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 44,
+      "sourceAmount": {
+        "value": 1933154,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:isabela-3rd-deo",
+      "legislativeDistrictId": "leg:isabela:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 45,
+      "sourceAmount": {
+        "value": 1865369,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:isabela-3rd-deo",
+      "legislativeDistrictId": "leg:isabela:3rd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 46,
+      "sourceAmount": {
+        "value": 1134816,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:isabela-4th-deo",
+      "legislativeDistrictId": "leg:isabela:4th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 47,
+      "sourceAmount": {
+        "value": 2160654,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:isabela-4th-deo",
+      "legislativeDistrictId": "leg:isabela:6th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 48,
+      "sourceAmount": {
+        "value": 3689000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:nueva-ecija-1st-deo",
+      "legislativeDistrictId": "leg:nueva-ecija:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 49,
+      "sourceAmount": {
+        "value": 3426750,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:nueva-ecija-1st-deo",
+      "legislativeDistrictId": "leg:nueva-ecija:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 50,
+      "sourceAmount": {
+        "value": 1757124,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:nueva-ecija-2nd-deo",
+      "legislativeDistrictId": "leg:nueva-ecija:3rd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 51,
+      "sourceAmount": {
+        "value": 493825,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:nueva-ecija-2nd-deo",
+      "legislativeDistrictId": "leg:nueva-ecija:4th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 52,
+      "sourceAmount": {
+        "value": 1824624,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:pampanga-1st-deo",
+      "legislativeDistrictId": "leg:pampanga:3rd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 53,
+      "sourceAmount": {
+        "value": 2323940,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:pampanga-1st-deo",
+      "legislativeDistrictId": "leg:pampanga:4th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 54,
+      "sourceAmount": {
+        "value": 1964619,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:tarlac-deo",
+      "legislativeDistrictId": "leg:tarlac:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 55,
+      "sourceAmount": {
+        "value": 1308080,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:tarlac-deo",
+      "legislativeDistrictId": "leg:tarlac:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 56,
+      "sourceAmount": {
+        "value": 2008000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:batangas-2nd-deo",
+      "legislativeDistrictId": "leg:batangas:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 57,
+      "sourceAmount": {
+        "value": 3113725,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:batangas-2nd-deo",
+      "legislativeDistrictId": "leg:batangas:5th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 58,
+      "sourceAmount": {
+        "value": 1338896,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:batangas-4th-deo",
+      "legislativeDistrictId": "leg:batangas:4th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 59,
+      "sourceAmount": {
+        "value": 1676617,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:batangas-4th-deo",
+      "legislativeDistrictId": "leg:batangas:6th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 60,
+      "sourceAmount": {
+        "value": 3316000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:cavite-1st-deo",
+      "legislativeDistrictId": "leg:cavite:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 61,
+      "sourceAmount": {
+        "value": 1740638,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:cavite-1st-deo",
+      "legislativeDistrictId": "leg:cavite:3rd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 62,
+      "sourceAmount": {
+        "value": 1353575,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:cavite-1st-deo",
+      "legislativeDistrictId": "leg:cavite:6th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 63,
+      "sourceAmount": {
+        "value": 1143302,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:cavite-1st-deo",
+      "legislativeDistrictId": "leg:cavite:7th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 64,
+      "sourceAmount": {
+        "value": 2059074,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:cavite-3rd-deo",
+      "legislativeDistrictId": "leg:cavite:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 65,
+      "sourceAmount": {
+        "value": 1672469,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:cavite-3rd-deo",
+      "legislativeDistrictId": "leg:cavite:4th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 66,
+      "sourceAmount": {
+        "value": 500000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:cavite-3rd-deo",
+      "legislativeDistrictId": "leg:cavite:5th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 67,
+      "sourceAmount": {
+        "value": 1377304,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:laguna-2nd-deo",
+      "legislativeDistrictId": "leg:binan:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 68,
+      "sourceAmount": {
+        "value": 1240000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:laguna-2nd-deo",
+      "legislativeDistrictId": "leg:calamba:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 69,
+      "sourceAmount": {
+        "value": 1463709,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:laguna-2nd-deo",
+      "legislativeDistrictId": "leg:santa-rosa:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 70,
+      "sourceAmount": {
+        "value": 668028,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:laguna-2nd-deo",
+      "legislativeDistrictId": "leg:laguna:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 71,
+      "sourceAmount": {
+        "value": 899271,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:laguna-2nd-deo",
+      "legislativeDistrictId": "leg:laguna:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 72,
+      "sourceAmount": {
+        "value": 214874,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:rizal-1st-deo",
+      "legislativeDistrictId": "leg:antipolo:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 73,
+      "sourceAmount": {
+        "value": 1026094,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:rizal-1st-deo",
+      "legislativeDistrictId": "leg:antipolo:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 74,
+      "sourceAmount": {
+        "value": 1202550,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:rizal-1st-deo",
+      "legislativeDistrictId": "leg:rizal:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 75,
+      "sourceAmount": {
+        "value": 500000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:rizal-2nd-deo",
+      "legislativeDistrictId": "leg:rizal:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 76,
+      "sourceAmount": {
+        "value": 500000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:rizal-2nd-deo",
+      "legislativeDistrictId": "leg:rizal:3rd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 77,
+      "sourceAmount": {
+        "value": 500000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:rizal-2nd-deo",
+      "legislativeDistrictId": "leg:rizal:4th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 78,
+      "sourceAmount": {
+        "value": 500000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:barmm",
+      "legislativeDistrictId": "leg:basilan:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 79,
+      "sourceAmount": {
+        "value": 188306,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:barmm",
+      "legislativeDistrictId": "leg:tawi-tawi:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 80,
+      "sourceAmount": {
+        "value": 309772,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:barmm",
+      "legislativeDistrictId": "leg:lanao-del-sur:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 81,
+      "sourceAmount": {
+        "value": 1892000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:barmm",
+      "legislativeDistrictId": "leg:lanao-del-sur:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 82,
+      "sourceAmount": {
+        "value": 657000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:barmm",
+      "legislativeDistrictId": "leg:maguindanao-del-norte:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 83,
+      "sourceAmount": {
+        "value": 365500,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:barmm",
+      "legislativeDistrictId": "leg:maguindanao-del-sur:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 84,
+      "sourceAmount": {
+        "value": 1015000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:cebu-6th-deo",
+      "legislativeDistrictId": "leg:mandaue:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 85,
+      "sourceAmount": {
+        "value": 1283844,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:cebu-6th-deo",
+      "legislativeDistrictId": "leg:lapu-lapu-city:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 86,
+      "sourceAmount": {
+        "value": 1972537,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:cebu-6th-deo",
+      "legislativeDistrictId": "leg:cebu:6th",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 87,
+      "sourceAmount": {
+        "value": 1437000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:cebu-city-deo",
+      "legislativeDistrictId": "leg:cebu-city:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 88,
+      "sourceAmount": {
+        "value": 565000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:cebu-city-deo",
+      "legislativeDistrictId": "leg:cebu-city:2nd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 89,
+      "sourceAmount": {
+        "value": 2136200,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:south-cotabato-1st-deo",
+      "legislativeDistrictId": "leg:south-cotabato:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 90,
+      "sourceAmount": {
+        "value": 500000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:south-cotabato-1st-deo",
+      "legislativeDistrictId": "leg:general-santos-city:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 91,
+      "sourceAmount": {
+        "value": 500000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:apayao-1st-deo",
+      "legislativeDistrictId": "leg:apayao:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 92,
+      "sourceAmount": {
+        "value": 1218898,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:apayao-2nd-deo",
+      "legislativeDistrictId": "leg:apayao:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 93,
+      "sourceAmount": {
+        "value": 1423094,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:benguet-1st-deo",
+      "legislativeDistrictId": "leg:benguet:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 94,
+      "sourceAmount": {
+        "value": 985237,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:benguet-2nd-deo",
+      "legislativeDistrictId": "leg:benguet:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 95,
+      "sourceAmount": {
+        "value": 768000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:ifugao-1st-deo",
+      "legislativeDistrictId": "leg:ifugao:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 96,
+      "sourceAmount": {
+        "value": 1042807,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:ifugao-2nd-deo",
+      "legislativeDistrictId": "leg:ifugao:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 97,
+      "sourceAmount": {
+        "value": 1202481,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:lower-kalinga-deo",
+      "legislativeDistrictId": "leg:kalinga:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 98,
+      "sourceAmount": {
+        "value": 1468363,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:upper-kalinga-deo",
+      "legislativeDistrictId": "leg:kalinga:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 99,
+      "sourceAmount": {
+        "value": 1180339,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:mountain-province-1st-deo",
+      "legislativeDistrictId": "leg:mountain-province:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 100,
+      "sourceAmount": {
+        "value": 1092620,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:mountain-province-2nd-deo",
+      "legislativeDistrictId": "leg:mountain-province:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 101,
+      "sourceAmount": {
+        "value": 1042133,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:nueva-vizcaya-deo",
+      "legislativeDistrictId": "leg:nueva-vizcaya:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 102,
+      "sourceAmount": {
+        "value": 1407852,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:nueva-vizcaya-2nd-deo",
+      "legislativeDistrictId": "leg:nueva-vizcaya:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 103,
+      "sourceAmount": {
+        "value": 918312,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:leyte-1st-deo",
+      "legislativeDistrictId": "leg:leyte:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 104,
+      "sourceAmount": {
+        "value": 924954,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:tacloban-city-deo",
+      "legislativeDistrictId": "leg:leyte:1st",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 105,
+      "sourceAmount": {
+        "value": 875000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:isabela-city-deo",
+      "legislativeDistrictId": "leg:basilan:lone",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 106,
+      "sourceAmount": {
+        "value": 205000,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:zamboanga-del-norte-3rd-deo",
+      "legislativeDistrictId": "leg:zamboanga-del-norte:3rd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 107,
+      "sourceAmount": {
+        "value": 996571,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    },
+    {
+      "officeId": "office:zamboanga-del-norte-4th-deo",
+      "legislativeDistrictId": "leg:zamboanga-del-norte:3rd",
+      "relationship": "allocation_row_in_undated_source",
+      "sourceRow": 108,
+      "sourceAmount": {
+        "value": 1555429,
+        "unit": "thousand_PHP",
+        "dashInSource": false
+      }
+    }
+  ]
+}

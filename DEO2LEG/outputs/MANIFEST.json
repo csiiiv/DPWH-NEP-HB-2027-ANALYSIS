@@ -1,0 +1,93 @@
+{
+  "publishedOn": "2026-10-23",
+  "publisher": "DEO2LEG/publish_outputs.py",
+  "policy": "Byte-identical copies of the final DEO2LEG artifacts, published so consumers need only read outputs/. Never edit these files: regenerate with build_mapping.py then republish. MANIFEST sha256 values are the integrity check; 'publish_outputs.py --check' verifies copies against both the canonical build and this manifest.",
+  "canonicalBuild": {
+    "regenerate": "python DEO2LEG/build_mapping.py",
+    "inputs": [
+      "DPWH_per_district_extracted.csv",
+      "DPWH_per_district_extracted.json",
+      "sources/official_house_roster_2026-10-22.json",
+      "sources/dpwh-project-code-mapping@38fe1cf2.json",
+      "sources/deoLegRows@26b3f3f2.json",
+      "legislative_profiles/profiles.json",
+      "build_mapping.py",
+      "build_official_roster.py",
+      "join_districts.py",
+      "leg_profiles.py"
+    ],
+    "schemaVersion": "2.1.0",
+    "buildDate": "2026-10-23"
+  },
+  "pathResolution": {
+    "base": "DEO2LEG/ (the repository directory containing this outputs/ folder)",
+    "note": "Files are copied byte-for-byte, so every relative path inside them is still resolved from the DEO2LEG root, NOT from outputs/. The only such field is representative.profile.photoPath, e.g. 'legislative_profiles/photos/foo.jpg' -> DEO2LEG/legislative_profiles/photos/foo.jpg. Portraits are NOT copied into outputs/ (44MB of scraped assets; they are inputs, not outputs). Do not rewrite the JSON to make paths outputs-relative: that would break byte-identity and invalidate these hashes."
+  },
+  "crossChecks": {
+    "relationshipCount": 264,
+    "sidecarRowCount": 264,
+    "rowsMatch": true,
+    "districtCount": 254,
+    "amountsAbsentFromGraph": true
+  },
+  "files": [
+    {
+      "file": "deo_leg_crosswalk.json",
+      "canonicalPath": "deo_leg_crosswalk.json",
+      "description": "Mapping graph: DEO offices <-> legislative districts <-> representatives. Structure only; contains no monetary amounts.",
+      "sha256": "db9bc8e08d79d08d24a743e3abfcf281c9b123de0f060e385739b7b294890570",
+      "bytes": 579992,
+      "schemaVersion": "2.1.0",
+      "buildDate": "2026-10-23",
+      "summary": {
+        "totalOffices": 213,
+        "officesFromAllocationTable": 200,
+        "legacyRegistryOnlyOffices": 13,
+        "totalLegislativeDistricts": 254,
+        "distinctDistrictLabelsInTable": 254,
+        "totalRelationships": 264,
+        "fullyLinkedOffices": 200,
+        "unlinkedOffices": 13,
+        "representativesResolved": 252,
+        "representativesAmbiguous": 2,
+        "representativesNotFound": 0,
+        "districtsServedByMultipleOffices": 10,
+        "officesSpanningMultipleDistricts": 33,
+        "totalAllocationThousandsPHP": 440610663,
+        "dashRows": 2,
+        "representativesWithProfile": 252,
+        "representativesWithoutProfile": 0,
+        "ambiguousSeatsWithCandidateProfiles": 2
+      },
+      "byteIdenticalToCanonical": true
+    },
+    {
+      "file": "source_amounts.json",
+      "canonicalPath": "evidence/source_amounts.json",
+      "description": "Evidence sidecar: all 264 allocation rows with transcribed amounts and page/row provenance. Kept separate so the reusable graph stays free of transient fiscal values.",
+      "sha256": "f34896fc4d09e4891e211e1d132dc338c79933f4d731ae09085de10810469c5a",
+      "bytes": 93072,
+      "schemaVersion": "2.1.0",
+      "buildDate": "2026-10-23",
+      "summary": {
+        "totalRows": 264,
+        "nonDashRows": 262,
+        "dashRows": 2,
+        "totalThousandsPHP": 440610663,
+        "distinctOffices": 200,
+        "distinctDistrictLabels": 254
+      },
+      "byteIdenticalToCanonical": true
+    }
+  ],
+  "notPublished": [
+    {
+      "path": "legislative_profiles/photos/",
+      "reason": "Scraped portrait assets (44MB); inputs, not outputs. Referenced by photoPath."
+    },
+    {
+      "path": "deo_leg_crosswalk_draft(1).json",
+      "reason": "Superseded schema 0.1.0 draft (108-row partial crosswalk). Retained as a historical artifact, deliberately not published."
+    }
+  ]
+}

@@ -1,0 +1,554 @@
+{
+ "provenance": {
+  "repository": "bettergovph/open-data-visualization",
+  "commit": "7d8700fe9627d496794aba38478e4ea0649af51f",
+  "file": "static/nep-preview/congress.html",
+  "gitBlobSha": "26b3f3f25370b5d5ed19d63a096b6e48282d193c",
+  "extractedFrom": "deoLegRows JS array (initial array + .push() additions), order preserved",
+  "underlyingDocument": "DPWH per district.pdf (scanned; provided by PCIJ per page footer; fiscal year not stated)",
+  "amountUnit": "thousand_PHP (0 in this extraction = dash in source scan, NOT a zero allocation)",
+  "retrievedDate": "2026-10-22"
+ },
+ "rows": [
+  {
+   "office": "Las Piñas-Muntinlupa DEO",
+   "leg": "Las Piñas · Lone",
+   "amount": 1346406
+  },
+  {
+   "office": "Las Piñas-Muntinlupa DEO",
+   "leg": "Muntinlupa · Lone",
+   "amount": 968588
+  },
+  {
+   "office": "Malabon-Navotas DEO",
+   "leg": "Malabon · Lone",
+   "amount": 1387143
+  },
+  {
+   "office": "Malabon-Navotas DEO",
+   "leg": "Navotas · Lone",
+   "amount": 1609250
+  },
+  {
+   "office": "Metro Manila 1st DEO",
+   "leg": "Mandaluyong · Lone",
+   "amount": 333675
+  },
+  {
+   "office": "Metro Manila 1st DEO",
+   "leg": "Marikina · 1st",
+   "amount": 630000
+  },
+  {
+   "office": "Metro Manila 1st DEO",
+   "leg": "Marikina · 2nd",
+   "amount": 538000
+  },
+  {
+   "office": "Metro Manila 1st DEO",
+   "leg": "Pasig · Lone",
+   "amount": 892000
+  },
+  {
+   "office": "Metro Manila 1st DEO",
+   "leg": "San Juan · Lone",
+   "amount": 377562
+  },
+  {
+   "office": "Metro Manila 1st DEO",
+   "leg": "Taguig · 1st",
+   "amount": 230000
+  },
+  {
+   "office": "Metro Manila 1st DEO",
+   "leg": "Taguig · 2nd",
+   "amount": 0
+  },
+  {
+   "office": "Metro Manila 2nd DEO",
+   "leg": "Makati · 1st",
+   "amount": 776983
+  },
+  {
+   "office": "Metro Manila 2nd DEO",
+   "leg": "Makati · 2nd",
+   "amount": 0
+  },
+  {
+   "office": "Metro Manila 2nd DEO",
+   "leg": "Parañaque · 1st",
+   "amount": 959595
+  },
+  {
+   "office": "Metro Manila 2nd DEO",
+   "leg": "Parañaque · 2nd",
+   "amount": 874328
+  },
+  {
+   "office": "Metro Manila 3rd DEO",
+   "leg": "Caloocan · 1st",
+   "amount": 1560600
+  },
+  {
+   "office": "Metro Manila 3rd DEO",
+   "leg": "Caloocan · 2nd",
+   "amount": 269650
+  },
+  {
+   "office": "Metro Manila 3rd DEO",
+   "leg": "Caloocan · 3rd",
+   "amount": 720800
+  },
+  {
+   "office": "Metro Manila 3rd DEO",
+   "leg": "Valenzuela · 1st",
+   "amount": 977546
+  },
+  {
+   "office": "Metro Manila 3rd DEO",
+   "leg": "Valenzuela · 2nd",
+   "amount": 978275
+  },
+  {
+   "office": "North Manila DEO",
+   "leg": "Manila · 1st",
+   "amount": 537700
+  },
+  {
+   "office": "North Manila DEO",
+   "leg": "Manila · 2nd",
+   "amount": 493500
+  },
+  {
+   "office": "North Manila DEO",
+   "leg": "Manila · 3rd",
+   "amount": 890500
+  },
+  {
+   "office": "North Manila DEO",
+   "leg": "Manila · 4th",
+   "amount": 553500
+  },
+  {
+   "office": "North Manila DEO",
+   "leg": "Manila · 6th",
+   "amount": 342000
+  },
+  {
+   "office": "South Manila DEO",
+   "leg": "Manila · 6th",
+   "amount": 1050400
+  },
+  {
+   "office": "South Manila DEO",
+   "leg": "Manila · 5th",
+   "amount": 2765012
+  },
+  {
+   "office": "South Manila DEO",
+   "leg": "Pasay · Lone",
+   "amount": 905964
+  },
+  {
+   "office": "Quezon City 1st DEO",
+   "leg": "Quezon City · 1st",
+   "amount": 1290030
+  },
+  {
+   "office": "Quezon City 1st DEO",
+   "leg": "Quezon City · 2nd",
+   "amount": 1594711
+  },
+  {
+   "office": "Quezon City 1st DEO",
+   "leg": "Quezon City · 5th",
+   "amount": 1335571
+  },
+  {
+   "office": "Quezon City 1st DEO",
+   "leg": "Quezon City · 6th",
+   "amount": 980340
+  },
+  {
+   "office": "Quezon City 2nd DEO",
+   "leg": "Quezon City · 3rd",
+   "amount": 844573
+  },
+  {
+   "office": "Quezon City 2nd DEO",
+   "leg": "Quezon City · 4th",
+   "amount": 1702000
+  },
+  {
+   "office": "Pangasinan 2nd DEO",
+   "leg": "Pangasinan · 2nd",
+   "amount": 1889222
+  },
+  {
+   "office": "Pangasinan 2nd DEO",
+   "leg": "Pangasinan · 4th",
+   "amount": 1836393
+  },
+  {
+   "office": "Pangasinan 3rd DEO",
+   "leg": "Pangasinan · 5th",
+   "amount": 2116734
+  },
+  {
+   "office": "Pangasinan 3rd DEO",
+   "leg": "Pangasinan · 6th",
+   "amount": 2516086
+  },
+  {
+   "office": "Bulacan 1st DEO",
+   "leg": "Bulacan · 1st",
+   "amount": 1575230
+  },
+  {
+   "office": "Bulacan 1st DEO",
+   "leg": "Bulacan · 2nd",
+   "amount": 1122308
+  },
+  {
+   "office": "Bulacan 1st DEO",
+   "leg": "Bulacan · 5th",
+   "amount": 1450956
+  },
+  {
+   "office": "Bulacan 2nd DEO",
+   "leg": "Bulacan · 4th",
+   "amount": 1701000
+  },
+  {
+   "office": "Bulacan 2nd DEO",
+   "leg": "Bulacan · 6th",
+   "amount": 1557636
+  },
+  {
+   "office": "Bulacan 2nd DEO",
+   "leg": "San Jose del Monte · Lone",
+   "amount": 1933154
+  },
+  {
+   "office": "Isabela 3rd DEO",
+   "leg": "Isabela · 2nd",
+   "amount": 1865369
+  },
+  {
+   "office": "Isabela 3rd DEO",
+   "leg": "Isabela · 3rd",
+   "amount": 1134816
+  },
+  {
+   "office": "Isabela 4th DEO",
+   "leg": "Isabela · 4th",
+   "amount": 2160654
+  },
+  {
+   "office": "Isabela 4th DEO",
+   "leg": "Isabela · 6th",
+   "amount": 3689000
+  },
+  {
+   "office": "Nueva Ecija 1st DEO",
+   "leg": "Nueva Ecija · 1st",
+   "amount": 3426750
+  },
+  {
+   "office": "Nueva Ecija 1st DEO",
+   "leg": "Nueva Ecija · 2nd",
+   "amount": 1757124
+  },
+  {
+   "office": "Nueva Ecija 2nd DEO",
+   "leg": "Nueva Ecija · 3rd",
+   "amount": 493825
+  },
+  {
+   "office": "Nueva Ecija 2nd DEO",
+   "leg": "Nueva Ecija · 4th",
+   "amount": 1824624
+  },
+  {
+   "office": "Pampanga 1st DEO",
+   "leg": "Pampanga · 3rd",
+   "amount": 2323940
+  },
+  {
+   "office": "Pampanga 1st DEO",
+   "leg": "Pampanga · 4th",
+   "amount": 1964619
+  },
+  {
+   "office": "Tarlac DEO",
+   "leg": "Tarlac · 1st",
+   "amount": 1308080
+  },
+  {
+   "office": "Tarlac DEO",
+   "leg": "Tarlac · 2nd",
+   "amount": 2008000
+  },
+  {
+   "office": "Batangas 2nd DEO",
+   "leg": "Batangas · 2nd",
+   "amount": 3113725
+  },
+  {
+   "office": "Batangas 2nd DEO",
+   "leg": "Batangas · 5th",
+   "amount": 1338896
+  },
+  {
+   "office": "Batangas 4th DEO",
+   "leg": "Batangas · 4th",
+   "amount": 1676617
+  },
+  {
+   "office": "Batangas 4th DEO",
+   "leg": "Batangas · 6th",
+   "amount": 3316000
+  },
+  {
+   "office": "Cavite 1st DEO",
+   "leg": "Cavite · 1st",
+   "amount": 1740638
+  },
+  {
+   "office": "Cavite 1st DEO",
+   "leg": "Cavite · 3rd",
+   "amount": 1353575
+  },
+  {
+   "office": "Cavite 1st DEO",
+   "leg": "Cavite · 6th",
+   "amount": 1143302
+  },
+  {
+   "office": "Cavite 1st DEO",
+   "leg": "Cavite · 7th",
+   "amount": 2059074
+  },
+  {
+   "office": "Cavite 3rd DEO",
+   "leg": "Cavite · 2nd",
+   "amount": 1672469
+  },
+  {
+   "office": "Cavite 3rd DEO",
+   "leg": "Cavite · 4th",
+   "amount": 500000
+  },
+  {
+   "office": "Cavite 3rd DEO",
+   "leg": "Cavite · 5th",
+   "amount": 1377304
+  },
+  {
+   "office": "Laguna 2nd DEO",
+   "leg": "Biñan · Lone",
+   "amount": 1240000
+  },
+  {
+   "office": "Laguna 2nd DEO",
+   "leg": "Calamba · Lone",
+   "amount": 1463709
+  },
+  {
+   "office": "Laguna 2nd DEO",
+   "leg": "Santa Rosa · Lone",
+   "amount": 668028
+  },
+  {
+   "office": "Laguna 2nd DEO",
+   "leg": "Laguna · 1st",
+   "amount": 899271
+  },
+  {
+   "office": "Laguna 2nd DEO",
+   "leg": "Laguna · 2nd",
+   "amount": 214874
+  },
+  {
+   "office": "Rizal 1st DEO",
+   "leg": "Antipolo · 1st",
+   "amount": 1026094
+  },
+  {
+   "office": "Rizal 1st DEO",
+   "leg": "Antipolo · 2nd",
+   "amount": 1202550
+  },
+  {
+   "office": "Rizal 1st DEO",
+   "leg": "Rizal · 1st",
+   "amount": 500000
+  },
+  {
+   "office": "Rizal 2nd DEO",
+   "leg": "Rizal · 2nd",
+   "amount": 500000
+  },
+  {
+   "office": "Rizal 2nd DEO",
+   "leg": "Rizal · 3rd",
+   "amount": 500000
+  },
+  {
+   "office": "Rizal 2nd DEO",
+   "leg": "Rizal · 4th",
+   "amount": 500000
+  },
+  {
+   "office": "BARMM",
+   "leg": "Basilan · Lone",
+   "amount": 188306
+  },
+  {
+   "office": "BARMM",
+   "leg": "Tawi-Tawi · Lone",
+   "amount": 309772
+  },
+  {
+   "office": "BARMM",
+   "leg": "Lanao del Sur · 1st",
+   "amount": 1892000
+  },
+  {
+   "office": "BARMM",
+   "leg": "Lanao del Sur · 2nd",
+   "amount": 657000
+  },
+  {
+   "office": "BARMM",
+   "leg": "Maguindanao del Norte · Lone",
+   "amount": 365500
+  },
+  {
+   "office": "BARMM",
+   "leg": "Maguindanao del Sur · Lone",
+   "amount": 1015000
+  },
+  {
+   "office": "Cebu 6th DEO",
+   "leg": "Mandaue · Lone",
+   "amount": 1283844
+  },
+  {
+   "office": "Cebu 6th DEO",
+   "leg": "Lapu-Lapu City · Lone",
+   "amount": 1972537
+  },
+  {
+   "office": "Cebu 6th DEO",
+   "leg": "Cebu · 6th",
+   "amount": 1437000
+  },
+  {
+   "office": "Cebu City DEO",
+   "leg": "Cebu City · 1st",
+   "amount": 565000
+  },
+  {
+   "office": "Cebu City DEO",
+   "leg": "Cebu City · 2nd",
+   "amount": 2136200
+  },
+  {
+   "office": "South Cotabato 1st DEO",
+   "leg": "South Cotabato · 1st",
+   "amount": 500000
+  },
+  {
+   "office": "South Cotabato 1st DEO",
+   "leg": "General Santos City · Lone",
+   "amount": 500000
+  },
+  {
+   "office": "Apayao 1st DEO",
+   "leg": "Apayao · Lone",
+   "amount": 1218898
+  },
+  {
+   "office": "Apayao 2nd DEO",
+   "leg": "Apayao · Lone",
+   "amount": 1423094
+  },
+  {
+   "office": "Benguet 1st DEO",
+   "leg": "Benguet · Lone",
+   "amount": 985237
+  },
+  {
+   "office": "Benguet 2nd DEO",
+   "leg": "Benguet · Lone",
+   "amount": 768000
+  },
+  {
+   "office": "Ifugao 1st DEO",
+   "leg": "Ifugao · Lone",
+   "amount": 1042807
+  },
+  {
+   "office": "Ifugao 2nd DEO",
+   "leg": "Ifugao · Lone",
+   "amount": 1202481
+  },
+  {
+   "office": "Lower Kalinga DEO",
+   "leg": "Kalinga · Lone",
+   "amount": 1468363
+  },
+  {
+   "office": "Upper Kalinga DEO",
+   "leg": "Kalinga · Lone",
+   "amount": 1180339
+  },
+  {
+   "office": "Mountain Province 1st DEO",
+   "leg": "Mountain Province · Lone",
+   "amount": 1092620
+  },
+  {
+   "office": "Mountain Province 2nd DEO",
+   "leg": "Mountain Province · Lone",
+   "amount": 1042133
+  },
+  {
+   "office": "Nueva Vizcaya DEO",
+   "leg": "Nueva Vizcaya · Lone",
+   "amount": 1407852
+  },
+  {
+   "office": "Nueva Vizcaya 2nd DEO",
+   "leg": "Nueva Vizcaya · Lone",
+   "amount": 918312
+  },
+  {
+   "office": "Leyte 1st DEO",
+   "leg": "Leyte · 1st",
+   "amount": 924954
+  },
+  {
+   "office": "Tacloban City DEO",
+   "leg": "Leyte · 1st",
+   "amount": 875000
+  },
+  {
+   "office": "Isabela City DEO",
+   "leg": "Basilan · Lone",
+   "amount": 205000
+  },
+  {
+   "office": "Zamboanga del Norte 3rd DEO",
+   "leg": "Zamboanga del Norte · 3rd",
+   "amount": 996571
+  },
+  {
+   "office": "Zamboanga del Norte 4th DEO",
+   "leg": "Zamboanga del Norte · 3rd",
+   "amount": 1555429
+  }
+ ]
+}
