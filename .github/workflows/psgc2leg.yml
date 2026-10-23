@@ -29,3 +29,7 @@ jobs:
         run: node PSGC2LEG/build.mjs --check
       - name: Verify geographic resolution behavior
         run: node --test PSGC2LEG/tests/*.test.mjs
+      - name: Check direct GPS CLI syntax and help
+        run: |
+          python3 -m py_compile PSGC2LEG/lookup_gps.py
+          python3 PSGC2LEG/lookup_gps.py --help
