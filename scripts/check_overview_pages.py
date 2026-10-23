@@ -48,7 +48,7 @@ def main():
                     assert '/app/?preview=overview#overview' in page.url
                     expect(page.get_by_role('heading', name='Budget allocation overview', exact=True)).to_be_visible()
                     nav = page.get_by_role('navigation', name='Workbench workspaces')
-                    assert nav.locator('a').all_text_contents() == ['Overview','DPWH','DA Farm-to-Market Roads','DOH Health Facilities','NIA Irrigation','Geolocation','Sources','About']
+                    assert nav.locator('a').all_text_contents() == ['Overview','DPWH','DA Farm-to-Market Roads','DOH Health Facilities','NIA Irrigation','Geolocation','Sources','About','Congress']
                     expect(nav.get_by_role('link',name='Overview',exact=True)).to_have_attribute('aria-current','page')
                     expect(page.get_by_role('navigation',name='Workbench pages')).to_have_count(0)
                     expect(page.locator('.overview-workspace-card')).to_have_count(4)
