@@ -85,3 +85,8 @@ Before publishing numeric codes, **manually audit** code-vintage changes, the ci
 5. Maintain representative **seat** resolution separately from geographic mapping; current ambiguous representative seats in DEO2LEG stay ambiguous.
 
 **No project-level budget allocations are made by this package.** Counts or amounts should only be aggregated from *unique geolocated projects*, not the DEO office ledger; a multi-district project must be described as spanning districts unless segment-level cost data supports a split.
+
+## Independently sourced validation benchmark
+
+See [OFFICIAL_SOURCE_AUDIT.md](OFFICIAL_SOURCE_AUDIT.md) for the 107-case comparison against six enacted laws and Quezon City's official barangay-to-district list. It finds one directly wrong seat assignment and numerous provisional conflicts/unresolved cases. The report is preserved as [outputs/official_crosscheck_report.json](outputs/official_crosscheck_report.json); no raw observations are overwritten.
+
