@@ -1,0 +1,1763 @@
+{
+  "schemaVersion": "1.0.0",
+  "benchmarkDate": "2026-10-23",
+  "benchmarkScope": "Selected independent statutes and official city-government barangay classifications, not nationwide verification.",
+  "officialReferenceList": [
+    {
+      "id": "RA11546",
+      "url": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "level": "municipality",
+      "placeCount": 23
+    },
+    {
+      "id": "RA11553",
+      "url": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "level": "municipality",
+      "placeCount": 12
+    },
+    {
+      "id": "RA11533",
+      "url": "https://lawphil.net/statutes/repacts/ra2021/ra_11533_2021.html",
+      "level": "municipality",
+      "placeCount": 9
+    },
+    {
+      "id": "RA11804",
+      "url": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "level": "municipality",
+      "placeCount": 11
+    },
+    {
+      "id": "RA11714",
+      "url": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "level": "municipality",
+      "placeCount": 11
+    },
+    {
+      "id": "QC_COUNCIL",
+      "url": "https://qccouncil.quezoncity.gov.ph/",
+      "level": "barangay",
+      "placeCount": 30
+    },
+    {
+      "id": "RA11545",
+      "url": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "level": "barangay",
+      "placeCount": 11
+    }
+  ],
+  "summary": {
+    "checked": 107,
+    "agreement": 46,
+    "wrong_assignment": 1,
+    "source_conflict": 38,
+    "unmatched_seat": 11,
+    "unmapped": 11,
+    "bySource": {
+      "RA11546": {
+        "checked": 23,
+        "agreement": 7,
+        "wrong_assignment": 1,
+        "source_conflict": 15,
+        "unmatched_seat": 0,
+        "unmapped": 0
+      },
+      "RA11553": {
+        "checked": 12,
+        "agreement": 12,
+        "wrong_assignment": 0,
+        "source_conflict": 0,
+        "unmatched_seat": 0,
+        "unmapped": 0
+      },
+      "RA11533": {
+        "checked": 9,
+        "agreement": 9,
+        "wrong_assignment": 0,
+        "source_conflict": 0,
+        "unmatched_seat": 0,
+        "unmapped": 0
+      },
+      "RA11804": {
+        "checked": 11,
+        "agreement": 11,
+        "wrong_assignment": 0,
+        "source_conflict": 0,
+        "unmatched_seat": 0,
+        "unmapped": 0
+      },
+      "RA11714": {
+        "checked": 11,
+        "agreement": 0,
+        "wrong_assignment": 0,
+        "source_conflict": 0,
+        "unmatched_seat": 11,
+        "unmapped": 0
+      },
+      "QC_COUNCIL": {
+        "checked": 30,
+        "agreement": 7,
+        "wrong_assignment": 0,
+        "source_conflict": 23,
+        "unmatched_seat": 0,
+        "unmapped": 0
+      },
+      "RA11545": {
+        "checked": 11,
+        "agreement": 0,
+        "wrong_assignment": 0,
+        "source_conflict": 0,
+        "unmatched_seat": 0,
+        "unmapped": 11
+      }
+    }
+  },
+  "findings": [
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Calumpit",
+      "expectedDistrictId": "leg:bulacan:1st",
+      "observedDistrictId": "leg:bulacan:1st",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bulacan:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Hagonoy",
+      "expectedDistrictId": "leg:bulacan:1st",
+      "observedDistrictId": "leg:bulacan:1st",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bulacan:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Paombong",
+      "expectedDistrictId": "leg:bulacan:1st",
+      "observedDistrictId": "leg:bulacan:1st",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bulacan:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Pulilan",
+      "expectedDistrictId": "leg:bulacan:1st",
+      "observedDistrictId": "leg:bulacan:1st",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bulacan:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Bulakan",
+      "expectedDistrictId": "leg:bulacan:1st",
+      "observedDistrictId": "leg:bulacan:1st",
+      "verdict": "agreement",
+      "lookupStatus": "single_source_provisional",
+      "candidates": [
+        "leg:bulacan:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "City of Malolos",
+      "expectedDistrictId": "leg:bulacan:1st",
+      "observedDistrictId": "leg:bulacan:1st",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bulacan:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Baliuag",
+      "expectedDistrictId": "leg:bulacan:2nd",
+      "observedDistrictId": "leg:bulacan:4th",
+      "verdict": "wrong_assignment",
+      "lookupStatus": "single_source_provisional",
+      "candidates": [
+        "leg:bulacan:4th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Bustos",
+      "expectedDistrictId": "leg:bulacan:2nd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:2nd",
+        "leg:bulacan:3rd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Plaridel",
+      "expectedDistrictId": "leg:bulacan:2nd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:2nd",
+        "leg:bulacan:3rd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "San Ildefonso",
+      "expectedDistrictId": "leg:bulacan:3rd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:3rd",
+        "leg:bulacan:4th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "San Miguel",
+      "expectedDistrictId": "leg:bulacan:3rd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:3rd",
+        "leg:bulacan:4th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "San Rafael",
+      "expectedDistrictId": "leg:bulacan:3rd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:3rd",
+        "leg:bulacan:4th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Doña Remedios Trinidad",
+      "expectedDistrictId": "leg:bulacan:3rd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:3rd",
+        "leg:bulacan:4th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Obando",
+      "expectedDistrictId": "leg:bulacan:4th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:2nd",
+        "leg:bulacan:4th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Marilao",
+      "expectedDistrictId": "leg:bulacan:4th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:4th",
+        "leg:bulacan:6th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "City of Meycauayan",
+      "expectedDistrictId": "leg:bulacan:4th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:4th",
+        "leg:bulacan:6th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Guiguinto",
+      "expectedDistrictId": "leg:bulacan:5th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:5th",
+        "leg:bulacan:6th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Balagtas",
+      "expectedDistrictId": "leg:bulacan:5th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:5th",
+        "leg:bulacan:6th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Pandi",
+      "expectedDistrictId": "leg:bulacan:5th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:5th",
+        "leg:bulacan:6th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Bocaue",
+      "expectedDistrictId": "leg:bulacan:5th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:5th",
+        "leg:bulacan:6th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Santa Maria",
+      "expectedDistrictId": "leg:bulacan:6th",
+      "observedDistrictId": "leg:bulacan:6th",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bulacan:6th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Norzagaray",
+      "expectedDistrictId": "leg:bulacan:6th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:4th",
+        "leg:bulacan:6th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11546",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bulacan",
+      "place": "Angat",
+      "expectedDistrictId": "leg:bulacan:6th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:bulacan:4th",
+        "leg:bulacan:6th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11553",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bataan",
+      "place": "Hermosa",
+      "expectedDistrictId": "leg:bataan:1st",
+      "observedDistrictId": "leg:bataan:1st",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bataan:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11553",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bataan",
+      "place": "Orani",
+      "expectedDistrictId": "leg:bataan:1st",
+      "observedDistrictId": "leg:bataan:1st",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bataan:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11553",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bataan",
+      "place": "Samal",
+      "expectedDistrictId": "leg:bataan:1st",
+      "observedDistrictId": "leg:bataan:1st",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bataan:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11553",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bataan",
+      "place": "Abucay",
+      "expectedDistrictId": "leg:bataan:1st",
+      "observedDistrictId": "leg:bataan:1st",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bataan:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11553",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bataan",
+      "place": "City of Balanga",
+      "expectedDistrictId": "leg:bataan:2nd",
+      "observedDistrictId": "leg:bataan:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bataan:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11553",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bataan",
+      "place": "Orion",
+      "expectedDistrictId": "leg:bataan:2nd",
+      "observedDistrictId": "leg:bataan:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bataan:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11553",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bataan",
+      "place": "Pilar",
+      "expectedDistrictId": "leg:bataan:2nd",
+      "observedDistrictId": "leg:bataan:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bataan:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11553",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bataan",
+      "place": "Limay",
+      "expectedDistrictId": "leg:bataan:2nd",
+      "observedDistrictId": "leg:bataan:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bataan:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11553",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bataan",
+      "place": "Bagac",
+      "expectedDistrictId": "leg:bataan:3rd",
+      "observedDistrictId": "leg:bataan:3rd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bataan:3rd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11553",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bataan",
+      "place": "Morong",
+      "expectedDistrictId": "leg:bataan:3rd",
+      "observedDistrictId": "leg:bataan:3rd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bataan:3rd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11553",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bataan",
+      "place": "Dinalupihan",
+      "expectedDistrictId": "leg:bataan:3rd",
+      "observedDistrictId": "leg:bataan:3rd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bataan:3rd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11553",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Bataan",
+      "place": "Mariveles",
+      "expectedDistrictId": "leg:bataan:3rd",
+      "observedDistrictId": "leg:bataan:3rd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:bataan:3rd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11533",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11533_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Rizal",
+      "place": "Cardona",
+      "expectedDistrictId": "leg:rizal:2nd",
+      "observedDistrictId": "leg:rizal:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:rizal:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11533",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11533_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Rizal",
+      "place": "Baras",
+      "expectedDistrictId": "leg:rizal:2nd",
+      "observedDistrictId": "leg:rizal:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:rizal:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11533",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11533_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Rizal",
+      "place": "Tanay",
+      "expectedDistrictId": "leg:rizal:2nd",
+      "observedDistrictId": "leg:rizal:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:rizal:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11533",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11533_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Rizal",
+      "place": "Morong",
+      "expectedDistrictId": "leg:rizal:2nd",
+      "observedDistrictId": "leg:rizal:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:rizal:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11533",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11533_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Rizal",
+      "place": "Jalajala",
+      "expectedDistrictId": "leg:rizal:2nd",
+      "observedDistrictId": "leg:rizal:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "single_source_provisional",
+      "candidates": [
+        "leg:rizal:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11533",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11533_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Rizal",
+      "place": "Pililla",
+      "expectedDistrictId": "leg:rizal:2nd",
+      "observedDistrictId": "leg:rizal:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:rizal:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11533",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11533_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Rizal",
+      "place": "Teresa",
+      "expectedDistrictId": "leg:rizal:2nd",
+      "observedDistrictId": "leg:rizal:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:rizal:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11533",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11533_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Rizal",
+      "place": "San Mateo",
+      "expectedDistrictId": "leg:rizal:3rd",
+      "observedDistrictId": "leg:rizal:3rd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:rizal:3rd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11533",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11533_2021.html",
+      "scope": "municipality",
+      "jurisdiction": "Rizal",
+      "place": "Rodriguez",
+      "expectedDistrictId": "leg:rizal:4th",
+      "observedDistrictId": "leg:rizal:4th",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:rizal:4th"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11804",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "South Cotabato",
+      "place": "Polomolok",
+      "expectedDistrictId": "leg:south-cotabato:1st",
+      "observedDistrictId": "leg:south-cotabato:1st",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:south-cotabato:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11804",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "South Cotabato",
+      "place": "Tampakan",
+      "expectedDistrictId": "leg:south-cotabato:1st",
+      "observedDistrictId": "leg:south-cotabato:1st",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:south-cotabato:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11804",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "South Cotabato",
+      "place": "Tupi",
+      "expectedDistrictId": "leg:south-cotabato:1st",
+      "observedDistrictId": "leg:south-cotabato:1st",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:south-cotabato:1st"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11804",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "South Cotabato",
+      "place": "City of Koronadal",
+      "expectedDistrictId": "leg:south-cotabato:2nd",
+      "observedDistrictId": "leg:south-cotabato:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:south-cotabato:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11804",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "South Cotabato",
+      "place": "Banga",
+      "expectedDistrictId": "leg:south-cotabato:2nd",
+      "observedDistrictId": "leg:south-cotabato:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:south-cotabato:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11804",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "South Cotabato",
+      "place": "Tantangan",
+      "expectedDistrictId": "leg:south-cotabato:2nd",
+      "observedDistrictId": "leg:south-cotabato:2nd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:south-cotabato:2nd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11804",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "South Cotabato",
+      "place": "Norala",
+      "expectedDistrictId": "leg:south-cotabato:3rd",
+      "observedDistrictId": "leg:south-cotabato:3rd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:south-cotabato:3rd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11804",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "South Cotabato",
+      "place": "Santo Niño",
+      "expectedDistrictId": "leg:south-cotabato:3rd",
+      "observedDistrictId": "leg:south-cotabato:3rd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:south-cotabato:3rd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11804",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "South Cotabato",
+      "place": "Surallah",
+      "expectedDistrictId": "leg:south-cotabato:3rd",
+      "observedDistrictId": "leg:south-cotabato:3rd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:south-cotabato:3rd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11804",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "South Cotabato",
+      "place": "Lake Sebu",
+      "expectedDistrictId": "leg:south-cotabato:3rd",
+      "observedDistrictId": "leg:south-cotabato:3rd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:south-cotabato:3rd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11804",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "South Cotabato",
+      "place": "T'boli",
+      "expectedDistrictId": "leg:south-cotabato:3rd",
+      "observedDistrictId": "leg:south-cotabato:3rd",
+      "verdict": "agreement",
+      "lookupStatus": "corroborated_provisional",
+      "candidates": [
+        "leg:south-cotabato:3rd"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11714",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "Agusan del Norte",
+      "place": "City of Cabadbaran",
+      "expectedDistrictId": "leg:agusan-del-norte:lone",
+      "observedDistrictId": null,
+      "verdict": "unmatched_seat",
+      "lookupStatus": "unmatched_seat",
+      "candidates": [
+        "leg:agusan-del-norte:lone"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11714",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "Agusan del Norte",
+      "place": "Las Nieves",
+      "expectedDistrictId": "leg:agusan-del-norte:lone",
+      "observedDistrictId": null,
+      "verdict": "unmatched_seat",
+      "lookupStatus": "unmatched_seat",
+      "candidates": [
+        "leg:agusan-del-norte:lone"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11714",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "Agusan del Norte",
+      "place": "Buenavista",
+      "expectedDistrictId": "leg:agusan-del-norte:lone",
+      "observedDistrictId": null,
+      "verdict": "unmatched_seat",
+      "lookupStatus": "unmatched_seat",
+      "candidates": [
+        "leg:agusan-del-norte:lone"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11714",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "Agusan del Norte",
+      "place": "Carmen",
+      "expectedDistrictId": "leg:agusan-del-norte:lone",
+      "observedDistrictId": null,
+      "verdict": "unmatched_seat",
+      "lookupStatus": "unmatched_seat",
+      "candidates": [
+        "leg:agusan-del-norte:lone"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11714",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "Agusan del Norte",
+      "place": "Jabonga",
+      "expectedDistrictId": "leg:agusan-del-norte:lone",
+      "observedDistrictId": null,
+      "verdict": "unmatched_seat",
+      "lookupStatus": "unmatched_seat",
+      "candidates": [
+        "leg:agusan-del-norte:lone"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11714",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "Agusan del Norte",
+      "place": "Kitcharao",
+      "expectedDistrictId": "leg:agusan-del-norte:lone",
+      "observedDistrictId": null,
+      "verdict": "unmatched_seat",
+      "lookupStatus": "unmatched_seat",
+      "candidates": [
+        "leg:agusan-del-norte:lone"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11714",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "Agusan del Norte",
+      "place": "Magallanes",
+      "expectedDistrictId": "leg:agusan-del-norte:lone",
+      "observedDistrictId": null,
+      "verdict": "unmatched_seat",
+      "lookupStatus": "unmatched_seat",
+      "candidates": [
+        "leg:agusan-del-norte:lone"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11714",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "Agusan del Norte",
+      "place": "Nasipit",
+      "expectedDistrictId": "leg:agusan-del-norte:lone",
+      "observedDistrictId": null,
+      "verdict": "unmatched_seat",
+      "lookupStatus": "unmatched_seat",
+      "candidates": [
+        "leg:agusan-del-norte:lone"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11714",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "Agusan del Norte",
+      "place": "Remedios T. Romualdez",
+      "expectedDistrictId": "leg:agusan-del-norte:lone",
+      "observedDistrictId": null,
+      "verdict": "unmatched_seat",
+      "lookupStatus": "unmatched_seat",
+      "candidates": [
+        "leg:agusan-del-norte:lone"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11714",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "Agusan del Norte",
+      "place": "Santiago",
+      "expectedDistrictId": "leg:agusan-del-norte:lone",
+      "observedDistrictId": null,
+      "verdict": "unmatched_seat",
+      "lookupStatus": "unmatched_seat",
+      "candidates": [
+        "leg:agusan-del-norte:lone"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "RA11714",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "scope": "municipality",
+      "jurisdiction": "Agusan del Norte",
+      "place": "Tubay",
+      "expectedDistrictId": "leg:agusan-del-norte:lone",
+      "observedDistrictId": null,
+      "verdict": "unmatched_seat",
+      "lookupStatus": "unmatched_seat",
+      "candidates": [
+        "leg:agusan-del-norte:lone"
+      ],
+      "matchMethod": "province_municipality_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Alicia",
+      "expectedDistrictId": "leg:quezon-city:1st",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Bagong Pag-asa",
+      "expectedDistrictId": "leg:quezon-city:1st",
+      "observedDistrictId": "leg:quezon-city:1st",
+      "verdict": "agreement",
+      "lookupStatus": "single_source_provisional",
+      "candidates": [
+        "leg:quezon-city:1st"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Bahay Toro",
+      "expectedDistrictId": "leg:quezon-city:1st",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Balingasa",
+      "expectedDistrictId": "leg:quezon-city:1st",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Project 6",
+      "expectedDistrictId": "leg:quezon-city:1st",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Bagong Silangan",
+      "expectedDistrictId": "leg:quezon-city:2nd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:2nd",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:4th",
+        "leg:quezon-city:5th",
+        "leg:quezon-city:6th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Batasan Hills",
+      "expectedDistrictId": "leg:quezon-city:2nd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:2nd",
+        "leg:quezon-city:4th",
+        "leg:quezon-city:5th",
+        "leg:quezon-city:6th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Commonwealth",
+      "expectedDistrictId": "leg:quezon-city:2nd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:2nd",
+        "leg:quezon-city:4th",
+        "leg:quezon-city:5th",
+        "leg:quezon-city:6th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Holy Spirit",
+      "expectedDistrictId": "leg:quezon-city:2nd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:2nd",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:4th",
+        "leg:quezon-city:5th",
+        "leg:quezon-city:6th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Payatas",
+      "expectedDistrictId": "leg:quezon-city:2nd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:2nd",
+        "leg:quezon-city:4th",
+        "leg:quezon-city:5th",
+        "leg:quezon-city:6th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Amihan",
+      "expectedDistrictId": "leg:quezon-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Bagumbayan",
+      "expectedDistrictId": "leg:quezon-city:3rd",
+      "observedDistrictId": "leg:quezon-city:3rd",
+      "verdict": "agreement",
+      "lookupStatus": "single_source_provisional",
+      "candidates": [
+        "leg:quezon-city:3rd"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Loyola Heights",
+      "expectedDistrictId": "leg:quezon-city:3rd",
+      "observedDistrictId": "leg:quezon-city:3rd",
+      "verdict": "agreement",
+      "lookupStatus": "single_source_provisional",
+      "candidates": [
+        "leg:quezon-city:3rd"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Ugong Norte",
+      "expectedDistrictId": "leg:quezon-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "White Plains",
+      "expectedDistrictId": "leg:quezon-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Botocan",
+      "expectedDistrictId": "leg:quezon-city:4th",
+      "observedDistrictId": "leg:quezon-city:4th",
+      "verdict": "agreement",
+      "lookupStatus": "single_source_provisional",
+      "candidates": [
+        "leg:quezon-city:4th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Kamuning",
+      "expectedDistrictId": "leg:quezon-city:4th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:4th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Laging Handa",
+      "expectedDistrictId": "leg:quezon-city:4th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:4th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Kalusugan",
+      "expectedDistrictId": "leg:quezon-city:4th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:4th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Kaunlaran",
+      "expectedDistrictId": "leg:quezon-city:4th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:4th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Bagbag",
+      "expectedDistrictId": "leg:quezon-city:5th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:5th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Fairview",
+      "expectedDistrictId": "leg:quezon-city:5th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:5th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Greater Lagro",
+      "expectedDistrictId": "leg:quezon-city:5th",
+      "observedDistrictId": "leg:quezon-city:5th",
+      "verdict": "agreement",
+      "lookupStatus": "single_source_provisional",
+      "candidates": [
+        "leg:quezon-city:5th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "North Fairview",
+      "expectedDistrictId": "leg:quezon-city:5th",
+      "observedDistrictId": "leg:quezon-city:5th",
+      "verdict": "agreement",
+      "lookupStatus": "single_source_provisional",
+      "candidates": [
+        "leg:quezon-city:5th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "San Bartolome",
+      "expectedDistrictId": "leg:quezon-city:5th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:5th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "New Era",
+      "expectedDistrictId": "leg:quezon-city:6th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:6th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Pasong Tamo",
+      "expectedDistrictId": "leg:quezon-city:6th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:6th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Sauyo",
+      "expectedDistrictId": "leg:quezon-city:6th",
+      "observedDistrictId": "leg:quezon-city:6th",
+      "verdict": "agreement",
+      "lookupStatus": "single_source_provisional",
+      "candidates": [
+        "leg:quezon-city:6th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Tandang Sora",
+      "expectedDistrictId": "leg:quezon-city:6th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:6th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "QC_COUNCIL",
+      "sourceUrl": "https://qccouncil.quezoncity.gov.ph/",
+      "scope": "barangay",
+      "jurisdiction": "Quezon City",
+      "place": "Talipapa",
+      "expectedDistrictId": "leg:quezon-city:6th",
+      "observedDistrictId": null,
+      "verdict": "source_conflict",
+      "lookupStatus": "conflict",
+      "candidates": [
+        "leg:quezon-city:1st",
+        "leg:quezon-city:3rd",
+        "leg:quezon-city:6th"
+      ],
+      "matchMethod": "city_barangay_name"
+    },
+    {
+      "source": "RA11545",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "scope": "barangay",
+      "jurisdiction": "Caloocan City",
+      "place": "Barangay 178",
+      "expectedDistrictId": "leg:caloocan-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "unmapped",
+      "lookupStatus": "unmapped",
+      "candidates": [],
+      "matchMethod": "none"
+    },
+    {
+      "source": "RA11545",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "scope": "barangay",
+      "jurisdiction": "Caloocan City",
+      "place": "Barangay 179",
+      "expectedDistrictId": "leg:caloocan-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "unmapped",
+      "lookupStatus": "unmapped",
+      "candidates": [],
+      "matchMethod": "none"
+    },
+    {
+      "source": "RA11545",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "scope": "barangay",
+      "jurisdiction": "Caloocan City",
+      "place": "Barangay 180",
+      "expectedDistrictId": "leg:caloocan-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "unmapped",
+      "lookupStatus": "unmapped",
+      "candidates": [],
+      "matchMethod": "none"
+    },
+    {
+      "source": "RA11545",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "scope": "barangay",
+      "jurisdiction": "Caloocan City",
+      "place": "Barangay 181",
+      "expectedDistrictId": "leg:caloocan-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "unmapped",
+      "lookupStatus": "unmapped",
+      "candidates": [],
+      "matchMethod": "none"
+    },
+    {
+      "source": "RA11545",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "scope": "barangay",
+      "jurisdiction": "Caloocan City",
+      "place": "Barangay 182",
+      "expectedDistrictId": "leg:caloocan-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "unmapped",
+      "lookupStatus": "unmapped",
+      "candidates": [],
+      "matchMethod": "none"
+    },
+    {
+      "source": "RA11545",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "scope": "barangay",
+      "jurisdiction": "Caloocan City",
+      "place": "Barangay 183",
+      "expectedDistrictId": "leg:caloocan-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "unmapped",
+      "lookupStatus": "unmapped",
+      "candidates": [],
+      "matchMethod": "none"
+    },
+    {
+      "source": "RA11545",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "scope": "barangay",
+      "jurisdiction": "Caloocan City",
+      "place": "Barangay 184",
+      "expectedDistrictId": "leg:caloocan-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "unmapped",
+      "lookupStatus": "unmapped",
+      "candidates": [],
+      "matchMethod": "none"
+    },
+    {
+      "source": "RA11545",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "scope": "barangay",
+      "jurisdiction": "Caloocan City",
+      "place": "Barangay 185",
+      "expectedDistrictId": "leg:caloocan-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "unmapped",
+      "lookupStatus": "unmapped",
+      "candidates": [],
+      "matchMethod": "none"
+    },
+    {
+      "source": "RA11545",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "scope": "barangay",
+      "jurisdiction": "Caloocan City",
+      "place": "Barangay 186",
+      "expectedDistrictId": "leg:caloocan-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "unmapped",
+      "lookupStatus": "unmapped",
+      "candidates": [],
+      "matchMethod": "none"
+    },
+    {
+      "source": "RA11545",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "scope": "barangay",
+      "jurisdiction": "Caloocan City",
+      "place": "Barangay 187",
+      "expectedDistrictId": "leg:caloocan-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "unmapped",
+      "lookupStatus": "unmapped",
+      "candidates": [],
+      "matchMethod": "none"
+    },
+    {
+      "source": "RA11545",
+      "sourceUrl": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "scope": "barangay",
+      "jurisdiction": "Caloocan City",
+      "place": "Barangay 188",
+      "expectedDistrictId": "leg:caloocan-city:3rd",
+      "observedDistrictId": null,
+      "verdict": "unmapped",
+      "lookupStatus": "unmapped",
+      "candidates": [],
+      "matchMethod": "none"
+    }
+  ]
+}
