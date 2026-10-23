@@ -31,10 +31,14 @@ const skip = haveIndex ? false : { skip: "congress datasets not built — run pr
 const read = (name) => JSON.parse(fs.readFileSync(new URL(name, DATA), "utf8"));
 
 // SortableTable and ShareLink read location during render; provide the
-// browser globals static markup expects.
+// browser globals static markup expects. navigator is assigned only when
+// absent: Node >= 22 ships it as a getter-only global, and re-assigning
+// (even x = x ?? fallback) throws "which has only a getter".
 globalThis.location = new URL("http://localhost/#congress");
 globalThis.window = globalThis;
-globalThis.navigator = globalThis.navigator ?? {clipboard: {writeText: async () => {}}};
+if (!globalThis.navigator) {
+  globalThis.navigator = {clipboard: {writeText: async () => {}}};
+}
 
 const route = (key, params = "") => ({key, params: new URLSearchParams(params)});
 
