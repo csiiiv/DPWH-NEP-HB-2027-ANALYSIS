@@ -1,0 +1,40 @@
+name: COMELEC electoral geography source checks
+
+on:
+  pull_request:
+    paths:
+      - 'COMELEC/**'
+      - '.github/workflows/comelec-root.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'COMELEC/**'
+      - '.github/workflows/comelec-root.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-layer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test official-source type classification
+        run: python3 -m unittest discover -s COMELEC/tests -p 'test_*.py' -v
+      - name: Audit source manifest schema and official seat control
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('COMELEC/sources/source_manifest.json').read_text())
+          assert data['houseSeatsExpected'] == 254
+          assert len(data['layers']) == 5
+          assert all('fileStatus' in x for x in data['layers'])
+          assert data['layers'][0]['category'] == 'electoral_baseline'
+          assert data['layers'][1]['fileStatus'] == 'cited_by_psa_primary_file_not_yet_retrieved'
+          print('COMELEC source acquisition status accurately captured.')
+          PY

@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "1.0.0",
+  "policy": "Electoral source of truth first; PSA PSGC is a separate authoritative administrative namespace. No inferred legislative boundary from councilor district number, voter count, or PSGC code prefix.",
+  "baselineElection": "2025-05-12",
+  "houseSeatsExpected": 254,
+  "layers": [
+    {
+      "id": "comelec_2025_elective_positions",
+      "rank": 1,
+      "category": "electoral_baseline",
+      "publisher": "Commission on Elections",
+      "asOf": "2024-12-20",
+      "appliesTo": "2025-05-12",
+      "url": "https://www.comelec.gov.ph/php-tpls-attachments/2025NLE/Statistics/12202024_NoOfElectivePositions2025NLE.pdf",
+      "title": "Number of Elective Positions to be Voted for, 12 May 2025 NLE",
+      "format": "pdf",
+      "localPath": "sources/2025/12202024_NoOfElectivePositions2025NLE.pdf",
+      "fileStatus": "remote_identified_not_vendored",
+      "use": "2025 seat counts; typed Legislative District headings and municipality/city participation",
+      "constraints": [
+        "Mixed congressional, provincial and city-council district sections; never conflate.",
+        "May not enumerate barangays within subdivided cities.",
+        "Automatic text extraction is review-required."
+      ]
+    },
+    {
+      "id": "comelec_2025_barangay_geography",
+      "rank": 1,
+      "category": "electoral_baseline",
+      "publisher": "Commission on Elections",
+      "appliesTo": "2025-05-12",
+      "title": "List of Barangays by Legislative/Councilor District",
+      "referenceUrl": "https://psa.gov.ph/system/files/phcd/Press%20Release%20on%20Legislative%20District%20%282024%20POPCEN%29.pdf",
+      "fileStatus": "cited_by_psa_primary_file_not_yet_retrieved",
+      "use": "Direct barangay membership for subdivided congressional districts",
+      "constraints": [
+        "PSA cites this COMELEC list but report does not reproduce all rows.",
+        "Capture legislative and councilor district type explicitly."
+      ]
+    },
+    {
+      "id": "legal_reapportionment",
+      "rank": 2,
+      "category": "statutory_changes",
+      "publisher": "Congress / Commission on Elections",
+      "asOf": "through_2025",
+      "referencePath": "../PSGC2LEG/sources/official_reference_cases.json",
+      "fileStatus": "partial_statutory_fixture_available",
+      "use": "Effective-election, statute-backed overrides; may supersede earlier election geography only in the correct temporal interval."
+    },
+    {
+      "id": "psa_psgc_2026q3",
+      "rank": 3,
+      "category": "administrative_identity",
+      "publisher": "Philippine Statistics Authority",
+      "asOf": "2026-09-30",
+      "url": "https://psa.gov.ph/classification/psgc",
+      "fileStatus": "source_page_identified_not_vendored",
+      "use": "Authoritative geographic unit existence, code, name and hierarchy; NOT electoral seats."
+    },
+    {
+      "id": "uacs_historical_crosswalk",
+      "rank": 4,
+      "category": "historical_comparison",
+      "publisher": "Unified Accounts Code Structure",
+      "url": "https://uacs.gov.ph/resources/legislative-district-mapping",
+      "fileStatus": "xlsx_identified_not_vendored_vintage_unverified",
+      "use": "Historical QA and redistricting-change detection; not current seat truth."
+    }
+  ],
+  "nationalControlTotal": {
+    "count": 254,
+    "source": "Philippine Statistics Authority 2024 POPCEN Legislative Districts release, September 12 2025",
+    "url": "https://psa.gov.ph/system/files/phcd/Press%20Release%20on%20Legislative%20District%20%282024%20POPCEN%29.pdf"
+  },
+  "auditRequirements": [
+    "Every geographic membership must cite a page or row in the electoral source or applicable law.",
+    "District type must be house_legislative before it can enter PSGC2LEG.",
+    "Missing rows remain unknown, not automatically filled from a councilor or province district.",
+    "Join PSGC codes only after administrative vintage reconciliation.",
+    "No attribution of budget authorship from a geographic district alone."
+  ]
+}
