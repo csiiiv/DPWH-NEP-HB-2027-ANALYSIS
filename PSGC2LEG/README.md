@@ -90,3 +90,8 @@ Before publishing numeric codes, **manually audit** code-vintage changes, the ci
 
 See [OFFICIAL_SOURCE_AUDIT.md](OFFICIAL_SOURCE_AUDIT.md) for the 107-case comparison against six enacted laws and Quezon City's official barangay-to-district list. It finds one directly wrong seat assignment and numerous provisional conflicts/unresolved cases. The report is preserved as [outputs/official_crosscheck_report.json](outputs/official_crosscheck_report.json); no raw observations are overwritten.
 
+
+## Complete administrative source and PSA comparison
+
+**Do not use the partial BetterGov electoral reference to enumerate barangays.** The complete 2026 PSGC-derived geographic hierarchy (42,010 barangays and 43,768 records including geographic sublevels) is in [PSGC_SOURCE_OF_TRUTH.md](PSGC_SOURCE_OF_TRUTH.md). PSGC-code traversal is provided by `psgc_registry.mjs`; a strict standalone importer `audit_official_psgc.py` checks this third-party snapshot against the official PSA Excel workbook and records source hashes and differences. The original PSA workbook was not fetched for this branch, so the snapshot is not yet original-source verified.
+
