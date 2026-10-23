@@ -1,0 +1,148 @@
+/* #congress workspace: district cards + project explorer.
+   Reuses .fmr-stat / .fmr-badge / .fmr-dialog from Fmr.css; this file owns the
+   card grid, tier badges and the record drawer. */
+
+.congress-disclaimer { max-width:90ch; margin-top:10px; }
+
+/* --- controls ---------------------------------------------------------- */
+.congress-controls { display:flex; align-items:flex-end; flex-wrap:wrap; gap:12px; margin:20px 0; }
+.congress-controls label { display:flex; flex-direction:column; gap:5px; font-size:13px; flex:1; min-width:180px; }
+.congress-controls input, .congress-controls select { width:100%; min-width:0; padding:8px 10px; border:1px solid #c9d6e5; border-radius:7px; background:white; }
+.congress-count { font-size:13px; font-weight:650; color:#516780; white-space:nowrap; }
+.congress-result-bar { display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin:18px 0; }
+.congress-empty { padding:24px; background:white; border:1px dashed #c9d6e5; border-radius:10px; }
+
+/* --- card grid --------------------------------------------------------- */
+/* Cards stretch to a uniform height per row (align-items:stretch), and the
+   footer is pinned with margin-top:auto below, so every card in a row shares
+   one height and one footer baseline no matter how many seats it lists. */
+.congress-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:16px; align-items:stretch; }
+.congress-card { background:white; border:1px solid #d9e2ed; border-left:4px solid #c9d6e5; border-radius:10px; padding:16px; display:flex; flex-direction:column; gap:12px; }
+.congress-card.tier-A { border-left-color:#245fa8; }
+.congress-card.tier-B { border-left-color:#b07a1e; }
+.congress-card.tier-none { border-left-color:#8a8f98; background:#fbfcfd; }
+.congress-card.no-money { color:#4c5661; }
+.congress-card-head { display:flex; gap:12px; align-items:flex-start; }
+.congress-card-title { min-width:0; flex:1; }
+.congress-card-title h3 { margin:4px 0 6px; font-size:17px; line-height:1.25; overflow-wrap:anywhere; }
+.congress-card-open { background:none; border:0; padding:0; font:inherit; font-weight:650; color:#1d4e89; cursor:pointer; text-align:left; }
+.congress-card-open:hover { text-decoration:underline; }
+.congress-district { font-size:12.5px; color:#516780; text-transform:uppercase; letter-spacing:.04em; margin:0; }
+.congress-badges { display:flex; gap:6px; flex-wrap:wrap; margin:0; }
+
+.congress-portrait { width:64px; height:86px; object-fit:cover; border-radius:7px; border:1px solid #d9e2ed; background:#eef3f9; flex:none; }
+.congress-portrait-empty { width:64px; height:86px; border-radius:7px; border:1px dashed #d9e2ed; background:#f4f7fb; flex:none; }
+
+/* --- tier + leadership badges ------------------------------------------ */
+.congress-tier { font-size:11px; font-weight:700; letter-spacing:.03em; padding:3px 8px; border-radius:20px; border:1px solid; white-space:nowrap; }
+.congress-tier.tier-A { color:#1d4e89; border-color:#b3cbe8; background:#eef4fb; }
+.congress-tier.tier-B { color:#7d5610; border-color:#e3cd9c; background:#fdf6e6; }
+.congress-tier.tier-none { color:#5a6270; border-color:#cfd5dd; background:#f1f3f6; }
+.congress-leadership { font-size:11px; font-weight:700; padding:3px 8px; border-radius:20px; color:#5b2d82; border:1px solid #d9c2ec; background:#f7f0fd; white-space:nowrap; }
+
+/* --- seats ------------------------------------------------------------- */
+.congress-seats { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; font-size:13px; }
+.congress-seats li { display:flex; flex-wrap:wrap; gap:6px; align-items:baseline; padding-bottom:6px; border-bottom:1px dotted #e3e9f1; }
+.congress-seats li:last-child { border-bottom:0; padding-bottom:0; }
+.congress-seat-district { font-weight:650; color:#3c4a5a; min-width:8.5em; }
+.congress-seat-rep { color:#1f2a37; }
+.congress-seat-rep a { margin-left:5px; color:#1d4e89; text-decoration:none; font-size:12px; }
+.congress-seat-rep a:hover { text-decoration:underline; }
+.congress-seat-ambiguous { color:#8a5a10; font-style:italic; }
+
+/* --- bucket lines ------------------------------------------------------ */
+.congress-buckets { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px; font-size:13px; }
+.congress-bucket { display:flex; gap:10px; align-items:baseline; }
+.congress-bucket-label { min-width:6.5em; color:#516780; font-weight:600; cursor:help; }
+.congress-bucket-value { flex:1; overflow-wrap:anywhere; }
+.congress-bucket-value strong { font-weight:700; }
+.congress-bucket-side { display:block; color:#6b7c8f; font-size:11.5px; }
+.congress-bucket.empty .congress-bucket-value { color:#9aa7b4; }
+.congress-bucket.is-muted .congress-bucket-label { color:#8a6a2a; }
+
+/* --- card foot --------------------------------------------------------- */
+/* margin-top:auto pins the footer to the card's bottom edge, aligning the
+   totals row and Explore button across every card in the same grid row. */
+.congress-card-foot { display:flex; gap:10px; align-items:stretch; flex-wrap:wrap; border-top:1px solid #e3e9f1; padding-top:12px; margin-top:auto; }
+.congress-card-foot .fmr-stat { flex:1; min-width:120px; padding:10px 12px; gap:3px; }
+.congress-card-foot .fmr-stat>span { font-size:11.5px; }
+.congress-card-foot .fmr-stat strong { font-size:17px; }
+.congress-card-foot .fmr-stat small { font-size:11px; }
+.congress-explore { flex-basis:100%; padding:10px 14px; border:1px solid #245fa8; border-radius:8px; background:#245fa8; color:white; font:inherit; font-weight:650; cursor:pointer; }
+.congress-explore:hover { background:#1d4e89; }
+/* The whole explanation block pins to the card bottom, so the ₱0 stat and
+   Read-why button sit on the same baseline as money-carrying cards' footers
+   (the paragraph above it absorbs the remaining height naturally). */
+.congress-no-money { display:flex; flex-direction:column; gap:10px; margin-top:auto; }
+.congress-no-money p { font-size:13px; margin:0; }
+.congress-no-money .fmr-stat.zero { border-color:#dfe4ea; }
+.congress-no-money-note { padding:16px; background:white; border:1px solid #d9e2ed; border-radius:10px; font-size:14px; }
+
+/* --- held-out panels --------------------------------------------------- */
+.congress-panel { background:white; border:1px solid #d9e2ed; border-radius:10px; padding:18px; margin-bottom:16px; }
+.congress-panel h2 { margin-top:0; }
+.congress-lens { display:grid; grid-template-columns:minmax(9em,14em) 1fr; gap:8px 16px; margin:0; font-size:13.5px; }
+.congress-lens dt { font-weight:650; color:#3c4a5a; }
+.congress-lens dd { margin:0; overflow-wrap:anywhere; }
+
+/* --- district page ----------------------------------------------------- */
+.congress-rep-line { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:8px 0 0; font-size:14px; }
+.congress-card-stats { grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); }
+
+.congress-datasets { display:flex; gap:10px; flex-wrap:wrap; margin:10px 0; }
+.congress-dataset { display:flex; flex-direction:column; gap:3px; padding:10px 16px; border:1px solid #c9d6e5; border-radius:9px; background:white; font:inherit; font-weight:650; cursor:pointer; min-width:120px; text-align:left; }
+.congress-dataset small { font-weight:500; font-size:11.5px; color:#516780; }
+.congress-dataset.active { border-color:#245fa8; background:#eef4fb; color:#1d4e89; }
+/* Gated chips stay clickable: clicking one explains why it cannot be
+   attributed here, so they are styled — not disabled. */
+.congress-dataset.gated { border-style:dashed; }
+.congress-dataset.gated:hover { background:#f6f8fb; }
+
+.congress-bucket-table { width:100%; border-collapse:collapse; font-size:13px; margin:14px 0; background:white; }
+.congress-bucket-table caption { text-align:left; font-size:12.5px; color:#516780; padding-bottom:8px; }
+.congress-bucket-table th, .congress-bucket-table td { padding:8px 10px; border-bottom:1px solid #e8edf4; text-align:left; vertical-align:top; }
+.congress-bucket-table thead th { background:#f4f7fb; font-size:12px; text-transform:uppercase; letter-spacing:.03em; color:#516780; }
+.congress-bucket-table .num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.congress-bucket-table tbody tr.selected { background:#eef4fb; }
+.congress-bucket-table tfoot th, .congress-bucket-table tfoot td { border-top:2px solid #c9d6e5; font-weight:650; background:#fbfcfe; }
+.congress-detail-error { border:1px solid #d9a5a5; background:#fdf6f6; border-radius:10px; padding:16px 18px; margin:14px 0; }
+.congress-detail-error button { margin-top:8px; }
+.congress-basis { color:#516780; font-size:12.5px; max-width:52ch; }
+
+.congress-flag-chips { display:inline-flex; gap:4px; flex-wrap:wrap; align-items:center; }
+.congress-chainage-cell { display:inline-flex; flex-direction:column; gap:2px; font-size:12px; max-width:16em; }
+.congress-chainage-cell small { color:#516780; overflow-wrap:anywhere; }
+.congress-pdf-buttons { display:inline-flex; gap:4px; flex-wrap:wrap; }
+
+/* --- record drawer ----------------------------------------------------- */
+.congress-drawer { max-width:min(920px,94vw); }
+.congress-drawer h3 { margin:4px 0 8px; overflow-wrap:anywhere; }
+.congress-drawer h4 { margin:16px 0 6px; font-size:13px; text-transform:uppercase; letter-spacing:.04em; color:#516780; }
+.congress-drawer section { border-top:1px solid #e8edf4; padding-top:4px; }
+.congress-drawer-meta { display:flex; gap:6px; flex-wrap:wrap; margin:0 0 6px; }
+.congress-flags { margin:0; padding-left:18px; font-size:13.5px; }
+.congress-trace { font-size:12px; color:#516780; overflow-wrap:anywhere; }
+.congress-record-table { width:100%; border-collapse:collapse; font-size:13px; }
+.congress-record-table th, .congress-record-table td { padding:7px 9px; border-bottom:1px solid #e8edf4; text-align:left; vertical-align:top; }
+.congress-record-table thead th { background:#f4f7fb; font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; color:#516780; }
+.congress-record-table .num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.congress-record-table code { font-size:11.5px; overflow-wrap:anywhere; }
+.congress-delta { font-size:13.5px; margin:8px 0 0; }
+.congress-chainage { font-size:13.5px; margin:4px 0; overflow-wrap:anywhere; }
+.congress-chainage span { margin-left:6px; }
+.congress-coords { margin:0; padding-left:18px; font-size:13.5px; }
+.congress-coords li { margin-bottom:6px; overflow-wrap:anywhere; }
+.congress-coords small { display:block; color:#516780; font-size:12px; }
+.congress-traces { display:grid; grid-template-columns:minmax(8em,12em) 1fr; gap:6px 14px; margin:0; font-size:13px; }
+.congress-traces dt { font-weight:650; color:#3c4a5a; }
+.congress-traces dd { margin:0; overflow-wrap:anywhere; }
+.fmr-dialog-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+
+@media(max-width:760px) {
+  .congress-grid { grid-template-columns:1fr; }
+  .congress-lens, .congress-traces { grid-template-columns:1fr; gap:2px 0; }
+  .congress-lens dt, .congress-traces dt { margin-top:8px; }
+  .congress-seat-district { min-width:0; }
+  .congress-bucket { flex-direction:column; gap:2px; }
+  .congress-bucket-label { min-width:0; }
+}

@@ -82,6 +82,16 @@ export const workspaces = {
       ["nep", "DBM NEP"],
     ],
   },
+  congress: {
+    label: "Congress",
+    prefix: "congress",
+    // Only the grid is a tab. #congress/district still resolves as a page (a
+    // card deep link like ?district=<card id> opens the explorer view), but it
+    // is reached by clicking a representative, never from the tab strip.
+    pages: [
+      ["home", "Districts"],
+    ],
+  },
   geo: {
     label: "Geolocation",
     prefix: "geo",
@@ -125,7 +135,7 @@ export function readRoute(hash = location.hash) {
   const params = new URLSearchParams(query);
   // Older tab links serialized reset values as text. Accept those shared URLs
   // without treating "null" as a record selection or filter; preserve search text.
-  for (const key of ['pair','node','group','records','status','direction','ranking','sort','dir']) {
+  for (const key of ['pair','node','group','records','status','direction','ranking','sort','dir','district']) {
     if (['null','undefined'].includes(params.get(key))) params.delete(key);
   }
   const segments = path.split("/").filter(Boolean);

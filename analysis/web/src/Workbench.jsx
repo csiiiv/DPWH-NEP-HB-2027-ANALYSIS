@@ -15,10 +15,11 @@ const ExperimentsApp = lazy(() => import("./ExperimentsApp.jsx"));
 const HfepApp = lazy(() => import("./HfepApp.jsx"));
 const NiaApp = lazy(() => import("./NiaApp.jsx"));
 const GeoApp = lazy(() => import("./GeoApp.jsx"));
+const CongressApp = lazy(() => import("./CongressApp.jsx"));
 
 // Lazy loaders per registered workspace key. DPWH is statically imported as
 // the default workspace; each annex app is code-split behind its prefix.
-const lazyApps = { overview: MainOverview, sources: Sources, about: AboutApp, experiments: ExperimentsApp, fmr: FmrApp, hfep: HfepApp, nia: NiaApp, geo: GeoApp };
+const lazyApps = { overview: MainOverview, sources: Sources, about: AboutApp, experiments: ExperimentsApp, fmr: FmrApp, hfep: HfepApp, nia: NiaApp, geo: GeoApp, congress: CongressApp };
 
 export default function Workbench() {
   const [workspace, setWorkspace] = useState(() => readWorkspace());

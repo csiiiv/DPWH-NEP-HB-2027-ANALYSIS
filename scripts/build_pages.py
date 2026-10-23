@@ -5,6 +5,7 @@ import hashlib
 import json
 import re
 import shutil
+import sys
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -232,6 +233,51 @@ def package_hfep():
     print(f'Packaged HFEP workbench evidence and PDFs for {len(pdfs)} source documents')
 
 
+def package_congress(target):
+    """Package the Congress DEO-lens index and its WebP portraits.
+
+    Both artifacts are generated (gitignored), so they are rebuilt here rather
+    than trusted to exist — the same reason buildComparisonData.mjs is run
+    above. The index carries row IDs only; the explorer reads the shared
+    comparison payload, so no per-district record shard is packaged.
+    """
+    import subprocess
+
+    # The index is derived from comparison_projects_2027.json (pinned by
+    # SHA-256), which is rebuilt just above. Rebuild the index too, always, so
+    # a stale index can never be packaged against a fresh payload — the row IDs
+    # it pins are only meaningful against the exact build it classified.
+    subprocess.run(['node', str(ROOT / 'analysis/web/buildCongressIndex.mjs')],
+                   check=True, cwd=ROOT)
+    index_path = DATA / 'congress_district_index_2027.json'
+    if not index_path.is_file():
+        raise ValueError('Congress index was not built: ' + str(index_path))
+    index = json.loads(index_path.read_text())
+
+    portraits = DATA / 'congress_portraits'
+    target.mkdir(parents=True, exist_ok=True)
+    expected = {district['representative']['photoPath']
+                for district in index['districts'].values()
+                if (district.get('representative') or {}).get('photoPath')}
+    if not portraits.is_dir() or not (portraits / 'manifest.json').is_file():
+        subprocess.run([sys.executable, str(ROOT / 'scripts/build_congress_portraits.py')],
+                       check=True, cwd=ROOT)
+    manifest = json.loads((portraits / 'manifest.json').read_text())
+    built = {entry['photoPath'] for entry in manifest['portraits']}
+    missing = sorted(expected - built)
+    if missing:
+        raise ValueError(f'Congress portraits missing for {len(missing)} roster entries: '
+                         f'{", ".join(missing[:3])}')
+
+    shutil.copyfile(index_path, target / index_path.name)
+    shutil.copytree(portraits, target / 'congress_portraits', dirs_exist_ok=True)
+    counts = index['counts']
+    print(f"Packaged Congress DEO lens: {counts['cards']} cards over {counts['districts']} districts "
+          f"({counts['tier_a']} Tier A, {counts['tier_b']} Tier B, "
+          f"{counts['regional_group_only']} with no DEO ledger) "
+          f"+ {manifest['count']} portraits")
+
+
 def main(with_react=True):
     validate_current_pages()
     OUTPUT.mkdir(exist_ok=True)
@@ -247,6 +293,7 @@ def main(with_react=True):
         subprocess.run(['node', str(ROOT / 'analysis/web/buildComparisonData.mjs')], check=True, cwd=ROOT)
         for name in ('comparison_overview_2027.json', 'comparison_projects_2027.json', 'highlights_details_2027.json'):
             shutil.copyfile(DATA / name, target / name)
+        package_congress(target)
     index = hosted_report_links((ROOT / 'site/index.html').read_text(), ROOT / 'site/index.html')
     # Site template still uses ../analysis/<viewer>.html — rewrite to packaged layout.
     index = index.replace('href="../analysis/', 'href="analysis/').replace('src="../analysis/', 'src="analysis/')

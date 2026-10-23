@@ -327,6 +327,46 @@ export const sourceGroups = [
     ],
   },
   {
+    id: "deo2leg",
+    title: "DEO ↔ legislative districts",
+    blurb:
+      "Reusable many-to-many mapping between DPWH District Engineering Offices and the 254 geographic House districts, built from the complete allocation-table transcription. Representatives are checked against the official congress.gov.ph directory and enriched with scraped member profiles; verification is against that one authority, not multiple independent ones.",
+    items: [
+      {
+        label: "DEO–LEG crosswalk (schema 2.1.0)",
+        kind: "repo",
+        path: "DEO2LEG/deo_leg_crosswalk.json",
+        purpose: "Offices, legislative districts, and relationships — structure only, no amounts",
+        coverage:
+          "264 relationships across 200 offices and 254 districts; representatives verified against the official congress.gov.ph directory (252 resolved, 2 ambiguous surfaced, 0 unresolved), each resolved seat enriched with member code, profile URL and portrait; 13 legacy registry offices flagged but deliberately unlinked.",
+      },
+      {
+        label: "Allocation amounts evidence sidecar",
+        kind: "repo",
+        path: "DEO2LEG/evidence/source_amounts.json",
+        purpose: "Every allocation-table row with its transcribed amount, page/row provenance, and dash flags",
+        coverage:
+          "264 rows totalling ₱440.61B (₱'000) from an undated PCIJ-sourced scan. Kept out of the mapping graph by design; the fiscal year is unstated and must not be assumed.",
+      },
+      {
+        label: "Legislative member profiles",
+        kind: "repo",
+        path: "DEO2LEG/legislative_profiles/profiles.json",
+        purpose: "member_code, profile URL and locally cached portrait per House member",
+        coverage:
+          "324 scraped profiles (256 district, 68 party-list) with 324 portraits. Joined into the crosswalk on the exact (seat, name) pair — never on name alone — covering all 252 resolved districts plus both candidates on each ambiguous seat. Agreement with the roster on all 324 pairs is cross-pipeline, not independent: both read the same congress.gov.ph page.",
+      },
+      {
+        label: "DEO2LEG guide",
+        kind: "doc",
+        path: "DEO2LEG/README.md",
+        purpose: "Schema, sources, three-way validation, defects found and fixed, and known unresolved cases",
+        coverage:
+          "Documents the complete-table extraction, the BetterGov and OCR cross-checks, the roster corrections (Isabela 6th, Iloilo 2nd, Taguig reapportionment, the Southern Leyte 1st parser artifact), profile enrichment, and the 80 invariant tests.",
+      },
+    ],
+  },
+  {
     id: "comparison",
     title: "Workbench payloads (packaged with the site)",
     blurb:
@@ -360,6 +400,15 @@ export const sourceGroups = [
         path: "analysis/road_group_candidates_2027.json",
         purpose: "Same-shell groups with unpaired House (insertion) and unpaired NEP (deletion) candidates",
         coverage: "₱23.4B insertion candidates · ₱12.2B deletion candidates across 627 shells. Powers Analysis → Groupings.",
+      },
+      {
+        label: "Congress DEO-lens district index",
+        kind: "data",
+        path: "analysis/congress_district_index_2027.json",
+        purpose:
+          "Per-office-group cards for the #congress workspace: districts, representatives, tier labels, headline figures, and the row IDs each bucket holds (≈1 MB)",
+        coverage:
+          "196 cards over 254 districts (159 Tier A, 32 Tier B undivided ranges, 5 with no DEO ledger); 13,547 comparison rows pinned by ID plus the 3,999-row unattributable residual and 67 office-change rows held out. Card figures tie out exactly against the published DPWH Overview across 29 numeric fields; the explorer resolves the pinned IDs against this comparison payload, so a card and its table cannot drift apart.",
       },
     ],
   },

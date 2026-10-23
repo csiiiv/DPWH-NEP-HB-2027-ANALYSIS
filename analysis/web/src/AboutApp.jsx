@@ -16,6 +16,7 @@ const docs = [
   {path: "analysis/docs/shareable_datasets_by_page.md", label: "Shareable datasets by page", note: "Every shareable dataset mapped to the workspace page that renders it."},
   {path: "analysis/docs/analysis_tabs_framework.md", label: "Analysis methods and counting units", note: "The rules governing Analysis-tab populations, record grains and evidence."},
   {path: "other-analysis/README.md", label: "DA · DOH · NIA orientation", note: "Where the FMR, HFEP, and irrigation line items sit inside HB 10858 Volume I-B, with page offsets and control checks."},
+  {path: "DEO2LEG/README.md", label: "DEO ↔ legislative district mapping", note: "Many-to-many crosswalk linking DPWH District Engineering Offices to House districts — 264 relationships, official-roster verification, scraped member profiles with portraits, isolated allocation evidence."},
 ];
 const stacks = [
   ["Python builders own the numbers", "Extraction, rollup audits, and comparison datasets are built deterministically from committed PDFs; machine audits record every rebuild's checks."],

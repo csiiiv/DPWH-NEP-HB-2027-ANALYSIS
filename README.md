@@ -75,6 +75,7 @@ use the packaged preview above. The packager includes all workspaces.
 - [NIA irrigation analysis](analysis-nia/README.md): HB 10858 irrigation annex extraction (828 projects, ₱17,999,305,000).
 - [DOH health facilities analysis](analysis-hfep/README.md): retained HFEP schedules, source controls, and evidence limits.
 - [Geolocation analysis](gps-analysis/README.md): the GPS inventory scanner, dataset registry, and map workspace.
+- [DEO ↔ legislative district mapping](DEO2LEG/README.md): many-to-many crosswalk between DPWH District Engineering Offices and the 254 House legislative districts (schema 2.1.0, 264 relationships), with an evidence sidecar isolating allocation amounts, scraped member profiles for every resolved representative, and 80 invariant tests.
 - [Frontend guide](analysis/web/README.md): shared components and local workflow.
 - [Earlier DPWH analysis](analysis/README.md): retained source work and modules from the original workbench.
 - [Shareable findings](analysis/docs/shareable_findings.md): URL settings for searches, filters, expanded records, and source paths.

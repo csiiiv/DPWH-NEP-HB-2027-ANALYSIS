@@ -72,8 +72,8 @@ test('unregistered hash prefixes fall back to the DPWH workspace', () => {
 });
 test('the workspace registry exposes consistent labels, prefixes and pages', () => {
   // Every workspace needs a label, at least one tab, and a unique prefix.
-  assert.deepEqual(workspaceLabels, {overview: 'Overview', dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities', nia: 'NIA Irrigation', geo: 'Geolocation', sources: 'Sources', about: 'About', experiments: 'Experiments'});
-  assert.deepEqual(Object.keys(workspaces), ['overview', 'dpwh', 'fmr', 'hfep', 'nia', 'geo', 'sources', 'about', 'experiments']);
+  assert.deepEqual(workspaceLabels, {overview: 'Overview', dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities', nia: 'NIA Irrigation', congress: 'Congress', geo: 'Geolocation', sources: 'Sources', about: 'About', experiments: 'Experiments'});
+  assert.deepEqual(Object.keys(workspaces), ['overview', 'dpwh', 'fmr', 'hfep', 'nia', 'congress', 'geo', 'sources', 'about', 'experiments']);
   const prefixes = Object.values(workspaces).map(ws => ws.prefix);
   assert.equal(new Set(prefixes).size, prefixes.length, 'prefixes must be unique');
   for (const ws of Object.values(workspaces)) {
@@ -138,6 +138,30 @@ test('geo workspace routes stay prefixed and deep-link the map', () => {
   assert.equal(workspaceHref('nia', readRoute('#geo/map')), '#nia/home');
 });
 
+
+test('congress workspace routes stay prefixed and deep-link a district', () => {
+  assert.equal(readWorkspace('#congress/home'), 'congress');
+  assert.equal(readWorkspace('#congress'), 'congress');
+  assert.equal(readRoute('#congress').key, 'home');
+  const route = readRoute('#congress/district?district=office-group:leg:tarlac:3rd&dataset=dpwh');
+  assert.equal(route.workspace, 'congress');
+  assert.equal(route.key, 'district');
+  assert.equal(route.params.get('district'), 'office-group:leg:tarlac:3rd');
+  assert.equal(route.params.get('dataset'), 'dpwh');
+  assert.equal(routeHref('district', {district: 'office-group:leg:tarlac:3rd'}, 'congress'),
+    '#congress/district?district=office-group%3Aleg%3Atarlac%3A3rd');
+  // Congress has one tab (the grid); the district page is a deep link reached
+  // by clicking a representative, so it must never appear in the tab strip.
+  assert.deepEqual(workspaces.congress.pages, [['home', 'Districts']]);
+  assert.equal(workspaceHref('congress', readRoute('#nia/analysis')), '#congress/home');
+  assert.equal(workspaceHref('nia', readRoute('#congress/district')), '#nia/home');
+  // A stale district id is dropped rather than read as the literal string
+  // "null", so a bookmarked card that no longer exists returns to the list.
+  assert.equal(readRoute('#congress/district?district=null').params.get('district'), null);
+  // Empty and unset are treated the same way, and routeHref omits them.
+  assert.equal(readRoute('#congress/district?district=').params.get('district'), '');
+  assert.equal(routeHref('home', {district: null, dataset: ''}, 'congress'), '#congress/home');
+});
 
 test('tab resets omit cleared state instead of selecting a candidate named null', () => {
   for (const workspace of ['dpwh','fmr','nia','hfep']) {
