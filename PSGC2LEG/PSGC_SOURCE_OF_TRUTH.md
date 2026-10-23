@@ -48,3 +48,14 @@ Each of the 42,010 barangay PSGC codes must exist **whether or not** it can be a
 Import and compare the **original** September 2026 PSA spreadsheet against the pinned mirrored snapshot, preserving the exact workbook SHA256 and legal corrections (e.g. Lambangan -> Lambagan). Diff additions/deletions/renames/parent changes and quarantine discrepancies. Then publish a first-party-ingested version as the primary registry and retain this mirror only as cross-check evidence.
 
 Name-based legal/official benchmark remains at [OFFICIAL_SOURCE_AUDIT.md](OFFICIAL_SOURCE_AUDIT.md); it is *not* automatically expanded over the entire PSGC registry.
+
+
+## Cross-check with the original PSA publication
+
+Download the [official PSA 3Q 2026 publication file](https://psa.gov.ph/system/files/scd/PSGC-3Q-2026-Publication-Datafile.xlsx). The local importer reads the `PSGC` worksheet directly using Python's standard library; **no Excel conversion and no third-party libraries are needed**.
+
+```bash
+python3 PSGC2LEG/audit_official_psgc.py PSGC-3Q-2026-Publication-Datafile.xlsx --output PSGC2LEG/outputs/psa_primary_comparison.json
+```
+
+The resulting report records the workbook SHA-256 and every code missing, added or renamed compared with the pinned full-length mirror. The official workbook must be adjudicated before asserting full first-party verification. The old provisional legislative mapping remains an *independent*, separately sourced dimension.
