@@ -8,6 +8,7 @@ export const REVISIONS = [
   {key: 'increased', label: 'Increased', note: 'Retained pairs · higher allocation', color: '#0b6b3a', cue: '↑'},
   {key: 'reduced', label: 'Decreased', note: 'Retained pairs · lower allocation', color: '#a12020', cue: '↓'},
   {key: 'deletion', label: 'Deleted', note: 'NEP-only candidates', color: '#6b5543', cue: '−'},
+  {key: 'scope_review', label: 'Scope review', note: 'Same road, non-overlapping segments · delta not booked', color: '#7a5ba6', cue: '~'},
 ];
 const ensure = (ok, message) => {if (!ok) throw new Error(`Revision matrix: ${message}`);};
 
@@ -33,5 +34,9 @@ export function workspaceRevisionMatrix(w) {
     {key: 'increased', rows: a.increased_count, nep: a.increased_nep_php, hgab: a.increased_house_php},
     {key: 'reduced', rows: a.reduced_count, nep: a.reduced_nep_php, hgab: a.reduced_house_php},
     {key: 'deletion', rows: w.deletions.count, nep: w.deletions.amount_php, hgab: 0},
+    // Same-road pairs with non-overlapping segments: present in both
+    // ledgers so they rebuild totals, but excluded from booked adjustments.
+    ...(w.scope_review ? [{key: 'scope_review', rows: w.scope_review.count,
+      nep: w.scope_review.nep_php, hgab: w.scope_review.house_php}] : []),
   ], expected: {nep: w.sources.nep.amount_php, hgab: w.sources.house.amount_php}});
 }

@@ -46,7 +46,7 @@ function checkFlow(model) {
 
 test('non-budget inventory uses the complete five-stage grammar; regrouping preserves revisions', () => {
   const regions = inventoryFlow(), departments = inventoryFlow('department');
-  assert.deepEqual(regions.totals, {before: 100, after: 102, count: 6, additions: 27, reductions: 25, delta: 2});
+  assert.deepEqual(regions.totals, {before: 100, after: 102, count: 6, additions: 27, reductions: 25, delta: 2, scope_net: 0});
   assert.deepEqual(regions.totals, departments.totals);
   assert.deepEqual(regions.groups.map(g => g.id), ['North', 'South']);
   assert.deepEqual(departments.groups.map(g => g.id), ['Tools', 'Parts']);

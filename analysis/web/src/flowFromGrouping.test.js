@@ -69,11 +69,18 @@ test('column 2 stays group-major: contiguous blocks in the fixed class order', (
   for (const block of seen)
     assert.deepEqual(block.order, block.order.slice().sort((a, b) => REVISION_ORDER.indexOf(a) - REVISION_ORDER.indexOf(b)),
       `${block.id} cells are not in revision order`);
-  // Column 3 keeps each group's reductions sink directly below its own node.
+  // Column 3 keeps each group's sinks directly below its own after node:
+  // reductions always, scope-loss only for groups with a scope deficit.
   const right = flow.graph.nodes.filter(n => n.column === 3).sort((a, b) => a.order - b.order);
-  for (let i = 0; i < right.length; i += 2) {
+  let i = 0;
+  while (i < right.length) {
     assert.equal(right[i].role, 'after', right[i].groupId);
-    if (right[i + 1]) {assert.equal(right[i + 1].role, 'reductions'); assert.equal(right[i + 1].groupId, right[i].groupId);}
+    const group = right[i].groupId;
+    i++;
+    while (i < right.length && right[i].groupId === group && right[i].role !== 'after') {
+      assert.ok(['reductions', 'scopeLoss'].includes(right[i].role), right[i].role);
+      i++;
+    }
   }
 });
 

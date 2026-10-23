@@ -2,27 +2,27 @@
   "manifest": {
     "schema_version": 1,
     "fiscal_year": 2027,
-    "built_at": "2026-10-11T19:13:02+08:00",
+    "built_at": "2026-10-23T07:20:47+08:00",
     "pipeline": [
       "DPWH Transparency NEP",
       "Official NEP PDF source",
       "House HB 10858"
     ],
     "units": "Integer Philippine pesos",
-    "matching_method": "Stage 1: retained API↔Official NEP pairs from nep_2027_api_reconciliation (equal PAP + amount; exact_title_amount or ocr_title_candidate). FAP and the 23 documented non-FAP omissions are outside the Transparency listing. Stage 2: House project extract ↔ Official NEP exact/fuzzy/ambiguous/unmatched candidates from source_comparison_2027. Amount does not establish identity. No pair is manually certified. Unmatched rows are not certified insertions or removals.",
+    "matching_method": "Stage 1: retained API↔Official NEP pairs from nep_2027_api_reconciliation (equal PAP + amount; exact_title_amount or ocr_title_candidate). FAP and the 23 documented non-FAP omissions are outside the Transparency listing. Stage 2: House project extract ↔ Official NEP exact/fuzzy/ambiguous/unmatched candidates from source_comparison_2027. Amount does not establish identity. Same-road pairs whose measured station spans share no overlap attach as segment_scope_review: scope review only, the amount delta is NOT booked as a same-project adjustment. Unmatched rows cross-referenced to an identical title+amount twin on the other side carry twin_review context. No pair is manually certified. Unmatched rows are not certified insertions or removals.",
     "comparison_ready": false,
     "generator": {
       "path": "analysis/builders/build_stage_trace.py",
-      "sha256": "fd1792bac171e9d4e98eff9dd805237631ddefaf762f46a09ba2db15e148cce6"
+      "sha256": "1941fa781b2c77acf56d2da697ae2edd19359565528a08a5fd7ec385e4aa579f"
     },
     "inputs": {
-      "source_comparison_2027.json": "9f500eb12e682f9c1086fa113426dee02cc23ddb4b4b7a1a75c1a541010889c4",
-      "comparison_manifest.json": "10cd7858cede7210b2f58c477868ff0761c902b74db6cfacf51db1ce9cabf75d",
+      "source_comparison_2027.json": "09dc5843dd1707a47aa336fe0e306bd3ed97c55646ed0d8a6478c87c61fad9f7",
+      "comparison_manifest.json": "09dbc62e44e269b570f333eb28ebb28a4759fe7bafb4af6f2a35f29bc6469af3",
       "nep_2027_api_reconciliation.json": "fd8dfef9ba34062f81818b3510311678b774bdbc758abfe341d28b9302196a0f",
       "dpwh_transparency_nep_tree.json": "bf526cfaf5e2270b5a539c9b292c1d9564741a062479ed545cafa7ec920ccbf6",
-      "road_group_candidates_2027.json": "7e0a2024823a178e549977eec92c9130bfd6682152b9ff1ad06f9ae09fef4ec7"
+      "road_group_candidates_2027.json": "f914a2d270f883f26288de1fb0b79a7ab8227bf3fbb4e7bafa0971bae49c7295"
     },
-    "upstream_comparison_built_at": "2026-10-11T18:01:28+08:00",
+    "upstream_comparison_built_at": "2026-10-23T07:00:05+08:00",
     "source_documents": {
       "house_summary": {
         "path": "HB_BUDGET/2 - HB 10858 VOL IB.pdf",
@@ -76,7 +76,8 @@
       "match_counts": {
         "exact_candidate": 9680,
         "house_unmatched": 5801,
-        "chainage_candidate": 324,
+        "segment_scope_candidate": 37,
+        "chainage_candidate": 287,
         "fuzzy_candidate": 385,
         "ambiguous": 5,
         "location_amendment_candidate": 29,
@@ -95,12 +96,13 @@
     "trace_counts": {
       "outside_api_then_candidate_decrease": 17,
       "outside_api_then_amount_same": 8,
-      "amount_same": 9649,
-      "candidate_increase": 203,
-      "candidate_decrease": 179,
+      "amount_same": 9639,
+      "candidate_increase": 188,
+      "candidate_decrease": 167,
       "transparency_gap_then_candidate_decrease": 10,
       "transparency_gap_then_amount_same": 13,
       "house_only_candidate": 5801,
+      "segment_scope_review": 37,
       "fuzzy_candidate": 385,
       "ambiguous": 5,
       "nep_only_candidate": 1341
@@ -846104,8 +846106,8 @@
       }
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 37330000,
@@ -846211,7 +846213,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "amount_same",
@@ -849792,8 +849795,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_decrease",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": -16359000,
@@ -849899,11 +849902,12 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
-      "trace": "candidate_decrease",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": -33418000,
@@ -850009,7 +850013,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "amount_same",
@@ -850256,8 +850261,8 @@
       "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "candidate_decrease",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 0.8571,
       "house_minus_nep_php": -3990000,
@@ -850363,7 +850368,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "candidate_increase",
@@ -854842,8 +854848,8 @@
       "reason": null
     },
     {
-      "trace": "amount_same",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 0,
@@ -854949,7 +854955,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (adjustment of station markers). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -857820,8 +857827,8 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 33182000,
@@ -857927,7 +857934,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "candidate_decrease",
@@ -858040,8 +858048,8 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 19005000,
@@ -858147,7 +858155,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -862637,8 +862646,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_decrease",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": -24424000,
@@ -862768,7 +862777,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -864553,8 +864563,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_decrease",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": -14258000,
@@ -865020,7 +865030,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -866116,8 +866127,8 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 18295000,
@@ -866235,7 +866246,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -866981,8 +866993,8 @@
       "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "amount_same",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 0,
@@ -867088,7 +867100,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -870591,7 +870604,7 @@
         "zone": "local",
         "region": "Region VI",
         "office": "Ilolilo 2nd District Engineering Office",
-        "office_canonical": "Ilolilo 2nd District Engineering Office",
+        "office_canonical": "Iloilo 2nd District Engineering Office",
         "pdf_page": 153,
         "evidence": "native_text"
       },
@@ -870599,8 +870612,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 10928000,
@@ -870742,7 +870755,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -872076,8 +872090,8 @@
       }
     },
     {
-      "trace": "amount_same",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 0,
@@ -872303,7 +872317,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -873270,8 +873285,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 8643000,
@@ -873377,7 +873392,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -875426,8 +875442,8 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "amount_same",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 0,
@@ -875653,7 +875669,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -878658,8 +878675,8 @@
       "reason": null
     },
     {
-      "trace": "amount_same",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 0.9024,
       "house_minus_nep_php": 0,
@@ -878765,7 +878782,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "amount_same",
@@ -879241,8 +879259,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 32756000,
@@ -879480,7 +879498,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (adjustment of station markers). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -880391,8 +880410,8 @@
       "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 0.8868,
       "house_minus_nep_php": 421000,
@@ -880498,7 +880517,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "candidate_increase",
@@ -884871,8 +884891,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 92000000,
@@ -885014,7 +885034,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -885100,8 +885121,8 @@
       }
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 0.8824,
       "house_minus_nep_php": 1900000,
@@ -885207,7 +885228,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -887586,7 +887608,7 @@
         "zone": "local",
         "region": "Region IV-A",
         "office": "Batagas 2nd District Engineering Office",
-        "office_canonical": "Batagas 2nd District Engineering Office",
+        "office_canonical": "Batangas 2nd District Engineering Office",
         "pdf_page": 179,
         "evidence": "native_text"
       },
@@ -887594,8 +887616,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_decrease",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": -22000000,
@@ -887773,7 +887795,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -891074,8 +891097,8 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "candidate_decrease",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": -21900000,
@@ -891337,7 +891360,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "amount_same",
@@ -898433,8 +898457,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 79274000,
@@ -898540,7 +898564,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "amount_same",
@@ -899213,8 +899238,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_decrease",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": -5419000,
@@ -899320,7 +899345,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (adjustment of station markers). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -899674,8 +899700,8 @@
       "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "amount_same",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 0,
@@ -899781,7 +899807,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -902512,8 +902539,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 0.8919,
       "house_minus_nep_php": 31558000,
@@ -902619,7 +902646,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (adjustment of station markers). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "amount_same",
@@ -903040,8 +903068,8 @@
       "reason": "Duplicate exact title/region/PAP key; no automatic pairing."
     },
     {
-      "trace": "amount_same",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 0.9032,
       "house_minus_nep_php": 0,
@@ -903147,7 +903175,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (adjustment of station markers). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "amount_same",
@@ -903368,8 +903397,8 @@
       "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "candidate_decrease",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": -500000,
@@ -903535,7 +903564,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "amount_same",
@@ -907704,8 +907734,8 @@
       "reason": null
     },
     {
-      "trace": "amount_same",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 0,
@@ -907907,7 +907937,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -909336,8 +909367,8 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "amount_same",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 0,
@@ -909479,7 +909510,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -911773,8 +911805,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_decrease",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": -80650000,
@@ -911928,7 +911960,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "candidate_increase",
@@ -912866,8 +912899,8 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 8000000,
@@ -912973,11 +913006,12 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
-      "trace": "amount_same",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 0.9016,
       "house_minus_nep_php": 0,
@@ -913083,11 +913117,12 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
-      "trace": "candidate_decrease",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 0.9341,
       "house_minus_nep_php": -300000,
@@ -913193,7 +913228,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "fuzzy_candidate",
@@ -914446,8 +914482,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 17000000,
@@ -914565,7 +914601,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "house_only_candidate",
@@ -921488,7 +921525,17 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p336:r8",
+        "other_side_title": "Quipot Br . (B02945LZ) along Quezon-Batangas Rd",
+        "other_side_pap_id": "p335:r0",
+        "other_side_program": "Bridge Program",
+        "other_side_region": "Region IV-A",
+        "amount_php": 120000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "house_only_candidate",
@@ -949805,7 +949852,17 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p612:r24",
+        "other_side_title": "Construction of Water System at Barangay Talisay, Lipa City, Batangas",
+        "other_side_pap_id": "p560:r0",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region IV-A",
+        "amount_php": 10000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "house_only_candidate",
@@ -965899,8 +965956,8 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "trace": "candidate_increase",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 1.0,
       "house_minus_nep_php": 68600000,
@@ -966018,7 +966075,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "candidate_increase",
@@ -966180,8 +966238,8 @@
       "reason": null
     },
     {
-      "trace": "candidate_decrease",
-      "house_match": "chainage_candidate",
+      "trace": "segment_scope_review",
+      "house_match": "segment_scope_candidate",
       "api_presence": "paired",
       "confidence": 0.9417,
       "house_minus_nep_php": -86240000,
@@ -966287,7 +966345,8 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": "Same road title_base with differing chainage (adjustment of station markers). Possible coverage amendment, not a new insertion."
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road.",
+      "segment_overlap_ratio": 0.0
     },
     {
       "trace": "fuzzy_candidate",
@@ -973930,7 +973989,17 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p577:r12",
+        "other_side_title": "Rehabilitation of Barangay Road, Barangay Masicong, City of San Fernando, La Union",
+        "other_side_pap_id": "p560:r0",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region I",
+        "amount_php": 15000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "house_only_candidate",
@@ -1017133,7 +1017202,17 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p649:r13",
+        "other_side_title": "Construction of Road Slope Protection Structure, Barangay Alta Vista, Ormoc City, Leyte",
+        "other_side_pap_id": "p560:r0",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 20000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "house_only_candidate",
@@ -1017182,7 +1017261,17 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p648:r21",
+        "other_side_title": "Construction of Concrete Road, Sta. 0 + 130 - Sta. 1 + 630, Barangay Liberty, Ormoc City, Leyte",
+        "other_side_pap_id": "p560:r0",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 50000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "house_only_candidate",
@@ -1017232,6 +1017321,16 @@
       },
       "suggestions": [],
       "reason": "Same-road corridor group exhausted: all 1 NEP rows on this PAP/region group are attached to other House rows; no NEP supply remains for this allocation. Split / insertion or scope-expansion candidate.",
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p648:r20",
+        "other_side_title": "Construction of Concrete Road Sta. 0 + 000 - Sta. 1 + 150, Barangay Monte Alegre, Isabel, Leyte",
+        "other_side_pap_id": "p560:r0",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 20000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      },
       "road_group": {
         "flag": "insertion_candidate_group_exhausted",
         "kind": "road",
@@ -1017290,7 +1017389,17 @@
         "evidence": "native_text"
       },
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p648:r22",
+        "other_side_title": "Construction of Concrete Road, Sta. 2 + 500 - Sta. 3 + 100, Sitio Macalpe, Barangay Cangag, Isabel, Leyte",
+        "other_side_pap_id": "p560:r0",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 10000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "house_only_candidate",
@@ -1022922,7 +1023031,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 612,
         "evidence": "native_text"
       },
@@ -1022971,7 +1023080,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 612,
         "evidence": "native_text"
       },
@@ -1023020,7 +1023129,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 612,
         "evidence": "native_text"
       },
@@ -1023069,7 +1023178,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 612,
         "evidence": "native_text"
       },
@@ -1023118,7 +1023227,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 612,
         "evidence": "native_text"
       },
@@ -1023167,7 +1023276,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023216,7 +1023325,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023265,7 +1023374,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023314,7 +1023423,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023363,7 +1023472,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023412,7 +1023521,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023461,7 +1023570,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023510,7 +1023619,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023559,7 +1023668,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023608,7 +1023717,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023657,7 +1023766,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023706,7 +1023815,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023755,7 +1023864,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023804,7 +1023913,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023853,7 +1023962,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023902,7 +1024011,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1023951,7 +1024060,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1024000,7 +1024109,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1024049,7 +1024158,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 613,
         "evidence": "native_text"
       },
@@ -1024098,7 +1024207,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024147,7 +1024256,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024196,7 +1024305,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024245,7 +1024354,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024294,7 +1024403,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024343,7 +1024452,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024392,7 +1024501,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024441,7 +1024550,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024490,7 +1024599,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024539,7 +1024648,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024588,7 +1024697,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024637,7 +1024746,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024686,7 +1024795,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024735,7 +1024844,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024784,7 +1024893,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024833,7 +1024942,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024882,7 +1024991,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024931,7 +1025040,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1024980,7 +1025089,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 614,
         "evidence": "native_text"
       },
@@ -1025029,7 +1025138,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 615,
         "evidence": "native_text"
       },
@@ -1025078,7 +1025187,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 615,
         "evidence": "native_text"
       },
@@ -1025127,7 +1025236,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 615,
         "evidence": "native_text"
       },
@@ -1025176,7 +1025285,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 615,
         "evidence": "native_text"
       },
@@ -1025225,7 +1025334,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 615,
         "evidence": "native_text"
       },
@@ -1025274,7 +1025383,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 615,
         "evidence": "native_text"
       },
@@ -1025323,7 +1025432,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 615,
         "evidence": "native_text"
       },
@@ -1025372,7 +1025481,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 615,
         "evidence": "native_text"
       },
@@ -1025421,7 +1025530,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 615,
         "evidence": "native_text"
       },
@@ -1025470,7 +1025579,7 @@
         "zone": "local",
         "region": "Region X",
         "office": "Misamis Occidenatal 2nd District Engineering Office",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "pdf_page": 615,
         "evidence": "native_text"
       },
@@ -1209201,7 +1209310,17 @@
       },
       "house": null,
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c3691",
+        "other_side_title": "Quipot Br. (B02945LZ) along Quezon-Batangas Rd",
+        "other_side_pap_id": "p312:r6",
+        "other_side_program": "Bridge Program",
+        "other_side_region": "Region IV-A",
+        "amount_php": 120000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "nep_only_candidate",
@@ -1258361,7 +1258480,17 @@
       },
       "house": null,
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c8534",
+        "other_side_title": "Rehabilitation of Barangay Road, Barangay Masicong, City of San Fernando, La Union",
+        "other_side_pap_id": "p433:r1",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region I",
+        "amount_php": 15000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "nep_only_candidate",
@@ -1264001,7 +1264130,17 @@
       },
       "house": null,
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c6778",
+        "other_side_title": "Construction of Water System at Barangay Talisay, Lipa City, Batangas",
+        "other_side_pap_id": "p404:r2",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region IV-A",
+        "amount_php": 10000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "nep_only_candidate",
@@ -1268687,7 +1268826,17 @@
       },
       "house": null,
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c11470",
+        "other_side_title": "Construction of Concrete Road Sta. 0+000 - Sta. 1+150, Barangay Monte Alegre, Isabel, Leyte",
+        "other_side_pap_id": "p433:r1",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 20000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "nep_only_candidate",
@@ -1268765,7 +1268914,17 @@
       },
       "house": null,
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c11469",
+        "other_side_title": "Construction of Concrete Road, Sta. 0+130 - Sta. 1+630, Barangay Liberty, Ormoc City, Leyte",
+        "other_side_pap_id": "p433:r1",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 50000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "nep_only_candidate",
@@ -1268843,7 +1269002,17 @@
       },
       "house": null,
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c11471",
+        "other_side_title": "Construction of Concrete Road, Sta. 2+500 - Sta. 3+100, Sitio Macalpe, Barangay Cangag, Isabel, Leyte",
+        "other_side_pap_id": "p433:r1",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 10000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "nep_only_candidate",
@@ -1268895,7 +1269064,17 @@
       },
       "house": null,
       "suggestions": [],
-      "reason": null
+      "reason": null,
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c11468",
+        "other_side_title": "Construction of Road Slope Protection Structure, Barangay Alta Vista, Ormoc City, Leyte",
+        "other_side_pap_id": "p433:r1",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 20000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
+      }
     },
     {
       "trace": "nep_only_candidate",

@@ -13,7 +13,12 @@ const population = (rows, side) => ({count: sum(rows, r => count(r[side])), comp
   amount_php: sum(rows, r => r[side].amount_php)});
 const analysis = (workspace, view, extra = '') => `#${workspace === 'dpwh' ? '' : workspace + '/'}analysis?view=${view}${extra}`;
 
-function partition(rows, house = 'house') {
+// Exported for build-time adapters that must partition the same rows the
+// Overview publishes (e.g. buildCongressIndex.mjs). Reusing this function is
+// what keeps a district roll-up from ever contradicting the published
+// Overview: the bucket definitions, the segment-scope carve-out and the
+// funding-bridge assertion below are then literally the same code.
+export function partition(rows, house = 'house') {
   const inserted = rows.filter(r => r[house] && !r.nep);
   const deleted = rows.filter(r => r.nep && !r[house]);
   const paired = rows.filter(r => r[house] && r.nep);
@@ -27,23 +32,35 @@ function partition(rows, house = 'house') {
     ensure(total === sum(members, p => p.amount_php), `${side} grouped money does not reconcile`);
     sources[side === house ? 'house' : 'nep'] = {count: members.length, amount_php: total};
   }
-  const increased = paired.filter(r => r[house].amount_php > r.nep.amount_php);
-  const reduced = paired.filter(r => r[house].amount_php < r.nep.amount_php);
+  // Segment-scope review: paired rows on the same road whose station spans
+  // share no overlap. Their delta is a different-segment artifact, NOT a
+  // same-project adjustment — excluded from unchanged/increased/reduced and
+  // reported as its own bucket so the funding bridge still ties. Equal-amount
+  // segment pairs are also excluded from unchanged: a silent mispair must
+  // stay visible in the review bucket, not hide as "unchanged".
+  const segmentScope = paired.filter(r => r.house_match === 'segment_scope_candidate' ||
+    String(r.trace).includes('segment_scope_review'));
+  const adjusted = paired.filter(r => !segmentScope.includes(r));
+  const increased = adjusted.filter(r => r[house].amount_php > r.nep.amount_php);
+  const reduced = adjusted.filter(r => r[house].amount_php < r.nep.amount_php);
+  ensure(increased.length + reduced.length + segmentScope.length +
+    adjusted.filter(r => r[house].amount_php === r.nep.amount_php).length === paired.length,
+    'paired rows do not partition into unchanged, increased, reduced and segment-scope review');
   // Unchanged: matched pairs whose recorded allocations are equal on both
   // stages — same population basis as insertions/deletions, zero paired
   // movement by construction.
-  const unchanged = paired.filter(r => r[house].amount_php === r.nep.amount_php);
-  ensure(unchanged.length + increased.length + reduced.length === paired.length,
-    'paired rows do not partition into unchanged, increased and reduced');
+  const unchanged = adjusted.filter(r => r[house].amount_php === r.nep.amount_php);
   const unchangedPopulation = population(unchanged, house);
   ensure(sum(unchanged, r => r[house].amount_php) === sum(unchanged, r => r.nep.amount_php),
     'unchanged pairs carry different House and NEP totals');
   const increases = sum(increased, r => r[house].amount_php - r.nep.amount_php);
   const reductions = sum(reduced, r => r.nep.amount_php - r[house].amount_php);
+  const scopeNet = sum(segmentScope, r => r[house].amount_php - r.nep.amount_php);
   // Per-group base allocations: what the changed pairs are worth on each
   // stage, so cards can show allocations next to the signed delta.
   const groupBases = rows => ({nep_php: sum(rows, r => r.nep.amount_php), house_php: sum(rows, r => r[house].amount_php)});
   const increasedBases = groupBases(increased), reducedBases = groupBases(reduced);
+  const scopeBases = groupBases(segmentScope);
   ensure(increasedBases.house_php - increasedBases.nep_php === increases, 'increased-pair bases do not tie to the gross increase');
   ensure(reducedBases.nep_php - reducedBases.house_php === reductions, 'reduced-pair bases do not tie to the gross reduction');
   const result = {sources, insertions: population(inserted, house), deletions: population(deleted, 'nep'),
@@ -53,8 +70,11 @@ function partition(rows, house = 'house') {
       increased_php: increases, reduced_php: reductions, net_php: increases - reductions,
       increased_nep_php: increasedBases.nep_php, increased_house_php: increasedBases.house_php,
       reduced_nep_php: reducedBases.nep_php, reduced_house_php: reducedBases.house_php},
+    scope_review: {count: segmentScope.length, count_unit: 'same-road pairs with non-overlapping segments',
+      house_php: scopeBases.house_php, nep_php: scopeBases.nep_php, net_php: scopeNet,
+      note: 'Different segments of the same road attached for scope review; amount deltas are deliberately not booked as same-project adjustments.'},
     delta_php: sources.house.amount_php - sources.nep.amount_php};
-  ensure(result.delta_php === result.insertions.amount_php - result.deletions.amount_php + result.adjustments.net_php,
+  ensure(result.delta_php === result.insertions.amount_php - result.deletions.amount_php + result.adjustments.net_php + result.scope_review.net_php,
     'comparison funding bridge does not reconcile');
   return result;
 }

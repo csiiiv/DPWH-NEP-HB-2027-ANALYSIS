@@ -29,6 +29,26 @@ class HouseReadingsTests(unittest.TestCase):
         self.assertEqual({r['trace'] for r in rows}, {'second_only', 'third_only'})
         self.assertEqual(sorted(r['delta_php'] for r in rows), [-10, 10])
 
+    def test_third_only_row_with_nep_twin_is_annotated_not_reclassified(self):
+        # A 3rd-reading-only row whose exact title+region+zone exists in the
+        # NEP schedule carries a nep_twin annotation (likely restoration of
+        # a 2nd-reading drop) while keeping its third_only status.
+        nep_rows = [{'source_id': 'p9:r0', 'pap3': 'BIP Access Roads', 'pdf_page': 458,
+                     'amount_php': 25_000_000, 'zone': 'non_fap', 'region': 'NCR',
+                     'title': 'Rehabilitation of Drainage including Pathwalk along 1st St'}]
+        rows = compare_readings(
+            [], [allocation('b', 25_000_000,
+                            title='Rehabilitation of Drainage including Pathwalk along 1st St')],
+            source_rows=nep_rows)
+        self.assertEqual(rows[0]['trace'], 'third_only')
+        twin = rows[0]['nep_twin']
+        self.assertEqual(twin['source_id'], 'p9:r0')
+        self.assertEqual(twin['pdf_page'], 458)
+        self.assertIn('restoration', twin['note'])
+        # Without NEP context there is no annotation.
+        bare = compare_readings([], [allocation('b', 25_000_000, title='Unrelated seawall')])
+        self.assertNotIn('nep_twin', bare[0])
+
     def test_different_office_does_not_establish_identity(self):
         rows = compare_readings([allocation('a', 10)], [allocation('b', 10, office='DEO B')])
         self.assertEqual(len(rows), 2)

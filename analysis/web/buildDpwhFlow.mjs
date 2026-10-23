@@ -50,6 +50,10 @@ export function buildDpwhFlow(payload, headline = null) {
   const rowClass = row => {
     const nep = Boolean(row.nep), hgab = Boolean(row.third);
     if (nep && hgab) {
+      // Same-road pairs with non-overlapping segments are scope review, not
+      // booked adjustments: the delta is a different-segment artifact.
+      if (row.house_match === 'segment_scope_candidate' ||
+          String(row.trace).includes('segment_scope_review')) return 'scope_review';
       const delta = row.house_minus_nep_php ?? 0;
       return delta > 0 ? 'increased' : delta < 0 ? 'reduced' : 'unchanged';
     }

@@ -35,7 +35,8 @@ from paths import DATA  # noqa: E402
 from normalize_labels import parse_title_slots  # noqa: E402
 
 ATTACHED = {'exact_candidate', 'chainage_candidate', 'location_amendment_candidate',
-            'soft_match_candidate', 'scope_amendment_candidate'}
+            'soft_match_candidate', 'scope_amendment_candidate',
+            'segment_scope_candidate'}
 
 # Attached-NEP median vs leftover median thresholds. A paired item far from
 # the leftovers' scale is a different work (INSPIRE vs barangay covered

@@ -23,7 +23,15 @@ export function canonicalOffice(office) {
   );
   // Place-name OCR slips → House / gazetteer spelling (keep in sync with
   // analysis/builders/normalize_labels.py PLACE_NAME_SPELLINGS).
-  s = s.replace(/Marindugue/gi, "Marinduque").replace(/Siguijor/gi, "Siquijor");
+  // The office-name slips matter most: "Misamis Occidenatal … District
+  // Engineering Office" would otherwise form its own bucket and split one
+  // office in two across every office filter.
+  s = s
+    .replace(/Marindugue/gi, "Marinduque")
+    .replace(/Siguijor/gi, "Siquijor")
+    .replace(/Occidenatal/gi, "Occidental")
+    .replace(/Batagas/gi, "Batangas")
+    .replace(/Ilolilo/gi, "Iloilo");
   return s;
 }
 

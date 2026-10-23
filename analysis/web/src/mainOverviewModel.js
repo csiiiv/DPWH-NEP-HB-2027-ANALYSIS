@@ -9,8 +9,12 @@ export function validateOverview(data) {
     for (const key of ['insertions', 'deletions', 'adjustments', 'increases', 'decreases', 'unchanged', 'house', 'nep'])
       if (!w.links[key]) throw new Error('Incomplete Overview workspace links.');
     const a = w.adjustments;
+    // Segment-scope review pairs (same road, non-overlapping spans) are
+    // deliberately excluded from adjustments; their net delta rides in the
+    // scope_review bucket so the bridge still reconciles exactly.
+    const scopeNet = w.scope_review?.net_php ?? 0;
     if (a.net_php !== a.increased_php - a.reduced_php || w.delta_php !==
-      w.insertions.amount_php - w.deletions.amount_php + a.net_php) throw new Error('Overview funding totals do not reconcile.');
+      w.insertions.amount_php - w.deletions.amount_php + a.net_php + scopeNet) throw new Error('Overview funding totals do not reconcile.');
     // Per-group base allocations must tie to their signed deltas: the pairs
     // behind "increased" are worth increased_php more at House amounts, and
     // the pairs behind "decreased" are worth reduced_php less.
@@ -20,8 +24,8 @@ export function validateOverview(data) {
     if (!Number.isSafeInteger(w.unchanged.count) || !Number.isSafeInteger(w.unchanged.amount_php) || w.unchanged.amount_php < 0)
       throw new Error('Invalid Overview unchanged population.');
     if (w.paired_comparison_rows != null &&
-      w.unchanged.comparison_rows + a.increased_count + a.reduced_count !== w.paired_comparison_rows)
-      throw new Error('Overview paired rows do not partition into unchanged, increased and reduced.');
+      w.unchanged.comparison_rows + a.increased_count + a.reduced_count + (w.scope_review?.count ?? 0) !== w.paired_comparison_rows)
+      throw new Error('Overview paired rows do not partition into unchanged, increased, reduced and segment-scope review.');
   }
   return data;
 }

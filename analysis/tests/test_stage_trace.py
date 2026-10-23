@@ -102,6 +102,26 @@ class StageTraceTests(unittest.TestCase):
             'house_minus_nep_php': 0,
         }), 'house_only_candidate')
 
+    def test_classify_segment_scope_never_books_deltas(self):
+        # Zero-overlap segment pairs attach for scope review only: whatever
+        # the amount delta, the trace must not narrate increase/decrease.
+        for delta in (0, 5_000_000, -5_000_000):
+            self.assertEqual(classify({
+                'house_match': 'segment_scope_candidate',
+                'api_presence': 'paired',
+                'house_minus_nep_php': delta,
+            }), 'segment_scope_review')
+        self.assertEqual(classify({
+            'house_match': 'segment_scope_candidate',
+            'api_presence': 'nep_not_in_transparency',
+            'house_minus_nep_php': 1,
+        }), 'transparency_gap_then_segment_scope_review')
+        self.assertEqual(classify({
+            'house_match': 'segment_scope_candidate',
+            'api_presence': 'outside_api_scope',
+            'house_minus_nep_php': -1,
+        }), 'outside_api_then_segment_scope_review')
+
     def test_packaging_validator_accepts_current_trace(self):
         self.assertEqual(page_validation.validate_stage_trace()['summary']['records'],
                          len(self.comparison['projects']))

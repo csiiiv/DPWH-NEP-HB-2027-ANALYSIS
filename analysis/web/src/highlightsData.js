@@ -17,6 +17,10 @@ export function highlightsData({rows,headlines,paps,stages,readings,roadGroups,c
  const candidates=regionCandidates(rows);
  const changes=Object.fromEntries(['insertions','deletions','increased','decreased','unchanged'].map(key=>[key,bucket()]));
  const held=Object.fromEntries(['insertions','deletions'].map(key=>[key,bucket()]));
+ // Same-road pairs with disjoint station spans: attached for scope review,
+ // reported separately, never booked as same-project changes.
+ const scopeReview=bucket();
+ scopeReview.nep_php=0;scopeReview.house_php=0;
  const counterparts=suggestedCounterparts(rows);
  for(const row of candidates){
   const house=row.third,nep=row.nep;
@@ -24,6 +28,18 @@ export function highlightsData({rows,headlines,paps,stages,readings,roadGroups,c
   if(house&&!nep){key='insertions';value=house.amount_php;source=house;target=ambiguous(row)?held:changes;
   }else if(nep&&!house){key='deletions';value=nep.amount_php;source=nep;target=counterparts.has(row.id)?held:changes;
   }else if(nep&&house){
+   // Segment-scope pairs (same road, disjoint station spans) are attached
+   // for scope review: their delta is a different-segment artifact, so they
+   // never enter the booked change columns. matchesFlag applies the same
+   // exclusion, keeping Highlights and the Compare filters consistent.
+   const segmentScope=row.house_match==='segment_scope_candidate'||
+    (typeof row.trace==='string'&&row.trace.includes('segment_scope_review'));
+   if(segmentScope){ // consumed by the scope bucket; nothing booked below
+    scopeReview.comparison_rows++;scopeReview.records+=count(house);
+    scopeReview.amount_php+=house.amount_php-nep.amount_php;
+    scopeReview.nep_php+=nep.amount_php;scopeReview.house_php+=house.amount_php;
+    continue;
+   }
    const delta=house.amount_php-nep.amount_php;
    key=delta>0?'increased':delta<0?'decreased':'unchanged';value=Math.abs(delta);source=house;target=changes;
   }else continue;
@@ -34,9 +50,9 @@ export function highlightsData({rows,headlines,paps,stages,readings,roadGroups,c
  // the four published columns are the validated subset only.
  const changes_full=Object.fromEntries(Object.entries(changes).map(([key,b])=>[key,{...b}]));
  for(const [key,b] of Object.entries(held)){changes_full[key].comparison_rows+=b.comparison_rows;changes_full[key].records+=b.records;changes_full[key].amount_php+=b.amount_php;}
- const net=changes_full.insertions.amount_php-changes_full.deletions.amount_php+changes_full.increased.amount_php-changes_full.decreased.amount_php;
+ const net=changes_full.insertions.amount_php-changes_full.deletions.amount_php+changes_full.increased.amount_php-changes_full.decreased.amount_php+scopeReview.amount_php;
  if(net!==sources.third.amount_php-sources.nep.amount_php)throw new Error('Highlights change bridge does not reconcile');
- if(changes_full.insertions.records+changes_full.increased.records+changes_full.decreased.records+changes_full.unchanged.records!==sources.third.records)throw new Error('Highlights House allocation counts do not reconcile');
+ if(changes_full.insertions.records+changes_full.increased.records+changes_full.decreased.records+changes_full.unchanged.records+scopeReview.records!==sources.third.records)throw new Error('Highlights House allocation counts do not reconcile');
  const validated_net_php=changes.insertions.amount_php-changes.deletions.amount_php+changes.increased.amount_php-changes.decreased.amount_php;
  // Ambiguity splits use the same classification as the Analysis rankings:
  // House-only rows with retained NEP suggestions, and NEP-only rows that
@@ -89,7 +105,7 @@ export function highlightsData({rows,headlines,paps,stages,readings,roadGroups,c
  const grouping=roadGroups?.summary??stages.road_group_summary??null;
  const laoag=roadGroups?.groups?.find(group=>group.shell.includes('|laoag city|'));
  return {sources,changes,changes_full,unresolved_insertions:held.insertions.comparison_rows,net_change_php:net,
-  validated_net_php,held,
+  validated_net_php,held,scope_review:scopeReview,
   insertion_split,deletion_split,traceability,controls,
   agency:{nep_php:stages.summary.stages.official_nep.new_appropriations_php,house_php:readings.summary.third.new_appropriations},
   paps,regions,offices:{nep:headlines.sources.nep.offices,third:headlines.sources.third.offices},

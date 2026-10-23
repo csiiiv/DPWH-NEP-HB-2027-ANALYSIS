@@ -13,6 +13,11 @@ export function matchesInsertionRanking(row,reading,ranking){
 
 export function matchesDifferenceScope(row){
  const house=row.third??row.second;
+ // Segment-scope review pairs are attached for identity review only: their
+ // spans share no overlap, so the amount delta is a different-segment
+ // artifact, not a same-project adjustment. Excluded here so headline
+ // adjustment totals never book them; the rows stay visible in Compare.
+ if(row.house_match==='segment_scope_candidate'||String(row.trace).includes('segment_scope_review'))return false;
  return Boolean(row.nep && house && house.amount_php !== row.nep.amount_php);
 }
 

@@ -19,7 +19,7 @@ export function buildBudgetCategoryModel(payload, scope = 'dpwh') {
 }
 
 export function categoryRecordHref(key, group) {
-  const flags = {insertion: 'house_only', deletion: 'nep_only_all', unchanged: 'amount_same', increased: 'amount_increase', reduced: 'amount_decrease'};
+  const flags = {insertion: 'house_only', deletion: 'nep_only_all', unchanged: 'amount_same', increased: 'amount_increase', reduced: 'amount_decrease', scope_review: 'segment_scope'};
   const params = new URLSearchParams({view: 'projects'});
   if (key) params.set('flag', flags[key]);
   if (group) {
@@ -81,6 +81,12 @@ export function budgetFlowRecordLink(model, revision, group) {
   const source = model.dataset?.key || 'dpwh';
   if (source === 'dpwh' && model.grouping.key === 'category') return {href: categoryRecordHref(revision, group), scoped: true};
   const status = {insertion: 'house_only', deletion: 'nep_only', unchanged: 'unchanged', increased: 'increased', reduced: 'decreased'}[revision];
+  // FMR/NIA have no segment-scope machinery: a scope_review cell there is the
+  // normalized empty one, and if one ever carries rows the target workspace
+  // cannot express that population — fall back to the unscoped label rather
+  // than promising a filter that selects the wrong rows.
+  if (revision === 'scope_review' && (source === 'fmr' || source === 'nia'))
+    return {href: model.dataset.comparison_href, scoped: false};
   if (source === 'fmr' || source === 'nia' && (!group || model.grouping.key === 'subprogram')) {
     const params = new URLSearchParams({view: 'projects'});
     if (status) params.set('status', status);

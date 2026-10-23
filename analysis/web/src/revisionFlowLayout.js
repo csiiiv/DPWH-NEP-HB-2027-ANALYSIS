@@ -33,10 +33,12 @@ export function layoutRevisionFlow(model, {valueHeight = 520, alignment = 'top'}
     const stack = cellSlots.reduce((s, h) => s + h, 0);
     const after = graph.nodes.find(n => n.role === 'after');
     const sink = graph.nodes.find(n => n.role === 'reductions');
+    const scopeSink = graph.nodes.find(n => n.role === 'scopeLoss');
     const sinkSlot = sink ? Math.max(44, (wrapFlowLabel(label, 52).length + 2) * 13 + 5, sink.value * scale) : 0;
-    const rightHeight = (after?.value || 0) * scale + (sink ? 32 + sinkSlot : 0);
+    const scopeSinkSlot = scopeSink ? Math.max(44, (wrapFlowLabel(label, 52).length + 2) * 13 + 5, scopeSink.value * scale) : 0;
+    const rightHeight = (after?.value || 0) * scale + (sink ? 32 + sinkSlot : 0) + (scopeSink ? 32 + scopeSinkSlot : 0);
     const bodyHeight = Math.max(stack, rightHeight);
-    return {cells, cellSlots, stack, sink, sinkSlot, bodyHeight, heading, height: heading + bodyHeight + 24};
+    return {cells, cellSlots, stack, sink, sinkSlot, scopeSink, scopeSinkSlot, bodyHeight, heading, height: heading + bodyHeight + 24};
   });
   const flowTop = top + (plans[0]?.heading || groupHeading);
   const plotHeight = plans.reduce((s, p) => s + p.height, 0);
@@ -79,6 +81,18 @@ export function layoutRevisionFlow(model, {valueHeight = 520, alignment = 'top'}
         height: h, width: 12, value: plan.sink.value, label: `${model.labels.reductions} · ${group.label}`};
       map.set(reductionSink.key, reductionSink);
       sinks.push(reductionSink);
+    }
+    // Scope-review deficit sink: same treatment as the reduction sink — a
+    // terminal node that only receives, positioned below the group's after
+    // bar. Without a position, links to it cannot be drawn or ordered.
+    if (plan.scopeSink) {
+      const above = plan.sink ? sinks.find(s => s.role === 'reductions' && s.groupId === group.id) : null;
+      const baseY = above ? above.y + above.height + 32 : right.y + right.height + 32;
+      const h = plan.scopeSink.value * scale;
+      const sink = {...plan.scopeSink, x: columnX.after, y: baseY + offset(plan.scopeSinkSlot, h),
+        height: h, width: 12, value: plan.scopeSink.value, label: `Unbooked scope loss · ${group.label}`};
+      map.set(sink.key, sink);
+      sinks.push(sink);
     }
     // Reserve the addition stub above the existing base at an Increased node.
     const sourceY = new Map([...map].map(([key, n]) => [key, n.y]));

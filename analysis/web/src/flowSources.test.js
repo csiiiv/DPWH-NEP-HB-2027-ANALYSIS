@@ -88,6 +88,10 @@ test('FMR and NIA supported scoped links identify exactly their promised rows an
   for (const [key, grouping, rows, filter] of [['fmr','region',fmrRows(annexes.fmr),filterFmr], ['nia','subprogram',niaRows(annexes.nia),filterNia]]) {
     const model = buildBudgetFlowModel(catalog.sources.find(s => s.dataset.key === key), grouping);
     for (const group of model.groups) for (const cell of group.cells) {
+      // Zero-count cells never render, so they promise no population. (FMR
+      // and NIA have no segment-scope machinery: their scope_review cell is
+      // always the normalized empty one.)
+      if (!cell.rows) continue;
       const link = budgetFlowRecordLink(model, cell.key, group.id);
       assert.ok(link.scoped);
       const params = Object.fromEntries(new URLSearchParams(link.href.split('?')[1]));

@@ -1,17 +1,20 @@
 // Bar chart comparison: one horizontal NEP/HGAB bar pair per detail group,
-// each bar segmented by revision class (unchanged, increased, decreased, and
-// deleted on NEP / inserted on HGAB). The model delegates to the validated
-// budget-flow builder — both ledgers must reconcile before any bar is drawn —
-// and the layout is a pure geometry pass where every segment shares one peso
-// scale, like the flow figures.
+// each bar segmented by revision class (unchanged, increased, decreased and
+// scope-review on both sides, plus deleted on NEP / inserted on HGAB). The
+// model delegates to the validated budget-flow builder — both ledgers must
+// reconcile before any bar is drawn — and the layout is a pure geometry pass
+// where every segment shares one peso scale, like the flow figures.
 import {buildBudgetFlowModel} from './budgetFlowModel.js';
 import {REVISIONS} from './revisionMatrix.js';
 import {wrapHierarchyLabel} from './hierarchyLayout.js';
 
-// One shared class order on both bars, one-sided classes last, so the first
-// three segments start at the same x on the NEP and HGAB bars and widths
+// One shared class order on both bars, one-sided classes last, so the leading
+// two-sided segments start at the same x on the NEP and HGAB bars and widths
 // compare directly (unchanged aligns with unchanged, increased with increased).
-export const SEGMENTS = ['unchanged', 'increased', 'reduced', 'deletion', 'insertion']
+// scope_review is two-sided — the pair exists on both ledgers, only its delta
+// is unbooked — so it joins the shared classes. Omitting it here would drop
+// real money from both bars while the bar totals still carried it.
+export const SEGMENTS = ['unchanged', 'increased', 'reduced', 'scope_review', 'deletion', 'insertion']
   .map(key => REVISIONS.find(r => r.key === key));
 export const SIDES = [
   {key: 'nep', label: 'DBM NEP', short: 'NEP'},

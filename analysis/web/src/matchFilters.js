@@ -12,6 +12,7 @@ export const MATCH_STATUS_OPTIONS = [
   ['matched', 'Already matched'],
   ['matched_normalized', 'Matched after normalization'],
   ['matched_chainage', 'Matched after chainage check'],
+  ['matched_segment_scope', 'Matched — segment scope review'],
   ['matched_location', 'Matched as location amendment'],
   ['matched_soft', 'Matched after soft review'],
   ['matched_scope', 'Matched as scope amendment'],
@@ -38,6 +39,8 @@ export const FLAG_OPTIONS = [
   ['outside_api', 'Outside Transparency scope'],
   ['group_exhausted', 'Grouping · unpaired HGAB row (insertion candidate)'],
   ['group_nep_leftover', 'Grouping · unpaired NEP row (deletion candidate)'],
+  ['segment_scope', 'Segment scope review (delta not booked)'],
+  ['twin_review', 'Twin review · identical unmatched pair'],
   ...DIFF_FLAG_OPTIONS,
 ];
 
@@ -45,6 +48,7 @@ export const MATCH_STATUS_INFO = Object.fromEntries([
   ['matched', ['Already matched', 'Unique House↔NEP pair under the retained matching key with identical raw titles. Identity remains provisional.']],
   ['matched_normalized', ['Matched after normalization', 'Unique House↔NEP pair whose titles agree only after live normalize rules (Brgy./place slips/structure IDs), a stage-qualifier bridge (Construction (Completion) ↔ Construction), or another retained pairing rule. Printed titles stay as extracted.']],
   ['matched_chainage', ['Matched after chainage check', 'Unique House↔NEP pair that shares the same road title_base with differing station spans. Attached for identity; reasons include station-marker adjustment, increased/decreased project length, or re-segmentation. Amount flags still apply.']],
+  ['matched_segment_scope', ['Matched — segment scope review', 'Same road title_base whose measured station spans share NO overlap — different segments of one road, attached for scope review only. The amount delta is deliberately NOT booked as a same-project increase/decrease; treat as possible split, re-segmentation or separate work until certified.']],
   ['matched_location', ['Matched as location amendment', 'Unique House↔NEP pair that shares the project shell but relocates a place slot (province / street / barangay) or changes a point-to-point barangay corridor endpoint. Attached as an amendment; amount flags still apply.']],
   ['matched_soft', ['Matched after soft review', 'Unique equal-amount House↔NEP pair soft-attached after review: OCR/spelling slip, facility qualifier only (Gym / Gymnasium / Covered Court), or high-identity punct/sub-barangay detail. Always carries a typed reason plus diff_tags and identity_score — not a silent exact match.']],
   ['matched_scope', ['Matched as scope amendment', 'Unique House↔NEP pair (identity ≥ 0.90, soft tags only) attached as a scope amendment after Tier-3 review: GPS-confirmed scope change, re-surveyed chainage digits, unit/phase re-scope, facility or parenthetical scope, Solar/Footbridge wording. Amount deltas apply and stay flagged; provenance (reason + diff_tags + identity_score) is always carried.']],
@@ -61,6 +65,8 @@ export const REVIEW_FLAG_INFO = Object.fromEntries([
   ['nep_only_all', ['NEP only · all candidates', 'All NEP records without an attached House reading, including possible replacements named by unresolved House suggestions. Not confirmed deletions.']],
   ['group_exhausted', ['Unpaired HGAB in shell grouping', 'House row on a road-corridor or project-shell grouping (work + municipality + province) whose NEP rows are all paired to other House rows — no NEP counterpart remains for this allocation. Insertion candidate with group context; identity never certified.']],
   ['group_nep_leftover', ['Unpaired NEP in shell grouping', 'NEP row on a shell grouping whose House side is fully paired while this NEP item remains unmatched — likely dropped or re-titled at HGAB. Deletion candidate with group context; identity never certified.']],
+  ['segment_scope', ['Segment scope review', 'Paired rows on the same road whose station spans share no overlap. Delta deliberately excluded from adjustment totals — review as different-segment work (split / re-segmentation / separate project), not a same-project change.']],
+  ['twin_review', ['Twin review', 'Unmatched row whose identical normalized title + region + zone + equal amount exists unmatched on the other side (typically under a different program/PAP). Likely transfer or duplicate printing; kept unpaired — insertion/deletion candidacy stands until reviewed.']],
   ['nep_only_suggested', ['NEP only · possible replacement', 'NEP-only row that an unmatched House row names as a fuzzy counterpart.']],
   ['amount_increase', ['NEP → HGAB increased', 'Retained candidate pair where House amount is larger than NEP.']],
   ['amount_decrease', ['NEP → HGAB decreased', 'Retained candidate pair where House amount is smaller than NEP.']],
@@ -75,6 +81,10 @@ export const LEGACY_STATUS_MAP = {
   fuzzy_candidate: {matchStatus: 'fuzzy'},
   chainage_candidate: {matchStatus: 'matched_chainage'},
   chainage: {matchStatus: 'matched_chainage'},
+  segment_scope_candidate: {matchStatus: 'matched_segment_scope'},
+  segment_scope_review: {matchStatus: 'matched_segment_scope'},
+  transparency_gap_then_segment_scope_review: {matchStatus: 'matched_segment_scope', flag: 'transparency_gap'},
+  outside_api_then_segment_scope_review: {matchStatus: 'matched_segment_scope', flag: 'outside_api'},
   location_amendment_candidate: {matchStatus: 'matched_location'},
   soft_match_candidate: {matchStatus: 'matched_soft'},
   scope_amendment_candidate: {matchStatus: 'matched_scope'},
@@ -101,6 +111,8 @@ export function identityMatchStatus(row) {
   const hm = row.house_match;
   if (hm === 'exact_candidate') return row.reason ? 'matched_normalized' : 'matched';
   if (hm === 'chainage_candidate') return 'matched_chainage';
+  if (hm === 'segment_scope_candidate') return 'matched_segment_scope';
+  if (typeof row.trace === 'string' && row.trace.includes('segment_scope_review')) return 'matched_segment_scope';
   if (hm === 'location_amendment_candidate') return 'matched_location';
   if (hm === 'soft_match_candidate') return 'matched_soft';
   if (hm === 'scope_amendment_candidate') return 'matched_scope';
@@ -149,12 +161,19 @@ export function rowFlags(row, counterparts = null) {
     if (counterparts?.has(row.id)) flags.push('nep_only_suggested');
   }
   const delta = row.house_minus_nep_php ?? pairedAmountDelta(row);
-  if (delta != null && delta > 0) flags.push('amount_increase');
-  else if (delta != null && delta < 0) flags.push('amount_decrease');
-  else if (delta === 0) flags.push('amount_same');
-  else if (typeof row.trace === 'string') {
-    if (row.trace.includes('candidate_increase')) flags.push('amount_increase');
-    else if (row.trace.includes('candidate_decrease')) flags.push('amount_decrease');
+  // Segment-scope review pairs never take amount flags: their delta is a
+  // different-segment artifact, not a same-project increase/decrease. The
+  // segment_scope flag below is the only amount-adjacent signal they carry.
+  const segmentScopeRow = row.house_match === 'segment_scope_candidate' ||
+    (typeof row.trace === 'string' && row.trace.includes('segment_scope_review'));
+  if (!segmentScopeRow) {
+    if (delta != null && delta > 0) flags.push('amount_increase');
+    else if (delta != null && delta < 0) flags.push('amount_decrease');
+    else if (delta === 0) flags.push('amount_same');
+    else if (typeof row.trace === 'string') {
+      if (row.trace.includes('candidate_increase')) flags.push('amount_increase');
+      else if (row.trace.includes('candidate_decrease')) flags.push('amount_decrease');
+    }
   }
   if (row.api_presence === 'nep_not_in_transparency' || (typeof row.trace === 'string' && row.trace.includes('transparency_gap'))) {
     flags.push('transparency_gap');
@@ -168,6 +187,11 @@ export function rowFlags(row, counterparts = null) {
   if (row.road_group?.flag === 'deletion_candidate_group_house_paired') {
     flags.push('group_nep_leftover');
   }
+  if (row.house_match === 'segment_scope_candidate' ||
+      (typeof row.trace === 'string' && row.trace.includes('segment_scope_review'))) {
+    flags.push('segment_scope');
+  }
+  if (row.twin_review) flags.push('twin_review');
   return flags;
 }
 

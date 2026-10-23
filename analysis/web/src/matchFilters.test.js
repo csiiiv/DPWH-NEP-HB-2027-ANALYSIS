@@ -77,6 +77,35 @@ test('flags cover presence, amount deltas and Transparency coverage', () => {
   }).includes('transparency_gap'));
 });
 
+test('segment-scope review rows carry the scope flag, not amount flags', () => {
+  // Trace-level segment scope (stage trace vocabulary).
+  const traceRow = {
+    trace: 'segment_scope_review',
+    house_match: 'segment_scope_candidate',
+    nep: {id: 'n', amount_php: 5},
+    third: {id: 'h', amount_php: 50},
+  };
+  assert.equal(identityMatchStatus(traceRow), 'matched_segment_scope');
+  assert.ok(rowFlags(traceRow).includes('segment_scope'));
+  assert.ok(!rowFlags(traceRow).includes('amount_increase'));
+  // Prefix variants map through the legacy vocabulary.
+  assert.deepEqual(parseLegacyStatus('segment_scope_review'), {matchStatus: 'matched_segment_scope', flag: '', trace: ''});
+  assert.equal(parseLegacyStatus('transparency_gap_then_segment_scope_review').flag, 'transparency_gap');
+  assert.equal(matchesFlag(traceRow, 'segment_scope'), true);
+});
+
+test('twin-review rows are flagged without changing their match status', () => {
+  const row = {
+    house_match: 'house_unmatched',
+    second: {id: 'h'},
+    twin_review: {kind: 'twin_unmatched_pair', other_side_id: 'n'},
+  };
+  assert.equal(identityMatchStatus(row), 'no_match');
+  assert.ok(rowFlags(row).includes('house_only'));
+  assert.ok(rowFlags(row).includes('twin_review'));
+  assert.equal(matchesFlag(row, 'twin_review'), true);
+});
+
 test('select helpers and legacy status mapping', () => {
   const fuzzy = {house_match: 'fuzzy_candidate', second: {id: 'h'}};
   assert.equal(matchesMatchStatus(fuzzy, 'fuzzy'), true);

@@ -65,6 +65,36 @@ class NormalizeLabelsTests(unittest.TestCase):
         self.assertNotEqual(
             raw_normalized('Marindugue'), raw_normalized('Marinduque'))
 
+    def test_office_place_name_slips_collapse_into_the_real_office(self):
+        # These three OCR slips appeared inside implementing-office names in the
+        # House NEP annexes. Without collapsing them, "Misamis Occidenatal 2nd
+        # District Engineering Office" (106 records) sits in its own bucket
+        # beside the correctly spelled office (108 records): office filters
+        # split one office in two and the DEO -> district crosswalk misses it.
+        self.assertEqual(
+            canonical_office('Misamis Occidenatal 2nd District Engineering Office'),
+            'Misamis Occidental 2nd District Engineering Office')
+        self.assertEqual(
+            canonical_office('Batagas 2nd District Engineering Office'),
+            'Batangas 2nd District Engineering Office')
+        self.assertEqual(
+            canonical_office('Ilolilo 2nd District Engineering Office'),
+            'Iloilo 2nd District Engineering Office')
+        # Slips are matched case-insensitively; only the slipped token itself is
+        # rewritten to the gazetteer spelling.
+        self.assertEqual(
+            canonical_office('misamis occidenatal 2nd district engineering office'),
+            'misamis Occidental 2nd district engineering office')
+        # The raw surface form stays untouched for provenance, and the title
+        # match key is deliberately NOT affected: no project title carries these
+        # slips, so widening title matching would only risk merging distinct
+        # titles (PLACE_NAME_SPELLINGS feeds canonical_office, not title keys).
+        self.assertNotEqual(
+            raw_normalized('Batagas'), raw_normalized('Batangas'))
+        self.assertNotEqual(
+            title_match_key('Batagas Circumferential Rd'),
+            title_match_key('Batangas Circumferential Rd'))
+
     def test_structure_id_letter_o_becomes_zero(self):
         self.assertEqual(
             title_match_key('Agkawayan Br. (B00008LB) along Tagbac-Lubang-Looc Rd'),

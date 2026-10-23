@@ -16,9 +16,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scripts'))
 from validate_current_pages import validate_current_pages
 
 
-def allocation(id, title='Construction of Road at Barangay Mabini, Sample City', amount=10000000, reg='Region III', zone='local'):
+def allocation(id, title='Construction of Road at Barangay Mabini, Sample City', amount=10000000, reg='Region III', zone='local', pap_id='p262:r1'):
     return {'id': id, 'title': title, 'amount_php': amount, 'region': reg,
-            'zone': zone, 'program': 'Network Development Program', 'pap_id': 'p262:r1'}
+            'zone': zone, 'program': 'Network Development Program', 'pap_id': pap_id}
 
 
 class CurrentPageTests(unittest.TestCase):
@@ -149,6 +149,52 @@ class CurrentPageTests(unittest.TestCase):
         self.assertEqual(project_matches([h], [n2])[0]['status'], 'fuzzy_candidate')
         self.assertEqual(project_matches([h], [allocation('n3', title='Unrelated seawall')])[0]['status'],
                          'house_unmatched')
+
+    def test_zero_overlap_segments_attach_as_scope_review_not_adjustment(self):
+        # Same road base, disjoint station spans: different segments of one
+        # road. Attached for scope review; the delta must stay unbooked.
+        from normalize_labels import annotate_source_labels
+        h = annotate_source_labels(allocation('h', title='Manila-Batangas Rd - K0097 + 000 - K0098 + 000', amount=50))
+        n = annotate_source_labels(allocation('n', title='Manila-Batangas Rd - K0150 + 000 - K0151 + 000', amount=30))
+        rows = project_matches([h], [n])
+        self.assertEqual([r['status'] for r in rows], ['segment_scope_candidate'])
+        self.assertEqual(rows[0]['delta_php'], 20)
+        self.assertEqual(rows[0]['segment_overlap_ratio'], 0.0)
+        self.assertIn('NOT booked', rows[0]['reason'])
+        self.assertIn('scope review', rows[0]['reason'])
+
+    def test_partial_overlap_segments_stay_chainage_candidates(self):
+        # Overlapping spans (re-segmentation) keep the regular chainage path
+        # with booked deltas.
+        h = allocation('h', title='Manila-Batangas Rd - K0097 + 000 - K0098 + 000', amount=10)
+        n = allocation('n', title='Manila-Batangas Rd - K0097 + 500 - K0098 + 200', amount=8)
+        rows = project_matches([h], [n])
+        self.assertEqual([r['status'] for r in rows], ['chainage_candidate'])
+        self.assertEqual(rows[0]['delta_php'], 2)
+
+    def test_cross_pap_twin_stays_unmatched_but_carries_twin_review(self):
+        # Identical title+region+zone+amount under different PAPs never
+        # auto-pairs; both sides carry a twin_review cross-reference.
+        h = allocation('h', pap_id='p1:r1', amount=5_000_000)
+        n = allocation('n', pap_id='p2:r0', amount=5_000_000)
+        rows = project_matches([h], [n])
+        self.assertEqual({r['status'] for r in rows}, {'house_unmatched', 'nep_unmatched'})
+        flagged = [r for r in rows if r.get('twin_review')]
+        self.assertEqual(len(flagged), 2)
+        house_flag = next(r for r in flagged if r.get('house'))
+        nep_flag = next(r for r in flagged if r.get('nep'))
+        self.assertEqual(house_flag['twin_review']['other_side_id'], 'n')
+        self.assertEqual(nep_flag['twin_review']['other_side_id'], 'h')
+        self.assertIn('never certifies identity', house_flag['twin_review']['note'])
+
+    def test_same_pap_twin_without_unique_key_stays_silent(self):
+        # Same-scope same-title rows that missed the exact tier are
+        # duplicate-key cases: no twin flag (amount must not break the tie).
+        h = allocation('h', amount=1_000_000)
+        n = allocation('n', amount=1_000_000)
+        rows = project_matches([h], [n])
+        self.assertEqual([r['status'] for r in rows], ['exact_candidate'])
+        self.assertNotIn('twin_review', rows[0])
 
     def test_location_reassignment_attaches_as_an_amendment(self):
         h = allocation(

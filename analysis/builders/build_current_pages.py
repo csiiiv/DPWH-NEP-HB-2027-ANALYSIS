@@ -43,7 +43,9 @@ METHOD = ('Unique normalized title + canonical region + canonical PAP node ID '
           'Titles also parse into title_base + chainage spans (K/Sta/C/Chainage); '
           'unique same-base differing stations attach as chainage matches with '
           'reasons (station-marker adjustment, length change, re-segmentation) '
-          'and amount deltas like exact pairs. '
+          'and amount deltas like exact pairs, EXCEPT when measured station '
+          'spans share no overlap: those attach as segment-scope candidates '
+          'whose amount delta is never booked as a same-project adjustment. '
           'Amount does not determine identity. Duplicate keys remain ambiguous. '
           'FAP loans additionally pair across differing program sections '
           '(I-C National Building Program vs NEP Local Program) when the '
@@ -56,6 +58,9 @@ METHOD = ('Unique normalized title + canonical region + canonical PAP node ID '
           'region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; '
           'unique same title_base with different chainage spans (or digit-only title diffs) '
           'attach as chainage matches (consume NEP). '
+          'After all passes, rows unmatched on both sides that are identical '
+          'title+region+zone+amount twins under different program/PAP sections '
+          'carry a twin_review cross-reference but never auto-pair. '
           'Suggestions do not consume NEP rows. No pair has been manually certified.')
 
 
@@ -177,6 +182,44 @@ def _is_chainage_pair(house_row, nep_row):
     return bool(h_digits) and h_digits == digits_omitted(nep_row['title'])
 
 
+# Zero-overlap gate: two rows on the same road base whose measured station
+# spans never intersect are different segments, not one re-segmented project.
+# Booking their amount delta as a same-project adjustment manufactures
+# phantom increases/decreases (67 pairs / PHP 2.37B gross in the FY2027
+# Senate reconciliation self-audit), so they attach for identity review only.
+_MIN_SEGMENT_OVERLAP = 0.05  # share of the shorter measured span
+
+
+def _span_intervals(row):
+    out = []
+    for c in row.get('chainages') or []:
+        a, b = c.get('meters_from'), c.get('meters_to')
+        if a is not None and b is not None:
+            out.append((min(a, b), max(a, b)))
+    return out
+
+
+def segment_overlap_ratio(house_row, nep_row):
+    """Overlap metres ÷ shorter total measured length; None when unmeasurable."""
+    h_spans, n_spans = _span_intervals(house_row), _span_intervals(nep_row)
+    if not h_spans or not n_spans:
+        return None
+    shorter = min(sum(b - a for a, b in h_spans), sum(b - a for a, b in n_spans))
+    if shorter <= 0:
+        return None
+    overlap = sum(max(0.0, min(b1, b2) - max(a1, a2))
+                  for a1, b1 in h_spans for a2, b2 in n_spans)
+    return min(overlap / shorter, 1.0)
+
+
+def _segment_relation(house_row, nep_row):
+    """'overlap' | 'none' | 'unmeasured' for a same-base chainage candidate."""
+    ratio = segment_overlap_ratio(house_row, nep_row)
+    if ratio is None:
+        return 'unmeasured'
+    return 'overlap' if ratio >= _MIN_SEGMENT_OVERLAP else 'none'
+
+
 def _attach_chainage(house_row, nep_row, confidence=1.0):
     return {
         'status': 'chainage_candidate',
@@ -186,6 +229,66 @@ def _attach_chainage(house_row, nep_row, confidence=1.0):
         'delta_php': house_row['amount_php'] - nep_row['amount_php'],
         'reason': _chainage_amendment_reason(house_row, nep_row),
     }
+
+
+def _attach_segment_scope(house_row, nep_row, confidence=1.0):
+    ratio = segment_overlap_ratio(house_row, nep_row)
+    delta = house_row['amount_php'] - nep_row['amount_php']
+    detail = ('station spans share no segment' if not ratio
+              else f'station spans overlap only {ratio:.1%} of the shorter span')
+    return {
+        'status': 'segment_scope_candidate',
+        'confidence': confidence,
+        'house': house_row,
+        'nep': nep_row,
+        'delta_php': delta,
+        'segment_overlap_ratio': round(ratio, 4) if ratio is not None else None,
+        'reason': (
+            f'Same road title_base but {detail}. Different segment of the '
+            'same road — attached for scope review only; the amount delta is '
+            'NOT booked as a same-project adjustment. '
+            + ('Amounts are equal, so a mispair would be silent — verify '
+               'against the printed schedules before certifying. ' if delta == 0 else '')
+            + 'Possible split, re-segmentation or separate work on the same road.'
+        ),
+    }
+
+
+def _twin_review_note(this_row, other_row):
+    """Cross-reference an identical-title+amount twin left on both sides."""
+    return {
+        'kind': 'twin_unmatched_pair',
+        'other_side_id': other_row['id'],
+        'other_side_title': other_row['title'],
+        'other_side_pap_id': other_row.get('pap_id'),
+        'other_side_program': other_row.get('program'),
+        'other_side_region': other_row.get('region'),
+        'amount_php': this_row['amount_php'],
+        'note': (
+            'Identical normalized title, region, zone and equal amount exist '
+            'on the unmatched opposite side under a different program/PAP '
+            'section. Likely a cross-PAP transfer or duplicated printing — '
+            'left unpaired; both rows stay insertion/deletion candidates '
+            'until reviewed. Amount alone never certifies identity.'
+        ),
+    }
+
+
+def _twin_pairs(house, source, matched_h, matched_n):
+    """Map house_idx → nep_idx for unique unmatched equal twins across PAPs."""
+    h_by_key, n_by_key = defaultdict(list), defaultdict(list)
+    for i, r in enumerate(house):
+        if i not in matched_h:
+            h_by_key[(r['zone'], r['region'], _title_key(r), r['amount_php'])].append(i)
+    for i, r in enumerate(source):
+        if i not in matched_n:
+            n_by_key[(r['zone'], r['region'], _title_key(r), r['amount_php'])].append(i)
+    pairs = {}
+    for k, hs in h_by_key.items():
+        ns = n_by_key.get(k, [])
+        if len(hs) == len(ns) == 1 and scope_key(house[hs[0]]) != scope_key(source[ns[0]]):
+            pairs[hs[0]] = ns[0]
+    return pairs
 
 
 _LOCATION_AMENDMENT_TAGS = frozenset({
@@ -529,7 +632,10 @@ def project_matches(house, source):
         if len(unused_chainage) >= 1:
             nep_row = unused_chainage[0]['nep']
             n_idx = next(j for j, r in enumerate(source) if r is nep_row)
-            records.append(_attach_chainage(h, source[n_idx], unused_chainage[0]['confidence']))
+            if _segment_relation(h, nep_row) == 'none':
+                records.append(_attach_segment_scope(h, nep_row, unused_chainage[0]['confidence']))
+            else:
+                records.append(_attach_chainage(h, nep_row, unused_chainage[0]['confidence']))
             matched_h.add(i)
             matched_n.add(n_idx)
             continue
@@ -596,7 +702,10 @@ def project_matches(house, source):
         n = ns[0]
         if not _is_chainage_pair(house[idx], source[n]):
             continue
-        attached = _attach_chainage(house[idx], source[n])
+        if _segment_relation(house[idx], source[n]) == 'none':
+            attached = _attach_segment_scope(house[idx], source[n])
+        else:
+            attached = _attach_chainage(house[idx], source[n])
         rec.clear()
         rec.update(attached)
         matched_h.add(idx)
@@ -604,6 +713,24 @@ def project_matches(house, source):
     for i, n in enumerate(source):
         if i not in matched_n:
             records.append({'status': 'nep_unmatched', 'nep': n})
+    # Cross-PAP twin sweep (annotation only, never auto-pairs). Runs after
+    # every pass, including nep_unmatched emission, so flags reflect final
+    # match state: rows left unmatched on BOTH sides with an identical
+    # normalized title + region + zone + EQUAL amount under different
+    # program/PAP sections are flagged twins of each other. Amount never
+    # certifies identity, and both rows keep their unmatched candidate
+    # status — insertion/deletion totals stay untouched until a human
+    # certifies the pair.
+    twin_house = _twin_pairs(house, source, matched_h, matched_n)
+    rec_by_house_id = {r['house']['id']: r for r in records if r.get('house')}
+    rec_by_nep_id = {r['nep']['id']: r for r in records if r.get('nep')}
+    for h_idx, n_idx in twin_house.items():
+        h_rec = rec_by_house_id.get(house[h_idx]['id'])
+        if h_rec is not None:
+            h_rec['twin_review'] = _twin_review_note(house[h_idx], source[n_idx])
+        n_rec = rec_by_nep_id.get(source[n_idx]['id'])
+        if n_rec is not None:
+            n_rec['twin_review'] = _twin_review_note(source[n_idx], house[h_idx])
     return records
 
 

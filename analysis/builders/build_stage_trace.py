@@ -34,6 +34,10 @@ METHOD = (
     '23 documented non-FAP omissions are outside the Transparency listing. '
     'Stage 2: House project extract ↔ Official NEP exact/fuzzy/ambiguous/unmatched '
     'candidates from source_comparison_2027. Amount does not establish identity. '
+    'Same-road pairs whose measured station spans share no overlap attach as '
+    'segment_scope_review: scope review only, the amount delta is NOT booked '
+    'as a same-project adjustment. Unmatched rows cross-referenced to an '
+    'identical title+amount twin on the other side carry twin_review context. '
     'No pair is manually certified. Unmatched rows are not certified insertions or removals.'
 )
 
@@ -73,6 +77,17 @@ def api_side(pair: dict) -> dict:
 def classify(row: dict) -> str:
     status = row['house_match']
     api_presence = row['api_presence']
+    if status == 'segment_scope_candidate':
+        # Same road base but station spans share no overlap: different
+        # segments of one road attached for scope review. The amount delta
+        # is deliberately NOT booked as a same-project increase/decrease —
+        # booking it manufactured phantom adjustments (67 pairs / PHP 2.37B
+        # gross in the FY2027 self-audit).
+        if api_presence == 'nep_not_in_transparency':
+            return 'transparency_gap_then_segment_scope_review'
+        if api_presence == 'outside_api_scope':
+            return 'outside_api_then_segment_scope_review'
+        return 'segment_scope_review'
     if status in ('exact_candidate', 'chainage_candidate',
                   'location_amendment_candidate', 'soft_match_candidate',
                   'scope_amendment_candidate'):
@@ -127,7 +142,8 @@ def build_rows(comparison: dict, reconciliation: dict) -> list[dict]:
         if record['status'] in ('exact_candidate', 'chainage_candidate',
                                 'location_amendment_candidate',
                                 'soft_match_candidate',
-                                'scope_amendment_candidate') and house and nep:
+                                'scope_amendment_candidate',
+                                'segment_scope_candidate') and house and nep:
             house_minus_nep = house['amount_php'] - nep['amount_php']
         primary = house or nep
         row = {
@@ -167,6 +183,15 @@ def build_rows(comparison: dict, reconciliation: dict) -> list[dict]:
                 row['diff_tags'] = record['diff_tags']
             if record.get('identity_score') is not None:
                 row['identity_score'] = record['identity_score']
+        # Segment-scope review pairs carry their measured overlap so reviewers
+        # see how disjoint the station spans are at a glance.
+        if record['status'] == 'segment_scope_candidate':
+            if record.get('segment_overlap_ratio') is not None:
+                row['segment_overlap_ratio'] = record['segment_overlap_ratio']
+        # Unmatched rows cross-referenced to an identical twin on the other
+        # side keep the twin context through every downstream join.
+        if record.get('twin_review'):
+            row['twin_review'] = record['twin_review']
         if api_presence == 'nep_not_in_transparency' and nep:
             gap = unpaired[nep['id']]
             row['transparency_gap'] = {

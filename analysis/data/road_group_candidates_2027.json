@@ -2,13 +2,13 @@
   "manifest": {
     "schema_version": 1,
     "fiscal_year": 2027,
-    "built_at": "2026-10-11T19:09:15+08:00",
+    "built_at": "2026-10-22T20:06:37+08:00",
     "generator": {
       "path": "analysis/builders/build_road_groups.py",
-      "sha256": "4a58a13a8ec8f769472147734e85de98e7238201b80c66e74c1ce882c074f912"
+      "sha256": "3471bf0d433bd44fb65bd63bb32164a8193814b7059089458f273a55f4dd1327"
     },
     "inputs": {
-      "source_comparison_2027.json": "9f500eb12e682f9c1086fa113426dee02cc23ddb4b4b7a1a75c1a541010889c4"
+      "source_comparison_2027.json": "51120386e71d84e7a9c77efa411dee0a19c49214446c2cf7c50e35606c36880d"
     },
     "matching_method": "Road rows group by zone+PAP+region+chainage-stripped title base; everything else groups by zone+PAP+region+place shell (work phrase + municipality + province, dropping barangay/sitio/street — the split axis). Attached pairs collapse to one HGAB-anchored record (NEP amount + delta as provenance). Two finding states: hgab_leftover (NEP supply fully paired, House rows remain — split / insertion candidates, with a scale pattern: split_like 0.2–5× median ratio, unsupplied_cluster paired item far larger, micro_supplied reverse) and nep_leftover (House side fully paired, NEP supply remains — dropped or re-titled candidates). Neither is a certified insertion or deletion."
   },
@@ -1019,7 +1019,7 @@
       "members": [
         {
           "id": "hb:ic:c3183",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "MSR JCT Canda-Hondagua-Roma Point Road (Roma Point Bridge), Sta. 1 + 210 - Sta. 1 + 600",
           "amount_php": 200000000,
@@ -7219,7 +7219,7 @@
         },
         {
           "id": "hb:ic:c1690",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Kapalong-Talaingod-Valencia (Bukidnon) Rd K1541 + 720 - K1541 + 766, K1543 +863 - K1544 + 025, K1574 + 618 - K1574 + 652, K1574 + 700 - K1574 + 758",
           "amount_php": 145000000,
@@ -7283,7 +7283,7 @@
         },
         {
           "id": "hb:ic:c1692",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Kapalong-Talaingod-Valencia (Bukidnon) Rd K1528+120 -K1528+500",
           "amount_php": 55000000,
@@ -9496,7 +9496,7 @@
         },
         {
           "id": "hb:ic:c2340",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Pangasinan - Zambales Rd - K0283 + 994 - K0286 + 438",
           "amount_php": 100000000,
@@ -16884,7 +16884,7 @@
       "members": [
         {
           "id": "hb:ic:c3184",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Quezon Eco - Tourism - Sariaya - Candelaria - Tiaong - San Antonio Road, Sta. 0 + 000 - Sta. 0 + 520, San Antonio, Quezon",
           "amount_php": 84700000,
@@ -28077,7 +28077,7 @@
         },
         {
           "id": "hb:ic:c1476",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Mt. Province-Ifugao Rd (Kiling-Paracelis Sect) - K0470 + 526 - K0471 + 000",
           "amount_php": 18920000,
@@ -35040,7 +35040,7 @@
       "members": [
         {
           "id": "hb:ic:c0868",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Talisay-Laurel-Agoncillo Rd - K0083 + 734 - K0084 + 808",
           "amount_php": 40000000,
@@ -36318,7 +36318,7 @@
       "members": [
         {
           "id": "hb:ic:c2253",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Iloilo-Capiz Rd (New Route) - K0098 + 1004 - K0100 + 100",
           "amount_php": 84747000,
@@ -36339,7 +36339,7 @@
         },
         {
           "id": "hb:ic:c2303",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Iloilo-Capiz Rd (New Route) - K0068 + 621 - K0068 + 722",
           "amount_php": 5473000,
@@ -50627,7 +50627,7 @@
         },
         {
           "id": "hb:ic:c8140",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Construction of Esperanza-Lebak Bypass Road, Sta. 5 + 550 - Sta. 7 + 259, Sta. 7 + 449 - Sta. 10 + 715, Esperanza, Sultan Kudarat",
           "amount_php": 200000000,
@@ -51511,7 +51511,7 @@
       "members": [
         {
           "id": "hb:ic:c3210",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Lalud-Garchitorena Road, Garchitorena, Camarines Sur, Sta. 34+420 - Sta. 34+576, Sta. 35+560 - Sta. 37+200",
           "amount_php": 120000000,
@@ -53964,7 +53964,7 @@
         },
         {
           "id": "hb:ic:c0220",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Juanito R. Remulla, Sr. Rd - K0039 + 885 - K0040 + 064",
           "amount_php": 16273000,
@@ -54378,7 +54378,7 @@
       "members": [
         {
           "id": "hb:ic:c0023",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Jose Abad Santos Ave (JASA) - K0120 + 000 - K0122+059",
           "amount_php": 64500000,
@@ -54399,7 +54399,7 @@
         },
         {
           "id": "hb:ic:c0201",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Jose Abad Santos Ave (JASA) - K0118 + 565 - K0119 + 022",
           "amount_php": 17500000,
@@ -54420,7 +54420,7 @@
         },
         {
           "id": "hb:ic:c0202",
-          "status": "chainage_candidate",
+          "status": "segment_scope_candidate",
           "attached": true,
           "title": "Jose Abad Santos Ave (JASA) - K0124 + 170 - K0124+949",
           "amount_php": 29500000,

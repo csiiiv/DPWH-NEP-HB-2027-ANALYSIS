@@ -1,6 +1,6 @@
 # Shareable datasets by workbench page
 
-Updated: **13 October 2026**. FY 2027 budget project/facility lists for
+Updated: **22 October 2026**. FY 2027 budget project/facility lists for
 journalists, citizens, and data analysts.
 
 This guide maps each workbench page family to the **best retained file to
@@ -135,6 +135,7 @@ DPWH lists are larger and mostly JSON trees. Prefer the flattest file that still
 | **Transparency NEP** (`#transparency`) | [fy2027-combined.json](../../dpwh-transparency-nep-data/json/fy2027-combined.json) (11,372 projects, ₱445,378,063,000) | Raw listing snapshot. Hierarchy form: [dpwh_transparency_nep_tree.json](../data/dpwh_transparency_nep_tree.json). **Incomplete vs full NEP** |
 | **Compare stages** (`#compare`) | [stage_trace_2027.json](../data/stage_trace_2027.json), [source_comparison_2027.json](../data/source_comparison_2027.json), [comparison_manifest.json](../data/comparison_manifest.json) | PAP/project/listing-gap candidates; `comparison_ready` remains false |
 | **Analysis** groupings / headlines | [road_group_candidates_2027.json](../data/road_group_candidates_2027.json) plus stage source files above | Same-shell grouping candidates; not certified insertions/deletions |
+| **DEO ↔ legislative district** lookup (any workspace) | [deo_leg_crosswalk.json](../../DEO2LEG/deo_leg_crosswalk.json) (264 relationships, 254 districts) | Reference mapping only: office → districts → representatives (each resolved seat carries `member_code`, profile URL and portrait). Amounts live separately in [source_amounts.json](../../DEO2LEG/evidence/source_amounts.json) and cite an **undated** scan |
 | **Highlights** | Supporting populations from the stage files; story context via the app | Prefer citing the underlying House/NEP/Transparency file for each claim |
 | **Resources catalog** | [resources.js](../web/src/resources.js) mirrors this inventory for the SPA | Packaged site copies many JSON files under `analysis/` paths |
 

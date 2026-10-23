@@ -2,7 +2,7 @@
   "manifest": {
     "schema_version": 2,
     "fiscal_year": 2027,
-    "built_at": "2026-10-11T18:01:28+08:00",
+    "built_at": "2026-10-23T07:00:05+08:00",
     "stages": {
       "nep": "Executive NEP proposal",
       "house": "HB 10858 supplied source documents; amendment completeness not certified"
@@ -12,14 +12,14 @@
     "nep_version": 1,
     "scope": "New appropriations excluding automatic appropriations; operations project comparison; local and FAP separated",
     "units": "Integer Philippine pesos",
-    "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Titles are normalized token-wise: common abbreviation variants (Brgy./Barangay) and place-name OCR slips (Marindugue/Marinduque, Siguijor/Siquijor) expand before matching; structure/road IDs rewrite OCR letter O in digit runs (Bo0008LB/B00008LB); consecutive repeated tokens collapse. Titles also parse into title_base + chainage spans (K/Sta/C/Chainage); unique same-base differing stations attach as chainage matches with reasons (station-marker adjustment, length change, re-segmentation) and amount deltas like exact pairs. Amount does not determine identity. Duplicate keys remain ambiguous. FAP loans additionally pair across differing program sections (I-C National Building Program vs NEP Local Program) when the normalized title, region and funding zone are each unique. A guarded fallback then pairs remaining rows when titles differ only by a stage qualifier after the work type (Construction (Completion) vs Construction) and the stripped key is unique on both sides of the same scope — dual line items that keep both variants stay unmatched. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; unique same title_base with different chainage spans (or digit-only title diffs) attach as chainage matches (consume NEP). Suggestions do not consume NEP rows. No pair has been manually certified.",
+    "matching_method": "Unique normalized title + canonical region + canonical PAP node ID (FAP uses program and zone), one-to-one exact candidates. Titles are normalized token-wise: common abbreviation variants (Brgy./Barangay) and place-name OCR slips (Marindugue/Marinduque, Siguijor/Siquijor) expand before matching; structure/road IDs rewrite OCR letter O in digit runs (Bo0008LB/B00008LB); consecutive repeated tokens collapse. Titles also parse into title_base + chainage spans (K/Sta/C/Chainage); unique same-base differing stations attach as chainage matches with reasons (station-marker adjustment, length change, re-segmentation) and amount deltas like exact pairs, EXCEPT when measured station spans share no overlap: those attach as segment-scope candidates whose amount delta is never booked as a same-project adjustment. Amount does not determine identity. Duplicate keys remain ambiguous. FAP loans additionally pair across differing program sections (I-C National Building Program vs NEP Local Program) when the normalized title, region and funding zone are each unique. A guarded fallback then pairs remaining rows when titles differ only by a stage qualifier after the work type (Construction (Completion) vs Construction) and the stripped key is unique on both sides of the same scope — dual line items that keep both variants stay unmatched. Remaining House rows receive up to three fuzzy suggestions within the same region/PAP/zone, top-20 token-overlap shortlist (ties ordered by source ID), then SequenceMatcher >=0.85; unique same title_base with different chainage spans (or digit-only title diffs) attach as chainage matches (consume NEP). After all passes, rows unmatched on both sides that are identical title+region+zone+amount twins under different program/PAP sections carry a twin_review cross-reference but never auto-pair. Suggestions do not consume NEP rows. No pair has been manually certified.",
     "generator": {
       "path": "analysis/builders/build_current_pages.py",
-      "sha256": "45c685cec5e83ceb924bbb57c325ee5d493a74d37489a1cda53f500239b53620"
+      "sha256": "91f842274904a136b516704263bff640d8a9a614b8058341c0cabe9a37e28349"
     },
     "generator_dependencies": {
       "analysis/builders/house_native.py": "67405d3561660c7e7c75e1073fc7381e5524dabd562b1a81054004867f9b161b",
-      "analysis/builders/normalize_labels.py": "eb8d8ba4119140c74a25327d7a28adc737f293156f0c94bb83f89badcf9826a8",
+      "analysis/builders/normalize_labels.py": "b414e26ace7a8d8fade1ad4e96029040f1175cc727c3c14f9653252a07c1e4c3",
       "analysis/builders/chainage.py": "ec3582b3fd9898fc28e372ab29946ec9efcba60354250dc46ad2c14c51de59b8",
       "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
     },
@@ -86,7 +86,8 @@
     "match_counts": {
       "exact_candidate": 9680,
       "house_unmatched": 5801,
-      "chainage_candidate": 324,
+      "segment_scope_candidate": 37,
+      "chainage_candidate": 287,
       "fuzzy_candidate": 385,
       "ambiguous": 5,
       "location_amendment_candidate": 29,
@@ -783108,7 +783109,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c0023",
@@ -783198,7 +783199,8 @@
         "title_base_match_key": "joseabadsantosavejasa"
       },
       "delta_php": 37330000,
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -786522,7 +786524,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c0201",
@@ -786612,10 +786614,11 @@
         "title_base_match_key": "joseabadsantosavejasa"
       },
       "delta_php": -16359000,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c0202",
@@ -786705,7 +786708,8 @@
         "title_base_match_key": "joseabadsantosavejasa"
       },
       "delta_php": -33418000,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -786906,7 +786910,7 @@
       "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 0.8571,
       "house": {
         "id": "hb:ic:c0220",
@@ -786996,7 +787000,8 @@
         "title_base_match_key": "juanitorremullasrrd"
       },
       "delta_php": -3990000,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -791083,7 +791088,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c0411",
@@ -791173,7 +791178,8 @@
         "title_base_match_key": "cagayandeorocitycoastalbypassrd"
       },
       "delta_php": 0,
-      "reason": "Same road title_base with differing chainage (adjustment of station markers). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -793945,7 +793951,7 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c0514",
@@ -794035,7 +794041,8 @@
         "title_base_match_key": "batangaslobord"
       },
       "delta_php": 33182000,
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -794131,7 +794138,7 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c0516",
@@ -794221,7 +794228,8 @@
         "title_base_match_key": "palicobalayanbatangasrd"
       },
       "delta_php": 19005000,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -798009,7 +798017,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c0775",
@@ -798128,7 +798136,8 @@
         "title_base_match_key": "milaorminalabacpilird"
       },
       "delta_php": -24424000,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -799762,7 +799771,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c0868",
@@ -800032,7 +800041,8 @@
         "title_base_match_key": "talisaylaurelagoncillord"
       },
       "delta_php": -14258000,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -801020,7 +801030,7 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c0920",
@@ -801122,7 +801132,8 @@
         "title_base_match_key": "bacolodcitybdryrd"
       },
       "delta_php": 18295000,
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -801769,7 +801780,7 @@
       "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c0985",
@@ -801859,7 +801870,8 @@
         "title_base_match_key": "dinagatloretord"
       },
       "delta_php": 0,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -804748,7 +804760,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "iloilocapiznewroutek0051950k0052395",
-        "office_canonical": "Ilolilo 2nd District Engineering Office",
+        "office_canonical": "Iloilo 2nd District Engineering Office",
         "title_base": "Iloilo-Capiz (New Route)",
         "chainages": [
           {
@@ -804770,7 +804782,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c1113",
@@ -804901,7 +804913,8 @@
         "title_base_match_key": "bacolodnorthrd"
       },
       "delta_php": 10928000,
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -806170,7 +806183,7 @@
       ]
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c1202",
@@ -806320,7 +806333,8 @@
         "title_base_match_key": "cebunorthhagnayawharfrd"
       },
       "delta_php": 0,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -807267,7 +807281,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c1247",
@@ -807357,7 +807371,8 @@
         "title_base_match_key": "nuevaecijapangasinanrd"
       },
       "delta_php": 8643000,
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -809596,7 +809611,7 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c1281",
@@ -809746,7 +809761,8 @@
         "title_base_match_key": "tayabasmainitmaubanrd"
       },
       "delta_php": 0,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -812336,7 +812352,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 0.9024,
       "house": {
         "id": "hb:ic:c1380",
@@ -812426,7 +812442,8 @@
         "title_base_match_key": "siquijorcircumferentialrd"
       },
       "delta_php": 0,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -812826,7 +812843,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c1429",
@@ -812993,7 +813010,8 @@
         "title_base_match_key": "jcttalubinbarlignatoninparaceliscalaccadrd"
       },
       "delta_php": 32756000,
-      "reason": "Same road title_base with differing chainage (adjustment of station markers). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -813793,7 +813811,7 @@
       "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 0.8868,
       "house": {
         "id": "hb:ic:c1476",
@@ -813883,7 +813901,8 @@
         "title_base_match_key": "mtprovinceifugaordkilingparacelissect"
       },
       "delta_php": 421000,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -817799,7 +817818,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c1690",
@@ -817930,7 +817949,8 @@
         "title_base_match_key": "kapalongtalaingodvalenciabukidnonrd"
       },
       "delta_php": 92000000,
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -818012,7 +818032,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 0.8824,
       "house": {
         "id": "hb:ic:c1692",
@@ -818102,7 +818122,8 @@
         "title_base_match_key": "kapalongtalaingodvalenciabukidnonrd"
       },
       "delta_php": 1900000,
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -820283,7 +820304,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "batangaslobordk0131100k0131206",
-        "office_canonical": "Batagas 2nd District Engineering Office",
+        "office_canonical": "Batangas 2nd District Engineering Office",
         "title_base": "Batangas-Lobo Rd",
         "chainages": [
           {
@@ -820305,7 +820326,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c1754",
@@ -820448,7 +820469,8 @@
         "title_base_match_key": "msrjctlopezbuenavistard"
       },
       "delta_php": -22000000,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -823283,7 +823305,7 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c1899",
@@ -823462,7 +823484,8 @@
         "title_base_match_key": "banauehungduanbenguetbdryrd"
       },
       "delta_php": -21900000,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -830222,7 +830245,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c2253",
@@ -830312,7 +830335,8 @@
         "title_base_match_key": "iloilocapizrdnewroute"
       },
       "delta_php": 79274000,
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -830917,7 +830941,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c2303",
@@ -831007,7 +831031,8 @@
         "title_base_match_key": "iloilocapizrdnewroute"
       },
       "delta_php": -5419000,
-      "reason": "Same road title_base with differing chainage (adjustment of station markers). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -831304,7 +831329,7 @@
       "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c2340",
@@ -831394,7 +831419,8 @@
         "title_base_match_key": "pangasinanzambalesrd"
       },
       "delta_php": 0,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -833838,7 +833864,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 0.8919,
       "house": {
         "id": "hb:ic:c2510",
@@ -833933,7 +833959,8 @@
         "title_base_match_key": "daangmaharlikajctlegazpistodomingotabacocamarinessurbdryrd"
       },
       "delta_php": 31558000,
-      "reason": "Same road title_base with differing chainage (adjustment of station markers). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -834309,7 +834336,7 @@
       "reason": "Duplicate exact title/region/PAP key; no automatic pairing."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 0.9032,
       "house": {
         "id": "hb:ic:c2556",
@@ -834399,7 +834426,8 @@
         "title_base_match_key": "roxascitycagaysibaguanbalijuagancudianivisanrd"
       },
       "delta_php": 0,
-      "reason": "Same road title_base with differing chainage (adjustment of station markers). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -834572,7 +834600,7 @@
       "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c2572",
@@ -834715,7 +834743,8 @@
         "title_base_match_key": "bilirancircumferentialrd"
       },
       "delta_php": -500000,
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -838936,7 +838965,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c2859",
@@ -839074,7 +839103,8 @@
         "title_base_match_key": "malilipotbypassroadalbay"
       },
       "delta_php": 0,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -840385,7 +840415,7 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c2893",
@@ -840504,7 +840534,8 @@
         "title_base_match_key": "bacolodnegrosoccidentaleconomichighwaybanocehbacolodcity"
       },
       "delta_php": 0,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -842676,7 +842707,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c3139",
@@ -842790,7 +842821,8 @@
         "title_base_match_key": "aguinaldotoboynatoninroad"
       },
       "delta_php": -80650000,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -843717,7 +843749,7 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c3173",
@@ -843807,10 +843839,11 @@
         "title_base_match_key": "marilagagohoroadquezon"
       },
       "delta_php": 8000000,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 0.9016,
       "house": {
         "id": "hb:ic:c3183",
@@ -843905,10 +843938,11 @@
         "title_base_match_key": "msrjctcandahondaguaromapointroadromapointbridge"
       },
       "delta_php": 0,
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Amounts are equal, so a mispair would be silent — verify against the printed schedules before certifying. Possible split, re-segmentation or separate work on the same road."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 0.9341,
       "house": {
         "id": "hb:ic:c3184",
@@ -844003,7 +844037,8 @@
         "title_base_match_key": "quezonecotourismsariayacandelariatiaongsanantonioroadsanantonioquezon"
       },
       "delta_php": -300000,
-      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "fuzzy_candidate",
@@ -845312,7 +845347,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c3210",
@@ -845419,7 +845454,8 @@
         "title_base_match_key": "laludgarchitorenaroadgarchitorenacamarinessur"
       },
       "delta_php": 17000000,
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "house_unmatched",
@@ -852472,6 +852508,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "quipotbrb02945lzalongquezonbatangasrd"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p336:r8",
+        "other_side_title": "Quipot Br . (B02945LZ) along Quezon-Batangas Rd",
+        "other_side_pap_id": "p335:r0",
+        "other_side_program": "Bridge Program",
+        "other_side_region": "Region IV-A",
+        "amount_php": 120000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -882832,6 +882878,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "constructionofwatersystemattalisaylipacitybatangas"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p612:r24",
+        "other_side_title": "Construction of Water System at Barangay Talisay, Lipa City, Batangas",
+        "other_side_pap_id": "p560:r0",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region IV-A",
+        "amount_php": 10000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -900242,7 +900298,7 @@
       "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 1.0,
       "house": {
         "id": "hb:ic:c8140",
@@ -900349,7 +900405,8 @@
         "title_base_match_key": "constructionofesperanzalebakbypassroadesperanzasultankudarat"
       },
       "delta_php": 68600000,
-      "reason": "Same road title_base with differing chainage (increased project length). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "chainage_candidate",
@@ -900505,7 +900562,7 @@
       }
     },
     {
-      "status": "chainage_candidate",
+      "status": "segment_scope_candidate",
       "confidence": 0.9417,
       "house": {
         "id": "hb:ic:c8143",
@@ -900600,7 +900657,8 @@
         "title_base_match_key": "constructionofhighwayjcttitulokstoniomonteverdedalugahighwayjctnedlakesebubagumbayansultankudarat"
       },
       "delta_php": -86240000,
-      "reason": "Same road title_base with differing chainage (adjustment of station markers). Possible coverage amendment, not a new insertion."
+      "segment_overlap_ratio": 0.0,
+      "reason": "Same road title_base but station spans share no segment. Different segment of the same road — attached for scope review only; the amount delta is NOT booked as a same-project adjustment. Possible split, re-segmentation or separate work on the same road."
     },
     {
       "status": "fuzzy_candidate",
@@ -909039,6 +909097,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "rehabilitationofroadmasicongcityofsanfernandolaunion"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p577:r12",
+        "other_side_title": "Rehabilitation of Barangay Road, Barangay Masicong, City of San Fernando, La Union",
+        "other_side_pap_id": "p560:r0",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region I",
+        "amount_php": 15000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -955331,6 +955399,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "constructionofroadslopeprotectionstructurealtavistaormoccityleyte"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p649:r13",
+        "other_side_title": "Construction of Road Slope Protection Structure, Barangay Alta Vista, Ormoc City, Leyte",
+        "other_side_pap_id": "p560:r0",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 20000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -955386,6 +955464,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "constructionofconcreteroadlibertyormoccityleyte"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p648:r21",
+        "other_side_title": "Construction of Concrete Road, Sta. 0 + 130 - Sta. 1 + 630, Barangay Liberty, Ormoc City, Leyte",
+        "other_side_pap_id": "p560:r0",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 50000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -955441,6 +955529,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "constructionofconcreteroadmontealegreisabelleyte"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p648:r20",
+        "other_side_title": "Construction of Concrete Road Sta. 0 + 000 - Sta. 1 + 150, Barangay Monte Alegre, Isabel, Leyte",
+        "other_side_pap_id": "p560:r0",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 20000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -955496,6 +955594,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "constructionofconcreteroadsitiomacalpecangagisabelleyte"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "p648:r22",
+        "other_side_title": "Construction of Concrete Road, Sta. 2 + 500 - Sta. 3 + 100, Sitio Macalpe, Barangay Cangag, Isabel, Leyte",
+        "other_side_pap_id": "p560:r0",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 10000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -961399,7 +961507,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofconcreteroaddonvictorianoconcepcionroadsta2500sta5000donvictorianomisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Concrete Road, Don Victoriano-Concepcion Road Don Victoriano, Misamis Occidental",
         "chainages": [
           {
@@ -961454,7 +961562,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok2labinaytovillabasta0000sta1700ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 2, Labinay - Barangay Villaba) Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -961509,7 +961617,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadsebactobasirangroadwithbridgesta0000sta0580tudelamisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road, Barangay Sebac - Barangay Basirang Road with Bridge Tudela, Misamis Occidental",
         "chainages": [
           {
@@ -961564,7 +961672,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok5tabidlitapanroadsta0000sta1350ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road, Purok 5 Barangay Tabid - Barangay Litapan Road Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -961619,7 +961727,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofmountainbypassroadcasilaksanagustinnamutsectionsta0000sta1700tudelamisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Mountain Bypass Road, Casilak San Agustin - Namut Section Tudela, Misamis Occidental",
         "chainages": [
           {
@@ -961674,7 +961782,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadstimsonabordokinumannortesta0000sta1700ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road, Barangay Stimson Abordo - Kinuman Norte Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -961729,7 +961837,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "improvementofroadbagakaycogonkinumannortegalaroadonintermittentsectionsalongsta0000sta13300ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Improvement of Road, Bagakay - Cogon - Kinuman Norte - Gala Road on intermittent sections along Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -961784,7 +961892,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "improvementofroadisidrodtanmangaroadsta0000sta1430tangubcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Improvement of Road, Isidro D. Tan - Manga Road Tangub City, Misamis Occidental",
         "chainages": [
           {
@@ -961839,7 +961947,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok4colupanaltotipansta0000sta1700sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 4 Barangay Colupan Alto - Barangay Tipan) Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -961894,7 +962002,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok1colupanaltocamanseriversta0000sta1700sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road, (Purok 1 Colupan Alto - Barangay Camanse River) Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -961949,7 +962057,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok2camansecolupanaltosta0000sta1000sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 2 Barangay Camanse - Colupan Alto) Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -962004,7 +962112,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok4poblacionsta0000sta0170bonifaciomisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 4), Barangay Poblacion Bonifacio, Misamis Occidental",
         "chainages": [
           {
@@ -962059,7 +962167,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadmitugasgalaroadsta0000sta1500tudelamisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road, (Barangay Mitugas - Gala Road) Tudela, Misamis Occidental",
         "chainages": [
           {
@@ -962114,7 +962222,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadbanglaytomatugnaosta0000sta1000tangubcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road, (Banglay - Matugnao) Tangub City, Misamis Occidental",
         "chainages": [
           {
@@ -962169,7 +962277,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpangabuansta0000sta0170tangubcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Barangay Road, Barangay Pangabuan Tangub City, Misamis Occidental",
         "chainages": [
           {
@@ -962224,7 +962332,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadnailondelapazsta0000sta0350tudelamisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road, Barangay Nailon - Barangay Dela Paz Tudela, Misamis Occidental",
         "chainages": [
           {
@@ -962279,7 +962387,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok2purok3balintawaksta0000sta0850ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 2 - Purok 3), Barangay Balintawak Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -962334,7 +962442,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok3capucaoptodalapangsta0000sta1700ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road, (Purok 3, Capucao P. - Dalapang) Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -962389,7 +962497,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok5purok6malaubangsta0000sta1350ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 5 - Purok 6), Barangay Malaubang Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -962444,7 +962552,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok1topurok4bolinsongsta0000sta0350bonifaciomisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 1 - Purok 4), Barangay Bolinsong Bonifacio, Misamis Occidental",
         "chainages": [
           {
@@ -962499,7 +962607,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok6liloansta0000tosta0250bonifaciomisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 6), Barangay Liloan Bonifacio, Misamis Occidental",
         "chainages": [
           {
@@ -962554,7 +962662,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok5liloansta0000tosta0250bonifaciomisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 5), Barangay Liloan Bonifacio, Misamis Occidental",
         "chainages": [
           {
@@ -962609,7 +962717,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok3topurok4lowerusugansta0000sta0350bonifaciomisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 3 - Purok 4), Barangay Lower Usugan Bonifacio, Misamis Occidental",
         "chainages": [
           {
@@ -962664,7 +962772,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok7lowerusugansta0000sta0350bonifaciomisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 7), Barangay Lower Usugan Bonifacio, Misamis Occidental",
         "chainages": [
           {
@@ -962719,7 +962827,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok7linconansta0000sta0170bonifaciomisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 7), Barangay Linconan Bonifacio, Misamis Occidental",
         "chainages": [
           {
@@ -962774,7 +962882,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok2demetriofernansta0000sta0170bonifaciomisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 2), Barangay Demetrio Fernan Bonifacio, Misamis Occidental",
         "chainages": [
           {
@@ -962829,7 +962937,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok5demetriofernansta0000sta0350bonifaciomisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 5), Barangay Demetrio Fernan Bonifacio, Misamis Occidental",
         "chainages": [
           {
@@ -962884,7 +962992,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadestrellakatipunansta0000sta0670sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Barangay Estrella - Barangay Katipunan) Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -962939,7 +963047,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok4sanisidroaltosta0000sta0670sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road, Purok 4, Barangay San Isidro Alto Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -962994,7 +963102,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok6toadorableroadsanvicentesta0000sta0350sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 6 - Adorable Road), Barangay San Vicente Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -963049,7 +963157,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok5purok6camansesta0000sta0350sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 5 - Purok 6), Barangay Camanse Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -963104,7 +963212,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok3colupanaltosta0000sta0350sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road, Purok 3 Barangay Colupan Alto Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -963159,7 +963267,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok2casoylibertadbajosta0000sta0350sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road, Purok 2 Casoy, Barangay Libertad Bajo Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -963214,7 +963322,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok1purok7dinassta0000sta0350sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 1 - Purok 7), Barangay Dinas Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -963269,7 +963377,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurokgumamelaseorsta0000sta0350sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok Gumamela), Barangay Señor Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -963324,7 +963432,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpuroksanjosepoblacionsta0000sta0350sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok San Jose), Barangay Poblacion Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -963379,7 +963487,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok6purok3tipansta0000sta0350sinacabanmisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 6 - Purok 3), Barangay Tipan Sinacaban, Misamis Occidental",
         "chainages": [
           {
@@ -963434,7 +963542,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok3cogonsta0000sta0350ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 3), Cogon zamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -963489,7 +963597,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok2gotocandakusta0000sta0350ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 2), Gotocan Daku Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -963544,7 +963652,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok3doaconsuelosta0000sta0170ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 3), Doña Consuelo Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -963599,7 +963707,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok9stimsonabordosta0000sta0500ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 9), Stimson Abordo Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -963654,7 +963762,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok8stimsonabordosta0000sta0350ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 8), Stimson Abordo Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -963709,7 +963817,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok4paustinodecenaintegratedschoolcarangansta0000sta0170ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 4 - Paustino Decena Integrated School), Barangay Carangan Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -963764,7 +963872,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadcapucaocgotocandiotpurok2sta0000sta0350ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Capucao C - Gotocan Diot Purok 2) Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -963819,7 +963927,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok2ckinumansursta0000sta0350ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 2C), Barangay Kinuman Sur Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -963874,7 +963982,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok3topurok7trigossta0000sta0500ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 3 - Purok 7), Barangay Trigos Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -963929,7 +964037,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadsegmentdpurok7bagakaysta0000sta0170ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Segment D Purok 7), Barangay Bagakay Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -963984,7 +964092,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "constructionofroadpurok3sangaydiotsta0000sta0500ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Construction of Road (Purok 3), Barangay Sangay Diot Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -964039,7 +964147,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok2topurok4embargosta0000sta0350ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 2 - Purok 4), Barangay Embargo Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -964094,7 +964202,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok1sinuzasta0000sta0500ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 1), Barangay Sinuza Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -964149,7 +964257,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok6pulottobalintawaksta0000sta0850ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 6 Pulot - Balintawak) Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -964204,7 +964312,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "concretingofroadpurok4topurok5pantaonsta0000sta0850ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Concreting of Road (Purok 4 - Purok 5), Barangay Pantaon Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -964259,7 +964367,7 @@
         "evidence": "native_text",
         "funding_php": {},
         "title_match_key": "improvementofroadsincludingfacilitiesalongpurokrizaltopurokbonifaciobacolodsta0000sta0100ozamizcitymisamisoccidental",
-        "office_canonical": "Misamis Occidenatal 2nd District Engineering Office",
+        "office_canonical": "Misamis Occidental 2nd District Engineering Office",
         "title_base": "Improvement of Roads including Facilities along Purok Rizal - Purok Bonifacio, Barangay Bacolod Ozamiz City, Misamis Occidental",
         "chainages": [
           {
@@ -1144615,6 +1144723,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "quipotbrb02945lzalongquezonbatangasrd"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c3691",
+        "other_side_title": "Quipot Br. (B02945LZ) along Quezon-Batangas Rd",
+        "other_side_pap_id": "p312:r6",
+        "other_side_program": "Bridge Program",
+        "other_side_region": "Region IV-A",
+        "amount_php": 120000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -1171665,6 +1171783,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "rehabilitationofroadmasicongcityofsanfernandolaunion"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c8534",
+        "other_side_title": "Rehabilitation of Barangay Road, Barangay Masicong, City of San Fernando, La Union",
+        "other_side_pap_id": "p433:r1",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region I",
+        "amount_php": 15000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -1174815,6 +1174943,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "constructionofwatersystemattalisaylipacitybatangas"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c6778",
+        "other_side_title": "Construction of Water System at Barangay Talisay, Lipa City, Batangas",
+        "other_side_pap_id": "p404:r2",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region IV-A",
+        "amount_php": 10000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -1177378,6 +1177516,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "constructionofconcreteroadmontealegreisabelleyte"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c11470",
+        "other_side_title": "Construction of Concrete Road Sta. 0+000 - Sta. 1+150, Barangay Monte Alegre, Isabel, Leyte",
+        "other_side_pap_id": "p433:r1",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 20000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -1177421,6 +1177569,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "constructionofconcreteroadlibertyormoccityleyte"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c11469",
+        "other_side_title": "Construction of Concrete Road, Sta. 0+130 - Sta. 1+630, Barangay Liberty, Ormoc City, Leyte",
+        "other_side_pap_id": "p433:r1",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 50000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -1177464,6 +1177622,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "constructionofconcreteroadsitiomacalpecangagisabelleyte"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c11471",
+        "other_side_title": "Construction of Concrete Road, Sta. 2+500 - Sta. 3+100, Sitio Macalpe, Barangay Cangag, Isabel, Leyte",
+        "other_side_pap_id": "p433:r1",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 10000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {
@@ -1177494,6 +1177662,16 @@
         "chainage_incomplete": false,
         "chainage_length_review": null,
         "title_base_match_key": "constructionofroadslopeprotectionstructurealtavistaormoccityleyte"
+      },
+      "twin_review": {
+        "kind": "twin_unmatched_pair",
+        "other_side_id": "hb:ic:c11468",
+        "other_side_title": "Construction of Road Slope Protection Structure, Barangay Alta Vista, Ormoc City, Leyte",
+        "other_side_pap_id": "p433:r1",
+        "other_side_program": "Convergence and Special Support Program",
+        "other_side_region": "Region VIII",
+        "amount_php": 20000000,
+        "note": "Identical normalized title, region, zone and equal amount exist on the unmatched opposite side under a different program/PAP section. Likely a cross-PAP transfer or duplicated printing — left unpaired; both rows stay insertion/deletion candidates until reviewed. Amount alone never certifies identity."
       }
     },
     {

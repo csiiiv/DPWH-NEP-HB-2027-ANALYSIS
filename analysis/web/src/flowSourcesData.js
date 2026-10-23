@@ -26,8 +26,7 @@ function dpwhOffice(row) {
 export function normalizedFlowSources({dpwh, fmr, hfep, nia}) {
   const annex = data => ({before: sum(data.stages.nep.projects, p => p.amount_php), after: sum(data.stages.house.projects, p => p.amount_php)});
   const dpwhRecords = dpwh.projects.filter(r => r.nep || r.third).map(r => ({id: r.id,
-    before: r.nep?.amount_php ?? null, after: r.third?.amount_php ?? null, source: r}));
-  const annexRecords = (data, rows) => rows(data).map(r => ({id: r.id,
+    before: r.nep?.amount_php ?? null, after: r.third?.amount_php ?? null, source: r}));  const annexRecords = (data, rows) => rows(data).map(r => ({id: r.id,
     before: r.nep?.amount_php ?? null, after: r.house?.amount_php ?? null, source: r}));
   const hfepRecords = lineItemRecords(comparisonIndex(hfep)).map(r => ({id: r.id,
     // On a paired facility a blank component is a zero base in an adjustment,
@@ -79,7 +78,18 @@ export function buildFlowSourcesData(inputs, provenance = {}) {
       if (!(audit.reading_comparison_total_pages > 0 && audit.reading_comparison_identical_pages === audit.reading_comparison_total_pages)) throw new Error(`${dataset.key}: House reading identity is not verified`);
     }
     const grouped = groupings.map(({pick, ...description}) => {
-      const flow = buildRevisionFlowFromRecords(records, {id: dataset.key, group: pick, expected: {...expected, count: records.length}});
+      // Same-road zero-overlap pairs stay attached but unbooked: the flow
+      // source flags them scope_review exactly where the matcher did, so
+      // gross additions/reductions never include different-segment deltas.
+      const revise = dataset.key === 'dpwh'
+        ? record => {
+            const row = record.source;
+            return row.house_match === 'segment_scope_candidate' ||
+              String(row.trace).includes('segment_scope_review')
+              ? 'scope_review' : null;
+          }
+        : null;
+      const flow = buildRevisionFlowFromRecords(records, {id: dataset.key, group: pick, expected: {...expected, count: records.length}, ...(revise ? {revise} : {})});
       return {...description, basis: `${description.basis} ${commonBasis}`, flow};
     });
     const root = grouped[0].flow;

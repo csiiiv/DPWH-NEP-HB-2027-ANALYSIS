@@ -34,9 +34,17 @@ test('Overview conserves each source ledger and separates all candidate/paired m
   for (const w of data.workspaces) {
     assert.equal(w.delta_php, w.sources.house.amount_php - w.sources.nep.amount_php);
     assert.equal(w.adjustments.net_php, w.adjustments.increased_php - w.adjustments.reduced_php);
-    assert.equal(w.delta_php, w.insertions.amount_php - w.deletions.amount_php + w.adjustments.net_php);
+    // Segment-scope review pairs (same road, non-overlapping spans) ride in
+    // their own bucket; workspaces without such pairs fall back to zero.
+    assert.equal(w.delta_php, w.insertions.amount_php - w.deletions.amount_php
+      + w.adjustments.net_php + (w.scope_review?.net_php ?? 0));
     for (const key of ['insertions','deletions','adjustments']) assert.ok(w.links[key].includes('?'));
   }
+  const dpwh = data.workspaces.find(w => w.key === 'dpwh');
+  // 37 same-road pairs with non-overlapping segments moved out of the
+  // booked adjustments into scope_review (22 October honesty fix).
+  assert.equal(dpwh.scope_review.count, 37);
+  assert.equal(dpwh.scope_review.net_php, 149434000);
   const nia = data.workspaces.find(w => w.key === 'nia');
   assert.equal(nia.insertions.count,222); assert.equal(nia.deletions.count,185);
   assert.equal(nia.adjustments.net_php,-830000000); assert.equal(nia.delta_php,401124000);
@@ -46,16 +54,18 @@ test('Overview conserves each source ledger and separates all candidate/paired m
 });
 test('Unchanged populations pair equal allocations and complete the paired partition', () => {
   const byKey = Object.fromEntries(data.workspaces.map(w => [w.key, w]));
-  // Stable figures from the verified 17 October build.
+  // Stable figures from the verified 17 October build; DPWH unchanged drops
+  // to 9,660 on 22 October: 10 equal-amount same-road pairs with disjoint
+  // segments now live in scope_review instead of hiding as unchanged.
   assert.equal(byKey.nia.unchanged.count,602); assert.equal(byKey.nia.unchanged.amount_php,10047605000);
   assert.equal(byKey.fmr.unchanged.count,605); assert.equal(byKey.fmr.unchanged.amount_php,13584095000);
   assert.equal(byKey.hfep.unchanged.count,281); assert.equal(byKey.hfep.unchanged.amount_php,3092749000);
-  assert.equal(byKey.dpwh.unchanged.count,9670); assert.equal(byKey.dpwh.unchanged.amount_php,348425553000);
+  assert.equal(byKey.dpwh.unchanged.count,9660); assert.equal(byKey.dpwh.unchanged.amount_php,347453119000);
   // Pair-grain workspaces: unchanged + changed rows equal the paired rows.
   for (const key of ['dpwh','fmr','nia']) {
     const w = byKey[key];
-    assert.equal(w.unchanged.comparison_rows + w.adjustments.increased_count + w.adjustments.reduced_count,
-      w.paired_comparison_rows, `${key} paired partition`);
+    assert.equal(w.unchanged.comparison_rows + w.adjustments.increased_count + w.adjustments.reduced_count
+      + (w.scope_review?.count ?? 0), w.paired_comparison_rows, `${key} paired partition`);
   }
   // Unchanged rows contribute zero to the funding bridge by construction.
   for (const w of data.workspaces)
@@ -63,13 +73,13 @@ test('Unchanged populations pair equal allocations and complete the paired parti
   // Per-group base allocations tie to their signed deltas, and adding the
   // bases back reconstructs each ledger exactly.
   for (const w of data.workspaces) {
-    const a = w.adjustments;
+    const a = w.adjustments, s = w.scope_review;
     assert.equal(a.increased_house_php - a.increased_nep_php, a.increased_php, `${w.key} increased bases`);
     assert.equal(a.reduced_nep_php - a.reduced_house_php, a.reduced_php, `${w.key} reduced bases`);
-    assert.equal(w.insertions.amount_php + w.unchanged.amount_php + a.increased_house_php + a.reduced_house_php,
-      w.sources.house.amount_php, `${w.key} House ledger reconstruction`);
-    assert.equal(w.deletions.amount_php + w.unchanged.amount_php + a.increased_nep_php + a.reduced_nep_php,
-      w.sources.nep.amount_php, `${w.key} NEP ledger reconstruction`);
+    assert.equal(w.insertions.amount_php + w.unchanged.amount_php + a.increased_house_php + a.reduced_house_php
+      + (s?.house_php ?? 0), w.sources.house.amount_php, `${w.key} House ledger reconstruction`);
+    assert.equal(w.deletions.amount_php + w.unchanged.amount_php + a.increased_nep_php + a.reduced_nep_php
+      + (s?.nep_php ?? 0), w.sources.nep.amount_php, `${w.key} NEP ledger reconstruction`);
   }
   // Links: FMR/NIA unchanged status filter, HFEP same-event records; DPWH
   // links into Compare's amount_same flag (counts verified to match the tile).
@@ -109,8 +119,11 @@ test('Flow graphs conserve both ledgers and expose linked populations', () => {
 test('DPWH expands grouped members and includes foreign-assisted paired reductions outside Transparency', () => {
   const w = data.workspaces[0];
   assert.equal(w.insertions.count,6196); assert.equal(w.insertions.comparison_rows,6193);
-  assert.equal(w.sources.house.count,16275); assert.equal(w.adjustments.count,409);
-  assert.equal(w.adjustments.reduced_count,206); assert.equal(w.adjustments.reduced_php,87348816000);
+  assert.equal(w.sources.house.count,16275); assert.equal(w.adjustments.count,382);
+  // 22 October honesty fix: 37 same-road pairs with non-overlapping segments
+  // (formerly 15 booked increases + 22 booked reductions) moved to scope_review.
+  assert.equal(w.adjustments.reduced_count,194); assert.equal(w.adjustments.reduced_php,87039358000);
+  assert.equal(w.scope_review.count,37); assert.equal(w.scope_review.net_php,149434000);
   assert.equal(w.controls.house_php,654102015000);
   assert.notEqual(w.sources.house.amount_php,w.controls.house_php);
   assert.ok(w.links.deletions.includes('flag=nep_only_all'));
@@ -160,7 +173,7 @@ test('Summary exports retain exact PHP, basis and supporting links; topic findin
   assert.ok(csv.includes('printed_vs_ledger_delta_residual_php'));
   assert.ok(csv.includes('"unchanged_records","unchanged_php"'));
   assert.ok(csv.includes('"6196","172149788000"'));
-  assert.ok(csv.includes('"9670","348425553000"')); // DPWH unchanged count/allocation
+  assert.ok(csv.includes('"9660","347453119000"')); // DPWH unchanged count/allocation (22 Oct scope-review split)
   assert.ok(csv.includes('#nia/compare?view=projects&status=unchanged'));
   assert.ok(csv.includes('-140000'));
   const ai = data.features.find(f => f.key === 'nia');

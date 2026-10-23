@@ -30,7 +30,7 @@ test('worked example preserves offsetting gross changes and separate side amount
   assert.equal(totals.additions, 65e9);
   assert.equal(totals.reductions, 35e9);
   assert.equal(totals.delta, 30e9);
-  assert.deepEqual(categories.map(c => c.key), ['insertion', 'unchanged', 'increased', 'reduced', 'deletion']);
+  assert.deepEqual(categories.map(c => c.key), ['insertion', 'unchanged', 'increased', 'reduced', 'deletion', 'scope_review']);
   assert.equal(categories[2].nep, 20e9);
   assert.equal(categories[2].hgab, 35e9);
 });
@@ -111,7 +111,7 @@ test('every real category has its own revision cells and exact supporting row po
   assert.ok(model.groups.length > 1);
   const ids = new Set();
   for (const g of model.groups) {
-    assert.equal(g.cells.length, 5);
+    assert.equal(g.cells.length, 6);
     assert.equal(g.cells.reduce((s, c) => s + c.nep, 0), g.nep);
     assert.equal(g.cells.reduce((s, c) => s + c.hgab, 0), g.hgab);
     for (const c of g.cells) {
@@ -132,7 +132,7 @@ test('every real category has its own revision cells and exact supporting row po
   assert.ok(layout.height < 2200, 'scoped matrices, stubs and sinks stay within the pilot canvas');
   assert.ok(layout.rows.every(g => g.cells.every(c => c.width === 18 && c.value > 0)), 'only non-zero proportional C nodes render');
   for (let i=1;i<layout.rows.length;i++) assert.ok(layout.rows[i-1].before >= layout.rows[i].before);
-  const rank = ['deletion','insertion','increased','unchanged','reduced'];
+  const rank = ['deletion','insertion','increased','unchanged','reduced','scope_review'];
   for (const g of layout.rows) {
     const expected = g.graph;
     assert.deepEqual(g.cells.map(c => c.key), rank.filter(key => g.cells.some(c => c.key === key)));
@@ -141,8 +141,15 @@ test('every real category has its own revision cells and exact supporting row po
     assert.equal(g.reductionSink.value, -g.matrix.cells.find(c => c.key === 'reduced').delta);
     assert.ok(!layout.ribbons.some(r => r.source === g.reductionSink.key));
   }
-  assert.equal(layout.stubs.reduce((s, stub) => s + stub.value, 0), model.totals.additions);
-  assert.equal(layout.sinks.reduce((s, sink) => s + sink.value, 0), 87348816000);
+  // Stubs carry booked additions plus unbooked scope-review surplus; both
+  // must be accounted, but only booked additions appear in totals.additions.
+  assert.equal(layout.stubs.filter(s => s.revision !== 'scope_review')
+    .reduce((s, stub) => s + stub.value, 0), model.totals.additions);
+  assert.ok(layout.stubs.filter(s => s.revision === 'scope_review').length > 0,
+    'scope-review surplus stubs must exist for the withheld deltas');
+  // Reduction sinks plus scope-review deficit sinks (unbooked scope loss):
+  // 87,039,358,000 booked reductions + 17,640,000 unbooked scope deficit.
+  assert.equal(layout.sinks.reduce((s, sink) => s + sink.value, 0), 87056998000);
   assert.ok(!layout.rows.find(g => g.id === 'fap').cells.some(c => ['increased','deletion'].includes(c.key)));
 
   const allGroupRows = model.groups.flatMap(g => selectRows(payload.projects, comparisonState(new URLSearchParams(categoryRecordHref(null,g.id).split('?')[1]))));
@@ -203,13 +210,13 @@ test('top-three budget variation preserves all amounts, counts, scoped evidence 
   assert.equal(others.hgab, 218442484000);
   assert.equal(others.rows, 4553);
   assert.equal(others.members.length, 4);
-  assert.equal(layout.rows.reduce((s, g) => s + g.cells.length, 0), 18);
-  assert.equal(layout.ribbons.length, 41);
-  assert.equal(layout.stubs.length, 7);
-  assert.equal(layout.sinks.length, 4);
+  assert.equal(layout.rows.reduce((s, g) => s + g.cells.length, 0), 21);
+  assert.equal(layout.ribbons.length, 48);
+  assert.equal(layout.stubs.length, 9);
+  assert.equal(layout.sinks.length, 5);
   assert.equal(layout.scale, layoutRevisionFlow(complete.flow).scale);
-  assert.ok(layout.height < 1400);
-  assert.ok(layout.height < layoutRevisionFlow(complete.flow).height * .72);
+  assert.ok(layout.height < 1600);
+  assert.ok(layout.height < layoutRevisionFlow(complete.flow).height * .75);
   const members = others.members.flatMap(g => selectRows(source.projects, comparisonState(new URLSearchParams(categoryRecordHref(null, g.id).split('?')[1]))));
   assert.equal(members.length, others.rows);
   assert.equal(new Set(members.map(r => r.id)).size, others.rows);

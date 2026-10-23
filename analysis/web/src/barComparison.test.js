@@ -43,13 +43,34 @@ test('bar model pairs NEP and HGAB per group with per-class side amounts', () =>
 });
 
 test('segment vocabulary keeps the shared class order and revision colors', () => {
-  assert.deepEqual(SEGMENTS.map(s => s.key), ['unchanged', 'increased', 'reduced', 'deletion', 'insertion']);
+  assert.deepEqual(SEGMENTS.map(s => s.key),
+    ['unchanged', 'increased', 'reduced', 'scope_review', 'deletion', 'insertion']);
   for (const segment of SEGMENTS) {
     const source = REVISIONS.find(r => r.key === segment.key);
     assert.equal(segment.color, source.color);
     assert.equal(segment.label, source.label);
   }
   assert.deepEqual(SIDES.map(s => s.key), ['nep', 'hgab']);
+});
+
+test('every revision class is drawable, so no class can silently vanish from a bar', () => {
+  // Bars are drawn from SEGMENTS only. A revision class the model produces
+  // but SEGMENTS omits would drop real money from both bars while the bar
+  // totals still carried it — the exact bug scope_review exposed. Two-sided
+  // classes must also stay ahead of the one-sided pair so that the leading
+  // segments keep aligning across the NEP and HGAB bars.
+  const drawn = SEGMENTS.map(s => s.key);
+  for (const revision of REVISIONS) {
+    assert.ok(drawn.includes(revision.key), `${revision.key} has no segment`);
+  }
+  assert.equal(drawn.length, REVISIONS.length, 'no segment outside the vocabulary');
+  const oneSided = ['deletion', 'insertion'];
+  const shared = drawn.filter(key => !oneSided.includes(key));
+  assert.deepEqual(drawn, [...shared, ...drawn.filter(key => oneSided.includes(key))],
+    'one-sided classes must come last');
+  for (const key of shared) {
+    assert.ok(!oneSided.includes(key), `${key} is drawn as a shared class`);
+  }
 });
 
 test('sort keeps largest-NEP order or numeric-aware label order without dropping bars', () => {

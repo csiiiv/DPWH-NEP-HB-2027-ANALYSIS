@@ -66,6 +66,14 @@ LIVE_TITLE_ABBREVIATIONS = {
 PLACE_NAME_SPELLINGS = (
     ('Marindugue', 'Marinduque'),
     ('Siguijor', 'Siquijor'),
+    # OCR slips inside implementing-office names. These are not cosmetic: an
+    # office spelled `Misamis Occidenatal ...` (106 NEP records) lands in a
+    # SEPARATE bucket from the correctly spelled office (108 records), so every
+    # office filter in the app silently splits one office in two and the
+    # DEO -> congressional-district crosswalk cannot match it.
+    ('Occidenatal', 'Occidental'),
+    ('Batagas', 'Batangas'),
+    ('Ilolilo', 'Iloilo'),
 )
 
 # Mined / reviewed candidates — not used by matching until explicitly merged

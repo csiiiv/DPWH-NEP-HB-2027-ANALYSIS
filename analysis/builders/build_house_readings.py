@@ -50,7 +50,7 @@ def grouped_side(records, reading):
     return side
 
 
-def compare_readings(second, third):
+def compare_readings(second, third, source_rows=None):
     groups = [defaultdict(list), defaultdict(list)]
     for rows, group in zip((second, third), groups):
         for row in rows:
@@ -64,12 +64,41 @@ def compare_readings(second, third):
         status = ('repeated_key' if repeated else 'third_only' if not left else
                   'second_only' if not right else 'amount_changed' if delta else 'same_amount')
         primary = right or left
-        result.append({'id': f'house-reading:{i}', 'title': primary['title'],
-                       'program': primary['program'], 'pap': primary['pap'],
-                       'region': primary['region'], 'zone': primary['zone'],
-                       'trace': status, 'second': left, 'third': right, 'delta_php': delta,
-                       'match_basis': 'Grouped repeated key; no individual pairing' if repeated
-                           else 'Unique normalized title + PAP + region + office + allocation kind + zone'})
+        pair = {'id': f'house-reading:{i}', 'title': primary['title'],
+                'program': primary['program'], 'pap': primary['pap'],
+                'region': primary['region'], 'zone': primary['zone'],
+                'trace': status, 'second': left, 'third': right, 'delta_php': delta,
+                'match_basis': 'Grouped repeated key; no individual pairing' if repeated
+                    else 'Unique normalized title + PAP + region + office + allocation kind + zone'}
+        result.append(pair)
+    # NEP-twin annotation for reading drift (annotation only): a row new in
+    # the 3rd reading whose exact normalized title also exists in the printed
+    # NEP project schedule under the same region/zone is marked as a likely
+    # restoration of a 2nd-reading drop — not narrated as a fresh insertion.
+    # Row identity and status are unchanged; the NEP reference only adds
+    # review context.
+    if source_rows:
+        nep_keys = defaultdict(list)
+        for r in source_rows:
+            zone = 'local' if r.get('zone') == 'non_fap' else r.get('zone')
+            nep_keys[(zone, r['region'], r.get('title_match_key') or normalized(r['title']))].append(r)
+        for pair in result:
+            if pair['trace'] != 'third_only' or (pair['third'].get('records') or []) != []:
+                continue
+            t = pair['third']
+            hits = nep_keys.get((t['zone'], t['region'], t.get('title_match_key') or normalized(t['title'])), [])
+            if len(hits) == 1:
+                pair['nep_twin'] = {
+                    'source_id': hits[0]['source_id'],
+                    'pap3': hits[0]['pap3'],
+                    'pdf_page': hits[0]['pdf_page'],
+                    'amount_php': hits[0]['amount_php'],
+                    'note': ('Identical normalized title + region + zone exists in the '
+                             'printed NEP schedule. Likely a restoration of a 2nd-reading '
+                             'drop rather than a new legislative insertion — review '
+                             'against the NEP line before certifying. Annotation only; '
+                             'this row keeps its third_only status.'),
+                }
     # Every source record is present once, even where individual identity is ambiguous.
     for side, rows in [('second', second), ('third', third)]:
         consumed = [r['source_record_id'] for pair in result if pair[side]
@@ -113,7 +142,7 @@ def build():
             pdfs = [path for path in native['provenance_sha256'] if path.lower().endswith('.pdf')]
             if len(pdfs) != 1: raise ValueError('Expected one source PDF per reading/volume')
             documents[f'{reading}_{volume}'] = {'path': pdfs[0], 'sha256': native['provenance_sha256'][pdfs[0]]}
-    projects = compare_readings(*allocations)
+    projects = compare_readings(*allocations, source_rows=source['projects'])
     paps = []
     for name in sorted(controls[0].keys() | controls[1].keys()):
         a, b = controls[0].get(name), controls[1].get(name)

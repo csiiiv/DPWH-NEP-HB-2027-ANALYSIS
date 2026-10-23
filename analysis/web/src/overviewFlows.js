@@ -42,6 +42,10 @@ export function flowGraph(w) {
       amount_php: cells.unchanged.nep, count: w.unchanged.count, href: w.links.unchanged},
     {key: 'reduced', name: 'Reduced', sub: 'paired titles, decreased at House', kind: 'adjust', col: 1, order: 4,
       amount_php: cells.reduced.nep, count: a.reduced_count, href: w.links.decreases, labelSide: 'left'},
+    ...(cells.scope_review && cells.scope_review.nep > 0 ? [{key: 'scope_review', name: 'Scope review',
+      sub: 'same road, non-overlapping segments', kind: 'scope_review', col: 1, order: 5,
+      amount_php: cells.scope_review.nep, count: w.scope_review.count,
+      href: '#compare?view=projects&flag=segment_scope', labelSide: 'left'}] : []),
     {key: 'house', name: 'HGAB', sub: 'House GAB ledger', kind: 'stage', col: 2, order: 0,
       amount_php: w.sources.house.amount_php, count: w.sources.house.count, href: w.links.house},
     {key: 'reductions', name: 'House Reductions', sub: 'gross reductions on paired titles', kind: 'down', col: 2, order: 1,
@@ -51,7 +55,7 @@ export function flowGraph(w) {
   const core = revisionMatrixGraph({scope: matrix.scope, totals: {before: matrix.totals.nep, after: matrix.totals.hgab},
     cells: matrix.cells.map(c => ({...c, before: c.nep, after: c.hgab, count: c.rows}))});
   const aliases = {before: 'nep', after: 'house', deletion: 'deletions', insertion: 'insertions', increased: 'additions',
-    unchanged: 'unchanged', reduced: 'reduced', reductions: 'reductions'};
+    unchanged: 'unchanged', reduced: 'reduced', scope_review: 'scope_review', reductions: 'reductions'};
   const keys = Object.fromEntries(Object.entries(core.keys).map(([role, key]) => [key, aliases[role]]));
   const links = core.links.map(l => ({source: keys[l.source], target: keys[l.target], value: l.value, kind: l.kind}));
   const stubs = core.stubs.map(s => ({target: keys[s.target], value: s.value, kind: s.kind,
