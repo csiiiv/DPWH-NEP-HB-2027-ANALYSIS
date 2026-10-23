@@ -31,9 +31,11 @@ jobs:
       - name: Build 43k+ PSGC administrative code mappings
         run: node PSGC2LEG/build_code_mapping.mjs
       - name: Run code-mapping invariants
-        run: node --test PSGC2LEG/tests/codeMapping.test.mjs
+        run: node --test PSGC2LEG/tests/codeMapping.test.mjs PSGC2LEG/tests/lookupDistrict.test.mjs
       - name: Check build is deterministic
         run: node PSGC2LEG/build_code_mapping.mjs --check
+      - name: Show unresolved statute and seat coverage audit
+        run: node PSGC2LEG/lookup_district.mjs --audit
       - name: Publish reviewable mapping artifact
         uses: actions/upload-artifact@v4
         with:

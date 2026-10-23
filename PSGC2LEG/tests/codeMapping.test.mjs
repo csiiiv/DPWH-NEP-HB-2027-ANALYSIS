@@ -42,6 +42,18 @@ test('Caloocan third district barangays 178-188 use their cited legislative law'
    assert.equal(mapping.records[code][1],'verified_statute');
  }
 });
+test('city-specific lone congressional district is not mistaken for Bulacan provincial membership',()=>{
+ const city=Object.entries(reg.records).find(([code,r])=>r[1]==='component_city'&&/San Jose del Monte/i.test(r[0]));
+ assert.ok(city,'San Jose del Monte city must exist in PSGC');
+ assert.equal(mapping.records[city[0]][0],'leg:san-jose-del-monte-city:lone');
+ assert.equal(mapping.records[city[0]][1],'provisional_house_roster');
+});
+test('Rizal Jala-Jala place-name difference is reconciled against statutory Jalajala',()=>{
+ const city=Object.entries(reg.records).find(([code,r])=>r[1]==='municipality'&&/Jala.?Jala/i.test(r[0]));
+ assert.ok(city);
+ assert.equal(mapping.records[city[0]][0],'leg:rizal:2nd');
+ assert.equal(mapping.records[city[0]][1],'verified_statute');
+});
 test('no unmapped record is silently assigned a district',()=>{
  for(const [id,status] of Object.values(mapping.records)){
   if(['conflict','unmatched_seat','requires_barangay','unmapped','not_applicable'].includes(status))assert.equal(id,null);
