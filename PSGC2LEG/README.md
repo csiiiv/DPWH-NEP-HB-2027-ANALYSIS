@@ -86,6 +86,12 @@ Before publishing numeric codes, **manually audit** code-vintage changes, the ci
 
 **No project-level budget allocations are made by this package.** Counts or amounts should only be aggregated from *unique geolocated projects*, not the DEO office ledger; a multi-district project must be described as spanning districts unless segment-level cost data supports a split.
 
+## Source-first pipeline (20th Congress)
+
+The adopted source hierarchy is now tracked in [`../COMELEC/README.md`](../COMELEC/README.md): **2025 COMELEC electoral geography → effective reapportionment laws/COMELEC resolutions → dated PSA PSGC administrative identifiers → older UACS/NSCB for historical comparison**. The new COMELEC parser first extracts typed records with page references and explicitly refuses to conflate councilor/provincial district headings with House seats. Its review-required output must pass full district and PSGC coverage validation before it supersedes the provisional BetterGov name lookups in this module.
+
+Current published `outputs/psgc_leg_crosswalk.json` remains **provisional** and is not automatically upgraded by merely adding a COMELEC source manifest or an extraction sample.
+
 ## Independently sourced validation benchmark
 
 See [OFFICIAL_SOURCE_AUDIT.md](OFFICIAL_SOURCE_AUDIT.md) for the 107-case comparison against six enacted laws and Quezon City's official barangay-to-district list. It finds one directly wrong seat assignment and numerous provisional conflicts/unresolved cases. The report is preserved as [outputs/official_crosscheck_report.json](outputs/official_crosscheck_report.json); no raw observations are overwritten.
