@@ -41,6 +41,16 @@ Supported input: `{province, municipality, barangay, municipality_psgc?, baranga
 
 A multi-district city without a barangay returns `requires_barangay`; unmatched names return `unmapped`; conflicting source assignments return `conflict` with **no chosen district**. For a lone-district city the city's seat can be returned directly. Geocoder point failures and administrative-boundary uncertainty must be handled upstream.
 
+## Direct GPS lookup (existing PSGC geomapper)
+
+The repository already has `dpwh_coor2psgc_geomapping` and its 2023 administrative polygons. With that geocoder installed and initialized, use:
+
+```bash
+python3 PSGC2LEG/lookup_gps.py 14.601 120.984
+```
+
+The GPS wrapper calls `CombinedPSGCGeomapper.geomap_point(latitude, longitude)`, then the same `lookup.mjs` resolver. A returned legislative district is still a **provisional administrative crosswalk**, not a legally verified district polygon. The sample coordinates above are illustrative and do not assert a particular district. A failed polygon lookup returns `no_psgc_polygon_match`.
+
 ## Optional: compile actual PSGC numeric code keys
 
 Supply a versioned, flattened PSGC gazetteer as a JSON array of rows:
