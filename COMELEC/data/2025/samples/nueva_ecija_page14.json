@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "0.1.0",
+  "dataset": "comelec_2025_page_14_partial_sample",
+  "completeness": "partial_single_page_not_province_or_national_coverage",
+  "sourceId": "comelec_2025_elective_positions",
+  "sourceUrl": "https://www.comelec.gov.ph/php-tpls-attachments/2025NLE/Statistics/12202024_NoOfElectivePositions2025NLE.pdf",
+  "pdfPage": 14,
+  "printedPage": 14,
+  "electionDate": "2025-05-12",
+  "jurisdiction": "Nueva Ecija",
+  "districtType": "house_legislative",
+  "verificationMethod": "manually_transcribed_from_official_pdf_page_14",
+  "requiresPsgcReconciliation": true,
+  "notes": [
+    "Last district shown continues on following PDF page; this is a fixture for extraction regressions only.",
+    "Municipality/city names are printed labels, NOT verified 2026 PSGC code keys."
+  ],
+  "districts": [
+    {
+      "districtId": "leg:nueva-ecija:1st",
+      "members": [
+        "Aliaga",
+        "Cuyapo",
+        "Guimba",
+        "Licab",
+        "Nampicuan",
+        "Quezon",
+        "Santo Domingo",
+        "Talavera",
+        "Zaragoza"
+      ],
+      "pageComplete": true
+    },
+    {
+      "districtId": "leg:nueva-ecija:2nd",
+      "members": [
+        "Carranglan",
+        "Llanera",
+        "Lupao",
+        "Pantabangan",
+        "Rizal",
+        "Talugtug",
+        "San Jose City",
+        "Science City of Muñoz"
+      ],
+      "pageComplete": true
+    },
+    {
+      "districtId": "leg:nueva-ecija:3rd",
+      "members": [
+        "Bongabon",
+        "Gabaldon",
+        "General Mamerto Natividad",
+        "Laur",
+        "Santa Rosa",
+        "City of Cabanatuan",
+        "City of Palayan"
+      ],
+      "pageComplete": true
+    },
+    {
+      "districtId": "leg:nueva-ecija:4th",
+      "members": [
+        "Cabiao",
+        "General Tinio",
+        "Jaen",
+        "Peñaranda"
+      ],
+      "pageComplete": false
+    }
+  ]
+}
