@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {buildCrosswalk,materializePsgcCodes} from './lib.mjs';
 const root=dirname(fileURLToPath(import.meta.url));
 const read=p=>JSON.parse(readFileSync(resolve(root,p),'utf8'));
-const sha=p=>createHash('sha256').update(readFileSync(resolve(root,p))).digest('hex');
+const blobSha=p=>{const data=readFileSync(resolve(root,p));return createHash('sha1').update(Buffer.from('blob '+data.length+'\\0')).update(data).digest('hex');};
 const arg=(name)=>{const i=process.argv.indexOf(name);return i>=0?process.argv[i+1]:null};
 const sourcePaths=['sources/districts.json','sources/districts_generated.json'];
 const primary=read(sourcePaths[0]),secondary=read(sourcePaths[1]);
@@ -19,9 +19,9 @@ if(psgcFile){
  data.metadata.psgcCodeVintage=arg('--psgc-version')||'unverified_external_psgc_version';
  data.metadata.psgcSourceSha256=createHash('sha256').update(readFileSync(resolve(process.cwd(),psgcFile))).digest('hex');
 }
-data.metadata.inputHashes=Object.fromEntries(sourcePaths.map(p=>[p,sha(p)]));
-data.metadata.rosterSha256=createHash('sha256').update(readFileSync(resolve(root,'../DEO2LEG/deo_leg_crosswalk.json'))).digest('hex');
-const result=JSON.stringify(data,null,2)+'\\n';
+data.metadata.inputGitBlobShas=Object.fromEntries(sourcePaths.map(p=>[p,blobSha(p)]));
+data.metadata.rosterGitBlobSha=blobSha('../DEO2LEG/deo_leg_crosswalk.json');
+const result=JSON.stringify(data,null,2)+'\n';
 const target=resolve(root,'outputs/psgc_leg_crosswalk.json');
 if(process.argv.includes('--check')){
  if(readFileSync(target,'utf8')!==result)throw Error('Published PSGC2LEG output has drifted; rebuild it');
