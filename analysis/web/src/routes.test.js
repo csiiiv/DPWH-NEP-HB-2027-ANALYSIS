@@ -83,6 +83,9 @@ test('the workspace registry exposes consistent labels, prefixes and pages', () 
   }
   // Hidden workspaces resolve in the router but never join listed nav.
   assert.equal(workspaces.experiments.hidden, true);
+  assert.equal(workspaces.congress.hidden, true);
+  assert.ok(!Object.keys(workspaces).filter(key => !workspaces[key].hidden).includes('congress'));
+  assert.equal(readWorkspace('#congress/district?district=office-group:leg:tarlac:3rd'), 'congress');
   assert.equal(readWorkspace('#experiments'), 'experiments');
   assert.equal(readWorkspace('#experiments?chart=flow'), 'experiments');
   // DPWH keeps the empty prefix; annexes each own one hash segment.

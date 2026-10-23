@@ -85,6 +85,8 @@ export const workspaces = {
   congress: {
     label: "Congress",
     prefix: "congress",
+    // Omit from header navigation for now, but keep direct routes available.
+    hidden: true,
     // Only the grid is a tab. #congress/district still resolves as a page (a
     // card deep link like ?district=<card id> opens the explorer view), but it
     // is reached by clicking a representative, never from the tab strip.
