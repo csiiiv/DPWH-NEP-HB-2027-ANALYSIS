@@ -214,7 +214,7 @@ export function main(){
   console.log('Generated PSGC2LEG mapping matches committed output');
  }else{
   writeFileSync(target,result);
-  console.log(JSON.stringify({file:target,coverage:data.coverage,unmatchedLawLocations:data.diagnostics.sourceMembershipsWithoutMatchingPsgc.length},null,2));
+  console.log(JSON.stringify({file:target,coverage:data.coverage,unmatchedLawLocations:data.diagnostics.sourceMembershipsWithoutMatchingPsgc},null,2));
  }
 }
 if(process.argv[1] && fileURLToPath(import.meta.url)===resolve(process.argv[1]))main();

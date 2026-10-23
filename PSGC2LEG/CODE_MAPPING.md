@@ -34,3 +34,15 @@ Each record is `[legislativeDistrictIdOrNull, status, sourceId]`. Use `unresolve
 The source law fixture is **not** nationwide. The correct outcome for unsupported or conflicting memberships is `null`, never a fabricated congressional district. All municipality/child barangay legal assignments explicitly specify source IDs; inherited child mapping is marked `verified_statute_inherited` only if the entire municipality is assigned by law. County/city name collisions use the PSGC parent chain; NCR HUCs are allowed to have no province parent.
 
 Before citing district-level budget totals: verify the applicable election date, reconcile PSGC vintages, and preserve multi-district or spatially spanning projects without guessing fractional allocations.
+
+## Strict code-based lookup
+
+Use the newly generated [2025 code-to-district mapping](outputs/psgc_to_leg_2025.json) without falling back to nonunique place names:
+
+```bash
+node PSGC2LEG/lookup_district.mjs 1381300022
+node PSGC2LEG/lookup_district.mjs --geocoder /path/to/psgc_geomapper_output.json
+node PSGC2LEG/lookup_district.mjs --audit
+```
+
+The JSON returns a `legislativeDistrictId` or `null`, the administrative PSGC parent chain, the precise mapping evidence tier, and representative metadata (where the existing 20th Congress roster has a match). A geocoder result without a valid 10-digit code returns `missing_psgc_code` rather than guessing from names. This is not a polygon-to-electoral-district GIS layer.
