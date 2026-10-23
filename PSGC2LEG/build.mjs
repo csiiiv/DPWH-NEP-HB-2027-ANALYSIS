@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {buildCrosswalk,materializePsgcCodes} from './lib.mjs';
 const root=dirname(fileURLToPath(import.meta.url));
 const read=p=>JSON.parse(readFileSync(resolve(root,p),'utf8'));
-const blobSha=p=>{const data=readFileSync(resolve(root,p));return createHash('sha1').update(Buffer.from('blob '+data.length+'\\0')).update(data).digest('hex');};
+const blobSha=p=>{const data=readFileSync(resolve(root,p));return createHash('sha1').update(Buffer.from('blob '+data.length+'\0')).update(data).digest('hex');};
 const arg=(name)=>{const i=process.argv.indexOf(name);return i>=0?process.argv[i+1]:null};
 const sourcePaths=['sources/districts.json','sources/districts_generated.json'];
 const primary=read(sourcePaths[0]),secondary=read(sourcePaths[1]);
