@@ -31,6 +31,8 @@ jobs:
         run: node PSGC2LEG/crosscheck_official.mjs --check
       - name: Verify geographic resolution behavior
         run: node --test PSGC2LEG/tests/*.test.mjs
+      - name: Validate official PSA publication parser and discrepancy checker
+        run: python3 -m unittest discover -s PSGC2LEG/tests -p test_audit_official_psgc.py -v
       - name: Check direct GPS CLI syntax and help
         run: |
           python3 -m py_compile PSGC2LEG/lookup_gps.py
