@@ -1,0 +1,31 @@
+name: PSGC2LEG geographic crosswalk checks
+
+on:
+  pull_request:
+    paths:
+      - 'PSGC2LEG/**'
+      - 'DEO2LEG/deo_leg_crosswalk.json'
+      - '.github/workflows/psgc2leg.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'PSGC2LEG/**'
+      - 'DEO2LEG/deo_leg_crosswalk.json'
+      - '.github/workflows/psgc2leg.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Confirm generated crosswalk is current
+        run: node PSGC2LEG/build.mjs --check
+      - name: Verify geographic resolution behavior
+        run: node --test PSGC2LEG/tests/*.test.mjs
