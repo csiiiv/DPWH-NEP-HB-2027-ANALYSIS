@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""GPS -> existing PSGC geomapper -> provisional PSGC2LEG resolver.
+"""GPS -> existing PSGC geomapper -> code-keyed PSGC2LEG electoral resolver.
 
 Uses the pinned 2023 PSGC geometry already employed by the FMR pipeline.
 This is a coordinate *point* lookup, not a congressional electoral polygon
@@ -41,7 +41,7 @@ def lookup(lat, lon):
         file = Path(d) / "location.json"
         file.write_text(json.dumps(location), encoding="utf-8")
         process = subprocess.run(
-            ["node", str(REPO / "PSGC2LEG" / "lookup.mjs"), str(file)],
+            ["node", str(REPO / "PSGC2LEG" / "lookup_district.mjs"), "--geocoder", str(file)],
             check=True,
             capture_output=True,
             text=True

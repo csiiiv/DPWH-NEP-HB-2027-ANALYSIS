@@ -2,6 +2,17 @@
 
 Research-oriented, dependency-free, reproducible **GPS → PSGC location → geographic House district** bridge. Designed to complement, **not replace**, [DEO2LEG](../DEO2LEG/README.md). This branch deliberately does not change existing dashboards.
 
+
+## Current 2025 PSGC-code mapping
+
+A complete **code-indexed** dataset is now generated from the 42,010-barangay PSGC registry (mirror vintage 2026-10-12) and available as [`outputs/psgc_to_leg_2025.json`](outputs/psgc_to_leg_2025.json). See [CODE_MAPPING.md](CODE_MAPPING.md) for evidence-status definitions, version and limitations. It includes all geographic administrative codes and preserves `null` where House district membership is unverified or unknown. The direct `lookup_gps.py` wrapper now uses this strict code-keyed result; the legacy `lookup.mjs` name resolver remains available for historical comparison.
+
+```bash
+node PSGC2LEG/lookup_district.mjs 1381300022
+node PSGC2LEG/lookup_district.mjs --audit
+node PSGC2LEG/build_code_mapping.mjs --check
+```
+
 ## Scope and confidence
 
 - **Current published dataset:** named municipality and city-barangay crosswalk built from *pinned* BetterGov files and validated against the 254 DEO2LEG district IDs.
