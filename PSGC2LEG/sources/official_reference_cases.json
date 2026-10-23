@@ -1,0 +1,238 @@
+{
+  "schemaVersion": "1.0.0",
+  "verifiedOn": "2026-10-23",
+  "methodology": "Manually transcribed directly from cited law texts or Quezon City Council district list. These are reference checks, not proof that underlying administrative geometry is current. Jurisdiction and district identifiers refer to DEO2LEG's 20th Congress geographic seats. No budget ownership attribution.",
+  "psgcReference": {
+    "name": "PSA PSGC third quarter 2026 masterlist",
+    "date": "2026-09-30",
+    "url": "https://psa.gov.ph/classification/psgc",
+    "note": "Code and administrative-name reference only; does NOT itself classify barangays by legislative district. Official 2026 Excel file not ingested by this benchmark."
+  },
+  "sources": [
+    {
+      "id": "RA11546",
+      "title": "Bulacan, six districts",
+      "url": "https://lawphil.net/statutes/repacts/ra2021/ra_11546_2021.html",
+      "jurisdiction": "Bulacan",
+      "level": "municipality",
+      "effectiveElection": 2022,
+      "districts": {
+        "1st": [
+          "Calumpit",
+          "Hagonoy",
+          "Paombong",
+          "Pulilan",
+          "Bulakan",
+          "City of Malolos"
+        ],
+        "2nd": [
+          "Baliuag",
+          "Bustos",
+          "Plaridel"
+        ],
+        "3rd": [
+          "San Ildefonso",
+          "San Miguel",
+          "San Rafael",
+          "Doña Remedios Trinidad"
+        ],
+        "4th": [
+          "Obando",
+          "Marilao",
+          "City of Meycauayan"
+        ],
+        "5th": [
+          "Guiguinto",
+          "Balagtas",
+          "Pandi",
+          "Bocaue"
+        ],
+        "6th": [
+          "Santa Maria",
+          "Norzagaray",
+          "Angat"
+        ]
+      }
+    },
+    {
+      "id": "RA11553",
+      "title": "Bataan, three districts",
+      "url": "https://lawphil.net/statutes/repacts/ra2021/ra_11553_2021.html",
+      "jurisdiction": "Bataan",
+      "level": "municipality",
+      "effectiveElection": 2022,
+      "districts": {
+        "1st": [
+          "Hermosa",
+          "Orani",
+          "Samal",
+          "Abucay"
+        ],
+        "2nd": [
+          "City of Balanga",
+          "Orion",
+          "Pilar",
+          "Limay"
+        ],
+        "3rd": [
+          "Bagac",
+          "Morong",
+          "Dinalupihan",
+          "Mariveles"
+        ]
+      }
+    },
+    {
+      "id": "RA11533",
+      "title": "Rizal 2nd–4th districts",
+      "url": "https://lawphil.net/statutes/repacts/ra2021/ra_11533_2021.html",
+      "jurisdiction": "Rizal",
+      "level": "municipality",
+      "effectiveElection": 2022,
+      "districts": {
+        "2nd": [
+          "Cardona",
+          "Baras",
+          "Tanay",
+          "Morong",
+          "Jalajala",
+          "Pililla",
+          "Teresa"
+        ],
+        "3rd": [
+          "San Mateo"
+        ],
+        "4th": [
+          "Rodriguez"
+        ]
+      }
+    },
+    {
+      "id": "RA11804",
+      "title": "South Cotabato reapportionment (2025)",
+      "url": "https://lawphil.net/statutes/repacts/ra2022/ra_11804_2022.html",
+      "jurisdiction": "South Cotabato",
+      "level": "municipality",
+      "effectiveElection": 2025,
+      "districts": {
+        "1st": [
+          "Polomolok",
+          "Tampakan",
+          "Tupi"
+        ],
+        "2nd": [
+          "City of Koronadal",
+          "Banga",
+          "Tantangan"
+        ],
+        "3rd": [
+          "Norala",
+          "Santo Niño",
+          "Surallah",
+          "Lake Sebu",
+          "T'boli"
+        ]
+      }
+    },
+    {
+      "id": "RA11714",
+      "title": "Agusan del Norte provincial lone district (2025)",
+      "url": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html",
+      "jurisdiction": "Agusan del Norte",
+      "level": "municipality",
+      "effectiveElection": 2025,
+      "districts": {
+        "lone": [
+          "City of Cabadbaran",
+          "Las Nieves",
+          "Buenavista",
+          "Carmen",
+          "Jabonga",
+          "Kitcharao",
+          "Magallanes",
+          "Nasipit",
+          "Remedios T. Romualdez",
+          "Santiago",
+          "Tubay"
+        ]
+      }
+    },
+    {
+      "id": "QC_COUNCIL",
+      "title": "Official Quezon City Council barangay district list (30 independently sampled locations)",
+      "url": "https://qccouncil.quezoncity.gov.ph/",
+      "jurisdiction": "Quezon City",
+      "level": "barangay",
+      "effectiveElection": null,
+      "note": "Manually transcribed subset from city council site; not intended to claim full 142-barangay coverage.",
+      "districts": {
+        "1st": [
+          "Alicia",
+          "Bagong Pag-asa",
+          "Bahay Toro",
+          "Balingasa",
+          "Project 6"
+        ],
+        "2nd": [
+          "Bagong Silangan",
+          "Batasan Hills",
+          "Commonwealth",
+          "Holy Spirit",
+          "Payatas"
+        ],
+        "3rd": [
+          "Amihan",
+          "Bagumbayan",
+          "Loyola Heights",
+          "Ugong Norte",
+          "White Plains"
+        ],
+        "4th": [
+          "Botocan",
+          "Kamuning",
+          "Laging Handa",
+          "Kalusugan",
+          "Kaunlaran"
+        ],
+        "5th": [
+          "Bagbag",
+          "Fairview",
+          "Greater Lagro",
+          "North Fairview",
+          "San Bartolome"
+        ],
+        "6th": [
+          "New Era",
+          "Pasong Tamo",
+          "Sauyo",
+          "Tandang Sora",
+          "Talipapa"
+        ]
+      }
+    },
+    {
+      "id": "RA11545",
+      "title": "Caloocan City third district enumerated barangays",
+      "url": "https://lawphil.net/statutes/repacts/ra2021/ra_11545_2021.html",
+      "jurisdiction": "Caloocan City",
+      "level": "barangay",
+      "effectiveElection": 2022,
+      "note": "Third-district barangays 178–188 only. Do not use the old first-district reference to Barangay 176 without reconciling RA 11993 splitting it into six barangays.",
+      "districts": {
+        "3rd": [
+          "Barangay 178",
+          "Barangay 179",
+          "Barangay 180",
+          "Barangay 181",
+          "Barangay 182",
+          "Barangay 183",
+          "Barangay 184",
+          "Barangay 185",
+          "Barangay 186",
+          "Barangay 187",
+          "Barangay 188"
+        ]
+      }
+    }
+  ]
+}
