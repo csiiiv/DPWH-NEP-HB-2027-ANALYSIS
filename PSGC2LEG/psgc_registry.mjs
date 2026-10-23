@@ -6,7 +6,7 @@ export function verifyRegistry(registry,{strict2026=false}={}){
  if(!registry||!registry.records||!registry.provenance)throw Error('Missing versioned PSGC registry');
  const rows=registry.records,counts={},codes=new Set(Object.keys(rows)),errors=[];
  for(const [code,entry] of Object.entries(rows)){
-  if(!/^\\d{10}$/.test(code)||!Array.isArray(entry)||entry.length!==3)errors.push('Malformed entry: '+code);
+  if(!/^\d{10}$/.test(code)||!Array.isArray(entry)||entry.length!==3)errors.push('Malformed entry: '+code);
   const [name,kind,parent]=entry||[];
   if(!name||!TYPES.has(kind))errors.push('Invalid name/type: '+code);
   counts[kind]=(counts[kind]||0)+1;
@@ -23,7 +23,7 @@ export function verifyRegistry(registry,{strict2026=false}={}){
 }
 export function tracePsgc(registry,code){
  const records=registry.records;
- if(!/^\\d{10}$/.test(String(code)))return {status:'invalid_code',code:String(code)};
+ if(!/^\d{10}$/.test(String(code)))return {status:'invalid_code',code:String(code)};
  if(!records[code])return {status:'unknown_code',code:String(code),release:registry.provenance.authoritativeRelease};
  const chain=[],visited=new Set();let current=code;
  while(current!=='0000000000'){
@@ -42,7 +42,7 @@ export function tracePsgc(registry,code){
   verification:registry.provenance.verificationStatus};
 }
 function norm(s){
- return String(s??'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/^city of\\s+/,'').replace(/\\s+city$/,'').replace(/[^a-z0-9]+/g,' ').trim().replace(/\\s+/g,' ');
+ return String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/^city of\s+/,'').replace(/\s+city$/,'').replace(/[^a-z0-9]+/g,' ').trim().replace(/\s+/g,' ');
 }
 export function findPsgc(registry,query,{parentCode=null,type=null}={}){
  const q=norm(query);if(!q)return [];
