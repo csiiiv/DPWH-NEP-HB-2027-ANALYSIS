@@ -20,6 +20,7 @@ const input={
 };
 const CITY_TYPES=new Set(['component_city','highly_urbanized_city','independent_component_city','municipality']);
 const normCity=(n)=>placeKey(n);
+const jurisdictionOf=(n)=>{const s=jurisdictionKey(n);return s.startsWith('city of ')?jurisdictionKey(s.slice(8)):s;};
 const districtKey=(jur,seat)=>'leg:'+jurisdictionKey(jur).replace(/ /g,'-')+':'+seat;
 const legalTownAlias=(jur,n)=>{
  // Historical Baliuag municipality was converted to the City of Baliwag; explicit,
@@ -47,7 +48,7 @@ export function buildCodeMapping({registry,primary,secondary,legal,roster}){
  };
  for(const s of legal.sources){
   if(!/^RA\d+$/.test(s.id))continue;
-  const jur=jurisdictionKey(s.jurisdiction);
+  const jur=jurisdictionOf(s.jurisdiction);
   const target=s.level==='municipality'?legalMunicipal:
                s.level==='barangay'?legalBarangay:null;
   if(!target)continue;
@@ -123,7 +124,7 @@ export function buildCodeMapping({registry,primary,secondary,legal,roster}){
   const t=tracePsgc(registry,code);
   const city=t.cityMunicipality;
   if(!city) {write(code,null,'unmapped','missing_psgc_city_parent');continue;}
-  const cityJur=jurisdictionKey(city.name);
+  const cityJur=jurisdictionOf(city.name);
   const bg=normCity(name);
   const cityKey=cityJur+'|'+bg;
   const law=legalBarangay.get(cityKey);
@@ -184,10 +185,7 @@ export function buildCodeMapping({registry,primary,secondary,legal,roster}){
    not_applicable:'Higher administrative layer, not direct congressional locality'
   },
   coverage:{
-   administrativeCodes:codes.length,barangayCodes:counts.verified_statute+counts.verified_statute_inherited+
-   counts.provisional_correlated+counts.provisional_single+counts.provisional_inherited+
-   counts.conflict+counts.unmatched_seat+counts.requires_barangay+counts.unmapped-
-   [...townRecords.values()].length,
+   administrativeCodes:codes.length,barangayCodes:Object.values(registry.records).filter(v=>v[1]==='barangay').length,
    municipalityCityCodes:townRecords.size,
    resolvedPsgcCodes:classified,lawBackedPsgcCodes:official,
    mappedHouseDistricts:Object.keys(bySeat).length,rosterHouseDistricts:canonical.size,
