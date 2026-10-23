@@ -57,7 +57,7 @@ export function layoutRevisionFlow(model, {valueHeight = 520, alignment = 'top'}
     const graph = graphs[index], plan = plans[index];
     const bodyY = rowY + plan.heading;
     const left = {key: graph.keys.before, x: columnX.before, y: bodyY + offset(plan.bodyHeight, group.before * scale), height: group.before * scale, value: group.before};
-    const rightBlock = group.after * scale + (plan.sink ? 32 + plan.sinkSlot : 0);
+    const rightBlock = group.after * scale + (plan.sink ? 32 + plan.sinkSlot : 0) + (plan.scopeSink ? 32 + plan.scopeSinkSlot : 0);
     const right = {key: graph.keys.after, x: columnX.after, y: bodyY + offset(plan.bodyHeight, rightBlock), height: group.after * scale, value: group.after};
     const map = new Map();
     if (group.before) map.set(left.key, {...graph.nodes.find(n => n.key === left.key), ...left, width: 12});

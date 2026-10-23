@@ -102,6 +102,7 @@ export const workspaces = {
   },
   sources: { label: "Sources", prefix: "sources", pages: [["home", "Datasets"]] },
   about: { label: "About", prefix: "about", pages: [["home", "About this workbench"]] },
+  disclaimer: { label: "Disclaimer", prefix: "disclaimer", pages: [["home", "Methods and limitations"]] },
   // Experiments: unlisted exploration views reached only by direct URL.
   // `hidden` keeps it out of the workspace nav while the router still
   // resolves #experiments and code-split app bundles normally.
@@ -152,6 +153,7 @@ export function routeHref(key, params = {}, workspace = typeof location === 'und
   if (workspace === 'overview' && key === 'home') return `#overview${query ? '?' + query : ''}`;
   if (workspace === 'sources' && key === 'home') return `#sources${query ? '?' + query : ''}`;
   if (workspace === 'about' && key === 'home') return `#about${query ? '?' + query : ''}`;
+  if (workspace === 'disclaimer' && key === 'home') return `#disclaimer${query ? '?' + query : ''}`;
   if (workspace === 'experiments' && key === 'home') return `#experiments${query ? '?' + query : ''}`;
   const prefix = workspaces[workspace]?.prefix ? `${workspaces[workspace].prefix}/` : "";
   return `#${prefix}${key}${query ? "?" + query : ""}`;
@@ -164,6 +166,7 @@ export function workspaceHref(target, route = readRoute()) {
   if (target === 'overview') return '#overview';
   if (target === 'sources') return '#sources';
   if (target === 'about') return '#about';
+  if (target === 'disclaimer') return '#disclaimer';
   if (target === 'experiments') return '#experiments';
   const targetPages = workspaces[target]?.pages ?? [];
   const currentKey = route.key;

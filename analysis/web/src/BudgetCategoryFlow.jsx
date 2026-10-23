@@ -167,16 +167,16 @@ export default function BudgetCategoryFlow({payload, groupingKey = 'category', e
       selection={{group: selectedGroup?.id, revision: selectedRevision?.key}} onSelect={({group, revision}) => update(group, revision)}
       title={`FY2027 · ${dataset.label} · Five-stage budget alluvial`} caption={`${dataset.label} · five-stage budget alluvial`}
       captionDetail={`NEP total → ${plural} → revision cells within each group → ${plural} → HGAB total · ${presentation} · ${count(model.totals.rows)} ${unit} · PHP`}
-      description={`NEP ${money(model.totals.nep)} through ${model.groups.length} displayed groups (${presentation}) and five revision cells per group to HGAB ${money(model.totals.hgab)}. ${caveat}`}
+      description={`NEP ${money(model.totals.nep)} through ${model.groups.length} displayed groups (${presentation}) and six revision classes per group, including scope review, to HGAB ${money(model.totals.hgab)}. ${caveat}`}
       subtitle={`${date} · Grouping: ${grouping.label} · ${presentation} · All ${unit} · Selected: ${detailLabel || 'all'}`}
       formatValue={format} formatExact={money} formatCount={count} describedBy="budget-flow-help"
       revisionSuffix={key => ['insertion', 'deletion'].includes(key) ? '*' : ''}
       metadata={{title: `FY2027 ${dataset.label} five-stage budget alluvial`, dataset: {key: dataset.key, label: dataset.label, count_unit: unit, scope: dataset.scope, house_note: dataset.house_note}, grouping: model.grouping, filters: `all ${unit}`, presentation, rollup: model.rollup || null, alignment, date, unit: 'PHP', versions: `DBM NEP → HGAB · ${dataset.house_note}`, source: payload.provenance || 'dpwh_flow_2027.json', caveat}}
       footer={[
         `Source: FY2027 ${dataset.label} · NEP → HGAB · PHP · ${grouping.label} · ${presentation}`,
-        `Net ${signed(model.totals.delta)} = gross additions ${format(model.totals.additions)} − gross reductions ${format(model.totals.reductions)}`,
+        `Net ${signed(model.totals.delta)} = gross additions ${format(model.totals.additions)} − gross reductions ${format(model.totals.reductions)} + scope-review net ${signed(model.totals.scope_net || 0)}`,
         '* Unmatched insertion/deletion candidates. Retained pair identities also remain provisional. Observed changes do not establish transfers.',
-        'New money enters through floating stubs. Gross cuts end in per-group House Reductions. Deletions end at C. Zero-value cells omitted.',
+        'Stubs and sinks also carry unbooked scope-review differences separately from additions and reductions. Deletions end at C. Zero-value cells omitted.',
         `Version: ${payload.provenance?.sha256 ? `comparison SHA-256 ${payload.provenance.sha256.slice(0, 16)}` : 'dpwh_flow_2027.json'}`,
       ]}/>
     <section className="budget-flow-detail" aria-labelledby="budget-detail-heading" aria-live="polite">

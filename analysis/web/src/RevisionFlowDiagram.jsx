@@ -51,10 +51,10 @@ export default function RevisionFlowDiagram({model, layout: suppliedLayout, svgR
             <title>{`${r.groupId} · ${r.sourceName} → ${r.targetName}: ${formatExact(r.value)}`}</title>
           </path>)}
           {layout.stubs.map(stub => <g key={stub.key} className="bf-stub" data-group={stub.groupId} data-category={stub.revision} data-target={stub.target} data-value={stub.value}
-            role="button" tabIndex={0} aria-label={`${stub.groupId} · ${stub.revision} ${labels.additions}: ${formatExact(stub.value)}`}
+            role="button" tabIndex={0} aria-label={`${stub.groupId} · ${stub.revision === 'scope_review' ? 'Unbooked scope-review surplus' : `${stub.revision} ${labels.additions}`}: ${formatExact(stub.value)}`}
             onClick={() => selectRevision(stub.revision, stub.groupId)} onKeyDown={activate(() => selectRevision(stub.revision, stub.groupId))}
             onMouseEnter={() => setHover({group: stub.groupId, revision: stub.revision})} onMouseLeave={() => setHover(null)} opacity={dimmed(stub.groupId, stub.revision) ? .15 : 1}>
-            <title>{`${labels.additions} · ${formatExact(stub.value)} · ${stub.revision === 'insertion' ? 'full inserted value' : 'gross increase only'}`}</title>
+            <title>{`${stub.revision === 'scope_review' ? 'Unbooked scope-review surplus' : labels.additions} · ${formatExact(stub.value)} · ${stub.revision === 'scope_review' ? 'not booked as a same-project increase' : stub.revision === 'insertion' ? 'full inserted value' : 'gross increase only'}`}</title>
             <rect className="bf-stub-band" data-value={stub.value} x={stub.x} y={stub.y} width={stub.width} height={stub.height} fill={stub.color} opacity={.65}/>
             <circle cx={stub.portX} cy={stub.portY} r={3.5} fill={stub.color}/>
             <text x={stub.labelX} y={stub.labelY} textAnchor="end" className="bf-stub-label">+{format(stub.value)}</text>
@@ -103,6 +103,18 @@ export default function RevisionFlowDiagram({model, layout: suppliedLayout, svgR
                 <tspan x={g.reductionSink.x + 22} dy="13">{format(g.reductionSink.value)}</tspan>
               </text>
             </g>}
+          </g>)}
+          {layout.sinks.filter(sink => sink.role === 'scopeLoss').map(sink => <g key={sink.key} className="bf-scope-sink" data-group={sink.groupId}
+            role="button" tabIndex={0} aria-label={`Unbooked scope-review deficit · ${sink.groupId}: ${formatExact(sink.value)}`}
+            aria-pressed={selectedGroup?.id === sink.groupId && selectedRevision?.key === 'scope_review'}
+            onClick={() => selectRevision('scope_review', sink.groupId)} onKeyDown={activate(() => selectRevision('scope_review', sink.groupId))}
+            onMouseEnter={() => setHover({group: sink.groupId, revision: 'scope_review'})} onMouseLeave={() => setHover(null)} opacity={dimmed(sink.groupId, 'scope_review') ? .2 : 1}>
+            <rect data-stage="D" data-node="scope-review-deficit" data-node-key={sink.key} data-value={sink.value}
+              x={sink.x} y={sink.y} width={sink.width} height={sink.height} fill={sink.color}/>
+            <text x={sink.x + 22} y={sink.y + sink.height / 2 - 13} className="bf-sink-label">
+              <tspan fontWeight="700">Unbooked scope-review deficit</tspan>
+              <tspan x={sink.x + 22} dy="13">{format(sink.value)}</tspan>
+            </text>
           </g>)}
           {footer.slice(0, 5).map((line, i) => <text key={i} x={28} y={layout.height - 98 + i * 20} className="bf-footer">{line}</text>)}
         </svg>

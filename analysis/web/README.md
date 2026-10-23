@@ -3,6 +3,14 @@
 `Workbench.jsx` selects DPWH, DA farm-to-market roads, DOH health facilities, NIA irrigation, or
 Geolocation from the hash route. The shared header uses `routes.js` to render each workspace's
 navigation. Annex apps and browser datasets load when their workspace opens.
+The shared footer links to `#disclaimer`, which renders the tracked public
+notice in [`disclaimer/README.md`](../../disclaimer/README.md). Edit that file
+to update the full notice; internal drafting notes are excluded from the app.
+Browser navigation checks read the workspace registry through
+`scripts/serve_pages.py::workspace_labels()` so new tabs cannot leave stale
+copies of the navigation order in the checks.
+SSR render tests use separate Vite caches per test process, disable dependency
+discovery and HMR, and leave the running development server's cache alone.
 The FMR workflow is described below; see the
 [NIA workbench guide](../../analysis-nia/NIA_WORKBENCH.md) for irrigation views.
 NIA Compare follows DPWH's compact table workspace and inline PDF layout.

@@ -4,9 +4,12 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createServer} from 'vite';
 import {inventoryFlow} from './revisionFlowExample.js';
+import {buildRevisionFlow} from './revisionFlow.js';
 
 test('shared renderer accepts a second domain and multiple figures without budget vocabulary or duplicate IDs', async () => {
-  const server = await createServer({root: new URL('..', import.meta.url).pathname, server: {middlewareMode: true}, appType: 'custom'});
+  const server = await createServer({root: new URL('..', import.meta.url).pathname,
+    cacheDir: new URL(`../node_modules/.vite-tests/${process.pid}`, import.meta.url).pathname,
+    server: {middlewareMode: true, hmr: false}, optimizeDeps: {noDiscovery: true, include: []}, appType: 'custom'});
   try {
     const {default: Diagram} = await server.ssrLoadModule('/src/RevisionFlowDiagram.jsx');
     const model = inventoryFlow();
@@ -25,5 +28,28 @@ test('shared renderer accepts a second domain and multiple figures without budge
     for (const match of html.matchAll(/aria-labelledby="([^"]+)"/g)) {
       for (const id of match[1].split(' ')) assert.ok(ids.includes(id), `missing accessible label ${id}`);
     }
+  } finally {await server.close();}
+});
+
+test('scope-review deficits render a terminal node and surpluses retain unbooked labels', async () => {
+  const server = await createServer({root: new URL('..', import.meta.url).pathname,
+    cacheDir: new URL(`../node_modules/.vite-tests/${process.pid}`, import.meta.url).pathname,
+    server: {middlewareMode: true, hmr: false}, optimizeDeps: {noDiscovery: true, include: []}, appType: 'custom'});
+  try {
+    const {default: Diagram} = await server.ssrLoadModule('/src/RevisionFlowDiagram.jsx');
+    const flow = after => buildRevisionFlow({groups: [{id: 'review', label: 'Review',
+      cells: [{key: 'scope_review', before: 100, after, count: 1}]}],
+      expected: {before: 100, after, count: 1}});
+    const deficit = flow(80);
+    const html = renderToStaticMarkup(React.createElement(Diagram, {model: deficit}));
+    assert.match(html, /class="bf-scope-sink"/);
+    assert.match(html, /data-node="scope-review-deficit"[^>]*data-value="20"/);
+    for (const node of deficit.graph.nodes.filter(node => node.role === 'scopeLoss')) {
+      const attributeKey = node.key.replaceAll('&', '&amp;').replaceAll('"', '&quot;');
+      assert.ok(html.includes(`data-node-key="${attributeKey}"`), 'the deficit ribbon must end at a drawn node');
+    }
+    const surplus = renderToStaticMarkup(React.createElement(Diagram, {model: flow(120)}));
+    assert.match(surplus, /Unbooked scope-review surplus/);
+    assert.doesNotMatch(surplus, /gross increase only/);
   } finally {await server.close();}
 });

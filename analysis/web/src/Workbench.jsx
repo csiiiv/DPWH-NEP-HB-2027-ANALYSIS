@@ -5,6 +5,7 @@
 // a per-annex branch.
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { readWorkspace } from "./routes.js";
+import DisclaimerFooter from "./DisclaimerNotice.jsx";
 
 const FmrApp = lazy(() => import("./FmrApp.jsx"));
 const DpwhApp = lazy(() => import("./DpwhApp.jsx"));
@@ -16,10 +17,11 @@ const HfepApp = lazy(() => import("./HfepApp.jsx"));
 const NiaApp = lazy(() => import("./NiaApp.jsx"));
 const GeoApp = lazy(() => import("./GeoApp.jsx"));
 const CongressApp = lazy(() => import("./CongressApp.jsx"));
+const DisclaimerApp = lazy(() => import("./DisclaimerApp.jsx"));
 
 // Lazy loaders per registered workspace key. DPWH is statically imported as
 // the default workspace; each annex app is code-split behind its prefix.
-const lazyApps = { overview: MainOverview, sources: Sources, about: AboutApp, experiments: ExperimentsApp, fmr: FmrApp, hfep: HfepApp, nia: NiaApp, geo: GeoApp, congress: CongressApp };
+const lazyApps = { overview: MainOverview, sources: Sources, about: AboutApp, disclaimer: DisclaimerApp, experiments: ExperimentsApp, fmr: FmrApp, hfep: HfepApp, nia: NiaApp, geo: GeoApp, congress: CongressApp };
 
 export default function Workbench() {
   const [workspace, setWorkspace] = useState(() => readWorkspace());
@@ -30,8 +32,13 @@ export default function Workbench() {
   }, []);
   const App = lazyApps[workspace] ?? DpwhApp;
   return (
-    <Suspense fallback={<p role="status">Loading workspace…</p>}>
-      <App />
-    </Suspense>
+    <div className="workbench-shell">
+      <div className="workbench-content">
+        <Suspense fallback={<p role="status">Loading workspace…</p>}>
+          <App />
+        </Suspense>
+      </div>
+      <DisclaimerFooter />
+    </div>
   );
 }

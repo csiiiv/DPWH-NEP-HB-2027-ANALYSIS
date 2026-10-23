@@ -4,8 +4,25 @@ import {layoutPapFlow} from './papFlowLayout.js';
 import {layoutRevisionFlow} from './revisionFlowLayout.js';
 import {buildFlowFromGrouping} from './flowFromGrouping.js';
 import {inventoryFlow} from './revisionFlowExample.js';
+import {buildRevisionFlow} from './revisionFlow.js';
 
 const sum = list => list.reduce((s, item) => s + item.value, 0);
+
+test('scope-review deficits have positioned endpoints inside their category row', () => {
+  const model = buildRevisionFlow({groups: [{id: 'review', label: 'Review', cells: [
+    {key: 'scope_review', before: 100, after: 80, count: 1},
+    {key: 'reduced', before: 50, after: 40, count: 1},
+  ]}], expected: {before: 150, after: 120, count: 2}});
+  for (const layout of [layoutPapFlow(model), layoutRevisionFlow(model, {alignment: 'center'})]) {
+    const sink = layout.sinks.find(node => node.role === 'scopeLoss');
+    const row = layout.rows.find(group => group.id === sink.groupId);
+    assert.equal(sink.value, 20);
+    assert.equal(sink.height, sink.value * layout.scale);
+    assert.ok(sink.y + sink.height <= row.y + row.height);
+    assert.ok(layout.ribbons.some(ribbon => ribbon.target === sink.key));
+    assert.ok(layout.ribbons.every(ribbon => !/NaN|Infinity/.test(ribbon.d)));
+  }
+});
 
 test('pap engine places level outer segments and level ribbons per group', () => {
   const model = inventoryFlow();

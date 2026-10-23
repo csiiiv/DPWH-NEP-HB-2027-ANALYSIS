@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
     paths:
+      - 'disclaimer/**'
+      - 'DEO2LEG/**'
       - 'analysis/**'
       - 'other-analysis/**'
       - 'analysis-nia/**'
@@ -25,6 +27,8 @@ on:
       - '.github/workflows/pages.yml'
   pull_request:
     paths:
+      - 'disclaimer/**'
+      - 'DEO2LEG/**'
       - 'analysis/**'
       - 'other-analysis/**'
       - 'analysis-nia/**'

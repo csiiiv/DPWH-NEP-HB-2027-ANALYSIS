@@ -48,13 +48,15 @@ def main():
                     # and combines the other four without dropping any money.
                     expect(page.get_by_label('Category detail', exact=True)).to_have_value('top3')
                     expect(page.locator('.bf-group-row')).to_have_count(4)
-                    expect(page.locator('.bf-cell')).to_have_count(18)
-                    expect(page.locator('.bf-ribbon')).to_have_count(41)
-                    expect(page.locator('.bf-stub')).to_have_count(7)
+                    # The six-class matrix includes held-out scope review.
+                    expect(page.locator('.bf-cell')).to_have_count(21)
+                    expect(page.locator('.bf-ribbon')).to_have_count(48)
+                    expect(page.locator('.bf-stub')).to_have_count(9)
                     expect(page.locator('.bf-reduction-sink')).to_have_count(4)
+                    expect(page.locator('.bf-scope-sink')).to_have_count(1)
                     expect(page.locator('.bf-group-row').last).to_have_attribute('data-group', 'others')
                     compact_height = page.locator('.revision-flow-scroll svg').evaluate('svg => svg.viewBox.baseVal.height')
-                    assert compact_height < 1400
+                    assert compact_height < 1600
                     totals = page.locator('.budget-flow-metrics').inner_text()
                     assert not any('comparison_projects_2027.json' in url for url in requests)
                     page.get_by_label('Focus category', exact=True).select_option('others')
@@ -68,7 +70,7 @@ def main():
                     cell = page.locator('.bf-cell[data-group="others"][data-category="reduced"]')
                     cell.focus()
                     page.keyboard.press('Enter')
-                    expect(page.locator('.budget-flow-detail')).to_contain_text('84 comparison rows')
+                    expect(page.locator('.budget-flow-detail')).to_contain_text('77 comparison rows')
                     with page.expect_download() as result:
                         page.get_by_role('button', name='Download SVG', exact=True).click()
                     compact_svg = ET.fromstring(Path(result.value.path()).read_text())
@@ -77,7 +79,7 @@ def main():
                     assert len(compact_metadata['rollup']['members']) == 4
                     assert compact_metadata['selection'] == {'group': 'others', 'revision': 'reduced'}
                     page.locator('.budget-flow-others-detail a').filter(has_text='Asset Preservation Program').click()
-                    expect(page.locator('.result-count')).to_contain_text('38 of 17,613 comparison rows', timeout=30000)
+                    expect(page.locator('.result-count')).to_contain_text('31 of 17,613 comparison rows', timeout=30000)
                     page.go_back(wait_until='networkidle')
                     expect(page.get_by_label('Focus category', exact=True)).to_have_value('others')
                     page.get_by_role('button', name='Expand Others', exact=True).click()
@@ -85,25 +87,27 @@ def main():
                     expect(page.get_by_label('Focus category', exact=True)).to_have_value('')
                     expect(page).to_have_url(re.compile('detail=all'))
                     assert page.locator('.budget-flow-metrics').inner_text() == totals
-                    assert page.locator('.revision-flow-scroll svg').evaluate('svg => svg.viewBox.baseVal.height') > compact_height / .72
+                    assert page.locator('.revision-flow-scroll svg').evaluate('svg => svg.viewBox.baseVal.height') > compact_height / .75
                     page.get_by_role('button', name='Clear selection', exact=True).click()
-                    expect(page.locator('.bf-cell')).to_have_count(33)
-                    expect(page.locator('.bf-ribbon')).to_have_count(74)
+                    expect(page.locator('.bf-cell')).to_have_count(36)
+                    expect(page.locator('.bf-ribbon')).to_have_count(81)
                     expect(page.locator('.bf-stage')).to_have_count(5)
                     expect(page.locator('rect[data-stage="B"]')).to_have_count(7)
                     expect(page.locator('rect[data-stage="D"][data-node="ledger"]')).to_have_count(7)
-                    expect(page.locator('.bf-stub')).to_have_count(13)
+                    expect(page.locator('.bf-stub')).to_have_count(15)
                     expect(page.locator('.bf-reduction-sink')).to_have_count(7)
+                    expect(page.locator('.bf-scope-sink')).to_have_count(1)
                     expect(page.locator('rect[data-stage="D"][data-node="reductions"]')).to_have_count(7)
                     expect(page.locator('.bf-group-row[data-group="fap"] .bf-cell[data-category="increased"]')).to_have_count(0)
                     expect(page.locator('.bf-group-row[data-group="fap"] .bf-cell[data-category="deletion"]')).to_have_count(0)
                     assert page.locator('.revision-flow-scroll svg').evaluate('''svg => {
                       const scale = Number(svg.dataset.scale);
-                      const bands = svg.querySelectorAll('.bf-revision-node,.bf-stub-band,[data-node="reductions"],[data-node="ledger"]');
+                      const bands = svg.querySelectorAll('.bf-revision-node,.bf-stub-band,[data-node="reductions"],[data-node="scope-review-deficit"],[data-node="ledger"]');
                       return [...bands].every(el => Math.abs(Number(el.getAttribute('height')) - Number(el.dataset.value)*scale) < 1e-6);
                     }''')
-                    assert page.locator('.bf-stub-band').evaluate_all("els => els.reduce((sum,el) => sum+Number(el.dataset.value),0)") == 177170632000
-                    assert page.locator('[data-node="reductions"]').evaluate_all("els => els.reduce((sum,el) => sum+Number(el.dataset.value),0)") == 87348816000
+                    assert page.locator('.bf-stub-band').evaluate_all("els => els.reduce((sum,el) => sum+Number(el.dataset.value),0)") == 176878814000
+                    assert page.locator('[data-node="reductions"]').evaluate_all("els => els.reduce((sum,el) => sum+Number(el.dataset.value),0)") == 87039358000
+                    assert page.locator('[data-node="scope-review-deficit"]').evaluate_all("els => els.reduce((sum,el) => sum+Number(el.dataset.value),0)") == 17640000
                     # Top is the default. Switching alignment moves nodes and
                     # bands without changing any amount or proportional height.
                     svg = page.locator('.revision-flow-scroll svg')
@@ -154,12 +158,12 @@ def main():
                     expect(page).to_have_url(re.compile('revision=increased'))
                     expect(page.locator('#budget-detail-heading')).to_have_text('Increased · detail')
                     expect(page.locator('.budget-flow-detail a')).to_have_attribute('href', '#compare?view=projects&flag=amount_increase')
-                    expect(page.locator('.budget-flow-detail')).to_contain_text('203 comparison rows')
+                    expect(page.locator('.budget-flow-detail')).to_contain_text('188 comparison rows')
                     page.reload(wait_until='networkidle')
                     expect(legend.get_by_role('button', name='Increased', exact=True)).to_have_attribute('aria-pressed', 'true')
                     page.get_by_label('Show exact pesos', exact=True).check()
                     expect(page.locator('.budget-flow-metrics')).to_contain_text('₱572,924,074,000')
-                    expect(page.locator('.budget-flow-table')).to_contain_text('₱11,320,356,000')
+                    expect(page.locator('.budget-flow-table')).to_contain_text('₱10,329,499,000')
                     # Keyboard selection works on the actual SVG category cells.
                     cell = page.locator('.bf-cell[data-category="reduced"][data-group="Asset Preservation Program"]')
                     cell.focus()
@@ -238,7 +242,7 @@ def main():
                     assert '₱572,924,074,000' in text
                     assert 'Download section PNG' not in text
                     assert len([el for el in snapshot.iter() if el.get('class') == 'bf-group-row']) == 7
-                    assert len([el for el in snapshot.iter() if 'bf-revision-node' in el.get('class', '')]) == 33
+                    assert len([el for el in snapshot.iter() if 'bf-revision-node' in el.get('class', '')]) == 36
                     assert all(el.get('open') is not None for el in snapshot.iter() if el.tag.endswith('}details'))
                     assert page.locator('.revision-flow-scroll').evaluate('el => [el.scrollTop,el.scrollLeft]') == before_scroll
                     assert page.evaluate('location.hash') == before_hash
@@ -392,14 +396,18 @@ def main():
                     expect(checkbox).to_be_checked()
                     assert 'hide=central_office' in page.evaluate('location.hash')
                     expect(page.locator('.bar-comparison-row').first).not_to_have_attribute('data-id', 'Central Office')
-                    assert page.locator('.bar-comparison-row').count() == 220
-                    # The hidden group stays in the exact table, struck through,
-                    # with its per-class amounts (unchanged NEP ₱244.9B … inserted
-                    # HGAB ₱104.3B — summing to the ₱450.5B CO ledger).
+                    dpwh_source = next(source for source in sources if source['dataset']['key'] == 'dpwh')
+                    deo_groups = dpwh_source['groupings']['deo']['groups']
+                    expect(page.locator('.bar-comparison-row')).to_have_count(len(deo_groups) - 1)
+                    # The hidden office stays in the exact table, including
+                    # its current class amounts and held-out scope review.
                     hidden_row = page.locator('.budget-flow-table tbody tr.is-hidden-row')
                     expect(hidden_row).to_have_count(1)
-                    expect(hidden_row).to_contain_text('244,925,657,000')
-                    expect(hidden_row).to_contain_text('104,275,611,000')
+                    central = next(group for group in deo_groups if group['id'] == 'Central Office')
+                    for cell in central['classes']:
+                        for side in ('nep_php', 'third_php'):
+                            if cell[side]:
+                                expect(hidden_row).to_contain_text(f"{cell[side]:,}")
                     # The Total row still rebuilds the whole ledger.
                     expect(page.locator('.budget-flow-table tfoot')).to_contain_text('572,924,074,000')
                     # Reload keeps the scope; dataset/detail switches reset it.

@@ -10,7 +10,7 @@ import tempfile
 import threading
 from pathlib import Path
 from playwright.sync_api import expect, sync_playwright
-from serve_pages import RangeHandler, check_widths
+from serve_pages import RangeHandler, check_widths, workspace_labels
 from analysis_checks import check_analysis_links, check_banded_overview, check_candidate_group
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,7 +61,7 @@ def main():
                     assert tabs.locator('a').all_text_contents() == ['Home', 'Highlights', 'Compare stages', 'Analysis', 'House GAB', 'DBM NEP']
                     # The workspace selector exposes all registered workspaces.
                     workspaces = page.get_by_role('navigation', name='Workbench workspaces')
-                    assert workspaces.locator('a').all_text_contents() == ['Overview', 'DPWH', 'DA Farm-to-Market Roads', 'DOH Health Facilities', 'NIA Irrigation', 'Geolocation', 'Sources', 'About', 'Congress']
+                    expect(workspaces.locator('a')).to_have_text(workspace_labels())
                     expect(page.locator('main')).to_contain_text('10,021,659,000')
                     no_overflow()
                     page.screenshot(path=str(captures / f'home-{width}.png'))

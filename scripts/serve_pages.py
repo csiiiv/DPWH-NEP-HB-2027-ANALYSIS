@@ -1,11 +1,31 @@
 #!/usr/bin/env python3
 """Preview the packaged workbench with PDF byte-range support."""
 import argparse
+from functools import lru_cache, partial
+import json
 import os
 import re
-from functools import partial
+import subprocess
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+
+
+@lru_cache(maxsize=1)
+def workspace_labels():
+    """Expected navigation from the same registry used to build the app.
+
+    Keep browser checks sensitive to missing/reordered links without copying
+    a workspace list into each check whenever a workspace is added.
+    """
+    result = subprocess.run(
+        ["node", "--input-type=module", "--eval",
+         "import {workspaces} from './analysis/web/src/routes.js';"
+         "console.log(JSON.stringify(Object.values(workspaces)"
+         ".filter(workspace => !workspace.hidden).map(workspace => workspace.label)))"],
+        cwd=Path(__file__).resolve().parents[1],
+        check=True, capture_output=True, text=True,
+    )
+    return json.loads(result.stdout)
 
 
 def check_widths(default=(390, 1440)):

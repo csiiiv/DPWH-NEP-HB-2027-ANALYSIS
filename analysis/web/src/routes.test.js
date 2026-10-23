@@ -72,8 +72,8 @@ test('unregistered hash prefixes fall back to the DPWH workspace', () => {
 });
 test('the workspace registry exposes consistent labels, prefixes and pages', () => {
   // Every workspace needs a label, at least one tab, and a unique prefix.
-  assert.deepEqual(workspaceLabels, {overview: 'Overview', dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities', nia: 'NIA Irrigation', congress: 'Congress', geo: 'Geolocation', sources: 'Sources', about: 'About', experiments: 'Experiments'});
-  assert.deepEqual(Object.keys(workspaces), ['overview', 'dpwh', 'fmr', 'hfep', 'nia', 'congress', 'geo', 'sources', 'about', 'experiments']);
+  assert.deepEqual(workspaceLabels, {overview: 'Overview', dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities', nia: 'NIA Irrigation', congress: 'Congress', geo: 'Geolocation', sources: 'Sources', about: 'About', disclaimer: 'Disclaimer', experiments: 'Experiments'});
+  assert.deepEqual(Object.keys(workspaces), ['overview', 'dpwh', 'fmr', 'hfep', 'nia', 'congress', 'geo', 'sources', 'about', 'disclaimer', 'experiments']);
   const prefixes = Object.values(workspaces).map(ws => ws.prefix);
   assert.equal(new Set(prefixes).size, prefixes.length, 'prefixes must be unique');
   for (const ws of Object.values(workspaces)) {
@@ -178,4 +178,14 @@ test('legacy null reset links recover without stripping literal search text',()=
   const route=readRoute('#nia/analysis?view=insertions&pair=null&status=null&group=undefined&q=null');
   assert.equal(route.params.get('pair'),null);assert.equal(route.params.get('status'),null);
   assert.equal(route.params.get('group'),null);assert.equal(route.params.get('q'),'null');
+});
+
+test('the disclaimer has a stable direct route from every workspace', () => {
+  assert.equal(readWorkspace('#disclaimer'), 'disclaimer');
+  assert.equal(readRoute('#disclaimer').key, 'home');
+  assert.equal(routeHref('home', {}, 'disclaimer'), '#disclaimer');
+  for (const workspace of Object.keys(workspaces)) {
+    const route = readRoute(routeHref('home', {}, workspace));
+    assert.equal(workspaceHref('disclaimer', route), '#disclaimer');
+  }
 });

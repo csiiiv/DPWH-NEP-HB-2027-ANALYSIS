@@ -12,7 +12,7 @@ import tempfile
 import threading
 
 from playwright.sync_api import expect, sync_playwright
-from serve_pages import RangeHandler, check_widths
+from serve_pages import RangeHandler, check_widths, workspace_labels
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -48,7 +48,7 @@ def main():
                     assert '/app/?preview=overview#overview' in page.url
                     expect(page.get_by_role('heading', name='Budget allocation overview', exact=True)).to_be_visible()
                     nav = page.get_by_role('navigation', name='Workbench workspaces')
-                    assert nav.locator('a').all_text_contents() == ['Overview','DPWH','DA Farm-to-Market Roads','DOH Health Facilities','NIA Irrigation','Geolocation','Sources','About','Congress']
+                    expect(nav.locator('a')).to_have_text(workspace_labels())
                     expect(nav.get_by_role('link',name='Overview',exact=True)).to_have_attribute('aria-current','page')
                     expect(page.get_by_role('navigation',name='Workbench pages')).to_have_count(0)
                     expect(page.locator('.overview-workspace-card')).to_have_count(4)
@@ -92,6 +92,10 @@ def main():
                         assert int(r['insertion_house_php'])==w['insertions']['amount_php']
                         assert int(r['gross_reduction_php'])==w['adjustments']['reduced_php']
                         assert int(r['house_minus_nep_ledger_php'])==w['delta_php']
+                        assert int(r['scope_review_pairs'])==w.get('scope_review', {}).get('count', 0)
+                        assert int(r['scope_review_net_php'])==w.get('scope_review', {}).get('net_php', 0)
+                        assert int(r['scope_review_house_php']) - int(r['scope_review_nep_php']) == int(r['scope_review_net_php'])
+                        assert int(r['insertion_house_php']) - int(r['deletion_nep_php']) + int(r['paired_net_php']) + int(r['scope_review_net_php']) == int(r['house_minus_nep_ledger_php'])
                     table = page.get_by_role('region',name='Overview source funding snapshot',exact=True)
                     table.get_by_role('button',name='House − NEP (PHP)',exact=True).click()
                     assert 'sort=delta_php' in page.url
@@ -155,8 +159,17 @@ def main():
                     for key, value in totals.items():
                         expected_text = f"{value:,}" if 'records' in key or key in ('increased','reduced') else f"₱{value:,}"
                         assert expected_text in total_text, f'totals row missing {key}: {expected_text}'
-                    # Funding identity across the summed columns.
-                    assert totals['insertions'] - totals['deletions'] + totals['increased'] - totals['reduced'] == \
+                    # Scope-review pairs stay outside adjustments; the held-out
+                    # amounts must be visible and complete the funding bridge.
+                    scope_net = sum(w.get('scope_review', {}).get('net_php', 0) for w in data['workspaces'])
+                    for w in data['workspaces']:
+                        scope = w.get('scope_review', {})
+                        if scope.get('count'):
+                            note = page.locator('.overview-scope-review').filter(has_text=w['label'])
+                            expect(note).to_contain_text(f"{scope['count']:,} pairs under scope review")
+                            for key in ('nep_php', 'house_php', 'net_php'):
+                                expect(note).to_contain_text(f"₱{scope[key]:,}")
+                    assert totals['insertions'] - totals['deletions'] + totals['increased'] - totals['reduced'] + scope_net == \
                         totals['house'] - sum(w['sources']['nep']['amount_php'] for w in data['workspaces'])
                     page.screenshot(path=str(screenshots / f'overview-{width}.png'),full_page=True)
                     # Summary destinations restore the matching populations and
@@ -178,7 +191,7 @@ def main():
                     page.get_by_role('article',name='DPWH →',exact=True).get_by_role('link',name='DPWH unchanged',exact=True).click()
                     expect(page.get_by_label('Review flags',exact=True)).to_have_value('amount_same')
                     assert 'region_match=ignore' in page.url
-                    expect(page.locator('.result-count').first).to_contain_text('9,670 of',timeout=30000)
+                    expect(page.locator('.result-count').first).to_contain_text('9,660 of',timeout=30000)
                     # Unchanged deep-links land on the filtered populations.
                     page.goto(base+'#overview',wait_until='networkidle')
                     page.get_by_role('article',name='DA Farm-to-Market Roads →',exact=True).get_by_role('link',name='DA Farm-to-Market Roads unchanged',exact=True).click()
@@ -202,7 +215,7 @@ def main():
                     page.goto(base+'#sources',wait_until='networkidle')
                     expect(page.get_by_role('heading',name='Sources and datasets',exact=True)).to_be_visible()
                     expect(page.get_by_role('navigation',name='Workbench workspaces').get_by_role('link',name='Sources',exact=True)).to_have_attribute('aria-current','page')
-                    expect(page.locator('.resource-group')).to_have_count(10)
+                    expect(page.locator('.resource-group')).to_have_count(11)
                     nep_link=page.get_by_role('link',name='Canonical NEP tree',exact=True)
                     assert re.search(r'github\.com/.*/blob/main/analysis/data/nep_2027_tree\.json$',nep_link.get_attribute('href')),(nep_link.get_attribute('href'),)
                     fmr_bundle=page.get_by_role('link',name='FMR shareable bundle (CSV set + 7z archive)',exact=True)
@@ -387,6 +400,23 @@ def main():
                     expect(page.get_by_role('region',name='Workbench workspaces covered')).to_contain_text('NIA Irrigation')
                     expect(page.get_by_role('link',name='Repository README',exact=True)).to_have_attribute('href',re.compile(r'/README\.md$'))
                     assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
+                    # The shared notice travels across routes, and the full
+                    # public text opens directly without private drafting notes.
+                    footer = page.get_by_role('contentinfo', name='Analysis disclaimer')
+                    expect(footer).to_contain_text('provisional review leads')
+                    expect(page.locator('main').get_by_role('link', name='Read the full methods and limitations →', exact=True)).to_have_attribute('href', '#disclaimer')
+                    footer.get_by_role('link', name='Methods and limitations →', exact=True).click()
+                    expect(page.get_by_role('heading', name='Disclaimer — FY2027 Budget Workbenches', exact=True)).to_be_visible()
+                    page.reload(wait_until='networkidle')
+                    expect(page.get_by_role('navigation',name='Workbench workspaces').get_by_role('link',name='Disclaimer',exact=True)).to_have_attribute('aria-current','page')
+                    notice = page.locator('#disclaimer-content')
+                    expect(notice).to_contain_text('₱140,000')
+                    expect(notice).to_contain_text('Shared-office totals remain')
+                    expect(notice).not_to_contain_text('Drafting notes')
+                    expect(notice).not_to_contain_text('The Senate is expected')
+                    expect(notice.get_by_role('link', name='DEO mapping restrictions', exact=True)).to_have_attribute('href', re.compile(r'/blob/main/DEO2LEG/README\.md#disclaimers$'))
+                    assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
+                    page.screenshot(path=str(screenshots / f'disclaimer-{width}.png'), full_page=True)
                     page.goto(base+'#overview/unknown',wait_until='networkidle')
                     expect(page.get_by_role('heading',name='Unknown Overview view',exact=True)).to_be_visible()
                     page.get_by_role('link',name='Open Overview',exact=True).click()

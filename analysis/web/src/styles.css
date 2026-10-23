@@ -349,6 +349,14 @@ small {
   max-width: 900px;
   margin: 0 auto 1.25rem;
 }
+.workbench-shell { min-height: 100dvh; display: flex; flex-direction: column; }
+.workbench-content { flex: 1; min-width: 0; }
+.disclaimer-footer { width: 100%; margin-top: 24px; padding-top: 16px; padding-bottom: 20px; border-top: 1px solid #dbe3ed; color: #475569; font-size: .875rem; line-height: 1.6; }
+.disclaimer-footer p { margin: 0; max-width: 110ch; }
+.disclaimer-footer a { white-space: nowrap; }
+.disclaimer-content { padding-top: 24px; padding-bottom: 32px; line-height: 1.75; overflow-wrap: anywhere; }
+.disclaimer-content > * { max-width: 85ch; }
+.disclaimer-content li { margin-bottom: 12px; }
 .resource-list li {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

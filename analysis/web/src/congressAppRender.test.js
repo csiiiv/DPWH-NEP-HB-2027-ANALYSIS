@@ -46,7 +46,9 @@ const route = (key, params = "") => ({key, params: new URLSearchParams(params)})
 async function render(name, props) {
   const server = await createServer({
     root: new URL("..", import.meta.url).pathname,
-    server: { middlewareMode: true },
+    cacheDir: new URL(`../node_modules/.vite-tests/${process.pid}`, import.meta.url).pathname,
+    server: { middlewareMode: true, hmr: false },
+    optimizeDeps: { noDiscovery: true, include: [] },
     appType: "custom",
   });
   try {

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { repo, siteUrl } from "./data.js";
 import { routeHref } from "./routes.js";
 import WorkbenchHeader from "./WorkbenchHeader.jsx";
+import { DisclaimerSummary } from "./DisclaimerNotice.jsx";
 import "./Fmr.css";
 import "./MainOverview.css";
 
@@ -58,18 +59,7 @@ export default function AboutApp() {
           <a className="secondary" href={repo}>View repository source →</a>
         </div>
       </section>
-      <p className="fmr-notice">
-        <strong>Disclaimer.</strong> This is an independent, unofficial analysis
-        of publicly released budget documents. It is not affiliated with, and
-        has not been reviewed or endorsed by, the DPWH, DBM, DA, DOH, NIA, or
-        the House of Representatives. Figures are transcriptions and provisional
-        comparisons of the cited printed records — candidate insertions,
-        deletions, and amount changes are review leads, not certified findings.
-        Unmatched rows alone do not establish insertions, removals, or policy
-        changes, and nothing here should be read as an allegation of wrongdoing
-        against any office or official. Verify every figure against the primary
-        documents before quoting or republishing it.
-      </p>
+      <DisclaimerSummary />
 
       <h2>The workspaces</h2>
       <p className="muted">

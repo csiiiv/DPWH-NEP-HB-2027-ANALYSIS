@@ -15,6 +15,10 @@ const sideNote = key => key === 'deletion' ? ' · NEP side only' : key === 'inse
 // Compact-view choices: keep the largest N groups by NEP, combine the rest
 // into Others. null (All) draws every group.
 const TOP_BRANCHES = [{top: null, label: 'All'}, {top: 3, label: 'Top 3'}, {top: 5, label: 'Top 5'}, {top: 10, label: 'Top 10'}];
+const TABLE_SEGMENTS = {
+  nep: SEGMENTS.filter(segment => segment.key !== 'insertion'),
+  hgab: SEGMENTS.filter(segment => segment.key !== 'deletion'),
+};
 
 export default function BarComparisonExplorer({route, exact}) {
   const [catalog, setCatalog] = useState(null), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
@@ -245,13 +249,12 @@ function BarComparisonFigure({payload, groupingKey, datasets, exact, route, setP
         <thead><tr>
           <th scope="col" rowSpan="2">{grouping.label}</th>
           <th scope="col" rowSpan="2">{sentence(dataset.count_unit)}</th>
-          <th scope="col" colSpan="4">NEP (PHP)</th>
-          <th scope="col" colSpan="4">HGAB (PHP)</th>
+          <th scope="col" colSpan={TABLE_SEGMENTS.nep.length}>NEP (PHP)</th>
+          <th scope="col" colSpan={TABLE_SEGMENTS.hgab.length}>HGAB (PHP)</th>
           <th scope="col" rowSpan="2">Change (PHP)</th>
         </tr>
         <tr>
-          {['Unchanged', 'Increased', 'Decreased', 'Deleted'].map(label => <th scope="col" key={`nep-${label}`}>{label}</th>)}
-          {['Unchanged', 'Increased', 'Decreased', 'Inserted'].map(label => <th scope="col" key={`hgab-${label}`}>{label}</th>)}
+          {SIDES.flatMap(side => TABLE_SEGMENTS[side.key].map(segment => <th scope="col" key={`${side.key}-${segment.key}`}>{segment.label}</th>))}
         </tr></thead>
         <tbody>{(() => {
           const others = bars.filter(b => b.id === '__others__');
@@ -264,14 +267,13 @@ function BarComparisonFigure({payload, groupingKey, datasets, exact, route, setP
             title={isOthers ? `Others combines: ${bar.members.map(m => m.label).join('; ')}` : undefined}>
             <th scope="row">{bar.label}{isHidden ? ' ·' : ''}</th>
             <td>{count(bar.rows)}</td>
-            <td>{money(c.unchanged?.nep || 0)}</td><td>{money(c.increased?.nep || 0)}</td><td>{money(c.reduced?.nep || 0)}</td><td>{money(c.deletion?.nep || 0)}</td>
-            <td>{money(c.unchanged?.hgab || 0)}</td><td>{money(c.increased?.hgab || 0)}</td><td>{money(c.reduced?.hgab || 0)}</td><td>{money(c.insertion?.hgab || 0)}</td>
+            {SIDES.flatMap(side => TABLE_SEGMENTS[side.key].map(segment => <td key={`${side.key}-${segment.key}`}>{money(c[segment.key]?.[side.key] || 0)}</td>))}
             <td>{bar.hgab - bar.nep > 0 ? '+' : ''}{money(bar.hgab - bar.nep)}</td>
           </tr>;
         })}</tbody>
         <tfoot><tr>
           <th scope="row">Total · all {grouping.plural}</th><td>{count(model.totals.rows)}</td>
-          <td colSpan="4">{money(model.totals.nep)}</td><td colSpan="4">{money(model.totals.hgab)}</td>
+          <td colSpan={TABLE_SEGMENTS.nep.length}>{money(model.totals.nep)}</td><td colSpan={TABLE_SEGMENTS.hgab.length}>{money(model.totals.hgab)}</td>
           <td>{money(model.totals.delta)}</td>
         </tr></tfoot>
       </table>

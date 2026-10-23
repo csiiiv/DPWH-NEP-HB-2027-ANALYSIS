@@ -86,9 +86,9 @@ function renderPap({flow, exact}) {
   // renders here unchanged once those identities exist in the payload.
   return <section className="fmr-section" aria-labelledby="experiments-pap-heading">
     <h2 id="experiments-pap-heading">DPWH · category-scoped revision flow</h2>
-    <p>The planning document's five-stage structure with categories as the intermediate level: DBM NEP → category groups at NEP values → each category's own five-cell revision matrix → category groups at HGAB values → HGAB. The Allocation flows grammar runs recursively per category, so new House money enters through floating stubs and every category keeps its own House Reductions sink instead of one shared pool.</p>
+    <p>The planning document's five-stage structure with categories as the intermediate level: DBM NEP → category groups at NEP values → each category's own six-class revision matrix, including scope review → category groups at HGAB values → HGAB. The Allocation flows grammar runs recursively per category, so new House money enters through floating stubs and every category keeps its own House Reductions sink instead of one shared pool.</p>
     <CategoryFlowFigure flow={flow} exact={exact}/>
-    {flow && !flow.error && <p className="fmr-muted">Stage-C cells rebuild both ledgers — NEP {money(flow.stages.nep.amount_php)} and HGAB {money(flow.stages.third.amount_php)} over {flow.totals.rows.toLocaleString('en-PH')} comparison rows ({flow.groupings.category.groups.length} category groups). Column C blocks follow Column B's order and keep the workspace class order (deletion → insertion → increased → unchanged → reduced) inside each block. Insertions enter as new House money; deletions end at stage C. Row grain is comparison candidates.</p>}
+    {flow && !flow.error && <p className="fmr-muted">Stage-C cells rebuild both ledgers — NEP {money(flow.stages.nep.amount_php)} and HGAB {money(flow.stages.third.amount_php)} over {flow.totals.rows.toLocaleString('en-PH')} comparison rows ({flow.groupings.category.groups.length} category groups). Column C blocks follow Column B's order and keep the workspace class order (deletion → insertion → increased → unchanged → reduced → scope review) inside each block. Insertions enter as new House money; deletions end at stage C. Row grain is comparison candidates.</p>}
   </section>;
 }
 
@@ -113,7 +113,7 @@ function CategoryFlowFigure({flow, exact}) {
 function renderFlows({data, exact}) {
   return <section className="fmr-section" aria-labelledby="experiments-sankey-heading">
     <h2 id="experiments-sankey-heading">Allocation flow: NEP to House</h2>
-    <p>How each workspace's NEP ledger flows through the five groups into its House ledger. Ribbon thickness is Allocations Worth; the gross increase stub into Increased and the House Reductions side-flow are gross adjustments on paired titles. Select a ribbon or group to inspect its records in its workspace.</p>
+    <p>How each workspace's NEP ledger flows through the revision groups into its House ledger. Ribbon thickness is Allocations Worth; the gross increase stub into Increased and the House Reductions side-flow are gross adjustments on paired titles. Select a ribbon or group to inspect its records in its workspace.</p>
     <div className="flow-sankeys">{data.workspaces.map(w => <FlowSankey key={w.key} workspace={w} exact={exact}/>)}</div>
     <p className="fmr-muted">Flows conserve every ledger exactly — the same invariants the Overview tables enforce. Deletions and House reductions end outside the House ledger by definition. Each workspace keeps its own record grain and matching basis.</p>
   </section>;

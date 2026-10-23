@@ -24,6 +24,7 @@ retained datasets. Deep links are explicit (`#fmr/compare`, `#nia/analysis`, …
 | **Geolocation** | `#geo/…` | Home · Map. Every GPS-bearing budget record (61,688 scanned → 6,973 with GPS → 9,827 parsed points) on one MapLibre map with grouping-encoded badges, clusters, and per-record source evidence. |
 | **Sources** | `#sources` | Catalog of every shareable, normalized dataset: what it contains, where it lives in this repository (or downloads from the site), its documented limits, and an "Open workspace" link per domain. The former DPWH Resources tab folded in here (`#resources` redirects). |
 | **About** | `#about` | Suite-level introduction: what each workspace covers, how the Python-builders + React-frontend model works, the disclaimer, and the project documentation index. |
+| **Disclaimer** | `#disclaimer` | Full methods and limitations notice: provisional matching, reconciliation exceptions, source/version citations, and office/district attribution limits. Also linked from every workspace footer. |
 
 ### Headline numbers
 

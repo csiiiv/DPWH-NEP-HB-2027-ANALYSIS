@@ -3,7 +3,7 @@ import WorkbenchHeader from './WorkbenchHeader.jsx';
 import SortableTable from './SortableTable.jsx';
 import ShareLink from './ShareLink.jsx';
 import {loadData, repo, siteUrl} from './data.js';
-import {readRoute} from './routes.js';
+import {readRoute, routeHref} from './routes.js';
 import {compactMoney, money} from './fmrModel.js';
 import {overviewCsv, validateOverview} from './mainOverviewModel.js';
 import {CardShareMenu, CardModal, SectionHeader} from './CardShare.jsx';
@@ -88,8 +88,9 @@ function downloadSummary(data) {
 // every cell states its own counting unit, and figures come only from the
 // validated summary payload — never cross-workspace additions.
 // Totals row for the candidate-change table: pesos sum exactly because each
-// workspace's funding bridge holds (insertions − deletions + paired net =
-// House − NEP), so column sums reconcile to the summed ledgers. Record
+// workspace's funding bridge holds (insertions − deletions + paired net +
+// scope-review net = House − NEP). Scope review is shown separately below
+// the table, never booked back into paired adjustments. Record
 // counts, however, add across different grains — allocation records (DPWH),
 // project records (FMR and NIA) and funding-column records (HFEP) — so the
 // summed counts are record totals, not comparable project counts; the
@@ -203,7 +204,13 @@ function CoverageTables({data, exact, inModal = false}) {
           </>;})()}</tr></tfoot>
         </table>
       </div>
-      <p className="fmr-muted">Counts use each workspace's record grain, so they are not comparable across rows. "Allocations Worth" figures are total allocations; "Adjustments worth" figures are signed total adjustments (+/−) within those pairs, never allocations. Adjustments are gross movements within pairs — {data.workspaces.map(w => `${w.label}: ${w.adjustments.count_unit}`).join('; ')}. The DPWH pair counts include region-difference candidates. Unchanged allocations are equal on both stages. HFEP paired column additions/drops sit in its adjustments; its Analysis view displays NEP minus House. The Total row sums the four workspaces: allocation pesos reconcile exactly — insertions − deletions + net adjustments equal House − NEP in every workspace — while record counts add across different counting grains, so treat them as record totals, not comparable project counts.</p>
+      {data.workspaces.filter(w => w.scope_review?.count).map(w => <p key={w.key} className="fmr-notice overview-scope-review">
+        <strong>{w.label}: {number(w.scope_review.count)} pairs under scope review.</strong>{' '}
+        NEP allocations <Amount value={w.scope_review.nep_php} exact/> → House allocations <Amount value={w.scope_review.house_php} exact/>;
+        net <Amount value={w.scope_review.net_php} exact signed/> is held separately from same-project adjustments.{' '}
+        <a href={w.key === 'dpwh' ? routeHref('analysis', {view: 'relations', tab: 'overlaps'}, 'dpwh') : w.links.adjustments}>Review segment scope →</a>
+      </p>)}
+      <p className="fmr-muted">Counts use each workspace's record grain, so they are not comparable across rows. "Allocations Worth" figures are total allocations; "Adjustments worth" figures are signed total adjustments (+/−) within those pairs, never allocations. Adjustments are gross movements within pairs — {data.workspaces.map(w => `${w.label}: ${w.adjustments.count_unit}`).join('; ')}. The DPWH pair counts include region-difference candidates. Unchanged allocations are equal on both stages. HFEP paired column additions/drops sit in its adjustments; its Analysis view displays NEP minus House. The Total row sums the four workspaces; add the separately shown scope-review allocations to reconstruct the full ledgers. Insertions − deletions + net adjustments + scope-review net equal House − NEP in every workspace. Record counts add across different counting grains, so treat them as record totals, not comparable project counts.</p>
     </section>
   </>;
 }

@@ -122,6 +122,8 @@ function retainedFiles() {
 }
 export default defineConfig({
   base: "./",
+  // Pre-bundle the lazily loaded notice renderer before a reader opens it.
+  optimizeDeps: { include: ["react-markdown"] },
   plugins: [react(), retainedFiles()],
   build: { outDir: "dist" },
   server: { host: "127.0.0.1" },

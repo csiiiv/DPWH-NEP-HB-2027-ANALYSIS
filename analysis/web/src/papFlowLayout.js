@@ -27,10 +27,12 @@ export function layoutPapFlow(model, {valueHeight = 520} = {}) {
     const stack = cellSlots.reduce((s, h) => s + h, 0);
     const after = graph.nodes.find(n => n.role === 'after');
     const sink = graph.nodes.find(n => n.role === 'reductions');
+    const scopeSink = graph.nodes.find(n => n.role === 'scopeLoss');
     const sinkSlot = sink ? Math.max(44, (wrapFlowLabel(label, 52).length + 2) * 13 + 5, sink.value * scale) : 0;
-    const rightHeight = (after?.value || 0) * scale + (sink ? 32 + sinkSlot : 0);
+    const scopeSinkSlot = scopeSink ? Math.max(44, (wrapFlowLabel(label, 52).length + 2) * 13 + 5, scopeSink.value * scale) : 0;
+    const rightHeight = (after?.value || 0) * scale + (sink ? 32 + sinkSlot : 0) + (scopeSink ? 32 + scopeSinkSlot : 0);
     const bodyHeight = Math.max(stack, rightHeight);
-    return {cells, cellSlots, stack, sink, sinkSlot, bodyHeight, heading, height: heading + bodyHeight + 24};
+    return {cells, cellSlots, stack, sink, sinkSlot, scopeSink, scopeSinkSlot, bodyHeight, heading, height: heading + bodyHeight + 24};
   });
   const flowTop = top + (plans[0]?.heading || groupHeading);
   const plotHeight = plans.reduce((s, p) => s + p.height, 0);
@@ -51,7 +53,7 @@ export function layoutPapFlow(model, {valueHeight = 520} = {}) {
     const graph = graphs[index], plan = plans[index];
     const bodyY = rowY + plan.heading;
     const left = {key: graph.keys.before, x: columnX.before, y: bodyY + offset(plan.bodyHeight, group.before * scale), height: group.before * scale, value: group.before};
-    const rightBlock = group.after * scale + (plan.sink ? 32 + plan.sinkSlot : 0);
+    const rightBlock = group.after * scale + (plan.sink ? 32 + plan.sinkSlot : 0) + (plan.scopeSink ? 32 + plan.scopeSinkSlot : 0);
     const right = {key: graph.keys.after, x: columnX.after, y: bodyY + offset(plan.bodyHeight, rightBlock), height: group.after * scale, value: group.after};
     const map = new Map();
     if (group.before) map.set(left.key, {...graph.nodes.find(n => n.key === left.key), ...left, width: 12});
@@ -75,6 +77,15 @@ export function layoutPapFlow(model, {valueHeight = 520} = {}) {
         height: h, width: 12, value: plan.sink.value, label: `${model.labels.reductions} · ${group.label}`};
       map.set(reductionSink.key, reductionSink);
       sinks.push(reductionSink);
+    }
+    // A scope-review deficit has its own terminal node, separate from cuts.
+    if (plan.scopeSink) {
+      const baseY = reductionSink ? reductionSink.y + reductionSink.height + 32 : right.y + right.height + 32;
+      const h = plan.scopeSink.value * scale;
+      const sink = {...plan.scopeSink, x: columnX.after, y: baseY + offset(plan.scopeSinkSlot, h),
+        height: h, width: 12, value: plan.scopeSink.value, label: `Unbooked scope-review deficit · ${group.label}`};
+      map.set(sink.key, sink);
+      sinks.push(sink);
     }
     // Reserve the addition stub above the existing base at an Increased node.
     const sourceY = new Map([...map].map(([key, n]) => [key, n.y]));

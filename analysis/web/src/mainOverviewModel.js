@@ -34,6 +34,7 @@ export function overviewCsv(data) {
     'nep_ledger_php', 'house_ledger_php', 'insertion_records', 'insertion_house_php', 'deletion_records', 'deletion_nep_php',
     'unchanged_records', 'unchanged_php', 'unchanged_comparison_rows', 'unchanged_href',
     'adjustment_count', 'adjustment_count_unit', 'increased_count', 'reduced_count', 'gross_increase_php', 'gross_reduction_php', 'paired_net_php',
+    'scope_review_pairs', 'scope_review_nep_php', 'scope_review_house_php', 'scope_review_net_php',
     'increased_nep_base_php', 'increased_house_base_php', 'reduced_nep_base_php', 'reduced_house_base_php',
     'house_minus_nep_ledger_php', 'house_printed_control_php', 'nep_printed_control_php', 'printed_vs_ledger_delta_residual_php',
     'insertions_href', 'deletions_href', 'adjustments_href'];
@@ -42,6 +43,7 @@ export function overviewCsv(data) {
     w.unchanged.count, w.unchanged.amount_php, w.unchanged.comparison_rows ?? '', w.links.unchanged ?? '',
     w.adjustments.count, w.adjustments.count_unit, w.adjustments.increased_count, w.adjustments.reduced_count,
     w.adjustments.increased_php, w.adjustments.reduced_php, w.adjustments.net_php,
+    w.scope_review?.count ?? 0, w.scope_review?.nep_php ?? 0, w.scope_review?.house_php ?? 0, w.scope_review?.net_php ?? 0,
     w.adjustments.increased_nep_php, w.adjustments.increased_house_php,
     w.adjustments.reduced_nep_php, w.adjustments.reduced_house_php,
     w.delta_php,
