@@ -1,0 +1,11 @@
+import {readFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+import {resolve,dirname} from 'node:path';
+import {resolveLocation} from './lib.mjs';
+const root=dirname(fileURLToPath(import.meta.url));
+const [inputFile]=process.argv.slice(2);
+if(!inputFile)throw Error('Usage: node PSGC2LEG/lookup.mjs <psgc-geocoder-result.json>');
+const cross=JSON.parse(readFileSync(resolve(root,'outputs/psgc_leg_crosswalk.json'),'utf8'));
+const location=JSON.parse(readFileSync(resolve(process.cwd(),inputFile),'utf8'));
+const result=resolveLocation(cross,location);
+console.log(JSON.stringify({...result,location},null,2));
