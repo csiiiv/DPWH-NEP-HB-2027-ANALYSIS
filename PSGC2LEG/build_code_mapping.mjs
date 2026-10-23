@@ -26,6 +26,7 @@ const legalTownAlias=(jur,n)=>{
  // Historical Baliuag municipality was converted to the City of Baliwag; explicit,
  // geography-scoped alias only, NOT global fuzzy name matching.
  if(jurisdictionKey(jur)==='bulacan' && normCity(n)==='baliuag')return 'baliwag';
+ if(jurisdictionKey(jur)==='rizal' && normCity(n)==='jalajala')return 'jala jala';
  return normCity(n);
 };
 const validStatus=new Set([
@@ -38,6 +39,14 @@ export function buildCodeMapping({registry,primary,secondary,legal,roster}){
  const districts=roster.legislativeDistricts;
  const canonical=new Set(Object.keys(districts));
  const provisional=buildCrosswalk({primary,secondary,roster});
+ // Distinguish city-specific congressional seats from identically named provinces.
+ const cityHouseSeats=new Map();
+ for(const [id,d] of Object.entries(districts)){
+  const j=String(d.jurisdiction||''), cityLike=/(^CITY OF | CITY$)/i.test(j)||id.startsWith('leg:butuan:')||id.startsWith('leg:manila:');
+  if(!cityLike)continue;
+  const k=normCity(j);
+  (cityHouseSeats.get(k)??cityHouseSeats.set(k,[]).get(k)).push({id,label:d.districtLabel});
+ }
  const legalMunicipal=new Map(),legalBarangay=new Map();
  const diagnostics={sourceMembershipsWithoutMatchingPsgc:[],duplicateOfficialAssignments:[],secondaryHints:[]};
  const sampleFound=new Map();
@@ -86,6 +95,15 @@ export function buildCodeMapping({registry,primary,secondary,legal,roster}){
   if(!city)return {id:null,status:'unmapped',source:'no_administrative_city'};
   const cityJur=jurisdictionKey(city.name),provJur=province?jurisdictionKey(province.name):'';
   const pk=normCity(city.name);
+  // A seat specific to this city takes priority over obsolete province memberships.
+  // This is still roster-only evidence, not verified electoral boundary membership.
+  const citySeats=cityHouseSeats.get(pk)||[];
+  if(citySeats.length===1 && String(citySeats[0].label).toLowerCase()==='lone'){
+    return {id:citySeats[0].id,status:'provisional_house_roster',source:'house_roster_city_seat'};
+  }
+  if(citySeats.length>0){
+    return {id:null,status:'requires_barangay',source:'city_house_seats'};
+  }
   const entry=provJur?provisional.municipalities[provJur+'|'+pk]:null;
   if(entry) return {id:entry.districtId,status:getStatus(entry),source:'bettergov_municipality',candidates:entry.candidates};
   const lone=provisional.cities[cityJur];
