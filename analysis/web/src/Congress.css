@@ -22,7 +22,7 @@
 .congress-card.tier-B { border-left-color:#b07a1e; }
 .congress-card.tier-none { border-left-color:#8a8f98; background:#fbfcfd; }
 .congress-card.no-money { color:#4c5661; }
-.congress-card-head { display:flex; gap:12px; align-items:flex-start; }
+.congress-card-head { display:flex; gap:14px; align-items:center; }
 .congress-card-title { min-width:0; flex:1; }
 .congress-card-title h3 { margin:4px 0 6px; font-size:17px; line-height:1.25; overflow-wrap:anywhere; }
 .congress-card-open { background:none; border:0; padding:0; font:inherit; font-weight:650; color:#1d4e89; cursor:pointer; text-align:left; }
@@ -30,8 +30,8 @@
 .congress-district { font-size:12.5px; color:#516780; text-transform:uppercase; letter-spacing:.04em; margin:0; }
 .congress-badges { display:flex; gap:6px; flex-wrap:wrap; margin:0; }
 
-.congress-portrait { width:64px; height:86px; object-fit:cover; border-radius:7px; border:1px solid #d9e2ed; background:#eef3f9; flex:none; }
-.congress-portrait-empty { width:64px; height:86px; border-radius:7px; border:1px dashed #d9e2ed; background:#f4f7fb; flex:none; }
+.congress-portrait { width:96px; height:129px; object-fit:cover; object-position:top; border-radius:7px; border:1px solid #d9e2ed; background:#eef3f9; flex:none; }
+.congress-portrait-empty { width:96px; height:129px; border-radius:7px; border:1px dashed #d9e2ed; background:#f4f7fb; flex:none; }
 
 /* --- tier + leadership badges ------------------------------------------ */
 .congress-tier { font-size:11px; font-weight:700; letter-spacing:.03em; padding:3px 8px; border-radius:20px; border:1px solid; white-space:nowrap; }

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync, existsSync} from 'node:fs';
 import {
   BUCKETS,
   DATASETS,
@@ -42,24 +42,38 @@ import {dpwhSummary} from './overviewSummary.js';
 import {FLAG_OPTIONS} from './matchFilters.js';
 import {suggestedCounterparts} from './suggestedCounterparts.js';
 
+// The index and the comparison payload are derived datasets (built by
+// predev/prebuild, gitignored). On a bare checkout that has not run the data
+// build, the whole suite reports skipped instead of crashing on ENOENT — the
+// same convention as relationsViewRender.test.js. CI builds before testing,
+// so the suite runs fully there.
+const haveData = existsSync(new URL('../../data/congress_district_index_2027.json', import.meta.url)) &&
+  existsSync(new URL('../../data/comparison_projects_2027.json', import.meta.url)) &&
+  existsSync(new URL('../../data/comparison_overview_2027.json', import.meta.url));
+const skip = haveData ? false : {skip: 'congress datasets not built — run predev/prebuild'};
+
 const read = name => JSON.parse(readFileSync(new URL(`../../data/${name}`, import.meta.url)));
-const index = read('congress_district_index_2027.json');
-const detail = read('comparison_projects_2027.json');
-const overview = read('comparison_overview_2027.json');
-const rows = congressRows(detail);
-const rowsById = indexRowsById(rows);
+// Reads and derived maps are guarded: on a bare checkout the tests are all
+// skipped, so the nulls below are never dereferenced.
+const index = haveData ? read('congress_district_index_2027.json') : null;
+const detail = haveData ? read('comparison_projects_2027.json') : null;
+const overview = haveData ? read('comparison_overview_2027.json') : null;
+const rows = haveData ? congressRows(detail) : [];
+const rowsById = haveData ? indexRowsById(rows) : null;
 // rowFlags()/matchesFlag() take the shared suggestedCounterparts map, so the
 // explorer must pass exactly this — an array would throw at .has().
-const counterparts = suggestedCounterparts(rows);
+const counterparts = haveData ? suggestedCounterparts(rows) : null;
 
 // Every card's rows, once, so the heavier sweeps do not rebuild them per test.
-const cardRowSets = new Map(index.cards.map(card => [card.id, cardRows(card, rowsById)]));
+const cardRowSets = haveData
+  ? new Map(index.cards.map(card => [card.id, cardRows(card, rowsById)]))
+  : new Map();
 
 // ---------------------------------------------------------------------------
 // Formatting — the card face must not silently round money into a lie
 // ---------------------------------------------------------------------------
 
-test('formatters keep money readable and lossless at card scale', () => {
+test(skip, 'formatters keep money readable and lossless at card scale', () => {
   assert.equal(money(1234567891), '₱1,234,567,891');
   assert.equal(money(NaN), '—');
   assert.equal(money(0), '₱0');
@@ -85,7 +99,7 @@ test('formatters keep money readable and lossless at card scale', () => {
 // Card face
 // ---------------------------------------------------------------------------
 
-test('every card exposes the six card-face figures without recomputation', () => {
+test(skip, 'every card exposes the six card-face figures without recomputation', () => {
   for (const card of index.cards) {
     const h = cardHeadline(card);
     for (const bucket of ['insertions', 'deletions', 'unchanged']) {
@@ -114,7 +128,7 @@ test('every card exposes the six card-face figures without recomputation', () =>
   }
 });
 
-test('both stages rebuild the card headline from its buckets', () => {
+test(skip, 'both stages rebuild the card headline from its buckets', () => {
   for (const card of index.cards) {
     const totals = bucketTotals(card);
     assert.equal(totals.ties, true,
@@ -132,7 +146,7 @@ test('both stages rebuild the card headline from its buckets', () => {
   }
 });
 
-test('a Tier B card never claims a single owner and names its co-served districts', () => {
+test(skip, 'a Tier B card never claims a single owner and names its co-served districts', () => {
   const tierB = index.cards.filter(card => card.tier === 'B');
   assert.equal(tierB.length, index.counts.tier_b);
   assert.ok(tierB.length > 0);
@@ -156,7 +170,7 @@ test('a Tier B card never claims a single owner and names its co-served district
   }
 });
 
-test('a single-district card names exactly one representative', () => {
+test(skip, 'a single-district card names exactly one representative', () => {
   const resolved = index.cards.filter(card => card.districts.length === 1 &&
     card.districts[0].representative.resolutionStatus === 'resolved');
   assert.ok(resolved.length > 100, `only ${resolved.length} clean single-district cards`);
@@ -170,7 +184,7 @@ test('a single-district card names exactly one representative', () => {
   }
 });
 
-test('the Speaker badge lands on exactly one card and travels with the member', () => {
+test(skip, 'the Speaker badge lands on exactly one card and travels with the member', () => {
   const withLeadership = index.cards.filter(card => leadershipRoles(card).length);
   assert.equal(withLeadership.length, 1, 'Speaker of the House is one seat');
   const roles = leadershipRoles(withLeadership[0]);
@@ -182,7 +196,7 @@ test('the Speaker badge lands on exactly one card and travels with the member', 
   assert.deepEqual([...allRoles], ['Speaker of the House']);
 });
 
-test('unresolved seats surface both candidates rather than picking one', () => {
+test(skip, 'unresolved seats surface both candidates rather than picking one', () => {
   const ambiguous = index.cards.filter(card =>
     card.districts.some(d => d.representative.resolutionStatus !== 'resolved'));
   assert.equal(ambiguous.length, index.counts.representatives_ambiguous);
@@ -201,7 +215,7 @@ test('unresolved seats surface both candidates rather than picking one', () => {
   }
 });
 
-test('districtSeats carries the roster links the card body renders', () => {
+test(skip, 'districtSeats carries the roster links the card body renders', () => {
   const card = index.cards.find(c => c.tier === 'A');
   const [seat] = districtSeats(card);
   assert.ok(seat.districtName.length > 0);
@@ -220,7 +234,7 @@ test('districtSeats carries the roster links the card body renders', () => {
   assert.equal(tierB.length, index.cards.find(c => c.tier === 'B').districts.length);
 });
 
-test('cards without a DEO ledger carry no attributed money', () => {
+test(skip, 'cards without a DEO ledger carry no attributed money', () => {
   const none = index.cards.filter(card => card.tier === 'none');
   assert.equal(none.length, index.counts.regional_group_only);
   assert.equal(none.length, 5);
@@ -246,7 +260,7 @@ test('cards without a DEO ledger carry no attributed money', () => {
   assert.equal(none.map(c => c.districts.length).reduce((a, b) => a + b), 5);
 });
 
-test('card sorting is stable, reversible and defaults to House money', () => {
+test(skip, 'card sorting is stable, reversible and defaults to House money', () => {
   const byHouse = sortedCards(index.cards);
   for (let i = 1; i < byHouse.length; i++) {
     assert.ok(cardHeadline(byHouse[i - 1]).house.amount_php >=
@@ -267,7 +281,7 @@ test('card sorting is stable, reversible and defaults to House money', () => {
   assert.deepEqual(index.cards.map(card => card.id), before);
 });
 
-test('sort options parse from the URL and round-trip exactly', () => {
+test(skip, 'sort options parse from the URL and round-trip exactly', () => {
   // Default: largest HGAB3 first, and the default stays out of the URL.
   assert.deepEqual(parseCardSort(undefined, undefined), {key: 'house_php', direction: 'desc'});
   assert.equal(cardSortParams({key: 'house_php', direction: 'desc'}), null);
@@ -293,7 +307,7 @@ test('sort options parse from the URL and round-trip exactly', () => {
   assert.equal(parseCardSort('rows', 'sideways').direction, 'desc');
 });
 
-test('every record and amount sort key orders the grid in both directions', () => {
+test(skip, 'every record and amount sort key orders the grid in both directions', () => {
   // The regression this guards against: a sort option that silently degrades
   // to the HGAB3-descending default because the key never reached the model.
   for (const option of CARD_SORT_OPTIONS) {
@@ -329,7 +343,7 @@ test('every record and amount sort key orders the grid in both directions', () =
 // Explorer: the index pins IDs, the table must render those same rows
 // ---------------------------------------------------------------------------
 
-test('the explorer filters exactly the row set the index classified', () => {
+test(skip, 'the explorer filters exactly the row set the index classified', () => {
   // congressRows() mirrors the builder: hydrateProjects() then regionCandidates().
   // Dropping either would let a card and its table disagree about a row.
   assert.equal(rows.length, index.reconciliation.row_counts.total);
@@ -347,7 +361,7 @@ test('the explorer filters exactly the row set the index classified', () => {
   }
 });
 
-test('row IDs resolve to real records and reproduce the card summary exactly', () => {
+test(skip, 'row IDs resolve to real records and reproduce the card summary exactly', () => {
   for (const card of index.cards) {
     const cardRowsList = cardRowSets.get(card.id);
     assert.equal(cardRowsList.length, card.rows, card.id);
@@ -377,7 +391,7 @@ test('row IDs resolve to real records and reproduce the card summary exactly', (
   }
 });
 
-test('a bucket row always carries the bucket the view claims it came from', () => {
+test(skip, 'a bucket row always carries the bucket the view claims it came from', () => {
   const card = index.cards.find(c => c.row_ids.increased.length && c.row_ids.insertions.length);
   for (const bucket of BUCKETS) {
     for (const row of bucketRows(card, rowsById, bucket)) {
@@ -386,7 +400,7 @@ test('a bucket row always carries the bucket the view claims it came from', () =
   }
 });
 
-test('no row is claimed by two buckets, two cards or a held-out panel', () => {
+test(skip, 'no row is claimed by two buckets, two cards or a held-out panel', () => {
   const seen = new Map();
   const claim = (id, where) => {
     if (seen.has(id)) {
@@ -407,7 +421,7 @@ test('no row is claimed by two buckets, two cards or a held-out panel', () => {
   assert.equal(counts.cards, index.reconciliation.row_counts.cards);
 });
 
-test('recordView exposes the provenance a record drawer needs', () => {
+test(skip, 'recordView exposes the provenance a record drawer needs', () => {
   const card = index.cards.find(c => c.row_ids.insertions.length);
   const row = bucketRows(card, rowsById, 'insertions')[0];
   const view = recordView(row.third, 'house-third');
@@ -430,7 +444,7 @@ test('recordView exposes the provenance a record drawer needs', () => {
   }
 });
 
-test('chainage is only reported when a side actually parses a span', () => {
+test(skip, 'chainage is only reported when a side actually parses a span', () => {
   let withChainage = 0, withDelta = 0, checked = 0;
   for (const card of index.cards) {
     for (const row of cardRowSets.get(card.id)) {
@@ -470,7 +484,7 @@ test('chainage is only reported when a side actually parses a span', () => {
   assert.ok(withDelta > 50, `expected two-sided chainage on some rows, saw ${withDelta}`);
 });
 
-test('chainage never asserts a length change the source did not print', () => {
+test(skip, 'chainage never asserts a length change the source did not print', () => {
   // An incomplete or review-flagged span must survive into the view so the
   // drawer can caveat it instead of showing a bare kilometre figure.
   let flagged = 0;
@@ -489,7 +503,7 @@ test('chainage never asserts a length change the source did not print', () => {
   assert.ok(flagged > 0, `expected some caveated spans, saw ${flagged}`);
 });
 
-test('pdf page references name the stage they came from', () => {
+test(skip, 'pdf page references name the stage they came from', () => {
   const kinds = new Set();
   let count = 0, rowsWithPage = 0;
   for (const card of index.cards) {
@@ -512,7 +526,7 @@ test('pdf page references name the stage they came from', () => {
   assert.deepEqual([...kinds].sort(), ['house-third', 'nep']);
 });
 
-test('coordinates are never asserted — only what the row carries or the title prints', () => {
+test(skip, 'coordinates are never asserted — only what the row carries or the title prints', () => {
   let titled = 0, carried = 0, rowsChecked = 0;
   for (const card of index.cards) {
     for (const row of cardRowSets.get(card.id)) {
@@ -550,7 +564,7 @@ test('coordinates are never asserted — only what the row carries or the title 
   assert.equal(carried, 0, 'a record-borne coordinate appeared where none exists');
 });
 
-test('explorer rows carry flags, both stages and their diff tags', () => {
+test(skip, 'explorer rows carry flags, both stages and their diff tags', () => {
   const card = index.cards.find(c => c.summary.adjustments.reduced_count && c.summary.deletions.count);
   const explorerRows = cardRowSets.get(card.id).map(row => explorerRow(row, {counterparts}));
   assert.ok(explorerRows.length > 1);
@@ -574,7 +588,7 @@ test('explorer rows carry flags, both stages and their diff tags', () => {
   assert.ok(explorerRows.some(row => row.bucket === 'deletions'));
 });
 
-test('scope review is taken from the index bucket, not re-derived in the view', () => {
+test(skip, 'scope review is taken from the index bucket, not re-derived in the view', () => {
   const scopeIds = new Set(index.cards.flatMap(c => c.row_ids.scope_review));
   let seen = 0;
   for (const card of index.cards) {
@@ -592,7 +606,7 @@ test('scope review is taken from the index bucket, not re-derived in the view', 
   assert.ok(seen > 0);
 });
 
-test('explorer columns match the card figures a user can cross-check', () => {
+test(skip, 'explorer columns match the card figures a user can cross-check', () => {
   const keys = EXPLORER_COLUMNS.map(column => column.key);
   assert.deepEqual(keys.slice(0, 4), ['title', 'bucket', 'statusLabel', 'flagLabels']);
   for (const key of ['house_php', 'nep_php', 'delta_php', 'house_office', 'nep_office']) {
@@ -608,7 +622,7 @@ test('explorer columns match the card figures a user can cross-check', () => {
   }
 });
 
-test('the flag census counts what the explorer can filter on', () => {
+test(skip, 'the flag census counts what the explorer can filter on', () => {
   const card = index.cards.find(c => c.row_ids.scope_review.length);
   const explorerRows = cardRowSets.get(card.id).map(row => explorerRow(row, {counterparts}));
   const census = flagCensus(explorerRows);
@@ -627,7 +641,7 @@ test('the flag census counts what the explorer can filter on', () => {
   }
 });
 
-test('the bucket census restates the card summary from rows, not from the index', () => {
+test(skip, 'the bucket census restates the card summary from rows, not from the index', () => {
   const card = index.cards.find(c => c.rows > 50 && c.summary.insertions.count);
   const explorerRows = cardRowSets.get(card.id).map(row => explorerRow(row));
   const census = bucketCensus(explorerRows);
@@ -644,7 +658,7 @@ test('the bucket census restates the card summary from rows, not from the index'
   assert.equal(census.reduce((n, entry) => n + entry.count, 0), card.rows);
 });
 
-test('explorer filters narrow rows and never silently widen them', () => {
+test(skip, 'explorer filters narrow rows and never silently widen them', () => {
   const card = index.cards.find(c => c.summary.insertions.count && c.summary.deletions.count);
   const explorerRows = cardRowSets.get(card.id).map(row => explorerRow(row));
   assert.equal(filterExplorerRows(explorerRows).length, explorerRows.length);
@@ -680,7 +694,7 @@ test('explorer filters narrow rows and never silently widen them', () => {
 // Held-out panels
 // ---------------------------------------------------------------------------
 
-test('the residual and office-change panels stay phrased as held-out, not claimed', () => {
+test(skip, 'the residual and office-change panels stay phrased as held-out, not claimed', () => {
   const residual = residualPanel(index);
   assert.equal(residual.rows, index.residual.row_ids.length);
   assert.equal(residual.rows, index.reconciliation.row_counts.residual);
@@ -712,7 +726,7 @@ test('the residual and office-change panels stay phrased as held-out, not claime
   for (const id of change.rowIds) assert.ok(rowsById.has(id), id);
 });
 
-test('datasets explain why only DPWH is attributable', () => {
+test(skip, 'datasets explain why only DPWH is attributable', () => {
   const options = datasetOptions(index);
   assert.deepEqual(options.map(o => o.key), ['dpwh', 'hfep', 'fmr', 'nia']);
   assert.equal(options[0].status, 'active');
@@ -730,7 +744,7 @@ test('datasets explain why only DPWH is attributable', () => {
   assert.equal(DATASETS.filter(d => d.status === 'active').length, 1);
 });
 
-test('the lens panel carries the limits and provenance a reader needs', () => {
+test(skip, 'the lens panel carries the limits and provenance a reader needs', () => {
   const lens = lensPanel(index);
   assert.match(lens.authority, /DEO2LEG\/README\.md/);
   assert.match(lens.authority, /authorized project-level use/);
@@ -751,7 +765,7 @@ test('the lens panel carries the limits and provenance a reader needs', () => {
   assert.equal(lens.counts.districts, Object.keys(index.districts).length);
 });
 
-test('the workspace never shows a number the published Overview does not', () => {
+test(skip, 'the workspace never shows a number the published Overview does not', () => {
   const published = dpwhSummary(overview, detail);
   const sums = {house_c: 0, house_a: 0, nep_c: 0, nep_a: 0, ins_c: 0, ins_a: 0, del_c: 0, del_a: 0};
   const parts = [...index.cards.map(card => card.summary),
@@ -780,7 +794,7 @@ test('the workspace never shows a number the published Overview does not', () =>
     index.reconciliation.row_counts.residual - index.reconciliation.row_counts.office_change);
 });
 
-test('every district is covered, and multi-office districts keep their rows disjoint', () => {
+test(skip, 'every district is covered, and multi-office districts keep their rows disjoint', () => {
   const byDistrict = new Map();
   for (const card of index.cards) {
     for (const district of card.districts) {

@@ -135,8 +135,12 @@ jobs:
         working-directory: analysis/web
         run: |
           npm ci
-          npm test
+          # Build first: prebuild regenerates the derived datasets (comparison
+          # payload, congress index/portraits, group-relations sidecars) that
+          # the test suite reads. Without them the congress suites skip, which
+          # would silently drop their coverage in CI.
           npm run build
+          npm test
       - name: Package SPA, DPWH, FMR, HFEP and NIA sources
         run: python3 scripts/build_pages.py --with-react
       - name: Check React navigation, sorting and real PDF range rendering

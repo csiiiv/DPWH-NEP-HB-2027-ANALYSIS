@@ -22,8 +22,11 @@ import { sortedCards, parseCardSort, districtSeats } from "./congressModel.js";
 
 const DATA = new URL("../../data/", import.meta.url);
 const INDEX = "congress_district_index_2027.json";
-const haveIndex = fs.existsSync(new URL(INDEX, DATA));
-const skip = haveIndex ? false : { skip: "congress index not built — run predev/prebuild" };
+// The index is derived (predev/prebuild, gitignored); the drawer test also
+// reads the comparison payload, so guard on both.
+const haveIndex = fs.existsSync(new URL(INDEX, DATA)) &&
+  fs.existsSync(new URL("comparison_projects_2027.json", DATA));
+const skip = haveIndex ? false : { skip: "congress datasets not built — run predev/prebuild" };
 
 const read = (name) => JSON.parse(fs.readFileSync(new URL(name, DATA), "utf8"));
 

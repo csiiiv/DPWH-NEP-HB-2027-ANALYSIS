@@ -236,10 +236,16 @@ def package_hfep():
 def package_congress(target):
     """Package the Congress DEO-lens index and its WebP portraits.
 
-    Both artifacts are generated (gitignored), so they are rebuilt here rather
-    than trusted to exist — the same reason buildComparisonData.mjs is run
-    above. The index carries row IDs only; the explorer reads the shared
-    comparison payload, so no per-district record shard is packaged.
+    The index is derived from the comparison payload (gitignored), so it is
+    rebuilt here rather than trusted to exist — the same reason
+    buildComparisonData.mjs is run above. The index carries row IDs only; the
+    explorer reads the shared comparison payload, so no per-district record
+    shard is packaged.
+
+    The WebP portraits are PRE-RENDERED and committed: they change only when
+    the roster changes, and rebuilding them here would drag Pillow into every
+    deploy. Instead their manifest is verified against the roster (hash-only)
+    and the committed files are packaged as-is.
     """
     import subprocess
 
@@ -254,16 +260,17 @@ def package_congress(target):
         raise ValueError('Congress index was not built: ' + str(index_path))
     index = json.loads(index_path.read_text())
 
+    # Committed portraits must match the roster and the committed index, or
+    # the deploy would ship stale faces. Hash-only check; no Pillow needed.
+    subprocess.run([sys.executable, str(ROOT / 'scripts/build_congress_portraits.py'),
+                    '--check'], check=True, cwd=ROOT)
     portraits = DATA / 'congress_portraits'
     target.mkdir(parents=True, exist_ok=True)
+    manifest = json.loads((portraits / 'manifest.json').read_text())
+    built = {entry['photoPath'] for entry in manifest['portraits']}
     expected = {district['representative']['photoPath']
                 for district in index['districts'].values()
                 if (district.get('representative') or {}).get('photoPath')}
-    if not portraits.is_dir() or not (portraits / 'manifest.json').is_file():
-        subprocess.run([sys.executable, str(ROOT / 'scripts/build_congress_portraits.py')],
-                       check=True, cwd=ROOT)
-    manifest = json.loads((portraits / 'manifest.json').read_text())
-    built = {entry['photoPath'] for entry in manifest['portraits']}
     missing = sorted(expected - built)
     if missing:
         raise ValueError(f'Congress portraits missing for {len(missing)} roster entries: '

@@ -75,7 +75,9 @@ function Portrait({seat}) {
     return <span className="congress-portrait-empty" aria-hidden="true" />;
   }
   const slug = seat.photoPath.split('/').pop().replace(/\.jpg$/i, '');
-  return <img className="congress-portrait" loading="lazy" width="64" height="64"
+  // width/height match the CSS box (96x129) so the browser reserves layout
+  // space before the lazy load; the 2x encode (192x258) keeps it sharp.
+  return <img className="congress-portrait" loading="lazy" width="96" height="129"
     src={siteUrl(`analysis/congress_portraits/${slug}.webp`)}
     alt="" aria-hidden="true"
     onError={event => {event.currentTarget.style.display = 'none';}} />;

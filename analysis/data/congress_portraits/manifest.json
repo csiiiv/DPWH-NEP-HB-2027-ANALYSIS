@@ -1,0 +1,4051 @@
+{
+ "count": 252,
+ "display_size": [
+  96,
+  129
+ ],
+ "generator": "scripts/build_congress_portraits.py",
+ "method": 6,
+ "output_bytes": 1166896,
+ "portraits": [
+  {
+   "output_bytes": 5248,
+   "output_sha256": "f1d8807e09e1654f9b5a6b30f6f60229c019e49bf24c690171f4ffffc89741a6",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/abante-bienvenido-jr-m.jpg",
+   "slug": "abante-bienvenido-jr-m",
+   "source_bytes": 152178,
+   "source_sha256": "186c20f41e49f0942b2e2b27a875d467a08adb3437771d7b7b060bcc45175bfd",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4388,
+   "output_sha256": "c8406b20e8f17b26c6fd7b6e3c50f4f74ca464974d94f94988e30b87db6c6ee9",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/acosta-gil-kabarangayjr.jpg",
+   "slug": "acosta-gil-kabarangayjr",
+   "source_bytes": 137104,
+   "source_sha256": "2ba2b3917670d0b84f7c8aaadf2d9c7852aa06a43c7fb7c8f43a5f95d00e1342",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3428,
+   "output_sha256": "ad6a239e744161efa053246f2aa225d82b817761a4e7ccd63786c4f826402b6e",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/adiong-ziaur-rahman-zia-alonto.jpg",
+   "slug": "adiong-ziaur-rahman-zia-alonto",
+   "source_bytes": 123163,
+   "source_sha256": "67ff9f14b18f0ee2f420dc421e412085f6d1d1e0451db98f612072d1a673672b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4824,
+   "output_sha256": "a13d393ea9a360ad20f02d343d10d43c5a9a90b6bb55baaecd16ff6a2ed9c295",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/advincula-adrian-jay-c.jpg",
+   "slug": "advincula-adrian-jay-c",
+   "source_bytes": 150940,
+   "source_sha256": "78a4b7f5a72b390556e7517a2875b41889f3955ad738cdf365c644480d69b2e8",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3924,
+   "output_sha256": "027a10ed46ac389a60ccc4bcdbc91185fa031f090b1a45cc9d77d90a05100413",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/agarao-benjamin-jr-c.jpg",
+   "slug": "agarao-benjamin-jr-c",
+   "source_bytes": 137879,
+   "source_sha256": "82bdaa2c939532a941afa4e8e0d7b398e9acdd596e264ce73c93083ec0b7a2d8",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 8916,
+   "output_sha256": "bdd31be5e77b02334b189906340689f0529fac45b0d421249b9d24656129054a",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/agyao-caroline-b-m-d.jpg",
+   "slug": "agyao-caroline-b-m-d",
+   "source_bytes": 179301,
+   "source_sha256": "a4a4d6fbb25bfb644808008d64254612b58157c0605effae6263318e2fdd0830",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4656,
+   "output_sha256": "0dcf730f19975d2134af1aa79928bd0cffe10dae4cb9dd0eaab3ff3fd7c25901",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/alano-ustadz-yusop-t.jpg",
+   "slug": "alano-ustadz-yusop-t",
+   "source_bytes": 136330,
+   "source_sha256": "aec43cbce50fbe35cbc1c5580f49412ce300c2ffcc23e1cf1239f93cb33329e5",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3920,
+   "output_sha256": "23701e3707cd866b83c2cee7730f3091a7b314c0160883d5082fbb8201edafe4",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/alba-jose-manuel-f.jpg",
+   "slug": "alba-jose-manuel-f",
+   "source_bytes": 133705,
+   "source_sha256": "282aaec3e4ee051524b030b9d586682a63ff91ac52e3181ce1ef1dc2d023dfc5",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4024,
+   "output_sha256": "ef118fa9d4cf216c3bb67c0ad4ce9cffc21d28b3ff7ceea356564a8946607c32",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/albano-antonio-tonypet-t.jpg",
+   "slug": "albano-antonio-tonypet-t",
+   "source_bytes": 127321,
+   "source_sha256": "2ca36962153d916605cc13557c6ff9b2bede185ce6bf82c432db720f239f9f40",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3776,
+   "output_sha256": "d5a206d3104fb1d530cdb5822c3d78be38961ff6e6dfe5a3a6b9725a7e11b794",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/almario-cheeno-miguel-d.jpg",
+   "slug": "almario-cheeno-miguel-d",
+   "source_bytes": 126915,
+   "source_sha256": "ff990b0c9f42b9d3051001069fe5b261ca6789bd6e05d9ed588cef50537252d1",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3856,
+   "output_sha256": "44cdf2e94096141dc3652915c64315ad048a8f25258aef9c0770603b92351169",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/almario-dennis-alden-b.jpg",
+   "slug": "almario-dennis-alden-b",
+   "source_bytes": 128201,
+   "source_sha256": "ef30ee991d3810f0897b0a17f90005a0ee5644ce484b0f8bbe17e9bc416c375e",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3154,
+   "output_sha256": "1914ede23b329bd65521ec69db092ca494b57ecc3109a30063cc4380099a1293",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/almonte-jason-p.jpg",
+   "slug": "almonte-jason-p",
+   "source_bytes": 120865,
+   "source_sha256": "2b3df680d023ddb6e9c7980d445c420cfa83a916873895c35a2563c79e029488",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3868,
+   "output_sha256": "a998e86a74bddc5afb9f0c4c72e5f24191cae3506393e9dd20d04bfd11c9ffe6",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/alvarez-jose-c.jpg",
+   "slug": "alvarez-jose-c",
+   "source_bytes": 134914,
+   "source_sha256": "89b42816b9a088eafcee541296ba6f15078ae45c5aed2e1ab9df2b288dfdfdca",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4672,
+   "output_sha256": "76b95b92f864a8c14b9fed658b1e29b49148af71766471ba56b95cf67599b38d",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/alvarez-mercedes-k.jpg",
+   "slug": "alvarez-mercedes-k",
+   "source_bytes": 139367,
+   "source_sha256": "cdb7f302236d0af5bf8b311e20339bfb43b97a554b51f30221f95a8f0d5d61aa",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3574,
+   "output_sha256": "d5aa0a2963553e678ca2dbf67c29bc078e6039bc1856278d2caf476e5ca71cce",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/amante-loreto-s.jpg",
+   "slug": "amante-loreto-s",
+   "source_bytes": 180615,
+   "source_sha256": "484871f480faad30b1afc8fdddeb56195473ab92d22d968bb7e19cbe19c4c01a",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3566,
+   "output_sha256": "0f907ba97db0d33ae01e61d0de16ad0a5afa3a9487fa65435430fbd7a09113dc",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/amatong-adrian-michael-a.jpg",
+   "slug": "amatong-adrian-michael-a",
+   "source_bytes": 122131,
+   "source_sha256": "4fc595d0a2aca29f5ec59f5c5d137787268dcd8185b63787664f462b9c4a2a25",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5286,
+   "output_sha256": "bb7b4e6c3f75bc5943e9fb81803ba6721543b5f1a432b5196f67943f1d9bf392",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/angara-rommel-rico-t.jpg",
+   "slug": "angara-rommel-rico-t",
+   "source_bytes": 144057,
+   "source_sha256": "b1b6d1440d5aaea45d2203aa5941f4814ca6129cd3b78e41abdd0f3c516e5a23",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5372,
+   "output_sha256": "3ca2ea308c7ed0e1759c7c253c4a02815bade152b429efffeab38091e0d7526b",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/angeles-maria-cristina-c.jpg",
+   "slug": "angeles-maria-cristina-c",
+   "source_bytes": 150205,
+   "source_sha256": "c44215c856dda2cb56e5c0cebb483233567726925fa5c9e6bc6920747352f5bf",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3546,
+   "output_sha256": "872f3a8e7ef5799c9b8d5817bddb3cfe987eb263df4fb0c99fbc9ce1c6199254",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/aquino-jose-joboy-ii-s.jpg",
+   "slug": "aquino-jose-joboy-ii-s",
+   "source_bytes": 114031,
+   "source_sha256": "bb875d50ed5eae1d4e81a3e1f1ddb950eaa69f982ddbb39da3f52c42f196379f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3306,
+   "output_sha256": "cdacd5c52fdebcdf79f1014c85bf634816d4014eeff0e6df0a6378ae6f41dbf8",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/arbison-munir-m.jpg",
+   "slug": "arbison-munir-m",
+   "source_bytes": 123945,
+   "source_sha256": "7a8db12226394220272478f2e32592ce4253692303c6d890d1ac6db9cc5a75de",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3876,
+   "output_sha256": "e458cd214b288c2bb68010c17f341938785b4c18315742ccbb468573adea2551",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/arenas-maria-rachel-j.jpg",
+   "slug": "arenas-maria-rachel-j",
+   "source_bytes": 128325,
+   "source_sha256": "48a09ed557ede7167fa71ce1b321dc2dce92b35a5263b7996bba4d78f810b76c",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4020,
+   "output_sha256": "49a9cd2bf703537ac49a7a0d194072de26834cf99aeb7c4f14eb7515a08e5390",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/arrogancia-reynante-u.jpg",
+   "slug": "arrogancia-reynante-u",
+   "source_bytes": 138371,
+   "source_sha256": "43f783b403dfae53d499950a2f9c035149dfe599b7fbbe1f287bc8abf43053bd",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3678,
+   "output_sha256": "23599ee64283d1a41e12ddebebe4e26ca745bfc06e0135f78d3f591121c3683e",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/asistio-dean.jpg",
+   "slug": "asistio-dean",
+   "source_bytes": 129190,
+   "source_sha256": "92eeb58dba5579a4d7f31f92a5c0777ac63decdfef6a574a24cd7d5203244fc6",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3754,
+   "output_sha256": "9ad280f0d38ed4ec3c24de252c5e465ca02be7055f6577f0a0b5c7f2ffd1fa0c",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/atayde-juan-carlos-arjo-c.jpg",
+   "slug": "atayde-juan-carlos-arjo-c",
+   "source_bytes": 126866,
+   "source_sha256": "1639fae4a25d692d68df76d67dd6c2d1ca442edc95e41bd245b0ce5ceb2563c6",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6874,
+   "output_sha256": "bac59b633f47ee0c9f577addc57eecfebd826ce8a1e2462ca645852a4e102c38",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/aumentado-maria-vanessa-van-van-c-rn.jpg",
+   "slug": "aumentado-maria-vanessa-van-van-c-rn",
+   "source_bytes": 157134,
+   "source_sha256": "6abd4ea9e63e48e0fa0fe28284c267db7777683b4b9da430a17ac6a77faa0d68",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5880,
+   "output_sha256": "452ce142c9eeb5b6f5ea862e571c956bcd299eaccfe5c35a3ffb7593c1f14c26",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/ba-as-nograles-shirlyn-l.jpg",
+   "slug": "ba-as-nograles-shirlyn-l",
+   "source_bytes": 146678,
+   "source_sha256": "5da52c7b232a79a7014f0a96c77b47ac4925208ff8ed444a94463cb7843c2ba5",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5336,
+   "output_sha256": "07897ee84d97bbde7745ef94364b834e91d0c109ab103da5ba5a30825f720da5",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/bag-ao-kaka-j.jpg",
+   "slug": "bag-ao-kaka-j",
+   "source_bytes": 144509,
+   "source_sha256": "0b357a7d4429a912c12f262e0400d759e9e90efa4d332735190699f9239ab078",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6654,
+   "output_sha256": "0251166e06474c6231a7b5e1ddf1638d192dbc662cac4e2c4b0cd3281f9c6cb1",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/balindong-yasser-alonto.jpg",
+   "slug": "balindong-yasser-alonto",
+   "source_bytes": 146566,
+   "source_sha256": "2b5f1003f85adea6f04ddd993130fbddb589a5601ef27ee3e49e468c57f759d8",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3582,
+   "output_sha256": "f666206e5ab515958c0510bc479b944c0a9984e36fb1ac8bb89832a1700b68f5",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/bancoro-marlo-c.jpg",
+   "slug": "bancoro-marlo-c",
+   "source_bytes": 132730,
+   "source_sha256": "71ffa241cf7cd514c1f986a0970215405b94006a6dd2c3b24788eb65ab2b63bb",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6450,
+   "output_sha256": "2eb60f348a7196ec0c31a623b34663c9e6417655d42093c9d777f7746ab5aad0",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/barba-angelo-marcos.jpg",
+   "slug": "barba-angelo-marcos",
+   "source_bytes": 157797,
+   "source_sha256": "0d885c5cb05b01161126564d2c44259de512325d7a5eb1322cf7b1271f919531",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5484,
+   "output_sha256": "ba2876fe381f42cf5308b98ae9f6f7f2c6e960157d5cc28d05a3621160662eb1",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/barbers-bernadette-s.jpg",
+   "slug": "barbers-bernadette-s",
+   "source_bytes": 148079,
+   "source_sha256": "fad5d5a9173ea91d5c3f58054cc42e7fb17fc33e7f5ec65e8fed63a52d9ec595",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4074,
+   "output_sha256": "50f8941e3082c038c3e6632e48d70e9f83aff887845047b33c29c768acfd43d2",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/baronda-julienne-jam-l.jpg",
+   "slug": "baronda-julienne-jam-l",
+   "source_bytes": 126494,
+   "source_sha256": "2eb77312a796f73a36235b5d26942bf2ed2a6aee9d0e1e9978d6f95880fa9508",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3474,
+   "output_sha256": "0302961fe0490b30dea7660594de193c88edbc32c4070c45146341c1be1f2c9c",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/bascug-alfelito-alfel-m.jpg",
+   "slug": "bascug-alfelito-alfel-m",
+   "source_bytes": 127343,
+   "source_sha256": "fa8bd782ba7eb52b3d81c533d38a4548e7b3e43113cab4320b6a7d70dde940aa",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 2880,
+   "output_sha256": "5b351b4878c8381ed16d6b16c99c6ad39732a24904078ee967aceb78905c0522",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/bautista-claude-p.jpg",
+   "slug": "bautista-claude-p",
+   "source_bytes": 102216,
+   "source_sha256": "051074312bf40cdcd8a98f27f5c8dfb5f9541c58959e49b34ab0e273794fdecc",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4002,
+   "output_sha256": "3d3de974d78a7830ca19345239ac52972a3dc068e7bb456005745054ef644020",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/benitez-alfredo-albee-b.jpg",
+   "slug": "benitez-alfredo-albee-b",
+   "source_bytes": 139229,
+   "source_sha256": "33be8de271da29e4cca3fae8d851c37e9c9fefc70179b9a16c2b85d7d03ce951",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4426,
+   "output_sha256": "6cbc28619b05acdb0d760de2cef13cb0df366efae0b74410337e99d295916a01",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/benitez-javier-miguel-lopez.jpg",
+   "slug": "benitez-javier-miguel-lopez",
+   "source_bytes": 132104,
+   "source_sha256": "6dfec069b9730b1d736d34cb40fc8bcb6083c26b7d7f2eb060f999b4d26a610c",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4580,
+   "output_sha256": "e02409426535ee79cfe19699c6b704efeaf2cef4233f7e25ae0ad480588747d5",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/bernos-jb.jpg",
+   "slug": "bernos-jb",
+   "source_bytes": 126273,
+   "source_sha256": "7e5e75ced39d0c95b97bfb36fb8051963431fcfe2f69cfd2904746c702128c40",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3984,
+   "output_sha256": "367123993b00819ddf0d1ad310af92fbd71fc78170d6c92f846d39d89705816b",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/biron-ferjenel-g-m-d.jpg",
+   "slug": "biron-ferjenel-g-m-d",
+   "source_bytes": 133706,
+   "source_sha256": "c6dac5576d8f5abb8ff27bb838bdb6e6decb81bdb4626ffa508185facdf8b3bd",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6080,
+   "output_sha256": "0cf925b743cd7de755e4d9e1f986a16576bc5e4fa66c25b027791d3bb7f0a3c9",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/bocobo-jorge-daniel-s.jpg",
+   "slug": "bocobo-jorge-daniel-s",
+   "source_bytes": 154766,
+   "source_sha256": "4b082fa1d355c4cd05bc633ae5d40c9c0cb7576b85fa697631a939d76186ca8f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3806,
+   "output_sha256": "856ff25fa82058d6e0ffe545b1dd8473caceb7428bca0d5bb600a60a9d3f7327",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/bolilia-amado-carlos-iv-a.jpg",
+   "slug": "bolilia-amado-carlos-iv-a",
+   "source_bytes": 129637,
+   "source_sha256": "86cc63464395ebd572829866b0423273e1ee4c92130b00a35f3990e8f55e1b78",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6160,
+   "output_sha256": "1d0da2205de55e3f138360ce5c942f1170684a2a61f3b4840091a1dad5452c26",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/bondoc-anna-york-p-m-d.jpg",
+   "slug": "bondoc-anna-york-p-m-d",
+   "source_bytes": 152637,
+   "source_sha256": "ac0c66a9060998cea93643a66695623fd28c1e512edd7b022acd20bd63523109",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5454,
+   "output_sha256": "40937d967944c5fd5bce10ff992b1dddb7df7e19831e7a133f202bfc1b33c7bc",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/bulut-begtang-eleanor-c.jpg",
+   "slug": "bulut-begtang-eleanor-c",
+   "source_bytes": 144731,
+   "source_sha256": "2daa326e28ebebddd2756cc2558459cd3e718a9b099e6a31a3130a6a5e4e331f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4624,
+   "output_sha256": "49d2804ee13720c543fefcc1548b0d6f418b57474ffc9d93f890d966afe6a7ab",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/cagas-john-tracy-f.jpg",
+   "slug": "cagas-john-tracy-f",
+   "source_bytes": 140904,
+   "source_sha256": "e7e7a10a5d43d5fdba7a6ac75089b4f1f35d51c305e0308b37691dfde4596b1e",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5396,
+   "output_sha256": "75930d724268bb9e1d04843b590978b3712b4fa35051e73a2c3e4100ad529901",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/calderon-patricia-c.jpg",
+   "slug": "calderon-patricia-c",
+   "source_bytes": 147315,
+   "source_sha256": "dcecaa53b7031aa0dd3b4a362b210790f8912e41eb6595a7a41eab688489d4de",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4272,
+   "output_sha256": "9622453ea8c1cfadf15a2511026bcc32f6ba9b7bea63fafffb4c1f7b9513e785",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/calixto-antonino-g.jpg",
+   "slug": "calixto-antonino-g",
+   "source_bytes": 146949,
+   "source_sha256": "d4ab7ea4f76bd4f060f950a1fd9757fb1db5a478476a6e3f8c722a4e57207161",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5312,
+   "output_sha256": "d350b39056e115688fd0ca53b1fec775d857b74a5454563cc7447ada9da5eb3f",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/caoagdan-rudy-s-dpa.jpg",
+   "slug": "caoagdan-rudy-s-dpa",
+   "source_bytes": 144072,
+   "source_sha256": "df227671a149dec961eade99db64974c8e41152e474b52ecb89cdf81656da9aa",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4408,
+   "output_sha256": "63b4c9907c02680cb6013b5236eae9dad4e5a711df252d53c7a943cf79ebcf3a",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/cari-carl-nicolas-c.jpg",
+   "slug": "cari-carl-nicolas-c",
+   "source_bytes": 141226,
+   "source_sha256": "cfe89971a6216f3edc9668fb6c25eeb73893805572420c49e4207074e14b331f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6766,
+   "output_sha256": "9a45fe725cb49926a16edb6f414603da55e9b1aae058d9b37b120abf29802071",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/castro-jane-t.jpg",
+   "slug": "castro-jane-t",
+   "source_bytes": 163582,
+   "source_sha256": "bb2d30e6158427c225d98429232a03fbcb0ee43cf835d816d84d6d7039870765",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4176,
+   "output_sha256": "7d667a35b26a79ad3c4b29e9602b5ee3e378dd231f0603d1686c4c89f3a251e6",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/cayton-timothy-joseph-e.jpg",
+   "slug": "cayton-timothy-joseph-e",
+   "source_bytes": 129298,
+   "source_sha256": "c01a36f9b4b8485a115b44d5d622c42c30a818a09b1f139dd31ae6726b497a9e",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3382,
+   "output_sha256": "78cd914d731000851db7830d8f394bea679f073e8c065c825b7e84087f721947",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/celeste-arthur-f.jpg",
+   "slug": "celeste-arthur-f",
+   "source_bytes": 125949,
+   "source_sha256": "c7e4f2597dee80920dd0662e6fa2fdf284abd9d1450402b2ed2b0a8fd8a28858",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3566,
+   "output_sha256": "e800bad28d75aa5a4c85525364c0694c228a96597ce1c9e14919fec7c07a2e8a",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/ceniza-leonel-jhong-d.jpg",
+   "slug": "ceniza-leonel-jhong-d",
+   "source_bytes": 122841,
+   "source_sha256": "c5a667715644ff4dee87ec73e1b366288c8298b5aceb869b763d9eccabcab871",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4246,
+   "output_sha256": "0fd4337178ba8ab8289b73714fb13162f63df5d3a2f2e60ebeb143287be18885",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/chan-junard-ahong-q.jpg",
+   "slug": "chan-junard-ahong-q",
+   "source_bytes": 137116,
+   "source_sha256": "de93e76dfeea419ac4f70b70e971c88bcf18c1ab900bc91c0f33e45735794979",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5230,
+   "output_sha256": "626648048b7a2acccfd86884b5530aff36d80dab9bd1624f18c0077fe8607c56",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/chua-joel-r.jpg",
+   "slug": "chua-joel-r",
+   "source_bytes": 147401,
+   "source_sha256": "3029c182190a14783fe33857c4b5c327435bdb6c94c367acdd903ee55d1ec278",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4424,
+   "output_sha256": "743a817ca9c0b3192b9884a8c0025182cb93dbfc3e2827ea4bd06666a793fdd3",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/chua-tai-katrina-reiko.jpg",
+   "slug": "chua-tai-katrina-reiko",
+   "source_bytes": 136515,
+   "source_sha256": "8c9ab1664d002de518ea155d665618c0c6638dc0a47a06db05ac15efc50053fb",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6250,
+   "output_sha256": "1f947f16caabfbf29bfb2739a12f364c646df4ff187f6ea7608fd31cfc38c631",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/chungalao-solomon-r.jpg",
+   "slug": "chungalao-solomon-r",
+   "source_bytes": 147082,
+   "source_sha256": "1d6c6436238c9ff2d0bb94046f4220ea7cbd1fdf1ff35b612cf7c95322627223",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3628,
+   "output_sha256": "66a29aab22808bd9b912137c6d55ec0d108b9f0e81d33b23030f1a08a15e84c6",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/co-pilar-ma-victoria.jpg",
+   "slug": "co-pilar-ma-victoria",
+   "source_bytes": 117855,
+   "source_sha256": "19b9106cba3fda0080bebfa0e7ccdf980d6ca72573e5b8ff6d32b5f59eef961c",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3736,
+   "output_sha256": "23c36266b48b79b9980cf5e1b4215f1f1d0c26972ea6b720d1cc659cc632b840",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/cojuangco-jaime-eduardo-marc-d.jpg",
+   "slug": "cojuangco-jaime-eduardo-marc-d",
+   "source_bytes": 127395,
+   "source_sha256": "35c089ddd0dc38d4d10047e7ddfc8cbc81d7b0b0ee924b5fe0463b551caa7d8c",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4124,
+   "output_sha256": "8b0be28ad6b3522739794a85b4436664a9c71a244ad3aa902f4deb74eb7060bc",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/cojuangco-mark-o.jpg",
+   "slug": "cojuangco-mark-o",
+   "source_bytes": 135300,
+   "source_sha256": "b75f51da8458be6ed9c3f348aee021f4efcacfd46602f9ef68911af3da38d882",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3388,
+   "output_sha256": "a8d5a04561eeb887275773ca4a5e26ca488489b831992817a9f1bd946f789b2f",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/collantes-king.jpg",
+   "slug": "collantes-king",
+   "source_bytes": 132464,
+   "source_sha256": "2d192a46b643e5bdbd27867e220c134b187e041ab81867e25f9184d854a0c342",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4538,
+   "output_sha256": "bc233f82b791b399cb1724e071ef25162860d324ef01c1ec956360c9c76ece4c",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/corvera-dale-b.jpg",
+   "slug": "corvera-dale-b",
+   "source_bytes": 137018,
+   "source_sha256": "afa473599ab15a68b0bbb81e576adac84b5bcc9fbc147191335b3f3091f05a8e",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4594,
+   "output_sha256": "ad4b070f630111f20e7532b1c96149bb4cf885248361371389f2dc4fb179842a",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/cruz-agatha-agay.jpg",
+   "slug": "cruz-agatha-agay",
+   "source_bytes": 131879,
+   "source_sha256": "76bbadc4fdadcb483e1439d9e9d71def9e725ed2c2d8cde3e1f777f0695960dc",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5416,
+   "output_sha256": "c85f82dc435c7b83a93d9bc071d42cbf0e24089af3ce6028202e3c8e55f3a04b",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/cruz-ricardo-jr-s.jpg",
+   "slug": "cruz-ricardo-jr-s",
+   "source_bytes": 135932,
+   "source_sha256": "ac98fb3be13a490a19aa1057eca5db7563a532b7e664b90d9b86a7456e1edbcd",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3908,
+   "output_sha256": "071fc3a74f185344421f2ff2e443474cdbf9b986b6df05e7401299731402b4f5",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/cruzado-edwin-l-m-d.jpg",
+   "slug": "cruzado-edwin-l-m-d",
+   "source_bytes": 135121,
+   "source_sha256": "91763f30e9bac0601afdb1aeabba8b9bf6084feb68774b9477c3f87808434634",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4414,
+   "output_sha256": "2adce646a5547276ea89c3f046ec2a5412c56fe62ee5f91663a6a7417091bd56",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/cua-midy-n.jpg",
+   "slug": "cua-midy-n",
+   "source_bytes": 129483,
+   "source_sha256": "90395c9e38a003e398ed73021af2c4f87ee5577befe7ba944116c56f43965daa",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4128,
+   "output_sha256": "b8608b8ef16ab395b5838affd35b0e506e55436e636056f40e30c53b795b4298",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/dalog-maximo-jr-y.jpg",
+   "slug": "dalog-maximo-jr-y",
+   "source_bytes": 129343,
+   "source_sha256": "8d5bfb8e6da29ce6a29963b1a11975d01b30d850bf834984cec0bd8e25eebde9",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3690,
+   "output_sha256": "617bdb3a451b038432e4ca9302b157726b91100f7ae65a21e73dd9e139b290fb",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/dayanghirang-nelson-jr.jpg",
+   "slug": "dayanghirang-nelson-jr",
+   "source_bytes": 124271,
+   "source_sha256": "4d12cbc6d53c51f45db34022fd78049b6a6cd1d469423fa13499262b3df27fef",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4602,
+   "output_sha256": "36c243ec94db2548f7aa8e92b111e17b3a63542350aaca6fcfc37239b8d6a73e",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/daza-niko-raul-s-j.jpg",
+   "slug": "daza-niko-raul-s-j",
+   "source_bytes": 144086,
+   "source_sha256": "3366230eeafc72216534661c31536f7fabe59b8f380a34592ac0c7e37f779d57",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5628,
+   "output_sha256": "cb38e69097bcc835c8d55a736fa73bc9b31676f535124485e327d6c58392b6e7",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/de-venecia-ma-georgina-p.jpg",
+   "slug": "de-venecia-ma-georgina-p",
+   "source_bytes": 157879,
+   "source_sha256": "3e2bb230f282a581684f334132fcc224d266b881b5a09a6497e0d094351c86d4",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3800,
+   "output_sha256": "8f2889537a23463d389c2ccaf16a4985482c93c27c44b861dab57814ee61fd54",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/defensor-lorenz-r.jpg",
+   "slug": "defensor-lorenz-r",
+   "source_bytes": 125395,
+   "source_sha256": "fe4cf318714968751f06454458ebd415ffa0976932889ea65f981e0e085b9e88",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4188,
+   "output_sha256": "ae235ebad58c701eeaf910be354ee5a7008d2d03294f5d258d51cdaa8528911c",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/degamo-janice.jpg",
+   "slug": "degamo-janice",
+   "source_bytes": 139855,
+   "source_sha256": "f1d6d2e0c1a25899cc6bc50283103313a44eba2585c9b99110a4e34b8365933f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5692,
+   "output_sha256": "cd47d593293d5289ae4d2140a8a4059f7e7268164d4cbabe4344e6d5bf0841b6",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/del-mar-rachel-marguerite-b.jpg",
+   "slug": "del-mar-rachel-marguerite-b",
+   "source_bytes": 139508,
+   "source_sha256": "81afc657a35ca705cac29bf5a45bcd99ea9a34199a093f3e5e6f2a6577cb5805",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4880,
+   "output_sha256": "d140091b113a1021de991f6cfdc197f4165c42285a2e4045a68e0b20edf417ff",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/dimacuha-beverley-rose-a.jpg",
+   "slug": "dimacuha-beverley-rose-a",
+   "source_bytes": 146601,
+   "source_sha256": "ba42bdaf50443de1ecc1b47fe77a475e09565f6e7f85d7e2754bfef17d079ccb",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5026,
+   "output_sha256": "ad7602e8ccabd727eed22d3889fb07be9081d031858f7ea001b8dd570fa2d5ea",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/dimaguila-walfredo-arman-jr-r.jpg",
+   "slug": "dimaguila-walfredo-arman-jr-r",
+   "source_bytes": 140011,
+   "source_sha256": "17c8b48964e52473e41248b962feb371c174a9580ff129e004755007e05b3213",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5394,
+   "output_sha256": "f9bb7f2b8786d35d7acd19341977cba6404019afdf6ef5726661b9a66a5cbf03",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/dimaporo-imelda-quibranza.jpg",
+   "slug": "dimaporo-imelda-quibranza",
+   "source_bytes": 149259,
+   "source_sha256": "3fcd3dd8b74c67249a8108c81cc8f1470679df9deba1cd2c10908fc3246dbd8b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4778,
+   "output_sha256": "bc715f08094626fe7aea6633696bc4f5b99652af0bad247d1186bc4a3340edc7",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/dimaporo-sittie-aminah-q.jpg",
+   "slug": "dimaporo-sittie-aminah-q",
+   "source_bytes": 131342,
+   "source_sha256": "5eada180af805cb070e1a90edd58ad3e3bf6e6c51e38bca34ba92696ee7735f9",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4072,
+   "output_sha256": "a418c963928e819b6612b090c6c3a28f14f200f85f44897c3c129274b64e04ad",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/dionisio-ernesto-jr-m.jpg",
+   "slug": "dionisio-ernesto-jr-m",
+   "source_bytes": 132276,
+   "source_sha256": "b02dde803f2dacb621b9bd0136f99abe21ff0b71dfcad3eeda2dd7c1ed80de78",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3846,
+   "output_sha256": "5a4f2d563cb8bd2450bc5b44d04750d3d4d84936a98add505711ebeaef5a0605",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/domingo-danilo-danny-a.jpg",
+   "slug": "domingo-danilo-danny-a",
+   "source_bytes": 127584,
+   "source_sha256": "60c7491410b8ce85041293bb483115631f9602fde009b30ec1a99e19915a0232",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5552,
+   "output_sha256": "a757e55f2e1e4b91efaed1706b7205449837fee8cb0883e8b191aaf2ce7ea832",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/domogan-mauricio-g.jpg",
+   "slug": "domogan-mauricio-g",
+   "source_bytes": 144710,
+   "source_sha256": "708db08cb861b4bb2df51d69e09e9ba3a9ee682fa8d9acc69e195d5c1e1a70ca",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3304,
+   "output_sha256": "0ef9df7dba6abaeb5fd9f461599c5978e6d4831c641d03ec43598bde99709463",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/duterte-omar-vincent-sangkola.jpg",
+   "slug": "duterte-omar-vincent-sangkola",
+   "source_bytes": 130915,
+   "source_sha256": "c7cffc3d615103baac2871fe88194cc9c7870e87fbef7244d5168b036b91d015",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3932,
+   "output_sha256": "64d6f3cddcb39444c8b2ef338b4f073adb33f741ca6357a0a5fe20d9f6432928",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/duterte-paolo-z.jpg",
+   "slug": "duterte-paolo-z",
+   "source_bytes": 124822,
+   "source_sha256": "47a348657b224572a1b6298a7c3439addc78e17532fb7f2a64d16771b0747c50",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4990,
+   "output_sha256": "ba333cfd2b5f81561210444e238f8980d93e835a9145d400ddab396f342e5d17",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/dy-faustino-bojie-iii-g.jpg",
+   "slug": "dy-faustino-bojie-iii-g",
+   "source_bytes": 142381,
+   "source_sha256": "91b669102860ee410e609df78bd99e19400a8f06318899058b879137dd08cef3",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 10156,
+   "output_sha256": "2ce6947d8acf4709d76fbcc6b040326c38fdbaf727f80d04a843f33321f0f10d",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/dy-faustino-michael-carlos-iii-t.jpg",
+   "slug": "dy-faustino-michael-carlos-iii-t",
+   "source_bytes": 172910,
+   "source_sha256": "8fb603c01bd44eb13d71f35bf8a9ee5385cf86a60d100906ca6d3bd34e09cbbe",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4962,
+   "output_sha256": "774df4de64b3767127e0ec06cea1f74db12459dfe5c955468c9dbe3f6bfd685c",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/dy-ian-paul-l.jpg",
+   "slug": "dy-ian-paul-l",
+   "source_bytes": 140806,
+   "source_sha256": "34e0b423410466e8f3ace30db1526e4b561a9b2a69df3cb32db2baf2f26b5d56",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5894,
+   "output_sha256": "cf5b90d6ef6ff9dbe190fe651cb068b5fafadad0aa83c71c3a47b8a6b8f3d8d7",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/emano-yevgeny-vincente-b.jpg",
+   "slug": "emano-yevgeny-vincente-b",
+   "source_bytes": 143871,
+   "source_sha256": "e02c9568d924a353ea8177cd7c675fd5036a909a3427d325a8a85c3f3ef868b0",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3374,
+   "output_sha256": "95a804c948c00d3fa1a0cd43204c4d93e2fb58c87271546820271caf2af4c421",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/enverga-wilfrido-mark-m.jpg",
+   "slug": "enverga-wilfrido-mark-m",
+   "source_bytes": 120653,
+   "source_sha256": "6458fd6534e7445de805480c5b0dab8825f991b4fbf6425479824b21fe57b3f9",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3630,
+   "output_sha256": "de2cb668c905553ba3e675a015bb698c7edb81787d01f789befcfbc5ecf36cac",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/erice-edgar-r.jpg",
+   "slug": "erice-edgar-r",
+   "source_bytes": 130860,
+   "source_sha256": "4eb836e4480b66ddb9972e42f281e86aff26695b348eb846d993c47eb71c070f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3618,
+   "output_sha256": "20333bfaa106a74dcae45b409d743913bcea9fa69cdc897d6e85d4fe610b7c36",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/escudero-bernadette-g.jpg",
+   "slug": "escudero-bernadette-g",
+   "source_bytes": 171409,
+   "source_sha256": "abe43e56671a9c3c625d5d96f20ce85b651dc45a67f76823c380117d14c85b7a",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3748,
+   "output_sha256": "1c32acaf56dda583600ea9c61bf4719e5978b755be84c62e74d69c00b7727115",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/espina-gerardo-gerryboy-jr-j.jpg",
+   "slug": "espina-gerardo-gerryboy-jr-j",
+   "source_bytes": 125489,
+   "source_sha256": "c51434642e1bb2bf6b4953e8c1296745f4708d5bb57dfad46523853983c5a221",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4032,
+   "output_sha256": "ac73b014fb5ed7fe5fccb944de540d9e864d047cc4b8c1e597621ba3715a948f",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/ferrer-antonio-a.jpg",
+   "slug": "ferrer-antonio-a",
+   "source_bytes": 134898,
+   "source_sha256": "ea08f2265f2f2c0a536bb14b76bff62b6c3ca88655cc3350862f90ca352aab88",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3760,
+   "output_sha256": "a48539c8e5289dfe050896ebcb1173a1eb48d78bd732567c810fe5db6694b4fe",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/ferrer-jeffrey-p.jpg",
+   "slug": "ferrer-jeffrey-p",
+   "source_bytes": 133451,
+   "source_sha256": "d558a8723dac828bb29d2d2fe14ececc6abf2df5e170684fbaf1de9684613bb9",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4270,
+   "output_sha256": "ff6b4ec06ce28384d697550e7e33167722fc5c83cdd126d92b6c19d984650498",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/flores-jonathan-keith-t.jpg",
+   "slug": "flores-jonathan-keith-t",
+   "source_bytes": 133996,
+   "source_sha256": "018e80a5262e5ae7e0858fc8bd30484e703d04eadddc0d18745b205031d61531",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4320,
+   "output_sha256": "34d4028357de9fe5cf939dee3421ac8fdae712cbffa485a81fa5ccc65ccd0b40",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/fortes-manuel-wowo-jr-l.jpg",
+   "slug": "fortes-manuel-wowo-jr-l",
+   "source_bytes": 135389,
+   "source_sha256": "f14b8080c045982e90840d03cf835598d6e6ef1e7ce94e80f1cd458fa8e09826",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3638,
+   "output_sha256": "8cd4622de48abab92fcbe430fc05b2b8f18ad22c24de490577a60d730fcde7b4",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/frasco-vincent-franco-duke-d.jpg",
+   "slug": "frasco-vincent-franco-duke-d",
+   "source_bytes": 128687,
+   "source_sha256": "b34af585a1ef6a4d1fba422c5883133f725202b499836d8916d574802f9ba6a3",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3658,
+   "output_sha256": "18255cc22b9de28a3336481dd506818b2ac55c645ca3cefebed5e2e23bfd678b",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/fresnedi-jaime-r.jpg",
+   "slug": "fresnedi-jaime-r",
+   "source_bytes": 129503,
+   "source_sha256": "743440f29380bfe8df760a929ef05a97e55c289385831ab4cabb193fa1306592",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 8290,
+   "output_sha256": "6f326706bfd1f296511db881d94e02191b0f8899fe2be59d187aa2e32d107a8a",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/fuentebella-arnie-b.jpg",
+   "slug": "fuentebella-arnie-b",
+   "source_bytes": 170214,
+   "source_sha256": "81e4105e536200124e9ee50c46056477ccf75ee0a5dab57dc88233cdf5873cce",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3590,
+   "output_sha256": "e699e68f07fd146220451954d03b3ecf401827444a408152cbe897e346112c17",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/galang-gerald-cloyd-alexis-v.jpg",
+   "slug": "galang-gerald-cloyd-alexis-v",
+   "source_bytes": 123237,
+   "source_sha256": "b9fe11752e5014ca83d8a20a0b1c33bc151b1b921e5f62f32c3cad55912a3376",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4024,
+   "output_sha256": "29bdfc20b20ab5ea06d6ad9035d65ed8d917fc9224c546458d20bf990f2f5732",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/galeos-edsel-a.jpg",
+   "slug": "galeos-edsel-a",
+   "source_bytes": 136376,
+   "source_sha256": "284b068b1cbfc02c3c5e9d699b80e021617b7507b8e0447a276b3176e7216680",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3558,
+   "output_sha256": "b36430727e76298600e02117e230e82b4cff6d36f97571d30df257b985ffe4c3",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/garcia-albert-s.jpg",
+   "slug": "garcia-albert-s",
+   "source_bytes": 127633,
+   "source_sha256": "1a0887177302b73607f5f7e6772a5f52a0f9222f7d433f58c5d81239051d992d",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4090,
+   "output_sha256": "de139d1d5f99e35441a24ad84483f350766b3c1f98442426f2b2bae35e004c50",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/garcia-dante-s.jpg",
+   "slug": "garcia-dante-s",
+   "source_bytes": 136976,
+   "source_sha256": "cea66d90291609679ad2679815d69b0813e0d57cbd66ec481edc29383de14db2",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3678,
+   "output_sha256": "e8f1daa033a547e6de6501a251a065b96c1aca9e43f47b451da4880a0585cf7e",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/garcia-jose-arturo-jr-s.jpg",
+   "slug": "garcia-jose-arturo-jr-s",
+   "source_bytes": 127754,
+   "source_sha256": "d9ffa0feb29adb106f11632b99c4c7f05cb9c66f1868cdb97a855f9cab38bc08",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4104,
+   "output_sha256": "d234fffd4e03f9d8f978309533b08c277bbdfd4a9515b59842e1732e9f7a69ed",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/garcia-karen-hope-f.jpg",
+   "slug": "garcia-karen-hope-f",
+   "source_bytes": 180898,
+   "source_sha256": "601b507976ee2b060fec37d6da817fcb29010c2dc8d896da35b7aa4153ff79ff",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5770,
+   "output_sha256": "304afcb6790af7611431d525eaaac5f040a0fbcb8d2e7203afa012c70ef5106c",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/garcia-maria-angela-s.jpg",
+   "slug": "garcia-maria-angela-s",
+   "source_bytes": 152727,
+   "source_sha256": "c809114b16c18e5d0d48dec173884f8af39bda1a7dd2c80ec76e53afd45592d1",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5582,
+   "output_sha256": "315fadc7813f31e7aaaf9e9ccbbb4dd555d358e67fa75ed04203a32678380de1",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/garin-janette-l.jpg",
+   "slug": "garin-janette-l",
+   "source_bytes": 142952,
+   "source_sha256": "734c3cf346facd01a038dbfdc203c0f7c768e25d5a4965b42eddcc9e6359c2cf",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3332,
+   "output_sha256": "cae86572a287f47d826dedea760ed23d0f69dc4a5b99107dd5e42493dd1e5bb6",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/gatchalian-kenneth-t.jpg",
+   "slug": "gatchalian-kenneth-t",
+   "source_bytes": 122777,
+   "source_sha256": "040f6a82da35ce113f5b0c0da8f8d4bafeb94f1d23c757eebc9bb5ab7387cecd",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4094,
+   "output_sha256": "fd925fc41f090d60107dcf3758088618d906340f2f57daa3ec6108e8cd7c4934",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/gato-ciriaco-jr-b-m-d-fpso-hns.jpg",
+   "slug": "gato-ciriaco-jr-b-m-d-fpso-hns",
+   "source_bytes": 133339,
+   "source_sha256": "8812f8735f293a12ebb020ed01b412bd1ef706ef1d70168e18dcf0ecd10a34e9",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4386,
+   "output_sha256": "e9ecdc28cccd659a9fc50d982724f00a5805fa2e051051b2173d0ff1f1db2b4b",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/go-ed-christopher-s.jpg",
+   "slug": "go-ed-christopher-s",
+   "source_bytes": 135018,
+   "source_sha256": "16bd94007975c6135721f74779f46087dabeab6f7c39253a82ee7a5371256833",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3488,
+   "output_sha256": "5636c9eae62d98ac4b8311077a92e08d6650647138aea4a30ed1eed229e56c57",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/gomez-richard-i-dpa.jpg",
+   "slug": "gomez-richard-i-dpa",
+   "source_bytes": 129465,
+   "source_sha256": "00184ebb03806819ae703c0bb1213b267b548973467fca2e3b25aef5f58403e4",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5988,
+   "output_sha256": "a5916fb82b3b7085b8e96b14df81bcd390fc68cd2d8cfae314019d62e5ff3f01",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/gonzales-alexandria-queenie.jpg",
+   "slug": "gonzales-alexandria-queenie",
+   "source_bytes": 153734,
+   "source_sha256": "44d92355ab363a586d097d66fd5e330b5725629c3df056db2e181dee50c67a3b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4250,
+   "output_sha256": "c57e7458cc82b34709188a22e7b2c6a1ab85d00f4988cd08854d962211fa96b5",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/gonzales-alyssa-michaela-mica-m.jpg",
+   "slug": "gonzales-alyssa-michaela-mica-m",
+   "source_bytes": 134801,
+   "source_sha256": "28950431ead292fe6d9fb06e4991dfb68a5f7e765a45da45cad46a7199697dbf",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4542,
+   "output_sha256": "39fca4e8be98d65c4d5bd7d304f20ea9d6bdcbe42847c389be287d80e4fef92f",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/gonzales-christopher-sheen-p.jpg",
+   "slug": "gonzales-christopher-sheen-p",
+   "source_bytes": 139617,
+   "source_sha256": "5f03fafc2208aa3c75944b86e15300246e60399946ae9c2f7cc893a249dcc8d3",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5028,
+   "output_sha256": "19a9007560c7fc56f9a355e3ba87cc44738c228a36b8878d83447c4868ca284f",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/gonzales-roy-m.jpg",
+   "slug": "gonzales-roy-m",
+   "source_bytes": 153572,
+   "source_sha256": "df99d21a8d055e8ebf86f6ac73526c5b95557b186446ac80cc844fdbdf8e5ca7",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5842,
+   "output_sha256": "2645e3db589d951879681b1bc492b3f9c65d376aa890006d9c8b9dad8f40cd66",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/gorriceta-kathryn-joyce-f-md.jpg",
+   "slug": "gorriceta-kathryn-joyce-f-md",
+   "source_bytes": 150962,
+   "source_sha256": "3cbfea362303fc76d63c53d74d7018c0bd01db21cd1843189396f0ffb427c8f9",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3360,
+   "output_sha256": "ef9a5cf8301e8356d7ebc7c7aedf3a42e8834ecfa86918f5072991c5634c6264",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/guico-ramon-jr-n.jpg",
+   "slug": "guico-ramon-jr-n",
+   "source_bytes": 124128,
+   "source_sha256": "87b66c217c5762dacb85e768a895999746c48a670d5e037992e9d1b2ee981d01",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3850,
+   "output_sha256": "519615cb966c879db0b605e6bbdb576b2bbe9d5ff383822d04385c104005ff1f",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/guintu-howard-a.jpg",
+   "slug": "guintu-howard-a",
+   "source_bytes": 129122,
+   "source_sha256": "70b37114db739a125479afccdf4e08a5c590075d7da9a897fd2c5c0f57510dbe",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4918,
+   "output_sha256": "671c9f182d1bd91b1f080dd07ecab56a60465843bf23cc826df0df7f31860f83",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/gullas-rhea-mae-a.jpg",
+   "slug": "gullas-rhea-mae-a",
+   "source_bytes": 143949,
+   "source_sha256": "0772c138a222785fbed93649f766b04ce3c62ecb98396360ef6215521547f3bf",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3910,
+   "output_sha256": "874eaa1a0c9d03f93cd1cf082d67c0e8aa05efeb4f26470177f730287270a211",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/hernandez-charisse-anne-c.jpg",
+   "slug": "hernandez-charisse-anne-c",
+   "source_bytes": 123706,
+   "source_sha256": "75097a9634642fea5fc5f9f6cbe2201911a3e8507fcc43a3ab93557cc50c833d",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3150,
+   "output_sha256": "22af9511445fab29c083ed071095eaad15c7a5ba0cb3e9965123ed1e12bff1a8",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/hernandez-dennis-tom-l.jpg",
+   "slug": "hernandez-dennis-tom-l",
+   "source_bytes": 125140,
+   "source_sha256": "62802d50b9d9ed29e299ac82d72200a002ac68764553da6a4e84f743c8b9ac96",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4434,
+   "output_sha256": "dc5b3235c9157087a19956f1cd335c268731df460aa81ee210a90455fbce5cd0",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/hernandez-ferdinand-l.jpg",
+   "slug": "hernandez-ferdinand-l",
+   "source_bytes": 142221,
+   "source_sha256": "0bd78c9f8d3de5c61db5ee7396c23e5ebfa65032e81c0f475ced2a1b75b88528",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3610,
+   "output_sha256": "8e2e8c310f60b5b9a73f1d48c2317007b37e4c9d9a65387d9abac204284c4322",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/hernandez-ramil-l.jpg",
+   "slug": "hernandez-ramil-l",
+   "source_bytes": 128128,
+   "source_sha256": "4074dd30bbc8bb74877b7cf0e7d0718e9b88f56ca471dd8f44649366e8ada100",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6832,
+   "output_sha256": "7b0628a95009b2d11ea62ef70c2d90850857000515a3dd1b33f7706ca92b99cd",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/hofer-hasim-marlesa-doc-marly.jpg",
+   "slug": "hofer-hasim-marlesa-doc-marly",
+   "source_bytes": 155545,
+   "source_sha256": "03e471abb134627ad732f0c442f826f54917635406a8c9622d14068ea0c055f4",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4656,
+   "output_sha256": "0f5e71dd797e6da6557c800c63fcf6487a52e9c627858965860a1a110f2e5cea",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/horibata-tsuyoshi-anthony-hori-g.jpg",
+   "slug": "horibata-tsuyoshi-anthony-hori-g",
+   "source_bytes": 139943,
+   "source_sha256": "35c1fdd4e1f79f8646037f6d9920250c1563e81b8bad6c5458da00325089f3f9",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4422,
+   "output_sha256": "f81b54569db4c701399b6a05c707d56c7fa055138f9c51699a688535290429ff",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/iway-emmanuel-l.jpg",
+   "slug": "iway-emmanuel-l",
+   "source_bytes": 135986,
+   "source_sha256": "0650cb9efc3fea95863ecb83a14b0d3ebaec8229757014597d4690243dca664e",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3810,
+   "output_sha256": "a37b5f3131f5ac67e8f593973682e34b2f45dac70ad98ed66eb3f6ff46f019fa",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/javier-lolita-t.jpg",
+   "slug": "javier-lolita-t",
+   "source_bytes": 123494,
+   "source_sha256": "c65c56a2a8d961fdbdfa4b2d09d3c01e4f8026fe4de6ba99ad0872e3de4d80cd",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4048,
+   "output_sha256": "4f5a36185f6801331fe7559eb4666588eaadc13974bb28ab4c43d8c0bec5358b",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/kho-antonio-t.jpg",
+   "slug": "kho-antonio-t",
+   "source_bytes": 131604,
+   "source_sha256": "4fff29d381a573e87cf1a27300b9f667b0bac92dffacb0a05f4f7ef36d9434b2",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6712,
+   "output_sha256": "1de247702367d2f5167840dee61b9c69ee75374dc713d2678c5e75f4b104ae32",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/kho-elisa-olga-t.jpg",
+   "slug": "kho-elisa-olga-t",
+   "source_bytes": 159225,
+   "source_sha256": "ec7c8377e1dee8bee4773ddf0f3c52c6da8499527f3d4d49269684e9285b6c88",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4090,
+   "output_sha256": "693e42df4707e1a8c4d405e7e812940e0a13e65722df3fd1c30a8500748467e4",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/kho-wilton-tonton-t.jpg",
+   "slug": "kho-wilton-tonton-t",
+   "source_bytes": 144291,
+   "source_sha256": "8571e7e33e6d6fa4c1cdd9244a135a0f922e30391c228b15c21835bcc0c49ec4",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4880,
+   "output_sha256": "7c08ae862655912996fc6790d0692cd5c5b2d58c080a287eed90e73808031679",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/khonghun-jefferson-f.jpg",
+   "slug": "khonghun-jefferson-f",
+   "source_bytes": 140797,
+   "source_sha256": "c86b6c8e26343a1d6ed0bc246c79782c5ab592cea660b9be8d9c8d74a5c223a4",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5406,
+   "output_sha256": "7187a6005a5153f3cb93875fd3d42d4f4a4fecd8c83358294cfc1df304ed16f1",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/labadlabad-irene-g.jpg",
+   "slug": "labadlabad-irene-g",
+   "source_bytes": 150235,
+   "source_sha256": "046d356bb45c463eabf06077bf40bc83db514795f29c6f7a73915a5783008d8c",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4236,
+   "output_sha256": "d10df3ae5ab2aa13032a830b8c0bbeb836bb9be57d4ab1c92160a65c1852cd8a",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/lagbas-atty-jennifer-karen-a.jpg",
+   "slug": "lagbas-atty-jennifer-karen-a",
+   "source_bytes": 137592,
+   "source_sha256": "ba3495c0c4ca43dac331605011106c2492126ec8d8de004c68a71ca4de11335f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3606,
+   "output_sha256": "e14b2d944eab43f0c5c61d2a96f2d495d4f6b8a56fb0786f1a67ae79c09ae8c3",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/lagdameo-jose-manuel-jm-f.jpg",
+   "slug": "lagdameo-jose-manuel-jm-f",
+   "source_bytes": 125399,
+   "source_sha256": "7b48a84e489bfa0c28ffd688e6f8aa6ce6f6975ac79164192c37175253e9651e",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4870,
+   "output_sha256": "a6e347dd4e5c7fa049867a1c8fa1013eabde4b8e223e57b8a8eeb49333acf105",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/lagdameo-monique-yazmin-maria-q.jpg",
+   "slug": "lagdameo-monique-yazmin-maria-q",
+   "source_bytes": 139404,
+   "source_sha256": "3e2aeb917cb7f73aaee7f8d3f6aa87878660a8c55a95d3b1c498cd28ae3fb08b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5700,
+   "output_sha256": "187747edbc17d4991d00673844a2ecd6f26dd731e5fa59cef15bbb458a755b7d",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/lagman-cielo-krisel.jpg",
+   "slug": "lagman-cielo-krisel",
+   "source_bytes": 150342,
+   "source_sha256": "d1c005f0ccf94a331c6e5a7e3fb218540d1d315f6ca17b33e39ec90f61393812",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3778,
+   "output_sha256": "0f324ccf26aa1a7a0ca474b1e0ca9a1ff3061bc3c0872a7e72505d19120f5e9e",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/lagon-daphne-a.jpg",
+   "slug": "lagon-daphne-a",
+   "source_bytes": 123447,
+   "source_sha256": "fc75ac0f60cf4ee4613297b12500985b79a1f41e76a72c71a9885e21a78de9d5",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5280,
+   "output_sha256": "e365db48d43b3d151e571d68ef0b8d929b4f8f7b86ac0614217de080b2c88238",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/lara-joseph-jojo-l.jpg",
+   "slug": "lara-joseph-jojo-l",
+   "source_bytes": 151220,
+   "source_sha256": "d58f3e2c16daa4bd5bae77a76323e5824b894cffef68048c561e5cfaa4556f09",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3842,
+   "output_sha256": "4345559aa303af8687c60542ba1fa5dc97a018776104a089c15c4f58fef66d0a",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/lazatin-carmelo-jr-g.jpg",
+   "slug": "lazatin-carmelo-jr-g",
+   "source_bytes": 135174,
+   "source_sha256": "79b8c1b5738291a217bcb1f6491292119319d488a3dbb71e69f8f179011adf00",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4516,
+   "output_sha256": "43badba3585f93fec0b613bf744fdde1033a2e5879a3fe02ccc52a1db4dc420b",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/ledesma-julio-iv-a.jpg",
+   "slug": "ledesma-julio-iv-a",
+   "source_bytes": 149853,
+   "source_sha256": "cb936e36c5b329505a86e91833df2d545830d4f77b013d785cd6c7629e7d7bb3",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4736,
+   "output_sha256": "28fe9134c8d3e0ccafee7255fd852bf35733d40fcaca4857f2db3a45f78a97d9",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/legacion-nelson-s.jpg",
+   "slug": "legacion-nelson-s",
+   "source_bytes": 143124,
+   "source_sha256": "3579a507c5d1dd42c4950def9d6891518dcd4413a31a692031f15372debbf011",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4350,
+   "output_sha256": "0a4b8e114cd59968b7c8eb0ed54f5bdbff6568b4574cd991d3695ccb84270997",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/legarda-antonio-jr-b.jpg",
+   "slug": "legarda-antonio-jr-b",
+   "source_bytes": 134661,
+   "source_sha256": "b1d9a955a734d131f2e8eb80d53e249231db474bad890d24cdb284648b556585",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3450,
+   "output_sha256": "72e4c6843a1df15587c9e24c8ae4ccdc9bfb196f3796a193fd803718c8cb78de",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/leviste-leandro-legarda.jpg",
+   "slug": "leviste-leandro-legarda",
+   "source_bytes": 117431,
+   "source_sha256": "d55effa781f46ca34c9faa86f3c15a410734bbdf6d97a0d19a49aa3554803300",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5420,
+   "output_sha256": "9f6421cbffa2b34536679aad1b636be4fb04d1acd7ac42fcbe37593a9f1fd67a",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/loria-carlos-andes.jpg",
+   "slug": "loria-carlos-andes",
+   "source_bytes": 145701,
+   "source_sha256": "90ce03ae16d84848c52cd024df875b0d6ca6edef0e5a30b16e8e4845b3d031f0",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4404,
+   "output_sha256": "fd95385f94a82a764c8d569a4d1b8af4f54d98c47076300f6628421ef75460e7",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/loyola-roy-m.jpg",
+   "slug": "loyola-roy-m",
+   "source_bytes": 137060,
+   "source_sha256": "8bd0df1604c663dd06346278f4df18ea0f1e95e73aae9b6c52902cc9fcb6f82e",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5454,
+   "output_sha256": "cee59e96fabc1693857565cd9619fd4e54f6d53519a28271ddba4ad920b88ac6",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/luistro-atty-gerville-jinky-bitrics-r.jpg",
+   "slug": "luistro-atty-gerville-jinky-bitrics-r",
+   "source_bytes": 154900,
+   "source_sha256": "b55b19cfe8d0cd59754ab7e8f45b9361dbf68e29881f2d6203565a2c8be30eae",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3876,
+   "output_sha256": "67e7195a15ead43954d8b4fb9e3a30877f3b2f784ac1d0e9b759a0273216e6bc",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/lumayag-isidro-d.jpg",
+   "slug": "lumayag-isidro-d",
+   "source_bytes": 129778,
+   "source_sha256": "dd8509d7be18169e7a69879c6c687d0003fc1d4992b1b9aa501a5213bf9d37b2",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6828,
+   "output_sha256": "e56ffb74e3b740c59b822c78fc643d80f7ccdb7da6bc71b49797c87bac1c51f4",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/macapagal-arroyo-gloria.jpg",
+   "slug": "macapagal-arroyo-gloria",
+   "source_bytes": 159355,
+   "source_sha256": "09e5d21cbeae54091f573e68bf2ec5e3830e7cdc549ca04c7b6278479dded784",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6344,
+   "output_sha256": "1b7e848ed8834bda0f5524e65a0ce9b959a569d278c9909a917612549ca4e997",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/maceda-giselle-mary-l.jpg",
+   "slug": "maceda-giselle-mary-l",
+   "source_bytes": 161799,
+   "source_sha256": "6f95fa23223708a75542612c6a816dd2df7810d26936fc8301741b636cefdeed",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4022,
+   "output_sha256": "01365e9d18121701465725b8ada0747b52c9e761200708708cf8e5755018d34b",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/madrona-eleandro-jesus-f.jpg",
+   "slug": "madrona-eleandro-jesus-f",
+   "source_bytes": 137484,
+   "source_sha256": "6cc84d01074ff32394f958816d373242c53e352bfe61eeb90bd3112503badf2b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5236,
+   "output_sha256": "7f0651ba96d0bd1ec9fddf553f6ffbf6557eeb3b4815560962a32c708caf4e58",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/malapitan-oscar-g.jpg",
+   "slug": "malapitan-oscar-g",
+   "source_bytes": 150154,
+   "source_sha256": "002751ce28030e52df389f6aa00041b9798abdcb5eb94fdf6f083ed1cc99f8de",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4052,
+   "output_sha256": "07454d6d405f4c8cb24d197e7b68a92b5a0f7dff69ff679070333ba21bda7dd0",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/mangudadatu-esmael-g.jpg",
+   "slug": "mangudadatu-esmael-g",
+   "source_bytes": 131667,
+   "source_sha256": "ee1b4c0d512077cc9e4acafd431b56626729384dc4fc9b275bb0099bc5b0c980",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5048,
+   "output_sha256": "113688c8e3527f06ef3c14b4bc1116e2ecf020428c9339826b08300c8619da85",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/maniquiz-doris-nanay-bing-e.jpg",
+   "slug": "maniquiz-doris-nanay-bing-e",
+   "source_bytes": 148683,
+   "source_sha256": "e13ba6ed53e12e36373fe7b5d2a86e3ac60beec215914eefb931310d530f8539",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3472,
+   "output_sha256": "1eff6366a44cdc8041f8ac740468632562304cec78321668cd55a93bca6754a5",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/mara-on-alfredo-iii-d.jpg",
+   "slug": "mara-on-alfredo-iii-d",
+   "source_bytes": 126919,
+   "source_sha256": "eba8dcf9877f687ebba438f50d4a2e7401429f2d5a8707d00dd15a3dc2596b6c",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3394,
+   "output_sha256": "7a112f60658fed915d298209af5d398339958add0e35a0fa2593003df16c5bb3",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/marcos-ferdinand-alexander-a.jpg",
+   "slug": "marcos-ferdinand-alexander-a",
+   "source_bytes": 120147,
+   "source_sha256": "b7bfc551773ce5c55c98579d974152ca9448f0d0c0ef47e637c5f0fb45874d48",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3948,
+   "output_sha256": "961ff4e5bf2ca0ec23c796dd08355f80057fca0d0375c61da94080d383d384dd",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/marquez-jesus-jess-r.jpg",
+   "slug": "marquez-jesus-jess-r",
+   "source_bytes": 133469,
+   "source_sha256": "589bc6d8b12bc630bb6ddc76975bf5affee78a5c665a4e8f11ef28352b01d7ea",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 8798,
+   "output_sha256": "cee19207b8f9bd89ac399c05c17a0afa4533792cd3b179f4ef14d388938611e1",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/mastura-sittie-shahara-bai-dimple-i.jpg",
+   "slug": "mastura-sittie-shahara-bai-dimple-i",
+   "source_bytes": 188915,
+   "source_sha256": "f73fa030eb3ac94721c13752f661caa2b0f1a1ef29bcc1f6b2111e3c1792dd8f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4520,
+   "output_sha256": "d238544b9c5451c7eece544ec1170a96cf81ef310d59c3cb30ef407769517c1d",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/matibag-ann.jpg",
+   "slug": "matibag-ann",
+   "source_bytes": 185846,
+   "source_sha256": "7ad4e166ab95065ec9de2b5c372fdb64234657041d1a7ad1095358606578c9b7",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3894,
+   "output_sha256": "3d2d6c95ca1985eac4bee5dc09fd69c894ee8251e648cb5a2eedc27f4c16af36",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/matugas-francisco-lalo-t.jpg",
+   "slug": "matugas-francisco-lalo-t",
+   "source_bytes": 134763,
+   "source_sha256": "240b05f1fde6c43aa94a52d2fa0a91d3dee93b6a163a61f4ff13085f3a1f8fdc",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5970,
+   "output_sha256": "4e296c5da495791c5ecaa4fab4763e20381eabe853f35da55d1f302203edeff5",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/mercado-revilla-lani.jpg",
+   "slug": "mercado-revilla-lani",
+   "source_bytes": 152613,
+   "source_sha256": "548807bd81180e08c36aa526c5167b18a2ec4caf41684d87a9ebc97185236471",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4934,
+   "output_sha256": "333c4bd27e5c1e9ec57ffbad32ba1eef49ce04634c2d23c7fac154e3261a5821",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/mercado-roger-gaviola.jpg",
+   "slug": "mercado-roger-gaviola",
+   "source_bytes": 136978,
+   "source_sha256": "3258ea0b0aec997c24b19c9c88de599342c70cf268d0095a0d4a15bd01fe1cd7",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4030,
+   "output_sha256": "d447c6d5e9d3d214f71c29ddde60ab6efd306de5bd1a8be48a5073739ddab4ef",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/miraflores-florencio-t.jpg",
+   "slug": "miraflores-florencio-t",
+   "source_bytes": 129748,
+   "source_sha256": "20eb4835319be658b53b28fb4334289aae89b10de484cc5baf4233569c3c9c37",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3534,
+   "output_sha256": "91c6fe992b9b6668e1bfa556c9e6082c915353074716c09d07d40eab2d0a41f0",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/momo-romeo-sr-s.jpg",
+   "slug": "momo-romeo-sr-s",
+   "source_bytes": 130446,
+   "source_sha256": "c9c3826e78a3afc761557828f36db5c57eb809e89770bcf903a0b07222c1ddbf",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4532,
+   "output_sha256": "e02c9e6656f0e19d6d1cf803fea52ce9c55d0fd58765d4d612785f07292928f3",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/nava-jc-rahman-a-md.jpg",
+   "slug": "nava-jc-rahman-a-md",
+   "source_bytes": 150349,
+   "source_sha256": "5c2def1bbe55ef5f451ce804982ceac96b5e6aa10c301115c8f00b1edfe8dc8b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4394,
+   "output_sha256": "373e44ed6fe08350ce4f23a3c4603cbb0fb442bb1e121b10867c581c93ea8ff5",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/nolasco-ramon-c.jpg",
+   "slug": "nolasco-ramon-c",
+   "source_bytes": 139927,
+   "source_sha256": "54c6fbb8b729885e248abbb92551c734c511003133e373f3fc6de0e0c4d34ef1",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4950,
+   "output_sha256": "43ab594de9c0ad7861f7fad0da68d3fa7ab49e64970dfe4b65fc898e5162b9fb",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/oaminal-sancho-fernando-ando-f.jpg",
+   "slug": "oaminal-sancho-fernando-ando-f",
+   "source_bytes": 133680,
+   "source_sha256": "e00fe1f853fa537a39e9459d17809ed86fa090a4b195bb16eaa7eebc22f1cf6b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4690,
+   "output_sha256": "8ed8ecbaba6ac67b52ab987532b1d5f9157be686619140010bc0a536d08c5cfb",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/olivarez-eric-l.jpg",
+   "slug": "olivarez-eric-l",
+   "source_bytes": 146188,
+   "source_sha256": "8e27a42fb48555c2101d9df380e1253fbb9fd342e35c6f7257fad83d0b77fcaa",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4230,
+   "output_sha256": "b0b2d759fa5959386b3a20a5e8bc12132f05923704975848e805f54913877692",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/ongchuan-edwin.jpg",
+   "slug": "ongchuan-edwin",
+   "source_bytes": 134594,
+   "source_sha256": "3f45a390fb74d374e898a52c1756a55779d9b6f61c92466d9508133f100d9929",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4210,
+   "output_sha256": "2bed087448527b9d109d0c8e352aac88d247b5cadc83cc8edbf7ca71f6748223",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/oreta-antolin-iii-a.jpg",
+   "slug": "oreta-antolin-iii-a",
+   "source_bytes": 132987,
+   "source_sha256": "ed1572786c5465b9ec670085a451e6335aeed98396947dfadb73f1e606f22868",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4122,
+   "output_sha256": "b03c5f301034ca8f102b98e398c4eb9dbe312b05508c0bda14093b8ed55f752c",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/ortega-francisco-paolo-v-p.jpg",
+   "slug": "ortega-francisco-paolo-v-p",
+   "source_bytes": 134207,
+   "source_sha256": "e5343a45ed00694af6fe8e4bdaeee9b935ef680c4f2e2ab1a3c7b4cc81ffcc1f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6712,
+   "output_sha256": "0c651c13d65088b7ef717d6922d2648ba2618ccf3ecfbb3caf44f63edbf01b05",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/ouano-dizon-emmarie-lolypop.jpg",
+   "slug": "ouano-dizon-emmarie-lolypop",
+   "source_bytes": 152201,
+   "source_sha256": "b134b0224589deb6775cb65e175b305715d4ef9382cb64f184e21f8b0c5c44a9",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3690,
+   "output_sha256": "d4e7b640d7f3cfbcf7d545eae493bdf826450ff73dd6153f9ec3c4d9e5788520",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/panaligan-arnan-c.jpg",
+   "slug": "panaligan-arnan-c",
+   "source_bytes": 134074,
+   "source_sha256": "379a490b0cfa07b85c9e6ceaff09768331c4f1fcae0ac09f83f319f222682d4e",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3982,
+   "output_sha256": "880f212da91c2e56b7cb82956c4cfde14d369fdfc39078141da1d873e99209c3",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/pancho-augustina-dominique-ditse-tina-c.jpg",
+   "slug": "pancho-augustina-dominique-ditse-tina-c",
+   "source_bytes": 131244,
+   "source_sha256": "7ae1f8b7f03dae4e283bfe8e0355c80e5fc5d7a0bc2700c66aeb59db601e12cf",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 8290,
+   "output_sha256": "deeed6b3afe9bdb59212bcd8b16a66f17767a15b02d3bc10e220cbdf04587d43",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/panotes-rosemarie-conejos.jpg",
+   "slug": "panotes-rosemarie-conejos",
+   "source_bytes": 165369,
+   "source_sha256": "cf999e2c6d4a9825b570d75fa7f1253ee6554b2b47ab85e1de6689b7eb6adc72",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3814,
+   "output_sha256": "702c13f4af2b20654a822537586f8862b173f0ac34e2daa5c250e816b0bd165f",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/pascual-emerson-d.jpg",
+   "slug": "pascual-emerson-d",
+   "source_bytes": 126677,
+   "source_sha256": "c5819d79b9ef5a658d4db44b5449eb33260f98f2818e3e1da4c12a7dc25dc1f3",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3272,
+   "output_sha256": "6af170ddec51a42dba048a2dbf7d17300bb51226176f797c9c8dddf732d821a0",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/perez-jerry-evangelista.jpg",
+   "slug": "perez-jerry-evangelista",
+   "source_bytes": 119577,
+   "source_sha256": "93ac8644f5149b2312607cb902117538f4175a8026575bdfdf8caece074359db",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4094,
+   "output_sha256": "a48fe7b6af174d723bb2777d055e35ac20b208f78856108dc32a19a9ec5aa6e1",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/pimentel-alexander-ty.jpg",
+   "slug": "pimentel-alexander-ty",
+   "source_bytes": 138662,
+   "source_sha256": "d1deb4c350f9c9c94d6cf9c32e66feee0845a3d1ca109c58dc5435acfc9cb624",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3476,
+   "output_sha256": "e9ed1d6fbedaae8f16ae6f0933b2db5620e60d403350d40dd3080f29035b87d8",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/plaza-eddiebong-g.jpg",
+   "slug": "plaza-eddiebong-g",
+   "source_bytes": 128669,
+   "source_sha256": "a5d5a5daaead30c3b6c5ded39e1101bc2e4a81a0139d97c69cede5da8a6c99b9",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4678,
+   "output_sha256": "d2c1bab6b5d181c1b3ca84cd024100c85846ad9fc33c4d35ad0151381e2ba7d0",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/pleyto-salvador-a.jpg",
+   "slug": "pleyto-salvador-a",
+   "source_bytes": 144606,
+   "source_sha256": "296da6a6e8b2dd6c1a951163a1151995207cb2e4106b3867e4f497e7d9389e26",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6710,
+   "output_sha256": "0ed160d76e97c3d9503aed0d19d41ad43f3a94ada709ce90cf8d4751c41e4be7",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/primicias-agabas-marlyn-l.jpg",
+   "slug": "primicias-agabas-marlyn-l",
+   "source_bytes": 161420,
+   "source_sha256": "3923360b0ef287e75dbcccffef629276a821dd8d7704c7ddb4de6ec797a378ce",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4964,
+   "output_sha256": "8aa1bd055494a8d34cd0f911514d389feec536b461c033dc5b77479e118ee522",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/pumaren-franz-s.jpg",
+   "slug": "pumaren-franz-s",
+   "source_bytes": 147325,
+   "source_sha256": "da73233589f5527789e68325a459ee10d2afc84b9c686794465c012152561a7a",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3794,
+   "output_sha256": "871357feca94daeba418845c4e801e95f384f161ce0d766d8ff5b37deabbc62a",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/puno-ronaldo-v.jpg",
+   "slug": "puno-ronaldo-v",
+   "source_bytes": 129305,
+   "source_sha256": "f88329601bcc95ffe57253afb5dd8dfee6a2a85cd644e405d509d82b2837d400",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3854,
+   "output_sha256": "41257d54707e0089401551737fdbfc8340155b48809933738948766fff15fa69",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/quimbo-atty-miro-s.jpg",
+   "slug": "quimbo-atty-miro-s",
+   "source_bytes": 128885,
+   "source_sha256": "300a060b69508286ce093a993c949577e65d997db08aaf1895831334a14f3622",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3234,
+   "output_sha256": "39fa4238cbe5569b66b556444d1463d8717f730ff8a56972679329e300af473e",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/rama-eduardo-jr-r.jpg",
+   "slug": "rama-eduardo-jr-r",
+   "source_bytes": 124185,
+   "source_sha256": "99c11383859b03c3e04bdd4e15ecbe39e29729f768221593e0b99a9184e175fe",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3554,
+   "output_sha256": "286ac340a0e53905b1d5acb54ebe5c256a08dc040e4ed49ecd2de498979445e4",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/recto-ryan-s.jpg",
+   "slug": "recto-ryan-s",
+   "source_bytes": 121260,
+   "source_sha256": "b97c3416a659562f98e0a04d4f0b49f74ea00a1264d541cf2a451a26d80eb54b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4226,
+   "output_sha256": "84a657a62d0a9731e3dc77b58d4fe4b678df647a0406f7dc04248421d4f6c509",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/regencia-celso-g.jpg",
+   "slug": "regencia-celso-g",
+   "source_bytes": 141503,
+   "source_sha256": "95a4731c3f21ffa7f1e5322f75c1f948c44a7e5d5864d73f4a4f664acb1edc04",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4686,
+   "output_sha256": "c6c44f436e0fdfc05e50568fad24f906d36c7698b487a5d2771dea1ba395a548",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/remulla-crispin-diego-d.jpg",
+   "slug": "remulla-crispin-diego-d",
+   "source_bytes": 140127,
+   "source_sha256": "ab0b741eba4e9f693a24ffa67e4c7e3c798c72ca504ca12da04fd26a0a614ad7",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3246,
+   "output_sha256": "caafaa1734fada0d3d70f9e5cb9cb2926f4009602dbb22d2342abde2d55005d6",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/revilla-ramon-jolo-iii-b.jpg",
+   "slug": "revilla-ramon-jolo-iii-b",
+   "source_bytes": 105254,
+   "source_sha256": "145f0be9c6645727514dc7a2846b3350f7ae99f5b2ac0b2c8f53ee5c2fd171e9",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3368,
+   "output_sha256": "35c4aa3f23d6f1fbded144a02bd5ad5077b21577dd7789630a1b269fbf047f78",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/rivera-noel-bong-n.jpg",
+   "slug": "rivera-noel-bong-n",
+   "source_bytes": 130013,
+   "source_sha256": "bf39fd6620a02a65ca559518c14d9ad74e4f6fbe47c8185e4f2644ac17d4ca3d",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4354,
+   "output_sha256": "465a60d132962547860566927e0a3a0dad7b38809517fa6c6db98d55b58e3b44",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/robes-arturo-b.jpg",
+   "slug": "robes-arturo-b",
+   "source_bytes": 133782,
+   "source_sha256": "1805566b7631e69b0245baa75de3b4cde80f5fffa29e7e36e5e68655ed967d4b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3756,
+   "output_sha256": "ebed67935100e756cea47f262919d35dd1a5300675fd2ca43b20e5c369b9c0eb",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/rodriguez-eulogio-leo-r.jpg",
+   "slug": "rodriguez-eulogio-leo-r",
+   "source_bytes": 140201,
+   "source_sha256": "0c0624d25dc0da81757cb40dec20d61f1bb28a75af668a2d79a6fe42f447e288",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3874,
+   "output_sha256": "a40c87317da4d04c0a5a81cd920e685493bd208cb0620c0bf78d768c114507c3",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/rodriguez-rufus-b.jpg",
+   "slug": "rodriguez-rufus-b",
+   "source_bytes": 137184,
+   "source_sha256": "8d1fc2279fbca839a0e257d45e0cfa8e2ebe80203b4fcd061be2e18eec53daf5",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4116,
+   "output_sha256": "8e10a5c838f11ed116f30cb14b16832312fbc70ca9be32d289ad04ffd832565d",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/roman-antonino-iii-b.jpg",
+   "slug": "roman-antonino-iii-b",
+   "source_bytes": 155543,
+   "source_sha256": "fa6df5685f25b3b5bf036bfe2a0e4ab17c3cec25c0d623de038641fa6ed8a366",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3676,
+   "output_sha256": "428642655cac80becc71e28f2cfc2baa1029749a93e6469b756b0bb937ac5c9e",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/romualdez-ferdinand-martin-g.jpg",
+   "slug": "romualdez-ferdinand-martin-g",
+   "source_bytes": 130956,
+   "source_sha256": "13c107620c96e9d8ea9bcc39af643c3389f8707e4d5a91921039cf2c58d83269",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3738,
+   "output_sha256": "5be57023a62a733e1ddf6f19234824d5ef31d11615eaac4c11ddfb625fe489dc",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/romualdo-jurdin-jesus-m.jpg",
+   "slug": "romualdo-jurdin-jesus-m",
+   "source_bytes": 136650,
+   "source_sha256": "8d2690927022b3c3d908c8aaab865abb1cca12d71b5d2adecf1da64add076ec0",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3846,
+   "output_sha256": "3ea981297bf05da22b1d4d7a1b1e4574708d38060970795939f2d1a13e6309e7",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/romulo-roman-t.jpg",
+   "slug": "romulo-roman-t",
+   "source_bytes": 129159,
+   "source_sha256": "14bd025c3920ae5fc6c719a61a01715ea338fdc5b6c0a8b595e0d990b25b7b1f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 8194,
+   "output_sha256": "b0e268c8fcebbec9450d647afc1ebe191e5115e2b740d4463b7da1e5a44b3cc3",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/roque-laarni-lavin.jpg",
+   "slug": "roque-laarni-lavin",
+   "source_bytes": 172960,
+   "source_sha256": "0af1c376e1caad827b3cc3f8fe373e958c8c052061dfbfdc04d8bf326e306557",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5398,
+   "output_sha256": "10db9a0c41ff1ed8c3e8f20e403d95fcaebc5ca6ae7553060afebacc2c1dc594",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/sagarbarria-ma-isabel-l.jpg",
+   "slug": "sagarbarria-ma-isabel-l",
+   "source_bytes": 149813,
+   "source_sha256": "0d73e949fb93665618de2723607feb23cf5c1acd3cc710db14ad0458b8d78571",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4358,
+   "output_sha256": "9201376d4cc78ddfbe1dac2e5fffe404fcfc58f8e359a333102d847217e6f388",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/sakaluran-ruth-m.jpg",
+   "slug": "sakaluran-ruth-m",
+   "source_bytes": 131955,
+   "source_sha256": "a15be3ecf739fbc4effe92493af9eb33194067d51b4c3ad10b8105ab327e4025",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5324,
+   "output_sha256": "cbe6a9a34ba2e2215b01ffc6da01c3dc88459ab6f8a70f3df80b4c2e17f70053",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/salceda-adrian-e.jpg",
+   "slug": "salceda-adrian-e",
+   "source_bytes": 150405,
+   "source_sha256": "7f17765b179d75dae0d6fe4fbbb7aa5647ff19a50922b9346eddef15cee59c22",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5006,
+   "output_sha256": "edac62ec5cbffea5a1c36e0726105d4332b47084ffe5f4de272cb82a87c36647",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/sali-dimszar-m.jpg",
+   "slug": "sali-dimszar-m",
+   "source_bytes": 147572,
+   "source_sha256": "eb5173ebe2f83b8ebb062e8ece3e3cac211c3c1e19fcc05bb09e59d74d151dd4",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3730,
+   "output_sha256": "941185cb5c82a8765ca4da95fb36fa3755dcbdb872f59efd5874d6dcb429b91e",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/salvacion-reynaldo-p.jpg",
+   "slug": "salvacion-reynaldo-p",
+   "source_bytes": 131024,
+   "source_sha256": "5c7bf8c77d42028d18dd5e05d4bf3add3d6fd8309840fafdaa04eee51f6af17d",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4564,
+   "output_sha256": "84e259a5c3b4878016b38323dd91f48a3fc0a72033f493db5011ec17be0950dc",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/salvador-mario-kokoy-o.jpg",
+   "slug": "salvador-mario-kokoy-o",
+   "source_bytes": 141511,
+   "source_sha256": "335319a71272286fda538a405c1e5956e871e9f66dd5f5d9c8fac8a5b93a652b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6192,
+   "output_sha256": "2c536fef5cadfbe4d0cf1e796f064f5fe775e2765a87745f2317fb87b375f34d",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/salvame-rosalie-ang.jpg",
+   "slug": "salvame-rosalie-ang",
+   "source_bytes": 148578,
+   "source_sha256": "46dece1868e1a9fd840451b0e2cd53619e61467cd40319de53a8e83b32a3b67d",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3956,
+   "output_sha256": "97f51d8f5d68bdeefd670df929dabcb27ad811fa1bdb764165885cf5a6d90bdf",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/santos-ma-alana-samantha-tali-o.jpg",
+   "slug": "santos-ma-alana-samantha-tali-o",
+   "source_bytes": 127177,
+   "source_sha256": "7b95dea690b80405bb85d4dd15ab6754b3a7dfa79e91e24a06dc48e30720675c",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4574,
+   "output_sha256": "c4828ec1b9f48272954cb61cc9825791de463ed18a6e73f2c0372de5f3f021a2",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/santos-mark-anthony-g.jpg",
+   "slug": "santos-mark-anthony-g",
+   "source_bytes": 143282,
+   "source_sha256": "074c2372b2ba8a3078f44b79e700c5de3d46c0800a079e1c61f4a2d4e16737e2",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4314,
+   "output_sha256": "ba196b2720415a7da0fcb891ec2f076f3bdf9b23578e1b6d1b132d35a49a6750",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/shimura-sun-j.jpg",
+   "slug": "shimura-sun-j",
+   "source_bytes": 142180,
+   "source_sha256": "4c037ebb9ff3218f345802721c477470f1d79a864133c72bde70a4653a1fef1c",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 9660,
+   "output_sha256": "d796a4eadf16755521cac522ea345b2e64456e7b3accefa4c2ed8272faf8dd02",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/singson-meehan-kristine.jpg",
+   "slug": "singson-meehan-kristine",
+   "source_bytes": 177921,
+   "source_sha256": "28aaefc4f7644ff05610b69b4eb4db0c37fb80f1db5a049a1b909f30493400cb",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 7470,
+   "output_sha256": "2d2b49a88c47e0673ac4dbae7fa52755e4f986d255a093f0ae113e3789a3dbe4",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/singson-ronald-v.jpg",
+   "slug": "singson-ronald-v",
+   "source_bytes": 160542,
+   "source_sha256": "4104c5c07c9709a5eee99314b05364f0af9d448f6bc79edec871cad077a8c1a0",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3670,
+   "output_sha256": "77981e798b1197cce78a4cbee432c4f078273b9ca5f489a0d2f815b185614b0a",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/solon-steve-chiongbian.jpg",
+   "slug": "solon-steve-chiongbian",
+   "source_bytes": 132479,
+   "source_sha256": "0369802d2c1e26bbfb6f6b6b92e5c9d257f8981b81d951c4df6b2f38ebe711b7",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3656,
+   "output_sha256": "ec0acd1d8d9c3bdbc5374a8c48ba51fd96af15ed827cc9f6a1d54e6e7fc1f802",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/suan-lordan-g.jpg",
+   "slug": "suan-lordan-g",
+   "source_bytes": 116381,
+   "source_sha256": "aecc0127f4fc2257de080ac54d8f37c1702efe69329403c20f7c02e40d448f8b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3894,
+   "output_sha256": "71c5bacb4ddd99bea68e3c7fd7850c7242fb33883d68eae5953fc05b412aa700",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/suansing-bella-vanessa-b.jpg",
+   "slug": "suansing-bella-vanessa-b",
+   "source_bytes": 119639,
+   "source_sha256": "9fb44952bf4d36e530fd21e865d4b8006cf2f853590346c01bd2d540a400408a",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4664,
+   "output_sha256": "0eee7c95c0faf62a8788fea87c2a6ec91290bac34c35a2328c466b1b43dcbe84",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/suansing-mikaela-angela-b.jpg",
+   "slug": "suansing-mikaela-angela-b",
+   "source_bytes": 141587,
+   "source_sha256": "7ba08c35d0ea986b76ba3f9ae7c166a1a41ef058935036298a76a2cd9d003234",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4740,
+   "output_sha256": "8cc24658080ff2c7834dd82f0c29ea9786411e429de07d0029403bfb82e5ef1a",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/suarez-david-jay-jay-c.jpg",
+   "slug": "suarez-david-jay-jay-c",
+   "source_bytes": 128832,
+   "source_sha256": "8f20b003b680f78ee9888f0284129dcdfe731f46a147785ab9a6b5a518513195",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4896,
+   "output_sha256": "f517d4069ecc373369346172a2f72774dad8a954c86c75afedf4f54d0393b1fd",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/suntay-jesus-bong-c.jpg",
+   "slug": "suntay-jesus-bong-c",
+   "source_bytes": 137630,
+   "source_sha256": "665ca8db1e1ba639ba35e1bc3e4247c2d0e9d603151712123a713b94dd4bcb8c",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6618,
+   "output_sha256": "7b970bd6984982d5b2c9a528a36edb480d9a8488e9166feb7797e932bc014b53",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tallado-josefina-b.jpg",
+   "slug": "tallado-josefina-b",
+   "source_bytes": 151731,
+   "source_sha256": "c3b94c4e77023e05e9641ea8a9278d098a9df0ae24325238c97642f7675d796b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4526,
+   "output_sha256": "ab88ca638029a5a71963ddd20c36439cb89817250d469676b9995398e46f0007",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tan-joseph-s.jpg",
+   "slug": "tan-joseph-s",
+   "source_bytes": 143297,
+   "source_sha256": "79194f2478adcdad039737fd47a9a85e41a3dcc18ec69f6d7b4df4f5e370f7b1",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4396,
+   "output_sha256": "d9439fe1624b6dc7305a737bdb567cc975e4060677c39b2f09cc378fad29554f",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tan-keith-micah-atty-mike-d-l.jpg",
+   "slug": "tan-keith-micah-atty-mike-d-l",
+   "source_bytes": 136574,
+   "source_sha256": "9408b784e8f17be4c9c9a5607e8c6e5ceb1b37db4e894f04f0e7f9a333755f72",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3288,
+   "output_sha256": "7a504204a897491ff8d20216fa51c110b28075298e545a9508221adb7bac8bea",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tan-reynolds-michael-t.jpg",
+   "slug": "tan-reynolds-michael-t",
+   "source_bytes": 113591,
+   "source_sha256": "a6fad4f34064c9bbbc897d604e0058821a841453a0336972925b3bf644fc3ca0",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 9292,
+   "output_sha256": "e1375fc8b6dd5390100b7b22d36d319bc2e7d3d7b329a526ca862f2a27835c98",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tan-samier-a.jpg",
+   "slug": "tan-samier-a",
+   "source_bytes": 171687,
+   "source_sha256": "9348cfc5aa5e749f58e5e9f56d555e81c7b4bd2d4f0836c73854a48a80c09dbf",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3630,
+   "output_sha256": "42ba00bf44f702712d7f793f41ad55264f8fc6c275425c157d0ee02f2f584076",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tan-stephen-james-t.jpg",
+   "slug": "tan-stephen-james-t",
+   "source_bytes": 124973,
+   "source_sha256": "6e7979e3b3e80a64fa1b934c5c4d14992a7ce18eb9a656b246cbe2d5a1ad4bc1",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3534,
+   "output_sha256": "6b6da367bdc666a5b0f1ff47b21f4213e0f1d3906ed9369911b107ba065548df",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tanjuatco-emigdio-iii-p.jpg",
+   "slug": "tanjuatco-emigdio-iii-p",
+   "source_bytes": 128184,
+   "source_sha256": "04f666ae161931fbcbbc0be491e35946cd7d91ddcd8260f3fbd7e175fdace136",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4636,
+   "output_sha256": "392cf05ce384b05773f13f0ceedf7a6f9465d0d70f64d8e154f8343e43d4ca5b",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tarriela-leody-odie-f.jpg",
+   "slug": "tarriela-leody-odie-f",
+   "source_bytes": 148462,
+   "source_sha256": "9d2a64f76f0881d1a34692d3744e572efdca0ea667e7812d8e537ef531715ad1",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3916,
+   "output_sha256": "bdfb2c01462043c6cd144d7bbca5be38492d790aa5e12cbcc914159b52918a20",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/teodoro-marcelino-marcy-r.jpg",
+   "slug": "teodoro-marcelino-marcy-r",
+   "source_bytes": 130277,
+   "source_sha256": "dfc5119e1bc5b6af3b4ede19f630adae972bf9e7f24ccaefcf248181d4c540d4",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3408,
+   "output_sha256": "9821d86953081d6a7f24de4b1cc4e4a651f79f514360517e370dbcc28ba71d60",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tiangco-tobias-toby-m.jpg",
+   "slug": "tiangco-tobias-toby-m",
+   "source_bytes": 119573,
+   "source_sha256": "1597df5293380e5ded8d92c9f04b6fa6e79baf9df9db98fcb87e530a597ab7c7",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3320,
+   "output_sha256": "f8c1f8bb6252270f5afe8486e9ca30b0e48a75cba38ab98d229721a6fc6250a5",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tieng-irwin-c.jpg",
+   "slug": "tieng-irwin-c",
+   "source_bytes": 159593,
+   "source_sha256": "808c510a855fec490a919c73d6c80dd030b350259b805123a70b49e2d5e21825",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4474,
+   "output_sha256": "bfd73c3a4a569d9c779014c96cdd15bae58650216e471118a669ae3820c00141",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tolentino-aniela-bianca-d.jpg",
+   "slug": "tolentino-aniela-bianca-d",
+   "source_bytes": 140366,
+   "source_sha256": "4f771f22cff0fbd1cc74aff3c48f881d887050cc50751fe83ab7a644c663228d",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 8684,
+   "output_sha256": "3cced91fbfd2f2005cbb774081c825e12c55d418f5ae6eb9bf0e80ed49826d12",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tuan-dibu-s.jpg",
+   "slug": "tuan-dibu-s",
+   "source_bytes": 163977,
+   "source_sha256": "f213fa09fb85b796339f01f96a0ecce0a2e56f567aa3d52684090081e2826b52",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3894,
+   "output_sha256": "6bb38419eb4ad06b9cbc45fa7c40c43ef02d6dce3fed392b31436ad28e3b7f85",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tulfo-ralph-wendel-p.jpg",
+   "slug": "tulfo-ralph-wendel-p",
+   "source_bytes": 134827,
+   "source_sha256": "32a765ee7706610e803828bbcf260cfe81fdb1cee33a1c029c0f23204f5767f1",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3172,
+   "output_sha256": "43cc36e1c668ff40fb79251b8e9f9969f65e707fa4e49606bcbe071ad41459be",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tupas-binky-april-m.jpg",
+   "slug": "tupas-binky-april-m",
+   "source_bytes": 110715,
+   "source_sha256": "5306bc27cf8b7566d2f3f758430981563c71676d7ba594acf5c8b2694cf1ec07",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6360,
+   "output_sha256": "7e1120ad1d4e4f912400b0d2743a69eb092887a7149e42ed796a51296e3101f2",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/tutor-kristine-alexie-b.jpg",
+   "slug": "tutor-kristine-alexie-b",
+   "source_bytes": 145900,
+   "source_sha256": "78a6876a547ac0276a41f62d37767f3b5898e75bb840f598668c4f7bf376da0f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 7642,
+   "output_sha256": "64250a92ec25e649ec76925a974259342140f9b1be17ed08204773452025fa26",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/umali-alfonso-jr-v.jpg",
+   "slug": "umali-alfonso-jr-v",
+   "source_bytes": 165643,
+   "source_sha256": "683d038f06823c5ec9610eaabab866c3f67a0b92fc6f4e2ac9db5caf8499d4a8",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4016,
+   "output_sha256": "95833b250bb639ae84e2e126277d4c6ef10ba14f31095f9957419144c415971e",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/ungab-isidro-t.jpg",
+   "slug": "ungab-isidro-t",
+   "source_bytes": 136681,
+   "source_sha256": "8e977dd3dc074c6f035ba7833c2aa06c5e4fc1ff03cf81d5690fca6a4dd95715",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3864,
+   "output_sha256": "e3bceb944ad305e1dca9ac36abff3f610549dca3d79a3671375686eaf1d6eabd",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/uy-de-carlo-l.jpg",
+   "slug": "uy-de-carlo-l",
+   "source_bytes": 126262,
+   "source_sha256": "4378ffab23856f381ad70936f85c961f240db2e6128599f25efd042e73bd1dd3",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3504,
+   "output_sha256": "2874a5ad0956af60da2c104d04f9f807ed296b4deff1f0156b13d5082c1e7c7b",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/uy-roberto-pinpin-jr-t.jpg",
+   "slug": "uy-roberto-pinpin-jr-t",
+   "source_bytes": 128514,
+   "source_sha256": "a8b9df578005e3fa8308040e2e130eba9976ad02c7b427325c0b9fd41697123e",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 6698,
+   "output_sha256": "dd97e7c42422733d5a89fbddd5fdb3704ab21b8e77c8e4b498b68f7bfcfecfac",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/valeriano-rolando-m.jpg",
+   "slug": "valeriano-rolando-m",
+   "source_bytes": 166356,
+   "source_sha256": "d84df74bf9f77a75e82080218105d61f4a67c002bfdef2e6da9c257e666d9ddb",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 7990,
+   "output_sha256": "166fa57580dce001c7186d9e0fa26ceed04a2bed4dbeac00c9bc2a6e421c5d36",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/vargas-alfonso-baby-aline.jpg",
+   "slug": "vargas-alfonso-baby-aline",
+   "source_bytes": 151796,
+   "source_sha256": "dbd8155ba4e190a04e65b617b139a147226b1addf376df3fdb8f073f394e6df0",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3986,
+   "output_sha256": "0f3c2809a6d9e89ec4a23d50a7e4a7758b2f9e38fb7d8358a3dc20b3ecadf695",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/vargas-patrick-michael-d.jpg",
+   "slug": "vargas-patrick-michael-d",
+   "source_bytes": 127006,
+   "source_sha256": "d50bc89a6a42399eec2db91a58953e48f25f20f4c907b3e09950239e18d0a503",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5464,
+   "output_sha256": "c2061db8ecfe5edc09407f75ca989102186c94d2582121e7d887383cba4c26c2",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/veloso-tuazon-anna-victoria.jpg",
+   "slug": "veloso-tuazon-anna-victoria",
+   "source_bytes": 142973,
+   "source_sha256": "8b1ad87a5de5da47cd7d13adce9215b4afa7058a20ca2837b98df89950dc996b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3658,
+   "output_sha256": "6470332f699deca9618afced289a1fdad502bee8e282c2ebff198373e3c4030f",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/vergara-julius-cesar-jay-v.jpg",
+   "slug": "vergara-julius-cesar-jay-v",
+   "source_bytes": 131303,
+   "source_sha256": "8bfda425f485d3e8d897bc23e9874b3a0bfecf0afd5136c909b152fc7bd81afc",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3936,
+   "output_sha256": "46480fe8a159407b0f3a32369f67e8a66462e33e7d5cfb915fa8fe3cdf1ab924",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/villa-zaldy-s.jpg",
+   "slug": "villa-zaldy-s",
+   "source_bytes": 138845,
+   "source_sha256": "8b9f37247be30ad34d238321f14bc24a3ad55a4a67d0a76484b8d84235b7834f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3952,
+   "output_sha256": "9f59448cc587a95c034024b9d65fbb68fe43c9d44ad6faab3ba14d3a1df76c26",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/villafuerte-miguel-luis-r.jpg",
+   "slug": "villafuerte-miguel-luis-r",
+   "source_bytes": 126485,
+   "source_sha256": "1d7456483dc53c479c8bb30eb9aad90fdd8c6ed805189a7d73ce9c1220e7f465",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4832,
+   "output_sha256": "e0570e51507a77e9d6bc82fbd2327b50c7316d94c2365f351e50bd4d79b93573",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/villafuerte-vincenzo-renato-luigi-r.jpg",
+   "slug": "villafuerte-vincenzo-renato-luigi-r",
+   "source_bytes": 141475,
+   "source_sha256": "9e155570ba3aded80c6013922ab41287c99fdd430f455611264b3cdf0cff451c",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5222,
+   "output_sha256": "892efa48b18aa7b8528e6787067a73750ea90b17d3cdf70c3fac9f93972206a3",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/villarica-linabelle-ruth-r.jpg",
+   "slug": "villarica-linabelle-ruth-r",
+   "source_bytes": 142188,
+   "source_sha256": "fc24587e56a04aa3b90f119c7a3f230f54eeb7236abc339afe37442b6898ee37",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3532,
+   "output_sha256": "097a13aeaef92863690d1541226d48eb70760c8b4a5a4d83404ac23fb4f1c597",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/violago-mark-cholo-i.jpg",
+   "slug": "violago-mark-cholo-i",
+   "source_bytes": 128611,
+   "source_sha256": "9568e0d6d468d1a1b33a48ab7f9f51da12e42345edaa087d5dfaf89aa639334d",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4330,
+   "output_sha256": "3550dd52627e7c41c2a4449b199b60ef9f468313b7f7f20da6df87f79207955d",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/yamsuan-brian-raymund-s.jpg",
+   "slug": "yamsuan-brian-raymund-s",
+   "source_bytes": 138209,
+   "source_sha256": "7cc124eb680beb081cc05b1c14df07b6eefebffdc93d9f6cf5f3511e8ab06d82",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3840,
+   "output_sha256": "f2327becd71aadd62c434ea32f2c82dbbd0a3531a3b9bfe7d2246b5331d37250",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/yap-christopherson-coco-m.jpg",
+   "slug": "yap-christopherson-coco-m",
+   "source_bytes": 131268,
+   "source_sha256": "775074975e1e6081a7591d6499f2d9dcd74d3f0ea1ee943ba7f37310bef1b75b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3990,
+   "output_sha256": "3f85ba052723e2aba6f83396500f1505dfb4fbeb1f8917ffafe42623dc8eb47b",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/yap-eric-go.jpg",
+   "slug": "yap-eric-go",
+   "source_bytes": 130946,
+   "source_sha256": "e5d7098c28a7e860bf4a25b88081124180edb6f598d9409fe69fcb0113b197e5",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4202,
+   "output_sha256": "ac8a4de990ac49f499514423fccdb424c6b527c907ad34a7eb3b6f59bffa2e6f",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/yap-john-geesnell-baba.jpg",
+   "slug": "yap-john-geesnell-baba",
+   "source_bytes": 137205,
+   "source_sha256": "80e07f4ddaa0003c23375eb952e986c8bda184460cf0caaeeff0c3402ae3b67b",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4872,
+   "output_sha256": "f2be5857857e38ada1f18d6dd39c6bb1c225cc669783ab3f6663f4d3fc96c247",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/ynares-rebecca-maria-alcantara.jpg",
+   "slug": "ynares-rebecca-maria-alcantara",
+   "source_bytes": 136167,
+   "source_sha256": "c3db9aa23d00a3a7561078f1a2e1f0f4e5443ff3d118e20cfe948418e068dd43",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4562,
+   "output_sha256": "b344d1e8cc295a74cd4191d7c8e2505e392530973626ba2186f510dc93053245",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/yu-jeyzel-victoria-c.jpg",
+   "slug": "yu-jeyzel-victoria-c",
+   "source_bytes": 141844,
+   "source_sha256": "721e91c9e00e2346f580f95c7c144c80518bb2fc1442a8700d376afed0bdc6bb",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4178,
+   "output_sha256": "82b6bf5f89db3828207a3d632ca2910e2e77e4b15ab01f24e02553ceb073f681",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/yu-joseph-kim-c.jpg",
+   "slug": "yu-joseph-kim-c",
+   "source_bytes": 129822,
+   "source_sha256": "6905952553022576bced11b1a53dfbb47587f181d680d17203c35e39c513ee5f",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 3910,
+   "output_sha256": "f1ada9a7ad0b0ed7390e993e7ad4bedc0e474e575d2ab6c138617bcf0b8cfe14",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/yulo-emilio-bernardino-l.jpg",
+   "slug": "yulo-emilio-bernardino-l",
+   "source_bytes": 135369,
+   "source_sha256": "572d4b594c610ff9af1138a9fb00230f5cf1fed6e09fef12a569a90ef92222e3",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 7828,
+   "output_sha256": "71dd49163e2dc4a5c922ab3550562317b4408400c7227af173e0a652aacf5958",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/zamora-maria-carmen-s.jpg",
+   "slug": "zamora-maria-carmen-s",
+   "source_bytes": 167798,
+   "source_sha256": "16f81639a88b59a10642d0d5cf25a6cfd47ecf3c259671aab177312dacad1eb1",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 4772,
+   "output_sha256": "4fc8a8b8273997e267bc4eb14ff4ee1454cd09800b48a7dc0a1c1763a27a42fd",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/zamora-ysabel-maria-j.jpg",
+   "slug": "zamora-ysabel-maria-j",
+   "source_bytes": 140568,
+   "source_sha256": "3a7bac02d4b460278551107e8592dd98abee6cea4f4906eaf59fddc7a1b7371d",
+   "source_size": [
+    288,
+    387
+   ]
+  },
+  {
+   "output_bytes": 5138,
+   "output_sha256": "fa1e82c4b28724c0e6b937cf7027af5db5e63c3acefa91914532c7ade8074e65",
+   "output_size": [
+    192,
+    258
+   ],
+   "photoPath": "legislative_profiles/photos/zubiri-audrey-kay-t.jpg",
+   "slug": "zubiri-audrey-kay-t",
+   "source_bytes": 143237,
+   "source_sha256": "5f7553476fd0c7af2fcb33620b3b855e99fa00896303c58ab60619198d4d8e86",
+   "source_size": [
+    288,
+    387
+   ]
+  }
+ ],
+ "quality": 78,
+ "schema_version": 1,
+ "source_bytes": 35004572,
+ "target_size": [
+  192,
+  258
+ ]
+}

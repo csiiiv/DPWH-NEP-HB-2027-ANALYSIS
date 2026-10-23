@@ -1,19 +1,30 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync, existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {hydrateProjects} from './comparisonData.js';
 import {regionCandidates} from './regionCandidates.js';
 import {partition} from './overviewSummary.js';
 import {buildCongressIndex, officeJoinKey, classifyRow, buildCrosswalk} from '../buildCongressIndex.mjs';
 
+// The comparison payload, overview and the built index are derived (built by
+// predev/prebuild, gitignored); the crosswalk is committed. On a bare
+// checkout the suite skips rather than crashing on ENOENT; CI builds before
+// testing so it always runs fully there.
+const haveData = ['comparison_projects_2027.json', 'comparison_overview_2027.json',
+  'congress_district_index_2027.json'].every(name =>
+  existsSync(new URL(`../../data/${name}`, import.meta.url)));
+const skip = haveData ? false : {skip: 'congress datasets not built — run predev/prebuild'};
+
 const read = name => JSON.parse(readFileSync(new URL(`../../data/${name}`, import.meta.url)));
 const readRepo = path => JSON.parse(readFileSync(new URL(`../../../${path}`, import.meta.url)));
 
-const detail = read('comparison_projects_2027.json');
-const overview = read('comparison_overview_2027.json');
-const crosswalk = readRepo('DEO2LEG/outputs/deo_leg_crosswalk.json');
-const committed = read('congress_district_index_2027.json');
+// Reads are guarded: when the derived data is absent every test is skipped,
+// so the nulls are never dereferenced.
+const detail = haveData ? read('comparison_projects_2027.json') : null;
+const overview = haveData ? read('comparison_overview_2027.json') : null;
+const crosswalk = haveData ? readRepo('DEO2LEG/outputs/deo_leg_crosswalk.json') : null;
+const committed = haveData ? read('congress_district_index_2027.json') : null;
 
 const BUCKETS = ['insertions', 'deletions', 'increased', 'reduced', 'unchanged', 'scope_review'];
 const flat = (list, key) => list.flatMap(card => card[key]);
@@ -42,7 +53,7 @@ function expectedBuckets(rows) {
 // The join vocabulary
 // ---------------------------------------------------------------------------
 
-test('the office join key collapses the ledger and registry vocabularies', () => {
+test(skip, 'the office join key collapses the ledger and registry vocabularies', () => {
   // The ledger prints the long form and has already collapsed the hyphen; the
   // crosswalk registry prints the abbreviation and keeps it.
   assert.equal(officeJoinKey('Las Piñas-Muntinlupa DEO'), officeJoinKey('Las Piñas Muntinlupa District Engineering Office'));
@@ -55,7 +66,7 @@ test('the office join key collapses the ledger and registry vocabularies', () =>
   assert.notEqual(officeJoinKey('Tarlac DEO'), officeJoinKey('Tarlac City DEO'));
 });
 
-test('the join key absorbs the office-name OCR slips the ledger carries', () => {
+test(skip, 'the join key absorbs the office-name OCR slips the ledger carries', () => {
   // Regression guard for the three slips mined out of the House NEP annexes.
   // Without them each typo formed its own office bucket, splitting one office
   // in two across every filter and dropping it out of the crosswalk join.
@@ -68,7 +79,7 @@ test('the join key absorbs the office-name OCR slips the ledger carries', () => 
   }
 });
 
-test('every ledger office resolves to a group or is knowingly unattributable', () => {
+test(skip, 'every ledger office resolves to a group or is knowingly unattributable', () => {
   const map = buildCrosswalk(crosswalk);
   const groupsForOffice = name => {
     const officeIds = map.keyToOffices.get(officeJoinKey(name));
@@ -98,7 +109,7 @@ test('every ledger office resolves to a group or is knowingly unattributable', (
   }
 });
 
-test('a regional grouping is never treated as a district office', () => {
+test(skip, 'a regional grouping is never treated as a district office', () => {
   const map = buildCrosswalk(crosswalk);
   const barmm = crosswalk.offices['office:barmm'];
   assert.equal(barmm.type, 'regional_group');
@@ -118,7 +129,7 @@ test('a regional grouping is never treated as a district office', () => {
 // Freshness and reconciliation
 // ---------------------------------------------------------------------------
 
-test('the committed index matches a fresh build', () => {
+test(skip, 'the committed index matches a fresh build', () => {
   const fresh = buildCongressIndex({detail, overview, crosswalk}, committed.built_at,
     committed.input_provenance);
   assert.deepEqual(committed, fresh,
@@ -139,7 +150,7 @@ test('the committed index matches a fresh build', () => {
   }
 });
 
-test('cards plus residual plus office change rebuild the published ledger exactly', () => {
+test(skip, 'cards plus residual plus office change rebuild the published ledger exactly', () => {
   const rows = regionCandidates(hydrateProjects(detail));
   const whole = partition(rows, 'third');
   const parts = [...committed.cards.map(card => card.summary),
@@ -174,7 +185,7 @@ test('cards plus residual plus office change rebuild the published ledger exactl
   assert.equal(published.sources.nep.count, overview.headlines.sources.nep.records);
 });
 
-test('every row lands in exactly one place', () => {
+test(skip, 'every row lands in exactly one place', () => {
   const rows = regionCandidates(hydrateProjects(detail));
   const byId = new Map(rows.map(row => [row.id, row]));
   const seen = new Map();
@@ -208,7 +219,7 @@ test('every row lands in exactly one place', () => {
   }
 });
 
-test('each card publishes the row IDs its own summary describes', () => {
+test(skip, 'each card publishes the row IDs its own summary describes', () => {
   const rows = new Map(regionCandidates(hydrateProjects(detail)).map(row => [row.id, row]));
   for (const card of committed.cards) {
     if (card.tier === 'none') {
@@ -243,7 +254,7 @@ test('each card publishes the row IDs its own summary describes', () => {
 // The four policy conditions
 // ---------------------------------------------------------------------------
 
-test('every aggregate carries an attribution tier and the tiers mean what they say', () => {
+test(skip, 'every aggregate carries an attribution tier and the tiers mean what they say', () => {
   assert.ok(committed.cards.length > 0);
   for (const card of committed.cards) {
     assert.ok(['A', 'B', 'none'].includes(card.tier), `${card.id} has tier ${card.tier}`);
@@ -263,7 +274,7 @@ test('every aggregate carries an attribution tier and the tiers mean what they s
     committed.counts.cards);
 });
 
-test('Tier B money is never divided among its districts', () => {
+test(skip, 'Tier B money is never divided among its districts', () => {
   const tierB = committed.cards.filter(card => card.tier === 'B');
   assert.ok(tierB.length > 0, 'no Tier B cards; the lens lost its shared offices');
   // Any KEY that would carry a per-district amount means the forbidden split
@@ -311,7 +322,7 @@ test('Tier B money is never divided among its districts', () => {
   }
 });
 
-test('the unattributable residual is published in full and holds the Central Office money', () => {
+test(skip, 'the unattributable residual is published in full and holds the Central Office money', () => {
   const residual = committed.residual;
   const whole = committed.reconciliation.whole.sources;
   const share = residual.share_of_ledger;
@@ -334,7 +345,7 @@ test('the unattributable residual is published in full and holds the Central Off
     'DEO2LEG/README.md states a different residual share than the index publishes');
 });
 
-test('the upstream honesty buckets survive into every card', () => {
+test(skip, 'the upstream honesty buckets survive into every card', () => {
   // Condition 4: segment-scope review stays its own bucket rather than being
   // folded into increases/decreases, on each card as well as in the whole.
   const whole = partition(regionCandidates(hydrateProjects(detail)), 'third');
@@ -358,7 +369,7 @@ test('the upstream honesty buckets survive into every card', () => {
 // Coverage and representation
 // ---------------------------------------------------------------------------
 
-test('every legislative district appears on a card with a consistent tier', () => {
+test(skip, 'every legislative district appears on a card with a consistent tier', () => {
   const seen = new Map();
   for (const card of committed.cards) {
     for (const district of card.districts) {
@@ -386,7 +397,7 @@ test('every legislative district appears on a card with a consistent tier', () =
   }
 });
 
-test('leadership roles appear only where the crosswalk records them', () => {
+test(skip, 'leadership roles appear only where the crosswalk records them', () => {
   const withRole = [];
   for (const card of committed.cards) {
     for (const district of card.districts) {
@@ -405,7 +416,7 @@ test('leadership roles appear only where the crosswalk records them', () => {
   }
 });
 
-test('an ambiguous seat names no representative and shows both candidates', () => {
+test(skip, 'an ambiguous seat names no representative and shows both candidates', () => {
   const ambiguous = Object.entries(crosswalk.legislativeDistricts)
     .filter(([, district]) => district.representative?.resolutionStatus !== 'resolved')
     .map(([districtId]) => districtId);
@@ -429,7 +440,7 @@ test('an ambiguous seat names no representative and shows both candidates', () =
     committed.counts.districts);
 });
 
-test('a card names a single representative only when one district is served', () => {
+test(skip, 'a card names a single representative only when one district is served', () => {
   for (const card of committed.cards) {
     if (card.districts.length === 1) {
       assert.ok(!card.representative.multiple, `${card.id} serves one district but lists several representatives`);
@@ -444,7 +455,7 @@ test('a card names a single representative only when one district is served', ()
   }
 });
 
-test('office-change rows are published as evidence, not assigned to a district', () => {
+test(skip, 'office-change rows are published as evidence, not assigned to a district', () => {
   const change = committed.office_change;
   assert.ok(change.rows.length > 0, 'no office-change rows; the hold-out is untested');
   const crossDistrict = change.rows.filter(row => row.cross_district);
@@ -475,7 +486,7 @@ test('office-change rows are published as evidence, not assigned to a district',
   assert.ok(change.note.includes('office'));
 });
 
-test('the lens states what it does not claim and which datasets it cannot cover', () => {
+test(skip, 'the lens states what it does not claim and which datasets it cannot cover', () => {
   assert.ok(committed.lens.not_claimed.includes('requested, sponsored, or controlled'));
   assert.equal(committed.lens.authority.includes('DEO2LEG/README.md'), true);
   assert.equal(committed.lens.regional_groups_excluded.length, 1);
@@ -491,7 +502,7 @@ test('the lens states what it does not claim and which datasets it cannot cover'
     committed.lens.stages.includes('not a stage'));
 });
 
-test('classifyRow never attributes a row whose stages disagree', () => {
+test(skip, 'classifyRow never attributes a row whose stages disagree', () => {
   const map = buildCrosswalk(crosswalk);
   const groupsForOffice = name => {
     const officeIds = map.keyToOffices.get(officeJoinKey(name));

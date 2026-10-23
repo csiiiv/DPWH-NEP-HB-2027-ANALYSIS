@@ -86,7 +86,10 @@ analysis/data/dpwh_details_xlsx_crosscheck.json
 
 analysis/data/budget_flow_sources_2027.json
 analysis/data/allocation_hierarchy_sources_2027.json
-# Congress DEO lens: rebuilt by analysis/web/buildCongressIndex.mjs and
-# scripts/build_congress_portraits.py (252 WebP portraits, ~0.7 MB).
+# Congress DEO lens: the index is rebuilt by analysis/web/buildCongressIndex.mjs
+# from the (larger) comparison payload. The WebP portraits are pre-rendered and
+# COMMITTED — they change only when the roster changes, and
+# scripts/build_congress_portraits.py --check (hash-only, no Pillow) verifies
+# staleness in CI. Run the builder without arguments to re-render after a
+# roster or display-size change, then commit the result.
 analysis/data/congress_district_index_2027.json
-analysis/data/congress_portraits/
