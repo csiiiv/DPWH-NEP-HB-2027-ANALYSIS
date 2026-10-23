@@ -85,6 +85,7 @@ jobs:
         run: |
           python3 -m unittest discover -s analysis/tests -p test_stage_trace.py -v
           python3 -m unittest discover -s analysis/tests -p test_static_pages.py -v
+          python3 -m unittest discover -s analysis/tests -p test_share_previews.py -v
           python3 -m unittest discover -s analysis/tests -p test_pdf_range_server.py -v
       - name: Initialize FMR geomapper
         run: git submodule update --init dpwh_coor2psgc_geomapping
