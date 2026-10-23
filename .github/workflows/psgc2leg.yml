@@ -27,6 +27,8 @@ jobs:
           node-version: '22'
       - name: Confirm generated crosswalk is current
         run: node PSGC2LEG/build.mjs --check
+      - name: Verify independent statutory and city-government crosscheck
+        run: node PSGC2LEG/crosscheck_official.mjs --check
       - name: Verify geographic resolution behavior
         run: node --test PSGC2LEG/tests/*.test.mjs
       - name: Check direct GPS CLI syntax and help
