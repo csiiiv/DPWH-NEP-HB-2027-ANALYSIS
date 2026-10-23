@@ -1,0 +1,52 @@
+name: Build full PSGC code-to-legislative district dataset
+
+on:
+  push:
+    branches:
+      - feature/psgc2leg-geographic-crosswalk
+    paths:
+      - 'PSGC2LEG/**'
+      - 'DEO2LEG/deo_leg_crosswalk.json'
+      - '.github/workflows/psgc2leg-code-map.yml'
+  pull_request:
+    paths:
+      - 'PSGC2LEG/**'
+      - 'DEO2LEG/deo_leg_crosswalk.json'
+      - '.github/workflows/psgc2leg-code-map.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build 43k+ PSGC administrative code mappings
+        run: node PSGC2LEG/build_code_mapping.mjs
+      - name: Run code-mapping invariants
+        run: node --test PSGC2LEG/tests/codeMapping.test.mjs
+      - name: Check build is deterministic
+        run: node PSGC2LEG/build_code_mapping.mjs --check
+      - name: Publish reviewable mapping artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: psgc-to-leg-2025
+          path: PSGC2LEG/outputs/psgc_to_leg_2025.json
+          retention-days: 30
+      - name: Publish generated mapping on isolated feature branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feature/psgc2leg-geographic-crosswalk'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add PSGC2LEG/outputs/psgc_to_leg_2025.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish full PSGC code-to-LEG mapping (generated)"
+            git push origin HEAD:feature/psgc2leg-geographic-crosswalk
+          fi
