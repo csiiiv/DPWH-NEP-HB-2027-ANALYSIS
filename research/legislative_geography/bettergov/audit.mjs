@@ -74,7 +74,7 @@ for(const f of manifest.pinnedFiles)dataset[f.path]=await loadPinned(f);
 const report=buildAudit({primary:dataset["static/data/districts.json"],generated:dataset["static/data/districts_generated.json"],hierarchy:dataset["city_barangays_mapping.json"],reps:dataset["static/data/20th_congress_representatives.json"]});
 report.upstream={repository:manifest.repository,commit:manifest.upstreamCommit,sourcePage:manifest.sourcePage,sourceHashes:Object.fromEntries(manifest.pinnedFiles.map(x=>[x.path,x.gitBlobSha1]))};
 report.officialControl=manifest.officialControl;
-const json=JSON.stringify(report,null,2)+"\\n";
+const json=JSON.stringify(report,null,2)+"\n";
 const out=resolve(root,"audit_report.json");
 if(process.argv.includes("--check")){
  if(!existsSync(out)||readFileSync(out,"utf8")!==json)throw Error("Audit output drift: regenerate with node audit.mjs");
