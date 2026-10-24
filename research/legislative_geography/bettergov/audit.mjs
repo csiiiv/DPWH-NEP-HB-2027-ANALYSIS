@@ -14,7 +14,7 @@ if(process.argv.includes("--source-dir")&&!sourceDir)throw Error("--source-dir e
 async function loadPinned(file){
  const url="https://raw.githubusercontent.com/"+manifest.repository+"/"+manifest.upstreamCommit+"/"+file.path;
  const input=sourceDir?readFileSync(resolve(sourceDir,file.path)):Buffer.from(await (async()=>{const r=await fetch(url);if(!r.ok)throw Error("Cannot fetch "+file.path+": "+r.status);return r.arrayBuffer();})());
- const digest=createHash("sha1").update(Buffer.from("blob "+input.length+"\\0")).update(input).digest("hex");
+ const digest=createHash("sha1").update(Buffer.from("blob "+input.length+"\0")).update(input).digest("hex");
  if(digest!==file.gitBlobSha1)throw Error("Git blob SHA mismatch for "+file.path+" expected "+file.gitBlobSha1+" got "+digest);
  return JSON.parse(input.toString("utf8"));
 }
