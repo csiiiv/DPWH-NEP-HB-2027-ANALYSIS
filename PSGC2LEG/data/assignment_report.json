@@ -1,0 +1,231 @@
+{
+  "total_municities_in_psgc": 1657,
+  "assigned": {
+    "whole_unit": 1629,
+    "multi_district_city": 27
+  },
+  "multi_district_cities": [
+    {
+      "psgc_code": "0730600000",
+      "name": "City of Cebu",
+      "jurisdiction": "Cebu City"
+    },
+    {
+      "psgc_code": "1130700000",
+      "name": "City of Davao",
+      "jurisdiction": "Davao City"
+    },
+    {
+      "psgc_code": "1030500000",
+      "name": "City of Cagayan De Oro",
+      "jurisdiction": "Cagayan de Oro"
+    },
+    {
+      "psgc_code": "1380300000",
+      "name": "City of Makati",
+      "jurisdiction": "Makati"
+    },
+    {
+      "psgc_code": "1381000000",
+      "name": "City of Parañaque",
+      "jurisdiction": "Parañaque"
+    },
+    {
+      "psgc_code": "1380600000",
+      "name": "City of Manila",
+      "jurisdiction": "Manila"
+    },
+    {
+      "psgc_code": "1380700000",
+      "name": "City of Marikina",
+      "jurisdiction": "Marikina"
+    },
+    {
+      "psgc_code": "1381300000",
+      "name": "Quezon City",
+      "jurisdiction": "Quezon City"
+    },
+    {
+      "psgc_code": "1380100000",
+      "name": "City of Caloocan",
+      "jurisdiction": "Caloocan"
+    },
+    {
+      "psgc_code": "1381600000",
+      "name": "City of Valenzuela",
+      "jurisdiction": "Valenzuela"
+    },
+    {
+      "psgc_code": "0405802000",
+      "name": "City of Antipolo",
+      "jurisdiction": "Antipolo"
+    },
+    {
+      "psgc_code": "0931700000",
+      "name": "City of Zamboanga",
+      "jurisdiction": "Zamboanga City"
+    }
+  ],
+  "unmatched_bettergov_entries": [],
+  "unmatched_bettergov_count": 0,
+  "psgc_municities_missing_from_bettergov": [],
+  "missing_count": 0,
+  "uacs_cross_check": {
+    "file": "uacs-nscb-municipality-leg__NSCB%20-%20Municipality%20with%20Legislative%20Districts.xlsx",
+    "checked": 1411,
+    "agree": 1297
+  },
+  "uacs_disagreements_sample": [
+    {
+      "psgc": "0203103000",
+      "name": "Aurora",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:isabela:5:2025"
+    },
+    {
+      "psgc": "0203105000",
+      "name": "Burgos",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:isabela:5:2025"
+    },
+    {
+      "psgc": "0203108000",
+      "name": "City of Cauayan",
+      "uacs_2014": "3rd",
+      "current": "leg:ph:isabela:6:2025"
+    },
+    {
+      "psgc": "0203112000",
+      "name": "Echague",
+      "uacs_2014": "4th",
+      "current": "leg:ph:isabela:6:2025"
+    },
+    {
+      "psgc": "0203116000",
+      "name": "Luna",
+      "uacs_2014": "3rd",
+      "current": "leg:ph:isabela:5:2025"
+    },
+    {
+      "psgc": "0203119000",
+      "name": "Mallig",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:isabela:5:2025"
+    },
+    {
+      "psgc": "0203121000",
+      "name": "Palanan",
+      "uacs_2014": "1st",
+      "current": "leg:ph:isabela:2:2025"
+    },
+    {
+      "psgc": "0203122000",
+      "name": "Quezon",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:isabela:5:2025"
+    },
+    {
+      "psgc": "0203123000",
+      "name": "Quirino",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:isabela:5:2025"
+    },
+    {
+      "psgc": "0203124000",
+      "name": "Ramon",
+      "uacs_2014": "4th",
+      "current": "leg:ph:isabela:3:2025"
+    },
+    {
+      "psgc": "0203125000",
+      "name": "Reina Mercedes",
+      "uacs_2014": "3rd",
+      "current": "leg:ph:isabela:2:2025"
+    },
+    {
+      "psgc": "0203126000",
+      "name": "Roxas",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:isabela:5:2025"
+    },
+    {
+      "psgc": "0203128000",
+      "name": "San Guillermo",
+      "uacs_2014": "3rd",
+      "current": "leg:ph:isabela:6:2025"
+    },
+    {
+      "psgc": "0203129000",
+      "name": "San Isidro",
+      "uacs_2014": "4th",
+      "current": "leg:ph:isabela:6:2025"
+    },
+    {
+      "psgc": "0203130000",
+      "name": "San Manuel",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:isabela:5:2025"
+    },
+    {
+      "psgc": "0300802000",
+      "name": "Bagac",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:bataan:3:2025"
+    },
+    {
+      "psgc": "0300804000",
+      "name": "Dinalupihan",
+      "uacs_2014": "1st",
+      "current": "leg:ph:bataan:3:2025"
+    },
+    {
+      "psgc": "0300807000",
+      "name": "Mariveles",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:bataan:3:2025"
+    },
+    {
+      "psgc": "0300808000",
+      "name": "Morong",
+      "uacs_2014": "1st",
+      "current": "leg:ph:bataan:3:2025"
+    },
+    {
+      "psgc": "0301401000",
+      "name": "Angat",
+      "uacs_2014": "3rd",
+      "current": "leg:ph:bulacan:6:2025"
+    },
+    {
+      "psgc": "0301402000",
+      "name": "Balagtas",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:bulacan:5:2025"
+    },
+    {
+      "psgc": "0301404000",
+      "name": "Bocaue",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:bulacan:5:2025"
+    },
+    {
+      "psgc": "0301408000",
+      "name": "Guiguinto",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:bulacan:5:2025"
+    },
+    {
+      "psgc": "0301413000",
+      "name": "Norzagaray",
+      "uacs_2014": "3rd",
+      "current": "leg:ph:bulacan:6:2025"
+    },
+    {
+      "psgc": "0301415000",
+      "name": "Pandi",
+      "uacs_2014": "2nd",
+      "current": "leg:ph:bulacan:5:2025"
+    }
+  ],
+  "uacs_disagreement_count": 114
+}

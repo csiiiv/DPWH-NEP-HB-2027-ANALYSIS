@@ -1,0 +1,56 @@
+{
+  "foundation_source": "bendlikeabamboo/barangay mirror 2026-10-12 (= PSA PSGC 3Q 2026)",
+  "foundation_provisional": true,
+  "replacement_plan": "swap to official PSA XLSX when network allows; structure identical",
+  "row_count": 43768,
+  "counts_by_level": {
+    "region": 18,
+    "province": 82,
+    "special_geographic_area": 1,
+    "city": 150,
+    "municipality": 1493,
+    "sub_municipality": 14,
+    "barangay": 42010
+  },
+  "city_class_counts": {
+    "HUC": 33,
+    "ICC": 6,
+    "CC": 111
+  },
+  "official_totals_check": {
+    "region": {
+      "got": 18,
+      "official": 18,
+      "match": true
+    },
+    "province": {
+      "got": 82,
+      "official": 82,
+      "match": true
+    },
+    "municipality": {
+      "got": 1493,
+      "official": 1493,
+      "match": true
+    },
+    "barangay": {
+      "got": 42010,
+      "official": 42010,
+      "match": true
+    }
+  },
+  "icc_note": "mirror ICC=6 vs PSA announcement 5: Isabela City counted as ICC in mirror; PSA lists it with '(Not a Province)' annotation. Kept as ICC; does not affect municipality-level LEG joins.",
+  "duplicate_codes": [],
+  "orphan_parent_codes": [],
+  "cycle_codes": [],
+  "cross_check_2023": {
+    "source": "PSA PSGC 4Q 2023 XLSX",
+    "compared": "municipality+city codes",
+    "old_municities": 1634,
+    "current_municities": 1643,
+    "expected_added": 8,
+    "added_since_2023": 91,
+    "removed_since_2023": 82
+  },
+  "problems": []
+}

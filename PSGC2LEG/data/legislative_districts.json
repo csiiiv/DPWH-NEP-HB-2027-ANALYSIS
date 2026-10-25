@@ -1,0 +1,4413 @@
+{
+  "source_refs": {
+    "seat_baseline": "COMELEC Resolution No. 11050 (4 Sep 2024) Annex A — 254 districts",
+    "roster": "BetterGov 20th Congress representatives (representative names corroboration only)"
+  },
+  "district_count": 254,
+  "expected_count": 254,
+  "region_seat_check": {
+    "BARMM": {
+      "catalog": 8,
+      "annex_a": 8
+    },
+    "CAR": {
+      "catalog": 7,
+      "annex_a": 7
+    },
+    "Caraga": {
+      "catalog": 9,
+      "annex_a": 9
+    },
+    "NCR": {
+      "catalog": 33,
+      "annex_a": 33
+    },
+    "NIR": {
+      "catalog": 11,
+      "annex_a": 11
+    },
+    "R1": {
+      "catalog": 12,
+      "annex_a": 12
+    },
+    "R10": {
+      "catalog": 14,
+      "annex_a": 14
+    },
+    "R11": {
+      "catalog": 11,
+      "annex_a": 11
+    },
+    "R12": {
+      "catalog": 10,
+      "annex_a": 10
+    },
+    "R2": {
+      "catalog": 12,
+      "annex_a": 12
+    },
+    "R3": {
+      "catalog": 24,
+      "annex_a": 24
+    },
+    "R4A": {
+      "catalog": 31,
+      "annex_a": 31
+    },
+    "R4B": {
+      "catalog": 8,
+      "annex_a": 8
+    },
+    "R5": {
+      "catalog": 16,
+      "annex_a": 16
+    },
+    "R6": {
+      "catalog": 12,
+      "annex_a": 12
+    },
+    "R7": {
+      "catalog": 14,
+      "annex_a": 14
+    },
+    "R8": {
+      "catalog": 13,
+      "annex_a": 13
+    },
+    "R9": {
+      "catalog": 9,
+      "annex_a": 9
+    }
+  },
+  "districts": [
+    {
+      "leg_id": "leg:ph:basilan:lone:2025",
+      "jurisdiction": "Basilan",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "BARMM",
+      "region": "Bangsamoro Autonomous Region in Muslim Mindanao",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Yusop Alano",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:lanao-del-sur:1:2025",
+      "jurisdiction": "Lanao del Sur",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "BARMM",
+      "region": "Bangsamoro Autonomous Region in Muslim Mindanao",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Zia Alonto Adiong",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:lanao-del-sur:2:2025",
+      "jurisdiction": "Lanao del Sur",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "BARMM",
+      "region": "Bangsamoro Autonomous Region in Muslim Mindanao",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Yasser Balindong",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:maguindanao-del-norte:lone:2025",
+      "jurisdiction": "Maguindanao del Norte",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "BARMM",
+      "region": "Bangsamoro Autonomous Region in Muslim Mindanao",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Dimple Mastura",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:maguindanao-del-sur:lone:2025",
+      "jurisdiction": "Maguindanao del Sur",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "BARMM",
+      "region": "Bangsamoro Autonomous Region in Muslim Mindanao",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Esmael Mangudadatu",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:sulu:1:2025",
+      "jurisdiction": "Sulu",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "BARMM",
+      "region": "Bangsamoro Autonomous Region in Muslim Mindanao",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Samier Tan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:sulu:2:2025",
+      "jurisdiction": "Sulu",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "BARMM",
+      "region": "Bangsamoro Autonomous Region in Muslim Mindanao",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Abdulmunir Mundoc Arbison",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:tawi-tawi:lone:2025",
+      "jurisdiction": "Tawi-Tawi",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "BARMM",
+      "region": "Bangsamoro Autonomous Region in Muslim Mindanao",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Dimszar Sali",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:abra:lone:2025",
+      "jurisdiction": "Abra",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "CAR",
+      "region": "Cordillera Administrative Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Joseph Bernos",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:apayao:lone:2025",
+      "jurisdiction": "Apayao",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "CAR",
+      "region": "Cordillera Administrative Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Eleanor Begtang",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:baguio:lone:2025",
+      "jurisdiction": "Baguio",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "CAR",
+      "region": "Cordillera Administrative Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Mauricio Domogan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:benguet:lone:2025",
+      "jurisdiction": "Benguet",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "CAR",
+      "region": "Cordillera Administrative Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Eric Yap",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:ifugao:lone:2025",
+      "jurisdiction": "Ifugao",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "CAR",
+      "region": "Cordillera Administrative Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Solomon Chungalao",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:kalinga:lone:2025",
+      "jurisdiction": "Kalinga",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "CAR",
+      "region": "Cordillera Administrative Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Caroline Agyao",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:mountain-province:lone:2025",
+      "jurisdiction": "Mountain Province",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "CAR",
+      "region": "Cordillera Administrative Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Maximo Dalog Jr.",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:agusan-del-norte:lone:2025",
+      "jurisdiction": "Agusan del Norte",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "Caraga",
+      "region": "Caraga",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Dale Corvera",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:agusan-del-sur:1:2025",
+      "jurisdiction": "Agusan del Sur",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "Caraga",
+      "region": "Caraga",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Alfel Bascug",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:agusan-del-sur:2:2025",
+      "jurisdiction": "Agusan del Sur",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "Caraga",
+      "region": "Caraga",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Eddiebong Plaza",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:butuan:lone:2025",
+      "jurisdiction": "Butuan",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "Caraga",
+      "region": "Caraga",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jose Aquino II",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:dinagat-islands:lone:2025",
+      "jurisdiction": "Dinagat Islands",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "Caraga",
+      "region": "Caraga",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Kaka Bag-ao",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:surigao-del-norte:1:2025",
+      "jurisdiction": "Surigao del Norte",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "Caraga",
+      "region": "Caraga",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Francisco Matugas",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:surigao-del-norte:2:2025",
+      "jurisdiction": "Surigao del Norte",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "Caraga",
+      "region": "Caraga",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Bernadette Barbers",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:surigao-del-sur:1:2025",
+      "jurisdiction": "Surigao del Sur",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "Caraga",
+      "region": "Caraga",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Romeo Momo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:surigao-del-sur:2:2025",
+      "jurisdiction": "Surigao del Sur",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "Caraga",
+      "region": "Caraga",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Alexander Pimentel",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:caloocan:1:2025",
+      "jurisdiction": "Caloocan",
+      "jurisdiction_type": "city",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Oscar Malapitan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:caloocan:2:2025",
+      "jurisdiction": "Caloocan",
+      "jurisdiction_type": "city",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Edgar Erice",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:caloocan:3:2025",
+      "jurisdiction": "Caloocan",
+      "jurisdiction_type": "city",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Dean Asistio",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:las-pinas:lone:2025",
+      "jurisdiction": "Las Piñas",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Mark Anthony Santos",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:makati:1:2025",
+      "jurisdiction": "Makati",
+      "jurisdiction_type": "city",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Monique Lagdameo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:makati:2:2025",
+      "jurisdiction": "Makati",
+      "jurisdiction_type": "city",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Alden Almario",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:malabon:lone:2025",
+      "jurisdiction": "Malabon",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Antolin Oreta III",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:mandaluyong:lone:2025",
+      "jurisdiction": "Mandaluyong",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Alexandria Gonzales",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:manila:1:2025",
+      "jurisdiction": "Manila",
+      "jurisdiction_type": "city",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ernix Dionisio",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:manila:2:2025",
+      "jurisdiction": "Manila",
+      "jurisdiction_type": "city",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Rolan Valeriano",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:manila:3:2025",
+      "jurisdiction": "Manila",
+      "jurisdiction_type": "city",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Joel Chua",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:manila:4:2025",
+      "jurisdiction": "Manila",
+      "jurisdiction_type": "city",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Giselle Maceda",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:manila:5:2025",
+      "jurisdiction": "Manila",
+      "jurisdiction_type": "city",
+      "district_label": "5th District",
+      "district_no": 5,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Irwin Tieng",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:manila:6:2025",
+      "jurisdiction": "Manila",
+      "jurisdiction_type": "city",
+      "district_label": "6th District",
+      "district_no": 6,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Benny Abante[h]",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:marikina:1:2025",
+      "jurisdiction": "Marikina",
+      "jurisdiction_type": "city",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Marcelino Teodoro[i]",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:marikina:2:2025",
+      "jurisdiction": "Marikina",
+      "jurisdiction_type": "city",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Miro Quimbo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:muntinlupa:lone:2025",
+      "jurisdiction": "Muntinlupa",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jaime Fresnedi",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:navotas:lone:2025",
+      "jurisdiction": "Navotas",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Toby Tiangco",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:paranaque:1:2025",
+      "jurisdiction": "Parañaque",
+      "jurisdiction_type": "city",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Eric Olivarez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:paranaque:2:2025",
+      "jurisdiction": "Parañaque",
+      "jurisdiction_type": "city",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Brian Yamsuan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:pasay:lone:2025",
+      "jurisdiction": "Pasay",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Antonino Calixto",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:pasig:lone:2025",
+      "jurisdiction": "Pasig",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Roman Romulo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:quezon-city:1:2025",
+      "jurisdiction": "Quezon City",
+      "jurisdiction_type": "city",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Arjo Atayde",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:quezon-city:2:2025",
+      "jurisdiction": "Quezon City",
+      "jurisdiction_type": "city",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ralph Tulfo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:quezon-city:3:2025",
+      "jurisdiction": "Quezon City",
+      "jurisdiction_type": "city",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Franz Pumaren",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:quezon-city:4:2025",
+      "jurisdiction": "Quezon City",
+      "jurisdiction_type": "city",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Bong Suntay",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:quezon-city:5:2025",
+      "jurisdiction": "Quezon City",
+      "jurisdiction_type": "city",
+      "district_label": "5th District",
+      "district_no": 5,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Patrick Michael Vargas",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:quezon-city:6:2025",
+      "jurisdiction": "Quezon City",
+      "jurisdiction_type": "city",
+      "district_label": "6th District",
+      "district_no": 6,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Marivic Co-Pilar",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:san-juan:lone:2025",
+      "jurisdiction": "San Juan",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Bel Zamora",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:taguig-pateros:1:2025",
+      "jurisdiction": "Taguig–Pateros",
+      "jurisdiction_type": "city_pair",
+      "district_label": "1st District (Pateros)",
+      "district_no": 1,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ading Cruz",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:taguig-pateros:2:2025",
+      "jurisdiction": "Taguig–Pateros",
+      "jurisdiction_type": "city_pair",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Daniel Bocobo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:valenzuela:1:2025",
+      "jurisdiction": "Valenzuela",
+      "jurisdiction_type": "city",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Kenneth Gatchalian",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:valenzuela:2:2025",
+      "jurisdiction": "Valenzuela",
+      "jurisdiction_type": "city",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "NCR",
+      "region": "National Capital Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Gerald Galang",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bacolod:lone:2025",
+      "jurisdiction": "Bacolod",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "NIR",
+      "region": "Negros Island Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Albee Benitez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:negros-occidental:1:2025",
+      "jurisdiction": "Negros Occidental",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "NIR",
+      "region": "Negros Island Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jules Ledesma",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:negros-occidental:2:2025",
+      "jurisdiction": "Negros Occidental",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "NIR",
+      "region": "Negros Island Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Alfredo Marañon III",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:negros-occidental:3:2025",
+      "jurisdiction": "Negros Occidental",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "NIR",
+      "region": "Negros Island Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Javi Benitez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:negros-occidental:4:2025",
+      "jurisdiction": "Negros Occidental",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "NIR",
+      "region": "Negros Island Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jeffrey Ferrer",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:negros-occidental:5:2025",
+      "jurisdiction": "Negros Occidental",
+      "jurisdiction_type": "province",
+      "district_label": "5th District",
+      "district_no": 5,
+      "region_key": "NIR",
+      "region": "Negros Island Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Dino Yulo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:negros-occidental:6:2025",
+      "jurisdiction": "Negros Occidental",
+      "jurisdiction_type": "province",
+      "district_label": "6th District",
+      "district_no": 6,
+      "region_key": "NIR",
+      "region": "Negros Island Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Mercedes Alvarez-Lansang",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:negros-oriental:1:2025",
+      "jurisdiction": "Negros Oriental",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "NIR",
+      "region": "Negros Island Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Emmanuel Iway",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:negros-oriental:2:2025",
+      "jurisdiction": "Negros Oriental",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "NIR",
+      "region": "Negros Island Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Maisa Sagarbarria",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:negros-oriental:3:2025",
+      "jurisdiction": "Negros Oriental",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "NIR",
+      "region": "Negros Island Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Janice Degamo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:siquijor:lone:2025",
+      "jurisdiction": "Siquijor",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "NIR",
+      "region": "Negros Island Region",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Zaldy Villa",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:ilocos-norte:1:2025",
+      "jurisdiction": "Ilocos Norte",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R1",
+      "region": "Region I (Ilocos)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Sandro Marcos",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:ilocos-norte:2:2025",
+      "jurisdiction": "Ilocos Norte",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R1",
+      "region": "Region I (Ilocos)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Eugenio Angelo Barba",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:ilocos-sur:1:2025",
+      "jurisdiction": "Ilocos Sur",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R1",
+      "region": "Region I (Ilocos)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ronald Singson",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:ilocos-sur:2:2025",
+      "jurisdiction": "Ilocos Sur",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R1",
+      "region": "Region I (Ilocos)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Kristine Singson-Meehan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:la-union:1:2025",
+      "jurisdiction": "La Union",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R1",
+      "region": "Region I (Ilocos)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Paolo Ortega",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:la-union:2:2025",
+      "jurisdiction": "La Union",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R1",
+      "region": "Region I (Ilocos)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Dante Garcia",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:pangasinan:1:2025",
+      "jurisdiction": "Pangasinan",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R1",
+      "region": "Region I (Ilocos)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Arthur Celeste",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:pangasinan:2:2025",
+      "jurisdiction": "Pangasinan",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R1",
+      "region": "Region I (Ilocos)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Mark Cojuangco",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:pangasinan:3:2025",
+      "jurisdiction": "Pangasinan",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R1",
+      "region": "Region I (Ilocos)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Maria Rachel Arenas",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:pangasinan:4:2025",
+      "jurisdiction": "Pangasinan",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R1",
+      "region": "Region I (Ilocos)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Gina de Venecia",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:pangasinan:5:2025",
+      "jurisdiction": "Pangasinan",
+      "jurisdiction_type": "province",
+      "district_label": "5th District",
+      "district_no": 5,
+      "region_key": "R1",
+      "region": "Region I (Ilocos)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ramon Guico Jr.",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:pangasinan:6:2025",
+      "jurisdiction": "Pangasinan",
+      "jurisdiction_type": "province",
+      "district_label": "6th District",
+      "district_no": 6,
+      "region_key": "R1",
+      "region": "Region I (Ilocos)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Marlyn Primicias-Agabas",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bukidnon:1:2025",
+      "jurisdiction": "Bukidnon",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jose Manuel Alba",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bukidnon:2:2025",
+      "jurisdiction": "Bukidnon",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jonathan Keith Flores",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bukidnon:3:2025",
+      "jurisdiction": "Bukidnon",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Audrey Zubiri",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bukidnon:4:2025",
+      "jurisdiction": "Bukidnon",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Laarni Roque",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cagayan-de-oro:1:2025",
+      "jurisdiction": "Cagayan de Oro",
+      "jurisdiction_type": "city",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Lordan Suan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cagayan-de-oro:2:2025",
+      "jurisdiction": "Cagayan de Oro",
+      "jurisdiction_type": "city",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Rufus Rodriguez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:camiguin:lone:2025",
+      "jurisdiction": "Camiguin",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jurdin Jesus Romualdo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:iligan:lone:2025",
+      "jurisdiction": "Iligan",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Celso Regencia",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:lanao-del-norte:1:2025",
+      "jurisdiction": "Lanao del Norte",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Imelda Dimaporo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:lanao-del-norte:2:2025",
+      "jurisdiction": "Lanao del Norte",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Aminah Dimaporo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:misamis-occidental:1:2025",
+      "jurisdiction": "Misamis Occidental",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jason Almonte",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:misamis-occidental:2:2025",
+      "jurisdiction": "Misamis Occidental",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ando Oaminal",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:misamis-oriental:1:2025",
+      "jurisdiction": "Misamis Oriental",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Karen Lagbas",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:misamis-oriental:2:2025",
+      "jurisdiction": "Misamis Oriental",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R10",
+      "region": "Region X (Northern Mindanao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Yevgeny Emano",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:davao-city:1:2025",
+      "jurisdiction": "Davao City",
+      "jurisdiction_type": "city",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R11",
+      "region": "Region XI (Davao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Paolo Duterte",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:davao-city:2:2025",
+      "jurisdiction": "Davao City",
+      "jurisdiction_type": "city",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R11",
+      "region": "Region XI (Davao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Omar Duterte",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:davao-city:3:2025",
+      "jurisdiction": "Davao City",
+      "jurisdiction_type": "city",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R11",
+      "region": "Region XI (Davao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Isidro Ungab",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:davao-occidental:lone:2025",
+      "jurisdiction": "Davao Occidental",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R11",
+      "region": "Region XI (Davao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Claude Bautista",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:davao-oriental:1:2025",
+      "jurisdiction": "Davao Oriental",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R11",
+      "region": "Region XI (Davao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Nelson Dayanghirang Jr.",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:davao-oriental:2:2025",
+      "jurisdiction": "Davao Oriental",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R11",
+      "region": "Region XI (Davao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Cheeno Almario",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:davao-de-oro:1:2025",
+      "jurisdiction": "Davao de Oro",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R11",
+      "region": "Region XI (Davao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Maricar Zamora",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:davao-de-oro:2:2025",
+      "jurisdiction": "Davao de Oro",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R11",
+      "region": "Region XI (Davao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jhong Ceniza",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:davao-del-norte:1:2025",
+      "jurisdiction": "Davao del Norte",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R11",
+      "region": "Region XI (Davao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "De Carlo Uy",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:davao-del-norte:2:2025",
+      "jurisdiction": "Davao del Norte",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R11",
+      "region": "Region XI (Davao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jose Manuel Lagdameo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:davao-del-sur:lone:2025",
+      "jurisdiction": "Davao del Sur",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R11",
+      "region": "Region XI (Davao)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "John Tracy Cagas",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cotabato:1:2025",
+      "jurisdiction": "Cotabato",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R12",
+      "region": "Region XII (SOCCSKSARGEN)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Edwin Cruzado",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cotabato:2:2025",
+      "jurisdiction": "Cotabato",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R12",
+      "region": "Region XII (SOCCSKSARGEN)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Rudy Caoagdan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cotabato:3:2025",
+      "jurisdiction": "Cotabato",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R12",
+      "region": "Region XII (SOCCSKSARGEN)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Samantha Santos",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:general-santos:lone:2025",
+      "jurisdiction": "General Santos",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R12",
+      "region": "Region XII (SOCCSKSARGEN)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Shirlyn Bañas-Nograles",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:sarangani:lone:2025",
+      "jurisdiction": "Sarangani",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R12",
+      "region": "Region XII (SOCCSKSARGEN)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Steve Solon",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:south-cotabato:1:2025",
+      "jurisdiction": "South Cotabato",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R12",
+      "region": "Region XII (SOCCSKSARGEN)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ed Lumayag",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:south-cotabato:2:2025",
+      "jurisdiction": "South Cotabato",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R12",
+      "region": "Region XII (SOCCSKSARGEN)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ferdinand Hernandez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:south-cotabato:3:2025",
+      "jurisdiction": "South Cotabato",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R12",
+      "region": "Region XII (SOCCSKSARGEN)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Dibu Tuan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:sultan-kudarat:1:2025",
+      "jurisdiction": "Sultan Kudarat",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R12",
+      "region": "Region XII (SOCCSKSARGEN)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ruth Sakaluran",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:sultan-kudarat:2:2025",
+      "jurisdiction": "Sultan Kudarat",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R12",
+      "region": "Region XII (SOCCSKSARGEN)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Bella Suansing",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:batanes:lone:2025",
+      "jurisdiction": "Batanes",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R2",
+      "region": "Region II (Cagayan Valley)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jun Gato",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cagayan:1:2025",
+      "jurisdiction": "Cagayan",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R2",
+      "region": "Region II (Cagayan Valley)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ramon Nolasco",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cagayan:2:2025",
+      "jurisdiction": "Cagayan",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R2",
+      "region": "Region II (Cagayan Valley)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Baby Alfonso",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cagayan:3:2025",
+      "jurisdiction": "Cagayan",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R2",
+      "region": "Region II (Cagayan Valley)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Joseph Lara",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:isabela:1:2025",
+      "jurisdiction": "Isabela",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R2",
+      "region": "Region II (Cagayan Valley)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Tonypet Albano",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:isabela:2:2025",
+      "jurisdiction": "Isabela",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R2",
+      "region": "Region II (Cagayan Valley)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ed Christopher Go",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:isabela:3:2025",
+      "jurisdiction": "Isabela",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R2",
+      "region": "Region II (Cagayan Valley)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ian Paul Dy",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:isabela:4:2025",
+      "jurisdiction": "Isabela",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R2",
+      "region": "Region II (Cagayan Valley)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Joseph Tan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:isabela:5:2025",
+      "jurisdiction": "Isabela",
+      "jurisdiction_type": "province",
+      "district_label": "5th District",
+      "district_no": 5,
+      "region_key": "R2",
+      "region": "Region II (Cagayan Valley)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Mike Dy III",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:isabela:6:2025",
+      "jurisdiction": "Isabela",
+      "jurisdiction_type": "province",
+      "district_label": "6th District",
+      "district_no": 6,
+      "region_key": "R2",
+      "region": "Region II (Cagayan Valley)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Bojie Dy",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:nueva-vizcaya:lone:2025",
+      "jurisdiction": "Nueva Vizcaya",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R2",
+      "region": "Region II (Cagayan Valley)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Tim Cayton",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:quirino:lone:2025",
+      "jurisdiction": "Quirino",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R2",
+      "region": "Region II (Cagayan Valley)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Midy Cua",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:aurora:lone:2025",
+      "jurisdiction": "Aurora",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Rommel T. Angara",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bataan:1:2025",
+      "jurisdiction": "Bataan",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Antonino Roman III",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bataan:2:2025",
+      "jurisdiction": "Bataan",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Albert Garcia",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bataan:3:2025",
+      "jurisdiction": "Bataan",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Maria Angela Garcia",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bulacan:1:2025",
+      "jurisdiction": "Bulacan",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Danny Domingo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bulacan:2:2025",
+      "jurisdiction": "Bulacan",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Tina Pancho",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bulacan:3:2025",
+      "jurisdiction": "Bulacan",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Cholo Violago",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bulacan:4:2025",
+      "jurisdiction": "Bulacan",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Linabelle Villarica",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bulacan:5:2025",
+      "jurisdiction": "Bulacan",
+      "jurisdiction_type": "province",
+      "district_label": "5th District",
+      "district_no": 5,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Agay Cruz",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bulacan:6:2025",
+      "jurisdiction": "Bulacan",
+      "jurisdiction_type": "province",
+      "district_label": "6th District",
+      "district_no": 6,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Salvador Pleyto",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:nueva-ecija:1:2025",
+      "jurisdiction": "Nueva Ecija",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Mika Suansing",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:nueva-ecija:2:2025",
+      "jurisdiction": "Nueva Ecija",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Kokoy Salvador",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:nueva-ecija:3:2025",
+      "jurisdiction": "Nueva Ecija",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jay Vergara",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:nueva-ecija:4:2025",
+      "jurisdiction": "Nueva Ecija",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Emeng Pascual",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:pampanga:1:2025",
+      "jurisdiction": "Pampanga",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Carmelo Lazatin Jr.",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:pampanga:2:2025",
+      "jurisdiction": "Pampanga",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Gloria Macapagal Arroyo",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:pampanga:3:2025",
+      "jurisdiction": "Pampanga",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Mica Gonzales",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:pampanga:4:2025",
+      "jurisdiction": "Pampanga",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Anna York Bondoc",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:san-jose-del-monte:lone:2025",
+      "jurisdiction": "San Jose del Monte",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Arthur Robes",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:tarlac:1:2025",
+      "jurisdiction": "Tarlac",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jaime Cojuangco",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:tarlac:2:2025",
+      "jurisdiction": "Tarlac",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Cristy Angeles",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:tarlac:3:2025",
+      "jurisdiction": "Tarlac",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Bong Rivera",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:zambales:1:2025",
+      "jurisdiction": "Zambales",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jay Khonghun",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:zambales:2:2025",
+      "jurisdiction": "Zambales",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R3",
+      "region": "Region III (Central Luzon)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Bing Maniquiz",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:antipolo:1:2025",
+      "jurisdiction": "Antipolo",
+      "jurisdiction_type": "city",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ronaldo Puno",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:antipolo:2:2025",
+      "jurisdiction": "Antipolo",
+      "jurisdiction_type": "city",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Romeo Acop",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:batangas:1:2025",
+      "jurisdiction": "Batangas",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Leandro Legarda Leviste",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:batangas:2:2025",
+      "jurisdiction": "Batangas",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Gerville Luistro",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:batangas:3:2025",
+      "jurisdiction": "Batangas",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "King Collantes",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:batangas:4:2025",
+      "jurisdiction": "Batangas",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Caloy Bolilia",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:batangas:5:2025",
+      "jurisdiction": "Batangas",
+      "jurisdiction_type": "province",
+      "district_label": "5th District",
+      "district_no": 5,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Beverley Dimacuha",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:batangas:6:2025",
+      "jurisdiction": "Batangas",
+      "jurisdiction_type": "province",
+      "district_label": "6th District",
+      "district_no": 6,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ryan Recto",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:binan:lone:2025",
+      "jurisdiction": "Biñan",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Arman Dimaguila",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:calamba:lone:2025",
+      "jurisdiction": "Calamba",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Cha Hernandez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cavite:1:2025",
+      "jurisdiction": "Cavite",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jolo Revilla",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cavite:2:2025",
+      "jurisdiction": "Cavite",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Lani Mercado",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cavite:3:2025",
+      "jurisdiction": "Cavite",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Adrian Jay Advincula",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cavite:4:2025",
+      "jurisdiction": "Cavite",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Kiko Barzaga",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cavite:5:2025",
+      "jurisdiction": "Cavite",
+      "jurisdiction_type": "province",
+      "district_label": "5th District",
+      "district_no": 5,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Roy Loyola",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cavite:6:2025",
+      "jurisdiction": "Cavite",
+      "jurisdiction_type": "province",
+      "district_label": "6th District",
+      "district_no": 6,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Antonio Ferrer",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cavite:7:2025",
+      "jurisdiction": "Cavite",
+      "jurisdiction_type": "province",
+      "district_label": "7th District",
+      "district_no": 7,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Crispin Diego Remulla",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cavite:8:2025",
+      "jurisdiction": "Cavite",
+      "jurisdiction_type": "province",
+      "district_label": "8th District",
+      "district_no": 8,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Aniela Tolentino",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:laguna:1:2025",
+      "jurisdiction": "Laguna",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ann Matibag",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:laguna:2:2025",
+      "jurisdiction": "Laguna",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ramil Hernandez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:laguna:3:2025",
+      "jurisdiction": "Laguna",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Amben Amante",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:laguna:4:2025",
+      "jurisdiction": "Laguna",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Benjamin Agarao Jr.",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:quezon:1:2025",
+      "jurisdiction": "Quezon",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Mark Enverga",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:quezon:2:2025",
+      "jurisdiction": "Quezon",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "David Suarez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:quezon:3:2025",
+      "jurisdiction": "Quezon",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Reynante Arrogancia",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:quezon:4:2025",
+      "jurisdiction": "Quezon",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Keith Micah Tan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:rizal:1:2025",
+      "jurisdiction": "Rizal",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Mia Ynares",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:rizal:2:2025",
+      "jurisdiction": "Rizal",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Dino Tanjuatco",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:rizal:3:2025",
+      "jurisdiction": "Rizal",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jose Arturo Garcia Jr.",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:rizal:4:2025",
+      "jurisdiction": "Rizal",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Dennis Hernandez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:santa-rosa:lone:2025",
+      "jurisdiction": "Santa Rosa",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R4A",
+      "region": "Region IV-A (CALABARZON)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Roy Gonzales",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:marinduque:lone:2025",
+      "jurisdiction": "Marinduque",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R4B",
+      "region": "Region IV-B (MIMAROPA)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Reynaldo Salvacion",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:occidental-mindoro:lone:2025",
+      "jurisdiction": "Occidental Mindoro",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R4B",
+      "region": "Region IV-B (MIMAROPA)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Odie Tarriela",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:oriental-mindoro:1:2025",
+      "jurisdiction": "Oriental Mindoro",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R4B",
+      "region": "Region IV-B (MIMAROPA)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Arnan Panaligan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:oriental-mindoro:2:2025",
+      "jurisdiction": "Oriental Mindoro",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R4B",
+      "region": "Region IV-B (MIMAROPA)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Alfonso Umali Jr.",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:palawan:1:2025",
+      "jurisdiction": "Palawan",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R4B",
+      "region": "Region IV-B (MIMAROPA)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Rose Salvame",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:palawan:2:2025",
+      "jurisdiction": "Palawan",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R4B",
+      "region": "Region IV-B (MIMAROPA)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jose Alvarez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:palawan:3:2025",
+      "jurisdiction": "Palawan",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R4B",
+      "region": "Region IV-B (MIMAROPA)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Gil Acosta Jr.",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:romblon:lone:2025",
+      "jurisdiction": "Romblon",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R4B",
+      "region": "Region IV-B (MIMAROPA)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Eleandro Jesus Madrona",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:albay:1:2025",
+      "jurisdiction": "Albay",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Krisel Lagman",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:albay:2:2025",
+      "jurisdiction": "Albay",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Caloy Loria",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:albay:3:2025",
+      "jurisdiction": "Albay",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Adrian Salceda",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:camarines-norte:1:2025",
+      "jurisdiction": "Camarines Norte",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Josefina Tallado",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:camarines-norte:2:2025",
+      "jurisdiction": "Camarines Norte",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Rosemarie Panotes",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:camarines-sur:1:2025",
+      "jurisdiction": "Camarines Sur",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Hori Horibata",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:camarines-sur:2:2025",
+      "jurisdiction": "Camarines Sur",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Luigi Villafuerte",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:camarines-sur:3:2025",
+      "jurisdiction": "Camarines Sur",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Nelson Legacion",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:camarines-sur:4:2025",
+      "jurisdiction": "Camarines Sur",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Arnulf Bryan Fuentebella",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:camarines-sur:5:2025",
+      "jurisdiction": "Camarines Sur",
+      "jurisdiction_type": "province",
+      "district_label": "5th District",
+      "district_no": 5,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Miguel Luis Villafuerte",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:catanduanes:lone:2025",
+      "jurisdiction": "Catanduanes",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Eulogio Rodriguez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:masbate:1:2025",
+      "jurisdiction": "Masbate",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Antonio Kho",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:masbate:2:2025",
+      "jurisdiction": "Masbate",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Elisa Olga Kho",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:masbate:3:2025",
+      "jurisdiction": "Masbate",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Wilton Kho",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:sorsogon:1:2025",
+      "jurisdiction": "Sorsogon",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Dette Escudero",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:sorsogon:2:2025",
+      "jurisdiction": "Sorsogon",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R5",
+      "region": "Region V (Bicol)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Wowo Fortes",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:aklan:1:2025",
+      "jurisdiction": "Aklan",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R6",
+      "region": "Region VI (Western Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jess Marquez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:aklan:2:2025",
+      "jurisdiction": "Aklan",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R6",
+      "region": "Region VI (Western Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Florencio Miraflores",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:antique:lone:2025",
+      "jurisdiction": "Antique",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R6",
+      "region": "Region VI (Western Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Antonio Legarda Jr.",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:capiz:1:2025",
+      "jurisdiction": "Capiz",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R6",
+      "region": "Region VI (Western Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Howard Guintu",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:capiz:2:2025",
+      "jurisdiction": "Capiz",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R6",
+      "region": "Region VI (Western Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jane Castro",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:guimaras:lone:2025",
+      "jurisdiction": "Guimaras",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R6",
+      "region": "Region VI (Western Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "JC Rahman Nava",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:iloilo:1:2025",
+      "jurisdiction": "Iloilo",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R6",
+      "region": "Region VI (Western Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Janette Garin",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:iloilo:2:2025",
+      "jurisdiction": "Iloilo",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R6",
+      "region": "Region VI (Western Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Kathryn Joyce Gorriceta",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:iloilo:3:2025",
+      "jurisdiction": "Iloilo",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R6",
+      "region": "Region VI (Western Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Lorenz Defensor",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:iloilo:4:2025",
+      "jurisdiction": "Iloilo",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R6",
+      "region": "Region VI (Western Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ferjenel Biron",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:iloilo:5:2025",
+      "jurisdiction": "Iloilo",
+      "jurisdiction_type": "province",
+      "district_label": "5th District",
+      "district_no": 5,
+      "region_key": "R6",
+      "region": "Region VI (Western Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Binky April Tupas",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:iloilo-city:lone:2025",
+      "jurisdiction": "Iloilo City",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R6",
+      "region": "Region VI (Western Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Julienne Baronda",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bohol:1:2025",
+      "jurisdiction": "Bohol",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "John Geesnell Yap",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bohol:2:2025",
+      "jurisdiction": "Bohol",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Vanvan Aumentado",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:bohol:3:2025",
+      "jurisdiction": "Bohol",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Alexie Tutor",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cebu:1:2025",
+      "jurisdiction": "Cebu",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Rhea Gullas",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cebu:2:2025",
+      "jurisdiction": "Cebu",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Edsel Galeos",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cebu:3:2025",
+      "jurisdiction": "Cebu",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Karen Flores-Garcia",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cebu:4:2025",
+      "jurisdiction": "Cebu",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Sun Shimura",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cebu:5:2025",
+      "jurisdiction": "Cebu",
+      "jurisdiction_type": "province",
+      "district_label": "5th District",
+      "district_no": 5,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Duke Frasco",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cebu:6:2025",
+      "jurisdiction": "Cebu",
+      "jurisdiction_type": "province",
+      "district_label": "6th District",
+      "district_no": 6,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Daphne Lagon",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cebu:7:2025",
+      "jurisdiction": "Cebu",
+      "jurisdiction_type": "province",
+      "district_label": "7th District",
+      "district_no": 7,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Patricia Calderon",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cebu-city:1:2025",
+      "jurisdiction": "Cebu City",
+      "jurisdiction_type": "city",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Rachel del Mar",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:cebu-city:2:2025",
+      "jurisdiction": "Cebu City",
+      "jurisdiction_type": "city",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Eduardo Rama Jr.",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:lapu-lapu-city:lone:2025",
+      "jurisdiction": "Lapu-Lapu City",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Junard Chan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:mandaue:lone:2025",
+      "jurisdiction": "Mandaue",
+      "jurisdiction_type": "city",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R7",
+      "region": "Region VII (Central Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Emmarie Dizon",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:biliran:lone:2025",
+      "jurisdiction": "Biliran",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Gerardo Espina Jr.",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:eastern-samar:lone:2025",
+      "jurisdiction": "Eastern Samar",
+      "jurisdiction_type": "province",
+      "district_label": "Lone District",
+      "district_no": 0,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Sheen Gonzales",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:leyte:1:2025",
+      "jurisdiction": "Leyte",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Martin Romualdez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:leyte:2:2025",
+      "jurisdiction": "Leyte",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Lolita Javier",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:leyte:3:2025",
+      "jurisdiction": "Leyte",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Anna Veloso Tuazon",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:leyte:4:2025",
+      "jurisdiction": "Leyte",
+      "jurisdiction_type": "province",
+      "district_label": "4th District",
+      "district_no": 4,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Richard Gomez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:leyte:5:2025",
+      "jurisdiction": "Leyte",
+      "jurisdiction_type": "province",
+      "district_label": "5th District",
+      "district_no": 5,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Carl Cari",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:northern-samar:1:2025",
+      "jurisdiction": "Northern Samar",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Niko Raul Daza",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:northern-samar:2:2025",
+      "jurisdiction": "Northern Samar",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Edwin Ongchuan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:samar:1:2025",
+      "jurisdiction": "Samar",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Stephen James Tan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:samar:2:2025",
+      "jurisdiction": "Samar",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Reynolds Michael Tan",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:southern-leyte:1:2025",
+      "jurisdiction": "Southern Leyte",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Roger Mercado",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:southern-leyte:2:2025",
+      "jurisdiction": "Southern Leyte",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R8",
+      "region": "Region VIII (Eastern Visayas)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Christopherson Yap",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:zamboanga-city:1:2025",
+      "jurisdiction": "Zamboanga City",
+      "jurisdiction_type": "city",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R9",
+      "region": "Region IX (Zamboanga Peninsula)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Katrina Reiko Chua-Tai",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:zamboanga-city:2:2025",
+      "jurisdiction": "Zamboanga City",
+      "jurisdiction_type": "city",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R9",
+      "region": "Region IX (Zamboanga Peninsula)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Jerry Perez",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:zamboanga-sibugay:1:2025",
+      "jurisdiction": "Zamboanga Sibugay",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R9",
+      "region": "Region IX (Zamboanga Peninsula)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Marlo Bancoro",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:zamboanga-sibugay:2:2025",
+      "jurisdiction": "Zamboanga Sibugay",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R9",
+      "region": "Region IX (Zamboanga Peninsula)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Marly Hofer–Hasim",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:zamboanga-del-norte:1:2025",
+      "jurisdiction": "Zamboanga del Norte",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R9",
+      "region": "Region IX (Zamboanga Peninsula)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Pinpin Uy",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:zamboanga-del-norte:2:2025",
+      "jurisdiction": "Zamboanga del Norte",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R9",
+      "region": "Region IX (Zamboanga Peninsula)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Irene Labadlabad",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:zamboanga-del-norte:3:2025",
+      "jurisdiction": "Zamboanga del Norte",
+      "jurisdiction_type": "province",
+      "district_label": "3rd District",
+      "district_no": 3,
+      "region_key": "R9",
+      "region": "Region IX (Zamboanga Peninsula)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Ian Amatong",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:zamboanga-del-sur:1:2025",
+      "jurisdiction": "Zamboanga del Sur",
+      "jurisdiction_type": "province",
+      "district_label": "1st District",
+      "district_no": 1,
+      "region_key": "R9",
+      "region": "Region IX (Zamboanga Peninsula)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Joseph Yu",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    },
+    {
+      "leg_id": "leg:ph:zamboanga-del-sur:2:2025",
+      "jurisdiction": "Zamboanga del Sur",
+      "jurisdiction_type": "province",
+      "district_label": "2nd District",
+      "district_no": 2,
+      "region_key": "R9",
+      "region": "Region IX (Zamboanga Peninsula)",
+      "congress": 20,
+      "election_year": 2025,
+      "representative": "Victoria Yu",
+      "source_refs": [
+        "comelec-res-11050",
+        "bettergov-20th-congress-roster",
+        "comelec-res-11069"
+      ]
+    }
+  ],
+  "problems": [
+    {
+      "row": {
+        "province": "Zaldy Co",
+        "district": "Ako Bicol",
+        "representative": "September 29, 2025",
+        "party": "Resigned[38]"
+      },
+      "reason": "no region assignment"
+    }
+  ]
+}

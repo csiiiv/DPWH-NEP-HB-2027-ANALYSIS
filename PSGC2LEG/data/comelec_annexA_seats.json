@@ -1,0 +1,887 @@
+{
+  "source": "COMELEC Resolution No. 11050 (4 Sep 2024), Annex A",
+  "source_file": "comelec-res-11050__com_res_11050.pdf",
+  "entries": [
+    {
+      "kind": "region",
+      "name": "NATIONAL CAPITAL REGION",
+      "seats": 33,
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "NATIONAL CAPITAL REGION",
+      "name": "City of Manila",
+      "seats": 6,
+      "rowno": null,
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "NATIONAL CAPITAL REGION",
+      "name": "Quezon City",
+      "seats": 6,
+      "rowno": null,
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "NATIONAL CAPITAL REGION",
+      "name": "City of Caloocan",
+      "seats": 3,
+      "rowno": null,
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "NATIONAL CAPITAL REGION",
+      "name": "City of Makati",
+      "seats": 2,
+      "rowno": "4",
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "NATIONAL CAPITAL REGION",
+      "name": "City of Parañaque",
+      "seats": 2,
+      "rowno": "5",
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "NATIONAL CAPITAL REGION",
+      "name": "City of Valenzuela",
+      "seats": 2,
+      "rowno": "6",
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "NATIONAL CAPITAL REGION",
+      "name": "Pifras",
+      "seats": 1,
+      "rowno": null,
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "NATIONAL CAPITAL REGION",
+      "name": "10",
+      "seats": 1,
+      "rowno": null,
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "NATIONAL CAPITAL REGION",
+      "name": "City of Marikina",
+      "seats": 2,
+      "rowno": null,
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "NATIONAL CAPITAL REGION",
+      "name": "City of",
+      "seats": 1,
+      "rowno": "16",
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "NATIONAL CAPITAL REGION",
+      "name": "17",
+      "seats": 1,
+      "rowno": null,
+      "page": 10
+    },
+    {
+      "kind": "region",
+      "name": "CORDILLERA ADM. REGION",
+      "seats": 7,
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "CORDILLERA ADM. REGION",
+      "name": "2",
+      "seats": 1,
+      "rowno": null,
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "CORDILLERA ADM. REGION",
+      "name": "3",
+      "seats": 1,
+      "rowno": null,
+      "page": 10
+    },
+    {
+      "kind": "region",
+      "name": "REGION",
+      "seats": 12,
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "ILOCOS NORTE",
+      "seats": 2,
+      "rowno": null,
+      "page": 10
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "LA UNION",
+      "seats": 2,
+      "rowno": null,
+      "page": 10
+    },
+    {
+      "kind": "region",
+      "name": "REGION/PROVINCE",
+      "seats": null,
+      "page": 11
+    },
+    {
+      "kind": "region",
+      "name": "REGION",
+      "seats": null,
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "!I",
+      "seats": 12,
+      "rowno": null,
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "1",
+      "seats": 1,
+      "rowno": null,
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "CAGAYAN",
+      "seats": 3,
+      "rowno": "2",
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "ISABELA",
+      "seats": 6,
+      "rowno": "3",
+      "page": 11
+    },
+    {
+      "kind": "region",
+      "name": "REGION",
+      "seats": 24,
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "BULACAN",
+      "seats": 6,
+      "rowno": null,
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "NUEVA ECIJA",
+      "seats": 4,
+      "rowno": "3",
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "PAMPANGA",
+      "seats": 4,
+      "rowno": "4",
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "TARLAC",
+      "seats": 3,
+      "rowno": "5",
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "ZAMBALES",
+      "seats": 2,
+      "rowno": "6",
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "REGTON",
+      "seats": 31,
+      "rowno": null,
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "BATANGAS",
+      "seats": 6,
+      "rowno": null,
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "CAVITE",
+      "seats": 8,
+      "rowno": "2",
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "LAGUNA",
+      "seats": 4,
+      "rowno": null,
+      "page": 11
+    },
+    {
+      "kind": "region",
+      "name": "REGION IV-B (MIMAROPA)",
+      "seats": null,
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION IV-B (MIMAROPA)",
+      "name": "ORIENTAL MINDORO",
+      "seats": 2,
+      "rowno": null,
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION IV-B (MIMAROPA)",
+      "name": "PALAWAN",
+      "seats": 3,
+      "rowno": "4",
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION IV-B (MIMAROPA)",
+      "name": "5",
+      "seats": 1,
+      "rowno": null,
+      "page": 11
+    },
+    {
+      "kind": "region",
+      "name": "REGION V",
+      "seats": 16,
+      "page": 11
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION V",
+      "name": "ALBAY",
+      "seats": 3,
+      "rowno": null,
+      "page": 11
+    },
+    {
+      "kind": "region",
+      "name": "REGION/PROVINCE",
+      "seats": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION/PROVINCE",
+      "name": "CAMARINES NORTE",
+      "seats": 2,
+      "rowno": "2",
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION/PROVINCE",
+      "name": "3",
+      "seats": 5,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION/PROVINCE",
+      "name": "5",
+      "seats": 3,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION/PROVINCE",
+      "name": "SORSOGON",
+      "seats": 2,
+      "rowno": "6",
+      "page": 12
+    },
+    {
+      "kind": "region",
+      "name": "REGION V!",
+      "seats": 12,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION V!",
+      "name": "AKLAN",
+      "seats": 2,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION V!",
+      "name": "2",
+      "seats": 1,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION V!",
+      "name": "CAPIZ",
+      "seats": 2,
+      "rowno": "3",
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION V!",
+      "name": "Iloilo",
+      "seats": 5,
+      "rowno": "5",
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION V!",
+      "name": "City Iloilo",
+      "seats": 1,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION V!",
+      "name": "NEGROS REGION",
+      "seats": 11,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION V!",
+      "name": "NEGROS OCCIDENTAL",
+      "seats": 6,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION V!",
+      "name": "City of",
+      "seats": 1,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION V!",
+      "name": "NEGROS ORIENTAL",
+      "seats": 3,
+      "rowno": "2",
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION V!",
+      "name": "3",
+      "seats": 1,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "region",
+      "name": "REGION VII",
+      "seats": 14,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION VII",
+      "name": "BOHOL",
+      "seats": 3,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION VII",
+      "name": "CEBU",
+      "seats": 7,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION VII",
+      "name": "City of Cebu",
+      "seats": 2,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "region",
+      "name": "REGION VIII",
+      "seats": 13,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION VIII",
+      "name": "LEYTE",
+      "seats": 5,
+      "rowno": "3",
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION VIII",
+      "name": "NORTHERN SAMAR",
+      "seats": 2,
+      "rowno": "4",
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION VIII",
+      "name": "SAMAR",
+      "seats": 2,
+      "rowno": "5",
+      "page": 12
+    },
+    {
+      "kind": "region",
+      "name": "REGION",
+      "seats": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "IX",
+      "seats": 9,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "ZAMBOANGA DEL NORTE",
+      "seats": 3,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "ZAMBOANGA DEL SUR",
+      "seats": 2,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "City of Zamboanga",
+      "seats": 2,
+      "rowno": null,
+      "page": 12
+    },
+    {
+      "kind": "region",
+      "name": "REGION/PROVINCE",
+      "seats": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION/PROVINCE",
+      "name": "ZAMBOANGA SIBUGAY",
+      "seats": 2,
+      "rowno": "3",
+      "page": 13
+    },
+    {
+      "kind": "region",
+      "name": "REGION",
+      "seats": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "X",
+      "seats": 14,
+      "rowno": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "BUKIDNON",
+      "seats": 4,
+      "rowno": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "3",
+      "seats": 2,
+      "rowno": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "MISAMIS ORIENTAL",
+      "seats": 2,
+      "rowno": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "City of Cagayan de Oro",
+      "seats": 2,
+      "rowno": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "LANAO DEL NORTE",
+      "seats": 2,
+      "rowno": null,
+      "page": 13
+    },
+    {
+      "kind": "region",
+      "name": "REGION XI",
+      "seats": 11,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION XI",
+      "name": "DAVAO DE ORO",
+      "seats": 2,
+      "rowno": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION XI",
+      "name": "DAVAO DEL NORTE",
+      "seats": 2,
+      "rowno": "2",
+      "page": 13
+    },
+    {
+      "kind": "region",
+      "name": "REGION",
+      "seats": 10,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "1",
+      "seats": 1,
+      "rowno": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "KUDARAT",
+      "seats": 2,
+      "rowno": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION",
+      "name": "SOUTH COTABATO",
+      "seats": 3,
+      "rowno": "4",
+      "page": 13
+    },
+    {
+      "kind": "region",
+      "name": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM",
+      "seats": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM",
+      "name": "1",
+      "seats": 1,
+      "rowno": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM",
+      "name": "MAGUINDANAO",
+      "seats": 1,
+      "rowno": "3",
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM",
+      "name": "4",
+      "seats": 1,
+      "rowno": null,
+      "page": 13
+    },
+    {
+      "kind": "region",
+      "name": "CARAGA",
+      "seats": null,
+      "page": 13
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "CARAGA",
+      "name": "AGUSAN DEL SUR",
+      "seats": 2,
+      "rowno": "2",
+      "page": 13
+    },
+    {
+      "kind": "region",
+      "name": "REGION/PROVINCE",
+      "seats": null,
+      "page": 14
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION/PROVINCE",
+      "name": "SURIGAO DEL NORTE",
+      "seats": 2,
+      "rowno": null,
+      "page": 14
+    },
+    {
+      "kind": "jurisdiction",
+      "region": "REGION/PROVINCE",
+      "name": "SURIGAO DEL SUR",
+      "seats": 2,
+      "rowno": "4",
+      "page": 14
+    }
+  ],
+  "sum_jurisdiction_seats": 261,
+  "expected_total": 254,
+  "region_subtotals_from_doc": {
+    "NATIONAL CAPITAL REGION": 33,
+    "CORDILLERA ADM. REGION": 7,
+    "REGION": 10,
+    "REGION V": 16,
+    "REGION V!": 12,
+    "REGION VII": 14,
+    "REGION VIII": 13,
+    "REGION XI": 11
+  },
+  "skipped_lines": [
+    {
+      "page": 10,
+      "text": "Number of Seats for Members, House of Representatives",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "and Local Elections",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "of Legislotive",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "No.",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "NC",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "E Dislricls",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "TOTAL",
+      "nums": [
+        [
+          468.2398681640625,
+          "254"
+        ]
+      ]
+    },
+    {
+      "page": 10,
+      "text": "1",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "2",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "3",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "7 City of Pasig",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "8 Pasay City",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "I",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "City of Las",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "City of Mandaluyong",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "11",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "12 City of Muntinlupa",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "13 City of Malabon",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "14 City of Navotas",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "(2nd",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "15 City of Taguig councilor district)",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "Taguig (1st councilor district) - Pateros",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "City of San Juan",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "ABRA",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "1",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "APAYAO",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "BENGUET",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "City of Baguio",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "4 IFUGAO",
+      "nums": []
+    },
+    {
+      "page": 10,
+      "text": "5 KALINGA",
+      "nums": []
+    }
+  ]
+}
