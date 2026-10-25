@@ -64,6 +64,21 @@
       "notes": "Ten EMBO barangays legislative district apportionment after Taguig transfer",
       "verification_status": "downloaded_not_yet_inspected"
     },
+    "republic-act-8487": {
+      "source_id": "republic-act-8487",
+      "title": "Republic Act No. 8487 - Charter of the City of Taguig",
+      "publisher": "Congress of the Philippines (via LawPhil)",
+      "url": "https://lawphil.net/statutes/repacts/ra1998/ra_8487_1998.html",
+      "document_date": "1998-02-11",
+      "retrieved_at_utc": "2026-10-25T14:22:28+00:00",
+      "filename": "republic-act-8487__ra_8487_1998.html",
+      "kind": "html",
+      "bytes": 123943,
+      "sha256": "399cb383e4e15a0d7556a4c8eb8bf69046a3f95734b5078b78ab54273e2c1e1d",
+      "content_type_on_fetch": "text/html",
+      "notes": "Section 61 establishes the original Pateros-Taguig legislative district composition used to assign current child barangays",
+      "verification_status": "downloaded_not_yet_inspected"
+    },
     "bettergov-20th-congress-roster": {
       "source_id": "bettergov-20th-congress-roster",
       "title": "20th Congress representatives roster",

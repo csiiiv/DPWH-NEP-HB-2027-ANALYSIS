@@ -2,7 +2,8 @@
   "total_municities_in_psgc": 1657,
   "assigned": {
     "whole_unit": 1629,
-    "multi_district_city": 27
+    "multi_district_city": 27,
+    "barangay_split": 1814
   },
   "multi_district_cities": [
     {
@@ -29,6 +30,11 @@
       "psgc_code": "1381000000",
       "name": "City of Parañaque",
       "jurisdiction": "Parañaque"
+    },
+    {
+      "psgc_code": "1381500000",
+      "name": "City of Taguig",
+      "jurisdiction": "Taguig–Pateros"
     },
     {
       "psgc_code": "1380600000",
@@ -66,6 +72,100 @@
       "jurisdiction": "Zamboanga City"
     }
   ],
+  "split_city_barangay_assignments": {
+    "0730600000": {
+      "name": "City of Cebu",
+      "jurisdiction": "Cebu City",
+      "catalog_barangays": 80,
+      "assigned": 80,
+      "missing": []
+    },
+    "1130700000": {
+      "name": "City of Davao",
+      "jurisdiction": "Davao City",
+      "catalog_barangays": 182,
+      "assigned": 182,
+      "missing": []
+    },
+    "1030500000": {
+      "name": "City of Cagayan De Oro",
+      "jurisdiction": "Cagayan de Oro",
+      "catalog_barangays": 80,
+      "assigned": 80,
+      "missing": []
+    },
+    "1380300000": {
+      "name": "City of Makati",
+      "jurisdiction": "Makati",
+      "catalog_barangays": 23,
+      "assigned": 23,
+      "missing": []
+    },
+    "1381000000": {
+      "name": "City of Parañaque",
+      "jurisdiction": "Parañaque",
+      "catalog_barangays": 16,
+      "assigned": 16,
+      "missing": []
+    },
+    "1381500000": {
+      "name": "City of Taguig",
+      "jurisdiction": "Taguig–Pateros",
+      "catalog_barangays": 38,
+      "assigned": 38,
+      "missing": []
+    },
+    "1380600000": {
+      "name": "City of Manila",
+      "jurisdiction": "Manila",
+      "catalog_barangays": 897,
+      "assigned": 897,
+      "missing": []
+    },
+    "1380700000": {
+      "name": "City of Marikina",
+      "jurisdiction": "Marikina",
+      "catalog_barangays": 16,
+      "assigned": 16,
+      "missing": []
+    },
+    "1381300000": {
+      "name": "Quezon City",
+      "jurisdiction": "Quezon City",
+      "catalog_barangays": 142,
+      "assigned": 142,
+      "missing": []
+    },
+    "1380100000": {
+      "name": "City of Caloocan",
+      "jurisdiction": "Caloocan",
+      "catalog_barangays": 193,
+      "assigned": 193,
+      "missing": []
+    },
+    "1381600000": {
+      "name": "City of Valenzuela",
+      "jurisdiction": "Valenzuela",
+      "catalog_barangays": 33,
+      "assigned": 33,
+      "missing": []
+    },
+    "0405802000": {
+      "name": "City of Antipolo",
+      "jurisdiction": "Antipolo",
+      "catalog_barangays": 16,
+      "assigned": 16,
+      "missing": []
+    },
+    "0931700000": {
+      "name": "City of Zamboanga",
+      "jurisdiction": "Zamboanga City",
+      "catalog_barangays": 98,
+      "assigned": 98,
+      "missing": []
+    }
+  },
+  "split_city_barangays_assigned": 1814,
   "unmatched_bettergov_entries": [],
   "unmatched_bettergov_count": 0,
   "psgc_municities_missing_from_bettergov": [],

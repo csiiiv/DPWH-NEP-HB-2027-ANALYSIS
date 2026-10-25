@@ -1,7 +1,10 @@
 # PSGC2LEG — Philippine Standard Geographic Code → Legislative District Mapping
 
-**Project status:** v0.1 municipality-level baseline complete (25 Oct 2026).
-See [`docs/release_v0.1.md`](docs/release_v0.1.md) for coverage and validation.
+**Project status:** municipality baseline plus barangay-level resolution for all
+13 multi-district cities (25 Oct 2026). See
+[`docs/split_city_geometry.md`](docs/split_city_geometry.md) for the current
+coverage and [`docs/release_v0.1.md`](docs/release_v0.1.md) for the original
+baseline release.
 
 ## What this is
 
@@ -12,15 +15,17 @@ districts (LEG)** of the Philippine House of Representatives, anchored to the
 
 Planning document: [`DEO2LEG/docs/philippine_legislative_district_mapping_discussion.md`](../DEO2LEG/docs/philippine_legislative_district_mapping_discussion.md)
 
-## Granularity decision (25 October 2026)
+## Granularity
 
-- **Committed target:** municipality/city-level assignment nationwide.
-- **Stretch goal:** barangay-level splits for multi-district cities **outside NCR**.
-- **Optional/deferrable:** Metro Manila barangay splits (QC alone had 23 audited
-  unresolved cases in the prior prototype).
+- Single-district and province districts use whole city/municipality assignments.
+- All 13 multi-district cities use barangay assignments, including the eight in
+  Metro Manila.
+- The visualization dissolves those assignments into one feature per legislative
+  district: 254 features for 254 catalog seats, with no city placeholders.
 
-A multi-LEG city without barangay resolution is a valid municipality-level record
-with status `multi_district_city` — not a release blocker.
+The city-level `multi_district_city` records remain as parent markers. Their
+barangay descendants carry `assignment_type: barangay_split` and a concrete
+`leg_id`.
 
 ## Directory layout
 
@@ -31,7 +36,7 @@ PSGC2LEG/
 │   └── register/      # sources.json — provenance register
 ├── scripts/           # Download, parse, build, validate scripts
 ├── docs/              # Working notes, discrepancy reports
-└── (later) data/      # Generated canonical datasets
+└── data/              # Generated canonical datasets
 ```
 
 ## Source hierarchy (reconciliation precedence)

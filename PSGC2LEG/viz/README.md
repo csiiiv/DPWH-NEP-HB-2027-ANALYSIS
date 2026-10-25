@@ -1,128 +1,84 @@
 # PSGC2LEG Map Visualization
 
-Interactive **MapLibre GL JS** map of the 254 Philippine legislative districts
-(2025 elections / 20th Congress) at municipality-level assignment.
+Interactive **MapLibre GL JS** map of all 254 Philippine legislative districts
+for the May 2025 elections / 20th Congress baseline.
+
+## Coverage
+
+`leg_districts.geojson` contains exactly one feature for every district in
+`data/legislative_districts.json`:
+
+- whole-unit districts dissolve 2023 city and municipality polygons; and
+- the 13 multi-district cities dissolve 2023 barangay polygons according to
+  the barangay assignments in `data/psgc_leg_assignments.jsonl`.
+
+This includes separate district polygons for Manila, Quezon City, Caloocan,
+Makati, Marikina, Parañaque, Taguig–Pateros, and Valenzuela. There are no
+striped unresolved-city placeholders. See
+[`../docs/split_city_geometry.md`](../docs/split_city_geometry.md) and
+`geometry_report.json` for the assignment sources and retained-geometry caveats.
 
 ## Files
 
-- `index.html` — self-contained MapLibre app:
-  - **MapLibre GL JS 6.14.0 vendored locally** (`vendor/maplibre-gl.mjs` +
-    `maplibre-gl-worker.mjs`, exact copy of the web app's pinned
-    dependency; the worker resolves relative to `import.meta.url`, so no
-    bundler or CDN needed)
-  - CARTO basemaps (Voyager light / Dark Matter) — free, **no API key**,
-    same styles as the project's geolocation tab
-    (`analysis/web/src/GeoMap.jsx`), with light/dark toggle and automatic
-    fallback to a blank style offline
-  - district polygons colored **per province** (see Color scheme below)
-  - district labels at z≥6.5 and italic split-city labels at z≥7.5, using
-    the basemap's own key-free CARTO glyph pipeline (Open Sans)
-  - hover popups **and click-to-pin popups** showing the district's
-    representative with photo and a congress.gov.ph profile link
-    (photos from `DEO2LEG/legislative_profiles`)
-  - live search (municipality/city/district/representative) with
-    zoom-to-match and blue highlight
-  - 13 split-city polygons each with a **distinct hue-tinted stripe
-    pattern** (per-city pattern via data-driven `fill-pattern`) + dashed
-    outline
-- `vendor/` — MapLibre GL JS 6.14.0 (ESM build) copied verbatim from the
-  repo's pinned `analysis/web/node_modules/maplibre-gl/dist/`; serves with
-  zero CDN dependency for the mapping library itself
-- `leg_districts.geojson` — 232 simplified features (2.6 MB):
-  219 dissolved whole-unit districts + 13 split-city polygons
-- `province_hues.json` — adjacency-aware hue table (one hue per
-  jurisdiction); see Color scheme
-- `rep_photos.json` + `photos/` — 254 representative photos (34 MB) +
-  leg_id → {name, photo, area, detail_url} manifest
-- `preview.png` — actual MapLibre render (headless Chrome + SwiftShader
-  software WebGL; CARTO Voyager basemap, adjacency-hued fills, pinned
-  popup with rep photo)
+- `index.html` — self-contained MapLibre app with light/dark CARTO basemaps,
+  district labels, live search, hover and click-to-pin popups, and local
+  representative photos.
+- `vendor/` — locally vendored MapLibre GL JS 6.14.0.
+- `leg_districts.geojson` — 254 simplified district features.
+- `geometry_report.json` — machine-readable feature counts and split-city
+  geometry coverage.
+- `province_hues.json` — adjacency-aware jurisdiction hue table.
+- `rep_photos.json` and `photos/` — 254 representative photos and manifest.
+- `preview.png` — browser-test render of the map.
 
 ## Run
 
 ```bash
-cd PSGC2LEG/viz && python3 -m http.server 8901
+cd PSGC2LEG/viz
+python3 -m http.server 8901
 # open http://localhost:8901
 ```
 
-A static file server is required (the app fetches the GeoJSON via fetch();
-file:// won't work in most browsers).
+A static file server is required because the page loads modules and GeoJSON with
+`fetch()`; most browsers block these when the page is opened with `file://`.
 
 ## Color scheme
 
-Every jurisdiction (province / highly urbanized city / split city) gets its
-**own hue**; districts within it vary **lightness**, so a multi-district
-province reads as one colour family — e.g. Camarines Sur's 5 districts are
-all the same hue at 5 different shades, while neighbouring Camarines Norte
-is a different hue.
-
-- **Hue — adjacency-aware** (this replaced an earlier golden-angle scheme,
-  which spread hues evenly over all 103 jurisdictions but ignored
-  geography and could hand adjacent Bulacan and Nueva Ecija both-green
-  hues). `scripts/build_province_hues.py` unions each jurisdiction's
-  rendered polygons, builds the shared-border adjacency graph (203 edges;
-  a 0.001° ~110 m buffer makes the border match robust — provinces that
-  merely face each other across water do **not** count as adjacent), then
-  greedily assigns hues highest-degree-first, each pick maximizing the
-  minimum circular hue distance to already-coloured neighbours. The
-  minimum separation between any two touching jurisdictions across the
-  whole map is **55°**; the classic complaint case now reads Bulacan red
-  (0°) / Nueva Ecija green (100°) / Pampanga blue (230°). Split cities
-  participate in the same table, so Metro Manila stays readable. The page
-  falls back to a golden-angle estimate for any name missing from the
-  table (e.g. geojson rebuilt, hues stale) — determinism, not accuracy,
-  matters there.
-- **Lightness** — 60% (1st district) → 28% (highest), saturation easing
-  58% → 74%. Steps stay ≥5% apart so adjacent districts remain tellable.
-  The range matters: an earlier 74% → 34% ramp was effectively invisible,
-  since at 0.8 fill-opacity over CARTO Voyager's cream land 74% lightness
-  reads as "basemap" and the national view looked blank.
-- **Split cities** — each gets its own hue from the same table, rendered
-  as that hue's stripe pattern + dashed outline. They used to be uniform
-  grey, which made Manila, QC, and Caloocan indistinguishable — the one
-  thing a reader scanning Metro Manila needs. Stripe ambiguity is
-  deliberate until barangay-level assignment lands.
-- Colors are baked into each feature's `color` property at load, so the
-  fill layer is a plain `['get','color']` rather than a ~100-case `match`.
+Every province or independent city jurisdiction gets a hue. Districts within
+the jurisdiction vary in lightness, which keeps each family recognizable while
+making adjacent districts distinct. `scripts/build_province_hues.py` derives
+the hue table from shared polygon borders and maximizes circular hue separation
+between neighboring jurisdictions. Feature colors are added in the browser.
 
 ## Representative photos
 
-`scripts/copy_rep_photos.py` joins
-`DEO2LEG/legislative_profiles/profiles.json` to
-`data/legislative_districts.json` on (jurisdiction, district_no) and
-copies each district rep's photo into `photos/`. The join has three
-hazards, all handled (and each of which bit during development):
+`scripts/copy_rep_photos.py` joins the 254 catalog districts to the retained
+Congress profiles and copies the matching images into `photos/`. Popups show the
+representative, photo, profile link, region, and stable `leg_id`.
 
-1. **Namesakes** — congress.gov.ph spells cities differently ("Manila
-   City" vs our "City of Manila") and has provinces with city namesakes
-   (Quezon, Cebu). Normalization must never strip the word "city";
-   an explicit alias table maps the spellings.
-2. **19th-Congress leftovers** — a few areas have two profiles (two
-   Acops in Antipolo 2nd, two Barzagas in Cavite 4th); the candidate
-   whose name tokens match our catalog's `representative` field wins.
-3. **Source typos** — congress.gov.ph lists the Iloilo *province* 2nd
-   district rep as "Iloilo City, 2nd District" (no such district);
-   Taguig needs an explicit split into Taguig–Pateros 1st/2nd.
+## Geometry notes
 
-Result: 254/254 districts matched, 0 ambiguous, all photo files verified
-on disk.
+- Municipality and barangay geometry comes from the retained 2023
+  `altcoder/philippines-psgc-shapefiles` copy and is crosswalked to the Q3 2026
+  PSGC catalog.
+- Current Caloocan barangays 176-A through 176-F share the older aggregate
+  Barangay 176 polygon. They all belong to District 1.
+- The old Zamboanga `Dulian` polygon is assigned to District 2 because the
+  retained geometry does not separately delimit the current Dulian names.
+- Taguig includes the ten transferred EMBO barangays. Pateros is dissolved into
+  Taguig–Pateros District 1.
 
-## Notes
+These are visualization geometries for the recorded assignments, not cadastral
+or election-precinct survey boundaries.
 
-- District polygons are **dissolves of municipality polygons** — internal
-  municipality boundaries are intentionally removed per district.
-- Split cities (Manila, QC, Caloocan, Davao City, Cebu City, Taguig, etc.)
-  show as striped "multiple districts" — deliberate ambiguity visibility,
-  resolved only when barangay-level assignment lands (stretch goal).
-- Geometry: altcoder/philippines-psgc-shapefiles 2023 municity polygons,
-  crosswalked to Q3 2026 PSGC codes (NIR creation, Sulu → Region IX,
-  Bacolod HUC recode), simplified ~200 m.
-
-## Regenerate
+## Regenerate and validate
 
 ```bash
-python3 ../scripts/build_viz_geojson.py [tolerance_degrees]  # default 0.002 (~200 m)
-python3 ../scripts/build_province_hues.py                   # adjacency-aware hues
-python3 ../scripts/copy_rep_photos.py                       # photos + manifest
-python3 ../tests/check_viz_browser.py                       # headless browser check
+cd PSGC2LEG
+python3 scripts/build_assignments.py
+python3 scripts/build_viz_geojson.py          # 254 polygons
+python3 scripts/build_province_hues.py         # run after GeoJSON
+python3 scripts/copy_rep_photos.py
+python3 -m unittest discover -s tests -v
+python3 tests/check_viz_browser.py
 ```

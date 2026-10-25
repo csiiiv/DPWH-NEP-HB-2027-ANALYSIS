@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Phase 3: Build municipality/city-level PSGC→LEG assignments for the 2025 baseline.
+"""Phase 3: Build PSGC→LEG assignments for the 2025 baseline.
 
 Join strategy:
   - PSGC catalog (canonical codes) x BetterGov municipality→district mapping
@@ -9,8 +9,14 @@ Join strategy:
   - Municipality name matching is done WITHIN the parent province/city context,
     never globally by name alone.
 
+Split cities are additionally resolved at barangay level when a retained
+barangay roster is available. Taguig uses the original RA 8487 district
+composition plus COMELEC Resolution 11069's allocation of the ten EMBO
+barangays for the 2025 election.
+
 Outputs:
-  data/psgc_leg_assignments.jsonl   one row per municipality/city
+  data/psgc_leg_assignments.jsonl   municipality/city rows plus resolved
+                                    split-city barangays
   data/assignment_report.json       coverage + unmatched + conflicts + splits
 
 Assignment row schema:
@@ -72,6 +78,42 @@ def leg_id_for(jur_slug: str, dk: int) -> str:
 def slug(s: str) -> str:
     s = s.lower().replace("ñ", "n").replace("–", "-").replace(" ", "-")
     return re.sub(r"[^a-z0-9-]", "", s)
+
+
+# Current Taguig barangay allocation. The original barangays follow the two
+# districts established by RA 8487; their 2008 child barangays retain the
+# parent's district. COMELEC Resolution 11069 assigns the ten EMBO barangays.
+TAGUIG_DISTRICTS = {
+    1: {
+        "Bagumbayan", "Bambang", "Calzada", "Hagonoy", "Ibayo-Tipas",
+        "Ligid-Tipas", "Lower Bicutan", "New Lower Bicutan", "Napindan",
+        "Palingon", "San Miguel", "Santa Ana", "Tuktukan", "Ususan", "Wawa",
+        "Comembo", "Pembo", "Rizal",
+    },
+    2: {
+        "Central Bicutan", "Central Signal Village", "Fort Bonifacio",
+        "Katuparan", "Maharlika Village", "North Daang Hari",
+        "North Signal Village", "Pinagsama", "South Daang Hari",
+        "South Signal Village", "Tanyag", "Upper Bicutan", "Western Bicutan",
+        "Cembo", "East Rembo", "Pitogo", "Post Proper Northside",
+        "Post Proper Southside", "South Cembo", "West Rembo",
+    },
+}
+
+# Narrow source-name repairs used only inside a known split city.
+SPLIT_BARANGAY_ALIASES = {
+    ("Davao City", "KAP TOMAS MONTEVERDE SR"): "KAP TOMAS MONTEVERDE",
+    ("Davao City", "LEON GARCIA SR"): "LEON GARCIA",
+    ("Valenzuela", "GEN T DE LEON"): "HEN T DE LEON",
+}
+
+# BetterGov omits two numbered Manila rows. Their immediately adjacent
+# numbered barangays are in the same district, and the retained PSGC catalog
+# confirms both are current barangays.
+SPLIT_BARANGAY_OVERRIDES = {
+    ("Manila", "BARANGAY 10"): 1,
+    ("Manila", "BARANGAY 821"): 5,
+}
 
 
 # BetterGov jurisdiction key -> canonical jurisdiction name in LEG catalog
@@ -201,6 +243,9 @@ def main() -> int:
     psgc = [json.loads(l) for l in (DATA / "psgc_locations.jsonl").open(encoding="utf-8")]
     leg = json.loads((DATA / "legislative_districts.json").read_text(encoding="utf-8"))
     bg = json.loads(BG.read_text(encoding="utf-8"))
+    children = defaultdict(list)
+    for row in psgc:
+        children[row.get("parent_code")].append(row)
 
     # LEG catalog lookups
     leg_by_jur = defaultdict(dict)  # jurisdiction -> district_no -> district
@@ -234,6 +279,51 @@ def main() -> int:
     assignments = {}   # psgc_code -> row
     unmatched_bg = []
     multi_district_cities = []
+    split_barangay_stats = {}
+
+    def descendant_barangays(city_code: str):
+        result, stack = [], [city_code]
+        while stack:
+            parent = stack.pop()
+            for child in children.get(parent, []):
+                if child["level"] == "barangay":
+                    result.append(child)
+                elif child["level"] == "sub_municipality":
+                    stack.append(child["code"])
+        return result
+
+    def assign_split_barangays(city: dict, jur: str, roster: dict,
+                               sources=None, overrides=None):
+        """Attach every current barangay in a split city to one LEG seat."""
+        roster_by_name = {norm(name): district_key(label)
+                          for name, label in roster.items()}
+        direct = overrides or {}
+        rows, missing = descendant_barangays(city["code"]), []
+        for barangay in rows:
+            name = norm(barangay["name"])
+            source_name = SPLIT_BARANGAY_ALIASES.get((jur, name), name)
+            dk = direct.get(name, roster_by_name.get(source_name))
+            if dk is None or dk not in leg_by_jur.get(jur, {}):
+                missing.append(barangay["name"])
+                continue
+            district = leg_by_jur[jur][dk]
+            assignments[barangay["code"]] = {
+                "psgc_code": barangay["code"],
+                "name": barangay["name"],
+                "level": "barangay",
+                "parent_province_code": barangay["parent_code"],
+                "leg_id": district["leg_id"],
+                "assignment_type": "barangay_split",
+                "verification_status": "single_source",
+                "sources": sources or ["bettergov-districts-generated"],
+            }
+        split_barangay_stats[city["code"]] = {
+            "name": city["name"], "jurisdiction": jur,
+            "catalog_barangays": len(rows), "assigned": len(rows) - len(missing),
+            "missing": missing,
+        }
+        if missing:
+            raise ValueError(f"Unassigned split-city barangays for {jur}: {missing}")
 
     def assign(loc: dict, jur: str, dk: int, label_src: str, extra_sources=None):
         ld = leg_by_jur.get(jur, {}).get(dk)
@@ -288,7 +378,8 @@ def main() -> int:
             unmatched_bg.append({"jurisdiction": jur, "key": mkey, "norm": n})
             return
         if isinstance(val, dict):
-            # split city with barangay mapping: municipality-level = multi_district
+            # Keep a city-level marker and publish the actual district
+            # assignment on each current barangay beneath it.
             row = {
                 "psgc_code": loc["code"],
                 "name": loc["name"],
@@ -298,10 +389,14 @@ def main() -> int:
                 "assignment_type": "multi_district_city",
                 "verification_status": "provisional",
                 "sources": ["bettergov-districts-generated"],
-                "review_note": f"split city; {len(val.get('barangays', {}))} barangay entries available (stretch goal)",
+                "review_note": f"split city resolved through {len(val.get('barangays', {}))} retained barangay roster entries",
             }
             assignments[loc["code"]] = row
             multi_district_cities.append({"psgc_code": loc["code"], "name": loc["name"], "jurisdiction": jur})
+            overrides = {name: dk for (override_jur, name), dk in
+                         SPLIT_BARANGAY_OVERRIDES.items() if override_jur == jur}
+            assign_split_barangays(loc, jur, val.get("barangays", {}),
+                                   overrides=overrides)
             return
         dk = district_key(val)
         if dk is None:
@@ -340,10 +435,12 @@ def main() -> int:
                     if "pateros" in n.lower():
                         loc = ncr_entities.get("PATEROS")
                         if loc:
-                            assign(loc, jur, 1, "1st District (Pateros)", extra_sources=["comelec-res-11069"])
+                            assign(loc, jur, 1, "1st District (Pateros)",
+                                   extra_sources=["republic-act-8487", "comelec-res-11069"])
                     else:
-                        # Taguig city proper: split city (EMBO barangays moved);
-                        # municipality-level stays multi_district until barangay pass
+                        # Taguig city proper: RA 8487 supplies the original
+                        # district composition; COMELEC 11069 supplies the ten
+                        # transferred EMBO barangays for the 2025 election.
                         loc = ncr_entities.get("TAGUIG")
                         if loc and isinstance(val, dict):
                             handle_bg_entry(jur, mkey, val, prov_norm=None)
@@ -353,9 +450,17 @@ def main() -> int:
                                 "level": loc["level"], "parent_province_code": loc["parent_code"],
                                 "leg_id": None, "assignment_type": "multi_district_city",
                                 "verification_status": "provisional",
-                                "sources": ["comelec-res-11069"],
-                                "review_note": "Taguig split by councilor districts (Res 11069); Pateros joins 1st; barangay pass needed",
+                                "sources": ["republic-act-8487", "comelec-res-11069"],
+                                "review_note": "Taguig split resolved at barangay level from RA 8487 composition and COMELEC Res 11069; Pateros joins 1st",
                             }
+                            multi_district_cities.append({"psgc_code": loc["code"],
+                                "name": loc["name"], "jurisdiction": jur})
+                            direct = {norm(name): dk for dk, names in TAGUIG_DISTRICTS.items()
+                                      for name in names}
+                            assign_split_barangays(loc, jur, {},
+                                sources=["republic-act-8487", "comelec-res-11069",
+                                         "psgc-3q2026-bdb-flat"],
+                                overrides=direct)
                     continue
                 if isinstance(val, dict):
                     handle_bg_entry(jur, mkey, val, prov_norm=None)
@@ -470,6 +575,8 @@ def main() -> int:
         "total_municities_in_psgc": len(locs_mc),
         "assigned": dict(types),
         "multi_district_cities": multi_district_cities,
+        "split_city_barangay_assignments": split_barangay_stats,
+        "split_city_barangays_assigned": sum(x["assigned"] for x in split_barangay_stats.values()),
         "unmatched_bettergov_entries": unmatched_bg[:40],
         "unmatched_bettergov_count": len(unmatched_bg),
         "psgc_municities_missing_from_bettergov": [

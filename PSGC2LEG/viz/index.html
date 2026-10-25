@@ -31,7 +31,6 @@
   .legend .family { white-space: nowrap; }
   .legend i { display: inline-block; width: 12px; height: 12px; margin-right: 4px;
               border-radius: 2px; vertical-align: -2px; }
-  .legend .split { background: repeating-linear-gradient(45deg,#999,#999 3px,#fff 3px,#fff 6px); }
   #stats { margin-top: 8px; color: #666; font-size: 11px; }
   .maplibregl-popup-content { font-size: 13px; }
   .popup-meta { color: #555; font-size: 12px; }
@@ -57,7 +56,7 @@ python3 -m http.server 8901</pre>
     then open <code>http://localhost:8901</code>
   </div>
   <h1>Legislative Districts — 2025 (20th Congress)</h1>
-  <div class="sub">PSGC2LEG v0.1 · municipality-level assignment · 254 districts</div>
+  <div class="sub">PSGC2LEG · municipality + barangay assignment · 254 districts</div>
   <input id="search" type="text" placeholder="Search municipality, city, district, or representative…">
   <div id="basemapRow">
     <button id="btnLight" class="active">Light basemap</button>
@@ -104,13 +103,13 @@ map.addControl(new NavigationControl({ visualizeRoll: true }));
 map.addControl(new ScaleControl({ unit: 'metric' }));
 
 // ---- Province hues: adjacency-aware, computed at build time ----
-// Each jurisdiction (province / HUC / split city) gets one hue; districts
+// Each jurisdiction (province or independent city) gets one hue; districts
 // inside it vary lightness/saturation (shadeFor below). The hue table is
 // built by scripts/build_province_hues.py from the rendered geometry:
 // it unions each jurisdiction's polygons, derives the shared-border
-// adjacency graph (203 edges), then greedily assigns hues maximizing the
+// adjacency graph (201 edges), then greedily assigns hues maximizing the
 // minimum circular hue distance between neighbours — the minimum
-// separation across the whole map is 55° (was: golden-angle spread that
+// separation across the whole map is 65° (was: golden-angle spread that
 // could hand adjacent Bulacan and Nueva Ecija both-green hues).
 const GOLDEN_ANGLE = 137.508;   // fallback estimate for unknown names
 let HUES = null;                // {jurisdiction: hue_deg} from province_hues.json
@@ -118,7 +117,6 @@ let HUE_ORDER = [];             // sorted names, for the fallback path
 let JURISDICTION_INFO = [];     // [{name, districts: Map(no->label)}]
 const colorCache = new Map();   // juris|no -> hsl string
 const swatches = new Map();     // juris -> [{no, color}] for the legend
-const SPLIT_HUES = new Map();   // split-city name -> registered stripe image name
 
 // Rough hue estimate for names missing from province_hues.json (stale
 // table after a geojson rebuild). Exactness doesn't matter — only
@@ -161,66 +159,15 @@ function buildColorDictionary() {
   const byName = new Map();
   for (const f of districtFeatures) {
     const p = f.properties;
-    if (p.split) continue;
     byName.set(p.jurisdiction, (byName.get(p.jurisdiction) || new Map())
       .set(p.district_no ?? 0, p.district_label));
   }
   JURISDICTION_INFO = [...byName.entries()].map(([name, districts]) => ({ name, districts }));
 
-  // Split cities join the same golden-angle hue sequence. They used to be
-  // uniform grey, which made all 13 interchangeable — but a reader scanning
-  // Metro Manila needs Manila ≠ Caloocan ≠ Parañaque at a glance. Each gets
-  // its own hue, rendered as that hue's stripe pattern instead of a flat fill
-  // (stripes still signal "district split unresolved").
-  const splitNames = [...new Set(districtFeatures
-    .filter(f => f.properties.split)
-    .map(f => f.properties.jurisdiction))];
-  for (const n of splitNames) SPLIT_HUES.set(n, slug(n));
-
   // Sort deterministically so the golden-angle hue index is stable across
   // sessions and geojson rebuilds (feature order in the file can shift).
-  // Split cities are included so they cannot collide with a province hue.
-  HUE_ORDER = [...JURISDICTION_INFO.map(j => j.name), ...splitNames]
+  HUE_ORDER = JURISDICTION_INFO.map(j => j.name)
     .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
-}
-
-// Register one stripe image per split city, tinted with that city's hue.
-// Must run before the split-fill layer is added, and again after every
-// basemap swap (setStyle drops registered images).
-function addSplitStripeImages() {
-  for (const [name, imgName] of SPLIT_HUES) {
-    if (map.hasImage(imgName)) continue;
-    const h = HUES && HUES[name] != null ? HUES[name] : fallbackHue(name);
-    // mid-lightness, high saturation: dark enough to read over both the
-    // cream Voyager land and Dark Matter's near-black, not so dark it
-    // swallows the hatching
-    map.addImage(imgName, makeStripePattern(`hsl(${h}, 70%, 34%)`), { sdf: false });
-  }
-}
-
-// Stripe pattern for split cities. Parameterized by stroke colour so each
-// split city gets its *own* tint: 13 identical grey hatchings made Manila
-// and Caloocan and Cebu City indistinguishable from each other, which is
-// the one thing a reader needs when scanning the map.
-function makeStripePattern(stroke = '#8a8a8a') {
-  const c = document.createElement('canvas');
-  c.width = c.height = 8;
-  const ctx = c.getContext('2d');
-  ctx.strokeStyle = stroke;
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  ctx.moveTo(-2, 10); ctx.lineTo(10, -2);
-  ctx.moveTo(-2, 2);  ctx.lineTo(2, -2);
-  ctx.moveTo(6, 10);  ctx.lineTo(10, 6);
-  ctx.stroke();
-  return ctx.getImageData(0, 0, 8, 8);
-}
-
-// Safe image-name slug for split-city stripe patterns.
-function slug(s) {
-  return 'split-' + String(s).toLowerCase()
-    .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
 // Representative info keyed by leg_id, from rep_photos.json (built by
@@ -228,9 +175,6 @@ function slug(s) {
 let REPS = {};
 
 function popupText(p) {
-  if (p.split) {
-    return `<b>${p.jurisdiction}</b><br><span class="popup-meta">split city — multiple legislative districts<br>(barangay-level split not yet resolved)</span>`;
-  }
   const rep = REPS[p.leg_id];
   const photo = rep && rep.photo
     ? `<img class="rep-photo" src="${rep.photo}" alt="" loading="lazy"
@@ -267,12 +211,6 @@ let selectedIds = new Set();
 // (Re)add the district source + layers. Called on initial load and again
 // after every basemap style swap (setStyle with diff:false drops them).
 function addDistrictLayers() {
-  // grey fallback for any split city without a tinted pattern, then one
-  // per-city tinted stripe (re-registered after each basemap swap, since
-  // setStyle drops images — hasImage guards against duplicates)
-  if (!map.hasImage('stripes')) map.addImage('stripes', makeStripePattern(), { sdf: false });
-  addSplitStripeImages();
-
   map.addSource('districts', { type: 'geojson', data: districtData, generateId: true });
 
   // regular districts (province hue family, per-district shade)
@@ -280,10 +218,6 @@ function addDistrictLayers() {
     id: 'districts-fill',
     type: 'fill',
     source: 'districts',
-    // coalesce: non-split features dissolved by leg_id don't carry the
-    // legacy `split` key; a bare ['!',['get','split']] evaluates null and
-    // drops the feature in MapLibre v6.
-    filter: ['!', ['coalesce', ['get', 'split'], false]],
     paint: {
       // per-feature colors baked into properties at load time
       // (province hue via golden angle + district lightness ramp)
@@ -295,20 +229,6 @@ function addDistrictLayers() {
         ['boolean', ['feature-state', 'selected'], false], 0.95,
         0.8
       ],
-    }
-  });
-
-  // split cities (per-city tinted stripes)
-  map.addLayer({
-    id: 'split-fill',
-    type: 'fill',
-    source: 'districts',
-    filter: ['==', ['get', 'split'], true],
-    paint: {
-      // data-driven (cross-faded-data-driven per the v8 spec): each split
-      // city renders its own hue-tinted stripe image registered above
-      'fill-pattern': ['coalesce', ['get', 'pattern'], 'stripes'],
-      'fill-opacity': 0.55,
     }
   });
 
@@ -334,17 +254,6 @@ function addDistrictLayers() {
       ],
     }
   });
-  map.addLayer({
-    id: 'split-line-dash',
-    type: 'line',
-    source: 'districts',
-    filter: ['==', ['get', 'split'], true],
-    paint: { 'line-color': '#555', 'line-width': 1.2 },
-    layout: { 'line-cap': 'round' },
-  });
-  // dashed needs setPaintProperty after add (dasharray not transitionable)
-  map.setPaintProperty('split-line-dash', 'line-dasharray', [2, 1.5]);
-
   // district labels (zoomed-in reading). Uses the basemap's own glyph
   // pipeline — CARTO serves PBF glyph ranges key-free (verified live), and
   // the fonts below are the exact stacks the Voyager/Dark Matter styles
@@ -353,7 +262,6 @@ function addDistrictLayers() {
     id: 'district-labels',
     type: 'symbol',
     source: 'districts',
-    filter: ['!', ['coalesce', ['get', 'split'], false]],
     layout: {
       'text-field': [
         'format',
@@ -378,26 +286,6 @@ function addDistrictLayers() {
       'text-halo-width': 1.4,
     },
   });
-  // split cities: label only the name, districts are unresolved anyway
-  map.addLayer({
-    id: 'split-labels',
-    type: 'symbol',
-    source: 'districts',
-    filter: ['==', ['get', 'split'], true],
-    layout: {
-      'text-field': ['get', 'jurisdiction'],
-      'text-font': ['Open Sans Italic'],
-      'text-size': 11,
-      'text-letter-spacing': 0.05,
-    },
-    paint: {
-      'text-opacity': ['interpolate', ['linear'], ['zoom'], 7.5, 0, 9, 1],
-      'text-color': '#333',
-      'text-halo-color': 'rgba(255,255,255,0.9)',
-      'text-halo-width': 1.3,
-    },
-  });
-
   hovered = null;  // feature-state was reset with the source
   pinnedId = null; pinnedPopup = null;   // ditto — old popup is orphaned
 }
@@ -456,12 +344,6 @@ function wireInteractions() {
     map.getCanvas().style.cursor = '';
     hover.remove();
   });
-  map.on('mousemove', 'split-fill', e => {
-    showHover(e);
-    map.getCanvas().style.cursor = 'pointer';
-  });
-  map.on('mouseleave', 'split-fill', () => { hover.remove(); map.getCanvas().style.cursor = ''; });
-
   // click: pin (or re-pin on another feature). The map-wide handler below
   // decides unpinning by querying rendered features — NOT by DOM event
   // propagation, which MapLibre's internal emitter ignores (the layer pin
@@ -469,12 +351,11 @@ function wireInteractions() {
   // on the original DOM event does not cancel the latter).
   const pinFromEvent = (e) => pinFeature(e.features[0], e.lngLat);
   map.on('click', 'districts-fill', pinFromEvent);
-  map.on('click', 'split-fill', pinFromEvent);
   // clicking ocean / basemap closes any pinned popup; clicking a district
   // leaves it to the layer handlers above (re-pin or keep)
   map.on('click', (e) => {
     const hits = map.queryRenderedFeatures(e.point,
-      { layers: ['districts-fill', 'split-fill'] });
+      { layers: ['districts-fill'] });
     if (!hits.length) unpinPopup();
   });
 
@@ -524,28 +405,19 @@ map.on('load', async () => {
   ]);
   if (HUES && HUES._meta) delete HUES._meta;   // meta block is not a hue
   districtFeatures = districtData.features;
+  window.districtFeatures = districtFeatures;  // diagnostics and browser checks
 
   // bake per-feature colors: province hue + district lightness ramp
   buildColorDictionary();
-  for (const f of districtFeatures) {
-    if (f.properties.split) {
-      // split cities carry the name of their registered stripe image instead
-      // of a flat fill colour (fill-pattern is cross-faded-data-driven, so a
-      // per-feature expression works — verified against the bundled v8 spec)
-      f.properties.pattern = SPLIT_HUES.get(f.properties.jurisdiction) || 'stripes';
-    } else {
-      f.properties.color = districtColor(f.properties.jurisdiction, f.properties.district_no);
-    }
-  }
+  for (const f of districtFeatures)
+    f.properties.color = districtColor(f.properties.jurisdiction, f.properties.district_no);
   addDistrictLayers();
   wireInteractions();   // once; survives style swaps
   layersReady = true;
 
-  // legend: province families — hue = province, shade = district number;
-  // split cities listed with their own tinted stripe swatch (they share the
-  // same golden-angle hue sequence, so their legend rows match their fill)
+  // legend: jurisdiction families — hue = province/city, shade = district number
   const lg = document.getElementById('legend');
-  lg.innerHTML = '<div style="margin-bottom:4px;color:#333;">hue = province · shade = district #</div>';
+  lg.innerHTML = '<div style="margin-bottom:4px;color:#333;">hue = jurisdiction · shade = district #</div>';
   const jurisSorted = [...swatches.keys()].sort((a, b) =>
     a.localeCompare(b, 'en', { sensitivity: 'base' }));
   for (const juris of jurisSorted) {
@@ -555,19 +427,9 @@ map.on('load', async () => {
       .join('');
     lg.insertAdjacentHTML('beforeend', `<div><span class="family">${shadeDots} ${juris}</span></div>`);
   }
-  for (const name of [...SPLIT_HUES.keys()].sort((a, b) =>
-      a.localeCompare(b, 'en', { sensitivity: 'base' }))) {
-    const h = HUES && HUES[name] != null ? HUES[name] : fallbackHue(name);
-    lg.insertAdjacentHTML('beforeend',
-      `<div><span class="family"><i title="${name} — split city, districts unresolved" ` +
-      `style="background:repeating-linear-gradient(45deg,hsl(${h},70%,34%) 0 3px,#fff 3px 6px)"></i>` +
-      ` ${name} <span style="color:#888">(split)</span></span></div>`);
-  }
-  const nD = districtFeatures.filter(f => !f.properties.split).length;
-  const nS = districtFeatures.filter(f => f.properties.split).length;
   document.getElementById('stats').innerHTML =
-    `${nD} district polygons · ${nS} split cities<br>` +
-    `Sources: COMELEC Res 11050/11069 · BetterGov · PSGC Q3 2026<br>` +
+    `${districtFeatures.length} district polygons · all split cities resolved<br>` +
+    `Sources: COMELEC Res 11050/11069 · PSGC Q3 2026 · BetterGov rosters<br>` +
     `<a href="../docs/release_v0.1.md">v0.1 release notes</a>`;
 });
 

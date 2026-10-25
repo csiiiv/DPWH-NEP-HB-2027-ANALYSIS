@@ -1,5 +1,14 @@
 # Viz Upgrade — Adjacency Hues, Rep Photos, Pinned Popups (2026-10-25)
 
+> **Follow-up:** the later split-city geometry build replaced the 13 striped
+> placeholders with individual barangay-derived district polygons. The viewer
+> still uses the colors, photos, and pinned-popup behavior described here, but
+> now renders 254 district features. See
+> [`split_city_geometry.md`](split_city_geometry.md).
+> Counts in the original implementation notes below describe the earlier
+> placeholder geometry; the regenerated hue table now has 115 jurisdictions,
+> 201 adjacency edges, and a 65° minimum adjacent-hue separation.
+
 **Scope.** Three upgrades to `viz/index.html` and its build pipeline,
 from this session's user requests:
 
@@ -132,7 +141,7 @@ district popup (photo + link + red outline).
 
 ```bash
 cd PSGC2LEG
-python3 scripts/build_viz_geojson.py       # polygons (232 features)
+python3 scripts/build_viz_geojson.py       # polygons (254 features)
 python3 scripts/build_province_hues.py     # adjacency hues — AFTER geojson
 python3 scripts/copy_rep_photos.py         # photos + manifest
 python3 tests/check_viz_browser.py         # headless browser verification

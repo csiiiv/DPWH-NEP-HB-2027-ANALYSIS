@@ -1,5 +1,11 @@
 # Validation: DPWH ArcGIS Congressional_District layer (2022) for split-city resolution
 
+> **Historical evaluation.** The final visualization does not use these 2022
+> ArcGIS district polygons. Split cities are now built from the retained 2023
+> barangay geometry and current barangay assignments; see
+> [`split_city_geometry.md`](split_city_geometry.md). The analysis below records
+> why the ArcGIS layer was not suitable as the nationwide final source.
+
 **Question.** Can the DPWH Statistics Division ArcGIS FeatureServer
 (`services1.arcgis.com/IwZZTMxZCmAmFYvF`, © March 2022, NAMRIA-derived,
 source ids `dpwh-arcgis-congdist-layer-info` / `dpwh-arcgis-congdist-geojson`)

@@ -2,11 +2,12 @@
 """Browser smoke test for PSGC2LEG/viz/index.html (Playwright, headless).
 
 Serves viz/ over localhost (module imports + fetch need http), then checks:
-1. page loads, district layers render, no console errors
-2. colors: Bulacan vs Nueva Ecija fill hues differ strongly (adjacency hues)
-3. click pins a popup containing the rep photo <img> that survives
+1. page loads all 254 district features, including Metro Manila splits
+2. district layers render with no console errors
+3. colors: Bulacan vs Nueva Ecija fill hues differ strongly (adjacency hues)
+4. click pins a popup containing the rep photo <img> that survives
    mouse-out; clicking the ocean unpins
-4. photos fetch 200
+5. photos fetch 200
 
 Run:  python3 tests/check_viz_browser.py
 """
@@ -49,16 +50,40 @@ def main() -> int:
         page.on("pageerror", lambda e: errors.append(str(e)))
         page.goto(f"http://127.0.0.1:{PORT}/index.html")
         page.wait_for_function("window.map && window.map.isStyleLoaded()", timeout=30000)
-        page.wait_for_timeout(2500)   # tiles + images
+        page.wait_for_function(
+            "window.districtFeatures && window.districtFeatures.length === 254",
+            timeout=120000,
+        )
+        page.wait_for_function(
+            "window.map.getSource('districts') && window.map.isSourceLoaded('districts')",
+            timeout=120000,
+        )
+        page.wait_for_timeout(1000)   # labels + images
 
         # 1. layers present
         layers = page.evaluate("window.map.getLayersBySource ? window.map.getLayersBySource('districts').map(l=>l.id) : []") \
             if page.evaluate("!!window.map.getLayersBySource") else \
             page.evaluate("window.map.getStyle().layers.map(l => l.id)")
-        need = {"districts-fill", "split-fill", "district-labels"}
+        need = {"districts-fill", "districts-line", "district-labels"}
         missing = need - set(layers)
         print(f"layers ok: {not missing}" + (f"  missing: {missing}" if missing else ""))
         ok &= not missing
+
+        rendered = page.evaluate("""() => {
+          const unique = new Map(window.districtFeatures.map(f =>
+            [f.properties.leg_id, f.properties]));
+          const counts = {};
+          for (const p of unique.values())
+            counts[p.jurisdiction] = (counts[p.jurisdiction] || 0) + 1;
+          return {total: unique.size, counts};
+        }""")
+        ncr_expected = {"Manila": 6, "Quezon City": 6, "Caloocan": 3,
+                        "Makati": 2, "Marikina": 2, "Parañaque": 2,
+                        "Taguig–Pateros": 2, "Valenzuela": 2}
+        ncr_actual = {name: rendered["counts"].get(name, 0) for name in ncr_expected}
+        complete = rendered["total"] == 254 and ncr_actual == ncr_expected
+        print(f"district features: {rendered['total']}/254; NCR counts: {ncr_actual}")
+        ok &= complete
 
         # 2. adjacency contrast: Bulacan vs Nueva Ecija hues
         hues = json.loads((VIZ / "province_hues.json").read_text())
@@ -143,6 +168,10 @@ def main() -> int:
         print("ocean click unpins:", gone)
         ok &= gone
 
+        # The retained preview makes the completed NCR district boundaries easy
+        # to inspect instead of ending on the open-water unpin test.
+        page.evaluate("window.map.jumpTo({center:[121.02,14.59], zoom:10.2})")
+        page.wait_for_timeout(1500)
         page.screenshot(path=str(VIZ / "preview.png"), full_page=False)
 
         # console errors (ignore tile/network noise from remote basemap)

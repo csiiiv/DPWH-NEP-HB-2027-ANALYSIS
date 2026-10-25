@@ -1,5 +1,10 @@
 # PSGC2LEG Release v0.1 — Municipality-Level Baseline (2025/20th Congress)
 
+> **Historical release note.** The deferred barangay-level work described
+> below has since been completed for all 13 multi-district cities. See
+> [`split_city_geometry.md`](split_city_geometry.md) for the current dataset and
+> visualization status.
+
 **Generated:** 25 October 2026
 **Scope:** Municipality/city-level PSGC→LEG assignment nationwide (committed target).
 Barangay-level splits (stretch goal) deferred; split cities carried as
