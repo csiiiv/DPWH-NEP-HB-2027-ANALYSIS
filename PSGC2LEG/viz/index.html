@@ -4,14 +4,13 @@
 <meta charset="utf-8">
 <title>PSGC2LEG — Philippine Legislative Districts (2025 / 20th Congress)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet">
 <style>
   html, body { height: 100%; margin: 0; font-family: system-ui, sans-serif; }
   #map { height: 100%; }
   #panel {
-    position: absolute; top: 10px; right: 10px; z-index: 1000;
+    position: absolute; top: 10px; right: 10px; z-index: 5;
     background: white; padding: 12px 14px; border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,.25); max-width: 320px; font-size: 13px;
   }
@@ -24,8 +23,9 @@
               border-radius: 2px; vertical-align: -2px; }
   .legend .split { background: repeating-linear-gradient(45deg,#999,#999 3px,#fff 3px,#fff 6px); }
   #stats { margin-top: 8px; color: #666; font-size: 11px; }
-  .leaflet-popup-content { font-size: 13px; }
+  .maplibregl-popup-content { font-size: 13px; }
   .popup-meta { color: #555; font-size: 12px; }
+  .maplibregl-ctrl-group button { border-radius: 0 !important; }
 </style>
 </head>
 <body>
@@ -53,34 +53,48 @@ const REGION_COLORS = {
   "Region VIII (Eastern Visayas)": "#fdbf6f",
   "Region IX (Zamboanga Peninsula)": "#cab2d6",
   "Region X (Northern Mindanao)": "#6a3d9a",
-  "Region XI (Davao)": "#ffff33",
+  "Region XI (Davao)": "#d9c50a",
   "Region XII (SOCCSKSARGEN)": "#b15928",
   "Bangsamoro Autonomous Region in Muslim Mindanao": "#8dd3c7",
   "Caraga": "#fb8072",
 };
 const FALLBACK = "#cccccc";
 
-const map = L.map('map', { preferCanvas: true }).setView([12.5, 122.0], 6);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 18
-}).addTo(map);
+const colorExpr = [
+  'match', ['get', 'region'],
+  ...Object.entries(REGION_COLORS).flatMap(([k, v]) => [k, v]),
+  FALLBACK
+];
 
-let geo, allFeatures = [];
-
-function regionColor(props) {
-  if (props.split) return null;
-  return REGION_COLORS[props.region] || FALLBACK;
-}
-
-function style(f) {
-  if (f.properties.split) {
-    return { color: '#666', weight: 1, fillOpacity: 0.25,
-             fillPattern: null, fillColor: '#999', dashArray: '3 2' };
+const map = new maplibregl.Map({
+  container: 'map',
+  style: 'https://tiles.openfreemap.org/styles/positron',
+  center: [122.0, 12.5],
+  zoom: 5.2,
+  hash: true,
+});
+// Fallback if the remote style can't load (offline use): blank style,
+// districts still render as the base layer.
+map.on('styleerror', () => {
+  if (!map.styleLoaded()) {
+    map.setStyle({ version: 8, sources: {}, layers: [] });
   }
-  return {
-    color: '#fff', weight: 1, fillOpacity: 0.75,
-    fillColor: regionColor(f.properties)
-  };
+});
+map.addControl(new maplibregl.NavigationControl({ visualizeRoll: true }));
+map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }));
+
+function makeStripePattern() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 8;
+  const ctx = c.getContext('2d');
+  ctx.strokeStyle = '#8a8a8a';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(-2, 10); ctx.lineTo(10, -2);
+  ctx.moveTo(-2, 2);  ctx.lineTo(2, -2);
+  ctx.moveTo(6, 10);  ctx.lineTo(10, 6);
+  ctx.stroke();
+  return ctx.getImageData(0, 0, 8, 8);
 }
 
 function popupText(p) {
@@ -89,51 +103,161 @@ function popupText(p) {
   }
   const rep = p.representative ? `<br>Rep. ${p.representative}` : '';
   return `<b>${p.jurisdiction} — ${p.district_label}</b>${rep}
-    <br><span class="popup-meta">${p.region}<br><code>${p.leg_id}</code></span>`;
+    <br><span class="popup-meta">${p.region || ''}<br><code>${p.leg_id}</code></span>`;
 }
 
-let layer;
-$.getJSON('leg_districts.geojson', function(data) {
-  geo = data;
-  allFeatures = data.features;
-  layer = L.geoJSON(data, {
-    style, preferCanvas: true,
-    onEachFeature: (f, l) => {
-      l.bindPopup(popupText(f.properties));
-      l.on('mouseover', () => l.setStyle({ weight: 2.5, color: '#000' }));
-      l.on('mouseout', () => layer.resetStyle(l));
+function bboxOf(geom) {
+  let minX = 180, minY = 90, maxX = -180, maxY = -90;
+  const walk = c => {
+    if (typeof c[0] === 'number') {
+      minX = Math.min(minX, c[0]); maxX = Math.max(maxX, c[0]);
+      minY = Math.min(minY, c[1]); maxY = Math.max(maxY, c[1]);
+    } else c.forEach(walk);
+  };
+  walk(geom.coordinates);
+  return [[minX, minY], [maxX, maxY]];
+}
+
+let features = [];
+
+map.on('load', async () => {
+  map.addImage('stripes', makeStripePattern(), { sdf: false });
+
+  const data = await fetch('leg_districts.geojson').then(r => r.json());
+  features = data.features;
+
+  map.addSource('districts', { type: 'geojson', data, generateId: true });
+
+  // regular districts (region-colored)
+  map.addLayer({
+    id: 'districts-fill',
+    type: 'fill',
+    source: 'districts',
+    filter: ['!', ['get', 'split']],
+    paint: {
+      'fill-color': colorExpr,
+      'fill-opacity': [
+        'case',
+        ['boolean', ['feature-state', 'hover'], false], 0.95,
+        ['boolean', ['feature-state', 'selected'], false], 0.95,
+        0.72
+      ],
     }
-  }).addTo(map);
+  });
+
+  // split cities (striped)
+  map.addLayer({
+    id: 'split-fill',
+    type: 'fill',
+    source: 'districts',
+    filter: ['==', ['get', 'split'], true],
+    paint: {
+      'fill-pattern': 'stripes',
+      'fill-opacity': 0.55,
+    }
+  });
+
+  // outlines (hover/selected emphasized)
+  map.addLayer({
+    id: 'districts-line',
+    type: 'line',
+    source: 'districts',
+    paint: {
+      'line-color': [
+        'case',
+        ['boolean', ['feature-state', 'hover'], false], '#000',
+        ['boolean', ['feature-state', 'selected'], false], '#0000ff',
+        '#ffffff'
+      ],
+      'line-width': [
+        'case',
+        ['boolean', ['feature-state', 'hover'], false], 2.5,
+        ['boolean', ['feature-state', 'selected'], false], 3,
+        0.8
+      ],
+    }
+  });
+  map.addLayer({
+    id: 'split-line-dash',
+    type: 'line',
+    source: 'districts',
+    filter: ['==', ['get', 'split'], true],
+    paint: { 'line-color': '#555', 'line-width': 1.2 },
+    layout: { 'line-cap': 'round' },
+  });
+  // dashed needs setPaintProperty after add (dasharray not transitionable)
+  map.setPaintProperty('split-line-dash', 'line-dasharray', [2, 1.5]);
+
+  // interactions
+  let hovered = null;
+  const popup = new maplibregl.Popup({ closeButton: false, maxWidth: '320px' });
+
+  map.on('mousemove', 'districts-fill', e => {
+    if (hovered !== null) map.setFeatureState({ source: 'districts', id: hovered }, { hover: false });
+    hovered = e.features[0].id;
+    map.setFeatureState({ source: 'districts', id: hovered }, { hover: true });
+    map.getCanvas().style.cursor = 'pointer';
+    popup.setHTML(popupText(e.features[0].properties))
+         .setLngLat(e.lngLat).addTo(map);
+  });
+  map.on('mouseleave', 'districts-fill', () => {
+    if (hovered !== null) map.setFeatureState({ source: 'districts', id: hovered }, { hover: false });
+    hovered = null;
+    map.getCanvas().style.cursor = '';
+    popup.remove();
+  });
+  map.on('mousemove', 'split-fill', e => {
+    popup.setHTML(popupText(e.features[0].properties))
+         .setLngLat(e.lngLat).addTo(map);
+    map.getCanvas().style.cursor = 'pointer';
+  });
+  map.on('mouseleave', 'split-fill', () => { popup.remove(); map.getCanvas().style.cursor = ''; });
 
   // legend + stats
-  const lg = $('#legend');
+  const lg = document.getElementById('legend');
   for (const [name, color] of Object.entries(REGION_COLORS)) {
-    lg.append(`<div><i style="background:${color}"></i>${name}</div>`);
+    lg.insertAdjacentHTML('beforeend', `<div><i style="background:${color}"></i>${name}</div>`);
   }
-  lg.append('<div><i class="split"></i>split city (multi-district)</div>');
-  const nDistricts = allFeatures.filter(f => !f.split && !f.none).length;
-  const nSplit = allFeatures.filter(f => f.split).length;
-  $('#stats').html(`${nDistricts} district polygons · ${nSplit} split cities<br>` +
+  lg.insertAdjacentHTML('beforeend', '<div><i class="split"></i>split city (multi-district)</div>');
+  const nD = features.filter(f => !f.properties.split).length;
+  const nS = features.filter(f => f.properties.split).length;
+  document.getElementById('stats').innerHTML =
+    `${nD} district polygons · ${nS} split cities<br>` +
     `Sources: COMELEC Res 11050/11069 · BetterGov · PSGC Q3 2026<br>` +
-    `<a href="../docs/release_v0.1.md">v0.1 release notes</a>`);
+    `<a href="../docs/release_v0.1.md">v0.1 release notes</a>`;
 });
 
-$('#search').on('input', function() {
+// search: highlight + zoom to matches
+let selectedIds = new Set();
+document.getElementById('search').addEventListener('input', function () {
   const q = this.value.trim().toLowerCase();
-  if (!q || !layer) return;
-  let firstHit = null;
-  layer.eachLayer(l => {
-    const p = l.feature.properties;
+  if (!q || !map.isStyleLoaded()) return;
+  const matches = [];
+  for (const f of features) {
+    const p = f.properties;
     const hay = [p.jurisdiction, p.district_label, p.representative, p.leg_id]
       .filter(Boolean).join(' ').toLowerCase();
-    const hit = hay.includes(q);
-    if (hit && !firstHit) firstHit = l;
-    l.setStyle(hit ? { weight: 3, color: '#0000ff', fillOpacity: 0.9 }
-                   : style(l.feature));
-  });
-  if (firstHit && q.length > 1) {
-    const b = firstHit.getBounds();
-    map.fitBounds(b, { maxZoom: 11 });
+    if (hay.includes(q)) matches.push(f);
+  }
+  for (const id of selectedIds) map.setFeatureState({ source: 'districts', id }, { selected: false });
+  selectedIds = new Set();
+  if (matches.length) {
+    let minX = 180, minY = 90, maxX = -180, maxY = -90;
+    for (const f of matches) {
+      const [[a, b], [c, d]] = bboxOf(f.geometry);
+      minX = Math.min(minX, a); minY = Math.min(minY, b);
+      maxX = Math.max(maxX, c); maxY = Math.max(maxY, d);
+    }
+    map.fitBounds([[minX, minY], [maxX, maxY]], { padding: 60, maxZoom: 11, duration: 600 });
+    // re-select after generateId: find rendered ids for matched features
+    // (generateId assigns stable per-source ids in data order)
+    const idx = new Set(matches.map(m => features.indexOf(m)));
+    features.forEach((f, i) => {
+      if (idx.has(i)) {
+        map.setFeatureState({ source: 'districts', id: i }, { selected: true });
+        selectedIds.add(i);
+      }
+    });
   }
 });
 </script>
