@@ -1,0 +1,1526 @@
+{
+ "leg:ph:basilan:lone:2025": {
+  "name": "Alano, Ustadz Yusop T.",
+  "photo": "photos/alano-ustadz-yusop-t.jpg",
+  "area": "Basilan, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L002"
+ },
+ "leg:ph:lanao-del-sur:1:2025": {
+  "name": "Adiong, Ziaur-Rahman \"Zia\" Alonto",
+  "photo": "photos/adiong-ziaur-rahman-zia-alonto.jpg",
+  "area": "Lanao del Sur, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K002"
+ },
+ "leg:ph:lanao-del-sur:2:2025": {
+  "name": "Balindong, Yasser Alonto",
+  "photo": "photos/balindong-yasser-alonto.jpg",
+  "area": "Lanao del Sur, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J011"
+ },
+ "leg:ph:maguindanao-del-norte:lone:2025": {
+  "name": "Mastura, Sittie Shahara \"Bai Dimple\" I.",
+  "photo": "photos/mastura-sittie-shahara-bai-dimple-i.jpg",
+  "area": "Maguindanao del Norte, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K052"
+ },
+ "leg:ph:maguindanao-del-sur:lone:2025": {
+  "name": "Mangudadatu, Esmael G.",
+  "photo": "photos/mangudadatu-esmael-g.jpg",
+  "area": "Maguindanao del Sur, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J050"
+ },
+ "leg:ph:sulu:1:2025": {
+  "name": "Tan, Samier A.",
+  "photo": "photos/tan-samier-a.jpg",
+  "area": "Sulu, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J073"
+ },
+ "leg:ph:sulu:2:2025": {
+  "name": "Arbison, Munir M.",
+  "photo": "photos/arbison-munir-m.jpg",
+  "area": "Sulu, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/D004"
+ },
+ "leg:ph:tawi-tawi:lone:2025": {
+  "name": "Sali, Dimszar M.",
+  "photo": "photos/sali-dimszar-m.jpg",
+  "area": "Tawi-Tawi, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K075"
+ },
+ "leg:ph:abra:lone:2025": {
+  "name": "Bernos, JB",
+  "photo": "photos/bernos-jb.jpg",
+  "area": "Abra, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/I098"
+ },
+ "leg:ph:apayao:lone:2025": {
+  "name": "Bulut-Begtang, Eleanor C.",
+  "photo": "photos/bulut-begtang-eleanor-c.jpg",
+  "area": "Apayao, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G013"
+ },
+ "leg:ph:baguio:lone:2025": {
+  "name": "Domogan, Mauricio G.",
+  "photo": "photos/domogan-mauricio-g.jpg",
+  "area": "Baguio City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/D024"
+ },
+ "leg:ph:benguet:lone:2025": {
+  "name": "Yap, Eric Go",
+  "photo": "photos/yap-eric-go.jpg",
+  "area": "Benguet, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J118"
+ },
+ "leg:ph:ifugao:lone:2025": {
+  "name": "Chungalao, Solomon R.",
+  "photo": "photos/chungalao-solomon-r.jpg",
+  "area": "Ifugao, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/D015"
+ },
+ "leg:ph:kalinga:lone:2025": {
+  "name": "Agyao, Caroline B., M.D.",
+  "photo": "photos/agyao-caroline-b-m-d.jpg",
+  "area": "Kalinga, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L001"
+ },
+ "leg:ph:mountain-province:lone:2025": {
+  "name": "Dalog, Maximo Jr. Y.",
+  "photo": "photos/dalog-maximo-jr-y.jpg",
+  "area": "Mountain Province, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J024"
+ },
+ "leg:ph:agusan-del-norte:lone:2025": {
+  "name": "Corvera, Dale B.",
+  "photo": "photos/corvera-dale-b.jpg",
+  "area": "Agusan del Norte, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K023"
+ },
+ "leg:ph:agusan-del-sur:1:2025": {
+  "name": "Bascug, Alfelito \"Alfel\" M.",
+  "photo": "photos/bascug-alfelito-alfel-m.jpg",
+  "area": "Agusan del Sur, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J014"
+ },
+ "leg:ph:agusan-del-sur:2:2025": {
+  "name": "Plaza, Eddiebong G.",
+  "photo": "photos/plaza-eddiebong-g.jpg",
+  "area": "Agusan del Sur, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J057"
+ },
+ "leg:ph:butuan:lone:2025": {
+  "name": "Aquino, Jose \"Joboy\" II S.",
+  "photo": "photos/aquino-jose-joboy-ii-s.jpg",
+  "area": "Butuan, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F007"
+ },
+ "leg:ph:dinagat-islands:lone:2025": {
+  "name": "Bag-ao, Kaka J.",
+  "photo": "photos/bag-ao-kaka-j.jpg",
+  "area": "Dinagat Islands, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G009"
+ },
+ "leg:ph:surigao-del-norte:1:2025": {
+  "name": "Matugas, Francisco \"Lalo\" T.",
+  "photo": "photos/matugas-francisco-lalo-t.jpg",
+  "area": "Surigao del Norte, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F046"
+ },
+ "leg:ph:surigao-del-norte:2:2025": {
+  "name": "Barbers, Bernadette S.",
+  "photo": "photos/barbers-bernadette-s.jpg",
+  "area": "Surigao del Norte, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L008"
+ },
+ "leg:ph:surigao-del-sur:1:2025": {
+  "name": "Momo, Romeo Sr. S.",
+  "photo": "photos/momo-romeo-sr-s.jpg",
+  "area": "Surigao del Sur, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J105"
+ },
+ "leg:ph:surigao-del-sur:2:2025": {
+  "name": "Pimentel, Alexander Ty",
+  "photo": "photos/pimentel-alexander-ty.jpg",
+  "area": "Surigao del Sur, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L068"
+ },
+ "leg:ph:caloocan:1:2025": {
+  "name": "Malapitan, Oscar G.",
+  "photo": "photos/malapitan-oscar-g.jpg",
+  "area": "Caloocan City, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/E042"
+ },
+ "leg:ph:caloocan:2:2025": {
+  "name": "Erice, Edgar R.",
+  "photo": "photos/erice-edgar-r.jpg",
+  "area": "Caloocan City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/H025"
+ },
+ "leg:ph:caloocan:3:2025": {
+  "name": "Asistio, Dean",
+  "photo": "photos/asistio-dean.jpg",
+  "area": "Caloocan City, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K012"
+ },
+ "leg:ph:las-pinas:lone:2025": {
+  "name": "Santos, Mark Anthony G.",
+  "photo": "photos/santos-mark-anthony-g.jpg",
+  "area": "Las Piñas City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L077"
+ },
+ "leg:ph:makati:1:2025": {
+  "name": "Lagdameo, Monique Yazmin Maria Q.",
+  "photo": "photos/lagdameo-monique-yazmin-maria-q.jpg",
+  "area": "Makati City, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G055"
+ },
+ "leg:ph:makati:2:2025": {
+  "name": "Almario, Dennis \"Alden\" B.",
+  "photo": "photos/almario-dennis-alden-b.jpg",
+  "area": "Makati City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L003"
+ },
+ "leg:ph:malabon:lone:2025": {
+  "name": "Oreta, Antolin III A.",
+  "photo": "photos/oreta-antolin-iii-a.jpg",
+  "area": "Malabon City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L066"
+ },
+ "leg:ph:mandaluyong:lone:2025": {
+  "name": "Gonzales, Alexandria \"Queenie\"",
+  "photo": "photos/gonzales-alexandria-queenie.jpg",
+  "area": "Mandaluyong City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/I032"
+ },
+ "leg:ph:manila:1:2025": {
+  "name": "Dionisio, Ernesto Jr. M.",
+  "photo": "photos/dionisio-ernesto-jr-m.jpg",
+  "area": "Manila, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K028"
+ },
+ "leg:ph:manila:2:2025": {
+  "name": "Valeriano, Rolando M.",
+  "photo": "photos/valeriano-rolando-m.jpg",
+  "area": "Manila, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J078"
+ },
+ "leg:ph:manila:3:2025": {
+  "name": "Chua, Joel R.",
+  "photo": "photos/chua-joel-r.jpg",
+  "area": "Manila, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K020"
+ },
+ "leg:ph:manila:4:2025": {
+  "name": "Maceda, Giselle Mary L.",
+  "photo": "photos/maceda-giselle-mary-l.jpg",
+  "area": "Manila, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L059"
+ },
+ "leg:ph:manila:5:2025": {
+  "name": "Tieng, Irwin C.",
+  "photo": "photos/tieng-irwin-c.jpg",
+  "area": "Manila, 5th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F092"
+ },
+ "leg:ph:manila:6:2025": {
+  "name": "Abante, Bienvenido Jr. M.",
+  "photo": "photos/abante-bienvenido-jr-m.jpg",
+  "area": "Manila, 6th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/E003"
+ },
+ "leg:ph:marikina:1:2025": {
+  "name": "Teodoro, Marcelino \"Marcy\" R.",
+  "photo": "photos/teodoro-marcelino-marcy-r.jpg",
+  "area": "Marikina City, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F070"
+ },
+ "leg:ph:marikina:2:2025": {
+  "name": "Quimbo, Atty. Miro S.",
+  "photo": "photos/quimbo-atty-miro-s.jpg",
+  "area": "Marikina City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G073"
+ },
+ "leg:ph:muntinlupa:lone:2025": {
+  "name": "Fresnedi, Jaime R.",
+  "photo": "photos/fresnedi-jaime-r.jpg",
+  "area": "Muntinlupa City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K034"
+ },
+ "leg:ph:navotas:lone:2025": {
+  "name": "Tiangco, Tobias \"Toby\" M.",
+  "photo": "photos/tiangco-tobias-toby-m.jpg",
+  "area": "Navotas City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G090"
+ },
+ "leg:ph:paranaque:1:2025": {
+  "name": "Olivarez, Eric L.",
+  "photo": "photos/olivarez-eric-l.jpg",
+  "area": "Parañaque City, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/H046"
+ },
+ "leg:ph:paranaque:2:2025": {
+  "name": "Yamsuan, Brian Raymund S.",
+  "photo": "photos/yamsuan-brian-raymund-s.jpg",
+  "area": "Parañaque City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K138"
+ },
+ "leg:ph:pasay:lone:2025": {
+  "name": "Calixto, Antonino G.",
+  "photo": "photos/calixto-antonino-g.jpg",
+  "area": "Pasay City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J018"
+ },
+ "leg:ph:pasig:lone:2025": {
+  "name": "Romulo, Roman T.",
+  "photo": "photos/romulo-roman-t.jpg",
+  "area": "Pasig City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F062"
+ },
+ "leg:ph:quezon-city:1:2025": {
+  "name": "Atayde, Juan Carlos \"Arjo\" C.",
+  "photo": "photos/atayde-juan-carlos-arjo-c.jpg",
+  "area": "Quezon City, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K013"
+ },
+ "leg:ph:quezon-city:2:2025": {
+  "name": "Tulfo, Ralph Wendel P.",
+  "photo": "photos/tulfo-ralph-wendel-p.jpg",
+  "area": "Quezon City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K089"
+ },
+ "leg:ph:quezon-city:3:2025": {
+  "name": "Pumaren, Franz S.",
+  "photo": "photos/pumaren-franz-s.jpg",
+  "area": "Quezon City, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K067"
+ },
+ "leg:ph:quezon-city:4:2025": {
+  "name": "Suntay, Jesus \"Bong\" C.",
+  "photo": "photos/suntay-jesus-bong-c.jpg",
+  "area": "Quezon City, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J069"
+ },
+ "leg:ph:quezon-city:5:2025": {
+  "name": "Vargas, Patrick Michael D.",
+  "photo": "photos/vargas-patrick-michael-d.jpg",
+  "area": "Quezon City, 5th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K091"
+ },
+ "leg:ph:quezon-city:6:2025": {
+  "name": "Co-Pilar, Ma. Victoria",
+  "photo": "photos/co-pilar-ma-victoria.jpg",
+  "area": "Quezon City, 6th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K022"
+ },
+ "leg:ph:san-juan:lone:2025": {
+  "name": "Zamora, Ysabel Maria J.",
+  "photo": "photos/zamora-ysabel-maria-j.jpg",
+  "area": "San Juan City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K099"
+ },
+ "leg:ph:taguig-pateros:1:2025": {
+  "name": "Cruz, Ricardo Jr. S.",
+  "photo": "photos/cruz-ricardo-jr-s.jpg",
+  "area": "Taguig City-Pateros, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K024"
+ },
+ "leg:ph:taguig-pateros:2:2025": {
+  "name": "Bocobo, Jorge Daniel S.",
+  "photo": "photos/bocobo-jorge-daniel-s.jpg",
+  "area": "Taguig City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L013"
+ },
+ "leg:ph:valenzuela:1:2025": {
+  "name": "Gatchalian, Kenneth T.",
+  "photo": "photos/gatchalian-kenneth-t.jpg",
+  "area": "Valenzuela City, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L037"
+ },
+ "leg:ph:valenzuela:2:2025": {
+  "name": "Galang, Gerald Cloyd Alexis V.",
+  "photo": "photos/galang-gerald-cloyd-alexis-v.jpg",
+  "area": "Valenzuela City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L035"
+ },
+ "leg:ph:bacolod:lone:2025": {
+  "name": "Benitez, Alfredo \"Albee\" B.",
+  "photo": "photos/benitez-alfredo-albee-b.jpg",
+  "area": "Bacolod City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G015"
+ },
+ "leg:ph:negros-occidental:1:2025": {
+  "name": "Ledesma, Julio IV A.",
+  "photo": "photos/ledesma-julio-iv-a.jpg",
+  "area": "Negros Occidental, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/B020"
+ },
+ "leg:ph:negros-occidental:2:2025": {
+  "name": "Marañon, Alfredo III D.",
+  "photo": "photos/mara-on-alfredo-iii-d.jpg",
+  "area": "Negros Occidental, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/E045"
+ },
+ "leg:ph:negros-occidental:3:2025": {
+  "name": "Benitez, Javier Miguel Lopez",
+  "photo": "photos/benitez-javier-miguel-lopez.jpg",
+  "area": "Negros Occidental, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L012"
+ },
+ "leg:ph:negros-occidental:4:2025": {
+  "name": "Ferrer, Jeffrey P.",
+  "photo": "photos/ferrer-jeffrey-p.jpg",
+  "area": "Negros Occidental, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F082"
+ },
+ "leg:ph:negros-occidental:5:2025": {
+  "name": "Yulo, Emilio Bernardino L.",
+  "photo": "photos/yulo-emilio-bernardino-l.jpg",
+  "area": "Negros Occidental, 5th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K098"
+ },
+ "leg:ph:negros-occidental:6:2025": {
+  "name": "Alvarez, Mercedes K.",
+  "photo": "photos/alvarez-mercedes-k.jpg",
+  "area": "Negros Occidental, 6th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G006"
+ },
+ "leg:ph:negros-oriental:1:2025": {
+  "name": "Iway, Emmanuel L.",
+  "photo": "photos/iway-emmanuel-l.jpg",
+  "area": "Negros Oriental, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L099"
+ },
+ "leg:ph:negros-oriental:2:2025": {
+  "name": "Sagarbarria, Ma. Isabel L.",
+  "photo": "photos/sagarbarria-ma-isabel-l.jpg",
+  "area": "Negros Oriental, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L070"
+ },
+ "leg:ph:negros-oriental:3:2025": {
+  "name": "Degamo, Janice",
+  "photo": "photos/degamo-janice.jpg",
+  "area": "Negros Oriental, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L029"
+ },
+ "leg:ph:siquijor:lone:2025": {
+  "name": "Villa, Zaldy S.",
+  "photo": "photos/villa-zaldy-s.jpg",
+  "area": "Siquijor, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K137"
+ },
+ "leg:ph:ilocos-norte:1:2025": {
+  "name": "Marcos, Ferdinand Alexander A.",
+  "photo": "photos/marcos-ferdinand-alexander-a.jpg",
+  "area": "Ilocos Norte, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K051"
+ },
+ "leg:ph:ilocos-norte:2:2025": {
+  "name": "Barba, Angelo Marcos",
+  "photo": "photos/barba-angelo-marcos.jpg",
+  "area": "Ilocos Norte, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J012"
+ },
+ "leg:ph:ilocos-sur:1:2025": {
+  "name": "Singson, Ronald V.",
+  "photo": "photos/singson-ronald-v.jpg",
+  "area": "Ilocos Sur, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F068"
+ },
+ "leg:ph:ilocos-sur:2:2025": {
+  "name": "Singson-Meehan, Kristine",
+  "photo": "photos/singson-meehan-kristine.jpg",
+  "area": "Ilocos Sur, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J066"
+ },
+ "leg:ph:la-union:1:2025": {
+  "name": "Ortega, Francisco Paolo V P.",
+  "photo": "photos/ortega-francisco-paolo-v-p.jpg",
+  "area": "La Union, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K059"
+ },
+ "leg:ph:la-union:2:2025": {
+  "name": "Garcia, Dante S.",
+  "photo": "photos/garcia-dante-s.jpg",
+  "area": "La Union, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K036"
+ },
+ "leg:ph:pangasinan:1:2025": {
+  "name": "Celeste, Arthur F.",
+  "photo": "photos/celeste-arthur-f.jpg",
+  "area": "Pangasinan, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/D012"
+ },
+ "leg:ph:pangasinan:2:2025": {
+  "name": "Cojuangco, Mark O.",
+  "photo": "photos/cojuangco-mark-o.jpg",
+  "area": "Pangasinan, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/D017"
+ },
+ "leg:ph:pangasinan:3:2025": {
+  "name": "Arenas, Maria Rachel J.",
+  "photo": "photos/arenas-maria-rachel-j.jpg",
+  "area": "Pangasinan, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F008"
+ },
+ "leg:ph:pangasinan:4:2025": {
+  "name": "de Venecia, Ma. Georgina P.",
+  "photo": "photos/de-venecia-ma-georgina-p.jpg",
+  "area": "Pangasinan, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G030"
+ },
+ "leg:ph:pangasinan:5:2025": {
+  "name": "Guico, Ramon Jr. N.",
+  "photo": "photos/guico-ramon-jr-n.jpg",
+  "area": "Pangasinan, 5th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J042"
+ },
+ "leg:ph:pangasinan:6:2025": {
+  "name": "Primicias-Agabas, Marlyn L.",
+  "photo": "photos/primicias-agabas-marlyn-l.jpg",
+  "area": "Pangasinan, 6th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G072"
+ },
+ "leg:ph:bukidnon:1:2025": {
+  "name": "Alba, Jose Manuel F.",
+  "photo": "photos/alba-jose-manuel-f.jpg",
+  "area": "Bukidnon, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K005"
+ },
+ "leg:ph:bukidnon:2:2025": {
+  "name": "Flores, Jonathan Keith T.",
+  "photo": "photos/flores-jonathan-keith-t.jpg",
+  "area": "Bukidnon, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J033"
+ },
+ "leg:ph:bukidnon:3:2025": {
+  "name": "Zubiri, Audrey Kay T.",
+  "photo": "photos/zubiri-audrey-kay-t.jpg",
+  "area": "Bukidnon, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L094"
+ },
+ "leg:ph:bukidnon:4:2025": {
+  "name": "Roque, Laarni Lavin",
+  "photo": "photos/roque-laarni-lavin.jpg",
+  "area": "Bukidnon, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K074"
+ },
+ "leg:ph:cagayan-de-oro:1:2025": {
+  "name": "Suan, Lordan G.",
+  "photo": "photos/suan-lordan-g.jpg",
+  "area": "Cagayan de Oro City, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K079"
+ },
+ "leg:ph:cagayan-de-oro:2:2025": {
+  "name": "Rodriguez, Rufus B.",
+  "photo": "photos/rodriguez-rufus-b.jpg",
+  "area": "Cagayan de Oro City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F057"
+ },
+ "leg:ph:camiguin:lone:2025": {
+  "name": "Romualdo, Jurdin Jesus M.",
+  "photo": "photos/romualdo-jurdin-jesus-m.jpg",
+  "area": "Camiguin, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/C100"
+ },
+ "leg:ph:iligan:lone:2025": {
+  "name": "Regencia, Celso G.",
+  "photo": "photos/regencia-celso-g.jpg",
+  "area": "Iligan City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K069"
+ },
+ "leg:ph:lanao-del-norte:1:2025": {
+  "name": "Dimaporo, Imelda Quibranza",
+  "photo": "photos/dimaporo-imelda-quibranza.jpg",
+  "area": "Lanao del Norte, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G034"
+ },
+ "leg:ph:lanao-del-norte:2:2025": {
+  "name": "Dimaporo, Sittie Aminah Q.",
+  "photo": "photos/dimaporo-sittie-aminah-q.jpg",
+  "area": "Lanao del Norte, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K027"
+ },
+ "leg:ph:misamis-occidental:1:2025": {
+  "name": "Almonte, Jason P.",
+  "photo": "photos/almonte-jason-p.jpg",
+  "area": "Misamis Occidental, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K007"
+ },
+ "leg:ph:misamis-occidental:2:2025": {
+  "name": "Oaminal, Sancho Fernando \"Ando\" F.",
+  "photo": "photos/oaminal-sancho-fernando-ando-f.jpg",
+  "area": "Misamis Occidental, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K056"
+ },
+ "leg:ph:misamis-oriental:1:2025": {
+  "name": "Lagbas, Atty. Jennifer \"Karen\" A.",
+  "photo": "photos/lagbas-atty-jennifer-karen-a.jpg",
+  "area": "Misamis Oriental, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L050"
+ },
+ "leg:ph:misamis-oriental:2:2025": {
+  "name": "Emano, Yevgeny Vincente B.",
+  "photo": "photos/emano-yevgeny-vincente-b.jpg",
+  "area": "Misamis Oriental, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F027"
+ },
+ "leg:ph:davao-city:1:2025": {
+  "name": "Duterte, Paolo Z.",
+  "photo": "photos/duterte-paolo-z.jpg",
+  "area": "Davao City, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J026"
+ },
+ "leg:ph:davao-city:2:2025": {
+  "name": "Duterte, Omar Vincent Sangkola",
+  "photo": "photos/duterte-omar-vincent-sangkola.jpg",
+  "area": "Davao City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L034"
+ },
+ "leg:ph:davao-city:3:2025": {
+  "name": "Ungab, Isidro T.",
+  "photo": "photos/ungab-isidro-t.jpg",
+  "area": "Davao City, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F073"
+ },
+ "leg:ph:davao-occidental:lone:2025": {
+  "name": "Bautista, Claude P.",
+  "photo": "photos/bautista-claude-p.jpg",
+  "area": "Davao Occidental, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K015"
+ },
+ "leg:ph:davao-oriental:1:2025": {
+  "name": "Dayanghirang, Nelson \"JR\"",
+  "photo": "photos/dayanghirang-nelson-jr.jpg",
+  "area": "Davao Oriental, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L101"
+ },
+ "leg:ph:davao-oriental:2:2025": {
+  "name": "Almario, Cheeno Miguel D.",
+  "photo": "photos/almario-cheeno-miguel-d.jpg",
+  "area": "Davao Oriental, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K006"
+ },
+ "leg:ph:davao-de-oro:1:2025": {
+  "name": "Zamora, Maria Carmen S.",
+  "photo": "photos/zamora-maria-carmen-s.jpg",
+  "area": "Davao de Oro, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/H084"
+ },
+ "leg:ph:davao-de-oro:2:2025": {
+  "name": "Ceniza, Leonel \"Jhong\" D.",
+  "photo": "photos/ceniza-leonel-jhong-d.jpg",
+  "area": "Davao de Oro, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L018"
+ },
+ "leg:ph:davao-del-norte:1:2025": {
+  "name": "Uy, De Carlo L.",
+  "photo": "photos/uy-de-carlo-l.jpg",
+  "area": "Davao del Norte, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L085"
+ },
+ "leg:ph:davao-del-norte:2:2025": {
+  "name": "Lagdameo, Jose Manuel \"JM\" F.",
+  "photo": "photos/lagdameo-jose-manuel-jm-f.jpg",
+  "area": "Davao del Norte, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L051"
+ },
+ "leg:ph:davao-del-sur:lone:2025": {
+  "name": "Cagas, John Tracy F.",
+  "photo": "photos/cagas-john-tracy-f.jpg",
+  "area": "Davao del Sur, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K018"
+ },
+ "leg:ph:cotabato:1:2025": {
+  "name": "Cruzado, Edwin L., M.D.",
+  "photo": "photos/cruzado-edwin-l-m-d.jpg",
+  "area": "Cotabato, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L026"
+ },
+ "leg:ph:cotabato:2:2025": {
+  "name": "Caoagdan, Rudy S., DPA",
+  "photo": "photos/caoagdan-rudy-s-dpa.jpg",
+  "area": "Cotabato, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J019"
+ },
+ "leg:ph:cotabato:3:2025": {
+  "name": "Santos, Ma. Alana Samantha Taliño",
+  "photo": "photos/santos-ma-alana-samantha-tali-o.jpg",
+  "area": "Cotabato, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K077"
+ },
+ "leg:ph:general-santos:lone:2025": {
+  "name": "Bañas-Nograles, Shirlyn L.",
+  "photo": "photos/ba-as-nograles-shirlyn-l.jpg",
+  "area": "General Santos City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J123"
+ },
+ "leg:ph:sarangani:lone:2025": {
+  "name": "Solon, Steve Chiongbian",
+  "photo": "photos/solon-steve-chiongbian.jpg",
+  "area": "Sarangani, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K078"
+ },
+ "leg:ph:south-cotabato:1:2025": {
+  "name": "Lumayag, Isidro D.",
+  "photo": "photos/lumayag-isidro-d.jpg",
+  "area": "South Cotabato, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K049"
+ },
+ "leg:ph:south-cotabato:2:2025": {
+  "name": "Hernandez, Ferdinand L.",
+  "photo": "photos/hernandez-ferdinand-l.jpg",
+  "area": "South Cotabato, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/H035"
+ },
+ "leg:ph:south-cotabato:3:2025": {
+  "name": "Tuan, Dibu S.",
+  "photo": "photos/tuan-dibu-s.jpg",
+  "area": "South Cotabato, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L083"
+ },
+ "leg:ph:sultan-kudarat:1:2025": {
+  "name": "Sakaluran, Ruth M.",
+  "photo": "photos/sakaluran-ruth-m.jpg",
+  "area": "Sultan Kudarat, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L071"
+ },
+ "leg:ph:sultan-kudarat:2:2025": {
+  "name": "Suansing, Bella Vanessa B.",
+  "photo": "photos/suansing-bella-vanessa-b.jpg",
+  "area": "Sultan Kudarat, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L080"
+ },
+ "leg:ph:batanes:lone:2025": {
+  "name": "Gato, Ciriaco Jr. B., M.D., FPSO-HNS",
+  "photo": "photos/gato-ciriaco-jr-b-m-d-fpso-hns.jpg",
+  "area": "Batanes, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J038"
+ },
+ "leg:ph:cagayan:1:2025": {
+  "name": "Nolasco, Ramon C.",
+  "photo": "photos/nolasco-ramon-c.jpg",
+  "area": "Cagayan, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/I045"
+ },
+ "leg:ph:cagayan:2:2025": {
+  "name": "Vargas-Alfonso, Baby Aline",
+  "photo": "photos/vargas-alfonso-baby-aline.jpg",
+  "area": "Cagayan, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G125"
+ },
+ "leg:ph:cagayan:3:2025": {
+  "name": "Lara, Joseph \"Jojo\" L.",
+  "photo": "photos/lara-joseph-jojo-l.jpg",
+  "area": "Cagayan, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J047"
+ },
+ "leg:ph:isabela:1:2025": {
+  "name": "Albano, Antonio \"Tonypet\" T.",
+  "photo": "photos/albano-antonio-tonypet-t.jpg",
+  "area": "Isabela, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J006"
+ },
+ "leg:ph:isabela:2:2025": {
+  "name": "Go, Ed Christopher S.",
+  "photo": "photos/go-ed-christopher-s.jpg",
+  "area": "Isabela, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J039"
+ },
+ "leg:ph:isabela:3:2025": {
+  "name": "Dy, Ian Paul L.",
+  "photo": "photos/dy-ian-paul-l.jpg",
+  "area": "Isabela, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J029"
+ },
+ "leg:ph:isabela:4:2025": {
+  "name": "Tan, Joseph S.",
+  "photo": "photos/tan-joseph-s.jpg",
+  "area": "Isabela, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K083"
+ },
+ "leg:ph:isabela:5:2025": {
+  "name": "Dy, Faustino Michael Carlos III T.",
+  "photo": "photos/dy-faustino-michael-carlos-iii-t.jpg",
+  "area": "Isabela, 5th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J027"
+ },
+ "leg:ph:isabela:6:2025": {
+  "name": "Dy, Faustino \"Bojie\" III G.",
+  "photo": "photos/dy-faustino-bojie-iii-g.jpg",
+  "area": "Isabela, 6th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/D027"
+ },
+ "leg:ph:nueva-vizcaya:lone:2025": {
+  "name": "Cayton, Timothy Joseph E.",
+  "photo": "photos/cayton-timothy-joseph-e.jpg",
+  "area": "Nueva Vizcaya, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L017"
+ },
+ "leg:ph:quirino:lone:2025": {
+  "name": "Cua, Midy N.",
+  "photo": "photos/cua-midy-n.jpg",
+  "area": "Quirino, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K026"
+ },
+ "leg:ph:aurora:lone:2025": {
+  "name": "Angara, Rommel Rico T.",
+  "photo": "photos/angara-rommel-rico-t.jpg",
+  "area": "Aurora, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J009"
+ },
+ "leg:ph:bataan:1:2025": {
+  "name": "Roman, Antonino III B.",
+  "photo": "photos/roman-antonino-iii-b.jpg",
+  "area": "Bataan, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L102"
+ },
+ "leg:ph:bataan:2:2025": {
+  "name": "Garcia, Albert S.",
+  "photo": "photos/garcia-albert-s.jpg",
+  "area": "Bataan, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/E031"
+ },
+ "leg:ph:bataan:3:2025": {
+  "name": "Garcia, Maria Angela S.",
+  "photo": "photos/garcia-maria-angela-s.jpg",
+  "area": "Bataan, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K037"
+ },
+ "leg:ph:bulacan:1:2025": {
+  "name": "Domingo, Danilo \"Danny\" A.",
+  "photo": "photos/domingo-danilo-danny-a.jpg",
+  "area": "Bulacan, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K029"
+ },
+ "leg:ph:bulacan:2:2025": {
+  "name": "Pancho, Augustina Dominique \"Ditse Tina\" C.",
+  "photo": "photos/pancho-augustina-dominique-ditse-tina-c.jpg",
+  "area": "Bulacan, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K063"
+ },
+ "leg:ph:bulacan:3:2025": {
+  "name": "Violago, Mark Cholo I.",
+  "photo": "photos/violago-mark-cholo-i.jpg",
+  "area": "Bulacan, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L090"
+ },
+ "leg:ph:bulacan:4:2025": {
+  "name": "Villarica, Linabelle Ruth R.",
+  "photo": "photos/villarica-linabelle-ruth-r.jpg",
+  "area": "Bulacan, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J082"
+ },
+ "leg:ph:bulacan:5:2025": {
+  "name": "Cruz, Agatha \"Agay\"",
+  "photo": "photos/cruz-agatha-agay.jpg",
+  "area": "Bulacan, 5th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L025"
+ },
+ "leg:ph:bulacan:6:2025": {
+  "name": "Pleyto, Salvador A.",
+  "photo": "photos/pleyto-salvador-a.jpg",
+  "area": "Bulacan, 6th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K066"
+ },
+ "leg:ph:nueva-ecija:1:2025": {
+  "name": "Suansing, Mikaela Angela B.",
+  "photo": "photos/suansing-mikaela-angela-b.jpg",
+  "area": "Nueva Ecija, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K080"
+ },
+ "leg:ph:nueva-ecija:2:2025": {
+  "name": "Salvador, Mario \"Kokoy\" O.",
+  "photo": "photos/salvador-mario-kokoy-o.jpg",
+  "area": "Nueva Ecija, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L074"
+ },
+ "leg:ph:nueva-ecija:3:2025": {
+  "name": "Vergara, Julius Cesar \"Jay\" V.",
+  "photo": "photos/vergara-julius-cesar-jay-v.jpg",
+  "area": "Nueva Ecija, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L088"
+ },
+ "leg:ph:nueva-ecija:4:2025": {
+  "name": "Pascual, Emerson D.",
+  "photo": "photos/pascual-emerson-d.jpg",
+  "area": "Nueva Ecija, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K065"
+ },
+ "leg:ph:pampanga:1:2025": {
+  "name": "Lazatin, Carmelo Jr. G.",
+  "photo": "photos/lazatin-carmelo-jr-g.jpg",
+  "area": "Pampanga, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L097"
+ },
+ "leg:ph:pampanga:2:2025": {
+  "name": "Macapagal-Arroyo, Gloria",
+  "photo": "photos/macapagal-arroyo-gloria.jpg",
+  "area": "Pampanga, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G060"
+ },
+ "leg:ph:pampanga:3:2025": {
+  "name": "Gonzales, Alyssa Michaela \"Mica\" M.",
+  "photo": "photos/gonzales-alyssa-michaela-mica-m.jpg",
+  "area": "Pampanga, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L039"
+ },
+ "leg:ph:pampanga:4:2025": {
+  "name": "Bondoc, Anna York P., M.D.",
+  "photo": "photos/bondoc-anna-york-p-m-d.jpg",
+  "area": "Pampanga, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/E019"
+ },
+ "leg:ph:san-jose-del-monte:lone:2025": {
+  "name": "Robes, Arturo B.",
+  "photo": "photos/robes-arturo-b.jpg",
+  "area": "San Jose Del Monte City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F056"
+ },
+ "leg:ph:tarlac:1:2025": {
+  "name": "Cojuangco, Jaime Eduardo Marc D.",
+  "photo": "photos/cojuangco-jaime-eduardo-marc-d.jpg",
+  "area": "Tarlac, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K021"
+ },
+ "leg:ph:tarlac:2:2025": {
+  "name": "Angeles, Maria Cristina C.",
+  "photo": "photos/angeles-maria-cristina-c.jpg",
+  "area": "Tarlac, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L004"
+ },
+ "leg:ph:tarlac:3:2025": {
+  "name": "Rivera, Noel \"Bong\" N.",
+  "photo": "photos/rivera-noel-bong-n.jpg",
+  "area": "Tarlac, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K072"
+ },
+ "leg:ph:zambales:1:2025": {
+  "name": "Khonghun, Jefferson F.",
+  "photo": "photos/khonghun-jefferson-f.jpg",
+  "area": "Zambales, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/H038"
+ },
+ "leg:ph:zambales:2:2025": {
+  "name": "Maniquiz, Doris \"Nanay Bing\" E.",
+  "photo": "photos/maniquiz-doris-nanay-bing-e.jpg",
+  "area": "Zambales, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K050"
+ },
+ "leg:ph:antipolo:1:2025": {
+  "name": "Puno, Ronaldo V.",
+  "photo": "photos/puno-ronaldo-v.jpg",
+  "area": "Antipolo City, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/E052"
+ },
+ "leg:ph:antipolo:2:2025": {
+  "name": "Acop, Romeo M.",
+  "photo": "photos/acop-romeo-m.jpg",
+  "area": "Antipolo City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G002"
+ },
+ "leg:ph:batangas:1:2025": {
+  "name": "Leviste, Leandro Legarda",
+  "photo": "photos/leviste-leandro-legarda.jpg",
+  "area": "Batangas, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L054"
+ },
+ "leg:ph:batangas:2:2025": {
+  "name": "Luistro, Atty. Gerville \"Jinky Bitrics\" R.",
+  "photo": "photos/luistro-atty-gerville-jinky-bitrics-r.jpg",
+  "area": "Batangas, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K048"
+ },
+ "leg:ph:batangas:3:2025": {
+  "name": "Collantes, King",
+  "photo": "photos/collantes-king.jpg",
+  "area": "Batangas, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L023"
+ },
+ "leg:ph:batangas:4:2025": {
+  "name": "Bolilia, Amado Carlos IV A.",
+  "photo": "photos/bolilia-amado-carlos-iv-a.jpg",
+  "area": "Batangas, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L014"
+ },
+ "leg:ph:batangas:5:2025": {
+  "name": "Dimacuha, Beverley Rose A.",
+  "photo": "photos/dimacuha-beverley-rose-a.jpg",
+  "area": "Batangas, 5th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L030"
+ },
+ "leg:ph:batangas:6:2025": {
+  "name": "Recto, Ryan S.",
+  "photo": "photos/recto-ryan-s.jpg",
+  "area": "Batangas, 6th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L078"
+ },
+ "leg:ph:binan:lone:2025": {
+  "name": "Dimaguila, Walfredo \"Arman\" Jr. R.",
+  "photo": "photos/dimaguila-walfredo-arman-jr-r.jpg",
+  "area": "Biñan City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L031"
+ },
+ "leg:ph:calamba:lone:2025": {
+  "name": "Hernandez, Charisse Anne C.",
+  "photo": "photos/hernandez-charisse-anne-c.jpg",
+  "area": "Calamba City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K042"
+ },
+ "leg:ph:cavite:1:2025": {
+  "name": "Revilla, Ramon Jolo III B.",
+  "photo": "photos/revilla-ramon-jolo-iii-b.jpg",
+  "area": "Cavite, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K070"
+ },
+ "leg:ph:cavite:2:2025": {
+  "name": "Mercado-Revilla, Lani",
+  "photo": "photos/mercado-revilla-lani.jpg",
+  "area": "Cavite, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G078"
+ },
+ "leg:ph:cavite:3:2025": {
+  "name": "Advincula, Adrian Jay C.",
+  "photo": "photos/advincula-adrian-jay-c.jpg",
+  "area": "Cavite, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K003"
+ },
+ "leg:ph:cavite:4:2025": {
+  "name": "Barzaga, Francisco \"Kiko\" A.",
+  "photo": "photos/barzaga-francisco-kiko-a.jpg",
+  "area": "Cavite, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L096"
+ },
+ "leg:ph:cavite:5:2025": {
+  "name": "Loyola, Roy M.",
+  "photo": "photos/loyola-roy-m.jpg",
+  "area": "Cavite, 5th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G059"
+ },
+ "leg:ph:cavite:6:2025": {
+  "name": "Ferrer, Antonio A.",
+  "photo": "photos/ferrer-antonio-a.jpg",
+  "area": "Cavite, 6th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K032"
+ },
+ "leg:ph:cavite:7:2025": {
+  "name": "Remulla, Crispin Diego D.",
+  "photo": "photos/remulla-crispin-diego-d.jpg",
+  "area": "Cavite, 7th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K139"
+ },
+ "leg:ph:cavite:8:2025": {
+  "name": "Tolentino, Aniela Bianca D.",
+  "photo": "photos/tolentino-aniela-bianca-d.jpg",
+  "area": "Cavite, 8th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K088"
+ },
+ "leg:ph:laguna:1:2025": {
+  "name": "Matibag, Ann",
+  "photo": "photos/matibag-ann.jpg",
+  "area": "Laguna, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K053"
+ },
+ "leg:ph:laguna:2:2025": {
+  "name": "Hernandez, Ramil L.",
+  "photo": "photos/hernandez-ramil-l.jpg",
+  "area": "Laguna, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L044"
+ },
+ "leg:ph:laguna:3:2025": {
+  "name": "Amante, Loreto S.",
+  "photo": "photos/amante-loreto-s.jpg",
+  "area": "Laguna, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K009"
+ },
+ "leg:ph:laguna:4:2025": {
+  "name": "Agarao, Benjamin Jr. C.",
+  "photo": "photos/agarao-benjamin-jr-c.jpg",
+  "area": "Laguna, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/E005"
+ },
+ "leg:ph:quezon:1:2025": {
+  "name": "Enverga, Wilfrido Mark M.",
+  "photo": "photos/enverga-wilfrido-mark-m.jpg",
+  "area": "Quezon, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F028"
+ },
+ "leg:ph:quezon:2:2025": {
+  "name": "Suarez, David \"Jay-Jay\" C.",
+  "photo": "photos/suarez-david-jay-jay-c.jpg",
+  "area": "Quezon, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J068"
+ },
+ "leg:ph:quezon:3:2025": {
+  "name": "Arrogancia, Reynante U.",
+  "photo": "photos/arrogancia-reynante-u.jpg",
+  "area": "Quezon, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K011"
+ },
+ "leg:ph:quezon:4:2025": {
+  "name": "Tan, Keith Micah \"Atty. Mike\" D.L.",
+  "photo": "photos/tan-keith-micah-atty-mike-d-l.jpg",
+  "area": "Quezon, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K134"
+ },
+ "leg:ph:rizal:1:2025": {
+  "name": "Ynares, Rebecca Maria Alcantara",
+  "photo": "photos/ynares-rebecca-maria-alcantara.jpg",
+  "area": "Rizal, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L092"
+ },
+ "leg:ph:rizal:2:2025": {
+  "name": "Tanjuatco, Emigdio III P.",
+  "photo": "photos/tanjuatco-emigdio-iii-p.jpg",
+  "area": "Rizal, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K085"
+ },
+ "leg:ph:rizal:3:2025": {
+  "name": "Garcia, Jose Arturo Jr. S.",
+  "photo": "photos/garcia-jose-arturo-jr-s.jpg",
+  "area": "Rizal, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K038"
+ },
+ "leg:ph:rizal:4:2025": {
+  "name": "Hernandez, Dennis \"Tom\" L.",
+  "photo": "photos/hernandez-dennis-tom-l.jpg",
+  "area": "Rizal, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L043"
+ },
+ "leg:ph:santa-rosa:lone:2025": {
+  "name": "Gonzales, Roy M.",
+  "photo": "photos/gonzales-roy-m.jpg",
+  "area": "Santa Rosa City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L041"
+ },
+ "leg:ph:marinduque:lone:2025": {
+  "name": "Salvacion, Reynaldo P.",
+  "photo": "photos/salvacion-reynaldo-p.jpg",
+  "area": "Marinduque, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L073"
+ },
+ "leg:ph:occidental-mindoro:lone:2025": {
+  "name": "Tarriela,  Leody \"Odie\" F.",
+  "photo": "photos/tarriela-leody-odie-f.jpg",
+  "area": "Occidental Mindoro, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K086"
+ },
+ "leg:ph:oriental-mindoro:1:2025": {
+  "name": "Panaligan, Arnan C.",
+  "photo": "photos/panaligan-arnan-c.jpg",
+  "area": "Oriental Mindoro, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K062"
+ },
+ "leg:ph:oriental-mindoro:2:2025": {
+  "name": "Umali, Alfonso Jr. V.",
+  "photo": "photos/umali-alfonso-jr-v.jpg",
+  "area": "Oriental Mindoro, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/D066"
+ },
+ "leg:ph:palawan:1:2025": {
+  "name": "Salvame, Rosalie Ang",
+  "photo": "photos/salvame-rosalie-ang.jpg",
+  "area": "Palawan, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L075"
+ },
+ "leg:ph:palawan:2:2025": {
+  "name": "Alvarez, Jose C.",
+  "photo": "photos/alvarez-jose-c.jpg",
+  "area": "Palawan, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K008"
+ },
+ "leg:ph:palawan:3:2025": {
+  "name": "Acosta, Gil \"KabarangayJr\"",
+  "photo": "photos/acosta-gil-kabarangayjr.jpg",
+  "area": "Palawan, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J004"
+ },
+ "leg:ph:romblon:lone:2025": {
+  "name": "Madrona, Eleandro Jesus F.",
+  "photo": "photos/madrona-eleandro-jesus-f.jpg",
+  "area": "Romblon, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/A054"
+ },
+ "leg:ph:albay:1:2025": {
+  "name": "Lagman, Cielo Krisel",
+  "photo": "photos/lagman-cielo-krisel.jpg",
+  "area": "Albay, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/C065"
+ },
+ "leg:ph:albay:2:2025": {
+  "name": "Loria, Carlos Andes",
+  "photo": "photos/loria-carlos-andes.jpg",
+  "area": "Albay, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L057"
+ },
+ "leg:ph:albay:3:2025": {
+  "name": "Salceda, Adrian E.",
+  "photo": "photos/salceda-adrian-e.jpg",
+  "area": "Albay, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L072"
+ },
+ "leg:ph:camarines-norte:1:2025": {
+  "name": "Tallado, Josefina B.",
+  "photo": "photos/tallado-josefina-b.jpg",
+  "area": "Camarines Norte, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J070"
+ },
+ "leg:ph:camarines-norte:2:2025": {
+  "name": "Panotes, Rosemarie Conejos",
+  "photo": "photos/panotes-rosemarie-conejos.jpg",
+  "area": "Camarines Norte, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K064"
+ },
+ "leg:ph:camarines-sur:1:2025": {
+  "name": "Horibata, Tsuyoshi Anthony \"Hori\" G.",
+  "photo": "photos/horibata-tsuyoshi-anthony-hori-g.jpg",
+  "area": "Camarines Sur, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K043"
+ },
+ "leg:ph:camarines-sur:2:2025": {
+  "name": "Villafuerte, Vincenzo Renato Luigi R.",
+  "photo": "photos/villafuerte-vincenzo-renato-luigi-r.jpg",
+  "area": "Camarines Sur, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L089"
+ },
+ "leg:ph:camarines-sur:3:2025": {
+  "name": "Legacion, Nelson S.",
+  "photo": "photos/legacion-nelson-s.jpg",
+  "area": "Camarines Sur, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L052"
+ },
+ "leg:ph:camarines-sur:4:2025": {
+  "name": "Fuentebella, Arnie B.",
+  "photo": "photos/fuentebella-arnie-b.jpg",
+  "area": "Camarines Sur, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J037"
+ },
+ "leg:ph:camarines-sur:5:2025": {
+  "name": "Villafuerte, Miguel Luis R.",
+  "photo": "photos/villafuerte-miguel-luis-r.jpg",
+  "area": "Camarines Sur, 5th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K094"
+ },
+ "leg:ph:catanduanes:lone:2025": {
+  "name": "Rodriguez, Eulogio \"Leo\" R.",
+  "photo": "photos/rodriguez-eulogio-leo-r.jpg",
+  "area": "Catanduanes, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K073"
+ },
+ "leg:ph:masbate:1:2025": {
+  "name": "Kho, Antonio T.",
+  "photo": "photos/kho-antonio-t.jpg",
+  "area": "Masbate, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/A044"
+ },
+ "leg:ph:masbate:2:2025": {
+  "name": "Kho, Elisa \"Olga\" T.",
+  "photo": "photos/kho-elisa-olga-t.jpg",
+  "area": "Masbate, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/H037"
+ },
+ "leg:ph:masbate:3:2025": {
+  "name": "Kho, Wilton \"Tonton\" T.",
+  "photo": "photos/kho-wilton-tonton-t.jpg",
+  "area": "Masbate, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J046"
+ },
+ "leg:ph:sorsogon:1:2025": {
+  "name": "Escudero, Bernadette G.",
+  "photo": "photos/escudero-bernadette-g.jpg",
+  "area": "Sorsogon, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K030"
+ },
+ "leg:ph:sorsogon:2:2025": {
+  "name": "Fortes, Manuel \"Wowo\" Jr. L.",
+  "photo": "photos/fortes-manuel-wowo-jr-l.jpg",
+  "area": "Sorsogon, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K033"
+ },
+ "leg:ph:aklan:1:2025": {
+  "name": "Marquez, Jesus \"Jess\" R.",
+  "photo": "photos/marquez-jesus-jess-r.jpg",
+  "area": "Aklan, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L061"
+ },
+ "leg:ph:aklan:2:2025": {
+  "name": "Miraflores, Florencio T.",
+  "photo": "photos/miraflores-florencio-t.jpg",
+  "area": "Aklan, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/E048"
+ },
+ "leg:ph:antique:lone:2025": {
+  "name": "Legarda, Antonio Jr. B.",
+  "photo": "photos/legarda-antonio-jr-b.jpg",
+  "area": "Antique, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K047"
+ },
+ "leg:ph:capiz:1:2025": {
+  "name": "Guintu, Howard A.",
+  "photo": "photos/guintu-howard-a.jpg",
+  "area": "Capiz, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K117"
+ },
+ "leg:ph:capiz:2:2025": {
+  "name": "Castro, Jane T.",
+  "photo": "photos/castro-jane-t.jpg",
+  "area": "Capiz, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G021"
+ },
+ "leg:ph:guimaras:lone:2025": {
+  "name": "Nava, JC Rahman A., MD.",
+  "photo": "photos/nava-jc-rahman-a-md.jpg",
+  "area": "Guimaras, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F055"
+ },
+ "leg:ph:iloilo:1:2025": {
+  "name": "Garin, Janette L.",
+  "photo": "photos/garin-janette-l.jpg",
+  "area": "Iloilo, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/E032"
+ },
+ "leg:ph:iloilo:2:2025": {
+  "name": "Gorriceta, Kathryn Joyce F., MD",
+  "photo": "photos/gorriceta-kathryn-joyce-f-md.jpg",
+  "area": "Iloilo City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L042"
+ },
+ "leg:ph:iloilo:3:2025": {
+  "name": "Defensor, Lorenz R.",
+  "photo": "photos/defensor-lorenz-r.jpg",
+  "area": "Iloilo, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J119"
+ },
+ "leg:ph:iloilo:4:2025": {
+  "name": "Biron, Ferjenel G., M.D.",
+  "photo": "photos/biron-ferjenel-g-m-d.jpg",
+  "area": "Iloilo, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/E018"
+ },
+ "leg:ph:iloilo:5:2025": {
+  "name": "Tupas, Binky April M.",
+  "photo": "photos/tupas-binky-april-m.jpg",
+  "area": "Iloilo, 5th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L084"
+ },
+ "leg:ph:iloilo-city:lone:2025": {
+  "name": "Baronda, Julienne \"Jam\" L.",
+  "photo": "photos/baronda-julienne-jam-l.jpg",
+  "area": "Iloilo City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J013"
+ },
+ "leg:ph:bohol:1:2025": {
+  "name": "Yap, John Geesnell \"Baba\"",
+  "photo": "photos/yap-john-geesnell-baba.jpg",
+  "area": "Bohol, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L091"
+ },
+ "leg:ph:bohol:2:2025": {
+  "name": "Aumentado, Maria Vanessa \"Van-Van\" C., RN",
+  "photo": "photos/aumentado-maria-vanessa-van-van-c-rn.jpg",
+  "area": "Bohol, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K014"
+ },
+ "leg:ph:bohol:3:2025": {
+  "name": "Tutor, Kristine Alexie B.",
+  "photo": "photos/tutor-kristine-alexie-b.jpg",
+  "area": "Bohol, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J075"
+ },
+ "leg:ph:cebu:1:2025": {
+  "name": "Gullas, Rhea Mae A.",
+  "photo": "photos/gullas-rhea-mae-a.jpg",
+  "area": "Cebu, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K040"
+ },
+ "leg:ph:cebu:2:2025": {
+  "name": "Galeos, Edsel A.",
+  "photo": "photos/galeos-edsel-a.jpg",
+  "area": "Cebu, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K035"
+ },
+ "leg:ph:cebu:3:2025": {
+  "name": "Garcia, Karen Hope F.",
+  "photo": "photos/garcia-karen-hope-f.jpg",
+  "area": "Cebu, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L036"
+ },
+ "leg:ph:cebu:4:2025": {
+  "name": "Shimura, Sun J.",
+  "photo": "photos/shimura-sun-j.jpg",
+  "area": "Cebu, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L079"
+ },
+ "leg:ph:cebu:5:2025": {
+  "name": "Frasco, Vincent Franco \"Duke\" D.",
+  "photo": "photos/frasco-vincent-franco-duke-d.jpg",
+  "area": "Cebu, 5th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J036"
+ },
+ "leg:ph:cebu:6:2025": {
+  "name": "Lagon, Daphne A.",
+  "photo": "photos/lagon-daphne-a.jpg",
+  "area": "Cebu, 6th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K046"
+ },
+ "leg:ph:cebu:7:2025": {
+  "name": "Calderon, Patricia C.",
+  "photo": "photos/calderon-patricia-c.jpg",
+  "area": "Cebu, 7th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L016"
+ },
+ "leg:ph:cebu-city:1:2025": {
+  "name": "Del Mar, Rachel Marguerite B.",
+  "photo": "photos/del-mar-rachel-marguerite-b.jpg",
+  "area": "Cebu City, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/G031"
+ },
+ "leg:ph:cebu-city:2:2025": {
+  "name": "Rama, Eduardo Jr. R.",
+  "photo": "photos/rama-eduardo-jr-r.jpg",
+  "area": "Cebu City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K068"
+ },
+ "leg:ph:lapu-lapu-city:lone:2025": {
+  "name": "Chan, Junard \"Ahong\" Q.",
+  "photo": "photos/chan-junard-ahong-q.jpg",
+  "area": "Lapu-Lapu City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L019"
+ },
+ "leg:ph:mandaue:lone:2025": {
+  "name": "Ouano-Dizon, Emmarie \"Lolypop\"",
+  "photo": "photos/ouano-dizon-emmarie-lolypop.jpg",
+  "area": "Mandaue City, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J055"
+ },
+ "leg:ph:biliran:lone:2025": {
+  "name": "Espina,  Gerardo \"Gerryboy\" Jr. J.",
+  "photo": "photos/espina-gerardo-gerryboy-jr-j.jpg",
+  "area": "Biliran, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/E036"
+ },
+ "leg:ph:eastern-samar:lone:2025": {
+  "name": "Gonzales, Christopher Sheen P.",
+  "photo": "photos/gonzales-christopher-sheen-p.jpg",
+  "area": "Eastern Samar, Lone District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L040"
+ },
+ "leg:ph:leyte:1:2025": {
+  "name": "Romualdez, Ferdinand Martin G.",
+  "photo": "photos/romualdez-ferdinand-martin-g.jpg",
+  "area": "Leyte, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/F061"
+ },
+ "leg:ph:leyte:2:2025": {
+  "name": "Javier, Lolita T.",
+  "photo": "photos/javier-lolita-t.jpg",
+  "area": "Leyte, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J044"
+ },
+ "leg:ph:leyte:3:2025": {
+  "name": "Veloso-Tuazon, Anna Victoria",
+  "photo": "photos/veloso-tuazon-anna-victoria.jpg",
+  "area": "Leyte, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K092"
+ },
+ "leg:ph:leyte:4:2025": {
+  "name": "Gomez, Richard I., DPA",
+  "photo": "photos/gomez-richard-i-dpa.jpg",
+  "area": "Leyte, 4th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K039"
+ },
+ "leg:ph:leyte:5:2025": {
+  "name": "Cari, Carl Nicolas C.",
+  "photo": "photos/cari-carl-nicolas-c.jpg",
+  "area": "Leyte, 5th District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/J020"
+ },
+ "leg:ph:northern-samar:1:2025": {
+  "name": "Daza, Niko Raul S.J.",
+  "photo": "photos/daza-niko-raul-s-j.jpg",
+  "area": "Northern Samar, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L027"
+ },
+ "leg:ph:northern-samar:2:2025": {
+  "name": "Ongchuan, Edwin",
+  "photo": "photos/ongchuan-edwin.jpg",
+  "area": "Northern Samar, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/I047"
+ },
+ "leg:ph:samar:1:2025": {
+  "name": "Tan, Stephen James T.",
+  "photo": "photos/tan-stephen-james-t.jpg",
+  "area": "Samar, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K082"
+ },
+ "leg:ph:samar:2:2025": {
+  "name": "Tan, Reynolds  Michael T.",
+  "photo": "photos/tan-reynolds-michael-t.jpg",
+  "area": "Samar, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K084"
+ },
+ "leg:ph:southern-leyte:1:2025": {
+  "name": "Mercado, Roger Gaviola",
+  "photo": "photos/mercado-roger-gaviola.jpg",
+  "area": "Southern Leyte, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/0118"
+ },
+ "leg:ph:southern-leyte:2:2025": {
+  "name": "Yap, Christopherson \"Coco\" M.",
+  "photo": "photos/yap-christopherson-coco-m.jpg",
+  "area": "Southern Leyte, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K096"
+ },
+ "leg:ph:zamboanga-city:1:2025": {
+  "name": "Chua-Tai, Katrina Reiko",
+  "photo": "photos/chua-tai-katrina-reiko.jpg",
+  "area": "Zamboanga City, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L020"
+ },
+ "leg:ph:zamboanga-city:2:2025": {
+  "name": "Perez, Jerry Evangelista",
+  "photo": "photos/perez-jerry-evangelista.jpg",
+  "area": "Zamboanga City, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L095"
+ },
+ "leg:ph:zamboanga-sibugay:1:2025": {
+  "name": "Bancoro, Marlo C.",
+  "photo": "photos/bancoro-marlo-c.jpg",
+  "area": "Zamboanga Sibugay, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L007"
+ },
+ "leg:ph:zamboanga-sibugay:2:2025": {
+  "name": "Hofer-Hasim, Marlesa \"Doc Marly\"",
+  "photo": "photos/hofer-hasim-marlesa-doc-marly.jpg",
+  "area": "Zamboanga Sibugay, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L045"
+ },
+ "leg:ph:zamboanga-del-norte:1:2025": {
+  "name": "Uy, Roberto \"Pinpin\" Jr. T.",
+  "photo": "photos/uy-roberto-pinpin-jr-t.jpg",
+  "area": "Zamboanga del Norte, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K141"
+ },
+ "leg:ph:zamboanga-del-norte:2:2025": {
+  "name": "Labadlabad, Irene G.",
+  "photo": "photos/labadlabad-irene-g.jpg",
+  "area": "Zamboanga del Norte, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L048"
+ },
+ "leg:ph:zamboanga-del-norte:3:2025": {
+  "name": "Amatong, Adrian Michael A.",
+  "photo": "photos/amatong-adrian-michael-a.jpg",
+  "area": "Zamboanga del Norte, 3rd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K010"
+ },
+ "leg:ph:zamboanga-del-sur:1:2025": {
+  "name": "Yu, Joseph Kim C.",
+  "photo": "photos/yu-joseph-kim-c.jpg",
+  "area": "Zamboanga del Sur, 1st District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/L093"
+ },
+ "leg:ph:zamboanga-del-sur:2:2025": {
+  "name": "Yu, Jeyzel Victoria C.",
+  "photo": "photos/yu-jeyzel-victoria-c.jpg",
+  "area": "Zamboanga del Sur, 2nd District",
+  "detail_url": "https://www.congress.gov.ph/house-members/view/K097"
+ }
+}

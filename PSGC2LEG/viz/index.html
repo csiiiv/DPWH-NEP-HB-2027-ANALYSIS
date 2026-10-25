@@ -35,6 +35,13 @@
   #stats { margin-top: 8px; color: #666; font-size: 11px; }
   .maplibregl-popup-content { font-size: 13px; }
   .popup-meta { color: #555; font-size: 12px; }
+  /* pinned popup: rep photo floats right, name/label wrap around it */
+  .maplibregl-popup-content .rep-photo {
+    width: 72px; height: 88px; object-fit: cover; object-position: top;
+    border-radius: 6px; float: right; margin: 0 0 6px 10px;
+    background: #eee; border: 1px solid #ddd;
+  }
+  .maplibregl-popup-content .rep-link { font-size: 12px; }
   .maplibregl-ctrl-group button { border-radius: 0 !important; }
 </style>
 </head>
@@ -96,22 +103,30 @@ map.on('styleerror', () => {
 map.addControl(new NavigationControl({ visualizeRoll: true }));
 map.addControl(new ScaleControl({ unit: 'metric' }));
 
-// ---- Deterministic province hue + per-district shade ----
-// Each jurisdiction (province / HUC) gets its own hue, assigned by golden
-// angle over the alphabetically sorted jurisdiction list. Sorting first is
-// what makes this deterministic across sessions, and the golden angle
-// (~137.508°) is what makes it *collision-free*: name hashing looked fine
-// but gave 12 clashing hues across 103 jurisdictions (e.g. Camarines Sur
-// vs Cavite both landing near 30°), which defeats the whole point of the
-// scheme. Districts within a jurisdiction then vary lightness + saturation
-// — same hue family, distinguishable shades, like the user's example of
-// Camarines Sur's districts all reading as one colour family.
-const GOLDEN_ANGLE = 137.508;
-let HUE_ORDER = [];             // sorted jurisdiction names (assigned in buildColorDictionary)
+// ---- Province hues: adjacency-aware, computed at build time ----
+// Each jurisdiction (province / HUC / split city) gets one hue; districts
+// inside it vary lightness/saturation (shadeFor below). The hue table is
+// built by scripts/build_province_hues.py from the rendered geometry:
+// it unions each jurisdiction's polygons, derives the shared-border
+// adjacency graph (203 edges), then greedily assigns hues maximizing the
+// minimum circular hue distance between neighbours — the minimum
+// separation across the whole map is 55° (was: golden-angle spread that
+// could hand adjacent Bulacan and Nueva Ecija both-green hues).
+const GOLDEN_ANGLE = 137.508;   // fallback estimate for unknown names
+let HUES = null;                // {jurisdiction: hue_deg} from province_hues.json
+let HUE_ORDER = [];             // sorted names, for the fallback path
 let JURISDICTION_INFO = [];     // [{name, districts: Map(no->label)}]
 const colorCache = new Map();   // juris|no -> hsl string
 const swatches = new Map();     // juris -> [{no, color}] for the legend
 const SPLIT_HUES = new Map();   // split-city name -> registered stripe image name
+
+// Rough hue estimate for names missing from province_hues.json (stale
+// table after a geojson rebuild). Exactness doesn't matter — only
+// determinism, since the real table covers the normal case.
+function fallbackHue(name) {
+  const idx = HUE_ORDER.indexOf(name);
+  return idx < 0 ? 0 : Math.round((idx * GOLDEN_ANGLE) % 360);
+}
 
 // Lightness 60%..28% with saturation easing up for darker shades.
 // 1st district = lightest, highest = darkest.
@@ -131,8 +146,7 @@ function shadeFor(district_no, total) {
 function districtColor(jurisdiction, district_no) {
   const key = jurisdiction + '|' + district_no;
   if (colorCache.has(key)) return colorCache.get(key);
-  const idx = HUE_ORDER.indexOf(jurisdiction);
-  const h = idx < 0 ? 0 : Math.round((idx * GOLDEN_ANGLE) % 360);
+  const h = HUES && HUES[jurisdiction] != null ? HUES[jurisdiction] : fallbackHue(jurisdiction);
   const j = JURISDICTION_INFO.find(x => x.name === jurisdiction);
   const total = j ? j.districts.size : 1;
   const { l, s } = shadeFor(district_no, total);
@@ -176,8 +190,7 @@ function buildColorDictionary() {
 function addSplitStripeImages() {
   for (const [name, imgName] of SPLIT_HUES) {
     if (map.hasImage(imgName)) continue;
-    const idx = HUE_ORDER.indexOf(name);
-    const h = idx < 0 ? 0 : Math.round((idx * GOLDEN_ANGLE) % 360);
+    const h = HUES && HUES[name] != null ? HUES[name] : fallbackHue(name);
     // mid-lightness, high saturation: dark enough to read over both the
     // cream Voyager land and Dark Matter's near-black, not so dark it
     // swallows the hatching
@@ -210,13 +223,26 @@ function slug(s) {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
+// Representative info keyed by leg_id, from rep_photos.json (built by
+// scripts/copy_rep_photos.py from DEO2LEG/legislative_profiles).
+let REPS = {};
+
 function popupText(p) {
   if (p.split) {
     return `<b>${p.jurisdiction}</b><br><span class="popup-meta">split city — multiple legislative districts<br>(barangay-level split not yet resolved)</span>`;
   }
-  const rep = p.representative ? `<br>Rep. ${p.representative}` : '';
-  return `<b>${p.jurisdiction} — ${p.district_label}</b>${rep}
-    <br><span class="popup-meta">${p.region || ''}<br><code>${p.leg_id}</code></span>`;
+  const rep = REPS[p.leg_id];
+  const photo = rep && rep.photo
+    ? `<img class="rep-photo" src="${rep.photo}" alt="" loading="lazy"
+         onerror="this.style.display='none'">` : '';
+  const repLine = rep
+    ? `<div style="margin-top:4px;">Rep. <b>${rep.name}</b>` +
+      (rep.detail_url
+        ? ` <a class="rep-link" href="${rep.detail_url}" target="_blank" rel="noopener">congress.gov.ph↗</a>`
+        : '') + `</div>`
+    : (p.representative ? `<div style="margin-top:4px;">Rep. ${p.representative}</div>` : '');
+  return `${photo}<b>${p.jurisdiction} — ${p.district_label}</b>${repLine}
+    <span class="popup-meta">${p.region || ''}<br><code>${p.leg_id}</code></span>`;
 }
 
 function bboxOf(geom) {
@@ -265,6 +291,7 @@ function addDistrictLayers() {
       'fill-opacity': [
         'case',
         ['boolean', ['feature-state', 'hover'], false], 0.95,
+        ['boolean', ['feature-state', 'pinned'], false], 0.95,
         ['boolean', ['feature-state', 'selected'], false], 0.95,
         0.8
       ],
@@ -293,12 +320,14 @@ function addDistrictLayers() {
     paint: {
       'line-color': [
         'case',
+        ['boolean', ['feature-state', 'pinned'], false], '#d62728',
         ['boolean', ['feature-state', 'hover'], false], '#000',
         ['boolean', ['feature-state', 'selected'], false], '#0000ff',
         '#ffffff'
       ],
       'line-width': [
         'case',
+        ['boolean', ['feature-state', 'pinned'], false], 3,
         ['boolean', ['feature-state', 'hover'], false], 2.5,
         ['boolean', ['feature-state', 'selected'], false], 3,
         0.8
@@ -370,33 +399,84 @@ function addDistrictLayers() {
   });
 
   hovered = null;  // feature-state was reset with the source
+  pinnedId = null; pinnedPopup = null;   // ditto — old popup is orphaned
 }
 
 // Interactions are delegated by layer id and registered exactly once —
 // they keep working across basemap style swaps when the layers are re-added.
+//
+// Popup model: hover shows a transient preview; click *pins* a popup that
+// survives mouse-out (per the "clicking a region should hold open the
+// mouseover dialog" request), with the rep photo + congress.gov.ph link.
+// Clicking another feature, empty map/ocean, or the popup's close button
+// unpins. A pinned popup also wins over hover: while one is open, hover
+// previews are suppressed (two stacked popups fighting for the cursor is
+// worse than none).
+let pinnedId = null;        // feature id of the pinned popup (generateId)
+let pinnedPopup = null;     // the Popup instance while pinned
+
+function unpinPopup() {
+  if (pinnedPopup) { pinnedPopup.remove(); pinnedPopup = null; }
+  if (pinnedId !== null) {
+    map.setFeatureState({ source: 'districts', id: pinnedId }, { pinned: false });
+    pinnedId = null;
+  }
+}
+
+function pinFeature(f, lngLat) {
+  unpinPopup();
+  pinnedId = f.id;
+  pinnedPopup = new Popup({ closeButton: true, maxWidth: '320px' })
+    .setHTML(popupText(f.properties))
+    .setLngLat(lngLat)
+    .addTo(map);
+  // v6: Popup.on() returns undefined — must not be chained before addTo
+  pinnedPopup.on('close', unpinPopup);
+  map.setFeatureState({ source: 'districts', id: pinnedId }, { pinned: true });
+}
+
 function wireInteractions() {
-  const popup = new Popup({ closeButton: false, maxWidth: '320px' });
+  const hover = new Popup({ closeButton: false, maxWidth: '320px' });
+  const showHover = (e) => {
+    if (pinnedPopup) return;                    // pinned popup wins
+    hover.setHTML(popupText(e.features[0].properties))
+         .setLngLat(e.lngLat).addTo(map);
+  };
 
   map.on('mousemove', 'districts-fill', e => {
     if (hovered !== null) map.setFeatureState({ source: 'districts', id: hovered }, { hover: false });
     hovered = e.features[0].id;
     map.setFeatureState({ source: 'districts', id: hovered }, { hover: true });
     map.getCanvas().style.cursor = 'pointer';
-    popup.setHTML(popupText(e.features[0].properties))
-         .setLngLat(e.lngLat).addTo(map);
+    showHover(e);
   });
   map.on('mouseleave', 'districts-fill', () => {
     if (hovered !== null) map.setFeatureState({ source: 'districts', id: hovered }, { hover: false });
     hovered = null;
     map.getCanvas().style.cursor = '';
-    popup.remove();
+    hover.remove();
   });
   map.on('mousemove', 'split-fill', e => {
-    popup.setHTML(popupText(e.features[0].properties))
-         .setLngLat(e.lngLat).addTo(map);
+    showHover(e);
     map.getCanvas().style.cursor = 'pointer';
   });
-  map.on('mouseleave', 'split-fill', () => { popup.remove(); map.getCanvas().style.cursor = ''; });
+  map.on('mouseleave', 'split-fill', () => { hover.remove(); map.getCanvas().style.cursor = ''; });
+
+  // click: pin (or re-pin on another feature). The map-wide handler below
+  // decides unpinning by querying rendered features — NOT by DOM event
+  // propagation, which MapLibre's internal emitter ignores (the layer pin
+  // and the map-wide unpin both fire for the same click; stopPropagation
+  // on the original DOM event does not cancel the latter).
+  const pinFromEvent = (e) => pinFeature(e.features[0], e.lngLat);
+  map.on('click', 'districts-fill', pinFromEvent);
+  map.on('click', 'split-fill', pinFromEvent);
+  // clicking ocean / basemap closes any pinned popup; clicking a district
+  // leaves it to the layer handlers above (re-pin or keep)
+  map.on('click', (e) => {
+    const hits = map.queryRenderedFeatures(e.point,
+      { layers: ['districts-fill', 'split-fill'] });
+    if (!hits.length) unpinPopup();
+  });
 
   // search: highlight + zoom to matches
   document.getElementById('search').addEventListener('input', function () {
@@ -437,7 +517,12 @@ function wireInteractions() {
 }
 
 map.on('load', async () => {
-  districtData = await fetch('leg_districts.geojson').then(r => r.json());
+  [districtData, HUES, REPS] = await Promise.all([
+    fetch('leg_districts.geojson').then(r => r.json()),
+    fetch('province_hues.json').then(r => r.json()).catch(() => null),
+    fetch('rep_photos.json').then(r => r.json()).catch(() => ({})),
+  ]);
+  if (HUES && HUES._meta) delete HUES._meta;   // meta block is not a hue
   districtFeatures = districtData.features;
 
   // bake per-feature colors: province hue + district lightness ramp
@@ -472,8 +557,7 @@ map.on('load', async () => {
   }
   for (const name of [...SPLIT_HUES.keys()].sort((a, b) =>
       a.localeCompare(b, 'en', { sensitivity: 'base' }))) {
-    const idx = HUE_ORDER.indexOf(name);
-    const h = idx < 0 ? 0 : Math.round((idx * GOLDEN_ANGLE) % 360);
+    const h = HUES && HUES[name] != null ? HUES[name] : fallbackHue(name);
     lg.insertAdjacentHTML('beforeend',
       `<div><span class="family"><i title="${name} — split city, districts unresolved" ` +
       `style="background:repeating-linear-gradient(45deg,hsl(${h},70%,34%) 0 3px,#fff 3px 6px)"></i>` +
@@ -495,6 +579,7 @@ function setBasemap(next) {
   document.getElementById('btnLight').classList.toggle('active', next === 'light');
   document.getElementById('btnDark').classList.toggle('active', next === 'dark');
   selectedIds = new Set();   // feature-state dies with the replaced source
+  if (pinnedPopup) { pinnedPopup.remove(); pinnedPopup = null; pinnedId = null; }
   map.setStyle(STYLES[next], { diff: false });
 }
 document.getElementById('btnLight').onclick = () => setBasemap('light');
