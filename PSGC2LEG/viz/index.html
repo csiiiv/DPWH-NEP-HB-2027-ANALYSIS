@@ -12,6 +12,9 @@
     position: absolute; top: 10px; right: 10px; z-index: 5;
     background: white; padding: 12px 14px; border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,.25); max-width: 320px; font-size: 13px;
+    /* cap height so the 103-entry province legend scrolls instead of
+       pushing stats off-screen on laptop viewports */
+    max-height: calc(100vh - 20px); overflow-y: auto; box-sizing: border-box;
   }
   #panel h1 { font-size: 15px; margin: 0 0 4px; }
   #panel .sub { color: #555; margin-bottom: 8px; }
@@ -23,7 +26,9 @@
     border-radius: 6px; background: #f5f5f5; cursor: pointer;
   }
   #basemapRow button.active { background: #1f78b4; color: white; border-color: #1f78b4; }
-  .legend { line-height: 16px; font-size: 11px; }
+  .legend { line-height: 15px; font-size: 11px; max-height: 42vh; overflow-y: auto;
+            border-top: 1px solid #eee; padding-top: 6px; }
+  .legend .family { white-space: nowrap; }
   .legend i { display: inline-block; width: 12px; height: 12px; margin-right: 4px;
               border-radius: 2px; vertical-align: -2px; }
   .legend .split { background: repeating-linear-gradient(45deg,#999,#999 3px,#fff 3px,#fff 6px); }
@@ -62,7 +67,7 @@ python3 -m http.server 8901</pre>
   }
 </script>
 <script type="module">
-import { Map, NavigationControl, ScaleControl, Popup } from './vendor/maplibre-gl.mjs';
+import { Map as MapLibreMap, NavigationControl, ScaleControl, Popup } from './vendor/maplibre-gl.mjs';
 
 // Key-free basemaps — the same URLs the project's geolocation tab
 // (analysis/web/src/GeoMap.jsx) uses: CARTO's free GL styles on their
@@ -72,35 +77,7 @@ const STYLES = {
   dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
 };
 
-const REGION_COLORS = {
-  "National Capital Region": "#e41a1c",
-  "Cordillera Administrative Region": "#ff7f00",
-  "Region I (Ilocos)": "#e6ab02",
-  "Region II (Cagayan Valley)": "#a6761d",
-  "Region III (Central Luzon)": "#33a02c",
-  "Region IV-A (CALABARZON)": "#1f78b4",
-  "Region IV-B (MIMAROPA)": "#80b1d3",
-  "Region V (Bicol)": "#984ea3",
-  "Region VI (Western Visayas)": "#f781bf",
-  "Negros Island Region": "#bb9999",
-  "Region VII (Central Visayas)": "#b2df8a",
-  "Region VIII (Eastern Visayas)": "#fdbf6f",
-  "Region IX (Zamboanga Peninsula)": "#cab2d6",
-  "Region X (Northern Mindanao)": "#6a3d9a",
-  "Region XI (Davao)": "#d9c50a",
-  "Region XII (SOCCSKSARGEN)": "#b15928",
-  "Bangsamoro Autonomous Region in Muslim Mindanao": "#8dd3c7",
-  "Caraga": "#fb8072",
-};
-const FALLBACK = "#cccccc";
-
-const colorExpr = [
-  'match', ['get', 'region'],
-  ...Object.entries(REGION_COLORS).flatMap(([k, v]) => [k, v]),
-  FALLBACK
-];
-
-const map = new Map({
+const map = new MapLibreMap({
   container: 'map',
   style: STYLES.light,
   center: [122.0, 12.5],
@@ -118,6 +95,67 @@ map.on('styleerror', () => {
 });
 map.addControl(new NavigationControl({ visualizeRoll: true }));
 map.addControl(new ScaleControl({ unit: 'metric' }));
+
+// ---- Deterministic province hue + per-district shade ----
+// Each jurisdiction (province / HUC) gets its own hue, assigned by golden
+// angle over the alphabetically sorted jurisdiction list. Sorting first is
+// what makes this deterministic across sessions, and the golden angle
+// (~137.508°) is what makes it *collision-free*: name hashing looked fine
+// but gave 12 clashing hues across 103 jurisdictions (e.g. Camarines Sur
+// vs Cavite both landing near 30°), which defeats the whole point of the
+// scheme. Districts within a jurisdiction then vary lightness + saturation
+// — same hue family, distinguishable shades, like the user's example of
+// Camarines Sur's districts all reading as one colour family.
+const GOLDEN_ANGLE = 137.508;
+let HUE_ORDER = [];             // sorted jurisdiction names (assigned in buildColorDictionary)
+let JURISDICTION_INFO = [];     // [{name, districts: Map(no->label)}]
+const colorCache = new Map();   // juris|no -> hsl string
+const swatches = new Map();     // juris -> [{no, color}] for the legend
+
+// Lightness 60%..28% with saturation easing up for darker shades.
+// 1st district = lightest, highest = darkest.
+//
+// The range matters more than it looks: an earlier 74%..34% ramp was
+// effectively invisible — at fill-opacity 0.72 over CARTO Voyager's cream
+// land and pale-blue ocean, 74% lightness reads as "basemap", so the
+// archipelago came out washed out and the national view looked blank.
+// The old flat region palette used L~40-50%, which is the legibility band;
+// steps stay >=5% apart so adjacent districts remain distinguishable.
+function shadeFor(district_no, total) {
+  if (!total || total <= 1) return { l: 46, s: 64 };
+  const t = ((district_no || 1) - 1) / (total - 1);      // 0..1
+  return { l: Math.round(60 - t * 32), s: Math.round(58 + t * 16) };
+}
+
+function districtColor(jurisdiction, district_no) {
+  const key = jurisdiction + '|' + district_no;
+  if (colorCache.has(key)) return colorCache.get(key);
+  const idx = HUE_ORDER.indexOf(jurisdiction);
+  const h = idx < 0 ? 0 : Math.round((idx * GOLDEN_ANGLE) % 360);
+  const j = JURISDICTION_INFO.find(x => x.name === jurisdiction);
+  const total = j ? j.districts.size : 1;
+  const { l, s } = shadeFor(district_no, total);
+  const color = `hsl(${h}, ${s}%, ${l}%)`;
+  colorCache.set(key, color);
+  if (!swatches.has(jurisdiction)) swatches.set(jurisdiction, []);
+  swatches.get(jurisdiction).push({ no: district_no, color });
+  return color;
+}
+
+function buildColorDictionary() {
+  const byName = new Map();
+  for (const f of districtFeatures) {
+    const p = f.properties;
+    if (p.split) continue;
+    byName.set(p.jurisdiction, (byName.get(p.jurisdiction) || new Map())
+      .set(p.district_no ?? 0, p.district_label));
+  }
+  JURISDICTION_INFO = [...byName.entries()].map(([name, districts]) => ({ name, districts }));
+  // Sort deterministically so the golden-angle hue index is stable across
+  // sessions and geojson rebuilds (feature order in the file can shift).
+  HUE_ORDER = JURISDICTION_INFO.map(j => j.name)
+    .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
+}
 
 function makeStripePattern() {
   const c = document.createElement('canvas');
@@ -154,8 +192,8 @@ function bboxOf(geom) {
   return [[minX, minY], [maxX, maxY]];
 }
 
-let features = [];
 let districtData = null;
+let districtFeatures = [];
 let layersReady = false;
 let basemap = 'light';
 let hovered = null;
@@ -168,21 +206,24 @@ function addDistrictLayers() {
 
   map.addSource('districts', { type: 'geojson', data: districtData, generateId: true });
 
-  // regular districts (region-colored)
+  // regular districts (province hue family, per-district shade)
   map.addLayer({
     id: 'districts-fill',
     type: 'fill',
     source: 'districts',
-    // coalesce: non-split features lack the `split` key entirely; a bare
-    // ['!', ['get','split']] yields null (feature dropped) in MapLibre v6.
+    // coalesce: non-split features dissolved by leg_id don't carry the
+    // legacy `split` key; a bare ['!',['get','split']] evaluates null and
+    // drops the feature in MapLibre v6.
     filter: ['!', ['coalesce', ['get', 'split'], false]],
     paint: {
-      'fill-color': colorExpr,
+      // per-feature colors baked into properties at load time
+      // (province hue via golden angle + district lightness ramp)
+      'fill-color': ['string', ['get', 'color'], '#cccccc'],
       'fill-opacity': [
         'case',
         ['boolean', ['feature-state', 'hover'], false], 0.95,
         ['boolean', ['feature-state', 'selected'], false], 0.95,
-        0.72
+        0.8
       ],
     }
   });
@@ -265,12 +306,12 @@ function wireInteractions() {
     // always clear previous selection first (also when the query is emptied)
     for (const id of selectedIds) map.setFeatureState({ source: 'districts', id }, { selected: false });
     selectedIds = new Set();
-    // features[] is empty until first load, so searching early is a no-op;
+    // districtFeatures[] is empty until first load, so searching early is a no-op;
     // no isStyleLoaded() gate — that stays false while basemap resources
     // (tile JSON / sprite) are still pending and would swallow keystrokes.
     if (!q) return;
     const matches = [];
-    for (const f of features) {
+    for (const f of districtFeatures) {
       const p = f.properties;
       const hay = [p.jurisdiction, p.district_label, p.representative, p.leg_id]
         .filter(Boolean).join(' ').toLowerCase();
@@ -286,8 +327,8 @@ function wireInteractions() {
       map.fitBounds([[minX, minY], [maxX, maxY]], { padding: 60, maxZoom: 11, duration: 600 });
       // re-select after generateId: find rendered ids for matched features
       // (generateId assigns stable per-source ids in data order)
-      const idx = new Set(matches.map(m => features.indexOf(m)));
-      features.forEach((f, i) => {
+      const idx = new Set(matches.map(m => districtFeatures.indexOf(m)));
+      districtFeatures.forEach((f, i) => {
         if (idx.has(i)) {
           map.setFeatureState({ source: 'districts', id: i }, { selected: true });
           selectedIds.add(i);
@@ -299,19 +340,34 @@ function wireInteractions() {
 
 map.on('load', async () => {
   districtData = await fetch('leg_districts.geojson').then(r => r.json());
-  features = districtData.features;
+  districtFeatures = districtData.features;
+
+  // bake per-feature colors: province hue + district lightness ramp
+  buildColorDictionary();
+  for (const f of districtFeatures) {
+    if (!f.properties.split) {
+      f.properties.color = districtColor(f.properties.jurisdiction, f.properties.district_no);
+    }
+  }
   addDistrictLayers();
   wireInteractions();   // once; survives style swaps
   layersReady = true;
 
-  // legend + stats
+  // legend: province families — hue = province, shade = district number
   const lg = document.getElementById('legend');
-  for (const [name, color] of Object.entries(REGION_COLORS)) {
-    lg.insertAdjacentHTML('beforeend', `<div><i style="background:${color}"></i>${name}</div>`);
+  lg.innerHTML = '<div style="margin-bottom:4px;color:#333;">hue = province · shade = district #</div>';
+  const jurisSorted = [...swatches.keys()].sort((a, b) =>
+    a.localeCompare(b, 'en', { sensitivity: 'base' }));
+  for (const juris of jurisSorted) {
+    const sw = swatches.get(juris).sort((x, y) => x.no - y.no);
+    const shadeDots = sw.map(s =>
+      `<i title="${juris} — district ${s.no === 0 ? 'lone' : s.no}" style="background:${s.color}"></i>`)
+      .join('');
+    lg.insertAdjacentHTML('beforeend', `<div><span class="family">${shadeDots} ${juris}</span></div>`);
   }
   lg.insertAdjacentHTML('beforeend', '<div><i class="split"></i>split city (multi-district)</div>');
-  const nD = features.filter(f => !f.properties.split).length;
-  const nS = features.filter(f => f.properties.split).length;
+  const nD = districtFeatures.filter(f => !f.properties.split).length;
+  const nS = districtFeatures.filter(f => f.properties.split).length;
   document.getElementById('stats').innerHTML =
     `${nD} district polygons · ${nS} split cities<br>` +
     `Sources: COMELEC Res 11050/11069 · BetterGov · PSGC Q3 2026<br>` +

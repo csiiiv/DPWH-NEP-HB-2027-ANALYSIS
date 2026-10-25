@@ -88,6 +88,9 @@ def main() -> int:
                 "leg_id": leg_id,
                 "jurisdiction": d.get("jurisdiction"),
                 "district_label": d.get("district_label"),
+                # 0 = lone district; >=1 used by the viz for per-district
+                # shades of the province hue
+                "district_no": d.get("district_no"),
                 "region": d.get("region"),
                 "representative": d.get("representative"),
             },

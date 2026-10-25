@@ -153,6 +153,36 @@
       "content_type_on_fetch": "text/plain; charset=utf-8",
       "notes": "Extended fields variant of the 2026-10-12 PSGC mirror",
       "verification_status": "downloaded_not_yet_inspected"
+    },
+    "dpwh-arcgis-congdist-layer-info": {
+      "source_id": "dpwh-arcgis-congdist-layer-info",
+      "title": "Congressional District FeatureServer layer 0 — metadata",
+      "publisher": "DPWH Planning Service (Statistics Division / GIA)",
+      "url": "https://services1.arcgis.com/IwZZTMxZCmAmFYvF/ArcGIS/rest/services/Congressional_District/FeatureServer/0?f=json",
+      "document_date": "2022-03",
+      "retrieved_at_utc": "2026-10-25T02:14:12+00:00",
+      "filename": "dpwh-arcgis-congdist-layer-info__congressional_district_layer.json",
+      "kind": "json",
+      "bytes": 221085,
+      "sha256": "f4ef43f78fb79a1f71a7e9e4ff32ec4481866b61a7855b9ab71f136b497678c5",
+      "content_type_on_fetch": "application/json; charset=utf-8",
+      "notes": "Layer 0 of DPWH ArcGIS FeatureServer. Polygon districts, fields ISLAND/REGION/PROVINCE/CONG_DIST/POP2010/POP2015, native SR WGS84 UTM 51N (wkid 32651). Copyright line: 'Original source from NAMRIA rectified digitally by the GIA Staff of Statistics Division, Planning Service, DPWH (As of March 2022)'. 245 features = 19th Congress vintage, NOT the 2025/254-seat baseline (pre-dates RA 11593 Bulacan 5th/6th and the Maguindanao del Norte/Sur split). Value: per-district polygons for split cities (Manila 1-6, QC, Makati, Caloocan, etc.) — candidate input for the barangay-split stretch goal, not for 2025 assignment.",
+      "verification_status": "downloaded_not_yet_inspected"
+    },
+    "dpwh-arcgis-congdist-geojson": {
+      "source_id": "dpwh-arcgis-congdist-geojson",
+      "title": "Congressional District polygons — full geometry, reprojected to WGS84",
+      "publisher": "DPWH Planning Service (Statistics Division / GIA)",
+      "url": "https://services1.arcgis.com/IwZZTMxZCmAmFYvF/ArcGIS/rest/services/Congressional_District/FeatureServer/0/query?where=1%3D1&outFields=ISLAND,REGION,PROVINCE,CONG_DIST,POP2010,POP2015&returnGeometry=true&outSR=4326&f=geojson&resultRecordCount=2000",
+      "document_date": "2022-03",
+      "retrieved_at_utc": "2026-10-25T02:15:36+00:00",
+      "filename": "dpwh-arcgis-congdist-geojson__congressional_districts_wgs84.geojson",
+      "kind": "json",
+      "bytes": 20246363,
+      "sha256": "95f5d830d13729be87e4283d0a9a23a53cf8c72744817729f63a821022496515",
+      "content_type_on_fetch": "application/json; charset=utf-8",
+      "notes": "245 district polygons as GeoJSON (outSR=4326, reprojected from native wkid 32651). Fetched verbatim from the ArcGIS FeatureServer query endpoint; no post-processing. Same 2022 vintage caveat as dpwh-arcgis-congdist-layer-info.",
+      "verification_status": "downloaded_not_yet_inspected"
     }
   }
 }
