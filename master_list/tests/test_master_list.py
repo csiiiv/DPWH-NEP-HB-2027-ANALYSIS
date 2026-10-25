@@ -436,6 +436,29 @@ class RetainedArtifacts(unittest.TestCase):
         for name, digest in audit['output_sha256'].items():
             self.assertEqual(hashlib.sha256((data / name).read_bytes()).hexdigest(), digest, name)
 
+    def test_scoring_rules_doc_matches_code_and_audit(self):
+        """SCORING_RULES.md tables, code constants, and audit.json stay in sync."""
+        import sys
+        sys.path.insert(0, str(ROOT / 'master_list/scripts'))
+        from locations import (SCORE_BASES, SCORE_BONUSES, SCORE_FLAG_BONUSES,
+                               SCORE_PENALTIES, SCORE_METHOD)
+        audit = json.loads((ROOT / 'master_list/data/audit.json').read_text())
+        rules = audit['location_score_rules']
+        self.assertEqual(rules['method'], SCORE_METHOD)
+        self.assertEqual(rules['bases'], SCORE_BASES)
+        self.assertEqual(rules['bonuses'], SCORE_BONUSES)
+        self.assertEqual(rules['flag_bonuses'], SCORE_FLAG_BONUSES)
+        self.assertEqual(rules['penalties'], SCORE_PENALTIES)
+        # Every numeric point value in the doc tables matches the constants.
+        doc = (ROOT / 'master_list/docs/SCORING_RULES.md').read_text()
+        doc_ascii = doc.replace('−', '-')  # typographic minus -> ASCII
+        for table in (SCORE_BASES, SCORE_BONUSES, SCORE_FLAG_BONUSES, SCORE_PENALTIES):
+            for rule, points in table.items():
+                sign = f'+{points}' if points > 0 else str(points)
+                self.assertIn(f'`{rule}` | {sign}', doc_ascii,
+                              f'{rule} row missing/stale in SCORING_RULES.md')
+        self.assertIn(SCORE_METHOD, doc)
+
 
 if __name__ == '__main__':
     unittest.main()

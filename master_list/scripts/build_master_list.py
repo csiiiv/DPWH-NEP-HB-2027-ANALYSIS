@@ -15,8 +15,8 @@ from functools import lru_cache
 import sys
 import tempfile
 
-from locations import (SCORE_BASES, SCORE_BONUSES, SCORE_METHOD, SCORE_PENALTIES,
-                       Matcher, normalize, score_location)
+from locations import (SCORE_BASES, SCORE_BONUSES, SCORE_FLAG_BONUSES, SCORE_METHOD,
+                       SCORE_PENALTIES, Matcher, normalize, score_location)
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'gps-analysis'))
@@ -485,6 +485,7 @@ def build(out):
              'location_score_rules': {'method': SCORE_METHOD,
                                       'interpretation': 'Uncapped additive evidence score; not normalized and not a probability.',
                                       'bases': SCORE_BASES, 'bonuses': SCORE_BONUSES,
+                                      'flag_bonuses': SCORE_FLAG_BONUSES,
                                       'penalties': SCORE_PENALTIES},
              'input_files': inputs,
              'builder_sha256': {name: sha(Path(__file__).parent / name)

@@ -144,6 +144,9 @@
       "bridge_registry_unique_chain": 2,
       "bridge_registry_agreement": 2
     },
+    "flag_bonuses": {
+      "grouped_barangays_under_same_municipality": 3
+    },
     "penalties": {
       "title_or_heading_province_conflict": -5,
       "source_region_differs_from_title_location": -3,
@@ -177,7 +180,7 @@
       "scope": "Retained DPWH bridge inventory exact-ID match and spatial PSGC evidence (read-only)"
     },
     "PSGC2LEG/data/psgc_leg_assignments.jsonl": {
-      "sha256": "88de5f92789e4c7f9366c3734ddfdf71a9ea1ac650e9499125537278f6a19ff7",
+      "sha256": "67c239f01389f74d9f26ce161c6b7a3fb003e52c7cde0e2a3920ab399ef7fb67",
       "scope": "Verified PSGC2LEG municipality-to-legislative-district assignments (read-only)"
     },
     "analysis/data/nep_2027_source_projects.json": {
@@ -247,8 +250,8 @@
     }
   },
   "builder_sha256": {
-    "build_master_list.py": "9a42c722e4e2a4fc2b98f55b09dec38a29cc4d188f61ceaab6546d98fc384767",
-    "locations.py": "b7ba7e7e7b8149ea93ff7923e57498a1a05079eb0947ceca73f476bb51d282e5"
+    "build_master_list.py": "44cfcc0064c45b1b8d55c6d22677574661dd6be79273040a591c8b1e20f5b51e",
+    "locations.py": "52b9e7097cffcb84b5646af059f1735909fa39a8c9709e0754d020a21c296598"
   },
   "records": 64645,
   "datasets": {
@@ -280,16 +283,17 @@
         "2": 62,
         "3": 535,
         "4": 58,
-        "5": 846,
-        "6": 120,
-        "7": 1028,
-        "8": 702,
-        "9": 949,
-        "10": 28,
-        "11": 4094,
-        "12": 69,
+        "5": 845,
+        "6": 119,
+        "7": 1025,
+        "8": 698,
+        "9": 937,
+        "10": 31,
+        "11": 4003,
+        "12": 76,
         "13": 308,
-        "15": 3
+        "14": 96,
+        "15": 9
       },
       "records_with_coordinate_pairs": 609,
       "review_records": 4701,
@@ -326,16 +330,17 @@
         "2": 49,
         "3": 708,
         "4": 73,
-        "5": 1339,
-        "6": 137,
-        "7": 1637,
-        "8": 830,
-        "9": 1281,
-        "10": 36,
-        "11": 6718,
-        "12": 89,
+        "5": 1338,
+        "6": 136,
+        "7": 1631,
+        "8": 822,
+        "9": 1266,
+        "10": 42,
+        "11": 6603,
+        "12": 102,
         "13": 488,
-        "15": 4
+        "14": 124,
+        "15": 7
       },
       "records_with_coordinate_pairs": 2241,
       "review_records": 5877,
@@ -372,16 +377,17 @@
         "2": 49,
         "3": 713,
         "4": 73,
-        "5": 1339,
-        "6": 137,
-        "7": 1637,
-        "8": 830,
-        "9": 1281,
-        "10": 36,
-        "11": 6718,
-        "12": 89,
+        "5": 1338,
+        "6": 136,
+        "7": 1631,
+        "8": 822,
+        "9": 1266,
+        "10": 42,
+        "11": 6603,
+        "12": 102,
         "13": 488,
-        "15": 4
+        "14": 124,
+        "15": 7
       },
       "records_with_coordinate_pairs": 2241,
       "review_records": 5882,
@@ -415,16 +421,17 @@
         "2": 53,
         "3": 517,
         "4": 61,
-        "5": 871,
-        "6": 120,
-        "7": 1050,
-        "8": 712,
-        "9": 958,
-        "10": 29,
-        "11": 4137,
-        "12": 69,
+        "5": 870,
+        "6": 119,
+        "7": 1047,
+        "8": 708,
+        "9": 947,
+        "10": 32,
+        "11": 4049,
+        "12": 75,
         "13": 308,
-        "15": 3
+        "14": 93,
+        "15": 9
       },
       "records_with_coordinate_pairs": 617,
       "review_records": 4799,
@@ -450,14 +457,15 @@
         "3": 9,
         "4": 2,
         "5": 36,
-        "6": 5,
+        "6": 4,
         "7": 44,
-        "8": 103,
-        "9": 40,
+        "8": 99,
+        "9": 31,
         "10": 1,
-        "11": 453,
-        "12": 1,
+        "11": 449,
+        "12": 11,
         "13": 5,
+        "14": 8,
         "15": 1
       },
       "records_with_coordinate_pairs": 704,
@@ -487,15 +495,16 @@
         "3": 12,
         "4": 1,
         "5": 46,
-        "6": 4,
+        "6": 3,
         "7": 55,
-        "8": 166,
-        "9": 42,
+        "8": 158,
+        "9": 36,
         "10": 1,
-        "11": 616,
-        "12": 2,
+        "11": 610,
+        "12": 8,
         "13": 6,
-        "15": 5
+        "14": 14,
+        "15": 6
       },
       "records_with_coordinate_pairs": 964,
       "review_records": 305,
@@ -4386,8 +4395,8 @@
     ]
   },
   "output_sha256": {
-    "projects.jsonl.gz": "39537c6d77f4baa13cd6f9b40e6a125bb1c842a25f33e689408752fa015c1a77",
-    "projects.csv.gz": "22d70b0bdb414df33776ddee5a23df3c62738f38b849d55e51544ee277708cf0",
-    "location_review.csv.gz": "2c4349d8689f1cdad56fcca34dccd73c02b922923809b3228ffab42da6043b92"
+    "projects.jsonl.gz": "312ef3a4d1869af41d20423aadd58dcd8375db38f59a06c921d3c087dad3b327",
+    "projects.csv.gz": "4a6e556f369870ef2cab044842fed4ae1a96b86e8093620f40df092a9eca83d5",
+    "location_review.csv.gz": "af587f17b2f8d44e7aa0e62fb026c89b50bbd24dab38290dd0849112bfd64d98"
   }
 }

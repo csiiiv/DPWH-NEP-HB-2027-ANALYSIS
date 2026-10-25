@@ -32,6 +32,11 @@ SCORE_BONUSES = {
     'bridge_registry_unique_chain': 2,
     'bridge_registry_agreement': 2,
 }
+# Coherence flags raised during parsing that carry positive weight. Unlike
+# evidence bonuses (counted once per rule), these attach to the flag itself.
+SCORE_FLAG_BONUSES = {
+    'grouped_barangays_under_same_municipality': 3,
+}
 SCORE_PENALTIES = {
     'title_or_heading_province_conflict': -5,
     'source_region_differs_from_title_location': -3,
@@ -99,6 +104,11 @@ def score_location(match):
         if impact:
             score += impact
             factors.append({'rule': f'penalty:{flag}', 'impact': impact})
+        else:
+            bonus = SCORE_FLAG_BONUSES.get(flag, 0)
+            if bonus:
+                score += bonus
+                factors.append({'rule': f'coherence:{flag}', 'impact': bonus})
 
     match.update(score=score, score_method=SCORE_METHOD, score_factors=factors)
     return match

@@ -1,7 +1,7 @@
 # Master list location evidence: work log and roadmap
 
 **Status:** additive evidence version 6 built, verified, and published  
-**Score field:** `location.score`  
+**Score field:** `location.score` · **Scoring rules:** [SCORING_RULES.md](SCORING_RULES.md)  
 **Method identifier:** `location_evidence_v6`
 
 This document records what the master-list work has done, how the location
@@ -96,10 +96,14 @@ current PSGC geometry source is added.
 
 ## Raw additive scoring rules
 
-The score has no imposed minimum or maximum. Negative totals are allowed. It is
-an evidence ledger, not a probability, percentile, grade, or quality threshold.
+The complete rule tables — bases, evidence bonuses, corroboration bonuses, the
+coherence bonus, penalties, a layering diagram, and worked examples — now live
+in the dedicated [SCORING_RULES.md](SCORING_RULES.md). The tables below are
+kept only as a quick reference; the canonical sources are the code constants
+in `scripts/locations.py` and the machine-readable `location_score_rules`
+block of `data/audit.json`, which are regenerated together on every build.
 
-### Resolution base
+### Resolution base (quick reference)
 
 | Resolved outcome | Points |
 |---|---:|
@@ -109,33 +113,41 @@ an evidence ledger, not a probability, percentile, grade, or quality threshold.
 | Province only | +2 |
 | Several assigned locations | +3 |
 | One municipality/city/sub-municipality | +4 |
+| Registry chain adopted | +4 |
 | One barangay | +6 |
 
-### Independent evidence and hierarchy agreement
+### Independent evidence and hierarchy agreement (quick reference)
 
 | Evidence | Points |
 |---|---:|
-| Adjacent explicit `Brgy.`/`Barangay` marker | +2 |
 | Complete unmarked barangay → town → province suffix | +4 |
-| Compact multi-level locality component is fully covered | +1 |
+| Adjacent explicit `Brgy.`/`Barangay` marker | +2 |
+| Exact inventory `BRIDGE_ID` in title | +2 |
+| Unique registry chain for matched bridge | +2 |
+| Title scope intersects registry chain | +2 |
 | Title locality and printed source heading agree | +2 |
 | Selected locality and explicit parent province agree | +2 |
 | Source region and assigned PSGC region agree | +1 |
+| Compact multi-level locality component is fully covered | +1 |
+| Grouped barangays share one municipality (v6 coherence) | +3 |
 
 A cue type is counted once per observation. Repeating the same barangay in a
 title does not create independent evidence.
 
-### Contradictions and incomplete evidence
+### Contradictions and incomplete evidence (quick reference)
 
 | Review condition | Points |
 |---|---:|
 | Title or heading conflicts with province | -5 |
 | Source region conflicts with assigned region | -3 |
+| Registry chain conflicts with title location | -3 |
 | Barangay name remains ambiguous | -3 |
 | Barangay scope spans several municipalities | -3 |
 | A barangay marker cannot be resolved under its context | -2 |
 | Plural barangay list needs review | -1 |
 | Independent city appears with separate province context | -1 |
+
+`city_district_context` is informational and carries no weight.
 
 `score_factors` records every applied item. `score_method` identifies the rules
 version. The audit stores the same rule tables in machine-readable form.
@@ -159,8 +171,8 @@ parser does not count that phrase as an independent parent assertion.
 
 The v6 run spans scores from `-8` to `15`. The exact distribution is
 published in [REPORT.md](../data/REPORT.md) and `audit.json`. The most common
-totals are `11` (22,816 observations), `0` (16,946), `7` (5,520), `9` (4,551),
-`5` (4,753), and `8` (3,374). These clusters reflect the rules and source
+totals are `11` (22,397 observations), `0` (16,946), `7` (5,502), `5` (4,565),
+`9` (4,483), and `8` (3,338). These clusters reflect the rules and source
 formats; they are not validated accuracy classes.
 
 Compared with the original bounded-rule corpus, the expanded hierarchy parser
