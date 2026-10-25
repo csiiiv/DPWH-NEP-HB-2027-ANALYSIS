@@ -170,6 +170,25 @@ additions, and 175 score changes — every one an upgrade; zero
 `name_matched` regressions. The largest cluster (111 records, `9 → 11`) is
 the `North Cotabato` alias gaining explicit-parent-chain corroboration.
 
+### Office province hints (suggestion ordering only)
+
+District engineering offices are province-scoped, so an office name such as
+`Agusan del Norte District Engineering Office` carries ordering evidence for
+review suggestions — exactly the evidence that separates the printed
+`Barangay Poblacion, Carmen, Lanao del Norte` (whose office names Agusan del
+Norte) from its rival readings. `Matcher.province_code` extracts a hint only
+when the office contains exactly one unambiguous province-level catalog name
+(23,820 records carry one); homonym names like `Metro Manila` or `Isabela`
+yield no hint. In `hierarchy_candidate_v3`, `office_province_agreement`
+(+2) boosts a suggestion whose chain sits in the office's province, and
+`office_province_conflict` (-1, asymmetrically weaker, since offices
+legitimately administer cross-province works) notes the rest. Assigned
+locations, statuses, and scores are untouched: office names remain context
+and never become a project site. Measured effect: 4 top-suggestion
+re-rankings (all corrections of a same-region tie, e.g. `Magsaysay,
+Misamis Oriental` vs `Lanao del Norte`, both Region X with a Poblacion
+barangay); 8 more records gained a decisive top-2 gap.
+
 ## What we are doing now
 
 - Preserve every candidate, selected code, evidence item, review flag, and score

@@ -176,6 +176,36 @@ class TitleLocations(unittest.TestCase):
              for s in suggestions[1:]},
             {('Cebu', 3), ('Cotabato', 3)})
 
+    def test_office_province_hint_orders_suggestions_without_assigning(self):
+        # The printed Lanao del Norte conflicts with every candidate, but the
+        # implementing office names Agusan del Norte. That is ordering
+        # evidence only: status, assigned codes, and score stay untouched.
+        plain = self.matcher.match(
+            'Construction, Barangay Poblacion, Carmen, Lanao del Norte',
+            (), '1600000000')
+        hinted = self.matcher.match(
+            'Construction, Barangay Poblacion, Carmen, Lanao del Norte',
+            (), '1600000000', '1600200000')
+        self.assertEqual(plain['status'], hinted['status'])
+        self.assertEqual(plain['score'], hinted['score'])
+        self.assertEqual(plain['locations'], hinted['locations'])
+        self.assertEqual(hinted['suggestions'][0]['location']['psgc_code'], '1600204009')
+        self.assertEqual(hinted['suggestions'][0]['support_score'], 12)
+        self.assertIn('office_province_agreement',
+                      {f['rule'] for f in hinted['suggestions'][0]['factors']})
+        self.assertTrue(all('office_province_conflict' in s['conflicts']
+                            for s in hinted['suggestions'][1:]))
+
+    def test_province_code_extracts_only_unambiguous_provinces(self):
+        self.assertEqual(self.matcher.province_code(
+            'Agusan del Norte District Engineering Office'), '1600200000')
+        self.assertIsNone(self.matcher.province_code('Central Office'))
+        # 'Manila' is a city, not a province; 'Isabela' names municipalities.
+        self.assertIsNone(self.matcher.province_code(
+            'Metro Manila 3rd District Engineering Office'))
+        self.assertIsNone(self.matcher.province_code(
+            'Isabela 4th District Engineering Office'))
+
     def test_numbered_town_alias_is_scoped_by_province(self):
         result = self.matcher.match(
             'Construction, Barangay Kingan - Barangay Kianibong, '

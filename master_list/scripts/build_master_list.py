@@ -216,8 +216,11 @@ def build(out):
             # Allocations carry no site assertion; retain them in the ledger.
             is_allocation = r['record_kind'] not in {'project', 'facility', 'fap_project'}
             region_hint = matcher.region_code(r['source_region'])
+            # An office province hint orders review suggestions only; it is
+            # never assigned as a project site and never scores the record.
+            office_hint = matcher.province_code(r['implementing_office'])
             match = json.loads(json.dumps(matcher.match(
-                r['title'], tuple(r['structured_localities']), region_hint)))
+                r['title'], tuple(r['structured_localities']), region_hint, office_hint)))
             if is_allocation:
                 match = dict(status='allocation_not_site', method=None, verification_status=None,
                              locations=[], candidate_codes=[], suggestions=[], suggestion_method=None,
@@ -250,6 +253,7 @@ def build(out):
             # Office names are retained as weak context only, never project codes.
             r['office_location_candidates'] = sorted({c for hit in matcher.find(r['implementing_office'])
                                                         for c in hit['codes']})
+            r['office_province_hint'] = office_hint
             r['title_key'] = normalize(r['title'])
             dataset = r['dataset']
             counts[dataset] += 1

@@ -10,7 +10,7 @@ import unicodedata
 
 
 SCORE_METHOD = 'location_evidence_v3'
-SUGGESTION_METHOD = 'hierarchy_candidate_v2'
+SUGGESTION_METHOD = 'hierarchy_candidate_v3'
 SCORE_BASES = {
     'allocation_not_site': 0,
     'unresolved': 0,
@@ -224,7 +224,7 @@ class Matcher:
         return bounded
 
     @lru_cache(maxsize=30000)
-    def match(self, title, structured=(), region_hint=None):
+    def match(self, title, structured=(), region_hint=None, office_hint=None):
         title_hits = self.find(title)
         words = normalize(title).split()
         locality_parts = self.locality_parts(title)
@@ -500,7 +500,8 @@ class Matcher:
             status = 'province_only'
         else:
             status = 'unresolved'
-        suggestions = self.suggest_hierarchies(evidence, region_hint) if status != 'name_matched' or flags else []
+        suggestions = (self.suggest_hierarchies(evidence, region_hint, office_hint)
+                       if status != 'name_matched' or flags else [])
         return score_location({'status': status, 'method': 'exact_catalog_name_with_locality_syntax',
                 'verification_status': 'provisional_name_match',
                 'locations': [self.describe(c) for c in sorted(selected)],
@@ -509,7 +510,7 @@ class Matcher:
                 'evidence': evidence, 'review_flags': sorted(set(flags)),
                 'needs_review': status != 'name_matched' or bool(flags)})
 
-    def suggest_hierarchies(self, evidence, region_hint):
+    def suggest_hierarchies(self, evidence, region_hint, office_hint=None):
         """Rank coherent unassigned barangay/town/province chains for review.
 
         Suggestions never become assigned locations. They require an explicit
@@ -565,6 +566,17 @@ class Matcher:
                 else:
                     factors.append({'rule': 'source_region_conflict', 'impact': -2})
                     conflicts.append('source_region_conflict')
+            # District engineering offices are province-scoped, so a matching
+            # province name is meaningful ordering evidence. It stays a
+            # suggestion factor only: office names are context, never a
+            # project site. Conflict is asymmetrically weaker because offices
+            # legitimately administer works crossing province lines.
+            if office_hint:
+                if province == office_hint:
+                    factors.append({'rule': 'office_province_agreement', 'impact': 2})
+                else:
+                    factors.append({'rule': 'office_province_conflict', 'impact': -1})
+                    conflicts.append('office_province_conflict')
             chains.append({'code': code, 'province': province, 'region': region,
                            'factors': factors, 'conflicts': conflicts})
         # A unique region-compatible repair is chain-level evidence: the
@@ -594,4 +606,22 @@ class Matcher:
         for alias in sorted(self.regions, key=len, reverse=True):
             if text == alias or text.startswith(alias + ' '):
                 return self.regions[alias]
+        return None
+
+    def province_code(self, office):
+        """Province-level catalog name in an office label, else None.
+
+        Only an unambiguous province-level hit counts: names that are also
+        cities/municipalities (Isabela, Batangas) yield no hint, and an
+        office naming two provinces yields none either. The result orders
+        review suggestions only; it is never assigned as a project site.
+        """
+        if not office:
+            return None
+        hits = [set(codes) for hit in self.find(office)
+                for codes in [hit['codes']]
+                if all(self.rows[c]['level'] == 'province' for c in codes)]
+        provinces = set().union(*hits) if hits else set()
+        if len(provinces) == 1:
+            return next(iter(provinces))
         return None

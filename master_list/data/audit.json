@@ -229,8 +229,8 @@
     }
   },
   "builder_sha256": {
-    "build_master_list.py": "0e8fbaef2eac490f81f15aba2b72d4a7b688a1d1e5373c0b8447aa7eacead956",
-    "locations.py": "fa32521b2c62278762c41d5631a52fbc1891787dc0b930c4543e5c46fdb3e773"
+    "build_master_list.py": "76f13f2b4d076c1ec54ee1f2a249f9db1fcca346c5504964a96eecbf198626d9",
+    "locations.py": "0555b1422e344d0dbcc831a193155a75f56c1eecb5e2433809edeaa18a70440c"
   },
   "records": 64645,
   "datasets": {
@@ -575,7 +575,7 @@
           "locations": [],
           "candidate_codes": [],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [],
           "review_flags": [],
           "needs_review": true,
@@ -601,7 +601,7 @@
             "1380600000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -636,7 +636,7 @@
             "1380600000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -672,7 +672,7 @@
             "0105500000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -734,7 +734,7 @@
             "0931700000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -806,7 +806,7 @@
             "0931700000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -878,7 +878,7 @@
             "0931700000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -950,7 +950,7 @@
             "0931700000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -1043,7 +1043,7 @@
             "0931700000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -1134,7 +1134,7 @@
             "0931700000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -1225,7 +1225,7 @@
             "0931700000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -1316,7 +1316,7 @@
             "0931700000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -1392,7 +1392,7 @@
             "0301419000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -1488,7 +1488,7 @@
             "1806105000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -1614,7 +1614,7 @@
             "0105548000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -1703,7 +1703,7 @@
             "0102934000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -1793,7 +1793,7 @@
             "1030500000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -2747,7 +2747,7 @@
               ]
             }
           ],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -3784,7 +3784,7 @@
               ]
             }
           ],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -4136,7 +4136,7 @@
             "0600413000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v2",
+          "suggestion_method": "hierarchy_candidate_v3",
           "evidence": [
             {
               "field": "title",
@@ -4335,7 +4335,7 @@
     ]
   },
   "output_sha256": {
-    "projects.jsonl.gz": "3170687a59bb484d3186bc67f56b564b26630f6004df3c0200a2e8242d386599",
+    "projects.jsonl.gz": "d6886702234515d051cc05978091cbe9673531f06ce1b7a388cf212321ba2ee6",
     "projects.csv.gz": "41dd579fdad59947ad17b8f579ef7b911d613e016b486ae0ed6ec03b0fb3dc2a",
     "location_review.csv.gz": "0952156dab2c7237fbcb83b682d87e3f2349914c35e073136d88034df7a3336f"
   }
