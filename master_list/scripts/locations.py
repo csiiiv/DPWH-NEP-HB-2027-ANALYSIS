@@ -354,6 +354,81 @@ class Matcher:
                     break
         absorbed_phrases = {normalize(split_parts[pi + 1])
                             for pi in numbered_absorbed}  # suppress as towns
+        # A marker-less part immediately before an explicit city part may be
+        # a barangay of that city ("Libertad, Butuan City" / enumeration
+        # tails "..., Citrus and Kaypian, City of ..."). Probe trailing
+        # words; a resolving part is a barangay mention, not a town.
+        # An explicit city part must carry the city form itself ("City of X",
+        # "X City") — a bare homonym ("San Pedro", also a Laguna city) is not.
+        explicit_city_parts = {pi for pi, part in enumerate(split_parts)
+                               if (normalize(part).startswith('city of ')
+                                   or normalize(part).endswith(' city'))
+                               and any(self.rows[c]['level'] == 'city'
+                                       for c in self.index.get(normalize(part), ()))}
+        # Parts resolved as city barangays without any marker word.
+        markerless_barangay = {}  # {part_idx: [barangay_code, ...]}
+        # Enumeration continuation: "Barangays A, B, C and D, City of X" —
+        # every part between a plural-marker part and the explicit city part
+        # is a barangay-name member of that city ("and" joins split further).
+        # Runs BEFORE the immediate-before-city probe so multi-member parts
+        # resolve every name, not just the trailing one.
+        city_codes_flat = {cc for cp in explicit_city_parts
+                           for cc in self.index.get(normalize(split_parts[cp]), ())}
+        for pi, part in enumerate(split_parts):
+            words_here = normalize(part).split()
+            if not any(w in {'brgys', 'barangays'} for w in words_here):
+                continue
+            later_cities = [cp for cp in explicit_city_parts if cp > pi]
+            if not later_cities:
+                continue
+            for member_pi in range(pi + 1, later_cities[0]):
+                if member_pi in markerless_barangay:
+                    continue
+                # A part may hold several "and"-joined members; record each
+                # that resolves uniquely under the explicit city.
+                chunks = [c.strip() for c in normalize(split_parts[member_pi]).split(' and ') if c.strip()]
+                resolved_here = []
+                for chunk in chunks:
+                    if chunk not in self.all_barangays:
+                        continue
+                    in_city = {c for c in self.all_barangays[chunk]
+                               if self.rows[c]['parent_code'] in city_codes_flat}
+                    if len(in_city) == 1:
+                        resolved_here.append(next(iter(in_city)))
+                if resolved_here:
+                    markerless_barangay[member_pi] = resolved_here
+        # Immediate-before-city probe: a marker-less part directly preceding
+        # an explicit city may itself be one barangay ("Libertad, Butuan
+        # City"); parts already enumerated keep their richer resolution.
+        for pi in range(len(split_parts) - 1):
+            if pi + 1 not in explicit_city_parts or pi in markerless_barangay:
+                continue
+            words_here = normalize(split_parts[pi]).split()
+            if not words_here or any(w in {'brgy', 'brgys', 'barangay', 'barangays'}
+                                     for w in words_here):
+                continue  # marker parts are handled by the marker pass
+            for take in range(min(len(words_here), self.max_barangay_words), 0, -1):
+                name = ' '.join(words_here[-take:])
+                codes = self.all_barangays.get(name, set())
+                in_city = {c for c in codes
+                           if self.rows[c]['parent_code'] in city_codes_flat}
+                if len(in_city) == 1:
+                    markerless_barangay[pi] = [next(iter(in_city))]
+                    break
+                if codes:
+                    break  # a place-name hit that is not a city barangay stays a town
+        # District-before-city: a part immediately before an explicit city
+        # whose whole text names a town elsewhere ("Jaro, Iloilo City") is a
+        # city-district mention when the city's barangay names carry that
+        # qualifier ("San Isidro (Jaro)"). Kept for soft-conflict handling.
+        district_before_city = {}
+        for cp in explicit_city_parts:
+            if cp == 0:
+                continue
+            prev = normalize(split_parts[cp - 1])
+            if prev in self.index and any(self.rows[c]['level'] in
+                                          {'city', 'municipality'} for c in self.index[prev]):
+                district_before_city[cp - 1] = prev
         # Exact structured headings may be towns even when called province_control
         # by the source extractor (e.g. HFEP Sagada).
         for raw in structured:
@@ -373,7 +448,10 @@ class Matcher:
                 suppressed_num = True
             else:
                 suppressed_num = False
-            # A comma component must itself be a place, or an explicit city /
+            # A part resolved as a marker-less city barangay is not a town.
+            if any(phrase in normalize(split_parts[mpi]) or normalize(split_parts[mpi]) in phrase
+                   for mpi in markerless_barangay):
+                suppressed_num = True            # A comma component must itself be a place, or an explicit city /
             # municipality phrase. Province mentions in "Abra River" stay weak.
             exact = phrase in bounded or phrase in chain_phrases or any(
                 p in {f'city of {phrase}', f'municipality of {phrase}',
@@ -579,6 +657,19 @@ class Matcher:
                     # The marker word exists but no adjacent words form a
                     # catalog barangay name: an explicit unmatched mention.
                     part_markers.append(('', None, 'barangay_mentioned_but_unmatched'))
+            if part_idx in markerless_barangay:
+                # Precomputed: this marker-less part resolves as one or more
+                # barangays of the explicit city part that follows.
+                name = normalize(split_parts[part_idx])
+                for code in markerless_barangay[part_idx]:
+                    direct_barangays.add(code)
+                    part_markers.append((name, code, None))
+                    evidence.append({
+                        'field': 'title_barangay', 'text': name,
+                        'candidate_codes': [code],
+                        'locality_syntax': True,
+                        'resolution_rule': 'explicit_city_markerless_barangay',
+                    })
             if part_markers:
                 barangay_by_part[part_idx] = part_markers
         # Only flag unmatched when a marker word exists but no barangay name
@@ -653,6 +744,19 @@ class Matcher:
                             bool(accepted_towns & barangay_parent_towns)
                             and len(accepted_towns) == 1
                             and len(mentioned_towns) == 1)
+                        # Even without a resolved barangay, a district part
+                        # immediately before the explicit city ("Jaro, Iloilo
+                        # City") whose name the city's barangay qualifiers
+                        # use is a district mention, not a province conflict.
+                        if not district_context:
+                            accepted_city = next(iter(accepted_towns), None) if len(accepted_towns) == 1 else None
+                            if accepted_city:
+                                bidx, _ = self.barangay_index(accepted_city)
+                                quals = {re.search(r'\(([^)]+)\)', self.rows[bc]['name']).group(1).lower()
+                                         for n, cset in bidx.items() for bc in cset
+                                         if re.search(r'\(([^)]+)\)', self.rows[bc]['name'])}
+                                mentioned_names = {normalize(self.rows[t]['name']) for t in mentioned_towns}
+                                district_context = bool(mentioned_names & quals)
                         if district_context:
                             flags.append('city_district_context')
                         else:

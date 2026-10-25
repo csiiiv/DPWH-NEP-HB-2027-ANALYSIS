@@ -351,11 +351,23 @@ Version 6 removes four classes of false penalties, all generalized rules:
    town homonyms when scoping markers; parenthetical barangay qualifiers
    (`San Isidro (Jaro)`) disambiguate via a district mentioned elsewhere
    in the title.
+5. **Marker-less city barangays and enumerations (v6.1).** A marker-less
+   part immediately before an explicit city part (`Libertad, Butuan City`)
+   resolves as a barangay of that city when unique there; enumeration
+   members after a plural `Barangays` part (`San Pedro, Citrus and Kaypian,
+   City of San Jose del Monte`) each resolve under the city, with "and"
+   joins split; and a district-before-city whose name matches the city's
+   barangay-name parenthetical qualifiers (`Jaro, Iloilo City`) soft-flags
+   `city_district_context` even without a resolved barangay. An explicit
+   city part must carry the city form itself — a bare homonym (`San Pedro`,
+   also a Laguna city) never scopes.
 
 Measured v5.1 → v6: `title_or_heading_province_conflict` 323 → 169,
 `ambiguous_barangay_name` 991 → 368, `ambiguous` status 349 → 195 records,
 `multiple_locations` 3,490 → 3,557; `city_of_x`/`x city` forms (Butuan,
-Iloilo, all HUCs) resolve identically through existing aliases.
+Iloilo, all HUCs) resolve identically through existing aliases. The v6.1
+follow-up trimmed conflicts to 150 and ambiguous to 176 while attaching
+barangays the title explicitly names under their city.
 
 ## What we are doing now
 
