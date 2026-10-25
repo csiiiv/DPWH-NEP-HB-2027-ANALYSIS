@@ -9,7 +9,7 @@ import re
 import unicodedata
 
 
-SCORE_METHOD = 'location_evidence_v5'
+SCORE_METHOD = 'location_evidence_v6'
 SUGGESTION_METHOD = 'hierarchy_candidate_v3'
 SCORE_BASES = {
     'allocation_not_site': 0,
@@ -143,6 +143,23 @@ def aliases(row):
             bare = re.sub(r'\s+(?:i|ii|iii|iv|v|vi)$', '', value)
             if bare != value:
                 result.add(bare)
+        # PSA official names may carry personal initials that DPWH titles drop
+        # ("Pres. Manuel A. Roxas" written as "Pres. Manuel, Roxas"). Dropping
+        # single-letter initial tokens is safe; whole given names never drop.
+        for value in list(result):
+            dropped = ' '.join(w for w in value.split() if len(w) > 1)
+            if dropped and dropped != value:
+                result.add(dropped)
+    if row['level'] == 'barangay':
+        # Numbered barangays officially read "Bgy. No. 1, San Lorenzo" while
+        # titles write "Barangay 1, San Lorenzo" or "Brgy. 1 San Lorenzo".
+        # Expose the prefix-stripped variant; a bare numeral stays too
+        # generic to index, so require at least one name word after it.
+        for value in list(result):
+            stripped = re.sub(r'^(?:bgy|brgy|barangay)\s+(?:no\s+)?(?=\d)', '', value)
+            rest = stripped.split()
+            if stripped != value and len(rest) >= 2:
+                result.add(stripped)
     return {s for s in result if len(s) > 2}
 
 
@@ -251,6 +268,20 @@ class Matcher:
             if len(part_hits) > 1 and all(i in covered or word in locality_labels
                                          for i, word in enumerate(part_words)):
                 chain_phrases.update(hit['text'] for hit in part_hits)
+        # A catalog name may span a comma inside a bounded suffix, as when a
+        # PSA name with initials is written "Pres. Manuel, Roxas". Accept a
+        # phrase that appears across the joined parts but not inside any one
+        # part (a part-internal phrase may be a barangay mention, not a town).
+        joined_suffix = ' '.join(' '.join(normalize(p).split()) for p in locality_parts)
+        part_internal = {f' {p} ' for p in (f' {" ".join(normalize(x).split())} ' for x in locality_parts)}
+        spanning_phrases = set()
+        for hit in title_hits:
+            if f' {hit['text']} ' not in f' {joined_suffix} ':
+                continue
+            if any(f' {hit['text']} ' in padded for padded in part_internal):
+                continue
+            spanning_phrases.add(hit['text'])
+        bounded |= spanning_phrases
 
         # Resolve an unmarked barangay only from a complete, ordered
         # "barangay, municipality, province" suffix. This handles a name such
@@ -288,7 +319,31 @@ class Matcher:
                     'resolution_rule': 'comma_barangay_municipality_province_chain',
                 })
         groups = []
+        group_phrases = []
         evidence = list(hierarchy_evidence)
+        # A marker part ending in a bare number ("Barangay 1") may be the
+        # first half of an official name with an internal comma ("Bgy. No. 1,
+        # San Lorenzo"). Join the next part when the joined words form a
+        # catalog barangay alias; the absorbed part is then not a town.
+        numbered_absorbed = {}  # {part_idx: joined_name}
+        split_parts = re.split(r'[,;]', title)
+        for pi in range(len(split_parts) - 1):
+            words_here = normalize(split_parts[pi]).split()
+            marker_positions = [k for k, w in enumerate(words_here)
+                                if w in {'brgy', 'brgys', 'barangay', 'barangays'}]
+            if not marker_positions:
+                continue
+            tail = words_here[marker_positions[-1] + 1:]
+            if not tail or not tail[-1].isdigit():
+                continue
+            next_words = normalize(split_parts[pi + 1]).split()
+            for take in range(min(len(next_words), self.max_barangay_words), 0, -1):
+                joined = ' '.join(tail + next_words[:take])
+                if joined in self.all_barangays:
+                    numbered_absorbed[pi] = joined
+                    break
+        absorbed_phrases = {normalize(split_parts[pi + 1])
+                            for pi in numbered_absorbed}  # suppress as towns
         # Exact structured headings may be towns even when called province_control
         # by the source extractor (e.g. HFEP Sagada).
         for raw in structured:
@@ -302,6 +357,12 @@ class Matcher:
             before = ' '.join(words[max(0, hit['start'] - 3):hit['start']])
             after = ' '.join(words[hit['end']:hit['end'] + 2])
             phrase = hit['text']
+            # Phrases fully inside a part absorbed by a numbered-barangay
+            # join are barangay name components, not towns.
+            if any(phrase in ap or ap in phrase for ap in absorbed_phrases):
+                suppressed_num = True
+            else:
+                suppressed_num = False
             # A comma component must itself be a place, or an explicit city /
             # municipality phrase. Province mentions in "Abra River" stay weak.
             exact = phrase in bounded or phrase in chain_phrases or any(
@@ -311,10 +372,11 @@ class Matcher:
             city_suffix = phrase.endswith(' city') or after == 'city' or after.startswith('city ')
             # "in X" is useful only at the title end, not "in X River".
             locative_end = before.split()[-1:] in [['in'], ['at']] and hit['end'] == len(words)
-            suppressed = phrase in hierarchy_suppressed_towns and phrase in bounded
+            suppressed = (phrase in hierarchy_suppressed_towns and phrase in bounded) or suppressed_num
             if (exact or marker or city_suffix or locative_end) and not suppressed:
                 groups.append((set(hit['codes']), city_suffix or phrase.startswith('city of ')
                                or bool(re.search(r'(?:city of|municipality of)$', before))))
+                group_phrases.append(phrase)
             title_evidence = {'field': 'title', 'text': phrase,
                               'candidate_codes': hit['codes'],
                               'locality_syntax': bool((exact or marker or city_suffix or locative_end)
@@ -329,28 +391,67 @@ class Matcher:
         context_codes = {c for pool, _ in groups for c in pool}
         context_towns = {c for c in context_codes if self.rows[c]['level'] in
                          {'city', 'municipality', 'sub_municipality'}}
+        # An explicit city phrase ("Iloilo City") outranks same-named town
+        # homonyms for barangay scoping: a district homonym ("Jaro" also in
+        # Leyte) must not steal the barangay assignment.
+        explicit_city_codes = {c for pool, explicit in groups if explicit
+                               for c in pool if self.rows[c]['level'] == 'city'}
+        marker_scope_towns = explicit_city_codes or context_towns
         context_provinces = {c for c in context_codes if self.rows[c]['level'] == 'province'}
         direct_barangays = set(hierarchy_barangays)
+        barangay_by_part = {}  # {part_index: [(name, code, flag), ...]}
+        marker_seen = False
         flags = []
-        for part in re.split(r'[,;]', title):
+        for part_idx, part in enumerate(split_parts):
+            joined_name = numbered_absorbed.get(part_idx)
+            if joined_name:
+                # Resolve the joined numbered name directly under context.
+                candidates = set(self.all_barangays[joined_name])
+                compatible = set(candidates)
+                if context_towns:
+                    town_hits = {c for c in compatible
+                                 if self.rows[c]['parent_code'] in marker_scope_towns}
+                    compatible = town_hits
+                elif context_provinces:
+                    prov_hits = {c for c in compatible
+                                 if self.ancestry(c).get('province') in context_provinces}
+                    compatible = prov_hits
+                elif region_hint:
+                    reg_hits = {c for c in compatible
+                                if self.ancestry(c).get('region') == region_hint}
+                    if reg_hits:
+                        compatible = reg_hits
+                marker_seen = True
+                if len(compatible) == 1:
+                    code = next(iter(compatible))
+                    direct_barangays.add(code)
+                    barangay_by_part[part_idx] = [(joined_name, code, None)]
+                elif not compatible:
+                    barangay_by_part[part_idx] = [(joined_name, None, 'barangay_mentioned_but_unmatched')]
+                else:
+                    barangay_by_part[part_idx] = [(joined_name, None, 'ambiguous_barangay_name')]
+                evidence.append({
+                    'field': 'title_barangay', 'text': joined_name,
+                    'candidate_codes': sorted(candidates),
+                    'locality_syntax': True,
+                    'resolution_rule': 'numbered_barangay_comma_join',
+                })
+                continue
             local_words = normalize(part).split()
+            part_markers = []
             for i, word in enumerate(local_words):
                 if word not in {'brgy', 'brgys', 'barangay', 'barangays'}:
                     continue
+                marker_seen = True
                 if word in {'brgys', 'barangays'}:
                     flags.append('barangay_list_requires_review')
                 mention_found = False
+                chosen = None
                 for direction in ('after', 'before'):
+                    if chosen is not None:
+                        break
                     limit = min(self.max_barangay_words,
                                 len(local_words) - i - 1 if direction == 'after' else i)
-                    # Longest-name-first with a narrow descriptor backoff. A
-                    # PDF style like "San Roque Pob." expands to a name the
-                    # stated town may not use ("San Roque Poblacion" vs the
-                    # official "San Roque"). Only dropping a trailing
-                    # "poblacion" descriptor is safe: dropping numerals or
-                    # other words would change which barangay the title means
-                    # ("Poblacion 6" is not "Poblacion").
-                    chosen = None
                     for size in range(limit, 0, -1):
                         name = ' '.join(local_words[i + 1:i + 1 + size]
                                         if direction == 'after' else local_words[i - size:i])
@@ -361,7 +462,7 @@ class Matcher:
                         compatible = set(candidates)
                         if context_towns:
                             town_matches = {c for c in compatible
-                                            if self.rows[c]['parent_code'] in context_towns}
+                                            if self.rows[c]['parent_code'] in marker_scope_towns}
                             if town_matches:
                                 compatible = town_matches
                             else:
@@ -381,17 +482,13 @@ class Matcher:
                         if compatible or not name.endswith(' poblacion') or name == 'poblacion':
                             chosen = (name, candidates, compatible)
                             break
-                        # Descriptor backoff: retry without the trailing
-                        # "poblacion" token ("san roque poblacion" -> "san
-                        # roque"). Used only when that shorter name resolves
-                        # in context; otherwise the original mention stands.
                         shorter = name[:-len(' poblacion')]
                         if shorter in self.all_barangays:
                             short_candidates = set(self.all_barangays[shorter])
                             short_compatible = set(short_candidates)
                             if context_towns:
                                 short_compatible = {c for c in short_compatible
-                                                    if self.rows[c]['parent_code'] in context_towns}
+                                                    if self.rows[c]['parent_code'] in marker_scope_towns}
                             elif context_provinces:
                                 short_compatible = {c for c in short_compatible
                                                     if self.ancestry(c).get('province') in context_provinces}
@@ -403,44 +500,96 @@ class Matcher:
                                 break
                         chosen = (name, candidates, compatible)
                         break
-                    if mention_found and chosen is not None:
-                        name, candidates, compatible = chosen
-                        if len(compatible) == 1:
-                            code = next(iter(compatible))
-                            candidate_province = self.ancestry(code).get('province')
-                            if context_provinces and candidate_province not in context_provinces:
-                                # A barangay under a highly urbanized city has
-                                # no province ancestor. Mirroring the town-level
-                                # rule, a same-region province mention is soft
-                                # context (kept, flagged); a different-region
-                                # province remains a hard conflict.
-                                parent_town = self.rows[code]['parent_code']
-                                same_region = any(
-                                    self.ancestry(parent_town).get('region')
-                                    == self.ancestry(p).get('region')
-                                    for p in context_provinces)
-                                if candidate_province is None and same_region:
-                                    flags.append('independent_city_with_separate_province_context')
-                                    direct_barangays.add(code)
-                                else:
-                                    flags.append('title_or_heading_province_conflict')
-                            else:
-                                direct_barangays.add(code)
-                        elif not compatible:
-                            flags.append('barangay_mentioned_but_unmatched')
+                if mention_found and chosen is not None:
+                    name, candidates, compatible = chosen
+                    # Province context scopes barangay candidates even when
+                    # the town is ambiguous or absent: keep only candidates
+                    # inside a stated province before deciding uniqueness.
+                    if compatible and context_provinces:
+                        in_province = {c for c in compatible
+                                       if self.ancestry(c).get('province') in context_provinces}
+                        if in_province:
+                            compatible = in_province
+                        elif not any('province' in self.ancestry(c)
+                                     for c in compatible):
+                            pass  # independent-city barangays; region check applies below
                         else:
-                            flags.append('ambiguous_barangay_name')
-                        evidence.append({
-                            'field': 'title_barangay', 'text': name,
-                            'candidate_codes': sorted(candidates),
-                            'locality_syntax': True,
-                            'resolution_rule': 'explicit_barangay_marker',
-                        })
-                        break
-                    if mention_found:
-                        break
-                if not mention_found:
-                    flags.append('barangay_mentioned_but_unmatched')
+                            compatible = set()
+                    if len(compatible) > 1:
+                        # Same-named barangays within one city may carry
+                        # parenthetical district qualifiers ("San Isidro
+                        # (Jaro)" vs "San Isidro (La Paz)"). A district name
+                        # mentioned elsewhere in the title disambiguates.
+                        by_qualifier = {}
+                        for c in compatible:
+                            m = re.search(r'\(([^)]+)\)', self.rows[c]['name'])
+                            if m:
+                                by_qualifier.setdefault(normalize(m.group(1)), set()).add(c)
+                        if by_qualifier:
+                            rest = ' '.join(normalize(p) for j, p in enumerate(split_parts)
+                                            if j != part_idx)
+                            for qual, codes in by_qualifier.items():
+                                if f' {qual} ' in f' {rest} ':
+                                    compatible = codes & compatible
+                                    break
+                    if len(compatible) == 1:
+                        code = next(iter(compatible))
+                        candidate_province = self.ancestry(code).get('province')
+                        if context_provinces and candidate_province not in context_provinces:
+                            # A barangay under a highly urbanized city has
+                            # no province ancestor. Mirroring the town-level
+                            # rule, a same-region province mention is soft
+                            # context (kept, flagged); a different-region
+                            # province remains a hard conflict.
+                            parent_town = self.rows[code]['parent_code']
+                            same_region = any(
+                                self.ancestry(parent_town).get('region')
+                                == self.ancestry(p).get('region')
+                                for p in context_provinces)
+                            if candidate_province is None and same_region:
+                                flags.append('independent_city_with_separate_province_context')
+                                direct_barangays.add(code)
+                                part_markers.append((name, code, None))
+                            else:
+                                part_markers.append((name, None, 'title_or_heading_province_conflict'))
+                        else:
+                            direct_barangays.add(code)
+                            part_markers.append((name, code, None))
+                    elif not compatible:
+                        part_markers.append((name, None, 'barangay_mentioned_but_unmatched'))
+                    else:
+                        part_markers.append((name, None, 'ambiguous_barangay_name'))
+                    evidence.append({
+                        'field': 'title_barangay', 'text': name,
+                        'candidate_codes': sorted(candidates),
+                        'locality_syntax': True,
+                        'resolution_rule': 'explicit_barangay_marker',
+                    })
+                elif not mention_found:
+                    # The marker word exists but no adjacent words form a
+                    # catalog barangay name: an explicit unmatched mention.
+                    part_markers.append(('', None, 'barangay_mentioned_but_unmatched'))
+            if part_markers:
+                barangay_by_part[part_idx] = part_markers
+        # Only flag unmatched when a marker word exists but no barangay name
+        # followed it into the catalog; titles without any marker stay clean.
+        if marker_seen and not barangay_by_part:
+            flags.append('barangay_mentioned_but_unmatched')
+        # Resolve per-part marker outcomes: publish each marker's flag, unless
+        # a same-municipality group makes the mention internally coherent.
+        for part_idx, markers in barangay_by_part.items():
+            municipality_codes = {self.rows[c]['parent_code']
+                                  for _, c, _ in markers if c}
+            same_municipality = len(markers) >= 2 and len(municipality_codes) == 1
+            for name, code, flag in markers:
+                if flag and same_municipality:
+                    # Multiple barangays all under one municipality: waive the
+                    # per-marker conflict/ambiguity and record the grouping.
+                    if 'grouped_barangays_under_same_municipality' not in flags:
+                        flags.append('grouped_barangays_under_same_municipality')
+                    continue
+                if flag:
+                    flags.append(flag)
 
         # A resolved barangay supplies its actual PSGC parent chain. Add those
         # ancestors as constraints so unrelated same-named towns cannot win.
@@ -479,11 +628,26 @@ class Matcher:
             if compatible or independent:
                 if independent:
                     flags.append('independent_city_with_separate_province_context')
+                # A conflicting town mention may be a city district (Jaro, La
+                # Paz in Iloilo City; PSGC has no district level). Districts
+                # appear positionally: "Brgy X, <District>, <City>" — the
+                # conflicting part immediately precedes an accepted city and
+                # that city is the resolved barangay's parent. Soft-flag those
+                # instead of firing a hard conflict.
+                barangay_parent_towns = {self.rows[c]['parent_code'] for c in direct_barangays}
+                accepted_towns = compatible | independent
                 for pool in strong_groups:
                     mentioned_towns = pool & towns
-                    if mentioned_towns and not mentioned_towns & (compatible | independent):
-                        flags.append('title_or_heading_province_conflict')
-                towns = compatible | independent
+                    if mentioned_towns and not mentioned_towns & accepted_towns:
+                        district_context = (
+                            bool(accepted_towns & barangay_parent_towns)
+                            and len(accepted_towns) == 1
+                            and len(mentioned_towns) == 1)
+                        if district_context:
+                            flags.append('city_district_context')
+                        else:
+                            flags.append('title_or_heading_province_conflict')
+                towns = accepted_towns
             elif towns:
                 flags.append('title_or_heading_province_conflict')
         elif region_hint and len(towns) > 1:

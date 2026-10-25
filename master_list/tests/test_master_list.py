@@ -403,7 +403,7 @@ class RetainedArtifacts(unittest.TestCase):
                 self.assertTrue(row['source_dataset'])
                 score = row['location']['score']
                 self.assertIsInstance(score, int)
-                self.assertEqual(row['location']['score_method'], 'location_evidence_v5')
+                self.assertEqual(row['location']['score_method'], 'location_evidence_v6')
                 self.assertTrue(row['location']['score_factors'])
                 for location in row['location']['locations']:
                     code = location['psgc_code']

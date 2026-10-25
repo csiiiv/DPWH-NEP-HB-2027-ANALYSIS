@@ -1,13 +1,48 @@
 # Master list location evidence: work log and roadmap
 
-**Status:** additive evidence version 5.1 built, verified, and published  
+**Status:** additive evidence version 6 built, verified, and published  
 **Score field:** `location.score`  
-**Method identifier:** `location_evidence_v5`
+**Method identifier:** `location_evidence_v6`
 
 This document records what the master-list work has done, how the location
 parser now reasons about place mentions, and how the raw scores should be
 assessed before any normalization. A score may change only when source evidence
 or a documented rule changes.
+
+## Version 6 changes
+
+Version 6 addresses false penalties on multi-barangay titles, split-name
+municipalities, numbered barangays, and city districts:
+
+1. **Initial-dropping town aliases.** PSA names carrying personal initials
+   (`Pres. Manuel A. Roxas`) are also indexed without single-letter tokens
+   (`pres manuel roxas`), so titles writing `Pres. Manuel, Roxas` resolve.
+2. **Comma-spanning phrases.** A catalog name may span a comma inside a
+   bounded suffix when the phrase does not fit inside any single part; it
+   then qualifies as locality syntax for that phrase alone.
+3. **Province-first barangay scoping.** Barangay candidates are narrowed to a
+   stated province before uniqueness, preventing homonym barangays under
+   same-named towns in other provinces from poisoning the context.
+4. **Multi-marker capture.** Every `Brgy.`/`Barangay` marker in every part is
+   examined (previously only the first per part); grouped barangays under one
+   municipality waive per-marker conflict/ambiguity flags and record
+   `grouped_barangays_under_same_municipality`.
+5. **Numbered-barangay comma join.** A marker part ending in a bare number
+   (`Barangay 1`) joins the following part when the joined words form a
+   catalog alias (`1 san lorenzo` → `Bgy. No. 1, San Lorenzo`, Laoag City);
+   the absorbed part is suppressed from town scanning.
+6. **City-district context.** A conflicting town mention that is positionally
+   explained by a barangay's accepted parent city (`Jaro`, `La Paz` in Iloilo
+   City) records `city_district_context` instead of a hard province conflict.
+7. **Parenthetical qualifier disambiguation.** Same-named barangays inside one
+   city (`San Isidro (Jaro)` vs `San Isidro (La Paz)`) resolve when the title
+   mentions the parenthetical district elsewhere.
+8. **Explicit-city marker scope.** An explicit city phrase (`Iloilo City`)
+   outranks same-named town homonyms when scoping barangay markers.
+
+Dataset effect: `title_or_heading_province_conflict` 323 → 169, `ambiguous`
+status 349 → 195 records; 620 records now carry the grouped-barangay bonus.
+
 
 ## What we have done
 
@@ -122,10 +157,10 @@ parser does not count that phrase as an independent parent assertion.
 
 ## Current corpus distribution
 
-The v5.1 run spans scores from `-8` to `15`. The exact distribution is
+The v6 run spans scores from `-8` to `15`. The exact distribution is
 published in [REPORT.md](../data/REPORT.md) and `audit.json`. The most common
-totals are `11` (21,714 observations), `0` (16,946), `7` (5,482), `9` (4,876),
-`5` (4,753), and `8` (3,371). These clusters reflect the rules and source
+totals are `11` (22,816 observations), `0` (16,946), `7` (5,520), `9` (4,551),
+`5` (4,753), and `8` (3,374). These clusters reflect the rules and source
 formats; they are not validated accuracy classes.
 
 Compared with the original bounded-rule corpus, the expanded hierarchy parser
@@ -274,6 +309,41 @@ Two follow-ups to v5:
    through the assigned-municipality join and 1,503 through bridge
    coordinates (64.4% of all records). The district is a lookup of the
    final assignment, unscored and never new location evidence.
+
+## What changed in v6: multi-barangay titles, split names, city districts
+
+Version 6 removes four classes of false penalties, all generalized rules:
+
+1. **Initial-dropping aliases and comma-spanning phrases.** PSA towns with
+   personal initials (`Pres. Manuel A. Roxas`) are indexed without
+   single-letter tokens, and a catalog phrase spanning a comma inside a
+   bounded suffix (`Pres. Manuel, Roxas`) qualifies as locality syntax when
+   it fits no single comma part. Covers all five `Pres./President` towns.
+2. **Province-first barangay scoping + multi-marker capture.** Barangay
+   candidates are scoped to a stated province before uniqueness, and every
+   `Brgy.`/`Barangay` marker in every part is resolved (previously one per
+   part). When several markers in a part share one municipality, per-marker
+   conflict/ambiguity/unmatched flags are waived and the coherent group
+   scores (`grouped_barangays_under_same_municipality`, 620 records).
+   Example: the eight-barangay San Nicolas (Pangasinan) title resolves five
+   barangays at score 8 instead of `ambiguous` at -5.
+3. **Numbered-barangay comma join.** `Barangay 1, San Lorenzo` joins into
+   the official `Bgy. No. 1, San Lorenzo` alias (2,261 numbered barangays
+   nationwide); the absorbed part no longer masquerades as a town, so
+   `... San Lorenzo, Laoag City, Ilocos Norte` resolves to the exact
+   barangay instead of a hard conflict.
+4. **City districts and explicit-city scoping.** A conflicting town mention
+   explained positionally by the barangay's accepted parent city (`Jaro`,
+   `La Paz` in Iloilo City) records `city_district_context` (102 records)
+   instead of a hard conflict; explicit city phrases outrank same-named
+   town homonyms when scoping markers; parenthetical barangay qualifiers
+   (`San Isidro (Jaro)`) disambiguate via a district mentioned elsewhere
+   in the title.
+
+Measured v5.1 → v6: `title_or_heading_province_conflict` 323 → 169,
+`ambiguous_barangay_name` 991 → 368, `ambiguous` status 349 → 195 records,
+`multiple_locations` 3,490 → 3,557; `city_of_x`/`x city` forms (Butuan,
+Iloilo, all HUCs) resolve identically through existing aliases.
 
 ## What we are doing now
 

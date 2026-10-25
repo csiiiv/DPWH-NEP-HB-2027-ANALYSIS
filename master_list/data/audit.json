@@ -121,7 +121,7 @@
   },
   "location_policy": "Provisional exact name inference only. Printed office/region context is not a project site. No generated coordinates or fuzzy matching.",
   "location_score_rules": {
-    "method": "location_evidence_v5",
+    "method": "location_evidence_v6",
     "interpretation": "Uncapped additive evidence score; not normalized and not a probability.",
     "bases": {
       "allocation_not_site": 0,
@@ -177,7 +177,7 @@
       "scope": "Retained DPWH bridge inventory exact-ID match and spatial PSGC evidence (read-only)"
     },
     "PSGC2LEG/data/psgc_leg_assignments.jsonl": {
-      "sha256": "389fc6ff1ba32b11f1bee2fd820ab5567b223faf8ccd012b0ab2bd6f591deb3e",
+      "sha256": "88de5f92789e4c7f9366c3734ddfdf71a9ea1ac650e9499125537278f6a19ff7",
       "scope": "Verified PSGC2LEG municipality-to-legislative-district assignments (read-only)"
     },
     "analysis/data/nep_2027_source_projects.json": {
@@ -248,7 +248,7 @@
   },
   "builder_sha256": {
     "build_master_list.py": "9a42c722e4e2a4fc2b98f55b09dec38a29cc4d188f61ceaab6546d98fc384767",
-    "locations.py": "40c4e32b10b0356994f5575fb383020afa1c4680b50daed950ca2b4f8e94bc0c"
+    "locations.py": "b7ba7e7e7b8149ea93ff7923e57498a1a05079eb0947ceca73f476bb51d282e5"
   },
   "records": 64645,
   "datasets": {
@@ -262,40 +262,39 @@
       },
       "location_status": {
         "unresolved": 2265,
-        "name_matched": 7411,
-        "multiple_locations": 680,
-        "province_only": 312,
-        "ambiguous": 75,
+        "name_matched": 7430,
+        "multiple_locations": 692,
+        "province_only": 315,
+        "ambiguous": 41,
         "registry_matched": 409,
         "allocation_not_site": 268
       },
       "location_score_distribution": {
-        "-8": 1,
-        "-5": 8,
-        "-4": 7,
-        "-3": 9,
-        "-2": 15,
-        "-1": 54,
+        "-7": 3,
+        "-4": 3,
+        "-3": 16,
+        "-2": 12,
+        "-1": 53,
         "0": 2467,
-        "1": 86,
-        "2": 65,
-        "3": 539,
-        "4": 63,
-        "5": 844,
-        "6": 193,
-        "7": 1029,
-        "8": 707,
-        "9": 1017,
-        "10": 32,
-        "11": 3912,
-        "12": 62,
-        "13": 307,
+        "1": 64,
+        "2": 62,
+        "3": 535,
+        "4": 58,
+        "5": 846,
+        "6": 120,
+        "7": 1028,
+        "8": 702,
+        "9": 949,
+        "10": 28,
+        "11": 4094,
+        "12": 69,
+        "13": 308,
         "15": 3
       },
       "records_with_coordinate_pairs": 609,
-      "review_records": 4776,
+      "review_records": 4701,
       "legislative_districts": {
-        "assigned_municipality_join": 7400,
+        "assigned_municipality_join": 7407,
         "bridge_coordinate_join": 380
       }
     },
@@ -310,39 +309,38 @@
       "location_status": {
         "allocation_not_site": 2791,
         "unresolved": 2497,
-        "name_matched": 11719,
-        "multiple_locations": 912,
-        "province_only": 381,
-        "ambiguous": 94,
+        "name_matched": 11738,
+        "multiple_locations": 932,
+        "province_only": 383,
+        "ambiguous": 53,
         "registry_matched": 398
       },
       "location_score_distribution": {
         "-6": 1,
-        "-5": 7,
-        "-4": 5,
-        "-3": 10,
-        "-2": 12,
-        "-1": 43,
+        "-4": 2,
+        "-3": 15,
+        "-2": 9,
+        "-1": 40,
         "0": 5251,
-        "1": 112,
-        "2": 53,
-        "3": 715,
-        "4": 79,
-        "5": 1418,
-        "6": 272,
-        "7": 1621,
-        "8": 829,
-        "9": 1369,
-        "10": 37,
-        "11": 6382,
-        "12": 85,
-        "13": 487,
+        "1": 85,
+        "2": 49,
+        "3": 708,
+        "4": 73,
+        "5": 1339,
+        "6": 137,
+        "7": 1637,
+        "8": 830,
+        "9": 1281,
+        "10": 36,
+        "11": 6718,
+        "12": 89,
+        "13": 488,
         "15": 4
       },
       "records_with_coordinate_pairs": 2241,
-      "review_records": 6079,
+      "review_records": 5877,
       "legislative_districts": {
-        "assigned_municipality_join": 11727,
+        "assigned_municipality_join": 11739,
         "bridge_coordinate_join": 369
       }
     },
@@ -357,39 +355,38 @@
       "location_status": {
         "allocation_not_site": 2791,
         "unresolved": 2497,
-        "name_matched": 11724,
-        "multiple_locations": 912,
-        "province_only": 381,
-        "ambiguous": 94,
+        "name_matched": 11743,
+        "multiple_locations": 932,
+        "province_only": 383,
+        "ambiguous": 53,
         "registry_matched": 398
       },
       "location_score_distribution": {
         "-6": 1,
-        "-5": 7,
-        "-4": 5,
-        "-3": 10,
-        "-2": 12,
-        "-1": 43,
+        "-4": 2,
+        "-3": 15,
+        "-2": 9,
+        "-1": 40,
         "0": 5251,
-        "1": 112,
-        "2": 53,
-        "3": 720,
-        "4": 79,
-        "5": 1418,
-        "6": 272,
-        "7": 1621,
-        "8": 829,
-        "9": 1369,
-        "10": 37,
-        "11": 6382,
-        "12": 85,
-        "13": 487,
+        "1": 85,
+        "2": 49,
+        "3": 713,
+        "4": 73,
+        "5": 1339,
+        "6": 137,
+        "7": 1637,
+        "8": 830,
+        "9": 1281,
+        "10": 36,
+        "11": 6718,
+        "12": 89,
+        "13": 488,
         "15": 4
       },
       "records_with_coordinate_pairs": 2241,
-      "review_records": 6084,
+      "review_records": 5882,
       "legislative_districts": {
-        "assigned_municipality_join": 11727,
+        "assigned_municipality_join": 11739,
         "bridge_coordinate_join": 369
       }
     },
@@ -400,40 +397,39 @@
         "project": 11372
       },
       "location_status": {
-        "name_matched": 7488,
+        "name_matched": 7507,
         "unresolved": 2418,
-        "ambiguous": 76,
-        "province_only": 285,
-        "multiple_locations": 691,
+        "ambiguous": 42,
+        "province_only": 288,
+        "multiple_locations": 703,
         "registry_matched": 414
       },
       "location_score_distribution": {
-        "-8": 1,
-        "-5": 8,
-        "-4": 6,
-        "-3": 8,
-        "-2": 5,
-        "-1": 28,
+        "-7": 3,
+        "-4": 2,
+        "-3": 15,
+        "-2": 2,
+        "-1": 27,
         "0": 2387,
-        "1": 70,
-        "2": 56,
-        "3": 521,
-        "4": 65,
+        "1": 48,
+        "2": 53,
+        "3": 517,
+        "4": 61,
         "5": 871,
-        "6": 193,
-        "7": 1049,
-        "8": 715,
-        "9": 1026,
-        "10": 33,
-        "11": 3958,
-        "12": 62,
-        "13": 307,
+        "6": 120,
+        "7": 1050,
+        "8": 712,
+        "9": 958,
+        "10": 29,
+        "11": 4137,
+        "12": 69,
+        "13": 308,
         "15": 3
       },
       "records_with_coordinate_pairs": 617,
-      "review_records": 4874,
+      "review_records": 4799,
       "legislative_districts": {
-        "assigned_municipality_join": 7461,
+        "assigned_municipality_join": 7468,
         "bridge_coordinate_join": 385
       }
     },
@@ -445,29 +441,27 @@
       },
       "location_status": {
         "name_matched": 581,
-        "multiple_locations": 110,
-        "ambiguous": 4,
-        "province_only": 9
+        "multiple_locations": 111,
+        "province_only": 10,
+        "ambiguous": 2
       },
       "location_score_distribution": {
-        "-3": 1,
-        "-1": 1,
         "1": 4,
-        "3": 8,
-        "4": 4,
-        "5": 50,
-        "6": 18,
-        "7": 41,
-        "8": 98,
-        "9": 46,
+        "3": 9,
+        "4": 2,
+        "5": 36,
+        "6": 5,
+        "7": 44,
+        "8": 103,
+        "9": 40,
         "10": 1,
-        "11": 425,
+        "11": 453,
         "12": 1,
         "13": 5,
         "15": 1
       },
       "records_with_coordinate_pairs": 704,
-      "review_records": 229,
+      "review_records": 209,
       "legislative_districts": {
         "assigned_municipality_join": 677
       }
@@ -479,34 +473,34 @@
         "project": 964
       },
       "location_status": {
-        "name_matched": 771,
-        "multiple_locations": 176,
-        "ambiguous": 5,
-        "province_only": 11,
+        "name_matched": 770,
+        "multiple_locations": 178,
+        "province_only": 12,
+        "ambiguous": 3,
         "unresolved": 1
       },
       "location_score_distribution": {
         "-5": 1,
         "-3": 2,
-        "-1": 3,
+        "-1": 1,
         "1": 4,
-        "3": 11,
-        "4": 2,
-        "5": 60,
-        "6": 29,
-        "7": 52,
-        "8": 162,
-        "9": 49,
-        "10": 2,
-        "11": 575,
-        "12": 1,
+        "3": 12,
+        "4": 1,
+        "5": 46,
+        "6": 4,
+        "7": 55,
+        "8": 166,
+        "9": 42,
+        "10": 1,
+        "11": 616,
+        "12": 2,
         "13": 6,
         "15": 5
       },
       "records_with_coordinate_pairs": 964,
-      "review_records": 332,
+      "review_records": 305,
       "legislative_districts": {
-        "assigned_municipality_join": 933
+        "assigned_municipality_join": 932
       }
     },
     "hfep_nep": {
@@ -633,7 +627,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 0,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:unresolved",
@@ -668,7 +662,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 0,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:unresolved",
@@ -703,7 +697,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 0,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:unresolved",
@@ -747,7 +741,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 0,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:unresolved",
@@ -817,7 +811,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 5,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:name_matched_town",
@@ -889,7 +883,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 5,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:name_matched_town",
@@ -961,7 +955,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 5,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:name_matched_town",
@@ -1033,7 +1027,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 5,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:name_matched_town",
@@ -1126,7 +1120,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 4,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:multiple_locations",
@@ -1217,7 +1211,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 4,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:multiple_locations",
@@ -1308,7 +1302,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 4,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:multiple_locations",
@@ -1399,7 +1393,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 4,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:multiple_locations",
@@ -1484,7 +1478,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 3,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:province_only",
@@ -1623,7 +1617,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 3,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:province_only",
@@ -1713,7 +1707,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 3,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:province_only",
@@ -1794,7 +1788,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 3,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:province_only",
@@ -1945,7 +1939,7 @@
           ],
           "needs_review": true,
           "score": -3,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:ambiguous",
@@ -3509,12 +3503,12 @@
             }
           ],
           "review_flags": [
-            "ambiguous_barangay_name",
+            "barangay_mentioned_but_unmatched",
             "title_or_heading_province_conflict"
           ],
           "needs_review": true,
-          "score": -4,
-          "score_method": "location_evidence_v5",
+          "score": -3,
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:ambiguous",
@@ -3529,624 +3523,8 @@
               "impact": 1
             },
             {
-              "rule": "penalty:ambiguous_barangay_name",
-              "impact": -3
-            },
-            {
-              "rule": "penalty:title_or_heading_province_conflict",
-              "impact": -5
-            }
-          ]
-        }
-      },
-      {
-        "record_id": "dpwh_nep_pdf:p288:r10",
-        "title": "Alternate Road from Region X to Region XI (Jct. Diversion Road Catalunan Grande- Talandang-Sumimao-Panalum-Tapak-Cabanlasan-Aplaya, Malaybalay ), Brgy. Santo Nino Section, Sta. 1577 + 119.680 to Sta. 1577 + 200.000, Sta. 1577 + 420.000 to Sta. 1577 + 560.000, Sta. 1577 + 960.320 to Sta. 1578 + 120.000, Sta. 1579 + 455.000 to Sta. 1579 + 475.000, Talaingod, Davao del Norte",
-        "location": {
-          "status": "ambiguous",
-          "method": "exact_catalog_name_with_locality_syntax",
-          "verification_status": "provisional_name_match",
-          "locations": [
-            {
-              "psgc_code": "1102300000",
-              "name": "Davao del Norte",
-              "level": "province",
-              "ancestry": {
-                "province": {
-                  "code": "1102300000",
-                  "name": "Davao del Norte"
-                },
-                "region": {
-                  "code": "1100000000",
-                  "name": "Region XI (Davao Region)"
-                }
-              }
-            }
-          ],
-          "candidate_codes": [
-            "0102814010",
-            "0102922000",
-            "0105512023",
-            "0105540010",
-            "0201511040",
-            "0201526000",
-            "0203102054",
-            "0203127019",
-            "0203137047",
-            "0205704026",
-            "0300804038",
-            "0301403021",
-            "0301407027",
-            "0301409023",
-            "0301410049",
-            "0301415022",
-            "0301416015",
-            "0301417019",
-            "0304903100",
-            "0304908017",
-            "0305407033",
-            "0305408044",
-            "0305410021",
-            "0305411023",
-            "0305412029",
-            "0305416034",
-            "0305417016",
-            "0305418014",
-            "0306902015",
-            "0306905037",
-            "0306916080",
-            "0307102024",
-            "0307108018",
-            "0307110011",
-            "0401005100",
-            "0401010024",
-            "0401014068",
-            "0401016031",
-            "0401025014",
-            "0401026029",
-            "0401032019",
-            "0403403018",
-            "0403413015",
-            "0403424078",
-            "0403425017",
-            "0405627038",
-            "0405642017",
-            "0405801013",
-            "0405805019",
-            "0405811015",
-            "0405812016",
-            "0500516024",
-            "0501611015",
-            "0501706033",
-            "0501708046",
-            "0501716036",
-            "0501725025",
-            "0501728024",
-            "0501731019",
-            "0502011058",
-            "0504105034",
-            "0504114010",
-            "0506216063",
-            "0601903019",
-            "0601913021",
-            "0603017043",
-            "0603041024",
-            "0701206030",
-            "0701218014",
-            "0701224047",
-            "0701226022",
-            "0701238018",
-            "0701243033",
-            "0702211025",
-            "0702229013",
-            "0702251034",
-            "0702252043",
-            "0802606043",
-            "0802609063",
-            "0802618021",
-            "0802622015",
-            "0803701054",
-            "0803702044",
-            "0803707028",
-            "0803714019",
-            "0803719041",
-            "0803722021",
-            "0803723036",
-            "0803725025",
-            "0803726020",
-            "0803731028",
-            "0803734018",
-            "0803738087",
-            "0803750008",
-            "0804802010",
-            "0806007083",
-            "0806012029",
-            "0806018000",
-            "0806021039",
-            "0806022040",
-            "0806026015",
-            "0806402040",
-            "0806407056",
-            "0806408028",
-            "0806409038",
-            "0806414012",
-            "0807808016",
-            "0907201042",
-            "0907203031",
-            "0907206027",
-            "0907210026",
-            "0907213036",
-            "0907216020",
-            "0907218050",
-            "0907221016",
-            "0907223029",
-            "0907322055",
-            "0907330023",
-            "0907340015",
-            "0908301021",
-            "0908307023",
-            "0908316022",
-            "0931700077",
-            "1001312000",
-            "1001312061",
-            "1001314021",
-            "1001320016",
-            "1001801013",
-            "1003508024",
-            "1003522022",
-            "1004215041",
-            "1004315007",
-            "1102300000",
-            "1102303019",
-            "1102314018",
-            "1102315034",
-            "1102317038",
-            "1102322000",
-            "1102322003",
-            "1102324012",
-            "1102401020",
-            "1102406028",
-            "1108202039",
-            "1108209024",
-            "1108604019",
-            "1130700193",
-            "1204704035",
-            "1204707034",
-            "1204718026",
-            "1206306025",
-            "1206318000",
-            "1206501017",
-            "1380700010",
-            "1381000005",
-            "1381300109",
-            "1600205015",
-            "1600208010",
-            "1600301047",
-            "1600305016",
-            "1606720011",
-            "1606815013",
-            "1608501025",
-            "1608504014",
-            "1630400100",
-            "1705108010",
-            "1705109019",
-            "1705205057",
-            "1705208063",
-            "1705209036",
-            "1705211008",
-            "1705303011",
-            "1705307015",
-            "1705319010",
-            "1705917005",
-            "1804508019",
-            "1804617011",
-            "1804621023"
-          ],
-          "suggestions": [
-            {
-              "location": {
-                "psgc_code": "1102322003",
-                "name": "Santo Niño",
-                "level": "barangay",
-                "ancestry": {
-                  "barangay": {
-                    "code": "1102322003",
-                    "name": "Santo Niño"
-                  },
-                  "municipality": {
-                    "code": "1102322000",
-                    "name": "Talaingod"
-                  },
-                  "province": {
-                    "code": "1102300000",
-                    "name": "Davao del Norte"
-                  },
-                  "region": {
-                    "code": "1100000000",
-                    "name": "Region XI (Davao Region)"
-                  }
-                }
-              },
-              "support_score": 11,
-              "factors": [
-                {
-                  "rule": "explicit_barangay_mention",
-                  "impact": 4
-                },
-                {
-                  "rule": "named_parent_town",
-                  "impact": 3
-                },
-                {
-                  "rule": "named_parent_province",
-                  "impact": 2
-                },
-                {
-                  "rule": "source_region_agreement",
-                  "impact": 2
-                }
-              ],
-              "conflicts": []
-            },
-            {
-              "location": {
-                "psgc_code": "1001312061",
-                "name": "Sto. Niño",
-                "level": "barangay",
-                "ancestry": {
-                  "barangay": {
-                    "code": "1001312061",
-                    "name": "Sto. Niño"
-                  },
-                  "city": {
-                    "code": "1001312000",
-                    "name": "City of Malaybalay"
-                  },
-                  "province": {
-                    "code": "1001300000",
-                    "name": "Bukidnon"
-                  },
-                  "region": {
-                    "code": "1000000000",
-                    "name": "Region X (Northern Mindanao)"
-                  }
-                }
-              },
-              "support_score": 1,
-              "factors": [
-                {
-                  "rule": "explicit_barangay_mention",
-                  "impact": 4
-                },
-                {
-                  "rule": "named_parent_town",
-                  "impact": 3
-                },
-                {
-                  "rule": "named_province_conflict",
-                  "impact": -4
-                },
-                {
-                  "rule": "source_region_conflict",
-                  "impact": -2
-                }
-              ],
-              "conflicts": [
-                "named_province_conflict",
-                "source_region_conflict"
-              ]
-            }
-          ],
-          "suggestion_method": "hierarchy_candidate_v3",
-          "evidence": [
-            {
-              "field": "title",
-              "text": "malaybalay",
-              "candidate_codes": [
-                "1001312000"
-              ],
-              "locality_syntax": true
-            },
-            {
-              "field": "title",
-              "text": "santo nino",
-              "candidate_codes": [
-                "0201526000",
-                "0806018000",
-                "1206318000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "talaingod",
-              "candidate_codes": [
-                "1102322000"
-              ],
-              "locality_syntax": true
-            },
-            {
-              "field": "title",
-              "text": "davao del norte",
-              "candidate_codes": [
-                "1102300000"
-              ],
-              "locality_syntax": true
-            },
-            {
-              "field": "title_barangay",
-              "text": "santo nino",
-              "candidate_codes": [
-                "0102814010",
-                "0105512023",
-                "0105540010",
-                "0201511040",
-                "0203102054",
-                "0203127019",
-                "0203137047",
-                "0205704026",
-                "0300804038",
-                "0301403021",
-                "0301407027",
-                "0301409023",
-                "0301410049",
-                "0301415022",
-                "0301416015",
-                "0301417019",
-                "0304903100",
-                "0304908017",
-                "0305407033",
-                "0305408044",
-                "0305410021",
-                "0305411023",
-                "0305412029",
-                "0305416034",
-                "0305417016",
-                "0305418014",
-                "0306902015",
-                "0306905037",
-                "0306916080",
-                "0307102024",
-                "0307108018",
-                "0307110011",
-                "0401005100",
-                "0401010024",
-                "0401014068",
-                "0401016031",
-                "0401025014",
-                "0401026029",
-                "0401032019",
-                "0403403018",
-                "0403413015",
-                "0403424078",
-                "0403425017",
-                "0405627038",
-                "0405642017",
-                "0405801013",
-                "0405805019",
-                "0405811015",
-                "0405812016",
-                "0500516024",
-                "0501611015",
-                "0501706033",
-                "0501708046",
-                "0501716036",
-                "0501725025",
-                "0501728024",
-                "0501731019",
-                "0502011058",
-                "0504105034",
-                "0504114010",
-                "0506216063",
-                "0601903019",
-                "0601913021",
-                "0603017043",
-                "0603041024",
-                "0701206030",
-                "0701218014",
-                "0701224047",
-                "0701226022",
-                "0701238018",
-                "0701243033",
-                "0702211025",
-                "0702229013",
-                "0702251034",
-                "0702252043",
-                "0802606043",
-                "0802609063",
-                "0802618021",
-                "0802622015",
-                "0803701054",
-                "0803702044",
-                "0803707028",
-                "0803714019",
-                "0803719041",
-                "0803722021",
-                "0803723036",
-                "0803725025",
-                "0803726020",
-                "0803731028",
-                "0803734018",
-                "0803738087",
-                "0803750008",
-                "0804802010",
-                "0806007083",
-                "0806012029",
-                "0806021039",
-                "0806022040",
-                "0806026015",
-                "0806402040",
-                "0806407056",
-                "0806408028",
-                "0806409038",
-                "0806414012",
-                "0807808016",
-                "0907201042",
-                "0907203031",
-                "0907206027",
-                "0907210026",
-                "0907213036",
-                "0907216020",
-                "0907218050",
-                "0907221016",
-                "0907223029",
-                "0907322055",
-                "0907330023",
-                "0907340015",
-                "0908301021",
-                "0908307023",
-                "0908316022",
-                "0931700077",
-                "1001312061",
-                "1001314021",
-                "1001320016",
-                "1001801013",
-                "1003508024",
-                "1003522022",
-                "1004215041",
-                "1004315007",
-                "1102303019",
-                "1102314018",
-                "1102315034",
-                "1102317038",
-                "1102322003",
-                "1102324012",
-                "1102401020",
-                "1102406028",
-                "1108202039",
-                "1108209024",
-                "1108604019",
-                "1130700193",
-                "1204704035",
-                "1204707034",
-                "1204718026",
-                "1206306025",
-                "1206501017",
-                "1380700010",
-                "1381000005",
-                "1381300109",
-                "1600205015",
-                "1600208010",
-                "1600301047",
-                "1600305016",
-                "1606720011",
-                "1606815013",
-                "1608501025",
-                "1608504014",
-                "1630400100",
-                "1705108010",
-                "1705109019",
-                "1705205057",
-                "1705208063",
-                "1705209036",
-                "1705211008",
-                "1705303011",
-                "1705307015",
-                "1705319010",
-                "1705917005",
-                "1804508019",
-                "1804617011",
-                "1804621023"
-              ],
-              "locality_syntax": true,
-              "resolution_rule": "explicit_barangay_marker"
-            },
-            {
-              "field": "source_region",
-              "candidate_codes": [
-                "1100000000"
-              ],
-              "locality_syntax": true,
-              "resolution_rule": "source_region_agreement"
-            }
-          ],
-          "review_flags": [
-            "ambiguous_barangay_name",
-            "title_or_heading_province_conflict"
-          ],
-          "needs_review": true,
-          "score": -4,
-          "score_method": "location_evidence_v5",
-          "score_factors": [
-            {
-              "rule": "base:ambiguous",
-              "impact": 1
-            },
-            {
-              "rule": "evidence:explicit_barangay_marker",
-              "impact": 2
-            },
-            {
-              "rule": "evidence:source_region_agreement",
-              "impact": 1
-            },
-            {
-              "rule": "penalty:ambiguous_barangay_name",
-              "impact": -3
+              "rule": "penalty:barangay_mentioned_but_unmatched",
+              "impact": -2
             },
             {
               "rule": "penalty:title_or_heading_province_conflict",
@@ -4262,7 +3640,7 @@
           ],
           "needs_review": true,
           "score": -3,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:ambiguous",
@@ -4271,6 +3649,213 @@
             {
               "rule": "evidence:source_region_agreement",
               "impact": 1
+            },
+            {
+              "rule": "penalty:title_or_heading_province_conflict",
+              "impact": -5
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p299:r0",
+        "title": "Malaybalay-Gingoog Road (Gingoog City- Kalhaan, Claveria-Bulonay-Malaybalay City ), Barangay Kalabugao, Sta. 66 + 750 - Sta. 70 + 950, Impasug-ong, Bukidnon",
+        "location": {
+          "status": "ambiguous",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "1001300000",
+              "name": "Bukidnon",
+              "level": "province",
+              "ancestry": {
+                "province": {
+                  "code": "1001300000",
+                  "name": "Bukidnon"
+                },
+                "region": {
+                  "code": "1000000000",
+                  "name": "Region X (Northern Mindanao)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0102922000",
+            "0201511000",
+            "0504107000",
+            "1001300000",
+            "1001305000",
+            "1001305010",
+            "1001312000",
+            "1004306000",
+            "1004308000"
+          ],
+          "suggestions": [
+            {
+              "location": {
+                "psgc_code": "1001305010",
+                "name": "Kalabugao",
+                "level": "barangay",
+                "ancestry": {
+                  "barangay": {
+                    "code": "1001305010",
+                    "name": "Kalabugao"
+                  },
+                  "municipality": {
+                    "code": "1001305000",
+                    "name": "Impasug-ong"
+                  },
+                  "province": {
+                    "code": "1001300000",
+                    "name": "Bukidnon"
+                  },
+                  "region": {
+                    "code": "1000000000",
+                    "name": "Region X (Northern Mindanao)"
+                  }
+                }
+              },
+              "support_score": 11,
+              "factors": [
+                {
+                  "rule": "explicit_barangay_mention",
+                  "impact": 4
+                },
+                {
+                  "rule": "named_parent_town",
+                  "impact": 3
+                },
+                {
+                  "rule": "named_parent_province",
+                  "impact": 2
+                },
+                {
+                  "rule": "source_region_agreement",
+                  "impact": 2
+                }
+              ],
+              "conflicts": []
+            }
+          ],
+          "suggestion_method": "hierarchy_candidate_v3",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "malaybalay",
+              "candidate_codes": [
+                "1001312000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "gingoog",
+              "candidate_codes": [
+                "1004308000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "gingoog city",
+              "candidate_codes": [
+                "1004308000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "claveria",
+              "candidate_codes": [
+                "0201511000",
+                "0504107000",
+                "1004306000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "malaybalay city",
+              "candidate_codes": [
+                "1001312000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "impasug ong",
+              "candidate_codes": [
+                "1001305000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "bukidnon",
+              "candidate_codes": [
+                "1001300000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title_barangay",
+              "text": "kalabugao",
+              "candidate_codes": [
+                "1001305010"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "explicit_barangay_marker"
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "1000000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [
+            "barangay_mentioned_but_unmatched",
+            "title_or_heading_province_conflict"
+          ],
+          "needs_review": true,
+          "score": -3,
+          "score_method": "location_evidence_v6",
+          "score_factors": [
+            {
+              "rule": "base:ambiguous",
+              "impact": 1
+            },
+            {
+              "rule": "evidence:explicit_barangay_marker",
+              "impact": 2
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            },
+            {
+              "rule": "penalty:barangay_mentioned_but_unmatched",
+              "impact": -2
             },
             {
               "rule": "penalty:title_or_heading_province_conflict",
@@ -4363,7 +3948,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 8,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:registry_matched",
@@ -4453,7 +4038,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 8,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:registry_matched",
@@ -4556,7 +4141,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 8,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:registry_matched",
@@ -4675,7 +4260,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 8,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:registry_matched",
@@ -4711,7 +4296,7 @@
           ],
           "needs_review": false,
           "score": 0,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:allocation_not_site",
@@ -4737,7 +4322,7 @@
           ],
           "needs_review": false,
           "score": 0,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:allocation_not_site",
@@ -4763,7 +4348,7 @@
           ],
           "needs_review": false,
           "score": 0,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:allocation_not_site",
@@ -4789,7 +4374,7 @@
           ],
           "needs_review": false,
           "score": 0,
-          "score_method": "location_evidence_v5",
+          "score_method": "location_evidence_v6",
           "score_factors": [
             {
               "rule": "base:allocation_not_site",
@@ -4801,8 +4386,8 @@
     ]
   },
   "output_sha256": {
-    "projects.jsonl.gz": "e23f5fca99274d32e58ebaa8ea71180270a5760da9868735bb94a09e5658902e",
-    "projects.csv.gz": "eaad43c1a972915d483b0f80801af394bad71d47f26b5ecb87d42fe00bce5dee",
-    "location_review.csv.gz": "19dee2430d534e86d1a019be5528f4049b980a79c2efb4ced4372e2bbe28b376"
+    "projects.jsonl.gz": "39537c6d77f4baa13cd6f9b40e6a125bb1c842a25f33e689408752fa015c1a77",
+    "projects.csv.gz": "22d70b0bdb414df33776ddee5a23df3c62738f38b849d55e51544ee277708cf0",
+    "location_review.csv.gz": "2c4349d8689f1cdad56fcca34dccd73c02b922923809b3228ffab42da6043b92"
   }
 }
