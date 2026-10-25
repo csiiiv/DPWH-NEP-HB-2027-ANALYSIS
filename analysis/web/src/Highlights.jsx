@@ -4,6 +4,7 @@ import {amount} from './model.js';
 import {routeHref} from './routes.js';
 import {regionName} from './regionNames.js';
 import ShareLink from './ShareLink.jsx';
+import {highlightShareUrl} from './shareUrls.js';
 import {PdfSourceLink} from './PdfSourceModal.jsx';
 import LoadingModal from './LoadingModal.jsx';
 import './Highlights.css';
@@ -161,7 +162,7 @@ export default function Highlights({route}){
   <section aria-labelledby="story-heading"><h2 id="story-heading">Ten story angles</h2><p className="muted">Ranked by news value and strength of the retained evidence. Open a highlight for its figures, relevant records, and source references.</p>
    <ol className="highlights-stories">{stories(data).map(story=><li id={`highlight-${story.id}`} key={story.id} className={selected===story.id?'highlight-selected':''}>
     <article><p className="eyebrow">{story.label}</p><h3>{story.title}</h3><p>{story.evidence}</p><div className="highlight-prompt"><strong>Investigate</strong><p>{story.prompt}</p></div>
-     <div className="highlight-links"><button className="highlight-open" aria-haspopup="dialog" onClick={()=>{window.location.hash=routeHref('highlights',{story:story.id});}}>Explore this highlight →</button><a href={routeHref('highlights',{story:story.id})}>Link to this highlight</a>
+     <div className="highlight-links"><button className="highlight-open" aria-haspopup="dialog" onClick={()=>{window.location.hash=routeHref('highlights',{story:story.id});}}>Explore this highlight →</button><a href={routeHref('highlights',{story:story.id})}>Link to this highlight</a> <a href={highlightShareUrl(story.id)}>Share with preview</a>
       {story.example&&[['nep',story.example.nep_page,'NEP'],['house-third',story.example.house_page,'HGAB3']].map(([key,page,label])=>{
        const ref=sourceReference(key,page,story.example.title);return <PdfSourceLink key={key} source={ref}>{label} PDF p. {page}</PdfSourceLink>;
       })}

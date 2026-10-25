@@ -13,6 +13,7 @@ from urllib.parse import unquote, urlsplit
 from validate_current_pages import validate_current_pages
 from package_nia import package_nia
 from package_geo import package_geo
+from share_previews import generate_share_pages
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / '_site'
@@ -350,6 +351,7 @@ def main(with_react=True):
         if not pdf.is_file() or hashlib.sha256(pdf.read_bytes()).hexdigest() != expected:
             raise ValueError('React PDF preview requires the exact retained NEP Volume II-B source PDF')
         shutil.copytree(frontend, OUTPUT / 'app')
+        generate_share_pages(OUTPUT / 'app')
         for key, name in [('hb', 'hb_native_verification.html'), ('nep', 'nep_source_verification.html'),
                           ('dpwh_nep_api', 'dpwh_nep_api_verification.html')]:
             html = (VIEWERS / name).read_text()
