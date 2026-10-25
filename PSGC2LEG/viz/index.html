@@ -4,8 +4,7 @@
 <meta charset="utf-8">
 <title>PSGC2LEG — Philippine Legislative Districts (2025 / 20th Congress)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
-<link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet">
+<link href="vendor/maplibre-gl.css" rel="stylesheet">
 <style>
   html, body { height: 100%; margin: 0; font-family: system-ui, sans-serif; }
   #map { height: 100%; }
@@ -18,6 +17,12 @@
   #panel .sub { color: #555; margin-bottom: 8px; }
   #search { width: 100%; box-sizing: border-box; padding: 6px 8px; margin-bottom: 8px;
             border: 1px solid #bbb; border-radius: 6px; font-size: 13px; }
+  #basemapRow { display: flex; gap: 6px; margin-bottom: 8px; }
+  #basemapRow button {
+    flex: 1; padding: 4px 8px; font-size: 12px; border: 1px solid #bbb;
+    border-radius: 6px; background: #f5f5f5; cursor: pointer;
+  }
+  #basemapRow button.active { background: #1f78b4; color: white; border-color: #1f78b4; }
   .legend { line-height: 16px; font-size: 11px; }
   .legend i { display: inline-block; width: 12px; height: 12px; margin-right: 4px;
               border-radius: 2px; vertical-align: -2px; }
@@ -31,13 +36,42 @@
 <body>
 <div id="map"></div>
 <div id="panel">
+  <div id="fileWarn" style="display:none; margin-bottom:8px; padding:8px; border:1px solid #e6b700; background:#fff8e0; border-radius:6px; font-size:12px; line-height:1.45;">
+    <b>Opened directly from disk (file://).</b><br>
+    This page needs a local HTTP server — browsers block module imports and
+    GeoJSON fetches from <code>file://</code>. Run:
+    <pre style="margin:6px 0 0; background:#fff; padding:6px; border-radius:4px; overflow:auto;">cd PSGC2LEG/viz
+python3 -m http.server 8901</pre>
+    then open <code>http://localhost:8901</code>
+  </div>
   <h1>Legislative Districts — 2025 (20th Congress)</h1>
   <div class="sub">PSGC2LEG v0.1 · municipality-level assignment · 254 districts</div>
   <input id="search" type="text" placeholder="Search municipality, city, district, or representative…">
+  <div id="basemapRow">
+    <button id="btnLight" class="active">Light basemap</button>
+    <button id="btnDark">Dark basemap</button>
+  </div>
   <div class="legend" id="legend"></div>
   <div id="stats"></div>
 </div>
+
 <script>
+  // Detect file:// early — module script below will fail on CORS; show why.
+  if (location.protocol === 'file:') {
+    document.getElementById('fileWarn').style.display = 'block';
+  }
+</script>
+<script type="module">
+import { Map, NavigationControl, ScaleControl, Popup } from './vendor/maplibre-gl.mjs';
+
+// Key-free basemaps — the same URLs the project's geolocation tab
+// (analysis/web/src/GeoMap.jsx) uses: CARTO's free GL styles on their
+// public basemaps CDN. No API key or token required.
+const STYLES = {
+  light: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
+  dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+};
+
 const REGION_COLORS = {
   "National Capital Region": "#e41a1c",
   "Cordillera Administrative Region": "#ff7f00",
@@ -66,13 +100,15 @@ const colorExpr = [
   FALLBACK
 ];
 
-const map = new maplibregl.Map({
+const map = new Map({
   container: 'map',
-  style: 'https://tiles.openfreemap.org/styles/positron',
+  style: STYLES.light,
   center: [122.0, 12.5],
   zoom: 5.2,
   hash: true,
+  attributionControl: { compact: true },
 });
+window.map = map;   // debug/console affordance (also used by smoke tests)
 // Fallback if the remote style can't load (offline use): blank style,
 // districts still render as the base layer.
 map.on('styleerror', () => {
@@ -80,8 +116,8 @@ map.on('styleerror', () => {
     map.setStyle({ version: 8, sources: {}, layers: [] });
   }
 });
-map.addControl(new maplibregl.NavigationControl({ visualizeRoll: true }));
-map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }));
+map.addControl(new NavigationControl({ visualizeRoll: true }));
+map.addControl(new ScaleControl({ unit: 'metric' }));
 
 function makeStripePattern() {
   const c = document.createElement('canvas');
@@ -119,21 +155,27 @@ function bboxOf(geom) {
 }
 
 let features = [];
+let districtData = null;
+let layersReady = false;
+let basemap = 'light';
+let hovered = null;
+let selectedIds = new Set();
 
-map.on('load', async () => {
+// (Re)add the district source + layers. Called on initial load and again
+// after every basemap style swap (setStyle with diff:false drops them).
+function addDistrictLayers() {
   map.addImage('stripes', makeStripePattern(), { sdf: false });
 
-  const data = await fetch('leg_districts.geojson').then(r => r.json());
-  features = data.features;
-
-  map.addSource('districts', { type: 'geojson', data, generateId: true });
+  map.addSource('districts', { type: 'geojson', data: districtData, generateId: true });
 
   // regular districts (region-colored)
   map.addLayer({
     id: 'districts-fill',
     type: 'fill',
     source: 'districts',
-    filter: ['!', ['get', 'split']],
+    // coalesce: non-split features lack the `split` key entirely; a bare
+    // ['!', ['get','split']] yields null (feature dropped) in MapLibre v6.
+    filter: ['!', ['coalesce', ['get', 'split'], false]],
     paint: {
       'fill-color': colorExpr,
       'fill-opacity': [
@@ -188,9 +230,13 @@ map.on('load', async () => {
   // dashed needs setPaintProperty after add (dasharray not transitionable)
   map.setPaintProperty('split-line-dash', 'line-dasharray', [2, 1.5]);
 
-  // interactions
-  let hovered = null;
-  const popup = new maplibregl.Popup({ closeButton: false, maxWidth: '320px' });
+  hovered = null;  // feature-state was reset with the source
+}
+
+// Interactions are delegated by layer id and registered exactly once —
+// they keep working across basemap style swaps when the layers are re-added.
+function wireInteractions() {
+  const popup = new Popup({ closeButton: false, maxWidth: '320px' });
 
   map.on('mousemove', 'districts-fill', e => {
     if (hovered !== null) map.setFeatureState({ source: 'districts', id: hovered }, { hover: false });
@@ -213,6 +259,51 @@ map.on('load', async () => {
   });
   map.on('mouseleave', 'split-fill', () => { popup.remove(); map.getCanvas().style.cursor = ''; });
 
+  // search: highlight + zoom to matches
+  document.getElementById('search').addEventListener('input', function () {
+    const q = this.value.trim().toLowerCase();
+    // always clear previous selection first (also when the query is emptied)
+    for (const id of selectedIds) map.setFeatureState({ source: 'districts', id }, { selected: false });
+    selectedIds = new Set();
+    // features[] is empty until first load, so searching early is a no-op;
+    // no isStyleLoaded() gate — that stays false while basemap resources
+    // (tile JSON / sprite) are still pending and would swallow keystrokes.
+    if (!q) return;
+    const matches = [];
+    for (const f of features) {
+      const p = f.properties;
+      const hay = [p.jurisdiction, p.district_label, p.representative, p.leg_id]
+        .filter(Boolean).join(' ').toLowerCase();
+      if (hay.includes(q)) matches.push(f);
+    }
+    if (matches.length) {
+      let minX = 180, minY = 90, maxX = -180, maxY = -90;
+      for (const f of matches) {
+        const [[a, b], [c, d]] = bboxOf(f.geometry);
+        minX = Math.min(minX, a); minY = Math.min(minY, b);
+        maxX = Math.max(maxX, c); maxY = Math.max(maxY, d);
+      }
+      map.fitBounds([[minX, minY], [maxX, maxY]], { padding: 60, maxZoom: 11, duration: 600 });
+      // re-select after generateId: find rendered ids for matched features
+      // (generateId assigns stable per-source ids in data order)
+      const idx = new Set(matches.map(m => features.indexOf(m)));
+      features.forEach((f, i) => {
+        if (idx.has(i)) {
+          map.setFeatureState({ source: 'districts', id: i }, { selected: true });
+          selectedIds.add(i);
+        }
+      });
+    }
+  });
+}
+
+map.on('load', async () => {
+  districtData = await fetch('leg_districts.geojson').then(r => r.json());
+  features = districtData.features;
+  addDistrictLayers();
+  wireInteractions();   // once; survives style swaps
+  layersReady = true;
+
   // legend + stats
   const lg = document.getElementById('legend');
   for (const [name, color] of Object.entries(REGION_COLORS)) {
@@ -227,38 +318,22 @@ map.on('load', async () => {
     `<a href="../docs/release_v0.1.md">v0.1 release notes</a>`;
 });
 
-// search: highlight + zoom to matches
-let selectedIds = new Set();
-document.getElementById('search').addEventListener('input', function () {
-  const q = this.value.trim().toLowerCase();
-  if (!q || !map.isStyleLoaded()) return;
-  const matches = [];
-  for (const f of features) {
-    const p = f.properties;
-    const hay = [p.jurisdiction, p.district_label, p.representative, p.leg_id]
-      .filter(Boolean).join(' ').toLowerCase();
-    if (hay.includes(q)) matches.push(f);
-  }
-  for (const id of selectedIds) map.setFeatureState({ source: 'districts', id }, { selected: false });
-  selectedIds = new Set();
-  if (matches.length) {
-    let minX = 180, minY = 90, maxX = -180, maxY = -90;
-    for (const f of matches) {
-      const [[a, b], [c, d]] = bboxOf(f.geometry);
-      minX = Math.min(minX, a); minY = Math.min(minY, b);
-      maxX = Math.max(maxX, c); maxY = Math.max(maxY, d);
-    }
-    map.fitBounds([[minX, minY], [maxX, maxY]], { padding: 60, maxZoom: 11, duration: 600 });
-    // re-select after generateId: find rendered ids for matched features
-    // (generateId assigns stable per-source ids in data order)
-    const idx = new Set(matches.map(m => features.indexOf(m)));
-    features.forEach((f, i) => {
-      if (idx.has(i)) {
-        map.setFeatureState({ source: 'districts', id: i }, { selected: true });
-        selectedIds.add(i);
-      }
-    });
-  }
+// basemap switch: reload style, then re-add all district layers on top
+// (same setStyle(..., {diff:false}) + re-sync pattern as GeoMap.jsx)
+function setBasemap(next) {
+  if (next === basemap || !layersReady) return;
+  basemap = next;
+  document.getElementById('btnLight').classList.toggle('active', next === 'light');
+  document.getElementById('btnDark').classList.toggle('active', next === 'dark');
+  selectedIds = new Set();   // feature-state dies with the replaced source
+  map.setStyle(STYLES[next], { diff: false });
+}
+document.getElementById('btnLight').onclick = () => setBasemap('light');
+document.getElementById('btnDark').onclick = () => setBasemap('dark');
+
+map.on('style.load', () => {
+  if (!layersReady) return;   // initial style load — 'load' handler owns it
+  addDistrictLayers();        // re-add source + layers after style swap
 });
 </script>
 </body>

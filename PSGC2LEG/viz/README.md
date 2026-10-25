@@ -6,17 +6,27 @@ Interactive **MapLibre GL JS** map of the 254 Philippine legislative districts
 ## Files
 
 - `index.html` — self-contained MapLibre app:
-  - WebGL vector rendering (smooth pan/zoom), OpenFreeMap positron basemap
-    (free, no API key), with automatic fallback to a blank style offline
+  - **MapLibre GL JS 6.14.0 vendored locally** (`vendor/maplibre-gl.mjs` +
+    `maplibre-gl-worker.mjs`, exact copy of the web app's pinned
+    dependency; the worker resolves relative to `import.meta.url`, so no
+    bundler or CDN needed)
+  - CARTO basemaps (Voyager light / Dark Matter) — free, **no API key**,
+    same styles as the project's geolocation tab
+    (`analysis/web/src/GeoMap.jsx`), with light/dark toggle and automatic
+    fallback to a blank style offline
   - district polygons colored by region
   - hover popups (jurisdiction · district · representative · leg_id)
   - live search (municipality/city/district/representative) with
     zoom-to-match and blue highlight
-  - 27 split cities rendered with diagonal stripe pattern + dashed outline
+  - 13 split-city polygons rendered with diagonal stripe pattern + dashed
+    outline
+- `vendor/` — MapLibre GL JS 6.14.0 (ESM build) copied verbatim from the
+  repo's pinned `analysis/web/node_modules/maplibre-gl/dist/`; serves with
+  zero CDN dependency for the mapping library itself
 - `leg_districts.geojson` — 232 simplified features (2.8 MB):
   205 dissolved whole-unit districts + 27 split-city polygons
-- `preview.png` — Leaflet-rendered snapshot (v0.1; MapLibre canvas needs a
-  real GPU/Compositor, headless screenshots can't capture WebGL)
+- `preview.png` — actual MapLibre render (headless Chrome + SwiftShader
+  software WebGL; CARTO Voyager basemap, region-colored fills)
 
 ## Run
 
