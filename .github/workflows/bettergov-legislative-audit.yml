@@ -1,0 +1,29 @@
+name: Audit BetterGov legislative geography source
+
+on:
+  pull_request:
+    paths:
+      - 'research/legislative_geography/bettergov/**'
+      - '.github/workflows/bettergov-legislative-audit.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'research/legislative_geography/bettergov/**'
+      - '.github/workflows/bettergov-legislative-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fetch verified upstream snapshots and reproduce source audit
+        run: node research/legislative_geography/bettergov/audit.mjs --check
+      - name: Validate source claims and conflict classification
+        run: node --test research/legislative_geography/bettergov/tests/audit.test.mjs
