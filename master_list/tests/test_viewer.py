@@ -43,7 +43,7 @@ class Viewer(unittest.TestCase):
                 totals[row['dataset']] += int(row['value_php'])
                 score = int(row['location_score'])
                 self.assertEqual(row['location_score'], str(score))
-                self.assertEqual(row['score_method'], 'location_evidence_v3')
+                self.assertEqual(row['score_method'], 'location_evidence_v4')
                 for code in row['psgc_codes'].split('|'):
                     if code:
                         self.assertEqual(len(code), 10)

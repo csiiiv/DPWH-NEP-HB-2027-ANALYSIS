@@ -9,7 +9,7 @@ import re
 import unicodedata
 
 
-SCORE_METHOD = 'location_evidence_v3'
+SCORE_METHOD = 'location_evidence_v4'
 SUGGESTION_METHOD = 'hierarchy_candidate_v3'
 SCORE_BASES = {
     'allocation_not_site': 0,
@@ -400,7 +400,21 @@ class Matcher:
                             code = next(iter(compatible))
                             candidate_province = self.ancestry(code).get('province')
                             if context_provinces and candidate_province not in context_provinces:
-                                flags.append('title_or_heading_province_conflict')
+                                # A barangay under a highly urbanized city has
+                                # no province ancestor. Mirroring the town-level
+                                # rule, a same-region province mention is soft
+                                # context (kept, flagged); a different-region
+                                # province remains a hard conflict.
+                                parent_town = self.rows[code]['parent_code']
+                                same_region = any(
+                                    self.ancestry(parent_town).get('region')
+                                    == self.ancestry(p).get('region')
+                                    for p in context_provinces)
+                                if candidate_province is None and same_region:
+                                    flags.append('independent_city_with_separate_province_context')
+                                    direct_barangays.add(code)
+                                else:
+                                    flags.append('title_or_heading_province_conflict')
                             else:
                                 direct_barangays.add(code)
                         elif not compatible:

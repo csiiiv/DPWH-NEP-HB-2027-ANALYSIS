@@ -78,6 +78,28 @@ class TitleLocations(unittest.TestCase):
         self.assertNotIn('province', city['ancestry'])
         self.assertTrue(result['needs_review'])
 
+    def test_huc_barangay_survives_adjacent_province_mention(self):
+        # Cagayan de Oro City is an HUC: Macabalan has no province ancestor.
+        # A same-region province (Misamis Oriental, also Region X) is soft
+        # context mirroring the town-level Bacolod rule, not a hard conflict;
+        # the uniquely resolved barangay must be kept alongside the province.
+        result = self.matcher.match(
+            'Construction of Multi-Purpose Building, Barangay Macabalan, '
+            'Cagayan de Oro City, Misamis Oriental', (), '1000000000')
+        self.assertEqual(result['status'], 'multiple_locations')
+        self.assertEqual({(l['name'], l['level']) for l in result['locations']},
+                         {('Macabalan', 'barangay'), ('Misamis Oriental', 'province')})
+        self.assertIn('independent_city_with_separate_province_context', result['review_flags'])
+        self.assertNotIn('title_or_heading_province_conflict', result['review_flags'])
+
+    def test_huc_barangay_conflict_is_hard_across_regions(self):
+        # Quezon City (NCR) with a non-NCR province stays a hard conflict.
+        result = self.matcher.match(
+            'Construction of Road, Barangay Bagumbayan, Quezon City, Palawan')
+        self.assertEqual(result['status'], 'ambiguous')
+        self.assertIn('title_or_heading_province_conflict', result['review_flags'])
+        self.assertFalse(any(l['level'] == 'barangay' for l in result['locations']))
+
     def test_wrong_province_does_not_force_a_town_match(self):
         result = self.matcher.match('Construction of Road, San Pascual, Ilocos Norte')
         self.assertEqual(result['status'], 'ambiguous')
@@ -299,7 +321,7 @@ class RetainedArtifacts(unittest.TestCase):
                 self.assertTrue(row['source_dataset'])
                 score = row['location']['score']
                 self.assertIsInstance(score, int)
-                self.assertEqual(row['location']['score_method'], 'location_evidence_v3')
+                self.assertEqual(row['location']['score_method'], 'location_evidence_v4')
                 self.assertTrue(row['location']['score_factors'])
                 for location in row['location']['locations']:
                     code = location['psgc_code']

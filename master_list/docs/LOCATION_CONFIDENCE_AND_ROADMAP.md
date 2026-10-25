@@ -1,8 +1,8 @@
 # Master list location evidence: work log and roadmap
 
-**Status:** additive evidence version 3 built, verified, and published  
+**Status:** additive evidence version 4 built, verified, and published  
 **Score field:** `location.score`  
-**Method identifier:** `location_evidence_v3`
+**Method identifier:** `location_evidence_v4`
 
 This document records what the master-list work has done, how the location
 parser now reasons about place mentions, and how the raw scores should be
@@ -122,10 +122,10 @@ parser does not count that phrase as an independent parent assertion.
 
 ## Current corpus distribution
 
-The v3 run spans scores from `-8` to `15`. The exact distribution is
+The v4 run spans scores from `-8` to `15`. The exact distribution is
 published in [REPORT.md](../data/REPORT.md) and `audit.json`. The most common
-totals are `11` (21,666 observations), `0` (18,649), `7` (5,466), `9` (4,874),
-`5` (4,029), and `3` (3,170). These clusters reflect the rules and source
+totals are `11` (21,666 observations), `0` (18,649), `7` (5,468), `9` (4,874),
+`5` (4,821), and `3` (3,180). These clusters reflect the rules and source
 formats; they are not validated accuracy classes.
 
 Compared with the original bounded-rule corpus, the expanded hierarchy parser
@@ -188,6 +188,33 @@ and never become a project site. Measured effect: 4 top-suggestion
 re-rankings (all corrections of a same-region tie, e.g. `Magsaysay,
 Misamis Oriental` vs `Lanao del Norte`, both Region X with a Poblacion
 barangay); 8 more records gained a decisive top-2 gap.
+
+## What changed in v4
+
+A barangay uniquely resolved under a highly urbanized city was being
+dropped whenever the title also named an adjacent province. HUC barangays
+have no province ancestor, and the marker resolver treated "no province" as
+"conflicting province" — a hard conflict that discarded a valid barangay.
+Example: `Barangay Macabalan, Cagayan de Oro City, Misamis Oriental`
+(5 project groups) resolved the barangay correctly but then flagged and
+dropped it, leaving only the province.
+
+The fix mirrors the existing town-level HUC rule (as in `Bacolod City,
+Negros Occidental`): a stated province that shares the HUC's region is soft
+context — the barangay is kept alongside the province with the
+`independent_city_with_separate_province_context` flag (-1) — while a
+different-region province remains a hard `title_or_heading_province_conflict`
+(-5) that drops the barangay. Both records' titles that name the city
+without a province are unaffected (they already resolved cleanly).
+
+Measured v3 → v4 effect: 881 records upgraded from `ambiguous` to
+`multiple_locations`, every score change an upgrade (-2 → 5 cluster),
+zero `name_matched` regressions. The recovered barangays sit under 13 HUCs
+— Cagayan de Oro (166), Butuan (166), Puerto Princesa (142), Angeles (90),
+Lapu-Lapu (89), Mandaue (60), Cebu City (47), Bacolod (44), Lucena (40),
+Iloilo (30), Olongapo (10), General Santos (4), Iligan (1) — reflecting the
+common DPWH title style `Mandaue City, Cebu`, where the province names the
+HUC's surrounding region rather than an administrative parent.
 
 ## What we are doing now
 

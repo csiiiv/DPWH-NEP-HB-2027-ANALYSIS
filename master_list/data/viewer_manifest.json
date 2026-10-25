@@ -17,23 +17,23 @@
     "pdf": 53273,
     "api_without_pdf": 11372
   },
-  "score_method": "location_evidence_v3",
+  "score_method": "location_evidence_v4",
   "location_score_distribution": {
     "-8": 2,
-    "-6": 5,
+    "-6": 2,
     "-5": 31,
-    "-4": 33,
-    "-3": 56,
-    "-2": 842,
-    "-1": 264,
+    "-4": 23,
+    "-3": 40,
+    "-2": 50,
+    "-1": 204,
     "0": 18649,
-    "1": 409,
+    "1": 412,
     "2": 143,
-    "3": 3170,
-    "4": 322,
-    "5": 4029,
-    "6": 919,
-    "7": 5466,
+    "3": 3180,
+    "4": 338,
+    "5": 4821,
+    "6": 977,
+    "7": 5468,
     "8": 1752,
     "9": 4874,
     "10": 104,
@@ -44,14 +44,14 @@
   },
   "reference_policy": "PDF pages are 1-based file pages. API records have no asserted PDF reference. HFEP OCR JSON points to the corresponding retained HFEP_2.pdf.",
   "input_sha256": {
-    "master_list/data/projects.jsonl.gz": "d6886702234515d051cc05978091cbe9673531f06ce1b7a388cf212321ba2ee6",
-    "master_list/data/audit.json": "45d84a15e23e541bc885524dab254d2160696c306ee1cb791ede6f2b30275aea",
+    "master_list/data/projects.jsonl.gz": "b7408b6e04899c56dc5d4f7092ac40c6374c00e325a3fe1274796c7caf2af73c",
+    "master_list/data/audit.json": "4e6e2002d1be29ff87f39ae6d5df2c10e169f5e42b4ce694ee00865e6b472ef5",
     "PSGC2LEG/data/psgc_locations.jsonl": "e554dec87c0c4b8ce4859dddc81f099aede1a48a267133c4124161c2a4445ba4",
     "master_list/viewer/template.html": "548f8928c74a5dc36250460bb1738172800db040752d5e06eda1a494fbecef89",
     "master_list/scripts/build_viewer.py": "70f1f9bb8ccbcba330326a04cddda756cc4c4c3a1859aa23ab1eed42939921b7"
   },
   "output_sha256": {
-    "index.html": "ce5c235cc8fdadae7190a5357532d6f6f19c19c44fa47b31e35989ebb74176b7",
-    "project_list.csv.gz": "fe4a7bf7d9001384057e60a1f1ab535337f8e2c9dcaf56605b9da5846113176e"
+    "index.html": "14d0ff223895db9decf59d1d710c274042729defaca03205393c37ddef71c570",
+    "project_list.csv.gz": "c367a9b434f084e7f078fdc11d4530155594a58f981f4aa3e0b0cd21975ed592"
   }
 }
