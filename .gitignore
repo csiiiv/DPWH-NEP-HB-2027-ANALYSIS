@@ -93,3 +93,6 @@ analysis/data/allocation_hierarchy_sources_2027.json
 # staleness in CI. Run the builder without arguments to re-render after a
 # roster or display-size change, then commit the result.
 analysis/data/congress_district_index_2027.json
+
+# Local-only plain exports exceeding Git's 100 MiB blob limit
+master_list/data/project_list.csv

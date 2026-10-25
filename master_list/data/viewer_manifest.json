@@ -1,0 +1,57 @@
+{
+  "schema_version": 3,
+  "records": 64645,
+  "datasets": {
+    "dpwh_nep_pdf": 11420,
+    "dpwh_house_second": 18792,
+    "dpwh_house_third": 18797,
+    "dpwh_nep_api": 11372,
+    "fmr_nep": 704,
+    "fmr_hgab": 964,
+    "hfep_nep": 464,
+    "hfep_hgab": 513,
+    "nia_nep": 791,
+    "nia_hgab": 828
+  },
+  "references": {
+    "pdf": 53273,
+    "api_without_pdf": 11372
+  },
+  "score_method": "location_evidence_v2",
+  "location_score_distribution": {
+    "-8": 2,
+    "-6": 7,
+    "-5": 31,
+    "-4": 35,
+    "-3": 56,
+    "-2": 842,
+    "-1": 264,
+    "0": 18653,
+    "1": 411,
+    "2": 143,
+    "3": 3178,
+    "4": 326,
+    "5": 4055,
+    "6": 915,
+    "7": 5436,
+    "8": 1752,
+    "9": 4975,
+    "10": 104,
+    "11": 21551,
+    "12": 296,
+    "13": 1593,
+    "15": 20
+  },
+  "reference_policy": "PDF pages are 1-based file pages. API records have no asserted PDF reference. HFEP OCR JSON points to the corresponding retained HFEP_2.pdf.",
+  "input_sha256": {
+    "master_list/data/projects.jsonl.gz": "175c3e538c31145dd9cccded55ac7f749b0f01ec3ea8462bc90006b1e6f4e996",
+    "master_list/data/audit.json": "21c632c60f85416a6b4ff66164b7e8afd2f5734d676009322635cd0eb16ddd28",
+    "PSGC2LEG/data/psgc_locations.jsonl": "e554dec87c0c4b8ce4859dddc81f099aede1a48a267133c4124161c2a4445ba4",
+    "master_list/viewer/template.html": "548f8928c74a5dc36250460bb1738172800db040752d5e06eda1a494fbecef89",
+    "master_list/scripts/build_viewer.py": "70f1f9bb8ccbcba330326a04cddda756cc4c4c3a1859aa23ab1eed42939921b7"
+  },
+  "output_sha256": {
+    "index.html": "17e1e4e7ba2ac77f573b6e63f0c4aaf5a4877bead87a3297d1af2f27fdc77eee",
+    "project_list.csv.gz": "7b990c21369229d9bcabfb7e221ecc1a804227edac33dfa3b19cb3bd9ad52a27"
+  }
+}

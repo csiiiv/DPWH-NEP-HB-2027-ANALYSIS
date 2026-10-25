@@ -1,0 +1,258 @@
+"""Regression checks for geography ambiguity, source arithmetic and provenance."""
+import csv
+import gzip
+import hashlib
+import json
+from pathlib import Path
+import sys
+import unittest
+from collections import Counter
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'master_list/scripts'))
+from locations import Matcher
+from build_master_list import title_coordinates
+
+
+class TitleLocations(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.matcher = Matcher([json.loads(s) for s in
+            (ROOT / 'PSGC2LEG/data/psgc_locations.jsonl').read_text().splitlines()])
+
+    def test_town_disambiguated_by_province(self):
+        result = self.matcher.match('Construction of Road, San Jose, Occidental Mindoro')
+        self.assertEqual(result['status'], 'name_matched')
+        self.assertEqual(result['score'], 6)
+        self.assertEqual(result['locations'][0]['ancestry']['province']['name'], 'Occidental Mindoro')
+
+    def test_homonyms_are_not_arbitrarily_chosen(self):
+        result = self.matcher.match('Construction of Road, San Jose')
+        self.assertEqual(result['status'], 'ambiguous')
+        self.assertEqual(result['score'], 1)
+        self.assertEqual(result['locations'], [])
+        self.assertGreater(len(result['candidate_codes']), 1)
+
+    def test_river_name_is_not_a_province_assertion(self):
+        result = self.matcher.match('Abra River Irrigation System: Construction of Service Road')
+        self.assertEqual(result['status'], 'unresolved')
+        self.assertEqual(result['score'], 0)
+        self.assertEqual(result['locations'], [])
+        self.assertIn('1400100000', result['candidate_codes'])
+
+    def test_province_name_does_not_assert_same_named_city(self):
+        result = self.matcher.match('Construction of Road, Cebu')
+        self.assertEqual(result['status'], 'province_only')
+        self.assertEqual(result['score'], 2)
+        self.assertEqual(result['locations'][0]['level'], 'province')
+
+    def test_city_suffix_is_specific(self):
+        result = self.matcher.match('Construction of Road, Batangas City')
+        self.assertEqual(result['status'], 'name_matched')
+        self.assertEqual(result['score'], 4)
+        self.assertEqual(result['locations'][0]['level'], 'city')
+
+    def test_city_word_order_alias_is_explicit_inside_title(self):
+        for title in ['Construction of drainage in Bacolod City along National Road',
+                      'Construction of drainage in City of Bacolod along National Road']:
+            result = self.matcher.match(title)
+            self.assertEqual(result['status'], 'name_matched')
+            self.assertEqual(result['locations'][0]['name'], 'City of Bacolod')
+
+    def test_barangay_marker_does_not_cross_a_comma(self):
+        town = self.matcher.index['bacarra'].copy().pop()
+        barangays = [self.matcher.rows[c]['name'] for c in self.matcher.children[town]
+                     if self.matcher.rows[c]['level'] == 'barangay' and self.matcher.rows[c]['name'] != 'Tubburan']
+        result = self.matcher.match(f'Construction of Sitio {barangays[0]}, Brgy. Tubburan, Bacarra, Ilocos Norte')
+        self.assertEqual([l['name'] for l in result['locations']], ['Tubburan'])
+
+    def test_province_homonym_can_be_a_town_in_another_province(self):
+        result = self.matcher.match('Construction of Road, Aurora, Zamboanga del Sur')
+        self.assertEqual(result['status'], 'name_matched')
+        self.assertEqual(result['locations'][0]['ancestry']['province']['name'], 'Zamboanga del Sur')
+
+    def test_independent_city_is_not_assigned_to_province(self):
+        result = self.matcher.match('Construction of Road, Bacolod City, Negros Occidental')
+        city = next(l for l in result['locations'] if l['level'] == 'city')
+        self.assertEqual(city['name'], 'City of Bacolod')
+        self.assertNotIn('province', city['ancestry'])
+        self.assertTrue(result['needs_review'])
+
+    def test_wrong_province_does_not_force_a_town_match(self):
+        result = self.matcher.match('Construction of Road, San Pascual, Ilocos Norte')
+        self.assertEqual(result['status'], 'ambiguous')
+        self.assertEqual(result['score'], -4)
+        self.assertFalse(any(l['level'] == 'municipality' for l in result['locations']))
+
+    def test_one_compatible_town_does_not_hide_another_conflicting_town(self):
+        result = self.matcher.match('Construction of Road, Bacarra, Alaminos City, Ilocos Norte')
+        self.assertEqual(result['status'], 'ambiguous')
+        self.assertIn('title_or_heading_province_conflict', result['review_flags'])
+
+    def test_one_matching_barangay_does_not_hide_an_unmatched_marker(self):
+        result = self.matcher.match('Construction of Road, Brgy. Tubburan, Brgy. Unknownxyz, Bacarra, Ilocos Norte')
+        self.assertIn('barangay_mentioned_but_unmatched', result['review_flags'])
+        self.assertTrue(result['needs_review'])
+
+    def test_multiple_towns_remain_multiple(self):
+        result = self.matcher.match('Construction of Road, Bacarra, Adams, Ilocos Norte')
+        self.assertEqual(result['status'], 'multiple_locations')
+        self.assertEqual({l['name'] for l in result['locations']}, {'Bacarra', 'Adams'})
+        self.assertEqual(result['score'], 5)
+
+    def test_structured_heading_may_itself_be_a_municipality(self):
+        result = self.matcher.match('Municipality of Sagada, Nacagang Barangay Health Station', ('Sagada',))
+        self.assertEqual(result['locations'][0]['name'], 'Nacagang')
+        self.assertEqual(result['locations'][0]['level'], 'barangay')
+        self.assertEqual(result['locations'][0]['ancestry']['municipality']['name'], 'Sagada')
+        self.assertEqual(result['score'], 10)
+
+    def test_barangay_requires_explicit_marker_and_parent(self):
+        result = self.matcher.match('Construction of Road, Brgy. Tubburan, Bacarra, Ilocos Norte')
+        self.assertEqual(result['locations'][0]['level'], 'barangay')
+        weak = self.matcher.match('Construction of Tubburan Road, Bacarra, Ilocos Norte')
+        self.assertEqual(weak['locations'][0]['level'], 'municipality')
+
+    def test_unique_explicit_barangay_can_supply_its_parent_chain(self):
+        result = self.matcher.match(
+            'Construction of FMR Leading to Ilocos Sur Provincial Trading Center, '
+            'Brgy. Danuman West,')
+        self.assertEqual(result['status'], 'name_matched')
+        self.assertEqual(result['score'], 8)
+        self.assertEqual(result['locations'][0]['name'], 'Danuman West')
+        self.assertEqual(result['locations'][0]['ancestry']['municipality']['name'], 'Santa Maria')
+
+    def test_compact_town_province_chain_scopes_explicit_barangay(self):
+        result = self.matcher.match(
+            'Construction of Purok 5 to Purok 6 Brgy. Wangke FMR, '
+            'Brgy. Wangke, Claver Surigao del Norte')
+        self.assertEqual(result['status'], 'name_matched')
+        self.assertEqual(result['score'], 11)
+        self.assertEqual(result['locations'][0]['name'], 'Wangke')
+        self.assertEqual(result['locations'][0]['ancestry']['municipality']['name'], 'Claver')
+
+    def test_unmarked_barangay_requires_full_parent_chain(self):
+        result = self.matcher.match(
+            'Construction of Sitio Guiringan FMR, Sta. Maria, Piddig, Ilocos Norte')
+        self.assertEqual(result['status'], 'name_matched')
+        self.assertEqual(result['score'], 12)
+        self.assertEqual(result['locations'][0]['name'], 'Santa Maria')
+        self.assertEqual(result['locations'][0]['ancestry']['municipality']['name'], 'Piddig')
+        weak = self.matcher.match('Construction of Road, Santa Maria')
+        self.assertNotEqual(weak['locations'][0].get('level') if weak['locations'] else None,
+                            'barangay')
+
+    def test_ocr_spaced_enye_is_a_candidate_but_conflict_is_not_forced(self):
+        result = self.matcher.match(
+            'Construction, Barangay Santo Ni ñ o, Magallanes, Lanao del Norte',
+            (), '1600000000')
+        self.assertIn('1600208010', result['candidate_codes'])
+        self.assertNotIn('1600208010', {l['psgc_code'] for l in result['locations']})
+        self.assertIn('title_or_heading_province_conflict', result['review_flags'])
+        self.assertEqual(result['suggestions'][0]['location']['psgc_code'], '1600208010')
+        self.assertEqual(result['suggestions'][0]['support_score'], 5)
+
+    def test_conflicting_poblacion_chain_has_ranked_review_suggestions(self):
+        result = self.matcher.match(
+            'Construction, Barangay Poblacion, Carmen, Lanao del Norte',
+            (), '1600000000')
+        suggestions = result['suggestions']
+        self.assertEqual(suggestions[0]['location']['psgc_code'], '1600204009')
+        self.assertEqual(suggestions[0]['location']['ancestry']['province']['name'],
+                         'Agusan del Norte')
+        self.assertEqual(suggestions[0]['support_score'], 5)
+        self.assertIn('named_province_conflict', suggestions[0]['conflicts'])
+        self.assertEqual(
+            {(s['location']['ancestry']['province']['name'], s['support_score'])
+             for s in suggestions[1:]},
+            {('Cebu', 1), ('Cotabato', 1)})
+
+    def test_numbered_town_alias_is_scoped_by_province(self):
+        result = self.matcher.match(
+            'Construction, Barangay Kingan - Barangay Kianibong, '
+            'Tagoloan, Lanao del Sur')
+        self.assertEqual({l['name'] for l in result['locations']}, {'Kingan', 'Kianibong'})
+        self.assertTrue(all(l['ancestry']['municipality']['name'] == 'Tagoloan II'
+                            for l in result['locations']))
+
+    def test_trailing_coordinates_do_not_break_locality_chain(self):
+        result = self.matcher.match(
+            'Construction, Rizal, Lopez Jaena, Misamis Occidental '
+            '(8.529804, 123.726436)')
+        self.assertEqual(result['locations'][0]['psgc_code'], '1004208024')
+        self.assertEqual(result['locations'][0]['ancestry']['municipality']['name'],
+                         'Lopez Jaena')
+
+    def test_no_locality_does_not_invent_coordinates(self):
+        result = self.matcher.match('Rehabilitation of National Road - K0026 + 000 - K0027 + 000')
+        self.assertEqual(result['status'], 'unresolved')
+        self.assertEqual(result['locations'], [])
+
+    def test_region_labels(self):
+        self.assertEqual(self.matcher.region_code('REGION I - ILOCOS'), '0100000000')
+        self.assertEqual(self.matcher.region_code('Region IX'), '0900000000')
+        self.assertEqual(self.matcher.region_code('NCR'), '1300000000')
+        self.assertIsNone(self.matcher.region_code('Nationwide'))
+
+    def test_embedded_coordinate_orientation_and_chainage(self):
+        result = title_coordinates('Construction of Road, Cebu City (10.3, 123.9)')
+        self.assertEqual(result['points'][0]['latitude'], 10.3)
+        self.assertEqual(result['points'][0]['longitude'], 123.9)
+        self.assertIsNone(title_coordinates('Road rehabilitation - K0026 + 000 - K0027 + 000'))
+
+
+class RetainedArtifacts(unittest.TestCase):
+    def test_ledger_arithmetic_ids_and_psgc_integrity(self):
+        data = ROOT / 'master_list/data'
+        audit = json.loads((data / 'audit.json').read_text())
+        catalog = {r['code']: r for r in (json.loads(s) for s in
+            (ROOT / 'PSGC2LEG/data/psgc_locations.jsonl').read_text().splitlines())}
+        ids, counts, sums = set(), Counter(), Counter()
+        with gzip.open(data / 'projects.jsonl.gz', 'rt') as stream:
+            for line in stream:
+                row = json.loads(line)
+                self.assertNotIn(row['record_id'], ids)
+                ids.add(row['record_id'])
+                counts[row['dataset']] += 1
+                sums[row['dataset']] += row['amount_php']
+                self.assertIsInstance(row['amount_php'], int)
+                self.assertTrue(row['source_record_id'])
+                self.assertTrue(row['source_dataset'])
+                score = row['location']['score']
+                self.assertIsInstance(score, int)
+                self.assertEqual(row['location']['score_method'], 'location_evidence_v2')
+                self.assertTrue(row['location']['score_factors'])
+                for location in row['location']['locations']:
+                    code = location['psgc_code']
+                    self.assertIsInstance(code, str)
+                    self.assertEqual(len(code), 10)
+                    self.assertEqual(location['name'], catalog[code]['name'])
+                    parent = code
+                    expected = {}
+                    while parent:
+                        expected[catalog[parent]['level']] = parent
+                        parent = catalog[parent]['parent_code']
+                    self.assertEqual({k: v['code'] for k, v in location['ancestry'].items()}, expected)
+                if row['location']['status'] == 'allocation_not_site':
+                    self.assertEqual(row['location']['locations'], [])
+                    self.assertEqual(score, 0)
+        self.assertEqual(len(ids), audit['records'])
+        self.assertEqual(len(counts), 10)
+        for name, entry in audit['datasets'].items():
+            self.assertEqual(counts[name], entry['records'])
+            self.assertEqual(sums[name], entry['amount_php'])
+            self.assertEqual(sums[name], audit['amount_checks'][name]['expected_ledger_php'])
+        with gzip.open(data / 'projects.csv.gz', 'rt', newline='') as stream:
+            self.assertEqual(sum(1 for _ in csv.DictReader(stream)), len(ids))
+
+    def test_recorded_inputs_and_outputs_are_current(self):
+        data = ROOT / 'master_list/data'
+        audit = json.loads((data / 'audit.json').read_text())
+        for name, meta in audit['input_files'].items():
+            self.assertEqual(hashlib.sha256((ROOT / name).read_bytes()).hexdigest(), meta['sha256'], name)
+        for name, digest in audit['output_sha256'].items():
+            self.assertEqual(hashlib.sha256((data / name).read_bytes()).hexdigest(), digest, name)
+
+
+if __name__ == '__main__':
+    unittest.main()

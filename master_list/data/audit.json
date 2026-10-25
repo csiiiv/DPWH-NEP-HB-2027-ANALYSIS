@@ -1,0 +1,4344 @@
+{
+  "schema_version": 3,
+  "scope": "Retained FY2027 project and allocation observations; source/stage ledgers overlap. Never sum across datasets.",
+  "identity_policy": "One row per source observation; no cross-source project identity asserted.",
+  "amount_checks": {
+    "dpwh_nep_pdf": {
+      "expected_ledger_php": 572924074000,
+      "actual_php": 572924074000,
+      "difference_php": 0
+    },
+    "dpwh_house_second": {
+      "expected_ledger_php": 639179718000,
+      "actual_php": 639179718000,
+      "difference_php": 0
+    },
+    "dpwh_house_third": {
+      "expected_ledger_php": 639179718000,
+      "actual_php": 639179718000,
+      "difference_php": 0
+    },
+    "dpwh_nep_api": {
+      "expected_ledger_php": 445378063000,
+      "actual_php": 445378063000,
+      "difference_php": 0
+    },
+    "nia_nep": {
+      "expected_ledger_php": 17598181000,
+      "actual_php": 17598181000,
+      "difference_php": 0
+    },
+    "fmr_nep": {
+      "expected_ledger_php": 16000000000,
+      "actual_php": 16000000000,
+      "difference_php": 0
+    },
+    "fmr_hgab": {
+      "expected_ledger_php": 19628100000,
+      "actual_php": 19628100000,
+      "difference_php": 0
+    },
+    "hfep_nep": {
+      "expected_ledger_php": 14472519000,
+      "actual_php": 14472519000,
+      "difference_php": 0
+    },
+    "hfep_hgab": {
+      "expected_ledger_php": 10021659000,
+      "actual_php": 10021659000,
+      "difference_php": 0
+    },
+    "nia_hgab": {
+      "expected_ledger_php": 17999305000,
+      "actual_php": 17999305000,
+      "difference_php": 0
+    }
+  },
+  "source_discrepancies": {
+    "hfep_nep": {
+      "infrastructure": 0,
+      "medical_equipment": -140000,
+      "motor_vehicle": 0,
+      "total": -140000
+    }
+  },
+  "psgc_foundation": {
+    "foundation_source": "bendlikeabamboo/barangay mirror 2026-10-12 (= PSA PSGC 3Q 2026)",
+    "foundation_provisional": true,
+    "replacement_plan": "swap to official PSA XLSX when network allows; structure identical",
+    "row_count": 43768,
+    "counts_by_level": {
+      "region": 18,
+      "province": 82,
+      "special_geographic_area": 1,
+      "city": 150,
+      "municipality": 1493,
+      "sub_municipality": 14,
+      "barangay": 42010
+    },
+    "city_class_counts": {
+      "HUC": 33,
+      "ICC": 6,
+      "CC": 111
+    },
+    "official_totals_check": {
+      "region": {
+        "got": 18,
+        "official": 18,
+        "match": true
+      },
+      "province": {
+        "got": 82,
+        "official": 82,
+        "match": true
+      },
+      "municipality": {
+        "got": 1493,
+        "official": 1493,
+        "match": true
+      },
+      "barangay": {
+        "got": 42010,
+        "official": 42010,
+        "match": true
+      }
+    },
+    "icc_note": "mirror ICC=6 vs PSA announcement 5: Isabela City counted as ICC in mirror; PSA lists it with '(Not a Province)' annotation. Kept as ICC; does not affect municipality-level LEG joins.",
+    "duplicate_codes": [],
+    "orphan_parent_codes": [],
+    "cycle_codes": [],
+    "cross_check_2023": {
+      "source": "PSA PSGC 4Q 2023 XLSX",
+      "compared": "municipality+city codes",
+      "old_municities": 1634,
+      "current_municities": 1643,
+      "expected_added": 8,
+      "added_since_2023": 91,
+      "removed_since_2023": 82
+    },
+    "problems": []
+  },
+  "location_policy": "Provisional exact name inference only. Printed office/region context is not a project site. No generated coordinates or fuzzy matching.",
+  "location_score_rules": {
+    "method": "location_evidence_v2",
+    "interpretation": "Uncapped additive evidence score; not normalized and not a probability.",
+    "bases": {
+      "allocation_not_site": 0,
+      "unresolved": 0,
+      "ambiguous": 1,
+      "province_only": 2,
+      "multiple_locations": 3,
+      "name_matched_town": 4,
+      "name_matched_barangay": 6
+    },
+    "bonuses": {
+      "explicit_barangay_marker": 2,
+      "comma_barangay_municipality_province_chain": 4,
+      "compact_locality_component": 1,
+      "title_and_source_heading": 2,
+      "explicit_parent_chain": 2,
+      "source_region_agreement": 1
+    },
+    "penalties": {
+      "title_or_heading_province_conflict": -5,
+      "source_region_differs_from_title_location": -3,
+      "ambiguous_barangay_name": -3,
+      "barangay_scope_spans_multiple_municipalities": -3,
+      "barangay_mentioned_but_unmatched": -2,
+      "barangay_list_requires_review": -1,
+      "independent_city_with_separate_province_context": -1
+    }
+  },
+  "input_files": {
+    "PSGC2LEG/data/psgc_locations.jsonl": {
+      "sha256": "e554dec87c0c4b8ce4859dddc81f099aede1a48a267133c4124161c2a4445ba4"
+    },
+    "PSGC2LEG/data/psgc_summary.json": {
+      "sha256": "1979b58a497c78232a1051ff65ec99ee29f72b4f7e6b3d165f2ab5de7ff9bc15"
+    },
+    "gps-analysis/scan_gps_inventory.py": {
+      "sha256": "66992af5296f75dc4d21152edc883da24cffce5f0129a2bf5ecfd58055864a3f"
+    },
+    "gps-analysis/coordinate_parse.py": {
+      "sha256": "be246e399cc5537802bb44dfd6b2c3b6acac623e2a16a72b6aa0fedd6b37c46c"
+    },
+    "analysis/data/nep_2027_source_projects.json": {
+      "sha256": "2d58683888ae697c4506544b48d30ed4b6f6cfa9e796f7328ca4e4b9075423cf",
+      "scope": "FY2027 DPWH operations only; GAS/S2O excluded"
+    },
+    "analysis/data/hb_dpwh_native_ic_projects.json": {
+      "sha256": "7ca94948ba16fd46fabf3cd1061d1b04657f7d19e3c00c9891d7d2becf6ced51",
+      "scope": "DPWH VOL I-C project details pp9–942 (native text layer)"
+    },
+    "analysis/data/hb_dpwh_native_ic_projects_3rd_reading.json": {
+      "sha256": "4ab63aea525784ce342d4911c7859f77380b8504eb5483d8e65d48be9377078c",
+      "scope": "DPWH VOL I-C project details pp9–942 (native text layer)"
+    },
+    "dpwh-transparency-nep-data/json/fy2027-combined.json": {
+      "sha256": "dd57319349db0174fb59ae2a1939274a6ee072f889a48e85712818980a480e2e",
+      "scope": "DPWH Transparency NEP listing; overlaps PDF observations"
+    },
+    "other-analysis/data/nep_fmr_tree.json": {
+      "sha256": "182b67acb063cc0c3501bcbb2f56f0b8e2014105ecae2df3c1a87c4372cb3e62",
+      "scope": "DA locally-funded FMR annex; not the full DA budget or FMR planning/bridges activities",
+      "legislative_stage": "NEP executive proposal; not an enacted appropriation"
+    },
+    "other-analysis/data/nep_fmr_coordinates_normalized.json": {
+      "sha256": "53d76f3a3bd928a355e9c25b641ed156820b4aeee4a4d3308ff6f951441ce2fc",
+      "scope": "Retained FMR coordinate interpretation; not a new geocode"
+    },
+    "other-analysis/data/hgab_fmr_tree.json": {
+      "sha256": "40907bb12528a76d955bda746e364ec8c28e14b19134eb6b2f90d07ead0bfdb5",
+      "scope": "DA locally-funded FMR annex; not the full DA budget or FMR planning/bridges activities",
+      "legislative_stage": "not_independently_authenticated"
+    },
+    "other-analysis/data/hgab_fmr_coordinates_normalized.json": {
+      "sha256": "c8c360514ad9ac908f435c7782bca879cfda01d26b102c97f2348f58dd7243c0",
+      "scope": "Retained FMR coordinate interpretation; not a new geocode"
+    },
+    "analysis-hfep/data/nep_hfep_tree.json": {
+      "sha256": "0e1fc837bf1f553fcba71ea941e4fae09fd4d8117f59cdf614e068cdc48dce7f",
+      "scope": "DOH FY 2027 Health Facilities Enhancement Program capital outlays",
+      "legislative_stage": "executive_proposal"
+    },
+    "analysis-hfep/data/hgab_hfep_tree.json": {
+      "sha256": "3d93535f64f01919fab729c37aee5b6181ad952bffe75af352be46574d0cef05",
+      "scope": "DOH FY 2027 Health Facilities Enhancement Program (HFEP) annex; not the entire DOH appropriation. The I-A HFEP allocation of PHP 10,088,832,000 additionally includes PHP 67,173,000 MOOE, which is outside this annex.",
+      "legislative_stage": "not_independently_authenticated"
+    },
+    "analysis-nia/data/nep_nia_dataset.json": {
+      "sha256": "685dabfc819030a02d6e53b43a038bea59b11dd872e9a4bb262cf13e8a4aa50c",
+      "scope": "NEP NIA project annex"
+    },
+    "analysis-nia/data/hgab_nia_tree.json": {
+      "sha256": "5c4808b5e28745b405b5222b0b4a3c2fca536ee0d32a7bb20bf81051787cac4f",
+      "scope": "NIA FY 2027 Irrigation Program detailed annex (printed 874-919); not the whole NIA appropriation of PHP 45,172,024,000 and not the agency's separately listed major locally-funded and foreign-assisted projects",
+      "legislative_stage": "not_independently_authenticated"
+    },
+    "analysis-hfep/data/nep_hfep_audit.json": {
+      "sha256": "eefc2f35fd1022cc80c0906525b550c680c56fcfaa36ab77b01d7b8df55d9c10",
+      "scope": "Retained extraction ledger control"
+    },
+    "analysis-hfep/data/hgab_hfep_audit.json": {
+      "sha256": "74dc61536424e62030ed90e81d62073f2eb345235907a1de2448b01983498da7",
+      "scope": "Retained extraction ledger control"
+    },
+    "analysis-nia/data/hgab_nia_audit.json": {
+      "sha256": "90c2bffadbbc899a126d282e86e3c80baa28be3284a62fdccdce86f35148b2b8",
+      "scope": "Retained extraction ledger control"
+    }
+  },
+  "builder_sha256": {
+    "build_master_list.py": "0e8fbaef2eac490f81f15aba2b72d4a7b688a1d1e5373c0b8447aa7eacead956",
+    "locations.py": "d20db91aae276dd2b6c8009f2030930f8b267a64478d1a0778503b87099e04c9"
+  },
+  "records": 64645,
+  "datasets": {
+    "dpwh_nep_pdf": {
+      "records": 11420,
+      "amount_php": 572924074000,
+      "record_kinds": {
+        "project": 11152,
+        "office_allocation": 217,
+        "region_allocation": 51
+      },
+      "location_status": {
+        "unresolved": 2674,
+        "name_matched": 7411,
+        "multiple_locations": 484,
+        "province_only": 312,
+        "ambiguous": 271,
+        "allocation_not_site": 268
+      },
+      "location_score_distribution": {
+        "-8": 1,
+        "-6": 2,
+        "-5": 8,
+        "-4": 11,
+        "-3": 13,
+        "-2": 177,
+        "-1": 76,
+        "0": 2896,
+        "1": 90,
+        "2": 42,
+        "3": 539,
+        "4": 69,
+        "5": 704,
+        "6": 170,
+        "7": 1017,
+        "8": 298,
+        "9": 1041,
+        "10": 23,
+        "11": 3871,
+        "12": 62,
+        "13": 307,
+        "15": 3
+      },
+      "records_with_coordinate_pairs": 609,
+      "review_records": 5187
+    },
+    "dpwh_house_second": {
+      "records": 18792,
+      "amount_php": 639179718000,
+      "record_kinds": {
+        "allocation": 2791,
+        "project": 15972,
+        "fap_project": 29
+      },
+      "location_status": {
+        "allocation_not_site": 2791,
+        "unresolved": 2895,
+        "name_matched": 11719,
+        "multiple_locations": 668,
+        "province_only": 381,
+        "ambiguous": 338
+      },
+      "location_score_distribution": {
+        "-6": 2,
+        "-5": 7,
+        "-4": 7,
+        "-3": 14,
+        "-2": 241,
+        "-1": 51,
+        "0": 5672,
+        "1": 115,
+        "2": 26,
+        "3": 716,
+        "4": 86,
+        "5": 1214,
+        "6": 264,
+        "7": 1610,
+        "8": 431,
+        "9": 1394,
+        "10": 27,
+        "11": 6342,
+        "12": 85,
+        "13": 484,
+        "15": 4
+      },
+      "records_with_coordinate_pairs": 2241,
+      "review_records": 6478
+    },
+    "dpwh_house_third": {
+      "records": 18797,
+      "amount_php": 639179718000,
+      "record_kinds": {
+        "allocation": 2791,
+        "project": 15977,
+        "fap_project": 29
+      },
+      "location_status": {
+        "allocation_not_site": 2791,
+        "unresolved": 2895,
+        "name_matched": 11724,
+        "multiple_locations": 668,
+        "province_only": 381,
+        "ambiguous": 338
+      },
+      "location_score_distribution": {
+        "-6": 2,
+        "-5": 7,
+        "-4": 7,
+        "-3": 14,
+        "-2": 241,
+        "-1": 51,
+        "0": 5672,
+        "1": 115,
+        "2": 26,
+        "3": 721,
+        "4": 86,
+        "5": 1214,
+        "6": 264,
+        "7": 1610,
+        "8": 431,
+        "9": 1394,
+        "10": 27,
+        "11": 6342,
+        "12": 85,
+        "13": 484,
+        "15": 4
+      },
+      "records_with_coordinate_pairs": 2241,
+      "review_records": 6483
+    },
+    "dpwh_nep_api": {
+      "records": 11372,
+      "amount_php": 445378063000,
+      "record_kinds": {
+        "project": 11372
+      },
+      "location_status": {
+        "name_matched": 7488,
+        "unresolved": 2832,
+        "ambiguous": 273,
+        "province_only": 285,
+        "multiple_locations": 494
+      },
+      "location_score_distribution": {
+        "-8": 1,
+        "-6": 1,
+        "-5": 8,
+        "-4": 10,
+        "-3": 12,
+        "-2": 169,
+        "-1": 50,
+        "0": 2821,
+        "1": 75,
+        "2": 33,
+        "3": 521,
+        "4": 71,
+        "5": 729,
+        "6": 170,
+        "7": 1037,
+        "8": 301,
+        "9": 1050,
+        "10": 24,
+        "11": 3917,
+        "12": 62,
+        "13": 307,
+        "15": 3
+      },
+      "records_with_coordinate_pairs": 617,
+      "review_records": 5290
+    },
+    "fmr_nep": {
+      "records": 704,
+      "amount_php": 16000000000,
+      "record_kinds": {
+        "project": 704
+      },
+      "location_status": {
+        "name_matched": 581,
+        "multiple_locations": 108,
+        "ambiguous": 6,
+        "province_only": 9
+      },
+      "location_score_distribution": {
+        "-3": 1,
+        "-2": 2,
+        "-1": 1,
+        "1": 4,
+        "3": 8,
+        "4": 4,
+        "5": 48,
+        "6": 18,
+        "7": 41,
+        "8": 98,
+        "9": 46,
+        "10": 1,
+        "11": 425,
+        "12": 1,
+        "13": 5,
+        "15": 1
+      },
+      "records_with_coordinate_pairs": 704,
+      "review_records": 229
+    },
+    "fmr_hgab": {
+      "records": 964,
+      "amount_php": 19628100000,
+      "record_kinds": {
+        "project": 964
+      },
+      "location_status": {
+        "name_matched": 771,
+        "multiple_locations": 170,
+        "ambiguous": 11,
+        "province_only": 11,
+        "unresolved": 1
+      },
+      "location_score_distribution": {
+        "-5": 1,
+        "-3": 2,
+        "-2": 6,
+        "-1": 3,
+        "1": 4,
+        "3": 11,
+        "4": 2,
+        "5": 54,
+        "6": 29,
+        "7": 52,
+        "8": 162,
+        "9": 49,
+        "10": 2,
+        "11": 575,
+        "12": 1,
+        "13": 6,
+        "15": 5
+      },
+      "records_with_coordinate_pairs": 964,
+      "review_records": 332
+    },
+    "hfep_nep": {
+      "records": 464,
+      "amount_php": 14472519000,
+      "record_kinds": {
+        "facility": 464
+      },
+      "location_status": {
+        "name_matched": 90,
+        "province_only": 339,
+        "unresolved": 29,
+        "ambiguous": 1,
+        "multiple_locations": 5
+      },
+      "location_score_distribution": {
+        "-1": 4,
+        "0": 29,
+        "1": 1,
+        "3": 328,
+        "5": 46,
+        "7": 35,
+        "11": 21
+      },
+      "records_with_coordinate_pairs": 0,
+      "review_records": 384
+    },
+    "hfep_hgab": {
+      "records": 513,
+      "amount_php": 10021659000,
+      "record_kinds": {
+        "facility": 513
+      },
+      "location_status": {
+        "name_matched": 129,
+        "province_only": 357,
+        "unresolved": 23,
+        "multiple_locations": 4
+      },
+      "location_score_distribution": {
+        "-1": 4,
+        "0": 23,
+        "1": 7,
+        "2": 6,
+        "3": 334,
+        "5": 46,
+        "7": 34,
+        "9": 1,
+        "11": 58
+      },
+      "records_with_coordinate_pairs": 0,
+      "review_records": 392
+    },
+    "nia_nep": {
+      "records": 791,
+      "amount_php": 17598181000,
+      "record_kinds": {
+        "project": 791
+      },
+      "location_status": {
+        "unresolved": 776,
+        "name_matched": 12,
+        "province_only": 3
+      },
+      "location_score_distribution": {
+        "-2": 3,
+        "-1": 8,
+        "0": 765,
+        "2": 3,
+        "4": 3,
+        "8": 9
+      },
+      "records_with_coordinate_pairs": 1,
+      "review_records": 780
+    },
+    "nia_hgab": {
+      "records": 828,
+      "amount_php": 17999305000,
+      "record_kinds": {
+        "project": 828
+      },
+      "location_status": {
+        "unresolved": 794,
+        "name_matched": 28,
+        "province_only": 6
+      },
+      "location_score_distribution": {
+        "-2": 3,
+        "-1": 16,
+        "0": 775,
+        "2": 7,
+        "4": 5,
+        "8": 22
+      },
+      "records_with_coordinate_pairs": 1,
+      "review_records": 802
+    }
+  },
+  "examples": {
+    "unresolved": [
+      {
+        "record_id": "dpwh_nep_pdf:p195:r8",
+        "title": "Maharlika Highway (LZ ) - K0026 + (- 1036 ) - K0026 + (- 120 ), K0028 + 240 - K0028 + 590, K0029 + 350 - K0030 + 000",
+        "location": {
+          "status": "unresolved",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [],
+          "candidate_codes": [],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [],
+          "review_flags": [],
+          "needs_review": true,
+          "score": 0,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:unresolved",
+              "impact": 0
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p195:r10",
+        "title": "Manila North Rd - K0212 + 007 - K0213 + 497, K0215 + (- 927 ) - K0215 + (- 837 ), K0215 + (- 808 ) - K0215 + (- 077 ), K0217 + 1010 - K0218 + 333, K0218 + 655 - K0219 + 076, K0220 + 418 - K0220 + 571, K0220 + 618 - K0220 + 857, K0222 + 000 - K0222 + 661, K0223 + 589 - K0223 + 906, K0225 + 870 - K0226 + 144, K0227 + 994 - K0229 + 753, K0231 + 576 - K0232 + 174, K0233 + 212 - K0233 + 383",
+        "location": {
+          "status": "unresolved",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [],
+          "candidate_codes": [
+            "1380600000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "manila",
+              "candidate_codes": [
+                "1380600000"
+              ],
+              "locality_syntax": false
+            }
+          ],
+          "review_flags": [],
+          "needs_review": true,
+          "score": 0,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:unresolved",
+              "impact": 0
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p195:r11",
+        "title": "Manila North Rd - K0235 + 415 - K0236 + 005, K0236 + 238 - K0236 + 755, K0247 + 523 - K0247 + 588, K0251 + 1014 - K0252 + 147, K0252 + 219 - K0253 + 070, K0253 + 610 - K0253 + 973, K0255 + 403 - K0255 + 688, K0255 + 719 - K0255 + 924, K0256 + 252 - K0256 + 989, K0258 + 715 - K0259 + 460",
+        "location": {
+          "status": "unresolved",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [],
+          "candidate_codes": [
+            "1380600000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "manila",
+              "candidate_codes": [
+                "1380600000"
+              ],
+              "locality_syntax": false
+            }
+          ],
+          "review_flags": [],
+          "needs_review": true,
+          "score": 0,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:unresolved",
+              "impact": 0
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p195:r12",
+        "title": "Pangasinan-La Union Inter-Provl Rd - K0386 + 737 - K0389 + 142",
+        "location": {
+          "status": "unresolved",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [],
+          "candidate_codes": [
+            "0103300000",
+            "0105500000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "pangasinan",
+              "candidate_codes": [
+                "0105500000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "la union",
+              "candidate_codes": [
+                "0103300000"
+              ],
+              "locality_syntax": false
+            }
+          ],
+          "review_flags": [],
+          "needs_review": true,
+          "score": 0,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:unresolved",
+              "impact": 0
+            }
+          ]
+        }
+      }
+    ],
+    "name_matched": [
+      {
+        "record_id": "dpwh_nep_pdf:p198:r14",
+        "title": "Lanao-Pagadian-Zamboanga City Rd - K1637 + 000 - K1642 + 000",
+        "location": {
+          "status": "name_matched",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0931700000",
+              "name": "City of Zamboanga",
+              "level": "city",
+              "ancestry": {
+                "city": {
+                  "code": "0931700000",
+                  "name": "City of Zamboanga"
+                },
+                "region": {
+                  "code": "0900000000",
+                  "name": "Region IX (Zamboanga Peninsula)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0907322000",
+            "0931700000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "pagadian",
+              "candidate_codes": [
+                "0907322000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "zamboanga city",
+              "candidate_codes": [
+                "0931700000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0900000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": false,
+          "score": 5,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:name_matched_town",
+              "impact": 4
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p198:r15",
+        "title": "Lanao-Pagadian-Zamboanga City Rd - K1642 + 000 - K1647 + 738",
+        "location": {
+          "status": "name_matched",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0931700000",
+              "name": "City of Zamboanga",
+              "level": "city",
+              "ancestry": {
+                "city": {
+                  "code": "0931700000",
+                  "name": "City of Zamboanga"
+                },
+                "region": {
+                  "code": "0900000000",
+                  "name": "Region IX (Zamboanga Peninsula)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0907322000",
+            "0931700000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "pagadian",
+              "candidate_codes": [
+                "0907322000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "zamboanga city",
+              "candidate_codes": [
+                "0931700000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0900000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": false,
+          "score": 5,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:name_matched_town",
+              "impact": 4
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p199:r1",
+        "title": "Maharlika Highway (Lanao-Pagadian-Zamboanga City Rd ) - (S01632MN) Chainage 000 - Chainage 110, Chainage 140 - Chainage 270, Chainage 300 - Chainage 436",
+        "location": {
+          "status": "name_matched",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0931700000",
+              "name": "City of Zamboanga",
+              "level": "city",
+              "ancestry": {
+                "city": {
+                  "code": "0931700000",
+                  "name": "City of Zamboanga"
+                },
+                "region": {
+                  "code": "0900000000",
+                  "name": "Region IX (Zamboanga Peninsula)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0907322000",
+            "0931700000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "pagadian",
+              "candidate_codes": [
+                "0907322000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "zamboanga city",
+              "candidate_codes": [
+                "0931700000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0900000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": false,
+          "score": 5,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:name_matched_town",
+              "impact": 4
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p199:r2",
+        "title": "Maharlika Highway (Lanao-Pagadian-Zamboanga City Rd ) - (S01634MN) Chainage 000 - Chainage 116, Chainage 197 - Chainage 301",
+        "location": {
+          "status": "name_matched",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0931700000",
+              "name": "City of Zamboanga",
+              "level": "city",
+              "ancestry": {
+                "city": {
+                  "code": "0931700000",
+                  "name": "City of Zamboanga"
+                },
+                "region": {
+                  "code": "0900000000",
+                  "name": "Region IX (Zamboanga Peninsula)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0907322000",
+            "0931700000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "pagadian",
+              "candidate_codes": [
+                "0907322000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "zamboanga city",
+              "candidate_codes": [
+                "0931700000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0900000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": false,
+          "score": 5,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:name_matched_town",
+              "impact": 4
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            }
+          ]
+        }
+      }
+    ],
+    "multiple_locations": [
+      {
+        "record_id": "dpwh_nep_pdf:p198:r19",
+        "title": "Maharlika Highway (Pagadian City-Zamboanga City Rd ) - (S01638MN) Chainage 000 - Chainage 505",
+        "location": {
+          "status": "multiple_locations",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0907322000",
+              "name": "City of Pagadian",
+              "level": "city",
+              "ancestry": {
+                "city": {
+                  "code": "0907322000",
+                  "name": "City of Pagadian"
+                },
+                "province": {
+                  "code": "0907300000",
+                  "name": "Zamboanga del Sur"
+                },
+                "region": {
+                  "code": "0900000000",
+                  "name": "Region IX (Zamboanga Peninsula)"
+                }
+              }
+            },
+            {
+              "psgc_code": "0931700000",
+              "name": "City of Zamboanga",
+              "level": "city",
+              "ancestry": {
+                "city": {
+                  "code": "0931700000",
+                  "name": "City of Zamboanga"
+                },
+                "region": {
+                  "code": "0900000000",
+                  "name": "Region IX (Zamboanga Peninsula)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0907322000",
+            "0931700000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "pagadian city",
+              "candidate_codes": [
+                "0907322000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "zamboanga city",
+              "candidate_codes": [
+                "0931700000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0900000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": true,
+          "score": 4,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:multiple_locations",
+              "impact": 3
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p198:r20",
+        "title": "Maharlika Highway (Pagadian City-Zamboanga City Rd ) - (S01639MN) Chainage 000 - Chainage 324, Chainage 1048 - Chainage 2603",
+        "location": {
+          "status": "multiple_locations",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0907322000",
+              "name": "City of Pagadian",
+              "level": "city",
+              "ancestry": {
+                "city": {
+                  "code": "0907322000",
+                  "name": "City of Pagadian"
+                },
+                "province": {
+                  "code": "0907300000",
+                  "name": "Zamboanga del Sur"
+                },
+                "region": {
+                  "code": "0900000000",
+                  "name": "Region IX (Zamboanga Peninsula)"
+                }
+              }
+            },
+            {
+              "psgc_code": "0931700000",
+              "name": "City of Zamboanga",
+              "level": "city",
+              "ancestry": {
+                "city": {
+                  "code": "0931700000",
+                  "name": "City of Zamboanga"
+                },
+                "region": {
+                  "code": "0900000000",
+                  "name": "Region IX (Zamboanga Peninsula)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0907322000",
+            "0931700000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "pagadian city",
+              "candidate_codes": [
+                "0907322000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "zamboanga city",
+              "candidate_codes": [
+                "0931700000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0900000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": true,
+          "score": 4,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:multiple_locations",
+              "impact": 3
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p198:r21",
+        "title": "Maharlika Highway (Pagadian City-Zamboanga City Rd ) - K1665 + 000 - K1665 + 500, K1667 + 623 - K1667 + 897, K1667 + 936 - K1669 + 000, K1670 + 000 - K1674 +",
+        "location": {
+          "status": "multiple_locations",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0907322000",
+              "name": "City of Pagadian",
+              "level": "city",
+              "ancestry": {
+                "city": {
+                  "code": "0907322000",
+                  "name": "City of Pagadian"
+                },
+                "province": {
+                  "code": "0907300000",
+                  "name": "Zamboanga del Sur"
+                },
+                "region": {
+                  "code": "0900000000",
+                  "name": "Region IX (Zamboanga Peninsula)"
+                }
+              }
+            },
+            {
+              "psgc_code": "0931700000",
+              "name": "City of Zamboanga",
+              "level": "city",
+              "ancestry": {
+                "city": {
+                  "code": "0931700000",
+                  "name": "City of Zamboanga"
+                },
+                "region": {
+                  "code": "0900000000",
+                  "name": "Region IX (Zamboanga Peninsula)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0907322000",
+            "0931700000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "pagadian city",
+              "candidate_codes": [
+                "0907322000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "zamboanga city",
+              "candidate_codes": [
+                "0931700000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0900000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": true,
+          "score": 4,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:multiple_locations",
+              "impact": 3
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p198:r22",
+        "title": "Maharlika Highway (Pagadian City-Zamboanga City Rd ) - K1675 + (- 337 ) - K1675 + 000, K1676 + 000 - K1676 + 669, K1676 + 721 - K1676 + 822, K1678 + 000 - K1678 + 091, K1680 + 380 - K1680 + 603, K1680 + 945 - K1681 + 000, K1684 + 018 - K1684 + 028, K1684 + 682 - K1685 + 000, K1687 + 000 - K1688 + 500, K1689 + 961 - K1690 + 508, K1690 + 526 - K1690 + 825, K1694 + 723 - K1694 + 775, K1694 + 812 - K1694 + 870, K1700 + 056 - K1700 + 106, K1714 + 2160 - K1718 + 020, K1718 + 1285 - K1718 + 1305",
+        "location": {
+          "status": "multiple_locations",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0907322000",
+              "name": "City of Pagadian",
+              "level": "city",
+              "ancestry": {
+                "city": {
+                  "code": "0907322000",
+                  "name": "City of Pagadian"
+                },
+                "province": {
+                  "code": "0907300000",
+                  "name": "Zamboanga del Sur"
+                },
+                "region": {
+                  "code": "0900000000",
+                  "name": "Region IX (Zamboanga Peninsula)"
+                }
+              }
+            },
+            {
+              "psgc_code": "0931700000",
+              "name": "City of Zamboanga",
+              "level": "city",
+              "ancestry": {
+                "city": {
+                  "code": "0931700000",
+                  "name": "City of Zamboanga"
+                },
+                "region": {
+                  "code": "0900000000",
+                  "name": "Region IX (Zamboanga Peninsula)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0907322000",
+            "0931700000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "pagadian city",
+              "candidate_codes": [
+                "0907322000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "zamboanga city",
+              "candidate_codes": [
+                "0931700000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0900000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": true,
+          "score": 4,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:multiple_locations",
+              "impact": 3
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            }
+          ]
+        }
+      }
+    ],
+    "province_only": [
+      {
+        "record_id": "dpwh_nep_pdf:p277:r4",
+        "title": "Bantay-San Ildefonso Bypass Road, Ilocos Sur",
+        "location": {
+          "status": "province_only",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0102900000",
+              "name": "Ilocos Sur",
+              "level": "province",
+              "ancestry": {
+                "province": {
+                  "code": "0102900000",
+                  "name": "Ilocos Sur"
+                },
+                "region": {
+                  "code": "0100000000",
+                  "name": "Region I (Ilocos Region)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0102900000",
+            "0102903000",
+            "0102919000",
+            "0301419000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "bantay",
+              "candidate_codes": [
+                "0102903000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "san ildefonso",
+              "candidate_codes": [
+                "0102919000",
+                "0301419000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "ilocos sur",
+              "candidate_codes": [
+                "0102900000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0100000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": true,
+          "score": 3,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:province_only",
+              "impact": 2
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p277:r5",
+        "title": "Bauang-San Fernando-San Juan Bypass Road (Bauang Section ), Sta 0 + 000 - Sta 3 + 003, La Union",
+        "location": {
+          "status": "province_only",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0103300000",
+              "name": "La Union",
+              "level": "province",
+              "ancestry": {
+                "province": {
+                  "code": "0103300000",
+                  "name": "La Union"
+                },
+                "region": {
+                  "code": "0100000000",
+                  "name": "Region I (Ilocos Region)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0102920000",
+            "0102922000",
+            "0103300000",
+            "0103307000",
+            "0103314000",
+            "0103316000",
+            "0305416000",
+            "0401023000",
+            "0501732000",
+            "0504118000",
+            "0702241000",
+            "0806414000",
+            "1001318000",
+            "1381400000",
+            "1400122000",
+            "1705913000",
+            "1806105000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "bauang",
+              "candidate_codes": [
+                "0103307000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "san fernando",
+              "candidate_codes": [
+                "0103314000",
+                "0305416000",
+                "0501732000",
+                "0504118000",
+                "0702241000",
+                "1001318000",
+                "1705913000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "san juan",
+              "candidate_codes": [
+                "0102920000",
+                "0103316000",
+                "0401023000",
+                "0806414000",
+                "1381400000",
+                "1400122000",
+                "1806105000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "bauang",
+              "candidate_codes": [
+                "0103307000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "la union",
+              "candidate_codes": [
+                "0103300000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0100000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": true,
+          "score": 3,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:province_only",
+              "impact": 2
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p277:r8",
+        "title": "Binalonan-Laoac-Villasis (BLV) Bypass Road, Pangasinan",
+        "location": {
+          "status": "province_only",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0105500000",
+              "name": "Pangasinan",
+              "level": "province",
+              "ancestry": {
+                "province": {
+                  "code": "0105500000",
+                  "name": "Pangasinan"
+                },
+                "region": {
+                  "code": "0100000000",
+                  "name": "Region I (Ilocos Region)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0105500000",
+            "0105512000",
+            "0105547000",
+            "0105548000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "binalonan",
+              "candidate_codes": [
+                "0105512000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "laoac",
+              "candidate_codes": [
+                "0105548000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "villasis",
+              "candidate_codes": [
+                "0105547000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "pangasinan",
+              "candidate_codes": [
+                "0105500000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0100000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": true,
+          "score": 3,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:province_only",
+              "impact": 2
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p277:r9",
+        "title": "Construction of Vigan-Cabugao Coastal / Diversion Road, Ilocos Sur",
+        "location": {
+          "status": "province_only",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0102900000",
+              "name": "Ilocos Sur",
+              "level": "province",
+              "ancestry": {
+                "province": {
+                  "code": "0102900000",
+                  "name": "Ilocos Sur"
+                },
+                "region": {
+                  "code": "0100000000",
+                  "name": "Region I (Ilocos Region)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0102900000",
+            "0102905000",
+            "0102934000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "vigan",
+              "candidate_codes": [
+                "0102934000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "cabugao",
+              "candidate_codes": [
+                "0102905000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "ilocos sur",
+              "candidate_codes": [
+                "0102900000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0100000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": true,
+          "score": 3,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:province_only",
+              "impact": 2
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            }
+          ]
+        }
+      }
+    ],
+    "ambiguous": [
+      {
+        "record_id": "dpwh_nep_pdf:p285:r10",
+        "title": "Cagayan de Oro Diversion Road Extension (Jct. Sayre Highway (Balubal )- Manolo Fortich Malitbog-Claveria-Eureka, Gingoog City Road ), Mantibugao-Lunocan Section, Sta. 1 + 739 - Sta. Sta. 2 + 578.11, Manolo Fortich, Bukidnon",
+        "location": {
+          "status": "ambiguous",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "1001300000",
+              "name": "Bukidnon",
+              "level": "province",
+              "ancestry": {
+                "province": {
+                  "code": "1001300000",
+                  "name": "Bukidnon"
+                },
+                "region": {
+                  "code": "1000000000",
+                  "name": "Region X (Northern Mindanao)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0102922000",
+            "0201511000",
+            "0504107000",
+            "0806409000",
+            "1001300000",
+            "1001313000",
+            "1001314000",
+            "1004306000",
+            "1004308000",
+            "1030500000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "cagayan de oro",
+              "candidate_codes": [
+                "1030500000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "manolo fortich",
+              "candidate_codes": [
+                "1001314000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "malitbog",
+              "candidate_codes": [
+                "0806409000",
+                "1001313000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "claveria",
+              "candidate_codes": [
+                "0201511000",
+                "0504107000",
+                "1004306000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "gingoog city",
+              "candidate_codes": [
+                "1004308000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "manolo fortich",
+              "candidate_codes": [
+                "1001314000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "bukidnon",
+              "candidate_codes": [
+                "1001300000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "1000000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [
+            "title_or_heading_province_conflict"
+          ],
+          "needs_review": true,
+          "score": -3,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:ambiguous",
+              "impact": 1
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            },
+            {
+              "rule": "penalty:title_or_heading_province_conflict",
+              "impact": -5
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p287:r1",
+        "title": "Magsaysay-Butuan City Coastal Bypass / Alternate Road (Sta. Cruz, Magsaysay ), Sta. 1 + 550 - Sta. 2 + 050, Brgy. Poblacion, Magsaysay, Misamis Oriental",
+        "location": {
+          "status": "ambiguous",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "1004300000",
+              "name": "Misamis Oriental",
+              "level": "province",
+              "ancestry": {
+                "province": {
+                  "code": "1004300000",
+                  "name": "Misamis Oriental"
+                },
+                "region": {
+                  "code": "1000000000",
+                  "name": "Region X (Northern Mindanao)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0102806011",
+            "0102814009",
+            "0102902015",
+            "0102909019",
+            "0102918006",
+            "0102921005",
+            "0102922000",
+            "0102923006",
+            "0102924000",
+            "0102928027",
+            "0102929004",
+            "0102932005",
+            "0103302010",
+            "0103303034",
+            "0103315019",
+            "0103317019",
+            "0103318010",
+            "0103319010",
+            "0103320017",
+            "0105502011",
+            "0105503021",
+            "0105505014",
+            "0105507008",
+            "0105508015",
+            "0105509013",
+            "0105512015",
+            "0105513026",
+            "0105515016",
+            "0105516007",
+            "0105519014",
+            "0105520012",
+            "0105521006",
+            "0105522028",
+            "0105523016",
+            "0105524062",
+            "0105525039",
+            "0105526025",
+            "0105528014",
+            "0105533020",
+            "0105542014",
+            "0105545018",
+            "0105546032",
+            "0105548013",
+            "0201506019",
+            "0201509008",
+            "0201521023",
+            "0203133014",
+            "0205001007",
+            "0205002011",
+            "0205006010",
+            "0205009003",
+            "0205012009",
+            "0205014008",
+            "0300803013",
+            "0300806007",
+            "0300807008",
+            "0300808004",
+            "0300811021",
+            "0301403014",
+            "0301404014",
+            "0301406010",
+            "0301407021",
+            "0301408006",
+            "0301412020",
+            "0301413022",
+            "0301415016",
+            "0301416007",
+            "0301417015",
+            "0301418022",
+            "0301419026",
+            "0301420008",
+            "0301421037",
+            "0301422023",
+            "0301423016",
+            "0304909019",
+            "0304924009",
+            "0304925006",
+            "0304929023",
+            "0305403018",
+            "0305406023",
+            "0305409020",
+            "0305415026",
+            "0305421004",
+            "0306901013",
+            "0306914007",
+            "0306916057",
+            "0307103015",
+            "0307113000",
+            "0307705010",
+            "0401001015",
+            "0401004009",
+            "0401010017",
+            "0401015026",
+            "0401016018",
+            "0401017008",
+            "0401020023",
+            "0401023029",
+            "0401024028",
+            "0401025013",
+            "0401026020",
+            "0402103086",
+            "0402111006",
+            "0402116002",
+            "0402117008",
+            "0403403016",
+            "0403407015",
+            "0403415019",
+            "0403425011",
+            "0403426000",
+            "0405605026",
+            "0405606012",
+            "0405608001",
+            "0405617016",
+            "0405618035",
+            "0405636015",
+            "0405640007",
+            "0405641014",
+            "0405642012",
+            "0405646029",
+            "0405814006",
+            "0500504038",
+            "0500510021",
+            "0500515029",
+            "0501602014",
+            "0501611008",
+            "0501718054",
+            "0501719027",
+            "0501726009",
+            "0501735015",
+            "0501736015",
+            "0502001008",
+            "0504101031",
+            "0504102020",
+            "0504103019",
+            "0504104011",
+            "0504105027",
+            "0504106022",
+            "0504108016",
+            "0504109012",
+            "0504110019",
+            "0504114006",
+            "0504115019",
+            "0504116015",
+            "0504117027",
+            "0504121026",
+            "0506206025",
+            "0506211028",
+            "0506216051",
+            "0600401011",
+            "0600402011",
+            "0600403019",
+            "0600404018",
+            "0600405012",
+            "0600406024",
+            "0600407013",
+            "0600408008",
+            "0600409021",
+            "0600410020",
+            "0600411015",
+            "0600412014",
+            "0600413015",
+            "0600414015",
+            "0600415013",
+            "0600416016",
+            "0600417009",
+            "0600601017",
+            "0600602034",
+            "0600603008",
+            "0600605011",
+            "0600609036",
+            "0600612022",
+            "0600614015",
+            "0600615009",
+            "0600617012",
+            "0601903021",
+            "0601906026",
+            "0601911013",
+            "0601913017",
+            "0601915010",
+            "0601917032",
+            "0603001022",
+            "0603002054",
+            "0603003015",
+            "0603004022",
+            "0603006025",
+            "0603008014",
+            "0603009019",
+            "0603010010",
+            "0603014028",
+            "0603015022",
+            "0603016024",
+            "0603026019",
+            "0603028071",
+            "0603032022",
+            "0603038021",
+            "0603042010",
+            "0607902021",
+            "0607903017",
+            "0701202011",
+            "0701203010",
+            "0701204014",
+            "0701205011",
+            "0701208010",
+            "0701209036",
+            "0701211016",
+            "0701213021",
+            "0701215006",
+            "0701216010",
+            "0701217011",
+            "0701218009",
+            "0701219007",
+            "0701224042",
+            "0701225030",
+            "0701226018",
+            "0701227016",
+            "0701232016",
+            "0701233008",
+            "0701234017",
+            "0701235014",
+            "0701236013",
+            "0701237013",
+            "0701238014",
+            "0701239014",
+            "0701240015",
+            "0701243021",
+            "0701244015",
+            "0701246034",
+            "0701248012",
+            "0702201007",
+            "0702202006",
+            "0702203007",
+            "0702204009",
+            "0702205035",
+            "0702206018",
+            "0702207020",
+            "0702210038",
+            "0702212005",
+            "0702213015",
+            "0702215016",
+            "0702218014",
+            "0702220012",
+            "0702221016",
+            "0702222029",
+            "0702223031",
+            "0702225012",
+            "0702227008",
+            "0702228009",
+            "0702231014",
+            "0702235020",
+            "0702237016",
+            "0702239011",
+            "0702240011",
+            "0702243020",
+            "0702244008",
+            "0702245008",
+            "0702246021",
+            "0702247016",
+            "0702248018",
+            "0702249016",
+            "0702250012",
+            "0702251028",
+            "0731100021",
+            "0803703010",
+            "0803713050",
+            "0803721018",
+            "0803726015",
+            "0803729021",
+            "0803731017",
+            "0803736017",
+            "0803745011",
+            "0803749008",
+            "0804802002",
+            "0804816006",
+            "0806001019",
+            "0806401012",
+            "0806402027",
+            "0806403025",
+            "0806406018",
+            "0806410007",
+            "0806415008",
+            "0807801007",
+            "0807806012",
+            "0906601026",
+            "0906605023",
+            "0906609035",
+            "0906612009",
+            "0907204009",
+            "0907207011",
+            "0907208010",
+            "0907213020",
+            "0907216018",
+            "0907217012",
+            "0907218025",
+            "0907219019",
+            "0907221007",
+            "0907222004",
+            "0907223003",
+            "0907224014",
+            "0907225011",
+            "0907302042",
+            "0907303023",
+            "0907305021",
+            "0907306020",
+            "0907311022",
+            "0907313034",
+            "0907315020",
+            "0907317024",
+            "0907323020",
+            "0907324019",
+            "0907325017",
+            "0907327013",
+            "0907333008",
+            "0907338010",
+            "0907340012",
+            "0907343009",
+            "0908301019",
+            "0908302017",
+            "0908303004",
+            "0908304012",
+            "0908305023",
+            "0908306020",
+            "0908307019",
+            "0908308028",
+            "0908309012",
+            "0908311015",
+            "0908313036",
+            "0908314013",
+            "0908315021",
+            "1001302015",
+            "1001303012",
+            "1001305013",
+            "1001306014",
+            "1001307010",
+            "1001309026",
+            "1001310012",
+            "1001311010",
+            "1001313006",
+            "1001316018",
+            "1001317028",
+            "1001319009",
+            "1001321024",
+            "1001322008",
+            "1001801012",
+            "1001803007",
+            "1001804011",
+            "1001805009",
+            "1003503015",
+            "1003505036",
+            "1003506028",
+            "1003507010",
+            "1003508020",
+            "1003510005",
+            "1003511000",
+            "1003511016",
+            "1003512010",
+            "1003513018",
+            "1003515017",
+            "1003517024",
+            "1003518022",
+            "1003521017",
+            "1003522019",
+            "1003523019",
+            "1004203024",
+            "1004206011",
+            "1004211009",
+            "1004213017",
+            "1004214013",
+            "1004300000",
+            "1004301010",
+            "1004304007",
+            "1004306020",
+            "1004307012",
+            "1004309009",
+            "1004310011",
+            "1004312011",
+            "1004313008",
+            "1004314008",
+            "1004315005",
+            "1004316007",
+            "1004317000",
+            "1004317016",
+            "1004318010",
+            "1004320008",
+            "1004321014",
+            "1004322011",
+            "1004323008",
+            "1004324006",
+            "1004325010",
+            "1030900017",
+            "1102314014",
+            "1102317029",
+            "1102324013",
+            "1102401018",
+            "1102404021",
+            "1102406023",
+            "1102407000",
+            "1102407015",
+            "1102408016",
+            "1102410026",
+            "1102412000",
+            "1102414018",
+            "1102502012",
+            "1102503004",
+            "1102504010",
+            "1102505019",
+            "1102506010",
+            "1102507028",
+            "1108201011",
+            "1108204026",
+            "1108206007",
+            "1108207013",
+            "1108209019",
+            "1108603032",
+            "1108604009",
+            "1204702032",
+            "1204703019",
+            "1204704032",
+            "1204705029",
+            "1204706040",
+            "1204707029",
+            "1204708034",
+            "1204710031",
+            "1204712050",
+            "1204713024",
+            "1204714020",
+            "1204715011",
+            "1206311013",
+            "1206312014",
+            "1206314006",
+            "1206315010",
+            "1206316020",
+            "1206317013",
+            "1206318006",
+            "1206319014",
+            "1206501009",
+            "1206502023",
+            "1206503022",
+            "1206505015",
+            "1206506016",
+            "1206508020",
+            "1206509031",
+            "1206510016",
+            "1206511013",
+            "1208001010",
+            "1208002023",
+            "1208003014",
+            "1208004014",
+            "1208006008",
+            "1208007023",
+            "1380300020",
+            "1380500024",
+            "1380605000",
+            "1380800005",
+            "1381600025",
+            "1381701004",
+            "1400102007",
+            "1400107012",
+            "1400108010",
+            "1400109006",
+            "1400110013",
+            "1400111006",
+            "1400112007",
+            "1400113009",
+            "1400114008",
+            "1400117006",
+            "1400119016",
+            "1400121008",
+            "1400123004",
+            "1400124010",
+            "1400125001",
+            "1400126005",
+            "1400127006",
+            "1401101007",
+            "1401103009",
+            "1401104009",
+            "1401105013",
+            "1401106005",
+            "1401107017",
+            "1401109005",
+            "1401110012",
+            "1401111010",
+            "1401112011",
+            "1401113007",
+            "1402701016",
+            "1402702011",
+            "1402703018",
+            "1402706028",
+            "1402707011",
+            "1402709009",
+            "1403201013",
+            "1403206004",
+            "1403214011",
+            "1403215014",
+            "1404402020",
+            "1404404016",
+            "1404405007",
+            "1404406009",
+            "1404407013",
+            "1404408005",
+            "1404409014",
+            "1404410017",
+            "1408101007",
+            "1408104020",
+            "1408105007",
+            "1408106016",
+            "1600204009",
+            "1600205011",
+            "1600206006",
+            "1600207011",
+            "1600208005",
+            "1600301016",
+            "1600302005",
+            "1600303019",
+            "1600304006",
+            "1600305005",
+            "1600306004",
+            "1600307006",
+            "1600309006",
+            "1600310006",
+            "1600312006",
+            "1600313008",
+            "1600314015",
+            "1606701001",
+            "1606702007",
+            "1606719011",
+            "1606722008",
+            "1606727006",
+            "1606801015",
+            "1606803012",
+            "1606804009",
+            "1606808008",
+            "1606811010",
+            "1606812011",
+            "1606814008",
+            "1606815009",
+            "1606816013",
+            "1606817012",
+            "1608501013",
+            "1608502008",
+            "1630400000",
+            "1704005000",
+            "1704006020",
+            "1705101004",
+            "1705102005",
+            "1705105000",
+            "1705105010",
+            "1705109009",
+            "1705111000",
+            "1705201029",
+            "1705202008",
+            "1705203032",
+            "1705204012",
+            "1705207013",
+            "1705211012",
+            "1705213007",
+            "1705301019",
+            "1705303015",
+            "1705314000",
+            "1705319008",
+            "1705320020",
+            "1705901006",
+            "1705902010",
+            "1705903012",
+            "1705904003",
+            "1705905006",
+            "1705906011",
+            "1705907011",
+            "1705908007",
+            "1705911017",
+            "1705912010",
+            "1705913011",
+            "1705914005",
+            "1705915010",
+            "1705916004",
+            "1804502020",
+            "1804507004",
+            "1804525006",
+            "1804529005",
+            "1804530015",
+            "1804601005",
+            "1804602024",
+            "1804605010",
+            "1804606018",
+            "1804607018",
+            "1804611028",
+            "1804614030",
+            "1804615018",
+            "1804616012",
+            "1804617009",
+            "1804618019",
+            "1804620012",
+            "1804622022",
+            "1804624011",
+            "1804625010",
+            "1806101013",
+            "1806105010",
+            "1806106031",
+            "1903602039",
+            "1903603005",
+            "1903604056",
+            "1903605025",
+            "1903606007",
+            "1903609018",
+            "1903610012",
+            "1903612043",
+            "1903613027",
+            "1903616111",
+            "1903619015",
+            "1903620042",
+            "1903622020",
+            "1903625033",
+            "1903628009",
+            "1903629017",
+            "1903637001",
+            "1908703003",
+            "1908706016",
+            "1908709020",
+            "1908802004",
+            "1908806020",
+            "1908807015",
+            "1908816012",
+            "1908820007"
+          ],
+          "suggestions": [
+            {
+              "location": {
+                "psgc_code": "1004317016",
+                "name": "Poblacion",
+                "level": "barangay",
+                "ancestry": {
+                  "barangay": {
+                    "code": "1004317016",
+                    "name": "Poblacion"
+                  },
+                  "municipality": {
+                    "code": "1004317000",
+                    "name": "Magsaysay"
+                  },
+                  "province": {
+                    "code": "1004300000",
+                    "name": "Misamis Oriental"
+                  },
+                  "region": {
+                    "code": "1000000000",
+                    "name": "Region X (Northern Mindanao)"
+                  }
+                }
+              },
+              "support_score": 11,
+              "factors": [
+                {
+                  "rule": "explicit_barangay_mention",
+                  "impact": 4
+                },
+                {
+                  "rule": "named_parent_town",
+                  "impact": 3
+                },
+                {
+                  "rule": "named_parent_province",
+                  "impact": 2
+                },
+                {
+                  "rule": "source_region_agreement",
+                  "impact": 2
+                }
+              ],
+              "conflicts": []
+            },
+            {
+              "location": {
+                "psgc_code": "1003511016",
+                "name": "Poblacion",
+                "level": "barangay",
+                "ancestry": {
+                  "barangay": {
+                    "code": "1003511016",
+                    "name": "Poblacion"
+                  },
+                  "municipality": {
+                    "code": "1003511000",
+                    "name": "Magsaysay"
+                  },
+                  "province": {
+                    "code": "1003500000",
+                    "name": "Lanao del Norte"
+                  },
+                  "region": {
+                    "code": "1000000000",
+                    "name": "Region X (Northern Mindanao)"
+                  }
+                }
+              },
+              "support_score": 5,
+              "factors": [
+                {
+                  "rule": "explicit_barangay_mention",
+                  "impact": 4
+                },
+                {
+                  "rule": "named_parent_town",
+                  "impact": 3
+                },
+                {
+                  "rule": "named_province_conflict",
+                  "impact": -4
+                },
+                {
+                  "rule": "source_region_agreement",
+                  "impact": 2
+                }
+              ],
+              "conflicts": [
+                "named_province_conflict"
+              ]
+            },
+            {
+              "location": {
+                "psgc_code": "1102407015",
+                "name": "Poblacion",
+                "level": "barangay",
+                "ancestry": {
+                  "barangay": {
+                    "code": "1102407015",
+                    "name": "Poblacion"
+                  },
+                  "municipality": {
+                    "code": "1102407000",
+                    "name": "Magsaysay"
+                  },
+                  "province": {
+                    "code": "1102400000",
+                    "name": "Davao del Sur"
+                  },
+                  "region": {
+                    "code": "1100000000",
+                    "name": "Region XI (Davao Region)"
+                  }
+                }
+              },
+              "support_score": 1,
+              "factors": [
+                {
+                  "rule": "explicit_barangay_mention",
+                  "impact": 4
+                },
+                {
+                  "rule": "named_parent_town",
+                  "impact": 3
+                },
+                {
+                  "rule": "named_province_conflict",
+                  "impact": -4
+                },
+                {
+                  "rule": "source_region_conflict",
+                  "impact": -2
+                }
+              ],
+              "conflicts": [
+                "named_province_conflict",
+                "source_region_conflict"
+              ]
+            },
+            {
+              "location": {
+                "psgc_code": "1705105010",
+                "name": "Poblacion",
+                "level": "barangay",
+                "ancestry": {
+                  "barangay": {
+                    "code": "1705105010",
+                    "name": "Poblacion"
+                  },
+                  "municipality": {
+                    "code": "1705105000",
+                    "name": "Magsaysay"
+                  },
+                  "province": {
+                    "code": "1705100000",
+                    "name": "Occidental Mindoro"
+                  },
+                  "region": {
+                    "code": "1700000000",
+                    "name": "MIMAROPA Region"
+                  }
+                }
+              },
+              "support_score": 1,
+              "factors": [
+                {
+                  "rule": "explicit_barangay_mention",
+                  "impact": 4
+                },
+                {
+                  "rule": "named_parent_town",
+                  "impact": 3
+                },
+                {
+                  "rule": "named_province_conflict",
+                  "impact": -4
+                },
+                {
+                  "rule": "source_region_conflict",
+                  "impact": -2
+                }
+              ],
+              "conflicts": [
+                "named_province_conflict",
+                "source_region_conflict"
+              ]
+            }
+          ],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "magsaysay",
+              "candidate_codes": [
+                "1003511000",
+                "1004317000",
+                "1102407000",
+                "1705105000",
+                "1705314000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "butuan city",
+              "candidate_codes": [
+                "1630400000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "santa cruz",
+              "candidate_codes": [
+                "0102924000",
+                "0307113000",
+                "0403426000",
+                "1102412000",
+                "1380605000",
+                "1704005000",
+                "1705111000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "magsaysay",
+              "candidate_codes": [
+                "1003511000",
+                "1004317000",
+                "1102407000",
+                "1705105000",
+                "1705314000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "magsaysay",
+              "candidate_codes": [
+                "1003511000",
+                "1004317000",
+                "1102407000",
+                "1705105000",
+                "1705314000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "misamis oriental",
+              "candidate_codes": [
+                "1004300000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title_barangay",
+              "text": "poblacion",
+              "candidate_codes": [
+                "0102806011",
+                "0102814009",
+                "0102902015",
+                "0102909019",
+                "0102918006",
+                "0102921005",
+                "0102923006",
+                "0102928027",
+                "0102929004",
+                "0102932005",
+                "0103302010",
+                "0103303034",
+                "0103315019",
+                "0103317019",
+                "0103318010",
+                "0103319010",
+                "0103320017",
+                "0105502011",
+                "0105503021",
+                "0105505014",
+                "0105507008",
+                "0105508015",
+                "0105509013",
+                "0105512015",
+                "0105513026",
+                "0105515016",
+                "0105516007",
+                "0105519014",
+                "0105520012",
+                "0105521006",
+                "0105522028",
+                "0105523016",
+                "0105524062",
+                "0105525039",
+                "0105526025",
+                "0105528014",
+                "0105533020",
+                "0105542014",
+                "0105545018",
+                "0105546032",
+                "0105548013",
+                "0201506019",
+                "0201509008",
+                "0201521023",
+                "0203133014",
+                "0205001007",
+                "0205002011",
+                "0205006010",
+                "0205009003",
+                "0205012009",
+                "0205014008",
+                "0300803013",
+                "0300806007",
+                "0300807008",
+                "0300808004",
+                "0300811021",
+                "0301403014",
+                "0301404014",
+                "0301406010",
+                "0301407021",
+                "0301408006",
+                "0301412020",
+                "0301413022",
+                "0301415016",
+                "0301416007",
+                "0301417015",
+                "0301418022",
+                "0301419026",
+                "0301420008",
+                "0301421037",
+                "0301422023",
+                "0301423016",
+                "0304909019",
+                "0304924009",
+                "0304925006",
+                "0304929023",
+                "0305403018",
+                "0305406023",
+                "0305409020",
+                "0305415026",
+                "0305421004",
+                "0306901013",
+                "0306914007",
+                "0306916057",
+                "0307103015",
+                "0307705010",
+                "0401001015",
+                "0401004009",
+                "0401010017",
+                "0401015026",
+                "0401016018",
+                "0401017008",
+                "0401020023",
+                "0401023029",
+                "0401024028",
+                "0401025013",
+                "0401026020",
+                "0402103086",
+                "0402111006",
+                "0402116002",
+                "0402117008",
+                "0403403016",
+                "0403407015",
+                "0403415019",
+                "0403425011",
+                "0405605026",
+                "0405606012",
+                "0405608001",
+                "0405617016",
+                "0405618035",
+                "0405636015",
+                "0405640007",
+                "0405641014",
+                "0405642012",
+                "0405646029",
+                "0405814006",
+                "0500504038",
+                "0500510021",
+                "0500515029",
+                "0501602014",
+                "0501611008",
+                "0501718054",
+                "0501719027",
+                "0501726009",
+                "0501735015",
+                "0501736015",
+                "0502001008",
+                "0504101031",
+                "0504102020",
+                "0504103019",
+                "0504104011",
+                "0504105027",
+                "0504106022",
+                "0504108016",
+                "0504109012",
+                "0504110019",
+                "0504114006",
+                "0504115019",
+                "0504116015",
+                "0504117027",
+                "0504121026",
+                "0506206025",
+                "0506211028",
+                "0506216051",
+                "0600401011",
+                "0600402011",
+                "0600403019",
+                "0600404018",
+                "0600405012",
+                "0600406024",
+                "0600407013",
+                "0600408008",
+                "0600409021",
+                "0600410020",
+                "0600411015",
+                "0600412014",
+                "0600413015",
+                "0600414015",
+                "0600415013",
+                "0600416016",
+                "0600417009",
+                "0600601017",
+                "0600602034",
+                "0600603008",
+                "0600605011",
+                "0600609036",
+                "0600612022",
+                "0600614015",
+                "0600615009",
+                "0600617012",
+                "0601903021",
+                "0601906026",
+                "0601911013",
+                "0601913017",
+                "0601915010",
+                "0601917032",
+                "0603001022",
+                "0603002054",
+                "0603003015",
+                "0603004022",
+                "0603006025",
+                "0603008014",
+                "0603009019",
+                "0603010010",
+                "0603014028",
+                "0603015022",
+                "0603016024",
+                "0603026019",
+                "0603028071",
+                "0603032022",
+                "0603038021",
+                "0603042010",
+                "0607902021",
+                "0607903017",
+                "0701202011",
+                "0701203010",
+                "0701204014",
+                "0701205011",
+                "0701208010",
+                "0701209036",
+                "0701211016",
+                "0701213021",
+                "0701215006",
+                "0701216010",
+                "0701217011",
+                "0701218009",
+                "0701219007",
+                "0701224042",
+                "0701225030",
+                "0701226018",
+                "0701227016",
+                "0701232016",
+                "0701233008",
+                "0701234017",
+                "0701235014",
+                "0701236013",
+                "0701237013",
+                "0701238014",
+                "0701239014",
+                "0701240015",
+                "0701243021",
+                "0701244015",
+                "0701246034",
+                "0701248012",
+                "0702201007",
+                "0702202006",
+                "0702203007",
+                "0702204009",
+                "0702205035",
+                "0702206018",
+                "0702207020",
+                "0702210038",
+                "0702212005",
+                "0702213015",
+                "0702215016",
+                "0702218014",
+                "0702220012",
+                "0702221016",
+                "0702222029",
+                "0702223031",
+                "0702225012",
+                "0702227008",
+                "0702228009",
+                "0702231014",
+                "0702235020",
+                "0702237016",
+                "0702239011",
+                "0702240011",
+                "0702243020",
+                "0702244008",
+                "0702245008",
+                "0702246021",
+                "0702247016",
+                "0702248018",
+                "0702249016",
+                "0702250012",
+                "0702251028",
+                "0731100021",
+                "0803703010",
+                "0803713050",
+                "0803721018",
+                "0803726015",
+                "0803729021",
+                "0803731017",
+                "0803736017",
+                "0803745011",
+                "0803749008",
+                "0804802002",
+                "0804816006",
+                "0806001019",
+                "0806401012",
+                "0806402027",
+                "0806403025",
+                "0806406018",
+                "0806410007",
+                "0806415008",
+                "0807801007",
+                "0807806012",
+                "0906601026",
+                "0906605023",
+                "0906609035",
+                "0906612009",
+                "0907204009",
+                "0907207011",
+                "0907208010",
+                "0907213020",
+                "0907216018",
+                "0907217012",
+                "0907218025",
+                "0907219019",
+                "0907221007",
+                "0907222004",
+                "0907223003",
+                "0907224014",
+                "0907225011",
+                "0907302042",
+                "0907303023",
+                "0907305021",
+                "0907306020",
+                "0907311022",
+                "0907313034",
+                "0907315020",
+                "0907317024",
+                "0907323020",
+                "0907324019",
+                "0907325017",
+                "0907327013",
+                "0907333008",
+                "0907338010",
+                "0907340012",
+                "0907343009",
+                "0908301019",
+                "0908302017",
+                "0908303004",
+                "0908304012",
+                "0908305023",
+                "0908306020",
+                "0908307019",
+                "0908308028",
+                "0908309012",
+                "0908311015",
+                "0908313036",
+                "0908314013",
+                "0908315021",
+                "1001302015",
+                "1001303012",
+                "1001305013",
+                "1001306014",
+                "1001307010",
+                "1001309026",
+                "1001310012",
+                "1001311010",
+                "1001313006",
+                "1001316018",
+                "1001317028",
+                "1001319009",
+                "1001321024",
+                "1001322008",
+                "1001801012",
+                "1001803007",
+                "1001804011",
+                "1001805009",
+                "1003503015",
+                "1003505036",
+                "1003506028",
+                "1003507010",
+                "1003508020",
+                "1003510005",
+                "1003511016",
+                "1003512010",
+                "1003513018",
+                "1003515017",
+                "1003517024",
+                "1003518022",
+                "1003521017",
+                "1003522019",
+                "1003523019",
+                "1004203024",
+                "1004206011",
+                "1004211009",
+                "1004213017",
+                "1004214013",
+                "1004301010",
+                "1004304007",
+                "1004306020",
+                "1004307012",
+                "1004309009",
+                "1004310011",
+                "1004312011",
+                "1004313008",
+                "1004314008",
+                "1004315005",
+                "1004316007",
+                "1004317016",
+                "1004318010",
+                "1004320008",
+                "1004321014",
+                "1004322011",
+                "1004323008",
+                "1004324006",
+                "1004325010",
+                "1030900017",
+                "1102314014",
+                "1102317029",
+                "1102324013",
+                "1102401018",
+                "1102404021",
+                "1102406023",
+                "1102407015",
+                "1102408016",
+                "1102410026",
+                "1102414018",
+                "1102502012",
+                "1102503004",
+                "1102504010",
+                "1102505019",
+                "1102506010",
+                "1102507028",
+                "1108201011",
+                "1108204026",
+                "1108206007",
+                "1108207013",
+                "1108209019",
+                "1108603032",
+                "1108604009",
+                "1204702032",
+                "1204703019",
+                "1204704032",
+                "1204705029",
+                "1204706040",
+                "1204707029",
+                "1204708034",
+                "1204710031",
+                "1204712050",
+                "1204713024",
+                "1204714020",
+                "1204715011",
+                "1206311013",
+                "1206312014",
+                "1206314006",
+                "1206315010",
+                "1206316020",
+                "1206317013",
+                "1206318006",
+                "1206319014",
+                "1206501009",
+                "1206502023",
+                "1206503022",
+                "1206505015",
+                "1206506016",
+                "1206508020",
+                "1206509031",
+                "1206510016",
+                "1206511013",
+                "1208001010",
+                "1208002023",
+                "1208003014",
+                "1208004014",
+                "1208006008",
+                "1208007023",
+                "1380300020",
+                "1380500024",
+                "1380800005",
+                "1381600025",
+                "1381701004",
+                "1400102007",
+                "1400107012",
+                "1400108010",
+                "1400109006",
+                "1400110013",
+                "1400111006",
+                "1400112007",
+                "1400113009",
+                "1400114008",
+                "1400117006",
+                "1400119016",
+                "1400121008",
+                "1400123004",
+                "1400124010",
+                "1400125001",
+                "1400126005",
+                "1400127006",
+                "1401101007",
+                "1401103009",
+                "1401104009",
+                "1401105013",
+                "1401106005",
+                "1401107017",
+                "1401109005",
+                "1401110012",
+                "1401111010",
+                "1401112011",
+                "1401113007",
+                "1402701016",
+                "1402702011",
+                "1402703018",
+                "1402706028",
+                "1402707011",
+                "1402709009",
+                "1403201013",
+                "1403206004",
+                "1403214011",
+                "1403215014",
+                "1404402020",
+                "1404404016",
+                "1404405007",
+                "1404406009",
+                "1404407013",
+                "1404408005",
+                "1404409014",
+                "1404410017",
+                "1408101007",
+                "1408104020",
+                "1408105007",
+                "1408106016",
+                "1600204009",
+                "1600205011",
+                "1600206006",
+                "1600207011",
+                "1600208005",
+                "1600301016",
+                "1600302005",
+                "1600303019",
+                "1600304006",
+                "1600305005",
+                "1600306004",
+                "1600307006",
+                "1600309006",
+                "1600310006",
+                "1600312006",
+                "1600313008",
+                "1600314015",
+                "1606701001",
+                "1606702007",
+                "1606719011",
+                "1606722008",
+                "1606727006",
+                "1606801015",
+                "1606803012",
+                "1606804009",
+                "1606808008",
+                "1606811010",
+                "1606812011",
+                "1606814008",
+                "1606815009",
+                "1606816013",
+                "1606817012",
+                "1608501013",
+                "1608502008",
+                "1704006020",
+                "1705101004",
+                "1705102005",
+                "1705105010",
+                "1705109009",
+                "1705201029",
+                "1705202008",
+                "1705203032",
+                "1705204012",
+                "1705207013",
+                "1705211012",
+                "1705213007",
+                "1705301019",
+                "1705303015",
+                "1705319008",
+                "1705320020",
+                "1705901006",
+                "1705902010",
+                "1705903012",
+                "1705904003",
+                "1705905006",
+                "1705906011",
+                "1705907011",
+                "1705908007",
+                "1705911017",
+                "1705912010",
+                "1705913011",
+                "1705914005",
+                "1705915010",
+                "1705916004",
+                "1804502020",
+                "1804507004",
+                "1804525006",
+                "1804529005",
+                "1804530015",
+                "1804601005",
+                "1804602024",
+                "1804605010",
+                "1804606018",
+                "1804607018",
+                "1804611028",
+                "1804614030",
+                "1804615018",
+                "1804616012",
+                "1804617009",
+                "1804618019",
+                "1804620012",
+                "1804622022",
+                "1804624011",
+                "1804625010",
+                "1806101013",
+                "1806105010",
+                "1806106031",
+                "1903602039",
+                "1903603005",
+                "1903604056",
+                "1903605025",
+                "1903606007",
+                "1903609018",
+                "1903610012",
+                "1903612043",
+                "1903613027",
+                "1903616111",
+                "1903619015",
+                "1903620042",
+                "1903622020",
+                "1903625033",
+                "1903628009",
+                "1903629017",
+                "1903637001",
+                "1908703003",
+                "1908706016",
+                "1908709020",
+                "1908802004",
+                "1908806020",
+                "1908807015",
+                "1908816012",
+                "1908820007"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "explicit_barangay_marker"
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "1000000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [
+            "ambiguous_barangay_name",
+            "title_or_heading_province_conflict"
+          ],
+          "needs_review": true,
+          "score": -4,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:ambiguous",
+              "impact": 1
+            },
+            {
+              "rule": "evidence:explicit_barangay_marker",
+              "impact": 2
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            },
+            {
+              "rule": "penalty:ambiguous_barangay_name",
+              "impact": -3
+            },
+            {
+              "rule": "penalty:title_or_heading_province_conflict",
+              "impact": -5
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p288:r10",
+        "title": "Alternate Road from Region X to Region XI (Jct. Diversion Road Catalunan Grande- Talandang-Sumimao-Panalum-Tapak-Cabanlasan-Aplaya, Malaybalay ), Brgy. Santo Nino Section, Sta. 1577 + 119.680 to Sta. 1577 + 200.000, Sta. 1577 + 420.000 to Sta. 1577 + 560.000, Sta. 1577 + 960.320 to Sta. 1578 + 120.000, Sta. 1579 + 455.000 to Sta. 1579 + 475.000, Talaingod, Davao del Norte",
+        "location": {
+          "status": "ambiguous",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "1102300000",
+              "name": "Davao del Norte",
+              "level": "province",
+              "ancestry": {
+                "province": {
+                  "code": "1102300000",
+                  "name": "Davao del Norte"
+                },
+                "region": {
+                  "code": "1100000000",
+                  "name": "Region XI (Davao Region)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0102814010",
+            "0102922000",
+            "0105512023",
+            "0105540010",
+            "0201511040",
+            "0201526000",
+            "0203102054",
+            "0203127019",
+            "0203137047",
+            "0205704026",
+            "0300804038",
+            "0301403021",
+            "0301407027",
+            "0301409023",
+            "0301410049",
+            "0301415022",
+            "0301416015",
+            "0301417019",
+            "0304903100",
+            "0304908017",
+            "0305407033",
+            "0305408044",
+            "0305410021",
+            "0305411023",
+            "0305412029",
+            "0305416034",
+            "0305417016",
+            "0305418014",
+            "0306902015",
+            "0306905037",
+            "0306916080",
+            "0307102024",
+            "0307108018",
+            "0307110011",
+            "0401005100",
+            "0401010024",
+            "0401014068",
+            "0401016031",
+            "0401025014",
+            "0401026029",
+            "0401032019",
+            "0403403018",
+            "0403413015",
+            "0403424078",
+            "0403425017",
+            "0405627038",
+            "0405642017",
+            "0405801013",
+            "0405805019",
+            "0405811015",
+            "0405812016",
+            "0500516024",
+            "0501611015",
+            "0501706033",
+            "0501708046",
+            "0501716036",
+            "0501725025",
+            "0501728024",
+            "0501731019",
+            "0502011058",
+            "0504105034",
+            "0504114010",
+            "0506216063",
+            "0601903019",
+            "0601913021",
+            "0603017043",
+            "0603041024",
+            "0701206030",
+            "0701218014",
+            "0701224047",
+            "0701226022",
+            "0701238018",
+            "0701243033",
+            "0702211025",
+            "0702229013",
+            "0702251034",
+            "0702252043",
+            "0802606043",
+            "0802609063",
+            "0802618021",
+            "0802622015",
+            "0803701054",
+            "0803702044",
+            "0803707028",
+            "0803714019",
+            "0803719041",
+            "0803722021",
+            "0803723036",
+            "0803725025",
+            "0803726020",
+            "0803731028",
+            "0803734018",
+            "0803738087",
+            "0803750008",
+            "0804802010",
+            "0806007083",
+            "0806012029",
+            "0806018000",
+            "0806021039",
+            "0806022040",
+            "0806026015",
+            "0806402040",
+            "0806407056",
+            "0806408028",
+            "0806409038",
+            "0806414012",
+            "0807808016",
+            "0907201042",
+            "0907203031",
+            "0907206027",
+            "0907210026",
+            "0907213036",
+            "0907216020",
+            "0907218050",
+            "0907221016",
+            "0907223029",
+            "0907322055",
+            "0907330023",
+            "0907340015",
+            "0908301021",
+            "0908307023",
+            "0908316022",
+            "0931700077",
+            "1001312000",
+            "1001312061",
+            "1001314021",
+            "1001320016",
+            "1001801013",
+            "1003508024",
+            "1003522022",
+            "1004215041",
+            "1004315007",
+            "1102300000",
+            "1102303019",
+            "1102314018",
+            "1102315034",
+            "1102317038",
+            "1102322000",
+            "1102322003",
+            "1102324012",
+            "1102401020",
+            "1102406028",
+            "1108202039",
+            "1108209024",
+            "1108604019",
+            "1130700193",
+            "1204704035",
+            "1204707034",
+            "1204718026",
+            "1206306025",
+            "1206318000",
+            "1206501017",
+            "1380700010",
+            "1381000005",
+            "1381300109",
+            "1600205015",
+            "1600208010",
+            "1600301047",
+            "1600305016",
+            "1606720011",
+            "1606815013",
+            "1608501025",
+            "1608504014",
+            "1630400100",
+            "1705108010",
+            "1705109019",
+            "1705205057",
+            "1705208063",
+            "1705209036",
+            "1705211008",
+            "1705303011",
+            "1705307015",
+            "1705319010",
+            "1705917005",
+            "1804508019",
+            "1804617011",
+            "1804621023"
+          ],
+          "suggestions": [
+            {
+              "location": {
+                "psgc_code": "1102322003",
+                "name": "Santo Niño",
+                "level": "barangay",
+                "ancestry": {
+                  "barangay": {
+                    "code": "1102322003",
+                    "name": "Santo Niño"
+                  },
+                  "municipality": {
+                    "code": "1102322000",
+                    "name": "Talaingod"
+                  },
+                  "province": {
+                    "code": "1102300000",
+                    "name": "Davao del Norte"
+                  },
+                  "region": {
+                    "code": "1100000000",
+                    "name": "Region XI (Davao Region)"
+                  }
+                }
+              },
+              "support_score": 11,
+              "factors": [
+                {
+                  "rule": "explicit_barangay_mention",
+                  "impact": 4
+                },
+                {
+                  "rule": "named_parent_town",
+                  "impact": 3
+                },
+                {
+                  "rule": "named_parent_province",
+                  "impact": 2
+                },
+                {
+                  "rule": "source_region_agreement",
+                  "impact": 2
+                }
+              ],
+              "conflicts": []
+            },
+            {
+              "location": {
+                "psgc_code": "1001312061",
+                "name": "Sto. Niño",
+                "level": "barangay",
+                "ancestry": {
+                  "barangay": {
+                    "code": "1001312061",
+                    "name": "Sto. Niño"
+                  },
+                  "city": {
+                    "code": "1001312000",
+                    "name": "City of Malaybalay"
+                  },
+                  "province": {
+                    "code": "1001300000",
+                    "name": "Bukidnon"
+                  },
+                  "region": {
+                    "code": "1000000000",
+                    "name": "Region X (Northern Mindanao)"
+                  }
+                }
+              },
+              "support_score": 1,
+              "factors": [
+                {
+                  "rule": "explicit_barangay_mention",
+                  "impact": 4
+                },
+                {
+                  "rule": "named_parent_town",
+                  "impact": 3
+                },
+                {
+                  "rule": "named_province_conflict",
+                  "impact": -4
+                },
+                {
+                  "rule": "source_region_conflict",
+                  "impact": -2
+                }
+              ],
+              "conflicts": [
+                "named_province_conflict",
+                "source_region_conflict"
+              ]
+            }
+          ],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "malaybalay",
+              "candidate_codes": [
+                "1001312000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "santo nino",
+              "candidate_codes": [
+                "0201526000",
+                "0806018000",
+                "1206318000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "talaingod",
+              "candidate_codes": [
+                "1102322000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "davao del norte",
+              "candidate_codes": [
+                "1102300000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title_barangay",
+              "text": "santo nino",
+              "candidate_codes": [
+                "0102814010",
+                "0105512023",
+                "0105540010",
+                "0201511040",
+                "0203102054",
+                "0203127019",
+                "0203137047",
+                "0205704026",
+                "0300804038",
+                "0301403021",
+                "0301407027",
+                "0301409023",
+                "0301410049",
+                "0301415022",
+                "0301416015",
+                "0301417019",
+                "0304903100",
+                "0304908017",
+                "0305407033",
+                "0305408044",
+                "0305410021",
+                "0305411023",
+                "0305412029",
+                "0305416034",
+                "0305417016",
+                "0305418014",
+                "0306902015",
+                "0306905037",
+                "0306916080",
+                "0307102024",
+                "0307108018",
+                "0307110011",
+                "0401005100",
+                "0401010024",
+                "0401014068",
+                "0401016031",
+                "0401025014",
+                "0401026029",
+                "0401032019",
+                "0403403018",
+                "0403413015",
+                "0403424078",
+                "0403425017",
+                "0405627038",
+                "0405642017",
+                "0405801013",
+                "0405805019",
+                "0405811015",
+                "0405812016",
+                "0500516024",
+                "0501611015",
+                "0501706033",
+                "0501708046",
+                "0501716036",
+                "0501725025",
+                "0501728024",
+                "0501731019",
+                "0502011058",
+                "0504105034",
+                "0504114010",
+                "0506216063",
+                "0601903019",
+                "0601913021",
+                "0603017043",
+                "0603041024",
+                "0701206030",
+                "0701218014",
+                "0701224047",
+                "0701226022",
+                "0701238018",
+                "0701243033",
+                "0702211025",
+                "0702229013",
+                "0702251034",
+                "0702252043",
+                "0802606043",
+                "0802609063",
+                "0802618021",
+                "0802622015",
+                "0803701054",
+                "0803702044",
+                "0803707028",
+                "0803714019",
+                "0803719041",
+                "0803722021",
+                "0803723036",
+                "0803725025",
+                "0803726020",
+                "0803731028",
+                "0803734018",
+                "0803738087",
+                "0803750008",
+                "0804802010",
+                "0806007083",
+                "0806012029",
+                "0806021039",
+                "0806022040",
+                "0806026015",
+                "0806402040",
+                "0806407056",
+                "0806408028",
+                "0806409038",
+                "0806414012",
+                "0807808016",
+                "0907201042",
+                "0907203031",
+                "0907206027",
+                "0907210026",
+                "0907213036",
+                "0907216020",
+                "0907218050",
+                "0907221016",
+                "0907223029",
+                "0907322055",
+                "0907330023",
+                "0907340015",
+                "0908301021",
+                "0908307023",
+                "0908316022",
+                "0931700077",
+                "1001312061",
+                "1001314021",
+                "1001320016",
+                "1001801013",
+                "1003508024",
+                "1003522022",
+                "1004215041",
+                "1004315007",
+                "1102303019",
+                "1102314018",
+                "1102315034",
+                "1102317038",
+                "1102322003",
+                "1102324012",
+                "1102401020",
+                "1102406028",
+                "1108202039",
+                "1108209024",
+                "1108604019",
+                "1130700193",
+                "1204704035",
+                "1204707034",
+                "1204718026",
+                "1206306025",
+                "1206501017",
+                "1380700010",
+                "1381000005",
+                "1381300109",
+                "1600205015",
+                "1600208010",
+                "1600301047",
+                "1600305016",
+                "1606720011",
+                "1606815013",
+                "1608501025",
+                "1608504014",
+                "1630400100",
+                "1705108010",
+                "1705109019",
+                "1705205057",
+                "1705208063",
+                "1705209036",
+                "1705211008",
+                "1705303011",
+                "1705307015",
+                "1705319010",
+                "1705917005",
+                "1804508019",
+                "1804617011",
+                "1804621023"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "explicit_barangay_marker"
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "1100000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [
+            "ambiguous_barangay_name",
+            "title_or_heading_province_conflict"
+          ],
+          "needs_review": true,
+          "score": -4,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:ambiguous",
+              "impact": 1
+            },
+            {
+              "rule": "evidence:explicit_barangay_marker",
+              "impact": 2
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            },
+            {
+              "rule": "penalty:ambiguous_barangay_name",
+              "impact": -3
+            },
+            {
+              "rule": "penalty:title_or_heading_province_conflict",
+              "impact": -5
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p297:r24",
+        "title": "Tabaco City-Malinao-Buhi-Iriga City Road, Camarines Sur, Sta. 40 + 300.00 - Sta. 41 + 100.00",
+        "location": {
+          "status": "ambiguous",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [
+            {
+              "psgc_code": "0501700000",
+              "name": "Camarines Sur",
+              "level": "province",
+              "ancestry": {
+                "province": {
+                  "code": "0501700000",
+                  "name": "Camarines Sur"
+                },
+                "region": {
+                  "code": "0500000000",
+                  "name": "Region V (Bicol Region)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0102922000",
+            "0500510000",
+            "0500517000",
+            "0501700000",
+            "0501705000",
+            "0501716000",
+            "0600413000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v1",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "tabaco city",
+              "candidate_codes": [
+                "0500517000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "malinao",
+              "candidate_codes": [
+                "0500510000",
+                "0600413000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "buhi",
+              "candidate_codes": [
+                "0501705000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "iriga city",
+              "candidate_codes": [
+                "0501716000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "camarines sur",
+              "candidate_codes": [
+                "0501700000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa",
+              "candidate_codes": [
+                "0102922000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "source_region",
+              "candidate_codes": [
+                "0500000000"
+              ],
+              "locality_syntax": true,
+              "resolution_rule": "source_region_agreement"
+            }
+          ],
+          "review_flags": [
+            "title_or_heading_province_conflict"
+          ],
+          "needs_review": true,
+          "score": -3,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:ambiguous",
+              "impact": 1
+            },
+            {
+              "rule": "evidence:source_region_agreement",
+              "impact": 1
+            },
+            {
+              "rule": "penalty:title_or_heading_province_conflict",
+              "impact": -5
+            }
+          ]
+        }
+      }
+    ],
+    "allocation_not_site": [
+      {
+        "record_id": "dpwh_nep_pdf:p424:r9",
+        "title": "Rainwater Collector System - Las Pi ñ as-Muntinlupa District Engineering Office",
+        "location": {
+          "status": "allocation_not_site",
+          "method": null,
+          "verification_status": null,
+          "locations": [],
+          "candidate_codes": [],
+          "suggestions": [],
+          "suggestion_method": null,
+          "evidence": [],
+          "review_flags": [
+            "allocation_is_not_a_project_site"
+          ],
+          "needs_review": false,
+          "score": 0,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:allocation_not_site",
+              "impact": 0
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p424:r10",
+        "title": "Rainwater Collector System - Malabon-Navotas District Engineering Office",
+        "location": {
+          "status": "allocation_not_site",
+          "method": null,
+          "verification_status": null,
+          "locations": [],
+          "candidate_codes": [],
+          "suggestions": [],
+          "suggestion_method": null,
+          "evidence": [],
+          "review_flags": [
+            "allocation_is_not_a_project_site"
+          ],
+          "needs_review": false,
+          "score": 0,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:allocation_not_site",
+              "impact": 0
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p424:r11",
+        "title": "Rainwater Collector System - Metro Manila 1st District Engineering Office",
+        "location": {
+          "status": "allocation_not_site",
+          "method": null,
+          "verification_status": null,
+          "locations": [],
+          "candidate_codes": [],
+          "suggestions": [],
+          "suggestion_method": null,
+          "evidence": [],
+          "review_flags": [
+            "allocation_is_not_a_project_site"
+          ],
+          "needs_review": false,
+          "score": 0,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:allocation_not_site",
+              "impact": 0
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p424:r12",
+        "title": "Rainwater Collector System - Metro Manila 2nd District Engineering Office",
+        "location": {
+          "status": "allocation_not_site",
+          "method": null,
+          "verification_status": null,
+          "locations": [],
+          "candidate_codes": [],
+          "suggestions": [],
+          "suggestion_method": null,
+          "evidence": [],
+          "review_flags": [
+            "allocation_is_not_a_project_site"
+          ],
+          "needs_review": false,
+          "score": 0,
+          "score_method": "location_evidence_v2",
+          "score_factors": [
+            {
+              "rule": "base:allocation_not_site",
+              "impact": 0
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "output_sha256": {
+    "projects.jsonl.gz": "175c3e538c31145dd9cccded55ac7f749b0f01ec3ea8462bc90006b1e6f4e996",
+    "projects.csv.gz": "9314eab4f9035bec0bca03e7a32f9596af8864d3dbe72ab002a0bb281f053b4a",
+    "location_review.csv.gz": "01b48a1b384259ac0e92b58ecc3b4735d18c2c65cf9d9420a9cc59c575b7e515"
+  }
+}

@@ -71,6 +71,7 @@ use the packaged preview above. The packager includes all workspaces.
 
 ## Guides and validation
 
+- [Project master list](master_list/README.md): collated FY2027 source observations with provisional PSGC locations, source evidence, exports, and a location review queue.
 - [FMR workbench guide](other-analysis/FMR_WORKBENCH.md): routes, matching, evidence, and checks.
 - [Source analysis](other-analysis/README.md): extraction and coordinate review artifacts for FMR, HFEP, and the annex method.
 - [NIA irrigation analysis](analysis-nia/README.md): HB 10858 irrigation annex extraction (828 projects, ₱17,999,305,000).

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>FY2027 · Project master list</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#202c38;background:#f5f7fa;font-size:14px}
+    *{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button,a,input,select{outline-offset:3px}a{color:#185a9c;text-decoration-thickness:1px;text-underline-offset:3px}button{cursor:pointer}button:disabled{cursor:default;opacity:.45}
+    header{padding:28px 32px 20px;background:#fff;border-bottom:1px solid #dde3eb}.eyebrow{color:#577087;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}h1{margin:7px 0 8px;font-size:28px;letter-spacing:-.035em}header p{margin:0;color:#5c6d7c;max-width:900px;line-height:1.6}.header-top{display:flex;align-items:start;justify-content:space-between;gap:20px}.download{border:1px solid #c8d5e3;border-radius:7px;padding:9px 12px;white-space:nowrap;background:#fff;color:#185a9c;text-decoration:none}
+    main{padding:22px 32px 32px}.filters{display:grid;grid-template-columns:minmax(240px,2fr) minmax(180px,1.1fr) minmax(180px,1.2fr) minmax(150px,.8fr);gap:14px;align-items:end;margin-bottom:16px}label{display:block;font-size:12px;font-weight:650;color:#526477}input[type=search],input[type=number],select{margin-top:6px;width:100%;height:40px;border:1px solid #cbd5df;border-radius:6px;background:#fff;padding:0 10px;color:#202c38}input::placeholder{color:#82909d}.options{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-bottom:17px}.check{font-size:13px;font-weight:400;display:flex;gap:7px;align-items:center}.check input{accent-color:#185a9c}.reset{border:0;background:transparent;color:#185a9c;padding:5px 0}.help{font-size:12px;color:#6a7785;line-height:1.55;margin-left:auto}.results-bar{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:11px;min-height:28px}#summary{font-weight:650}#total{font-size:12px;color:#617184;text-align:right}
+    .table-wrap{border:1px solid #d8e0e8;border-radius:8px;background:#fff;overflow:auto;max-height:calc(100vh - 340px);min-height:240px}table{width:100%;min-width:1200px;border-collapse:separate;border-spacing:0;table-layout:fixed}thead{position:sticky;top:0;z-index:1;background:#edf2f7}th{padding:11px 13px;text-align:left;border-bottom:1px solid #d8e0e8;font-size:12px;color:#45586c;font-weight:650}th button{padding:0;color:inherit;background:none;border:0;text-align:inherit;font-weight:inherit;width:100%}td{padding:14px 13px;border-bottom:1px solid #e8edf2;vertical-align:top;font-size:13px;line-height:1.5;overflow-wrap:anywhere}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#f9fbfd}.title-cell{font-weight:550}.meta{display:block;font-size:11px;font-weight:400;color:#718091;margin-top:6px}.badge{display:inline-block;font-size:10px;letter-spacing:.02em;background:#eef2f7;border:1px solid #dbe2eb;border-radius:4px;padding:1px 5px;margin-top:6px;color:#657486}.amount{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600}.location{margin-bottom:10px}.location:last-of-type{margin-bottom:0}.place-name{font-weight:550}.code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;color:#52677c}.parents{display:block;color:#6e7d8d;font-size:11px;line-height:1.45;margin:3px 0}.status{font-size:11px;color:#5f7081;margin-top:7px}.review{color:#956215}.suggestions{margin-top:10px;padding:8px;border:1px solid #e2c98f;border-radius:5px;background:#fffaf0;font-size:11px}.suggestion-heading{font-weight:700;color:#815d18;margin-bottom:5px}.suggestion{padding:7px 0;border-top:1px solid #eadbb9}.suggestion:first-of-type{border-top:0}.suggestion-score{display:block;color:#815d18;margin-top:3px}.suggestion details{margin-top:4px;color:#6d6044}.candidates{font-size:11px;color:#52677c;margin-top:8px}.candidates .candidate{padding:7px 0;border-top:1px solid #e5eaf0}.candidate .place-name{font-size:11px}.evidence{text-align:center;font-variant-numeric:tabular-nums}.score{display:inline-block;min-width:48px;border-radius:999px;padding:4px 8px;font-weight:700;background:#edf1f5;color:#536474}.score.positive{background:#e8f0f8;color:#285b85}.score.negative{background:#fae8df;color:#8a4932}.evidence details{font-size:10px;color:#667789;margin-top:7px;text-align:left}.evidence details div{margin-top:3px}.page{white-space:nowrap}.empty{padding:42px 20px;text-align:center;color:#697b8e;font-weight:400}.pagination{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-top:15px}.page-buttons{display:flex;gap:8px;align-items:center}button.nav{background:#fff;border:1px solid #ccd7e2;border-radius:5px;padding:7px 12px;color:#344d65}#page-info{font-size:12px;color:#627588;margin:0 8px}.page-size{display:flex;gap:8px;align-items:center;white-space:nowrap}.page-size select{width:auto;height:33px;margin:0}.footer{font-size:12px;color:#718091;margin-top:17px;line-height:1.6}#error{border:1px solid #ebc4ba;background:#fff3ef;padding:18px;line-height:1.6;border-radius:6px;margin-bottom:20px}noscript{display:block;padding:25px}
+    @media(max-width:1050px){.filters{grid-template-columns:1fr 1fr}.table-wrap{max-height:65vh}.help{margin-left:0}}@media(max-width:600px){header,main{padding:20px 16px}.header-top{display:block}.download{display:inline-block;margin-top:15px}.filters{grid-template-columns:1fr}.pagination{align-items:start;flex-direction:column}.results-bar{align-items:start;flex-direction:column;gap:5px}#total{text-align:left}h1{font-size:24px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-top"><div><div class="eyebrow">FY2027 · Budget records</div><h1>Project master list</h1><p>Project titles, amounts, provisional PSGC locations, and the source pages behind them.</p></div><a class="download" href="data/project_list.csv.gz" download>Download full CSV (gzip) ↗</a></div>
+  </header>
+  <main>
+    <div id="error" hidden role="alert"></div>
+    <div class="filters">
+      <label for="search">Search the list<input id="search" type="search" placeholder="Title, category, place, PSGC code, or PDF…" autocomplete="off" disabled></label>
+      <label for="dataset">Source<select id="dataset" disabled><option value="">All sources (overlap)</option></select></label>
+      <label for="category">Category<select id="category" disabled><option value="">All categories</option></select></label>
+      <label for="score">Minimum evidence score<input id="score" type="number" step="1" placeholder="Any score" disabled></label>
+    </div>
+    <div class="options"><label class="check"><input id="allocations" type="checkbox" disabled>Include allocation rows</label><label class="check"><input id="review" type="checkbox" disabled>Needs location review</label><button id="reset" class="reset" disabled>Reset filters</button><span class="help">Sources and readings overlap. Location matches are provisional.</span></div>
+    <div class="results-bar"><span id="summary" role="status" aria-live="polite">Loading the complete list…</span><span id="total"></span></div>
+    <div class="table-wrap" tabindex="0" aria-label="Scrollable project table">
+      <table id="projects"><colgroup><col style="width:24%"><col style="width:15%"><col style="width:11%"><col style="width:21%"><col style="width:9%"><col style="width:12%"><col style="width:8%"></colgroup>
+        <thead><tr><th scope="col" data-sort="title" aria-sort="none"><button data-sort="title">Title ↕</button></th><th scope="col" data-sort="category" aria-sort="none"><button data-sort="category">Category ↕</button></th><th scope="col" data-sort="value" class="amount" aria-sort="none"><button data-sort="value">Value (PHP) ↕</button></th><th scope="col">PSGC locations</th><th scope="col" data-sort="score" aria-sort="none"><button data-sort="score">Evidence score ↕</button></th><th scope="col">Reference PDF</th><th scope="col">Page</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="7" class="empty">Preparing records…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pagination"><div class="page-buttons"><button class="nav" id="previous" disabled>← Previous</button><span id="page-info">Page —</span><button class="nav" id="next" disabled>Next →</button></div><label class="page-size">Rows per page<select id="page-size" disabled><option>25</option><option selected>50</option><option>100</option><option>250</option></select></label></div>
+    <p class="footer">Page links use the PDF file’s page number; a printed page is shown separately when supplied. API listing rows have no asserted PDF reference. PSGC codes use the retained provisional catalog. <a href="README.md">Methods and data guide</a></p>
+  </main>
+  <noscript>Enable JavaScript to display the table, or open <a href="data/project_list.csv.gz">the full CSV (gzip)</a>.</noscript>
+  <script id="embedded-data" type="application/octet-stream">__MASTER_DATA_BASE64__</script>
+  <script>
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const money = new Intl.NumberFormat('en-PH', {maximumFractionDigits: 0});
+  const number = new Intl.NumberFormat('en-PH');
+  const labels = {name_matched:'Provisional name match',multiple_locations:'Multiple locations · review',province_only:'Province only · review',ambiguous:'Ambiguous · review',unresolved:'Unresolved',allocation_not_site:'Allocation without site'};
+  let records = [], filtered = [], datasets = {}, page = 1, sortKey = '', direction = 1, timer;
+  function element(tag, text, className) { const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (className) node.className = className; return node; }
+  function fileLink(path, pageNumber) { const url = new URL('../' + path.split('/').map(encodeURIComponent).join('/'), location.href); if(pageNumber) url.hash = 'page=' + pageNumber; return url.href; }
+  function sourceLink(text, path, pageNumber) {const link = element('a', text); link.href = fileLink(path,pageNumber); link.target='_blank'; link.rel='noopener'; return link;}
+  function isProject(r) { return ['project','facility','fap_project'].includes(r.kind); }
+  function populateCategories() {
+    const previous = $('category').value, selected = $('dataset').value;
+    const categories = [...new Set(records.filter(r => !selected || r.dataset === selected).map(r => r.category))].sort((a,b) => a.localeCompare(b));
+    $('category').replaceChildren(new Option('All categories',''), ...categories.map(value => new Option(value,value)));
+    if(categories.includes(previous)) $('category').value = previous;
+  }
+  function applyFilters() {
+    const terms = $('search').value.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+    const dataset = $('dataset').value, category = $('category').value;
+    const minimumScore = $('score').value === '' ? -Infinity : Number($('score').value);
+    filtered = records.filter(r => (!$('allocations').checked ? isProject(r) : true)
+      && (!dataset || r.dataset === dataset) && (!category || r.category === category)
+      && r.score >= minimumScore && (!$('review').checked || r.review)
+      && terms.every(term => r.search.includes(term)));
+      if(sortKey) filtered.sort((a,b) => direction * (['value','score'].includes(sortKey) ? a[sortKey]-b[sortKey] : a[sortKey].localeCompare(b[sortKey])));
+    page = 1; render();
+  }
+  function render() {
+    const size = Number($('page-size').value), pages = Math.max(1,Math.ceil(filtered.length/size));
+    page = Math.min(Math.max(1,page),pages);
+    const start = (page-1)*size, end = Math.min(start+size,filtered.length), body = document.createDocumentFragment();
+    for(const r of filtered.slice(start,end)) {
+      const tr = element('tr'); tr.dataset.recordId = r.id;
+      const title = element('td', r.title, 'title-cell');
+      title.append(element('span',datasets[r.dataset] + ' · ' + r.id, 'meta'));
+      if(!isProject(r)) title.append(element('span','Allocation','badge'));
+      const category = element('td',r.category), value = element('td','₱' + money.format(r.value),'amount'), places = element('td');
+      for(const l of r.locations) {const block=element('div',undefined,'location'); block.append(element('span',l.name,'place-name'),element('span',l.parents,'parents'),element('span',l.code + ' · ' + l.level.replaceAll('_',' '),'code'));places.append(block);}
+      const status = element('div',labels[r.status] || r.status,'status' + (r.review ? ' review' : ''));
+      if(!r.locations.length) places.append(element('span','No assigned location'));
+      if(r.flags.length) {const details = element('details'); details.append(element('summary',labels[r.status] + (r.review && r.status==='name_matched' ? ' · review' : '')));details.className=status.className; for(const flag of r.flags) details.append(element('div',flag.replaceAll('_',' ')));places.append(details);} else places.append(status);
+      if(r.suggestions.length) {const group=element('div',undefined,'suggestions');group.append(element('div','Suggested hierarchies for review','suggestion-heading'));for(const s of r.suggestions){const block=element('div',undefined,'suggestion');block.append(element('span',s.name,'place-name'),element('span',s.parents,'parents'),element('span',s.code+' · '+s.level.replaceAll('_',' '),'code'),element('span',`Raw suggestion support: ${s.supportScore} · not assigned`,'suggestion-score'));const why=element('details');why.append(element('summary','Why suggested'));for(const factor of s.factors)why.append(element('div',`${factor.impact>=0?'+':''}${factor.impact} · ${factor.rule.replaceAll('_',' ')}`));block.append(why);group.append(block);}places.append(group);}
+      if(r.candidates.length) {const details=element('details',undefined,'candidates');details.append(element('summary',`${number.format(r.candidates.length)} unassigned PSGC candidate${r.candidates.length===1?'':'s'}`));for(const c of r.candidates){const block=element('div',undefined,'candidate');block.append(element('span',c.name,'place-name'),element('span',c.parents,'parents'),element('span',c.code+' · '+c.level.replaceAll('_',' '),'code'));details.append(block);}places.append(details);}
+      const evidence = element('td',undefined,'evidence'), score = element('span',String(r.score),'score ' + (r.score > 0 ? 'positive' : r.score < 0 ? 'negative' : ''));
+      score.title='Raw additive location evidence score';evidence.append(score);
+      const factors=element('details');factors.append(element('summary','Why?'));for(const factor of r.scoreFactors)factors.append(element('div',`${factor.impact >= 0 ? '+' : ''}${factor.impact} · ${factor.rule.replaceAll('_',' ')}`));evidence.append(factors);
+      const reference = element('td'), pageCell = element('td',undefined,'page');
+      if(r.pdf) {reference.append(sourceLink(r.pdf.split('/').at(-1),r.pdf,r.page));pageCell.append(sourceLink(String(r.page),r.pdf,r.page));if(r.printed)pageCell.append(element('span','Printed ' + r.printed,'meta'));}
+      else {reference.append(element('span','Not supplied (API listing)','meta'),sourceLink('Source snapshot',r.source));pageCell.textContent='—';}
+      tr.append(title,category,value,places,evidence,reference,pageCell); body.append(tr);
+    }
+    if(!filtered.length) {const tr=element('tr'),td=element('td','No records match these filters.','empty');td.colSpan=7;tr.append(td);body.append(tr);}
+    $('rows').replaceChildren(body);
+    $('summary').textContent = filtered.length ? `${number.format(start+1)}–${number.format(end)} of ${number.format(filtered.length)} records` : '0 matching records';
+    $('page-info').textContent=`Page ${number.format(page)} of ${number.format(pages)}`;
+    $('previous').disabled=page===1; $('next').disabled=page===pages;
+    $('total').textContent = $('dataset').value ? `Filtered source total: ₱${money.format(filtered.reduce((sum,r)=>sum+r.value,0))}` : 'Choose one source to show its filtered total.';
+  }
+  async function load() {
+    try {
+      if(!globalThis.DecompressionStream) throw new Error('This viewer requires a recent Chrome, Edge, Firefox or Safari browser with gzip decompression support. The CSV remains available.');
+      const binary=atob($('embedded-data').textContent.trim()), bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
+      const data=JSON.parse(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
+      datasets=data.datasets;records=data.rows;
+      for(const r of records) r.search=[r.title,r.category,r.id,datasets[r.dataset],r.pdf || '',...r.locations.flatMap(l=>[l.name,l.code,l.parents]),...r.suggestions.flatMap(l=>[l.name,l.code,l.parents]),...r.candidates.flatMap(l=>[l.name,l.code,l.parents])].join(' ').toLocaleLowerCase();
+      $('embedded-data').remove();
+      for(const [value,label] of Object.entries(datasets)) $('dataset').append(new Option(label,value));
+      populateCategories();
+      document.querySelectorAll('input,select,#reset').forEach(node=>node.disabled=false);
+      $('search').addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(applyFilters,180);});
+      $('score').addEventListener('input',applyFilters);
+      $('dataset').addEventListener('change',()=>{populateCategories();applyFilters();});
+      for(const id of ['category','allocations','review']) $(id).addEventListener('change',applyFilters);
+      $('previous').addEventListener('click',()=>{page--;render();});$('next').addEventListener('click',()=>{page++;render();});$('page-size').addEventListener('change',()=>{page=1;render();});
+      for(const button of document.querySelectorAll('button[data-sort]')) button.addEventListener('click',()=>{const key=button.dataset.sort;direction=sortKey===key?-direction:1;sortKey=key;document.querySelectorAll('th[data-sort]').forEach(th=>th.setAttribute('aria-sort',th.dataset.sort===key?(direction===1?'ascending':'descending'):'none'));applyFilters();});
+      $('reset').addEventListener('click',()=>{for(const id of ['search','dataset','category','score']) $(id).value='';$('allocations').checked=false;$('review').checked=false;sortKey='';document.querySelectorAll('th[data-sort]').forEach(th=>th.setAttribute('aria-sort','none'));populateCategories();applyFilters();});
+      applyFilters();
+    } catch(error) { $('error').hidden=false;$('error').textContent=error.message;$('summary').textContent='The table could not load. Download the CSV to view the list.';$('rows').replaceChildren(); }
+  }
+  load();
+  </script>
+</body>
+</html>
