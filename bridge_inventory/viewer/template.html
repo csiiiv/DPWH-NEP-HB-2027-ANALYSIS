@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Bridge inventory</title>
+<style>
+:root{font:14px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#233344;background:#f5f7fa}*{box-sizing:border-box}body{margin:0}a{color:#185a9c;text-underline-offset:3px}button,input,select{font:inherit;outline-offset:3px}button,summary{cursor:pointer}button:disabled{cursor:default;opacity:.4}header{background:white;padding:26px 30px 22px;border-bottom:1px solid #dce3eb}.top{display:flex;justify-content:space-between;align-items:start;gap:24px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#60758a;font-weight:700}h1{font-size:28px;letter-spacing:-.03em;margin:7px 0 8px}p{line-height:1.6;margin:0;color:#5b6f81}.links{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:13px}.download{padding:9px 12px;border:1px solid #cbd8e5;border-radius:6px;white-space:nowrap;text-decoration:none}.context{font-size:12px;margin-top:14px;color:#64788a}main{padding:22px 30px 30px}.filters{display:grid;grid-template-columns:minmax(250px,2fr) repeat(3,minmax(170px,1fr));gap:14px;align-items:end}label{font-size:12px;font-weight:600;color:#506579}input,select{display:block;width:100%;margin-top:6px;height:40px;padding:0 10px;background:white;border:1px solid #cbd5df;border-radius:6px;color:#233344}.toolbar{margin:16px 0 12px;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:13px}button{border:1px solid #cbd5df;border-radius:5px;padding:7px 11px;background:white;color:#35536d}.reset{border:0;background:none;text-decoration:underline;padding:3px 0;font-size:12px}.table-wrap{overflow:auto;border:1px solid #d8e1eb;border-radius:7px;background:white;max-height:65vh;min-height:220px}table{width:100%;min-width:1480px;table-layout:fixed;border-spacing:0;border-collapse:separate}thead{position:sticky;top:0;background:#edf2f7;z-index:1}th{text-align:left;color:#4e6479;font-size:12px;padding:12px;border-bottom:1px solid #d7e0e9}th button{background:none;border:0;padding:0;color:inherit;font-weight:650;text-align:left}td{padding:14px 12px;border-bottom:1px solid #e6ebf1;vertical-align:top;line-height:1.5;font-size:13px;overflow-wrap:anywhere}tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafcfe}.name{font-weight:650}.meta{display:block;font-size:11px;color:#6a7e91;margin-top:4px}.code{font:11px ui-monospace,SFMono-Regular,Consolas,monospace;color:#516d85;display:block;margin-top:4px}.location{margin-bottom:9px}.location:last-child{margin-bottom:0}.badge{display:inline-block;border-radius:4px;padding:2px 6px;font-size:11px;background:#eef3f8;color:#516d85}.flagged{background:#fff2d9;color:#805916}.subtle{color:#718395;font-size:12px}.coordinates{font-variant-numeric:tabular-nums;font-size:12px}.coordinates span{display:block}details{margin-top:8px;font-size:11px;color:#526b81}summary{color:#355c7c}.detail-item{padding:7px 0;border-bottom:1px solid #e6ebf1}.detail-item:last-child{border-bottom:0}.attributes{margin-top:8px}.attribute{padding:4px 0;border-bottom:1px solid #edf1f5}.attribute strong{display:block;color:#65798b;font-size:10px}.empty{padding:35px;text-align:center;color:#718395}.pagination{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-top:14px}.page-buttons{display:flex;align-items:center;gap:9px}#page-info{font-size:12px;color:#60758a}.page-size{display:flex;align-items:center;gap:8px;white-space:nowrap}.page-size select{width:auto;height:33px;margin:0}.note{margin-top:16px;font-size:12px;line-height:1.6;color:#6b7f91}#error{border:1px solid #ecc1b2;background:#fff3ee;padding:16px;border-radius:5px;margin-bottom:16px}noscript{display:block;padding:20px}@media(max-width:1050px){.filters{grid-template-columns:1fr 1fr}.top{flex-direction:column;gap:16px}}@media(max-width:600px){header,main{padding:20px 16px}.filters{grid-template-columns:1fr}.pagination{align-items:start;flex-direction:column}.toolbar{align-items:start}.links{gap:12px}h1{font-size:25px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><div><div class="eyebrow">DPWH · National road bridges</div><h1>Bridge inventory</h1><p>Bridge assets, coordinates, administrative locations, and matched budget observations.</p></div><nav class="links" aria-label="Related files"><a class="download" id="download" href="data/bridge_project_coordinates.csv.gz" download>Project coordinates CSV ↓</a><a href="docs/README.md">Documentation</a><a href="../master_list/index.html">Project master list</a></nav></div>
+  <p class="context" id="context">Preparing the retained inventory…</p>
+</header>
+<main>
+  <div id="error" hidden role="alert"></div>
+  <div class="filters">
+    <label for="search">Search bridges<input id="search" type="search" placeholder="Bridge ID, name, road, place, PSGC code, or project…" autocomplete="off" disabled></label>
+    <label for="province">Inventory province<select id="province" disabled><option value="">All provinces</option></select></label>
+    <label for="projects">Project matches<select id="projects" disabled><option value="">All bridges</option><option value="matched">With matched projects</option><option value="unmatched">Without matched projects</option></select></label>
+    <label for="review">Location review<select id="review" disabled><option value="">All review states</option><option value="flagged">Has location flags</option><option value="clear">No location flags</option><option value="unresolved">No current PSGC candidate</option><option value="no-hit">No barangay polygon hit</option></select></label>
+  </div>
+  <div class="toolbar"><span id="summary" role="status" aria-live="polite">Loading bridges…</span><button class="reset" id="reset" disabled>Reset filters</button></div>
+  <div class="table-wrap" tabindex="0" aria-label="Scrollable bridge inventory table">
+    <table><colgroup><col style="width:20%"><col style="width:15%"><col style="width:12%"><col style="width:15%"><col style="width:15%"><col style="width:11%"><col style="width:12%"></colgroup>
+      <thead><tr><th scope="col" data-sort="id" aria-sort="ascending"><button data-sort="id">Bridge ↕</button></th><th scope="col" data-sort="province" aria-sort="none"><button data-sort="province">Inventory locality · DPWH ↕</button></th><th scope="col">Coordinates</th><th scope="col">Spatial locality · 2023</th><th scope="col">Current PSGC candidates</th><th scope="col" data-sort="projectCount" aria-sort="none"><button data-sort="projectCount">Project observations ↕</button></th><th scope="col">Location review</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="7" class="empty">Preparing records…</td></tr></tbody>
+    </table>
+  </div>
+  <div class="pagination"><div class="page-buttons"><button id="previous" disabled>← Previous</button><span id="page-info">Page —</span><button id="next" disabled>Next →</button></div><label class="page-size">Rows per page<select id="page-size" disabled><option>25</option><option selected>50</option><option>100</option><option>250</option></select></label></div>
+  <p class="note">Inventory locality names are supplied by DPWH. Spatial localities are computed from the inventory point using 2023 boundaries. Nearest edges are review candidates, not polygon hits. Current PSGC candidates remain provisional. Project observations overlap across budget stages. <a href="data/REPORT.md">Matching report</a> · <a href="data/PROXIMITY_REPORT.md">Nearest-edge report</a> · <a href="README.md">Data and downloads</a></p>
+</main>
+<noscript>Enable JavaScript to view the table, or download the <a href="data/bridge_project_coordinates.csv.gz">project coordinate CSV</a>.</noscript>
+<script id="embedded-data" type="application/octet-stream">__BRIDGE_DATA__</script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id), number = new Intl.NumberFormat('en-PH');
+const levels = ['barangay','municipality_city','province','region'];
+let rows = [], filtered = [], page = 1, sortKey = 'id', direction = 1, timer;
+function el(tag,text,cls){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node;}
+function norm(text){return String(text??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase();}
+function human(text){return text.replaceAll('_',' ');}
+function flagLabel(flag){const match=flag.match(/^inventory_(.+)_name_differs_from_polygon$/);return match?`${human(match[1])}: DPWH name differs from point's polygon`:flag==='no_barangay_polygon_hit'?'Point does not intersect a barangay polygon':human(flag);}
+function link(label,url){const a=el('a',label);a.href=url;a.target='_blank';a.rel='noopener';return a;}
+function sourceLink(path){return new URL('../'+path.split('/').map(encodeURIComponent).join('/'),location.href).href;}
+function applyFilters(){
+  const terms=norm($('search').value).trim().split(/\s+/).filter(Boolean), province=$('province').value, project=$('projects').value, review=$('review').value;
+  filtered=rows.filter(r=>(!province||r.province===province)&&(!project||(project==='matched'?r.projects.length>0:r.projects.length===0))&&(!review||(review==='flagged'?r.spatial.review_flags.length>0:review==='clear'?r.spatial.review_flags.length===0:review==='no-hit'?r.spatial.polygon_hits.barangay.length===0:r.spatial.current_psgc_candidates.length===0))&&terms.every(t=>r.search.includes(t)));
+  filtered.sort((a,b)=>direction*(sortKey==='projectCount'?a.projects.length-b.projects.length:String(a[sortKey]??'').localeCompare(String(b[sortKey]??''),undefined,{numeric:true}))||a.id.localeCompare(b.id));
+  page=1;render();
+}
+function render(){
+  const size=Number($('page-size').value),pages=Math.max(1,Math.ceil(filtered.length/size));page=Math.max(1,Math.min(page,pages));
+  const start=(page-1)*size,end=Math.min(start+size,filtered.length),body=document.createDocumentFragment();
+  for(const r of filtered.slice(start,end)){
+    const tr=el('tr');tr.dataset.bridgeId=r.id;
+    const bridge=el('td');bridge.append(el('div',r.name||'Unnamed bridge','name'),el('span',r.id,'code'),el('span',r.road,'meta'));
+    const attributes=el('details');attributes.append(el('summary','All inventory fields'));const list=el('div',undefined,'attributes');
+    for(const [key,value] of Object.entries(r.attributes)){const field=el('div',undefined,'attribute');field.append(el('strong',key),el('span',value===null?'Not supplied':String(value)));list.append(field);}attributes.append(list);bridge.append(attributes);
+    const locality=el('td');locality.append(el('div',r.barangay||'Barangay not supplied'),el('div',r.town||'Town not supplied'),el('div',r.province||'Province not supplied'),el('span',r.region,'meta'));
+    const coords=el('td',undefined,'coordinates');
+    if(Number.isFinite(r.latitude)&&Number.isFinite(r.longitude)){coords.append(el('span','Lat '+r.latitude.toFixed(6)),el('span','Lon '+r.longitude.toFixed(6)),link('Open map ↗','https://www.google.com/maps?q='+encodeURIComponent(r.latitude+','+r.longitude)));}else coords.textContent='Not supplied';
+    const spatial=el('td');
+    for(const level of levels){const hits=r.spatial.polygon_hits[level];if(hits.length){const block=el('div',undefined,'location');block.append(el('div',hits.map(h=>h.name||'Name not supplied').join(' / ')),el('span',human(level)+(hits.some(h=>h.relation==='boundary_touch')?' · boundary touch':''),'meta'));spatial.append(block);}}
+    if(!r.spatial.most_detailed_level)spatial.append(el('span','No polygon hit','subtle'));
+    if(r.proximity){const nearby=el('details');nearby.className='nearest-edges';nearby.append(el('summary','Nearest 3 barangay edges'),el('span','Approximate distances · review only','meta'));for(const c of r.proximity.candidates){const item=el('div',undefined,'detail-item');item.append(el('strong',`${c.rank}. ${c.name}`),el('div',c.parents.municipality_city.name||'Town not supplied'),el('div',`${c.distance_to_edge_m.toFixed(2)} m to polygon edge`));if(c.inventory_name_comparison.barangay)item.append(el('span','Agrees with DPWH barangay name','meta'));item.append(link('Closest edge ↗','https://www.google.com/maps?q='+encodeURIComponent(c.nearest_edge_coordinates[1]+','+c.nearest_edge_coordinates[0])));nearby.append(item);}spatial.append(nearby);}
+    const candidate=el('td');
+    for(const c of r.spatial.current_psgc_candidates){const block=el('div',undefined,'location');block.append(el('div',c.name),el('span',c.code,'code'),el('span',c.chain.slice(1).map(n=>n.name).join(' · '),'meta'));candidate.append(block);}
+    candidate.append(el('span',r.spatial.current_psgc_candidates.length?'Provisional · not assigned':'Unresolved','subtle'));
+    const projects=el('td');projects.append(el('span',number.format(r.projects.length),'badge'));
+    if(r.projects.length){const details=el('details');details.append(el('summary','View observations'));for(const p of r.projects){const item=el('div',undefined,'detail-item');item.append(el('div',p.title),el('span',human(p.dataset),'meta'),el('span',p.record_id,'code'),link('Source data ↗',sourceLink(p.source_dataset)));details.append(item);}projects.append(details);}else projects.append(el('span','No exact-ID project match','meta'));
+    const review=el('td');const flags=r.spatial.review_flags;
+    if(flags.length){review.append(el('span',`${flags.length} flag${flags.length===1?'':'s'}`,'badge flagged'));const details=el('details');details.append(el('summary','Review evidence'));for(const flag of flags)details.append(el('div',flagLabel(flag),'detail-item'));for(const [level,c] of Object.entries(r.spatial.inventory_spatial_comparison)){if(c.status==='name_differs'){const item=el('div',undefined,'detail-item');item.append(el('strong',human(level)),el('div','Inventory: '+(c.inventory_name||'—')),el('div','Polygon: '+c.polygon_names.map(n=>n||'—').join(' / ')));details.append(item);}}review.append(details);}else review.append(el('span','No location flags','subtle'));
+    tr.append(bridge,locality,coords,spatial,candidate,projects,review);body.append(tr);
+  }
+  if(!filtered.length){const tr=el('tr'),td=el('td','No bridges match these filters.','empty');td.colSpan=7;tr.append(td);body.append(tr);}
+  $('rows').replaceChildren(body);$('summary').textContent=filtered.length?`${number.format(start+1)}–${number.format(end)} of ${number.format(filtered.length)} bridges`:'0 matching bridges';
+  $('page-info').textContent=`Page ${number.format(page)} of ${number.format(pages)}`;$('previous').disabled=page===1;$('next').disabled=page===pages;
+}
+async function load(){try{
+  if(!globalThis.DecompressionStream)throw new Error('Use a recent browser with gzip decompression support, or download the CSV.');
+  const bytes=Uint8Array.from(atob($('embedded-data').textContent.trim()),c=>c.charCodeAt(0));
+  const data=JSON.parse(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).text());rows=data.rows;$('embedded-data').remove();
+  for(const r of rows)r.search=norm([r.id,r.name,r.road,...Object.values(r.attributes),r.longitude,r.latitude,Number.isFinite(r.longitude)?r.longitude.toFixed(6):'',Number.isFinite(r.latitude)?r.latitude.toFixed(6):'',JSON.stringify(r.spatial),JSON.stringify(r.proximity),...r.projects.flatMap(p=>[p.title,p.record_id,p.dataset])].join(' '));
+  for(const province of [...new Set(rows.map(r=>r.province).filter(Boolean))].sort())$('province').append(new Option(province,province));
+  $('context').textContent=`${number.format(rows.length)} bridge assets · ${number.format(data.matchedBridges)} linked to ${number.format(data.projectLinks)} budget observations · Inventory data: ${data.sourceDate} · Snapshot: ${data.snapshot.slice(0,4)}-${data.snapshot.slice(4,6)}-${data.snapshot.slice(6,8)}`;
+  document.querySelectorAll('input,select,#reset').forEach(n=>n.disabled=false);
+  $('search').addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(applyFilters,160);});
+  for(const id of ['province','projects','review'])$(id).addEventListener('change',applyFilters);
+  $('previous').addEventListener('click',()=>{page--;render();});$('next').addEventListener('click',()=>{page++;render();});$('page-size').addEventListener('change',()=>{page=1;render();});
+  for(const b of document.querySelectorAll('button[data-sort]'))b.addEventListener('click',()=>{direction=sortKey===b.dataset.sort?-direction:1;sortKey=b.dataset.sort;updateSort();applyFilters();});
+  $('reset').addEventListener('click',()=>{clearTimeout(timer);for(const id of ['search','province','projects','review'])$(id).value='';sortKey='id';direction=1;updateSort();applyFilters();});
+  applyFilters();
+}catch(error){$('error').hidden=false;$('error').textContent=error.message;$('summary').textContent='The table could not load. The CSV remains available.';$('rows').replaceChildren();}}
+function updateSort(){document.querySelectorAll('th[data-sort]').forEach(th=>th.setAttribute('aria-sort',th.dataset.sort===sortKey?(direction===1?'ascending':'descending'):'none'));}
+load();
+</script>
+</body>
+</html>
