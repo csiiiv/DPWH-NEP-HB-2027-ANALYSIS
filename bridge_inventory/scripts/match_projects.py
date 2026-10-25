@@ -3,6 +3,13 @@
 
 Requires geopandas, shapely, pyogrio, and pyproj. Historical polygon codes
 remain separate from current PSGC assignments. No master-list scores change.
+
+Legislative districts are derived directly from bridge coordinates where
+possible: the 2023 municity polygon code joins to the verified PSGC2LEG
+municipality-to-district assignments, and split cities fall back to
+point-in-polygon against the validated DPWH ArcGIS 2022 congressional
+district layer. PSGC name-chain reconciliation remains as separate evidence
+for records without coordinates.
 """
 from __future__ import annotations
 
@@ -19,6 +26,7 @@ import sys
 import tempfile
 
 import archive_bridges as archive
+import geopandas as gpd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'master_list/scripts'))
@@ -28,6 +36,10 @@ OUTPUT = ROOT / 'bridge_inventory/data'
 PROJECTS = ROOT / 'master_list/data/projects.jsonl.gz'
 CATALOG = ROOT / 'PSGC2LEG/data/psgc_locations.jsonl'
 CATALOG_SUMMARY = ROOT / 'PSGC2LEG/data/psgc_summary.json'
+LEG_ASSIGNMENTS = ROOT / 'PSGC2LEG/data/psgc_leg_assignments.jsonl'
+LEG_DISTRICTS = ROOT / 'PSGC2LEG/data/legislative_districts.json'
+CONGDIST_GEOJSON = (ROOT / 'PSGC2LEG/sources/raw/'
+                    'dpwh-arcgis-congdist-geojson__congressional_districts_wgs84.geojson')
 SHAPES = ROOT / 'dpwh_coor2psgc_geomapping/philippines-psgc-shapefiles/data/2023'
 SHAPE_NAMES = {
     'region': ('Regions/PH_Adm1_Regions.shp.shp', 'adm1'),
@@ -86,6 +98,13 @@ class Catalog:
             return []
         barangay, town, province = [normalize(hits[k][0]['name'])
                                     for k in ('barangay', 'municipality_city', 'province')]
+        # The 2023 shapefile represents NCR (and Isabela City) with adm2 units
+        # named like "NCR, Fourth District (Not a Province)". In the current
+        # catalog these chains are barangay -> city -> region with no province
+        # level, so the province name can never match a chain parent. Validate
+        # those chains by region instead of by the pseudo-province text.
+        pseudo_province = 'not a province' in (hits['province'][0]['name'] or '').lower()
+        region = normalize(hits['region'][0]['name']) if len(hits.get('region', [])) == 1 else None
         result = []
         for code in sorted(self.barangays.get(barangay, set())):
             chain, parent, seen = [], code, set()
@@ -101,12 +120,166 @@ class Catalog:
                 continue
             # HUC/ICC polygons may occupy an adm2 unit named after the city.
             parents = provinces if provinces else towns
-            if not any(province in aliases(r) for r in parents):
+            if pseudo_province:
+                # Pseudo-province text names districts, not a PSGC province;
+                # require the chain's region to match the polygon region.
+                chain_regions = [r for r in chain if r['level'] == 'region']
+                if not region or not any(region in aliases(r) for r in chain_regions):
+                    continue
+            elif not any(province in aliases(r) for r in parents):
                 continue
             result.append({'code': code, 'name': self.rows[code]['name'], 'level': 'barangay',
                            'chain': [{'code': r['code'], 'name': r['name'], 'level': r['level']}
                                      for r in chain]})
         return result
+
+
+class LegDistricts:
+    """Derive legislative districts from coordinates, PSGC only as fallback.
+
+    Primary path: the 2023 municity polygon's historical code joins (through
+    the PSGC2LEG vintage crosswalk) to the verified municipality-to-district
+    assignments. Split cities fall back to point-in-polygon against the DPWH
+    ArcGIS 2022 congressional district layer, adopted per the PSGC2LEG
+    validation verdicts (7 clean cities, Davao/CDO caveated; Antipolo, Cebu
+    City, Caloocan, and Taguig are not adopted — see
+    PSGC2LEG/docs/arcgis_congdist_validation.md).
+    """
+
+    # 2023 shapefile -> Q3 2026 PSGC recodes, as in build_viz_geojson.py.
+    OLD_TO_NEW_PREFIX = {
+        '06045': '18045',  # Negros Occidental
+        '07046': '18046',  # Negros Oriental
+        '07061': '18061',  # Siquijor
+        '19066': '09066',  # Sulu
+    }
+    OLD_TO_NEW_CODE = {
+        '0630200000': '1830200000',  # Bacolod (HUC, own code; moved to NIR)
+    }
+    # ArcGIS CONG_DIST prefix -> catalog jurisdiction, per the validation doc.
+    ARCGIS_JURISDICTION = {
+        'Manila City': 'City of Manila',
+        'Quezon City': 'Quezon City',
+        'Caloocan City': 'City of Caloocan',
+        'Makati City': 'City of Makati',
+        'Marikina City': 'City of Marikina',
+        'Parañaque City': 'City of Parañaque',
+        'Taguig City': 'City of Taguig',
+        'Valenzuela City': 'City of Valenzuela',
+        'Antipolo City': 'City of Antipolo',
+        'Cebu City': 'City of Cebu',
+        'Zamboanga City': 'City of Zamboanga',
+        'Cagayan De Oro City': 'City of Cagayan De Oro',
+        'Davao City': 'City of Davao',
+    }
+    # Validation verdicts; cities not listed here are not adopted.
+    ADOPTED = {'City of Manila', 'Quezon City', 'City of Caloocan', 'City of Makati',
+               'City of Marikina', 'City of Parañaque', 'City of Taguig',
+               'City of Valenzuela', 'City of Zamboanga'}
+    ADOPTED_WITH_CAVEAT = {'City of Davao', 'City of Cagayan De Oro'}
+    DISTRICT_RE = re.compile(r'^(.*?)\s*\((First|Second|Third|Fourth|Fifth|Sixth|Lone) District\)$')
+
+    def __init__(self, assignment_rows, district_rows):
+        self.by_code = {}
+        for row in assignment_rows:
+            self.by_code[row['psgc_code']] = row
+        self.districts = {d['leg_id']: d for d in district_rows}
+        # leg district-number lookup keyed by normalized jurisdiction label.
+        self.by_jurisdiction = defaultdict(list)
+        for d in district_rows:
+            self.by_jurisdiction[normalize(d['jurisdiction'])].append(d)
+
+    @classmethod
+    def modernize(cls, code10):
+        if code10 in cls.OLD_TO_NEW_CODE:
+            return cls.OLD_TO_NEW_CODE[code10]
+        prefix = cls.OLD_TO_NEW_PREFIX.get(code10[:5])
+        return prefix + code10[5:] if prefix else code10
+
+    def _catalog_district(self, label):
+        """Find the catalog district row for an ArcGIS CONG_DIST label."""
+        match = self.DISTRICT_RE.match(label or '')
+        if not match:
+            return None
+        name, ordinal = match.groups()
+        jurisdiction = self.ARCGIS_JURISDICTION.get(name, name)
+        wanted = {'First': 1, 'Second': 2, 'Third': 3, 'Fourth': 4,
+                  'Fifth': 5, 'Sixth': 6, 'Lone': 0}[ordinal]
+        for d in self.by_jurisdiction.get(normalize(jurisdiction), []):
+            if d['district_no'] == wanted:
+                return d
+        return None
+
+    def from_polygon_code(self, source_code, relation='within'):
+        """Whole-unit district via the verified assignment table."""
+        if relation != 'within' or not source_code:
+            return None
+        code10 = str(source_code).split('.')[0].zfill(10)
+        row = self.by_code.get(self.modernize(code10)) or self.by_code.get(code10)
+        if not row or row['assignment_type'] != 'whole_unit':
+            return None
+        district = self.districts.get(row['leg_id'])
+        if not district:
+            return None
+        return {
+            'leg_id': district['leg_id'],
+            'jurisdiction': district['jurisdiction'],
+            'district_label': district['district_label'],
+            'district_no': district['district_no'],
+            'derivation': 'municity_polygon_code_join',
+            'source': 'psgc_leg_assignments',
+        }
+
+    def split_city_district(self, point, city_name, arcgis_frame):
+        """District within a split city via validated ArcGIS polygons.
+
+        Returns None unless exactly one adopted district polygon contains the
+        point; boundary-touching or multi-polygon hits stay unresolved.
+        """
+        from shapely.geometry import Point
+        if city_name not in self.ADOPTED and city_name not in self.ADOPTED_WITH_CAVEAT:
+            return None
+        if arcgis_frame is None:
+            return None
+        xy = Point(point[0], point[1])
+        projected = gpd.GeoSeries([xy], crs=4326).to_crs(arcgis_frame.crs).iloc[0]
+        matches = []
+        for label, geometry in zip(arcgis_frame['CONG_DIST'], arcgis_frame.geometry):
+            if geometry is None or not projected.within(geometry):
+                continue
+            district = self._catalog_district(label)
+            if district and district['jurisdiction'] == city_name:
+                matches.append(district)
+        if len(matches) != 1:
+            return None
+        district = matches[0]
+        return {
+            'leg_id': district['leg_id'],
+            'jurisdiction': district['jurisdiction'],
+            'district_label': district['district_label'],
+            'district_no': district['district_no'],
+            'derivation': 'split_city_point_in_polygon',
+            'source': 'dpwh-arcgis-congdist-2022',
+            'caveat': ('district polygons validated with caveat: partial coverage'
+                       if city_name in self.ADOPTED_WITH_CAVEAT else None),
+        }
+
+    def for_bridge(self, evidence_row, arcgis_frame):
+        """District for one bridge from its retained spatial evidence."""
+        hits = evidence_row['polygon_hits'].get('municipality_city', [])
+        within = [h for h in hits if h['relation'] == 'within']
+        if len(within) != 1:
+            return None
+        district = self.from_polygon_code(within[0].get('source_code'))
+        if district:
+            return district
+        # Split city: fall back to direct point-in-polygon on the adopted layer.
+        assignment = self.by_code.get(self.modernize(
+            str(within[0].get('source_code', '')).split('.')[0].zfill(10)))
+        if assignment and assignment['assignment_type'] == 'multi_district_city':
+            return self.split_city_district(evidence_row['coordinates'],
+                                            assignment['name'], arcgis_frame)
+        return None
 
 
 def sha(path):
@@ -164,6 +337,14 @@ def locate(points, polygons, code_column, name_column):
     for units in result.values():
         units.sort(key=lambda u: (u['source_code'], u['relation']))
     return result
+
+
+def arcgis_congdist_features():
+    """Load the validated DPWH ArcGIS 2022 congressional district layer once."""
+    import geopandas as gpd
+    frame = gpd.read_file(CONGDIST_GEOJSON)[['CONG_DIST', 'geometry']]
+    frame = frame[frame['CONG_DIST'].notna()]
+    return frame
 
 
 def spatial(bridges, inputs):
@@ -242,6 +423,28 @@ def build(out):
         row['current_psgc_reconciliation'] = ('unique_hierarchy_name_candidate'
             if len(row['current_psgc_candidates']) == 1 else 'ambiguous_hierarchy_name_candidates'
             if row['current_psgc_candidates'] else 'unresolved')
+    # Legislative districts come directly from coordinates where possible;
+    # the PSGC chain reconciliation stays as separate fallback evidence.
+    inputs[str(LEG_ASSIGNMENTS.relative_to(ROOT))] = sha(LEG_ASSIGNMENTS)
+    inputs[str(LEG_DISTRICTS.relative_to(ROOT))] = sha(LEG_DISTRICTS)
+    inputs[str(CONGDIST_GEOJSON.relative_to(ROOT))] = sha(CONGDIST_GEOJSON)
+    leg = LegDistricts([json.loads(line) for line in LEG_ASSIGNMENTS.read_text().splitlines()],
+                       json.loads(LEG_DISTRICTS.read_text())['districts'])
+    print('Deriving legislative districts from bridge coordinates ...', flush=True)
+    arcgis_frame = None
+    split_cities = {a['name'] for a in leg.by_code.values()
+                    if a['assignment_type'] == 'multi_district_city'}
+    if split_cities & (leg.ADOPTED | leg.ADOPTED_WITH_CAVEAT):
+        arcgis_frame = arcgis_congdist_features()
+    derivation_counts = Counter()
+    for code in sorted(evidence):
+        district = leg.for_bridge(evidence[code], arcgis_frame)
+        if district:
+            evidence[code]['legislative_district'] = district
+            derivation_counts[district['derivation']] += 1
+        else:
+            evidence[code]['legislative_district'] = None
+    print(f'Legislative districts: {dict(derivation_counts)}', flush=True)
     matches, counts, matched_ids = [], defaultdict(Counter), set()
     seen = set()
     for project in records(PROJECTS):
@@ -260,20 +463,25 @@ def build(out):
     buffer = io.StringIO(newline='')
     fields = ['record_id', 'dataset', 'title', 'status', 'bridge_id', 'longitude', 'latitude',
               'spatial_2023_level', 'spatial_2023_candidates', 'spatial_review_flags',
-              'current_psgc_candidate_codes', 'current_psgc_reconciliation']
+              'current_psgc_candidate_codes', 'current_psgc_reconciliation',
+              'leg_district', 'leg_derivation', 'leg_source']
     writer = csv.DictWriter(buffer, fieldnames=fields)
     writer.writeheader()
     for row in matches:
         for match in row['matches']:
             ev = evidence[match['bridge_id']]
             level = ev['most_detailed_level']
+            district = ev.get('legislative_district') or {}
             writer.writerow({**{k: row[k] for k in ('record_id', 'dataset', 'title', 'status')},
                              **{k: match[k] for k in ('bridge_id', 'longitude', 'latitude')},
                              'spatial_2023_level': level,
                              'spatial_2023_candidates': json.dumps(ev['polygon_hits'].get(level, []), ensure_ascii=False),
                              'spatial_review_flags': '|'.join(ev['review_flags']),
                              'current_psgc_candidate_codes': '|'.join(r['code'] for r in ev['current_psgc_candidates']),
-                             'current_psgc_reconciliation': ev['current_psgc_reconciliation']})
+                             'current_psgc_reconciliation': ev['current_psgc_reconciliation'],
+                             'leg_district': district.get('leg_id') or '',
+                             'leg_derivation': district.get('derivation') or '',
+                             'leg_source': district.get('source') or ''})
     (out / 'bridge_project_coordinates.csv.gz').write_bytes(gzip.compress(buffer.getvalue().encode(), mtime=0))
     spatial_counts = Counter(evidence[i]['most_detailed_level'] or 'no_polygon_hit' for i in matched_ids)
     audit = {
@@ -284,6 +492,12 @@ def build(out):
         'boundary_code_note': 'Numeric shapefile attributes retained as decimal strings, without padding or current-code conversion.',
         'current_psgc_assignment': 'Provisional hierarchy name candidates only; current geometry not verified and master-list assignments unchanged.',
         'current_psgc_catalog_foundation': json.loads(CATALOG_SUMMARY.read_text()),
+        'legislative_district_method': {
+            'primary': '2023 municity polygon code -> vintage crosswalk -> psgc_leg_assignments (whole-unit)',
+            'split_cities': 'point-in-polygon, DPWH ArcGIS 2022 congressional districts, adopted cities per PSGC2LEG/docs/arcgis_congdist_validation.md',
+            'not_adopted': ['City of Antipolo', 'City of Cebu', 'City of Caloocan', 'City of Taguig'],
+            'caveated': ['City of Davao', 'City of Cagayan De Oro'],
+        },
         'matching_scope': 'Exact explicit bridge IDs; bridge-word mentions without IDs retained for review.',
         'by_dataset': dict(counts), 'unique_matched_bridges': len(matched_ids),
         'matched_bridge_spatial_levels': dict(spatial_counts),
@@ -292,6 +506,12 @@ def build(out):
                                                     for flag in evidence[i]['review_flags'])),
         'matched_bridge_current_psgc_reconciliation': dict(Counter(
             evidence[i]['current_psgc_reconciliation'] for i in sorted(matched_ids))),
+        'matched_bridge_legislative_districts': dict(Counter(
+            (evidence[i]['legislative_district'] or {}).get('derivation', 'unresolved')
+            for i in sorted(matched_ids))),
+        'all_inventory_legislative_districts': dict(Counter(
+            (r['legislative_district'] or {}).get('derivation', 'unresolved')
+            for r in evidence.values())),
         'all_inventory_spatial_levels': dict(Counter(r['most_detailed_level'] or 'no_polygon_hit'
                                                     for r in evidence.values())),
         'outputs_sha256': {p.name: sha(p) for p in sorted(out.iterdir())},
@@ -307,6 +527,13 @@ def build(out):
                           f'{c["id_not_in_inventory"]:,} | {c["bridge_mention_without_id"]:,} |')
     report.extend(['', f'Spatial levels among the {len(matched_ids):,} matched assets: '
                    + ', '.join(f'{k}: {v:,}' for k, v in sorted(spatial_counts.items())) + '.', '',
+                   'Legislative districts among matched assets: '
+                   + json.dumps(audit['matched_bridge_legislative_districts']) + '.',
+                   'Districts derive directly from bridge coordinates: municity polygon code joins',
+                   'the verified PSGC2LEG municipality-to-district assignments (whole-unit), and',
+                   'split cities use point-in-polygon on the validated DPWH ArcGIS 2022 layer',
+                   '(Antipolo, Cebu City, Caloocan, and Taguig excluded per validation verdicts;',
+                   'Davao and Cagayan de Oro adopted with coverage caveats).', '',
                    'Budget observations overlap across stages; these counts are not unique projects.',
                    'Coordinates describe the referenced bridge asset, not the full extent of funded work.',
                    'The spatial result uses dated 2023 polygons. Source codes are historical numeric attributes,',

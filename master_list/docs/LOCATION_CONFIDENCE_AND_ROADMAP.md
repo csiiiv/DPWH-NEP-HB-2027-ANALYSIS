@@ -122,10 +122,10 @@ parser does not count that phrase as an independent parent assertion.
 
 ## Current corpus distribution
 
-The v5 run spans scores from `-8` to `15`. The exact distribution is
+The v5.1 run spans scores from `-8` to `15`. The exact distribution is
 published in [REPORT.md](../data/REPORT.md) and `audit.json`. The most common
 totals are `11` (21,714 observations), `0` (16,946), `7` (5,482), `9` (4,876),
-`5` (4,753), and `8` (3,203). These clusters reflect the rules and source
+`5` (4,753), and `8` (3,371). These clusters reflect the rules and source
 formats; they are not validated accuracy classes.
 
 Compared with the original bounded-rule corpus, the expanded hierarchy parser
@@ -246,6 +246,34 @@ the ID factor only (+2); 94 records gain an agreement bonus; 16 records
 neighboring province) gain a conflict penalty and stay in review with
 their title answer retained. The unresolved population drops from 12,917
 to 11,466.
+
+## What changed in v5.1: NCR chains and legislative districts
+
+Two follow-ups to v5:
+
+1. **NCR/HIC chain validation.** The 2023 boundary shapefile represents
+   NCR (and Isabela City) with adm2 units named like `NCR, Fourth District
+   (Not a Province)`. In the current catalog those chains are barangay →
+   city → region with no province level, so the old province check could
+   never pass; every NCR bridge stayed unresolved regardless of polygon
+   hits. The bridge module now validates such chains by **region** instead
+   of pseudo-province text (mirroring the v4 HUC principle). Unique chains
+   rose from 8,060 to 8,358 and unresolved fell from 684 to 386; 168 more
+   records (42 NCR projects × 4 dataset echoes) became `registry_matched`.
+2. **Legislative districts derived directly from coordinates.** Districts
+   now come from the bridge point itself where possible, with PSGC chains
+   as the fallback: the 2023 municity polygon code joins the verified
+   [PSGC2LEG](../../PSGC2LEG/README.md) municipality-to-district
+   assignments (8,367 of 8,752 bridges; 100% of within-hits), and split
+   cities use point-in-polygon on the DPWH ArcGIS 2022 congressional
+   district layer adopted per its [validation
+   verdicts](../../PSGC2LEG/docs/arcgis_congdist_validation.md) (62
+   bridges; Antipolo, Cebu City, Caloocan, and Taguig excluded; Davao and
+   Cagayan de Oro caveated). Every master-list record with an assigned
+   municipality-level location also carries its verified district: 40,145
+   through the assigned-municipality join and 1,503 through bridge
+   coordinates (64.4% of all records). The district is a lookup of the
+   final assignment, unscored and never new location evidence.
 
 ## What we are doing now
 

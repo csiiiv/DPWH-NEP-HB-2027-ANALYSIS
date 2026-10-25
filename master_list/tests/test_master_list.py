@@ -359,6 +359,17 @@ class BridgeRegistry(unittest.TestCase):
         self.assertIn('bridge_registry_conflicts_with_title_location', match['review_flags'])
         self.assertTrue(match['needs_review'])
 
+    def test_registry_carries_coordinate_derived_district(self):
+        # NCR records resolve through the region-validated chain and carry the
+        # bridge's coordinate-derived district.
+        entry = self.registry['dpwh_nep_pdf:p320:r5']  # Malibay Br, Pasay
+        match = self.base_match('Malibay Br . (SB ) (B01859LZ) along Epifanio Delos Santos Ave (EDSA)')
+        self.assertEqual(match['status'], 'unresolved')
+        self.apply(match, entry, self.matcher)
+        self.assertEqual(match['status'], 'registry_matched')
+        self.assertEqual(entry['districts'][0]['leg_id'], 'leg:ph:pasay:lone:2025')
+        self.assertEqual(entry['districts'][0]['derivation'], 'municity_polygon_code_join')
+
     def test_non_exact_mentions_attach_id_match_factor_only(self):
         # bridge_mention_without_id: no chains, no assignment change, and no
         # scored registry factor (an unscored audit note is retained).

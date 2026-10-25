@@ -26,7 +26,9 @@ and can be included using the checkbox. A filtered amount total appears when a
 single source is selected.
 
 The [project list CSV](data/project_list.csv.gz) (gzip; deterministic build) contains
-all source rows and the same reference fields; decompress it before opening in a
+all source rows and the same reference fields, plus the verified legislative
+district (`leg_district`, `leg_district_label`, `leg_district_derivation`);
+decompress it before opening in a
 spreadsheet, or run the viewer build for a plain local `project_list.csv` copy.
 Import PSGC code columns as text to preserve leading
 zeros. Categories use the retained subprogram/program or HFEP category and

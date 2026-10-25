@@ -30,7 +30,7 @@ def main():
             page.locator('#review').select_option('clear')
             expect(page.locator('#summary')).to_contain_text('210 bridges')
             page.locator('#review').select_option('unresolved')
-            expect(page.locator('#summary')).to_contain_text('74 bridges')
+            expect(page.locator('#summary')).to_contain_text('32 bridges')
             page.locator('#reset').click()
             page.locator('#search').fill('B00664LZ')
             expect(page.locator('#summary')).to_have_text('1–1 of 1 bridges')

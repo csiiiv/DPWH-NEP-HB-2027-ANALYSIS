@@ -84,6 +84,71 @@ class MatchTests(unittest.TestCase):
         row['polygon_hits']['barangay'][0]['relation'] = 'boundary_touch'
         self.assertEqual(catalog.candidates(row), [])
 
+    def test_catalog_candidates_validate_ncr_chains_by_region_not_pseudo_province(self):
+        # NCR has no province level: barangay -> city -> region. The 2023
+        # shapefile inserts "NCR, Fourth District (Not a Province)" adm2
+        # units that can never match a catalog province; chains under them
+        # must validate by region instead.
+        catalog = module.Catalog([
+            {'code': '1300000000', 'name': 'National Capital Region (NCR)', 'level': 'region', 'parent_code': None},
+            {'code': '1374000000', 'name': 'City of Makati', 'level': 'city', 'parent_code': '1300000000'},
+            {'code': '1374010010', 'name': 'Palanan', 'level': 'barangay', 'parent_code': '1374000000'},
+            {'code': '0400000000', 'name': 'Region IV-A (CALABARZON)', 'level': 'region', 'parent_code': None},
+            {'code': '0474200000', 'name': 'Palanan', 'level': 'municipality', 'parent_code': '0400000000'},
+        ])
+        row = {'polygon_hits': {
+            'barangay': [{'name': 'Palanan', 'relation': 'within', 'source_code': '4'}],
+            'municipality_city': [{'name': 'City of Makati', 'relation': 'within', 'source_code': '1374000000'}],
+            'province': [{'name': 'NCR, Fourth District (Not a Province)', 'relation': 'within', 'source_code': '999'}],
+            'region': [{'name': 'National Capital Region (NCR)', 'relation': 'within', 'source_code': '13'}]}}
+        candidates = catalog.candidates(row)
+        self.assertEqual([c['code'] for c in candidates], ['1374010010'])
+        # A mismatching region blocks the pseudo-province path.
+        row['polygon_hits']['region'][0]['name'] = 'Region IV-A (CALABARZON)'
+        self.assertEqual(catalog.candidates(row), [])
+
+    def test_leg_districts_join_via_polygon_code_and_crosswalk(self):
+        leg = module.LegDistricts(
+            [{'psgc_code': '0102817000', 'name': 'Pasuquin', 'level': 'municipality',
+              'parent_province_code': '0102800000', 'leg_id': 'leg:ph:ilocos-norte:1:2025',
+              'assignment_type': 'whole_unit'}],
+            [{'leg_id': 'leg:ph:ilocos-norte:1:2025', 'jurisdiction': 'Ilocos Norte',
+              'district_label': '1st District', 'district_no': 1, 'congress': 20,
+              'election_year': 2025}])
+        # Source code stored as numeric text, unpadded (9 digits drops the
+        # region's leading zero).
+        district = leg.from_polygon_code('102817000')
+        self.assertEqual(district['leg_id'], 'leg:ph:ilocos-norte:1:2025')
+        self.assertEqual(district['derivation'], 'municity_polygon_code_join')
+        # NIR recode crosswalk: 2023 prefix codes join through the map.
+        leg2 = module.LegDistricts(
+            [{'psgc_code': '1804513010', 'name': 'Cadiz', 'level': 'municipality',
+              'parent_province_code': '1804500000', 'leg_id': 'leg:ph:negros-occidental:1:2025',
+              'assignment_type': 'whole_unit'}],
+            [{'leg_id': 'leg:ph:negros-occidental:1:2025', 'jurisdiction': 'Negros Occidental',
+              'district_label': '1st District', 'district_no': 1, 'congress': 20,
+              'election_year': 2025}])
+        # Cadiz 2023 code 604513010 recodes to 1804513010 by prefix.
+        self.assertEqual(leg2.from_polygon_code('604513010')['leg_id'],
+                         'leg:ph:negros-occidental:1:2025')
+        # Boundary touches and split cities do not produce whole-unit joins.
+        self.assertIsNone(leg.from_polygon_code('102817000', relation='boundary_touch'))
+
+    def test_leg_districts_split_city_catalog_lookup(self):
+        leg = module.LegDistricts(
+            [],
+            [{'leg_id': 'leg:ph:manila:1:2025', 'jurisdiction': 'City of Manila',
+              'district_label': '1st District', 'district_no': 1, 'congress': 20,
+              'election_year': 2025},
+             {'leg_id': 'leg:ph:manila:6:2025', 'jurisdiction': 'City of Manila',
+              'district_label': '6th District', 'district_no': 6, 'congress': 20,
+              'election_year': 2025}])
+        self.assertEqual(leg._catalog_district('Manila City (Sixth District)')['leg_id'],
+                         'leg:ph:manila:6:2025')
+        self.assertEqual(leg._catalog_district('Manila City (First District)')['leg_id'],
+                         'leg:ph:manila:1:2025')
+        self.assertIsNone(leg._catalog_district('Taguig City (Second District)'))
+
     def test_polygon_touches_overlaps_and_gaps_remain_distinct(self):
         import geopandas as gpd
         from shapely.geometry import Point, box

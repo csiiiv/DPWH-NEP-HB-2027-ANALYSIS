@@ -28,13 +28,13 @@
     "-1": 204,
     "0": 16946,
     "1": 396,
-    "2": 411,
+    "2": 243,
     "3": 3178,
     "4": 300,
     "5": 4753,
     "6": 977,
     "7": 5482,
-    "8": 3203,
+    "8": 3371,
     "9": 4876,
     "10": 142,
     "11": 21714,
@@ -44,14 +44,14 @@
   },
   "reference_policy": "PDF pages are 1-based file pages. API records have no asserted PDF reference. HFEP OCR JSON points to the corresponding retained HFEP_2.pdf.",
   "input_sha256": {
-    "master_list/data/projects.jsonl.gz": "7cf4d29b31e76cd8a1b16484ae40c0ee126e31274c112e5809ce36b51272fd01",
-    "master_list/data/audit.json": "6ee44fd1fcfe928e8955a405ddeeadd4888398625c2ff4980dc320080d040de6",
+    "master_list/data/projects.jsonl.gz": "e23f5fca99274d32e58ebaa8ea71180270a5760da9868735bb94a09e5658902e",
+    "master_list/data/audit.json": "dfc73be7e7554730e3118924846bbf89b182ab1926987103ae9d621a6f55f0f7",
     "PSGC2LEG/data/psgc_locations.jsonl": "e554dec87c0c4b8ce4859dddc81f099aede1a48a267133c4124161c2a4445ba4",
     "master_list/viewer/template.html": "548f8928c74a5dc36250460bb1738172800db040752d5e06eda1a494fbecef89",
     "master_list/scripts/build_viewer.py": "70f1f9bb8ccbcba330326a04cddda756cc4c4c3a1859aa23ab1eed42939921b7"
   },
   "output_sha256": {
-    "index.html": "d8360c260b41e8ceac2ba4e469e51b115d0b172be681821e2c85ac92d429ab01",
-    "project_list.csv.gz": "a60ca8f918ddcbce4a4cfc44db209610f0ae822d972655a93588612064ac6b9e"
+    "index.html": "98e8e784722df2179b2e0166bfb5e87f40463f39f7f28abe18af5778967e7bd2",
+    "project_list.csv.gz": "fd5a122f5860da4ea633158b6fe99d0f681dc16f1d171c72435059227a2845fb"
   }
 }

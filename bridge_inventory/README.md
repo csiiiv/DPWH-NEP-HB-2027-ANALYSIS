@@ -143,7 +143,19 @@ with gzip.open(snapshot / 'data/bridges.jsonl.gz', 'rt', encoding='utf-8') as so
         print(bridge['attributes']['BRIDGE_ID'], bridge['longitude'], bridge['latitude'])
 ```
 
-## Project coordinates and spatial PSGC evidence
+## Project coordinates, districts, and spatial PSGC evidence
+
+Legislative districts are derived **directly from bridge coordinates** where
+possible, with PSGC chains only as intermediary fallback evidence: the 2023
+municity polygon code joins the verified
+[PSGC2LEG](../PSGC2LEG/README.md) municipality-to-district assignments
+(whole-unit), and split cities use point-in-polygon on the DPWH ArcGIS 2022
+congressional district layer adopted per its [validation
+verdicts](../PSGC2LEG/docs/arcgis_congdist_validation.md) (Antipolo, Cebu
+City, Caloocan, and Taguig are not adopted; Davao and Cagayan de Oro carry
+coverage caveats). NCR chains validate by region — the shapefile's
+`(Not a Province)` adm2 units have no catalog province parent, since NCR
+goes barangay → city → region.
 
 The [matching report](data/REPORT.md) records the current project-ID and spatial
 results. The first run links **1,833 budget observations to 498 distinct bridge
@@ -153,7 +165,7 @@ boundary dataset. These observation counts overlap across budget stages.
 | File | Use |
 |---|---|
 | [bridge_project_matches.jsonl.gz](data/bridge_project_matches.jsonl.gz) | One budget observation per record, with exact-ID matches, missing IDs, and bridge mentions needing further identity review. |
-| [bridge_project_coordinates.csv.gz](data/bridge_project_coordinates.csv.gz) | One matched observation × bridge per row, coordinates, historical spatial candidates, current PSGC candidate codes, and review flags. |
+| [bridge_project_coordinates.csv.gz](data/bridge_project_coordinates.csv.gz) | One matched observation × bridge per row, coordinates, historical spatial candidates, current PSGC candidate codes, legislative district (id, derivation, source), and review flags. |
 | [bridge_spatial_evidence.jsonl.gz](data/bridge_spatial_evidence.jsonl.gz) | All 8,752 bridge assets: inventory locality names, coordinate-derived polygon hits at each level, name disagreements, and provisional current PSGC hierarchy candidates. |
 | [bridge_matching_audit.json](data/bridge_matching_audit.json) | Input/output hashes, boundary source/vintage, software versions, coverage, and review counts. |
 

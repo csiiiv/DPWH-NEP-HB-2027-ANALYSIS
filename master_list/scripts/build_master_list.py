@@ -162,7 +162,8 @@ CSV_FIELDS = ['record_id', 'dataset', 'agency', 'stage', 'fiscal_year', 'record_
               'title', 'amount_php', 'program', 'subprogram', 'source_region',
               'implementing_office', 'location_status', 'psgc_codes', 'psgc_names',
               'psgc_levels', 'region_codes', 'province_codes', 'municipality_city_codes',
-              'barangay_codes', 'location_score', 'score_method',
+              'barangay_codes', 'leg_district', 'leg_district_label', 'leg_district_derivation',
+              'location_score', 'score_method',
               'needs_review', 'review_flags', 'candidate_codes',
               'coordinate_status', 'coordinate_point_count', 'coordinate_points',
               'source_dataset', 'source_record_id', 'pdf_page']
@@ -187,7 +188,60 @@ def flat(r):
     result['coordinate_points'] = json.dumps(r['coordinate_summary']['points'], separators=(',', ':'))
     result['coordinate_status'] = r['coordinate_summary']['status']
     result['coordinate_point_count'] = r['coordinate_summary']['point_count']
+    district = r.get('legislative_district') or {}
+    result['leg_district'] = district.get('leg_id') or ''
+    result['leg_district_label'] = (f"{district.get('jurisdiction', '')} "
+                                    f"({district.get('district_label', '')})").strip(' ()')
+    result['leg_district_derivation'] = district.get('derivation') or ''
     return result
+
+
+def load_leg_assignments():
+    """Verified municipality/city -> legislative district assignments (PSGC2LEG).
+
+    The 2025/20th Congress baseline; municipality-level is the committed
+    target, split cities carry multi_district_city records.
+    """
+    path = ROOT / 'PSGC2LEG/data/psgc_leg_assignments.jsonl'
+    districts = json.loads((ROOT / 'PSGC2LEG/data/legislative_districts.json').read_text())['districts']
+    by_code = {}
+    for line in path.read_text().splitlines():
+        row = json.loads(line)
+        by_code[row['psgc_code']] = row
+    return by_code, {d['leg_id']: d for d in districts}, path
+
+
+def attach_legislative_district(record, location, by_code, districts):
+    """Record the verified district for the assigned municipality-level locations.
+
+    This is a lookup of the already-assigned location, not new location
+    evidence: it adds no score and changes no status. Registry-matched
+    records carry the bridge's coordinate-derived district when available.
+    """
+    municipal = sorted({l['ancestry'][level]['code'] for l in location['locations']
+                        for level in ('city', 'municipality', 'sub_municipality')
+                        if level in l['ancestry']})
+    if not municipal:
+        return None
+    assignments = [by_code.get(code) for code in municipal]
+    assignments = [a for a in assignments if a and a.get('leg_id')]
+    if not assignments:
+        return None
+    leg_ids = sorted({a['leg_id'] for a in assignments})
+    if len(leg_ids) != 1:
+        return None
+    assignment = next(a for a in assignments if a['leg_id'] == leg_ids[0])
+    district = districts.get(leg_ids[0])
+    if not district:
+        return None
+    return {
+        'leg_id': district['leg_id'],
+        'jurisdiction': district['jurisdiction'],
+        'district_label': district['district_label'],
+        'district_no': district['district_no'],
+        'assignment_type': assignment['assignment_type'],
+        'derivation': 'assigned_municipality_join',
+    }
 
 
 def compressed_text(path):
@@ -217,15 +271,21 @@ def load_bridge_registry():
         for line in stream:
             row = json.loads(line)
             chains = []
+            districts = []
             for m in row.get('matches', []):
                 evidence = spatial.get(m['bridge_id'])
                 candidates = evidence.get('current_psgc_candidates', []) if evidence else []
                 if len(candidates) == 1:
                     chains.append(candidates[0])
+                district = evidence.get('legislative_district') if evidence else None
+                if district:
+                    districts.append(district)
+            unique_districts = {d['leg_id']: d for d in districts}
             registry[row['record_id']] = {
                 'status': row['status'],
                 'bridge_ids': row.get('bridge_ids', []),
                 'chains': chains,
+                'districts': sorted(unique_districts.values(), key=lambda d: d['leg_id']),
             }
     return registry, [matches_path, spatial_path]
 
@@ -289,7 +349,6 @@ def apply_bridge_registry(match, registry_entry, matcher):
         })
 
 
-
 def build(out):
     catalog_rows = [json.loads(s) for s in (ROOT / CATALOG).read_text().splitlines()]
     matcher = Matcher(catalog_rows)
@@ -299,7 +358,11 @@ def build(out):
     for path in registry_paths:
         inputs[str(path.relative_to(ROOT))] = {'sha256': sha(path),
             'scope': 'Retained DPWH bridge inventory exact-ID match and spatial PSGC evidence (read-only)'}
+    leg_by_code, leg_districts, leg_path = load_leg_assignments()
+    inputs[str(leg_path.relative_to(ROOT))] = {'sha256': sha(leg_path),
+        'scope': 'Verified PSGC2LEG municipality-to-legislative-district assignments (read-only)'}
     counts, sums, statuses, score_counts, kinds, review = Counter(), Counter(), {}, {}, {}, Counter()
+    district_counts = {}
     coordinate_counts = Counter()
     examples, seen = {}, set()
     with compressed_text(out / 'projects.jsonl.gz') as js, \
@@ -353,6 +416,16 @@ def build(out):
             # Re-score after contextual flags (especially source-region
             # disagreement and registry evidence) have been added.
             score_location(match)
+            # Legislative district is a lookup of the final assignment, not new
+            # location evidence: unscored, recorded for every assigned record.
+            registry_entry = bridge_registry.get(r['record_id'])
+            if match['status'] == 'registry_matched' and registry_entry and len(registry_entry['districts']) == 1:
+                district = dict(registry_entry['districts'][0])
+                district['derivation'] = 'bridge_coordinate_join'
+                r['legislative_district'] = district
+            else:
+                r['legislative_district'] = attach_legislative_district(
+                    r, match, leg_by_code, leg_districts)
             # Office names are retained as weak context only, never project codes.
             r['office_location_candidates'] = sorted({c for hit in matcher.find(r['implementing_office'])
                                                         for c in hit['codes']})
@@ -363,6 +436,8 @@ def build(out):
             if r['coordinate_summary']['point_count']:
                 coordinate_counts[dataset] += 1
             sums[dataset] += r['amount_php']
+            if r.get('legislative_district'):
+                district_counts.setdefault(dataset, Counter())[r['legislative_district']['derivation']] += 1
             statuses.setdefault(dataset, Counter())[match['status']] += 1
             score_counts.setdefault(dataset, Counter())[match['score']] += 1
             kinds.setdefault(dataset, Counter())[r['record_kind']] += 1
@@ -401,6 +476,7 @@ def build(out):
             raise ValueError(f'{dataset}: sum differs from source control')
     audit = {'schema_version': 3, 'scope': 'Retained FY2027 project and allocation observations; source/stage ledgers overlap. Never sum across datasets.',
              'identity_policy': 'One row per source observation; no cross-source project identity asserted.',
+             'legislative_district_policy': 'Lookup of the final assigned location through the verified PSGC2LEG municipality-to-district assignments; unscored and never new location evidence. Bridge-registry records carry the bridge coordinate-derived district.',
              'amount_checks': {key: {'expected_ledger_php': val, 'actual_php': sums[key],
                                      'difference_php': sums[key] - val} for key, val in expected.items()},
              'source_discrepancies': {'hfep_nep': read('analysis-hfep/data/nep_hfep_audit.json')['summary']['ledger_vs_grand_total_gap_php']},
@@ -418,7 +494,8 @@ def build(out):
                  'location_score_distribution': {str(score): count for score, count in
                                                  sorted(score_counts[key].items())},
                  'records_with_coordinate_pairs': coordinate_counts[key],
-                 'review_records': review[key]} for key in counts},
+                 'review_records': review[key],
+                 'legislative_districts': dict(district_counts.get(key, {}))} for key in counts},
              'examples': examples,
              'output_sha256': {p.name: sha(p) for p in out.glob('*.gz')}}
     (out / 'audit.json').write_text(json.dumps(audit, ensure_ascii=False, indent=2) + '\n')

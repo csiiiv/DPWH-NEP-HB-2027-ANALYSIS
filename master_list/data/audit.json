@@ -2,6 +2,7 @@
   "schema_version": 3,
   "scope": "Retained FY2027 project and allocation observations; source/stage ledgers overlap. Never sum across datasets.",
   "identity_policy": "One row per source observation; no cross-source project identity asserted.",
+  "legislative_district_policy": "Lookup of the final assigned location through the verified PSGC2LEG municipality-to-district assignments; unscored and never new location evidence. Bridge-registry records carry the bridge coordinate-derived district.",
   "amount_checks": {
     "dpwh_nep_pdf": {
       "expected_ledger_php": 572924074000,
@@ -172,8 +173,12 @@
       "scope": "Retained DPWH bridge inventory exact-ID match and spatial PSGC evidence (read-only)"
     },
     "bridge_inventory/data/bridge_spatial_evidence.jsonl.gz": {
-      "sha256": "887d862c8fe069a0fe120ee5d198b5b2032432408c38465f2f0fd8331b188101",
+      "sha256": "2cc88aca445c7f1f72b0c5a34e5f6a9f995fe600bc138a055956342597e81aa7",
       "scope": "Retained DPWH bridge inventory exact-ID match and spatial PSGC evidence (read-only)"
+    },
+    "PSGC2LEG/data/psgc_leg_assignments.jsonl": {
+      "sha256": "389fc6ff1ba32b11f1bee2fd820ab5567b223faf8ccd012b0ab2bd6f591deb3e",
+      "scope": "Verified PSGC2LEG municipality-to-legislative-district assignments (read-only)"
     },
     "analysis/data/nep_2027_source_projects.json": {
       "sha256": "2d58683888ae697c4506544b48d30ed4b6f6cfa9e796f7328ca4e4b9075423cf",
@@ -242,7 +247,7 @@
     }
   },
   "builder_sha256": {
-    "build_master_list.py": "44c903aab1e856aa998b3a878bfaf24a0407bab0e5dfa8a2088b7b653c28f710",
+    "build_master_list.py": "9a42c722e4e2a4fc2b98f55b09dec38a29cc4d188f61ceaab6546d98fc384767",
     "locations.py": "40c4e32b10b0356994f5575fb383020afa1c4680b50daed950ca2b4f8e94bc0c"
   },
   "records": 64645,
@@ -256,12 +261,12 @@
         "region_allocation": 51
       },
       "location_status": {
-        "unresolved": 2307,
+        "unresolved": 2265,
         "name_matched": 7411,
         "multiple_locations": 680,
         "province_only": 312,
         "ambiguous": 75,
-        "registry_matched": 367,
+        "registry_matched": 409,
         "allocation_not_site": 268
       },
       "location_score_distribution": {
@@ -273,13 +278,13 @@
         "-1": 54,
         "0": 2467,
         "1": 86,
-        "2": 107,
+        "2": 65,
         "3": 539,
         "4": 63,
         "5": 844,
         "6": 193,
         "7": 1029,
-        "8": 665,
+        "8": 707,
         "9": 1017,
         "10": 32,
         "11": 3912,
@@ -288,7 +293,11 @@
         "15": 3
       },
       "records_with_coordinate_pairs": 609,
-      "review_records": 4818
+      "review_records": 4776,
+      "legislative_districts": {
+        "assigned_municipality_join": 7400,
+        "bridge_coordinate_join": 380
+      }
     },
     "dpwh_house_second": {
       "records": 18792,
@@ -300,12 +309,12 @@
       },
       "location_status": {
         "allocation_not_site": 2791,
-        "unresolved": 2539,
+        "unresolved": 2497,
         "name_matched": 11719,
         "multiple_locations": 912,
         "province_only": 381,
         "ambiguous": 94,
-        "registry_matched": 356
+        "registry_matched": 398
       },
       "location_score_distribution": {
         "-6": 1,
@@ -316,13 +325,13 @@
         "-1": 43,
         "0": 5251,
         "1": 112,
-        "2": 95,
+        "2": 53,
         "3": 715,
         "4": 79,
         "5": 1418,
         "6": 272,
         "7": 1621,
-        "8": 787,
+        "8": 829,
         "9": 1369,
         "10": 37,
         "11": 6382,
@@ -331,7 +340,11 @@
         "15": 4
       },
       "records_with_coordinate_pairs": 2241,
-      "review_records": 6121
+      "review_records": 6079,
+      "legislative_districts": {
+        "assigned_municipality_join": 11727,
+        "bridge_coordinate_join": 369
+      }
     },
     "dpwh_house_third": {
       "records": 18797,
@@ -343,12 +356,12 @@
       },
       "location_status": {
         "allocation_not_site": 2791,
-        "unresolved": 2539,
+        "unresolved": 2497,
         "name_matched": 11724,
         "multiple_locations": 912,
         "province_only": 381,
         "ambiguous": 94,
-        "registry_matched": 356
+        "registry_matched": 398
       },
       "location_score_distribution": {
         "-6": 1,
@@ -359,13 +372,13 @@
         "-1": 43,
         "0": 5251,
         "1": 112,
-        "2": 95,
+        "2": 53,
         "3": 720,
         "4": 79,
         "5": 1418,
         "6": 272,
         "7": 1621,
-        "8": 787,
+        "8": 829,
         "9": 1369,
         "10": 37,
         "11": 6382,
@@ -374,7 +387,11 @@
         "15": 4
       },
       "records_with_coordinate_pairs": 2241,
-      "review_records": 6126
+      "review_records": 6084,
+      "legislative_districts": {
+        "assigned_municipality_join": 11727,
+        "bridge_coordinate_join": 369
+      }
     },
     "dpwh_nep_api": {
       "records": 11372,
@@ -384,11 +401,11 @@
       },
       "location_status": {
         "name_matched": 7488,
-        "unresolved": 2460,
+        "unresolved": 2418,
         "ambiguous": 76,
         "province_only": 285,
         "multiple_locations": 691,
-        "registry_matched": 372
+        "registry_matched": 414
       },
       "location_score_distribution": {
         "-8": 1,
@@ -399,13 +416,13 @@
         "-1": 28,
         "0": 2387,
         "1": 70,
-        "2": 98,
+        "2": 56,
         "3": 521,
         "4": 65,
         "5": 871,
         "6": 193,
         "7": 1049,
-        "8": 673,
+        "8": 715,
         "9": 1026,
         "10": 33,
         "11": 3958,
@@ -414,7 +431,11 @@
         "15": 3
       },
       "records_with_coordinate_pairs": 617,
-      "review_records": 4916
+      "review_records": 4874,
+      "legislative_districts": {
+        "assigned_municipality_join": 7461,
+        "bridge_coordinate_join": 385
+      }
     },
     "fmr_nep": {
       "records": 704,
@@ -446,7 +467,10 @@
         "15": 1
       },
       "records_with_coordinate_pairs": 704,
-      "review_records": 229
+      "review_records": 229,
+      "legislative_districts": {
+        "assigned_municipality_join": 677
+      }
     },
     "fmr_hgab": {
       "records": 964,
@@ -480,7 +504,10 @@
         "15": 5
       },
       "records_with_coordinate_pairs": 964,
-      "review_records": 332
+      "review_records": 332,
+      "legislative_districts": {
+        "assigned_municipality_join": 933
+      }
     },
     "hfep_nep": {
       "records": 464,
@@ -505,7 +532,10 @@
         "11": 21
       },
       "records_with_coordinate_pairs": 0,
-      "review_records": 384
+      "review_records": 384,
+      "legislative_districts": {
+        "assigned_municipality_join": 70
+      }
     },
     "hfep_hgab": {
       "records": 513,
@@ -530,7 +560,10 @@
         "11": 59
       },
       "records_with_coordinate_pairs": 0,
-      "review_records": 392
+      "review_records": 392,
+      "legislative_districts": {
+        "assigned_municipality_join": 111
+      }
     },
     "nia_nep": {
       "records": 791,
@@ -552,7 +585,10 @@
         "8": 9
       },
       "records_with_coordinate_pairs": 1,
-      "review_records": 780
+      "review_records": 780,
+      "legislative_districts": {
+        "assigned_municipality_join": 12
+      }
     },
     "nia_hgab": {
       "records": 828,
@@ -574,7 +610,10 @@
         "8": 22
       },
       "records_with_coordinate_pairs": 1,
-      "review_records": 802
+      "review_records": 802,
+      "legislative_districts": {
+        "assigned_municipality_join": 27
+      }
     }
   },
   "examples": {
@@ -4762,8 +4801,8 @@
     ]
   },
   "output_sha256": {
-    "projects.jsonl.gz": "7cf4d29b31e76cd8a1b16484ae40c0ee126e31274c112e5809ce36b51272fd01",
-    "projects.csv.gz": "ae6a2b3e6680aec6f5ec84d1d4de335a80433d490d11db7d6a94ed2e3a0a79ad",
-    "location_review.csv.gz": "0783a0a71cd55136fc0bea125a1fab4f4408eaa2803fea54cf90e85c19582a23"
+    "projects.jsonl.gz": "e23f5fca99274d32e58ebaa8ea71180270a5760da9868735bb94a09e5658902e",
+    "projects.csv.gz": "eaad43c1a972915d483b0f80801af394bad71d47f26b5ecb87d42fe00bce5dee",
+    "location_review.csv.gz": "19dee2430d534e86d1a019be5528f4049b980a79c2efb4ced4372e2bbe28b376"
   }
 }
