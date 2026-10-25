@@ -10,7 +10,7 @@ from collections import Counter
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'master_list/scripts'))
-from locations import Matcher
+from locations import SCORE_METHOD, Matcher
 from build_master_list import title_coordinates
 
 
@@ -276,6 +276,134 @@ class TitleLocations(unittest.TestCase):
         self.assertEqual(result['locations'][0]['ancestry']['municipality']['name'], 'Bula')
         self.assertEqual(result['review_flags'], [])
 
+    def test_station_syntax_is_not_the_santa_municipality(self):
+        # "Sta. 126 + 151" is road chainage, never Santa, Ilocos Sur.
+        result = self.matcher.match(
+            'Malaybalay-Gingoog Road (Gingoog City-Kalhaan, Claveria-Bulonay-Malaybalay City ), '
+            'Hindangon Bridge, Sta. 126 + 151 - Sta. 126 + 211, Gingoog City, Misamis Oriental',
+            (), '1000000000')
+        self.assertEqual(result['status'], 'name_matched')
+        self.assertEqual({(l['name'], l['level']) for l in result['locations']},
+                         {('City of Gingoog', 'city')})
+        self.assertEqual(result['review_flags'], [])
+        self.assertFalse(any('santa' in ev['text'] for ev in result['evidence']))
+
+    def test_parenthesized_road_spec_does_not_assert_locality(self):
+        # The road-segment paren names Claveria (a Misamis Occidental
+        # municipality) and Malaybalay City (Bukidnon); neither may enter the
+        # town pool against the explicit Gingoog City, Misamis Oriental chain.
+        result = self.matcher.match(
+            'Malaybalay-Gingoog Road (Gingoog City-Kalhaan, Claveria-Bulonay-Malaybalay City ), '
+            'Hindangon Bridge, Sta. 126 + 151 - Sta. 126 + 211, Gingoog City, Misamis Oriental',
+            (), '1000000000')
+        self.assertNotIn('title_or_heading_province_conflict', result['review_flags'])
+        # An unbalanced paren (PDF artifact) still parses as text.
+        unbalanced = self.matcher.match(
+            'Jct Bukidnon-Davao City Rd (Sayre Highway Section, Omonay Br . (B01378MN)', (), '1000000000')
+        self.assertIsInstance(unbalanced['status'], str)
+
+    def test_road_head_name_does_not_become_a_suffix_town(self):
+        # The leading "Malaybalay-Gingoog Road" is a road name; Malaybalay
+        # must not borrow assertion strength from the Gingoog City suffix.
+        result = self.matcher.match(
+            'Malaybalay-Gingoog Road, Sta. 1 + 000 - Sta. 3 + 000, Gingoog City, Misamis Oriental',
+            (), '1000000000')
+        self.assertNotIn('title_or_heading_province_conflict', result['review_flags'])
+
+    def test_province_anchored_enumeration_attaches_all_members(self):
+        # Ten listed names under "Umingan, Pangasinan" are all Umingan
+        # barangays; homonyms (San Vicente, Cadiz) must resolve under the
+        # anchor town, not poison the town pool.
+        result = self.matcher.match(
+            'Rehabilitation of Roads, s. Flores, Sinabaan, Cabalitian, Tanggal Sawang, '
+            'San Vicente, Cadiz, Poblacion West, Nancalabasaan, Barat and Esperanza, '
+            'Umingan, Pangasinan, Sta. 0+000 - Sta. 5+229', (), '0100000000')
+        self.assertEqual(result['status'], 'multiple_locations')
+        names = {l['name'] for l in result['locations'] if l['level'] == 'barangay'}
+        self.assertEqual(names, {'Flores', 'Sinabaan', 'Cabalitian', 'Tanggal Sawang',
+                                 'San Vicente', 'Cadiz', 'Poblacion West',
+                                 'Nancalabasaan', 'Barat', 'Esperanza'})
+        for loc in result['locations']:
+            if loc['level'] == 'barangay':
+                self.assertEqual(loc['ancestry']['municipality']['name'], 'Umingan')
+        self.assertEqual(result['review_flags'], [])
+        self.assertIn('evidence:province_anchored_enumeration',
+                      {f['rule'] for f in result['score_factors']})
+
+    def test_enumeration_area_families_stay_candidates(self):
+        # "s. Pindangan - Poblacion - San Juan" under Alcala: Pindangan and
+        # Poblacion name area families (Pindangan Centro/East/West...), not
+        # single barangays; the four exact members attach, the families stay
+        # suggestions without being assigned.
+        result = self.matcher.match(
+            'Reconstruction/Improvement of Roads, s. Pindangan - Poblacion - San Juan, '
+            'San Vicente, Laoac and Anulid, Alcala, Pangasinan, K0176+200 - K0186+000',
+            (), '0100000000')
+        assigned = {l['name'] for l in result['locations'] if l['level'] == 'barangay'}
+        self.assertEqual(assigned, {'San Juan', 'San Vicente', 'Laoac', 'Anulid'})
+        suggested = {s['location']['name'] for s in result['suggestions']}
+        self.assertEqual(suggested, {'Pindangan Centro', 'Pindangan East', 'Pindangan West',
+                                     'Poblacion East', 'Poblacion West'})
+        self.assertNotIn('title_or_heading_province_conflict', result['review_flags'])
+
+    def test_enumeration_requires_complete_segmentation(self):
+        # "Bacarra, Adams, Ilocos Norte" is two towns, not an enumeration:
+        # Bacarra is not an Adams barangay, so no run completes.
+        result = self.matcher.match('Construction of Road, Bacarra, Adams, Ilocos Norte')
+        self.assertEqual(result['status'], 'multiple_locations')
+        self.assertEqual({l['name'] for l in result['locations']}, {'Bacarra', 'Adams'})
+
+    def test_city_anchored_enumeration_with_qualifiers(self):
+        # Twelve barangays of Cauayan City under a plural "Barangays" part:
+        # parenthetical purok qualifiers drop out ("Minante 2 (Purok 2)"), the
+        # Arabic numeral alias matches official "Minante II", and the San Luis
+        # barangay mention must not assert the four San Luis municipalities.
+        result = self.matcher.match(
+            'Construction of Public Water Supply System (Level II) at Barangays Buena Suerte, '
+            'Carabatan Bacareno, Dabburab, Disimuray, Gappal, Guayabal, Linglingay, '
+            'Minante 2 (Purok 2), Santa Luciana, San Luis, Tagaran (Purok 3), '
+            'Villa Luna (Purok 12), City of Cauayan, Isabela', (), '0200000000')
+        names = {l['name'] for l in result['locations'] if l['level'] == 'barangay'}
+        self.assertEqual(names, {'Buena Suerte', 'Carabatan Bacareno', 'Dabburab',
+                                 'Disimuray', 'Gappal', 'Guayabal', 'Linglingay',
+                                 'Minante II', 'Santa Luciana', 'San Luis',
+                                 'Tagaran', 'Villa Luna'})
+        self.assertNotIn('title_or_heading_province_conflict', result['review_flags'])
+        for loc in result['locations']:
+            if loc['level'] == 'barangay':
+                self.assertEqual(loc['ancestry']['city']['name'], 'City of Cauayan')
+
+    def test_adjacent_town_province_pair_scopes_numbered_markers(self):
+        # "Barangay 1 - Barangay 5, Catanauan, Quezon": the Arabic numeral
+        # alias ("Barangay 1" for official "Barangay I") collides between
+        # Catanauan and the municipality named Quezon inside Quezon province;
+        # the adjacent Town, Province pair must decide for Catanauan.
+        result = self.matcher.match(
+            'Construction of Road with Approach of Kaibayo Bridge, '
+            'Barangay 1 - Barangay 5, Catanauan, Quezon', (), '0400000000')
+        self.assertEqual(result['status'], 'name_matched')
+        self.assertEqual([l['name'] for l in result['locations']], ['Barangay 1'])
+        self.assertEqual(result['locations'][0]['ancestry']['municipality']['name'],
+                         'Catanauan')
+        self.assertNotIn('ambiguous_barangay_name', result['review_flags'])
+
+    def test_marker_part_before_city_of_phrase_is_not_a_town(self):
+        # "Barangay Sta. Cruz, City of San Jose Del Monte": the barangay
+        # mention must not assert the seven Santa Cruz municipalities; the
+        # city stands alone and the unmatched family is suggested, assigned
+        # nowhere.
+        result = self.matcher.match(
+            'Rehabilitation of Road, Area D, Barangay Sta. Cruz, '
+            'City of San Jose Del Monte, Bulacan (121.052012, 14.855548)', (), '0300000000')
+        self.assertEqual({(l['name'], l['level']) for l in result['locations']},
+                         {('City of San Jose Del Monte', 'city')})
+        self.assertIn('barangay_mentioned_but_unmatched', result['review_flags'])
+        self.assertNotIn('title_or_heading_province_conflict', result['review_flags'])
+        suggested = {s['location']['name'] for s in result['suggestions']}
+        self.assertEqual(suggested, {'Santa Cruz I', 'Santa Cruz II', 'Santa Cruz III',
+                                     'Santa Cruz IV', 'Santa Cruz V'})
+
+
     def test_descriptor_backoff_does_not_hijack_numbered_barangay(self):
         # Sariaya has no Poblacion-series barangay; "Poblacion 6" belongs to
         # six other towns. The mention must stay unmatched rather than being
@@ -403,7 +531,7 @@ class RetainedArtifacts(unittest.TestCase):
                 self.assertTrue(row['source_dataset'])
                 score = row['location']['score']
                 self.assertIsInstance(score, int)
-                self.assertEqual(row['location']['score_method'], 'location_evidence_v6')
+                self.assertEqual(row['location']['score_method'], SCORE_METHOD)
                 self.assertTrue(row['location']['score_factors'])
                 for location in row['location']['locations']:
                     code = location['psgc_code']

@@ -9,8 +9,8 @@ import re
 import unicodedata
 
 
-SCORE_METHOD = 'location_evidence_v6'
-SUGGESTION_METHOD = 'hierarchy_candidate_v3'
+SCORE_METHOD = 'location_evidence_v6.2'
+SUGGESTION_METHOD = 'hierarchy_candidate_v4'
 SCORE_BASES = {
     'allocation_not_site': 0,
     'unresolved': 0,
@@ -23,6 +23,7 @@ SCORE_BASES = {
 }
 SCORE_BONUSES = {
     'explicit_barangay_marker': 2,
+    'province_anchored_enumeration': 2,
     'comma_barangay_municipality_province_chain': 4,
     'compact_locality_component': 1,
     'title_and_source_heading': 2,
@@ -64,6 +65,7 @@ def score_location(match):
 
     resolution_rules = {ev.get('resolution_rule') for ev in match['evidence']}
     for rule in ('explicit_barangay_marker',
+                 'province_anchored_enumeration',
                  'comma_barangay_municipality_province_chain',
                  'compact_locality_component', 'source_region_agreement',
                  'bridge_registry_id_match', 'bridge_registry_unique_chain',
@@ -114,12 +116,16 @@ def score_location(match):
     return match
 
 
-def normalize(text):
+def _normalize_string(text):
+    """Apply the documented rewrites; punctuation survives for tokenizing."""
     # A recurring PDF extraction artifact separates the enye in Niño as
     # "Ni ñ o". Repair only that word-level pattern before Unicode folding.
     text = re.sub(r'\bni\s+ñ\s+o\b', 'niño', text or '', flags=re.IGNORECASE)
     text = unicodedata.normalize('NFKD', text).casefold()
     text = ''.join(c for c in text if not unicodedata.combining(c))
+    # Station syntax ("Sta. 0+000", "Sta. 126 + 151") names road chainage,
+    # not the municipality Santa, Ilocos Sur. Rewrite before Sta. -> santa.
+    text = re.sub(r'\bsta(\.?)\s*\+?\s*(?=\d)', r'stn\1 ', text)
     text = re.sub(r'\bsta\.?\s+', 'santa ', text)
     text = re.sub(r'\bsto\.?\s+', 'santo ', text)
     # Documented historical/abbreviated spellings retained by PSA usage:
@@ -131,7 +137,47 @@ def normalize(text):
     text = re.sub(r'\bcompostela\s+valley\b', 'davao de oro', text)
     text = re.sub(r'\bwestern\s+samar\b', 'samar', text)
     text = re.sub(r'\bpob\s*\.\s*(?=[,\s]|$)', 'poblacion ', text)
-    return ' '.join(re.findall(r'[a-z0-9]+', text))
+    return text
+
+
+def normalize(text):
+    return ' '.join(re.findall(r'[a-z0-9]+', _normalize_string(text)))
+
+
+def normalized_tokens(text):
+    """normalize()'s word list plus a balanced-parenthesis mask per word.
+
+    A parenthetical qualifies or annotates (road-segment specs, bridge IDs,
+    coordinates); place mentions inside BALANCED parentheses stay candidates
+    but never assert locality. Unclosed parens — a common PDF artifact —
+    mask nothing, so "(Jct Bukidnon-Davao City Rd" still parses as text.
+    """
+    words, masks = [], []
+    depth, starts = 0, []
+    for token in re.findall(r'\S+', _normalize_string(text)):
+        for piece in re.split(r'([()])', token):
+            if piece == '(':
+                depth += 1
+                starts.append(len(words))
+            elif piece == ')':
+                if depth:
+                    depth -= 1
+                    start = starts.pop() if starts else 0
+                    if not starts:
+                        for k in range(start, len(words)):
+                            masks[k] = True
+            elif piece:
+                for word in re.findall(r'[a-z0-9]+', piece):
+                    words.append(word)
+                    masks.append(False)
+    return words, masks
+
+
+def member_words(text):
+    """Enumeration-member words: parenthetical qualifiers (purok/sitio notes
+    such as "Minante 2 (Purok 2)") drop out — they are text context, not
+    barangay-name components."""
+    return normalize(re.sub(r'\([^()]*\)', '', text)).split()
 
 
 def aliases(row):
@@ -170,6 +216,16 @@ def aliases(row):
             rest = stripped.split()
             if stripped != value and len(rest) >= 2:
                 result.add(stripped)
+    if row['level'] in {'city', 'municipality', 'sub_municipality', 'barangay'}:
+        # DPWH titles write Arabic numerals where PSA uses Roman suffixes
+        # ("Minante 2" for official "Minante II"). A town cannot hold both
+        # spellings of one name, so the mapping is exact.
+        roman = {'i': '1', 'ii': '2', 'iii': '3', 'iv': '4', 'v': '5',
+                 'vi': '6', 'vii': '7', 'viii': '8', 'ix': '9', 'x': '10'}
+        for value in list(result):
+            m = re.search(r'\s+(i{1,3}|iv|v|vi{1,3}|ix|x)$', value)
+            if m:
+                result.add(value[:m.start()] + ' ' + roman[m.group(1)])
     return {s for s in result if len(s) > 2}
 
 
@@ -262,7 +318,7 @@ class Matcher:
     @lru_cache(maxsize=30000)
     def match(self, title, structured=(), region_hint=None, office_hint=None):
         title_hits = self.find(title)
-        words = normalize(title).split()
+        words, paren_masks = normalized_tokens(title)
         locality_parts = self.locality_parts(title)
         bounded = {normalize(p) for p in locality_parts}
 
@@ -282,10 +338,17 @@ class Matcher:
         # PSA name with initials is written "Pres. Manuel, Roxas". Accept a
         # phrase that appears across the joined parts but not inside any one
         # part (a part-internal phrase may be a barangay mention, not a town).
+        # The phrase must start inside the bounded suffix: a road name in the
+        # head part ("Malaybalay-Gingoog Road") must not borrow assertion
+        # strength from an unrelated suffix occurrence of the same word.
         joined_suffix = ' '.join(' '.join(normalize(p).split()) for p in locality_parts)
         part_internal = {f' {p} ' for p in (f' {" ".join(normalize(x).split())} ' for x in locality_parts)}
+        head_part = re.split(r'[,;]', title)[0] if re.split(r'[,;]', title)[1:] else ''
+        suffix_word_start = len(normalize(head_part).split())
         spanning_phrases = set()
         for hit in title_hits:
+            if hit['start'] < suffix_word_start:
+                continue
             if f' {hit['text']} ' not in f' {joined_suffix} ':
                 continue
             if any(f' {hit['text']} ' in padded for padded in part_internal):
@@ -354,6 +417,111 @@ class Matcher:
                     break
         absorbed_phrases = {normalize(split_parts[pi + 1])
                             for pi in numbered_absorbed}  # suppress as towns
+        # Province-anchored enumeration: "…, s. Member A, Member B and C,
+        # Town, Province" — when the contiguous part-run before a Town,
+        # Province anchor segments COMPLETELY into barangay names of that
+        # town, every member is a barangay mention of the anchor town.
+        # Complete segmentation is what separates enumerations from ordinary
+        # multi-town titles: in "Bacarra, Adams, Ilocos Norte" no part-run of
+        # Adams barangays can cover the Bacarra part. Exact matches attach
+        # directly; a bare area name (Pindangan, Poblacion) attaches a
+        # same-named family of that town (Pindangan Centro/East/West) only
+        # when the run carries >=2 exact members. A leading "s." token (the
+        # sources' enumeration marker) continues rather than starts a chunk.
+        enum_anchored = {}   # part_idx -> {'town': code, 'members': [...]}
+        enum_direct = set()  # exact members with a unique code, for attachment
+        for prov_pi in range(len(split_parts) - 1, -1, -1):
+            prov_pool = {c for c in self.index.get(normalize(split_parts[prov_pi]), ())
+                         if self.rows[c]['level'] == 'province'}
+            if len(prov_pool) != 1:  # absent or homonym: cannot anchor alone
+                continue
+            province = next(iter(prov_pool))
+            for town_pi in range(prov_pi - 1, -1, -1):
+                town_pool = {c for c in self.index.get(normalize(split_parts[town_pi]), ())
+                             if self.rows[c]['level'] in {'city', 'municipality',
+                                                          'sub_municipality'}
+                             and self.ancestry(c).get('province') == province}
+                if len(town_pool) != 1:
+                    continue
+                town = next(iter(town_pool))
+                if region_hint and self.ancestry(town).get('region') != region_hint:
+                    continue
+                bidx, bmax = self.barangay_index(town)
+                if not bidx:
+                    continue
+                part_members = {}  # part_idx -> [(name, kind, codes), ...]
+                for member_pi in range(0, town_pi):
+                    if member_pi in numbered_absorbed or member_pi in enum_anchored:
+                        continue
+                    words_here = member_words(split_parts[member_pi])
+                    if not words_here or any(w in {'brgy', 'brgys', 'barangay',
+                                                   'barangays'} for w in words_here):
+                        continue  # marker parts keep the marker pass
+                    if words_here[0] == 's' and len(words_here) > 1:
+                        words_here = words_here[1:]  # "s. <members>" marker
+                    members_here, ok = [], True
+                    k = 0
+                    while k < len(words_here):
+                        if words_here[k] == 'and':
+                            k += 1
+                            continue
+                        for size in range(min(bmax, len(words_here) - k), 0, -1):
+                            name = ' '.join(words_here[k:k + size])
+                            if name in bidx:
+                                members_here.append((name, 'exact',
+                                                     sorted(bidx[name])))
+                                k += size
+                                break
+                            family = sorted({c for n, cs in bidx.items()
+                                             if n.startswith(name + ' ')
+                                             and len(n.split()) == len(name.split()) + 1
+                                             for c in cs})
+                            if family:
+                                members_here.append((name, 'family', family))
+                                k += size
+                                break
+                        else:
+                            ok = False  # a word is not a barangay of the town
+                            break
+                    if ok and members_here:
+                        part_members[member_pi] = members_here
+                # Contiguous run of member parts immediately before the town.
+                run_start = town_pi
+                while run_start - 1 in part_members:
+                    run_start -= 1
+                run_parts = list(range(run_start, town_pi))
+                exact_total = sum(1 for pi in run_parts for _, kind, _ in part_members[pi]
+                                  if kind == 'exact')
+                if (not run_parts or exact_total < 2
+                        or len(run_parts) + sum(len(part_members[pi]) - 1
+                                                for pi in run_parts) < 2):
+                    continue  # isolated member: not an enumeration
+                members = [{'part': pi, 'name': name, 'kind': kind, 'codes': codes}
+                           for pi in run_parts
+                           for name, kind, codes in part_members[pi]]
+                for pi in run_parts:
+                    enum_anchored[pi] = {'town': town, 'members': members,
+                                         'town_part': town_pi, 'province_part': prov_pi}
+                enum_direct.update(next(iter(mc)) for pi in run_parts
+                                   for _, kind, mc in part_members[pi]
+                                   if kind == 'exact' and len(mc) == 1)
+                break
+        enum_evidence = []
+        for entry in enum_anchored.values():
+            town = entry['town']
+            for member in entry['members']:
+                if member['kind'] == 'exact':
+                    ev = {'field': 'title_barangay', 'text': member['name'],
+                          'candidate_codes': member['codes'],
+                          'parent_code': town, 'locality_syntax': True,
+                          'resolution_rule': 'province_anchored_enumeration'}
+                else:
+                    ev = {'field': 'title_barangay', 'text': member['name'],
+                          'candidate_codes': member['codes'],
+                          'parent_code': town, 'locality_syntax': True,
+                          'resolution_rule': 'province_anchored_enumeration_family'}
+                enum_evidence.append(ev)
+        evidence.extend(enum_evidence)
         # A marker-less part immediately before an explicit city part may be
         # a barangay of that city ("Libertad, Butuan City" / enumeration
         # tails "..., Citrus and Kaypian, City of ..."). Probe trailing
@@ -376,17 +544,22 @@ class Matcher:
                            for cc in self.index.get(normalize(split_parts[cp]), ())}
         for pi, part in enumerate(split_parts):
             words_here = normalize(part).split()
+            if pi == 0:
+                continue  # head part; only a road name starts an enumeration
             if not any(w in {'brgys', 'barangays'} for w in words_here):
                 continue
             later_cities = [cp for cp in explicit_city_parts if cp > pi]
             if not later_cities:
                 continue
             for member_pi in range(pi + 1, later_cities[0]):
-                if member_pi in markerless_barangay:
+                if member_pi in markerless_barangay or member_pi in enum_anchored:
                     continue
                 # A part may hold several "and"-joined members; record each
-                # that resolves uniquely under the explicit city.
-                chunks = [c.strip() for c in normalize(split_parts[member_pi]).split(' and ') if c.strip()]
+                # that resolves uniquely under the explicit city. Parts with
+                # ANY member resolving are wholly consumed: unresolvable
+                # words (parenthetical purok qualifiers, unmatched names)
+                # are not independent town mentions.
+                chunks = [c.strip() for c in ' '.join(member_words(split_parts[member_pi])).split(' and ') if c.strip()]
                 resolved_here = []
                 for chunk in chunks:
                     if chunk not in self.all_barangays:
@@ -400,9 +573,13 @@ class Matcher:
         # Immediate-before-city probe: a marker-less part directly preceding
         # an explicit city may itself be one barangay ("Libertad, Butuan
         # City"); parts already enumerated keep their richer resolution.
+        # The head part qualifies too when its trailing words name the city's
+        # barangay ("... Esplanade Tuburan Sur to Hi-way Looc, Danao City").
         for pi in range(len(split_parts) - 1):
             if pi + 1 not in explicit_city_parts or pi in markerless_barangay:
                 continue
+            if pi in enum_anchored:
+                continue  # consumed by a province-anchored run
             words_here = normalize(split_parts[pi]).split()
             if not words_here or any(w in {'brgy', 'brgys', 'barangay', 'barangays'}
                                      for w in words_here):
@@ -451,13 +628,24 @@ class Matcher:
             # A part resolved as a marker-less city barangay is not a town.
             if any(phrase in normalize(split_parts[mpi]) or normalize(split_parts[mpi]) in phrase
                    for mpi in markerless_barangay):
-                suppressed_num = True            # A comma component must itself be a place, or an explicit city /
+                suppressed_num = True
+            # A part consumed by a province-anchored enumeration names a
+            # barangay of the anchor town, not an independent town.
+            if any(phrase in normalize(split_parts[epi]) for epi in enum_anchored):
+                suppressed_num = True
+            # Place mentions inside balanced parentheses qualify or annotate
+            # (road-segment specs, bridge IDs); they stay candidates but
+            # never assert locality.
+            if any(paren_masks[i] for i in range(hit['start'], hit['end'])):
+                suppressed_num = True
+            # A comma component must itself be a place, or an explicit city /
             # municipality phrase. Province mentions in "Abra River" stay weak.
             exact = phrase in bounded or phrase in chain_phrases or any(
                 p in {f'city of {phrase}', f'municipality of {phrase}',
                       f'{phrase} city', f'province of {phrase}'} for p in bounded)
             marker = bool(re.search(r'(?:municipality of|city of|province of)$', before)) or phrase.startswith('city of ')
-            city_suffix = phrase.endswith(' city') or after == 'city' or after.startswith('city ')
+            city_suffix = phrase.endswith(' city') or after == 'city' or (
+                after.startswith('city ') and not after.startswith('city of'))
             # "in X" is useful only at the title end, not "in X River".
             locative_end = before.split()[-1:] in [['in'], ['at']] and hit['end'] == len(words)
             suppressed = (phrase in hierarchy_suppressed_towns and phrase in bounded) or suppressed_num
@@ -479,6 +667,67 @@ class Matcher:
         context_codes = {c for pool, _ in groups for c in pool}
         context_towns = {c for c in context_codes if self.rows[c]['level'] in
                          {'city', 'municipality', 'sub_municipality'}}
+        context_provinces_pre = {c for c in context_codes if self.rows[c]['level'] == 'province'}
+        # A province-name pool may carry same-named town homonyms ("Quezon"
+        # also names municipalities). When a title asserts a province, only
+        # towns actually inside it scope markers — except independent cities
+        # of the same region (HUCs have no province ancestor; v4 rule).
+        if context_provinces_pre and len(context_provinces_pre) == 1:
+            province = next(iter(context_provinces_pre))
+            prov_region = self.ancestry(province).get('region')
+            context_towns = {c for c in context_towns
+                             if self.ancestry(c).get('province') == province
+                             or ('province' not in self.ancestry(c)
+                                 and self.ancestry(c).get('region') == prov_region)}
+            # An adjacent "Town, Province" comma pair is an explicit chain;
+            # its town outranks remaining homonyms ("Catanauan, Quezon" —
+            # the municipality named Quezon inside Quezon province). The
+            # override applies only when it uniquely resolves marker names
+            # that stay ambiguous under the full town scope, so multi-town
+            # titles ("Guruyan, Juban, Sorsogon - Dolos, Bulan, Sorsogon")
+            # keep their full scope.
+            if len(context_towns) > 1:
+                pair_towns = set()
+                for pi in range(len(split_parts) - 1):
+                    town_pool = {c for c in self.index.get(normalize(split_parts[pi]), ())
+                                 if c in context_towns
+                                 and self.ancestry(c).get('province') == province}
+                    prov_pool = {c for c in self.index.get(normalize(split_parts[pi + 1]), ())
+                                 if c == province}
+                    if len(town_pool) == 1 and prov_pool:
+                        pair_towns.update(town_pool)
+                if len(pair_towns) == 1:
+                    # Marker names adjacent to each Brgy./Barangay word, in
+                    # either direction (mirrors the marker pass probe).
+                    marker_names = set()
+                    for part in split_parts:
+                        lw = normalize(part).split()
+                        for i, w in enumerate(lw):
+                            if w in {'brgy', 'barangay'}:
+                                for size in range(min(self.max_barangay_words,
+                                                      len(lw) - i - 1), 0, -1):
+                                    nm = ' '.join(lw[i + 1:i + 1 + size])
+                                    if nm in self.all_barangays:
+                                        marker_names.add(nm)
+                                        break
+                                for size in range(min(self.max_barangay_words, i), 0, -1):
+                                    nm = ' '.join(lw[i - size:i])
+                                    if nm in self.all_barangays:
+                                        marker_names.add(nm)
+                                        break
+
+                    def resolved_under(names, scope):
+                        count = 0
+                        for nm in names:
+                            hits = {c for c in self.all_barangays.get(nm, ())
+                                    if self.rows[c]['parent_code'] in scope}
+                            count += len(hits) == 1
+                        return count
+
+                    if (marker_names
+                            and resolved_under(marker_names, context_towns) < len(marker_names)
+                            and resolved_under(marker_names, pair_towns) == len(marker_names)):
+                        context_towns = pair_towns
         # An explicit city phrase ("Iloilo City") outranks same-named town
         # homonyms for barangay scoping: a district homonym ("Jaro" also in
         # Leyte) must not steal the barangay assignment.
@@ -486,11 +735,13 @@ class Matcher:
                                for c in pool if self.rows[c]['level'] == 'city'}
         marker_scope_towns = explicit_city_codes or context_towns
         context_provinces = {c for c in context_codes if self.rows[c]['level'] == 'province'}
-        direct_barangays = set(hierarchy_barangays)
+        direct_barangays = set(hierarchy_barangays) | set(enum_direct)
         barangay_by_part = {}  # {part_index: [(name, code, flag), ...]}
         marker_seen = False
         flags = []
         for part_idx, part in enumerate(split_parts):
+            if part_idx in enum_anchored:
+                continue  # consumed by the province-anchored enumeration
             joined_name = numbered_absorbed.get(part_idx)
             if joined_name:
                 # Resolve the joined numbered name directly under context.
@@ -803,6 +1054,10 @@ class Matcher:
             status = 'unresolved'
         suggestions = (self.suggest_hierarchies(evidence, region_hint, office_hint)
                        if status != 'name_matched' or flags else [])
+        assigned = {loc['psgc_code'] for loc in
+                    [self.describe(c) for c in sorted(selected)]}
+        suggestions = [s for s in suggestions
+                       if s['location']['psgc_code'] not in assigned]
         return score_location({'status': status, 'method': 'exact_catalog_name_with_locality_syntax',
                 'verification_status': 'provisional_name_match',
                 'locations': [self.describe(c) for c in sorted(selected)],
@@ -829,6 +1084,13 @@ class Matcher:
         barangays = {code for ev in evidence if ev['field'] == 'title_barangay'
                      for code in ev['candidate_codes']
                      if self.rows[code]['level'] == 'barangay'}
+        # Family-prefix mentions (a barangay marker whose name matches only a
+        # numbered/area family of a named town — "Sta. Cruz" under a city whose
+        # barangays are "Santa Cruz I".."V") carry the family codes; the town
+        # relationship is stated by the title, so they expand as chains.
+        family_mentions = [ev for ev in evidence
+                           if ev['field'] == 'title_barangay'
+                           and ev.get('resolution_rule') == 'explicit_barangay_marker']
         title_places = {code for ev in evidence
                         if ev['field'] in {'title', 'source_locality_heading'}
                         and ev.get('locality_syntax', True)
@@ -837,6 +1099,22 @@ class Matcher:
                        {'city', 'municipality', 'sub_municipality'}}
         named_provinces = {code for code in title_places
                            if self.rows[code]['level'] == 'province'}
+        for ev in family_mentions:
+            name = ev['text']
+            # Only a mention with NO exact barangay under any named town is
+            # a family mention; when a bare match exists (Poblacion under
+            # Carmen), the exact chains already speak and no family expands.
+            if any(self.rows[c]['parent_code'] in named_towns
+                   for c in ev['candidate_codes']):
+                continue
+            for town in named_towns:
+                bidx, _ = self.barangay_index(town)
+                fam = sorted({c for n, cs in bidx.items()
+                              if n.startswith(name + ' ')
+                              and len(n.split()) == len(name.split()) + 1
+                              for c in cs})
+                if len(fam) >= 2:
+                    barangays.update(fam)
         # Chain-combination context: does any stated town actually sit in a
         # stated province? If not, the title chain itself is impossible and
         # every suggestion is a repair candidate rather than a rival reading.

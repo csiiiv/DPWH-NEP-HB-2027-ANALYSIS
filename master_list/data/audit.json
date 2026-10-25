@@ -121,7 +121,7 @@
   },
   "location_policy": "Provisional exact name inference only. Printed office/region context is not a project site. No generated coordinates or fuzzy matching.",
   "location_score_rules": {
-    "method": "location_evidence_v6",
+    "method": "location_evidence_v6.2",
     "interpretation": "Uncapped additive evidence score; not normalized and not a probability.",
     "bases": {
       "allocation_not_site": 0,
@@ -135,6 +135,7 @@
     },
     "bonuses": {
       "explicit_barangay_marker": 2,
+      "province_anchored_enumeration": 2,
       "comma_barangay_municipality_province_chain": 4,
       "compact_locality_component": 1,
       "title_and_source_heading": 2,
@@ -251,7 +252,7 @@
   },
   "builder_sha256": {
     "build_master_list.py": "44cfcc0064c45b1b8d55c6d22677574661dd6be79273040a591c8b1e20f5b51e",
-    "locations.py": "764890d886bf39714ef2d4187326a888cb211801338bad28e7483387c0bb6a02"
+    "locations.py": "77168a5dac6bc9a6203e5542350a15b6adb1b1f1e41f6e5535f428b858af04f4"
   },
   "records": 64645,
   "datasets": {
@@ -264,42 +265,42 @@
         "region_allocation": 51
       },
       "location_status": {
-        "unresolved": 2265,
-        "name_matched": 7426,
-        "multiple_locations": 699,
-        "province_only": 315,
-        "ambiguous": 38,
-        "registry_matched": 409,
+        "unresolved": 2301,
+        "name_matched": 7394,
+        "multiple_locations": 709,
+        "province_only": 314,
+        "ambiguous": 16,
+        "registry_matched": 418,
         "allocation_not_site": 268
       },
       "location_score_distribution": {
-        "-7": 3,
-        "-4": 1,
-        "-3": 15,
+        "-8": 2,
+        "-7": 1,
+        "-3": 5,
         "-2": 12,
         "-1": 53,
-        "0": 2467,
-        "1": 64,
-        "2": 62,
-        "3": 536,
-        "4": 59,
-        "5": 842,
-        "6": 119,
-        "7": 1024,
-        "8": 700,
-        "9": 944,
-        "10": 29,
-        "11": 4001,
+        "0": 2505,
+        "1": 54,
+        "2": 64,
+        "3": 529,
+        "4": 43,
+        "5": 794,
+        "6": 90,
+        "7": 987,
+        "8": 721,
+        "9": 950,
+        "10": 38,
+        "11": 4080,
         "12": 76,
-        "13": 308,
-        "14": 96,
+        "13": 307,
+        "14": 100,
         "15": 9
       },
       "records_with_coordinate_pairs": 609,
-      "review_records": 4702,
+      "review_records": 4647,
       "legislative_districts": {
-        "assigned_municipality_join": 7409,
-        "bridge_coordinate_join": 380
+        "assigned_municipality_join": 7414,
+        "bridge_coordinate_join": 389
       }
     },
     "dpwh_house_second": {
@@ -312,40 +313,40 @@
       },
       "location_status": {
         "allocation_not_site": 2791,
-        "unresolved": 2497,
-        "name_matched": 11732,
-        "multiple_locations": 944,
-        "province_only": 383,
-        "ambiguous": 47,
-        "registry_matched": 398
+        "unresolved": 2532,
+        "name_matched": 11695,
+        "multiple_locations": 968,
+        "province_only": 375,
+        "ambiguous": 24,
+        "registry_matched": 407
       },
       "location_score_distribution": {
         "-6": 1,
-        "-3": 14,
+        "-3": 6,
         "-2": 9,
-        "-1": 40,
-        "0": 5249,
-        "1": 85,
-        "2": 49,
-        "3": 709,
-        "4": 73,
-        "5": 1313,
-        "6": 136,
-        "7": 1659,
-        "8": 824,
-        "9": 1271,
-        "10": 37,
-        "11": 6601,
-        "12": 102,
+        "-1": 39,
+        "0": 5284,
+        "1": 74,
+        "2": 50,
+        "3": 695,
+        "4": 57,
+        "5": 1245,
+        "6": 107,
+        "7": 1584,
+        "8": 852,
+        "9": 1291,
+        "10": 45,
+        "11": 6728,
+        "12": 104,
         "13": 488,
-        "14": 125,
+        "14": 126,
         "15": 7
       },
       "records_with_coordinate_pairs": 2241,
-      "review_records": 5877,
+      "review_records": 5771,
       "legislative_districts": {
-        "assigned_municipality_join": 11741,
-        "bridge_coordinate_join": 369
+        "assigned_municipality_join": 11750,
+        "bridge_coordinate_join": 378
       }
     },
     "dpwh_house_third": {
@@ -358,40 +359,40 @@
       },
       "location_status": {
         "allocation_not_site": 2791,
-        "unresolved": 2497,
-        "name_matched": 11737,
-        "multiple_locations": 944,
-        "province_only": 383,
-        "ambiguous": 47,
-        "registry_matched": 398
+        "unresolved": 2532,
+        "name_matched": 11700,
+        "multiple_locations": 968,
+        "province_only": 375,
+        "ambiguous": 24,
+        "registry_matched": 407
       },
       "location_score_distribution": {
         "-6": 1,
-        "-3": 14,
+        "-3": 6,
         "-2": 9,
-        "-1": 40,
-        "0": 5249,
-        "1": 85,
-        "2": 49,
-        "3": 714,
-        "4": 73,
-        "5": 1313,
-        "6": 136,
-        "7": 1659,
-        "8": 824,
-        "9": 1271,
-        "10": 37,
-        "11": 6601,
-        "12": 102,
+        "-1": 39,
+        "0": 5284,
+        "1": 74,
+        "2": 50,
+        "3": 700,
+        "4": 57,
+        "5": 1245,
+        "6": 107,
+        "7": 1584,
+        "8": 852,
+        "9": 1291,
+        "10": 45,
+        "11": 6728,
+        "12": 104,
         "13": 488,
-        "14": 125,
+        "14": 126,
         "15": 7
       },
       "records_with_coordinate_pairs": 2241,
-      "review_records": 5882,
+      "review_records": 5776,
       "legislative_districts": {
-        "assigned_municipality_join": 11741,
-        "bridge_coordinate_join": 369
+        "assigned_municipality_join": 11750,
+        "bridge_coordinate_join": 378
       }
     },
     "dpwh_nep_api": {
@@ -401,40 +402,41 @@
         "project": 11372
       },
       "location_status": {
-        "name_matched": 7503,
-        "unresolved": 2418,
-        "ambiguous": 38,
-        "province_only": 288,
-        "multiple_locations": 711,
-        "registry_matched": 414
+        "name_matched": 7469,
+        "unresolved": 2454,
+        "ambiguous": 16,
+        "province_only": 287,
+        "multiple_locations": 723,
+        "registry_matched": 423
       },
       "location_score_distribution": {
-        "-7": 3,
-        "-3": 14,
+        "-8": 2,
+        "-7": 1,
+        "-3": 4,
         "-2": 2,
         "-1": 27,
-        "0": 2386,
-        "1": 48,
-        "2": 53,
-        "3": 518,
-        "4": 62,
-        "5": 867,
-        "6": 119,
-        "7": 1047,
-        "8": 710,
-        "9": 954,
-        "10": 30,
-        "11": 4047,
+        "0": 2423,
+        "1": 39,
+        "2": 55,
+        "3": 510,
+        "4": 46,
+        "5": 818,
+        "6": 90,
+        "7": 1009,
+        "8": 732,
+        "9": 961,
+        "10": 40,
+        "11": 4125,
         "12": 75,
-        "13": 308,
-        "14": 93,
+        "13": 307,
+        "14": 97,
         "15": 9
       },
       "records_with_coordinate_pairs": 617,
-      "review_records": 4800,
+      "review_records": 4747,
       "legislative_districts": {
-        "assigned_municipality_join": 7470,
-        "bridge_coordinate_join": 385
+        "assigned_municipality_join": 7474,
+        "bridge_coordinate_join": 394
       }
     },
     "fmr_nep": {
@@ -444,31 +446,31 @@
         "project": 704
       },
       "location_status": {
-        "name_matched": 581,
-        "multiple_locations": 111,
-        "province_only": 10,
+        "name_matched": 583,
+        "multiple_locations": 112,
+        "province_only": 7,
         "ambiguous": 2
       },
       "location_score_distribution": {
         "1": 4,
-        "3": 9,
+        "3": 6,
         "4": 2,
-        "5": 36,
-        "6": 4,
-        "7": 44,
-        "8": 99,
+        "5": 35,
+        "6": 3,
+        "7": 41,
+        "8": 100,
         "9": 31,
         "10": 1,
-        "11": 449,
+        "11": 456,
         "12": 11,
         "13": 5,
         "14": 8,
         "15": 1
       },
       "records_with_coordinate_pairs": 704,
-      "review_records": 209,
+      "review_records": 202,
       "legislative_districts": {
-        "assigned_municipality_join": 677
+        "assigned_municipality_join": 680
       }
     },
     "fmr_hgab": {
@@ -478,35 +480,35 @@
         "project": 964
       },
       "location_status": {
-        "name_matched": 770,
-        "multiple_locations": 178,
-        "province_only": 12,
-        "ambiguous": 3,
+        "name_matched": 767,
+        "multiple_locations": 186,
+        "province_only": 8,
+        "ambiguous": 2,
         "unresolved": 1
       },
       "location_score_distribution": {
-        "-5": 1,
-        "-3": 2,
+        "-7": 1,
+        "-4": 1,
         "-1": 1,
         "1": 4,
-        "3": 12,
+        "3": 8,
         "4": 1,
-        "5": 46,
-        "6": 3,
-        "7": 55,
-        "8": 158,
+        "5": 44,
+        "6": 1,
+        "7": 50,
+        "8": 166,
         "9": 36,
         "10": 1,
-        "11": 610,
+        "11": 621,
         "12": 8,
         "13": 6,
-        "14": 14,
+        "14": 9,
         "15": 6
       },
       "records_with_coordinate_pairs": 964,
-      "review_records": 305,
+      "review_records": 295,
       "legislative_districts": {
-        "assigned_municipality_join": 932
+        "assigned_municipality_join": 937
       }
     },
     "hfep_nep": {
@@ -544,25 +546,25 @@
         "facility": 513
       },
       "location_status": {
-        "name_matched": 129,
-        "province_only": 359,
+        "name_matched": 130,
+        "province_only": 358,
         "unresolved": 21,
         "multiple_locations": 4
       },
       "location_score_distribution": {
         "-1": 4,
         "0": 21,
-        "1": 7,
+        "1": 6,
         "2": 6,
         "3": 336,
         "5": 46,
         "7": 34,
-        "11": 59
+        "11": 60
       },
       "records_with_coordinate_pairs": 0,
-      "review_records": 392,
+      "review_records": 391,
       "legislative_districts": {
-        "assigned_municipality_join": 111
+        "assigned_municipality_join": 112
       }
     },
     "nia_nep": {
@@ -597,15 +599,15 @@
         "project": 828
       },
       "location_status": {
-        "unresolved": 794,
+        "unresolved": 795,
         "name_matched": 28,
-        "province_only": 6
+        "province_only": 5
       },
       "location_score_distribution": {
         "-2": 3,
         "-1": 16,
-        "0": 775,
-        "2": 7,
+        "0": 776,
+        "2": 6,
         "4": 5,
         "8": 22
       },
@@ -628,12 +630,12 @@
           "locations": [],
           "candidate_codes": [],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [],
           "review_flags": [],
           "needs_review": true,
           "score": 0,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:unresolved",
@@ -654,7 +656,7 @@
             "1380600000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -668,7 +670,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 0,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:unresolved",
@@ -689,7 +691,7 @@
             "1380600000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -703,7 +705,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 0,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:unresolved",
@@ -725,7 +727,7 @@
             "0105500000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -747,7 +749,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 0,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:unresolved",
@@ -787,7 +789,7 @@
             "0931700000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -817,7 +819,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 5,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:name_matched_town",
@@ -859,7 +861,7 @@
             "0931700000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -889,7 +891,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 5,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:name_matched_town",
@@ -903,56 +905,65 @@
         }
       },
       {
-        "record_id": "dpwh_nep_pdf:p199:r1",
-        "title": "Maharlika Highway (Lanao-Pagadian-Zamboanga City Rd ) - (S01632MN) Chainage 000 - Chainage 110, Chainage 140 - Chainage 270, Chainage 300 - Chainage 436",
+        "record_id": "dpwh_nep_pdf:p200:r26",
+        "title": "Butuan City-Cagayan de Oro City-Iligan City Road (Agusan-Misamis Or Rd ) - K1239 + 382 - K1244 + 299",
         "location": {
           "status": "name_matched",
           "method": "exact_catalog_name_with_locality_syntax",
           "verification_status": "provisional_name_match",
           "locations": [
             {
-              "psgc_code": "0931700000",
-              "name": "City of Zamboanga",
+              "psgc_code": "1630400000",
+              "name": "City of Butuan",
               "level": "city",
               "ancestry": {
                 "city": {
-                  "code": "0931700000",
-                  "name": "City of Zamboanga"
+                  "code": "1630400000",
+                  "name": "City of Butuan"
                 },
                 "region": {
-                  "code": "0900000000",
-                  "name": "Region IX (Zamboanga Peninsula)"
+                  "code": "1600000000",
+                  "name": "Region XIII (Caraga)"
                 }
               }
             }
           ],
           "candidate_codes": [
-            "0907322000",
-            "0931700000"
+            "1030500000",
+            "1030900000",
+            "1630400000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
-              "text": "pagadian",
+              "text": "butuan city",
               "candidate_codes": [
-                "0907322000"
+                "1630400000"
               ],
-              "locality_syntax": false
+              "locality_syntax": true
             },
             {
               "field": "title",
-              "text": "zamboanga city",
+              "text": "cagayan de oro city",
               "candidate_codes": [
-                "0931700000"
+                "1030500000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "iligan city",
+              "candidate_codes": [
+                "1030900000"
               ],
               "locality_syntax": true
             },
             {
               "field": "source_region",
               "candidate_codes": [
-                "0900000000"
+                "1600000000"
               ],
               "locality_syntax": true,
               "resolution_rule": "source_region_agreement"
@@ -961,7 +972,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 5,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:name_matched_town",
@@ -975,56 +986,65 @@
         }
       },
       {
-        "record_id": "dpwh_nep_pdf:p199:r2",
-        "title": "Maharlika Highway (Lanao-Pagadian-Zamboanga City Rd ) - (S01634MN) Chainage 000 - Chainage 116, Chainage 197 - Chainage 301",
+        "record_id": "dpwh_nep_pdf:p200:r27",
+        "title": "Butuan City-Cagayan de Oro City-Iligan City Road (Agusan-Misamis Or Rd ) - K1244 + 299 - K1246 + 655 - K1246 + 908 - K1250 + (- 542)",
         "location": {
           "status": "name_matched",
           "method": "exact_catalog_name_with_locality_syntax",
           "verification_status": "provisional_name_match",
           "locations": [
             {
-              "psgc_code": "0931700000",
-              "name": "City of Zamboanga",
+              "psgc_code": "1630400000",
+              "name": "City of Butuan",
               "level": "city",
               "ancestry": {
                 "city": {
-                  "code": "0931700000",
-                  "name": "City of Zamboanga"
+                  "code": "1630400000",
+                  "name": "City of Butuan"
                 },
                 "region": {
-                  "code": "0900000000",
-                  "name": "Region IX (Zamboanga Peninsula)"
+                  "code": "1600000000",
+                  "name": "Region XIII (Caraga)"
                 }
               }
             }
           ],
           "candidate_codes": [
-            "0907322000",
-            "0931700000"
+            "1030500000",
+            "1030900000",
+            "1630400000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
-              "text": "pagadian",
+              "text": "butuan city",
               "candidate_codes": [
-                "0907322000"
+                "1630400000"
               ],
-              "locality_syntax": false
+              "locality_syntax": true
             },
             {
               "field": "title",
-              "text": "zamboanga city",
+              "text": "cagayan de oro city",
               "candidate_codes": [
-                "0931700000"
+                "1030500000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "iligan city",
+              "candidate_codes": [
+                "1030900000"
               ],
               "locality_syntax": true
             },
             {
               "field": "source_region",
               "candidate_codes": [
-                "0900000000"
+                "1600000000"
               ],
               "locality_syntax": true,
               "resolution_rule": "source_region_agreement"
@@ -1033,7 +1053,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 5,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:name_matched_town",
@@ -1049,75 +1069,80 @@
     ],
     "multiple_locations": [
       {
-        "record_id": "dpwh_nep_pdf:p198:r19",
-        "title": "Maharlika Highway (Pagadian City-Zamboanga City Rd ) - (S01638MN) Chainage 000 - Chainage 505",
+        "record_id": "dpwh_nep_pdf:p199:r8",
+        "title": "Butuan City-Cagayan de Oro City-Iligan City Rd - K1405 + 000 - K1405 + 033, K1405 + 136 - K1405 + 706, K1405 + 830 - K1406 + 414",
         "location": {
           "status": "multiple_locations",
           "method": "exact_catalog_name_with_locality_syntax",
           "verification_status": "provisional_name_match",
           "locations": [
             {
-              "psgc_code": "0907322000",
-              "name": "City of Pagadian",
+              "psgc_code": "1030500000",
+              "name": "City of Cagayan De Oro",
               "level": "city",
               "ancestry": {
                 "city": {
-                  "code": "0907322000",
-                  "name": "City of Pagadian"
-                },
-                "province": {
-                  "code": "0907300000",
-                  "name": "Zamboanga del Sur"
+                  "code": "1030500000",
+                  "name": "City of Cagayan De Oro"
                 },
                 "region": {
-                  "code": "0900000000",
-                  "name": "Region IX (Zamboanga Peninsula)"
+                  "code": "1000000000",
+                  "name": "Region X (Northern Mindanao)"
                 }
               }
             },
             {
-              "psgc_code": "0931700000",
-              "name": "City of Zamboanga",
+              "psgc_code": "1030900000",
+              "name": "City of Iligan",
               "level": "city",
               "ancestry": {
                 "city": {
-                  "code": "0931700000",
-                  "name": "City of Zamboanga"
+                  "code": "1030900000",
+                  "name": "City of Iligan"
                 },
                 "region": {
-                  "code": "0900000000",
-                  "name": "Region IX (Zamboanga Peninsula)"
+                  "code": "1000000000",
+                  "name": "Region X (Northern Mindanao)"
                 }
               }
             }
           ],
           "candidate_codes": [
-            "0907322000",
-            "0931700000"
+            "1030500000",
+            "1030900000",
+            "1630400000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
-              "text": "pagadian city",
+              "text": "butuan city",
               "candidate_codes": [
-                "0907322000"
+                "1630400000"
               ],
               "locality_syntax": true
             },
             {
               "field": "title",
-              "text": "zamboanga city",
+              "text": "cagayan de oro city",
               "candidate_codes": [
-                "0931700000"
+                "1030500000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "iligan city",
+              "candidate_codes": [
+                "1030900000"
               ],
               "locality_syntax": true
             },
             {
               "field": "source_region",
               "candidate_codes": [
-                "0900000000"
+                "1000000000"
               ],
               "locality_syntax": true,
               "resolution_rule": "source_region_agreement"
@@ -1126,7 +1151,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 4,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:multiple_locations",
@@ -1140,75 +1165,80 @@
         }
       },
       {
-        "record_id": "dpwh_nep_pdf:p198:r20",
-        "title": "Maharlika Highway (Pagadian City-Zamboanga City Rd ) - (S01639MN) Chainage 000 - Chainage 324, Chainage 1048 - Chainage 2603",
+        "record_id": "dpwh_nep_pdf:p199:r9",
+        "title": "Butuan City-Cagayan de Oro City-Iligan City Rd - K1406 + 473 - K1406 + 759, K1407 + 456 - K1408 + 909, K1408 + 992 - K1409 + 057, K1410 + 000 - K1410 + 486",
         "location": {
           "status": "multiple_locations",
           "method": "exact_catalog_name_with_locality_syntax",
           "verification_status": "provisional_name_match",
           "locations": [
             {
-              "psgc_code": "0907322000",
-              "name": "City of Pagadian",
+              "psgc_code": "1030500000",
+              "name": "City of Cagayan De Oro",
               "level": "city",
               "ancestry": {
                 "city": {
-                  "code": "0907322000",
-                  "name": "City of Pagadian"
-                },
-                "province": {
-                  "code": "0907300000",
-                  "name": "Zamboanga del Sur"
+                  "code": "1030500000",
+                  "name": "City of Cagayan De Oro"
                 },
                 "region": {
-                  "code": "0900000000",
-                  "name": "Region IX (Zamboanga Peninsula)"
+                  "code": "1000000000",
+                  "name": "Region X (Northern Mindanao)"
                 }
               }
             },
             {
-              "psgc_code": "0931700000",
-              "name": "City of Zamboanga",
+              "psgc_code": "1030900000",
+              "name": "City of Iligan",
               "level": "city",
               "ancestry": {
                 "city": {
-                  "code": "0931700000",
-                  "name": "City of Zamboanga"
+                  "code": "1030900000",
+                  "name": "City of Iligan"
                 },
                 "region": {
-                  "code": "0900000000",
-                  "name": "Region IX (Zamboanga Peninsula)"
+                  "code": "1000000000",
+                  "name": "Region X (Northern Mindanao)"
                 }
               }
             }
           ],
           "candidate_codes": [
-            "0907322000",
-            "0931700000"
+            "1030500000",
+            "1030900000",
+            "1630400000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
-              "text": "pagadian city",
+              "text": "butuan city",
               "candidate_codes": [
-                "0907322000"
+                "1630400000"
               ],
               "locality_syntax": true
             },
             {
               "field": "title",
-              "text": "zamboanga city",
+              "text": "cagayan de oro city",
               "candidate_codes": [
-                "0931700000"
+                "1030500000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "iligan city",
+              "candidate_codes": [
+                "1030900000"
               ],
               "locality_syntax": true
             },
             {
               "field": "source_region",
               "candidate_codes": [
-                "0900000000"
+                "1000000000"
               ],
               "locality_syntax": true,
               "resolution_rule": "source_region_agreement"
@@ -1217,7 +1247,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 4,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:multiple_locations",
@@ -1231,75 +1261,80 @@
         }
       },
       {
-        "record_id": "dpwh_nep_pdf:p198:r21",
-        "title": "Maharlika Highway (Pagadian City-Zamboanga City Rd ) - K1665 + 000 - K1665 + 500, K1667 + 623 - K1667 + 897, K1667 + 936 - K1669 + 000, K1670 + 000 - K1674 +",
+        "record_id": "dpwh_nep_pdf:p229:r17",
+        "title": "Butuan City-Cagayan de Oro City-Iligan City Rd - K1344 + 206 - K1345 + 231, K1358 + 541 - K1358 + 611, K1362 + 746 - K1362 + 764",
         "location": {
           "status": "multiple_locations",
           "method": "exact_catalog_name_with_locality_syntax",
           "verification_status": "provisional_name_match",
           "locations": [
             {
-              "psgc_code": "0907322000",
-              "name": "City of Pagadian",
+              "psgc_code": "1030500000",
+              "name": "City of Cagayan De Oro",
               "level": "city",
               "ancestry": {
                 "city": {
-                  "code": "0907322000",
-                  "name": "City of Pagadian"
-                },
-                "province": {
-                  "code": "0907300000",
-                  "name": "Zamboanga del Sur"
+                  "code": "1030500000",
+                  "name": "City of Cagayan De Oro"
                 },
                 "region": {
-                  "code": "0900000000",
-                  "name": "Region IX (Zamboanga Peninsula)"
+                  "code": "1000000000",
+                  "name": "Region X (Northern Mindanao)"
                 }
               }
             },
             {
-              "psgc_code": "0931700000",
-              "name": "City of Zamboanga",
+              "psgc_code": "1030900000",
+              "name": "City of Iligan",
               "level": "city",
               "ancestry": {
                 "city": {
-                  "code": "0931700000",
-                  "name": "City of Zamboanga"
+                  "code": "1030900000",
+                  "name": "City of Iligan"
                 },
                 "region": {
-                  "code": "0900000000",
-                  "name": "Region IX (Zamboanga Peninsula)"
+                  "code": "1000000000",
+                  "name": "Region X (Northern Mindanao)"
                 }
               }
             }
           ],
           "candidate_codes": [
-            "0907322000",
-            "0931700000"
+            "1030500000",
+            "1030900000",
+            "1630400000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
-              "text": "pagadian city",
+              "text": "butuan city",
               "candidate_codes": [
-                "0907322000"
+                "1630400000"
               ],
               "locality_syntax": true
             },
             {
               "field": "title",
-              "text": "zamboanga city",
+              "text": "cagayan de oro city",
               "candidate_codes": [
-                "0931700000"
+                "1030500000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "iligan city",
+              "candidate_codes": [
+                "1030900000"
               ],
               "locality_syntax": true
             },
             {
               "field": "source_region",
               "candidate_codes": [
-                "0900000000"
+                "1000000000"
               ],
               "locality_syntax": true,
               "resolution_rule": "source_region_agreement"
@@ -1308,7 +1343,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 4,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:multiple_locations",
@@ -1322,75 +1357,80 @@
         }
       },
       {
-        "record_id": "dpwh_nep_pdf:p198:r22",
-        "title": "Maharlika Highway (Pagadian City-Zamboanga City Rd ) - K1675 + (- 337 ) - K1675 + 000, K1676 + 000 - K1676 + 669, K1676 + 721 - K1676 + 822, K1678 + 000 - K1678 + 091, K1680 + 380 - K1680 + 603, K1680 + 945 - K1681 + 000, K1684 + 018 - K1684 + 028, K1684 + 682 - K1685 + 000, K1687 + 000 - K1688 + 500, K1689 + 961 - K1690 + 508, K1690 + 526 - K1690 + 825, K1694 + 723 - K1694 + 775, K1694 + 812 - K1694 + 870, K1700 + 056 - K1700 + 106, K1714 + 2160 - K1718 + 020, K1718 + 1285 - K1718 + 1305",
+        "record_id": "dpwh_nep_pdf:p229:r18",
+        "title": "Butuan City-Cagayan de Oro City-Iligan City Rd - K1392 + 725 - K1392 + 792.50, K1395 + 471 - K1395 + 497, K1399 + 310 - K1399 + 378",
         "location": {
           "status": "multiple_locations",
           "method": "exact_catalog_name_with_locality_syntax",
           "verification_status": "provisional_name_match",
           "locations": [
             {
-              "psgc_code": "0907322000",
-              "name": "City of Pagadian",
+              "psgc_code": "1030500000",
+              "name": "City of Cagayan De Oro",
               "level": "city",
               "ancestry": {
                 "city": {
-                  "code": "0907322000",
-                  "name": "City of Pagadian"
-                },
-                "province": {
-                  "code": "0907300000",
-                  "name": "Zamboanga del Sur"
+                  "code": "1030500000",
+                  "name": "City of Cagayan De Oro"
                 },
                 "region": {
-                  "code": "0900000000",
-                  "name": "Region IX (Zamboanga Peninsula)"
+                  "code": "1000000000",
+                  "name": "Region X (Northern Mindanao)"
                 }
               }
             },
             {
-              "psgc_code": "0931700000",
-              "name": "City of Zamboanga",
+              "psgc_code": "1030900000",
+              "name": "City of Iligan",
               "level": "city",
               "ancestry": {
                 "city": {
-                  "code": "0931700000",
-                  "name": "City of Zamboanga"
+                  "code": "1030900000",
+                  "name": "City of Iligan"
                 },
                 "region": {
-                  "code": "0900000000",
-                  "name": "Region IX (Zamboanga Peninsula)"
+                  "code": "1000000000",
+                  "name": "Region X (Northern Mindanao)"
                 }
               }
             }
           ],
           "candidate_codes": [
-            "0907322000",
-            "0931700000"
+            "1030500000",
+            "1030900000",
+            "1630400000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
-              "text": "pagadian city",
+              "text": "butuan city",
               "candidate_codes": [
-                "0907322000"
+                "1630400000"
               ],
               "locality_syntax": true
             },
             {
               "field": "title",
-              "text": "zamboanga city",
+              "text": "cagayan de oro city",
               "candidate_codes": [
-                "0931700000"
+                "1030500000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "title",
+              "text": "iligan city",
+              "candidate_codes": [
+                "1030900000"
               ],
               "locality_syntax": true
             },
             {
               "field": "source_region",
               "candidate_codes": [
-                "0900000000"
+                "1000000000"
               ],
               "locality_syntax": true,
               "resolution_rule": "source_region_agreement"
@@ -1399,7 +1439,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 4,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:multiple_locations",
@@ -1445,7 +1485,7 @@
             "0301419000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -1484,7 +1524,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 3,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:province_only",
@@ -1523,7 +1563,6 @@
           ],
           "candidate_codes": [
             "0102920000",
-            "0102922000",
             "0103300000",
             "0103307000",
             "0103314000",
@@ -1541,7 +1580,7 @@
             "1806105000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -1589,22 +1628,6 @@
             },
             {
               "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
               "text": "la union",
               "candidate_codes": [
                 "0103300000"
@@ -1623,7 +1646,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 3,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:province_only",
@@ -1667,7 +1690,7 @@
             "0105548000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -1713,7 +1736,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 3,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:province_only",
@@ -1756,7 +1779,7 @@
             "0102934000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -1794,7 +1817,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 3,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:province_only",
@@ -1809,159 +1832,6 @@
       }
     ],
     "ambiguous": [
-      {
-        "record_id": "dpwh_nep_pdf:p285:r10",
-        "title": "Cagayan de Oro Diversion Road Extension (Jct. Sayre Highway (Balubal )- Manolo Fortich Malitbog-Claveria-Eureka, Gingoog City Road ), Mantibugao-Lunocan Section, Sta. 1 + 739 - Sta. Sta. 2 + 578.11, Manolo Fortich, Bukidnon",
-        "location": {
-          "status": "ambiguous",
-          "method": "exact_catalog_name_with_locality_syntax",
-          "verification_status": "provisional_name_match",
-          "locations": [
-            {
-              "psgc_code": "1001300000",
-              "name": "Bukidnon",
-              "level": "province",
-              "ancestry": {
-                "province": {
-                  "code": "1001300000",
-                  "name": "Bukidnon"
-                },
-                "region": {
-                  "code": "1000000000",
-                  "name": "Region X (Northern Mindanao)"
-                }
-              }
-            }
-          ],
-          "candidate_codes": [
-            "0102922000",
-            "0201511000",
-            "0504107000",
-            "0806409000",
-            "1001300000",
-            "1001313000",
-            "1001314000",
-            "1004306000",
-            "1004308000",
-            "1030500000"
-          ],
-          "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
-          "evidence": [
-            {
-              "field": "title",
-              "text": "cagayan de oro",
-              "candidate_codes": [
-                "1030500000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "manolo fortich",
-              "candidate_codes": [
-                "1001314000"
-              ],
-              "locality_syntax": true
-            },
-            {
-              "field": "title",
-              "text": "malitbog",
-              "candidate_codes": [
-                "0806409000",
-                "1001313000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "claveria",
-              "candidate_codes": [
-                "0201511000",
-                "0504107000",
-                "1004306000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "gingoog city",
-              "candidate_codes": [
-                "1004308000"
-              ],
-              "locality_syntax": true
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "manolo fortich",
-              "candidate_codes": [
-                "1001314000"
-              ],
-              "locality_syntax": true
-            },
-            {
-              "field": "title",
-              "text": "bukidnon",
-              "candidate_codes": [
-                "1001300000"
-              ],
-              "locality_syntax": true
-            },
-            {
-              "field": "source_region",
-              "candidate_codes": [
-                "1000000000"
-              ],
-              "locality_syntax": true,
-              "resolution_rule": "source_region_agreement"
-            }
-          ],
-          "review_flags": [
-            "title_or_heading_province_conflict"
-          ],
-          "needs_review": true,
-          "score": -3,
-          "score_method": "location_evidence_v6",
-          "score_factors": [
-            {
-              "rule": "base:ambiguous",
-              "impact": 1
-            },
-            {
-              "rule": "evidence:source_region_agreement",
-              "impact": 1
-            },
-            {
-              "rule": "penalty:title_or_heading_province_conflict",
-              "impact": -5
-            }
-          ]
-        }
-      },
       {
         "record_id": "dpwh_nep_pdf:p287:r1",
         "title": "Magsaysay-Butuan City Coastal Bypass / Alternate Road (Sta. Cruz, Magsaysay ), Sta. 1 + 550 - Sta. 2 + 050, Brgy. Poblacion, Magsaysay, Misamis Oriental",
@@ -1993,7 +1863,6 @@
             "0102909019",
             "0102918006",
             "0102921005",
-            "0102922000",
             "0102923006",
             "0102924000",
             "0102928027",
@@ -2800,7 +2669,7 @@
               ]
             }
           ],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -2845,22 +2714,6 @@
                 "1102407000",
                 "1705105000",
                 "1705314000"
-              ],
-              "locality_syntax": true
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
               ],
               "locality_syntax": false
             },
@@ -3514,7 +3367,7 @@
           ],
           "needs_review": true,
           "score": -3,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:ambiguous",
@@ -3564,7 +3417,6 @@
             }
           ],
           "candidate_codes": [
-            "0102922000",
             "0500510000",
             "0500517000",
             "0501700000",
@@ -3573,7 +3425,7 @@
             "0600413000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -3617,22 +3469,6 @@
               "locality_syntax": true
             },
             {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "santa",
-              "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
               "field": "source_region",
               "candidate_codes": [
                 "0500000000"
@@ -3646,7 +3482,7 @@
           ],
           "needs_review": true,
           "score": -3,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:ambiguous",
@@ -3664,133 +3500,111 @@
         }
       },
       {
-        "record_id": "dpwh_nep_pdf:p299:r0",
-        "title": "Malaybalay-Gingoog Road (Gingoog City- Kalhaan, Claveria-Bulonay-Malaybalay City ), Barangay Kalabugao, Sta. 66 + 750 - Sta. 70 + 950, Impasug-ong, Bukidnon",
+        "record_id": "dpwh_nep_pdf:p361:r9",
+        "title": "Construction of Flood Control Structure at Aguada River, Aguada Br. Section (B00001BL) with Esplanade along Basilan Circumferential Road (S00002BL ), Isabela City",
+        "location": {
+          "status": "ambiguous",
+          "method": "exact_catalog_name_with_locality_syntax",
+          "verification_status": "provisional_name_match",
+          "locations": [],
+          "candidate_codes": [
+            "0990100000",
+            "0990101000",
+            "1900700000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v4",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "basilan",
+              "candidate_codes": [
+                "1900700000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "isabela city",
+              "candidate_codes": [
+                "0990100000",
+                "0990101000"
+              ],
+              "locality_syntax": true
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [],
+              "registry_status": "bridge_mention_without_id"
+            }
+          ],
+          "review_flags": [
+            "ambiguous_city_municipality_name"
+          ],
+          "needs_review": true,
+          "score": 1,
+          "score_method": "location_evidence_v6.2",
+          "score_factors": [
+            {
+              "rule": "base:ambiguous",
+              "impact": 1
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p409:r23",
+        "title": "Construction of Public Water Supply System (Level II) at Barangays Buena Suerte, Carabatan Bacareno, Dabburab, Disimuray, Gappal, Guayabal, Linglingay, Minante 2 (Purok 2 ), Santa Luciana, San Luis, Tagaran (Purok 3 ), Villa Luna (Purok 12 ), City of Cauavan, Isabela",
         "location": {
           "status": "ambiguous",
           "method": "exact_catalog_name_with_locality_syntax",
           "verification_status": "provisional_name_match",
           "locations": [
             {
-              "psgc_code": "1001300000",
-              "name": "Bukidnon",
-              "level": "province",
+              "psgc_code": "0203108009",
+              "name": "Buena Suerte",
+              "level": "barangay",
               "ancestry": {
+                "barangay": {
+                  "code": "0203108009",
+                  "name": "Buena Suerte"
+                },
+                "city": {
+                  "code": "0203108000",
+                  "name": "City of Cauayan"
+                },
                 "province": {
-                  "code": "1001300000",
-                  "name": "Bukidnon"
+                  "code": "0203100000",
+                  "name": "Isabela"
                 },
                 "region": {
-                  "code": "1000000000",
-                  "name": "Region X (Northern Mindanao)"
+                  "code": "0200000000",
+                  "name": "Region II (Cagayan Valley)"
                 }
               }
             }
           ],
           "candidate_codes": [
             "0102922000",
-            "0201511000",
-            "0504107000",
-            "1001300000",
-            "1001305000",
-            "1001305010",
-            "1001312000",
-            "1004306000",
-            "1004308000"
+            "0103310000",
+            "0203100000",
+            "0203108000",
+            "0203108009",
+            "0203116000",
+            "0305417000",
+            "0307708000",
+            "0401024000",
+            "0990100000",
+            "0990101000",
+            "1408105000",
+            "1600309000",
+            "1804514000"
           ],
-          "suggestions": [
-            {
-              "location": {
-                "psgc_code": "1001305010",
-                "name": "Kalabugao",
-                "level": "barangay",
-                "ancestry": {
-                  "barangay": {
-                    "code": "1001305010",
-                    "name": "Kalabugao"
-                  },
-                  "municipality": {
-                    "code": "1001305000",
-                    "name": "Impasug-ong"
-                  },
-                  "province": {
-                    "code": "1001300000",
-                    "name": "Bukidnon"
-                  },
-                  "region": {
-                    "code": "1000000000",
-                    "name": "Region X (Northern Mindanao)"
-                  }
-                }
-              },
-              "support_score": 11,
-              "factors": [
-                {
-                  "rule": "explicit_barangay_mention",
-                  "impact": 4
-                },
-                {
-                  "rule": "named_parent_town",
-                  "impact": 3
-                },
-                {
-                  "rule": "named_parent_province",
-                  "impact": 2
-                },
-                {
-                  "rule": "source_region_agreement",
-                  "impact": 2
-                }
-              ],
-              "conflicts": []
-            }
-          ],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
-              "text": "malaybalay",
-              "candidate_codes": [
-                "1001312000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "gingoog",
-              "candidate_codes": [
-                "1004308000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "gingoog city",
-              "candidate_codes": [
-                "1004308000"
-              ],
-              "locality_syntax": true
-            },
-            {
-              "field": "title",
-              "text": "claveria",
-              "candidate_codes": [
-                "0201511000",
-                "0504107000",
-                "1004306000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "malaybalay city",
-              "candidate_codes": [
-                "1001312000"
-              ],
-              "locality_syntax": true
-            },
-            {
-              "field": "title",
               "text": "santa",
               "candidate_codes": [
                 "0102922000"
@@ -3799,33 +3613,41 @@
             },
             {
               "field": "title",
-              "text": "santa",
+              "text": "san luis",
               "candidate_codes": [
-                "0102922000"
-              ],
-              "locality_syntax": false
-            },
-            {
-              "field": "title",
-              "text": "impasug ong",
-              "candidate_codes": [
-                "1001305000"
+                "0305417000",
+                "0307708000",
+                "0401024000",
+                "1600309000"
               ],
               "locality_syntax": true
             },
             {
               "field": "title",
-              "text": "bukidnon",
+              "text": "luna",
               "candidate_codes": [
-                "1001300000"
+                "0103310000",
+                "0203116000",
+                "1408105000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "isabela",
+              "candidate_codes": [
+                "0203100000",
+                "0990100000",
+                "0990101000",
+                "1804514000"
               ],
               "locality_syntax": true
             },
             {
               "field": "title_barangay",
-              "text": "kalabugao",
+              "text": "buena suerte",
               "candidate_codes": [
-                "1001305010"
+                "0203108009"
               ],
               "locality_syntax": true,
               "resolution_rule": "explicit_barangay_marker"
@@ -3833,19 +3655,19 @@
             {
               "field": "source_region",
               "candidate_codes": [
-                "1000000000"
+                "0200000000"
               ],
               "locality_syntax": true,
               "resolution_rule": "source_region_agreement"
             }
           ],
           "review_flags": [
-            "barangay_mentioned_but_unmatched",
+            "barangay_list_requires_review",
             "title_or_heading_province_conflict"
           ],
           "needs_review": true,
-          "score": -3,
-          "score_method": "location_evidence_v6",
+          "score": 0,
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:ambiguous",
@@ -3860,8 +3682,12 @@
               "impact": 1
             },
             {
-              "rule": "penalty:barangay_mentioned_but_unmatched",
-              "impact": -2
+              "rule": "corroboration:explicit_parent_chain",
+              "impact": 2
+            },
+            {
+              "rule": "penalty:barangay_list_requires_review",
+              "impact": -1
             },
             {
               "rule": "penalty:title_or_heading_province_conflict",
@@ -3909,7 +3735,7 @@
             "1004217000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -3954,7 +3780,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 8,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:registry_matched",
@@ -4007,7 +3833,7 @@
             "1380600000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -4044,7 +3870,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 8,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:registry_matched",
@@ -4100,7 +3926,7 @@
             "1408105000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -4147,7 +3973,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 8,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:registry_matched",
@@ -4204,7 +4030,7 @@
             "0603043000"
           ],
           "suggestions": [],
-          "suggestion_method": "hierarchy_candidate_v3",
+          "suggestion_method": "hierarchy_candidate_v4",
           "evidence": [
             {
               "field": "title",
@@ -4266,7 +4092,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 8,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:registry_matched",
@@ -4302,7 +4128,7 @@
           ],
           "needs_review": false,
           "score": 0,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:allocation_not_site",
@@ -4328,7 +4154,7 @@
           ],
           "needs_review": false,
           "score": 0,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:allocation_not_site",
@@ -4354,7 +4180,7 @@
           ],
           "needs_review": false,
           "score": 0,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:allocation_not_site",
@@ -4380,7 +4206,7 @@
           ],
           "needs_review": false,
           "score": 0,
-          "score_method": "location_evidence_v6",
+          "score_method": "location_evidence_v6.2",
           "score_factors": [
             {
               "rule": "base:allocation_not_site",
@@ -4392,8 +4218,8 @@
     ]
   },
   "output_sha256": {
-    "projects.jsonl.gz": "0bb1d2b124e013867e04cb7d6f6ced456290707034cbd5e5b0d079839b5d6d59",
-    "projects.csv.gz": "bcf043227f69bc51eddb462ec0df7f3814b49d6007dce53a8ff01866335821f6",
-    "location_review.csv.gz": "952123a8a7e987ca83fa30de9d31ce39651d12ece50a6e6fc47d16c24beba02a"
+    "projects.jsonl.gz": "e726a390387f234fe7f5c1f5336909c671e8fa74441078a4c3fae295e956a17c",
+    "projects.csv.gz": "2b2de19b5a6d2c954d720039763cc5dd4d759aa5ed761d3dbddedb39b6cddb6a",
+    "location_review.csv.gz": "3846412ff3244f687a6588ae1b290204c8f35c5b827bc5109460e88d9a67fd67"
   }
 }

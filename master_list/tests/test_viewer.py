@@ -10,6 +10,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'master_list/scripts'))
 from build_viewer import category, reference, digest
+from locations import SCORE_METHOD
 
 
 class Viewer(unittest.TestCase):
@@ -43,7 +44,7 @@ class Viewer(unittest.TestCase):
                 totals[row['dataset']] += int(row['value_php'])
                 score = int(row['location_score'])
                 self.assertEqual(row['location_score'], str(score))
-                self.assertEqual(row['score_method'], 'location_evidence_v6')
+                self.assertEqual(row['score_method'], SCORE_METHOD)
                 for code in row['psgc_codes'].split('|'):
                     if code:
                         self.assertEqual(len(code), 10)

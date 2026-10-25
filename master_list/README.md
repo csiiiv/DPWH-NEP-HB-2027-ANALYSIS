@@ -118,7 +118,7 @@ the actual construction site**. `needs_review = false` means the parser found
 one unflagged name match, not that a human certified it.
 
 `location.score` is an uncapped integer produced by the versioned
-`location_evidence_v5` rules. It is the sum of documented evidence and penalty
+`location_evidence_v6` rules. It is the sum of documented evidence and penalty
 factors, not a probability or normalized confidence value. Resolution depth,
 explicit barangay syntax, valid parent chains, compact locality components, and
 agreement with source headings or regions add points. Ambiguity, unmatched

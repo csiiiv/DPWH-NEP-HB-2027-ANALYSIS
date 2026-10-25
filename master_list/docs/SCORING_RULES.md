@@ -1,6 +1,6 @@
 # Location scoring rules
 
-**Method:** `location_evidence_v6` · **Suggestion method:** `hierarchy_candidate_v3`  
+**Method:** `location_evidence_v6.2` · **Suggestion method:** `hierarchy_candidate_v4`  
 **Canonical source:** `scripts/locations.py` (`SCORE_BASES`, `SCORE_BONUSES`,
 `SCORE_FLAG_BONUSES`, `SCORE_PENALTIES`) · **Machine-readable copy:**
 `data/audit.json` → `location_score_rules`
@@ -27,8 +27,8 @@ flowchart TD
     T[Title + structured headings<br/>+ source region / office hints] --> P
 
     subgraph P["1 · PARSE — collect candidate mentions"]
-        P1[Normalize spelling<br/>Sta./Sto., Pob., historical names,<br/>drop single-letter initials] --> P2
-        P2[Detect catalog names:<br/>towns, provinces, barangay markers,<br/>comma-spanning &amp; numbered joins] --> P3
+        P1[Normalize spelling<br/>Sta./Sto., Pob., historical names,<br/>stn guard for chainage,<br/>drop single-letter initials] --> P2
+        P2[Detect catalog names:<br/>towns, provinces, barangay markers,<br/>comma-spanning &amp; numbered joins,<br/>paren-masked road specs] --> P3
         P3[Build context pools:<br/>town / province / region candidates]
     end
 
@@ -51,7 +51,7 @@ flowchart TD
     subgraph B["3 · SCORE — layer evidence additively"]
         direction TB
         B0["BASE (exactly one)<br/>───────────────────<br/>barangay match ....... +6<br/>town / registry ...... +4<br/>multiple sites ....... +3<br/>province only ........ +2<br/>ambiguous ............ +1<br/>unresolved / alloc .... 0"] --> B1
-        B1["EVIDENCE bonuses (once per rule)<br/>───────────────────<br/>brgy→town→prov chain ... +4<br/>explicit Brgy. marker .. +2<br/>registry ID / chain /<br/>agreement (each) ....... +2<br/>source region agrees .... +1<br/>compact component ...... +1"] --> B2
+        B1["EVIDENCE bonuses (once per rule)<br/>───────────────────<br/>brgy→town→prov chain ... +4<br/>explicit Brgy. marker .. +2<br/>province-anchored<br/>enumeration ........... +2<br/>registry ID / chain /<br/>agreement (each) ....... +2<br/>source region agrees .... +1<br/>compact component ...... +1"] --> B2
         B2["CORROBORATION (independent fields)<br/>───────────────────<br/>title + printed heading . +2<br/>town + explicit province  +2"] --> B3
         B3["COHERENCE flag bonus<br/>───────────────────<br/>grouped barangays,<br/>same municipality ..... +3"] --> B4
         B4["PENALTIES (per flag)<br/>───────────────────<br/>province conflict ..... −5<br/>region conflict ....... −3<br/>registry conflict ..... −3<br/>ambiguous brgy ....... −3<br/>scope spans towns ..... −3<br/>unmatched marker ...... −2<br/>plural list review .... −1<br/>indep. city + province . −1"]
@@ -87,6 +87,7 @@ kept) rather than a rejection.
 | Cue | Rule id | Points |
 |---|---|---:|
 | Complete unmarked `barangay, town, province` suffix | `comma_barangay_municipality_province_chain` | +4 |
+| Province-anchored enumeration fully segmented into anchor-town barangays | `province_anchored_enumeration` | +2 |
 | Adjacent explicit `Brgy.`/`Barangay` marker | `explicit_barangay_marker` | +2 |
 | Exact inventory `BRIDGE_ID` in title | `bridge_registry_id_match` | +2 |
 | Matched bridge resolves to one PSGC chain | `bridge_registry_unique_chain` | +2 |
@@ -94,7 +95,11 @@ kept) rather than a rejection.
 | Source region agrees with assignment | `source_region_agreement` | +1 |
 | Compact multi-level component fully covered | `compact_locality_component` | +1 |
 
-Repeating the same barangay name in a title is one cue, not several.
+Repeating the same barangay name in a title is one cue, not several. An
+enumeration of *different* members is one `province_anchored_enumeration`
+cue covering the whole run. A mention inside balanced parentheses (road
+specifications, bridge IDs) stays a candidate but never counts as an
+assertion.
 
 ## Layer 3 — Corroboration bonuses
 
@@ -150,6 +155,7 @@ recorded, not punished.
 | `... Barangay 1, San Lorenzo, Laoag City, Ilocos Norte` (numbered comma join) | base barangay +6, marker +2, parent chain +2 | **10** |
 | `... Barangay Javellana, Jaro, Iloilo City, Iloilo` (district context) | base multiple +3, marker +2, parent chain +2, soft-city −1 | **6** |
 | `... Brgy. Wangke, Claver Surigao del Norte` | base barangay +6, marker +2, compact +1, parent chain +2, region +1 | **12** |
+| `... s. Flores, Sinabaan, Cabalitian, ..., Barat and Esperanza, Umingan, Pangasinan` (10 members, all anchor-town barangays) | base multiple +3, enumeration +2, grouped +3, parent chain +2 | **10** |
 | Registry: exact `BRIDGE_ID`, title had no location | base registry +4, ID +2, chain +2 | **8** |
 | `allocation for Region-wide ...` (no site claim) | base allocation 0 | **0** |
 

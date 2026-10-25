@@ -1,8 +1,8 @@
 # Master list location evidence: work log and roadmap
 
-**Status:** additive evidence version 6 built, verified, and published  
+**Status:** additive evidence version 6.2 built, verified, and published  
 **Score field:** `location.score` · **Scoring rules:** [SCORING_RULES.md](SCORING_RULES.md)  
-**Method identifier:** `location_evidence_v6`
+**Method identifier:** `location_evidence_v6.2`
 
 This document records what the master-list work has done, how the location
 parser now reasons about place mentions, and how the raw scores should be
@@ -13,7 +13,6 @@ or a documented rule changes.
 
 Version 6 addresses false penalties on multi-barangay titles, split-name
 municipalities, numbered barangays, and city districts:
-
 1. **Initial-dropping town aliases.** PSA names carrying personal initials
    (`Pres. Manuel A. Roxas`) are also indexed without single-letter tokens
    (`pres manuel roxas`), so titles writing `Pres. Manuel, Roxas` resolve.
@@ -361,6 +360,55 @@ Version 6 removes four classes of false penalties, all generalized rules:
    `city_district_context` even without a resolved barangay. An explicit
    city part must carry the city form itself — a bare homonym (`San Pedro`,
    also a Laguna city) never scopes.
+
+## What changed in v6.2: province-anchored enumerations and road-name hygiene
+
+Four generalized rules, all driven by review findings:
+
+1. **Province-anchored enumeration** (`province_anchored_enumeration`,
+   +2). When the contiguous part-run before a `Town, Province` anchor
+   segments *completely* into barangay names of that town, every member
+   attaches under the anchor (`s. Flores, Sinabaan, …, Barat and Esperanza,
+   Umingan, Pangasinan` → 10 Umingan barangays; 185 records). Bare area
+   names matching a same-named family of the town (`Pindangan` →
+   Pindangan Centro/East/West) stay candidates — families attach only as
+   review suggestions. Complete segmentation is what separates
+   enumerations from ordinary multi-town titles (`Bacarra, Adams, Ilocos
+   Norte` stays two towns).
+2. **Balanced-parenthesis suppression.** Place mentions inside balanced
+   parentheses (road-segment specs like `(Gingoog City-Kalhaan,
+   Claveria-Bulonay-Malaybalay City)`) stay candidates but never assert
+   locality. The explicit suffix still resolves (`…, Gingoog City, Misamis
+   Oriental`); 142 road-endpoint records became honest `unresolved`, 36 of
+   which adopted precise bridge-registry chains instead of endpoint towns.
+   Unclosed PDF-artifact parens mask nothing.
+3. **Station syntax.** `Sta. 126 + 151` / `Sta. 0+000` is chainage, not
+   Santa, Ilocos Sur — normalized to a non-matching token before the
+   `Sta.` → santa rule.
+4. **Marker/part hygiene.** Index phrases inside barangay-marker parts no
+   longer assert towns (`Barangay Sta. Cruz` no longer claims seven Santa
+   Cruz municipalities); a part before `City of X` keeps its barangay
+   reading (`Hi-way Looc, Danao City`); enumeration-member parts with
+   parenthetical qualifiers (`Minante 2 (Purok 2)`) match after dropping
+   the qualifier, with Arabic↔Roman numeral barangay aliases
+   (`Minante 2` = `Minante II`); an adjacent `Town, Province` pair scopes
+   markers that stay ambiguous under the full town set
+   (`Barangay 1 - Barangay 5, Catanauan, Quezon`) without narrowing
+   legitimate multi-town titles; and a barangay marker matching only a
+   numbered family of a named town expands those family chains as
+   suggestions (`Sta. Cruz` under CSJDM → `Santa Cruz I`–`V`,
+   `hierarchy_candidate_v4`).
+
+Measured v6.1 → v6.2: `ambiguous` 176 → 85 records,
+`title_or_heading_province_conflict` removed from 91 records and added to
+0; 363 false `barangay_mentioned_but_unmatched` flags cleared (56 honest
+ones added where markers genuinely cannot resolve); 73 records upgraded
+`ambiguous → name_matched` and 36 `province_only → name_matched`. 998
+records changed assigned codes; 708 scores rose and 301 fell, every fall a
+demotion of paren-masked or station-poisoned evidence rather than a lost
+valid assignment (the Kaibayo/Catanauan and Guruyan/Juban classes retain
+their v6.1 resolutions through the pair-scope rule).
+
 
 Measured v5.1 → v6: `title_or_heading_province_conflict` 323 → 169,
 `ambiguous_barangay_name` 991 → 368, `ambiguous` status 349 → 195 records,
