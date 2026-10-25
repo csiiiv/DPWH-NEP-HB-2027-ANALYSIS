@@ -9,8 +9,8 @@ import re
 import unicodedata
 
 
-SCORE_METHOD = 'location_evidence_v2'
-SUGGESTION_METHOD = 'hierarchy_candidate_v1'
+SCORE_METHOD = 'location_evidence_v3'
+SUGGESTION_METHOD = 'hierarchy_candidate_v2'
 SCORE_BASES = {
     'allocation_not_site': 0,
     'unresolved': 0,
@@ -103,6 +103,15 @@ def normalize(text):
     text = ''.join(c for c in text if not unicodedata.combining(c))
     text = re.sub(r'\bsta\.?\s+', 'santa ', text)
     text = re.sub(r'\bsto\.?\s+', 'santo ', text)
+    # Documented historical/abbreviated spellings retained by PSA usage:
+    # North Cotabato is the province officially named Cotabato (RA 11145,
+    # "North" is the distinguishing former name); Compostela Valley was
+    # renamed Davao de Oro (RA 11297); "Pob." abbreviates Poblacion in
+    # barangay names; Western Samar is the province officially named Samar.
+    text = re.sub(r'\bnorth\s+cotabato\b', 'cotabato', text)
+    text = re.sub(r'\bcompostela\s+valley\b', 'davao de oro', text)
+    text = re.sub(r'\bwestern\s+samar\b', 'samar', text)
+    text = re.sub(r'\bpob\s*\.\s*(?=[,\s]|$)', 'poblacion ', text)
     return ' '.join(re.findall(r'[a-z0-9]+', text))
 
 
@@ -325,6 +334,14 @@ class Matcher:
                 for direction in ('after', 'before'):
                     limit = min(self.max_barangay_words,
                                 len(local_words) - i - 1 if direction == 'after' else i)
+                    # Longest-name-first with a narrow descriptor backoff. A
+                    # PDF style like "San Roque Pob." expands to a name the
+                    # stated town may not use ("San Roque Poblacion" vs the
+                    # official "San Roque"). Only dropping a trailing
+                    # "poblacion" descriptor is safe: dropping numerals or
+                    # other words would change which barangay the title means
+                    # ("Poblacion 6" is not "Poblacion").
+                    chosen = None
                     for size in range(limit, 0, -1):
                         name = ' '.join(local_words[i + 1:i + 1 + size]
                                         if direction == 'after' else local_words[i - size:i])
@@ -352,6 +369,33 @@ class Matcher:
                                               if self.ancestry(c).get('region') == region_hint}
                             if region_matches:
                                 compatible = region_matches
+                        if compatible or not name.endswith(' poblacion') or name == 'poblacion':
+                            chosen = (name, candidates, compatible)
+                            break
+                        # Descriptor backoff: retry without the trailing
+                        # "poblacion" token ("san roque poblacion" -> "san
+                        # roque"). Used only when that shorter name resolves
+                        # in context; otherwise the original mention stands.
+                        shorter = name[:-len(' poblacion')]
+                        if shorter in self.all_barangays:
+                            short_candidates = set(self.all_barangays[shorter])
+                            short_compatible = set(short_candidates)
+                            if context_towns:
+                                short_compatible = {c for c in short_compatible
+                                                    if self.rows[c]['parent_code'] in context_towns}
+                            elif context_provinces:
+                                short_compatible = {c for c in short_compatible
+                                                    if self.ancestry(c).get('province') in context_provinces}
+                            elif region_hint:
+                                short_compatible = {c for c in short_compatible
+                                                    if self.ancestry(c).get('region') == region_hint}
+                            if short_compatible:
+                                chosen = (shorter, short_candidates, short_compatible)
+                                break
+                        chosen = (name, candidates, compatible)
+                        break
+                    if mention_found and chosen is not None:
+                        name, candidates, compatible = chosen
                         if len(compatible) == 1:
                             code = next(iter(compatible))
                             candidate_province = self.ancestry(code).get('province')
@@ -466,12 +510,19 @@ class Matcher:
                 'needs_review': status != 'name_matched' or bool(flags)})
 
     def suggest_hierarchies(self, evidence, region_hint):
-        """Rank coherent unassigned barangay/town chains for human review.
+        """Rank coherent unassigned barangay/town/province chains for review.
 
         Suggestions never become assigned locations. They require an explicit
         barangay mention and a separately named parent town. A conflicting
         printed province is retained as a negative factor instead of being
         silently corrected; source-region agreement can help order alternatives.
+
+        Chains are scored as combinations, not per candidate name. When the
+        stated town->province chain is absent from the catalog (the printed
+        province names no place containing the stated town), each compatible
+        chain is a candidate repair, and a repair that is the only one
+        compatible with the source region is the strongest single signal a
+        title-only parse can produce without assigning it.
         """
         barangays = {code for ev in evidence if ev['field'] == 'title_barangay'
                      for code in ev['candidate_codes']
@@ -484,7 +535,12 @@ class Matcher:
                        {'city', 'municipality', 'sub_municipality'}}
         named_provinces = {code for code in title_places
                            if self.rows[code]['level'] == 'province'}
-        suggestions = []
+        # Chain-combination context: does any stated town actually sit in a
+        # stated province? If not, the title chain itself is impossible and
+        # every suggestion is a repair candidate rather than a rival reading.
+        stated_chain_exists = any(self.ancestry(town).get('province') in named_provinces
+                                  for town in named_towns)
+        chains = []
         for code in barangays:
             town = self.rows[code]['parent_code']
             if town not in named_towns:
@@ -501,20 +557,31 @@ class Matcher:
             elif named_provinces:
                 factors.append({'rule': 'named_province_conflict', 'impact': -4})
                 conflicts.append('named_province_conflict')
+                if not stated_chain_exists:
+                    factors.append({'rule': 'stated_chain_absent_from_catalog', 'impact': 2})
             if region_hint:
                 if region == region_hint:
                     factors.append({'rule': 'source_region_agreement', 'impact': 2})
                 else:
                     factors.append({'rule': 'source_region_conflict', 'impact': -2})
                     conflicts.append('source_region_conflict')
-            suggestions.append({
-                'location': self.describe(code),
-                'support_score': sum(f['impact'] for f in factors),
-                'factors': factors,
-                'conflicts': conflicts,
-            })
-        return sorted(suggestions, key=lambda s: (-s['support_score'],
-                                                   s['location']['psgc_code']))
+            chains.append({'code': code, 'province': province, 'region': region,
+                           'factors': factors, 'conflicts': conflicts})
+        # A unique region-compatible repair is chain-level evidence: the
+        # combination of stated barangay + town fits exactly one province in
+        # the source region, so it is promoted above rival readings.
+        if not stated_chain_exists and named_provinces and region_hint:
+            region_repairs = [c for c in chains
+                              if c['region'] == region_hint
+                              and 'named_province_conflict' in c['conflicts']]
+            if len(region_repairs) == 1:
+                region_repairs[0]['factors'].append(
+                    {'rule': 'unique_region_compatible_repair', 'impact': 3})
+        return sorted(({'location': self.describe(c['code']),
+                        'support_score': sum(f['impact'] for f in c['factors']),
+                        'factors': c['factors'],
+                        'conflicts': c['conflicts']} for c in chains),
+                      key=lambda s: (-s['support_score'], s['location']['psgc_code']))
 
     def describe(self, code):
         row = self.rows[code]

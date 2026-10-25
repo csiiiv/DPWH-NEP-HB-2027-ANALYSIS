@@ -1,8 +1,8 @@
 # Master list location evidence: work log and roadmap
 
-**Status:** additive evidence version 2 built, verified, and published  
+**Status:** additive evidence version 3 built, verified, and published  
 **Score field:** `location.score`  
-**Method identifier:** `location_evidence_v2`
+**Method identifier:** `location_evidence_v3`
 
 This document records what the master-list work has done, how the location
 parser now reasons about place mentions, and how the raw scores should be
@@ -33,8 +33,10 @@ filters, review filtering, sorting, pagination, and direct PDF-page links.
 The parser first collects plausible place mentions, then tests their PSGC
 relationships instead of deciding from one name in isolation:
 
-1. Normalize punctuation, accents, `Sta.` and `Sto.`, while retaining the source
-   title unchanged.
+1. Normalize punctuation, accents, `Sta.` and `Sto.`, and documented
+   historical spellings (`North Cotabato` → `Cotabato`, `Compostela Valley` →
+   `Davao de Oro`, `Western Samar` → `Samar`, `Pob.` → `Poblacion`), while
+   retaining the source title unchanged.
 2. Detect complete catalog names at word boundaries and record every candidate
    PSGC code for repeated names.
 3. Identify locality syntax: comma suffixes, municipality/city/province labels,
@@ -120,18 +122,53 @@ parser does not count that phrase as an independent parent assertion.
 
 ## Current corpus distribution
 
-The first complete run spans scores from `-8` to `15`. The exact distribution is
+The v3 run spans scores from `-8` to `15`. The exact distribution is
 published in [REPORT.md](../data/REPORT.md) and `audit.json`. The most common
-totals are `11` (21,551 observations), `0` (18,653), `7` (5,436), `9` (4,975),
-`5` (4,055), and `3` (3,178). These clusters reflect the rules and source
+totals are `11` (21,666 observations), `0` (18,649), `7` (5,466), `9` (4,874),
+`5` (4,029), and `3` (3,170). These clusters reflect the rules and source
 formats; they are not validated accuracy classes.
 
 Compared with the original bounded-rule corpus, the expanded hierarchy parser
 changes assigned PSGC codes for 4,847 observations and status for 2,422. That
 scale makes a stratified review essential before labels such as low, medium, or
-high are reintroduced. The additive re-scoring itself did not change any
-assigned code, status, or score: it only added the ranked `suggestions`
-review queue and stabilized record serialization.
+high are reintroduced. The v2 → v3 rebuild reported its exact deltas in the
+sections below; prior rules remain reproducible from git history.
+
+## What changed in v3
+
+Version 3 keeps every v2 rule unchanged for assigned locations and makes three
+targeted improvements. Scores, statuses, and assigned codes change only where a
+documented rule changed; every change is auditable per record.
+
+1. **Chain-combination review suggestions** (`hierarchy_candidate_v2`). The
+   suggestion ranker now scores complete barangay → town → province chains as
+   combinations instead of listing candidate barangays separately. When the
+   stated town/province chain is absent from the catalog (`stated_chain_absent_
+   from_catalog`, +2), every suggestion is a repair candidate rather than a
+   rival reading; when exactly one repair is compatible with the source region
+   (`unique_region_compatible_repair`, +3), it ranks decisively above the
+   alternatives. Example: `Barangay Poblacion, Carmen, Lanao del Norte`
+   (Region XIII source) has no Carmen in Lanao del Norte; the only
+   region-compatible chain is Poblacion → Carmen → Agusan del Norte, which now
+   scores 10 against 3 for the next alternative. Suggestions still never
+   assign a location.
+2. **Documented historical spellings.** Titles saying `North Cotabato`
+   (150 occurrences), `Compostela Valley` (12), or `Western Samar` now match
+   their current official province names (`Cotabato`, `Davao de Oro`, `Samar`).
+   These are documented renames, not fuzzy matching.
+3. **`Pob.` contraction with context backoff.** `Pob.` expands to `Poblacion`
+   before matching; when the expanded name is not used in the stated town
+   (e.g. `San Roque Pob.` in Bula, Camarines Sur, whose barangay is officially
+   `San Roque`), the resolver drops only the trailing `poblacion` descriptor.
+   Distinguishing numerals are never dropped: `Poblacion 6, Sariaya` stays an
+   unmatched mention (Sariaya has no Poblacion-series barangay) instead of
+   being rewritten to a bare `poblacion` under an unrelated same-named town.
+
+Measured v2 → v3 effect: 10 status changes (8 `ambiguous →
+multiple_locations`, 2 `unresolved → province_only`), 22 assigned-code
+additions, and 175 score changes — every one an upgrade; zero
+`name_matched` regressions. The largest cluster (111 records, `9 → 11`) is
+the `North Cotabato` alias gaining explicit-parent-chain corroboration.
 
 ## What we are doing now
 

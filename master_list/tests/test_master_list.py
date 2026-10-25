@@ -150,7 +150,14 @@ class TitleLocations(unittest.TestCase):
         self.assertNotIn('1600208010', {l['psgc_code'] for l in result['locations']})
         self.assertIn('title_or_heading_province_conflict', result['review_flags'])
         self.assertEqual(result['suggestions'][0]['location']['psgc_code'], '1600208010')
-        self.assertEqual(result['suggestions'][0]['support_score'], 5)
+        # No Magallanes exists in Lanao del Norte, so this is a repair case:
+        # the chain-combination rules add stated_chain_absent_from_catalog and,
+        # because Santo Niño/Magallanes is the only Region XIII fit, the
+        # unique_region_compatible_repair promotion.
+        self.assertEqual(result['suggestions'][0]['support_score'], 10)
+        rules = {f['rule'] for f in result['suggestions'][0]['factors']}
+        self.assertIn('unique_region_compatible_repair', rules)
+        self.assertIn('stated_chain_absent_from_catalog', rules)
 
     def test_conflicting_poblacion_chain_has_ranked_review_suggestions(self):
         result = self.matcher.match(
@@ -160,12 +167,14 @@ class TitleLocations(unittest.TestCase):
         self.assertEqual(suggestions[0]['location']['psgc_code'], '1600204009')
         self.assertEqual(suggestions[0]['location']['ancestry']['province']['name'],
                          'Agusan del Norte')
-        self.assertEqual(suggestions[0]['support_score'], 5)
+        # Repair promoted by chain-combination rules: no Carmen exists in
+        # Lanao del Norte, and exactly one Region XIII chain is compatible.
+        self.assertEqual(suggestions[0]['support_score'], 10)
         self.assertIn('named_province_conflict', suggestions[0]['conflicts'])
         self.assertEqual(
             {(s['location']['ancestry']['province']['name'], s['support_score'])
              for s in suggestions[1:]},
-            {('Cebu', 1), ('Cotabato', 1)})
+            {('Cebu', 3), ('Cotabato', 3)})
 
     def test_numbered_town_alias_is_scoped_by_province(self):
         result = self.matcher.match(
@@ -187,6 +196,46 @@ class TitleLocations(unittest.TestCase):
         result = self.matcher.match('Rehabilitation of National Road - K0026 + 000 - K0027 + 000')
         self.assertEqual(result['status'], 'unresolved')
         self.assertEqual(result['locations'], [])
+
+    def test_north_cotabato_alias_resolves_the_cotabato_province(self):
+        result = self.matcher.match(
+            'Construction (Completion) of Water System, Barangay Leboce, Makilala, North Cotabato',
+            (), '1200000000')
+        self.assertEqual(result['status'], 'name_matched')
+        self.assertEqual(result['score'], 10)
+        self.assertEqual(result['locations'][0]['name'], 'Leboce')
+        self.assertEqual(result['locations'][0]['ancestry']['province']['name'], 'Cotabato')
+
+    def test_compostela_valley_alias_resolves_davao_de_oro(self):
+        result = self.matcher.match(
+            'Bukidnon-Compostela Valley Road, Namnam, San Fernando, Bukidnon-Laak, '
+            'Compostela Valley, Sta. 1 + 200', (), '1000000000')
+        self.assertEqual({l['name'] for l in result['locations']},
+                         {'San Fernando', 'Laak'})
+        self.assertEqual({l['ancestry']['province']['name'] for l in result['locations']},
+                         {'Bukidnon', 'Davao de Oro'})
+
+    def test_pob_abbreviation_backs_off_to_the_town_s_actual_barangay(self):
+        result = self.matcher.match(
+            'Construction of Flood Mitigation Structure along Bicol River, '
+            'Barangay San Roque Pob ., Bula, Camarines Sur', (), '0500000000')
+        self.assertEqual(result['status'], 'name_matched')
+        self.assertEqual(result['locations'][0]['name'], 'San Roque')
+        self.assertEqual(result['locations'][0]['ancestry']['municipality']['name'], 'Bula')
+        self.assertEqual(result['review_flags'], [])
+
+    def test_descriptor_backoff_does_not_hijack_numbered_barangay(self):
+        # Sariaya has no Poblacion-series barangay; "Poblacion 6" belongs to
+        # six other towns. The mention must stay unmatched rather than being
+        # rewritten to a bare "poblacion" under some other context town.
+        result = self.matcher.match(
+            'Construction of Line Canal, Barangay Poblacion 6, Sariaya, Quezon',
+            (), '0400000000')
+        self.assertEqual(result['status'], 'name_matched')
+        self.assertEqual([l['name'] for l in result['locations']], ['Sariaya'])
+        self.assertIn('barangay_mentioned_but_unmatched', result['review_flags'])
+        mention = [ev for ev in result['evidence'] if ev['field'] == 'title_barangay']
+        self.assertEqual(mention[0]['text'], 'poblacion 6')
 
     def test_region_labels(self):
         self.assertEqual(self.matcher.region_code('REGION I - ILOCOS'), '0100000000')
@@ -220,7 +269,7 @@ class RetainedArtifacts(unittest.TestCase):
                 self.assertTrue(row['source_dataset'])
                 score = row['location']['score']
                 self.assertIsInstance(score, int)
-                self.assertEqual(row['location']['score_method'], 'location_evidence_v2')
+                self.assertEqual(row['location']['score_method'], 'location_evidence_v3')
                 self.assertTrue(row['location']['score_factors'])
                 for location in row['location']['locations']:
                     code = location['psgc_code']

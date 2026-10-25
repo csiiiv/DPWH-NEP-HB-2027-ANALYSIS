@@ -17,41 +17,41 @@
     "pdf": 53273,
     "api_without_pdf": 11372
   },
-  "score_method": "location_evidence_v2",
+  "score_method": "location_evidence_v3",
   "location_score_distribution": {
     "-8": 2,
-    "-6": 7,
+    "-6": 5,
     "-5": 31,
-    "-4": 35,
+    "-4": 33,
     "-3": 56,
     "-2": 842,
     "-1": 264,
-    "0": 18653,
-    "1": 411,
+    "0": 18649,
+    "1": 409,
     "2": 143,
-    "3": 3178,
-    "4": 326,
-    "5": 4055,
-    "6": 915,
-    "7": 5436,
+    "3": 3170,
+    "4": 322,
+    "5": 4029,
+    "6": 919,
+    "7": 5466,
     "8": 1752,
-    "9": 4975,
+    "9": 4874,
     "10": 104,
-    "11": 21551,
+    "11": 21666,
     "12": 296,
     "13": 1593,
     "15": 20
   },
   "reference_policy": "PDF pages are 1-based file pages. API records have no asserted PDF reference. HFEP OCR JSON points to the corresponding retained HFEP_2.pdf.",
   "input_sha256": {
-    "master_list/data/projects.jsonl.gz": "175c3e538c31145dd9cccded55ac7f749b0f01ec3ea8462bc90006b1e6f4e996",
-    "master_list/data/audit.json": "21c632c60f85416a6b4ff66164b7e8afd2f5734d676009322635cd0eb16ddd28",
+    "master_list/data/projects.jsonl.gz": "3170687a59bb484d3186bc67f56b564b26630f6004df3c0200a2e8242d386599",
+    "master_list/data/audit.json": "3d9d043f0e2ebd804b2c8a43e904a25af2de1a5ede9861b7fdc073e195286bd6",
     "PSGC2LEG/data/psgc_locations.jsonl": "e554dec87c0c4b8ce4859dddc81f099aede1a48a267133c4124161c2a4445ba4",
     "master_list/viewer/template.html": "548f8928c74a5dc36250460bb1738172800db040752d5e06eda1a494fbecef89",
     "master_list/scripts/build_viewer.py": "70f1f9bb8ccbcba330326a04cddda756cc4c4c3a1859aa23ab1eed42939921b7"
   },
   "output_sha256": {
-    "index.html": "17e1e4e7ba2ac77f573b6e63f0c4aaf5a4877bead87a3297d1af2f27fdc77eee",
-    "project_list.csv.gz": "7b990c21369229d9bcabfb7e221ecc1a804227edac33dfa3b19cb3bd9ad52a27"
+    "index.html": "1063b2a9df3e80984461255898528567232a13ca9d84cb353b4baa660cf1b008",
+    "project_list.csv.gz": "99138be183986f7dfd85b84d5168624ee5537381e422582eca3db232c128201c"
   }
 }
