@@ -15,10 +15,13 @@ Interactive **MapLibre GL JS** map of the 254 Philippine legislative districts
     (`analysis/web/src/GeoMap.jsx`), with light/dark toggle and automatic
     fallback to a blank style offline
   - district polygons colored **per province** (see Color scheme below)
+  - district labels at z≥6.5 and italic split-city labels at z≥7.5, using
+    the basemap's own key-free CARTO glyph pipeline (Open Sans)
   - hover popups (jurisdiction · district · representative · leg_id)
   - live search (municipality/city/district/representative) with
     zoom-to-match and blue highlight
-  - 13 split-city polygons rendered with diagonal stripe pattern + dashed
+  - 13 split-city polygons each with a **distinct hue-tinted stripe
+    pattern** (per-city pattern via data-driven `fill-pattern`) + dashed
     outline
 - `vendor/` — MapLibre GL JS 6.14.0 (ESM build) copied verbatim from the
   repo's pinned `analysis/web/node_modules/maplibre-gl/dist/`; serves with
@@ -56,8 +59,12 @@ one colour family — e.g. Camarines Sur's 5 districts are all the same hue at
   The range matters: an earlier 74% → 34% ramp was effectively invisible,
   since at 0.8 fill-opacity over CARTO Voyager's cream land 74% lightness
   reads as "basemap" and the national view looked blank.
-- **Split cities** — grey diagonal stripes + dashed outline (deliberate
-  ambiguity until barangay-level assignment lands).
+- **Split cities** — each gets its own hue (same golden-angle sequence as
+  provinces, so no collisions with them either), rendered as that hue's
+  stripe pattern + dashed outline. They used to be uniform grey, which made
+  Manila, QC, and Caloocan indistinguishable — the one thing a reader
+  scanning Metro Manila needs. Stripe ambiguity is deliberate until
+  barangay-level assignment lands.
 - Colors are baked into each feature's `color` property at load, so the
   fill layer is a plain `['get','color']` rather than a ~100-case `match`.
 
