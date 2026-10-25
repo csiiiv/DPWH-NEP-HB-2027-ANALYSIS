@@ -1,9 +1,10 @@
 # Bridge inventory documentation
 
 This module supports the sequence **budget observation → bridge ID → inventory
-coordinates → dated administrative polygons → provisional current PSGC
-candidate**. It preserves the evidence for each step so the inventory can be
-reused independently of a budget year or viewer.
+coordinates → legislative district (direct) and dated administrative polygons →
+provisional current PSGC candidate (fallback)**. It preserves the evidence for
+each step so the inventory can be reused independently of a budget year or
+viewer.
 
 | Guide | Read it for |
 |---|---|
@@ -25,6 +26,8 @@ The inventory states **January 2023** as its data date, the local polygon set
 has **2023** vintage, and the current retained PSGC catalog is a **provisional
 community mirror marked as 3Q 2026**. These dates describe different inputs.
 
-Current PSGC candidates remain provisional. The enrichment writes separate
-evidence files; master-list location assignments, location scores, and financial
-ledgers are unchanged.
+Current PSGC candidates remain provisional. Master-list integration is live as
+of location evidence v5/v5.1: registry evidence scores as independent factors
+and assigned records carry verified legislative districts. The enrichment
+itself never changes master-list assignments directly; all master-list effects
+flow through its own versioned build with regression checks.

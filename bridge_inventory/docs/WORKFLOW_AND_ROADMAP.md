@@ -25,14 +25,24 @@ The initial enrichment scans 64,645 master-list observations. Results from the
 
 The **1,833 matched observations reference 498 distinct bridges**. All 498
 points have one strictly containing barangay polygon in the 2023 dataset.
-Current catalog reconciliation yields **424 unique provisional candidates**
-and **74 unresolved hierarchies**. There are no partial-ID matches in this run.
+Current catalog reconciliation yields **466 unique provisional candidates**
+and **32 unresolved hierarchies**. There are no partial-ID matches in this run.
+
+Legislative districts derive **directly from bridge coordinates**: **494 of
+the 498 matched bridges** carry a district — 458 through the 2023 municity
+polygon code joining the verified PSGC2LEG municipality-to-district
+assignments, and 4 more inside split cities through point-in-polygon on the
+validated DPWH ArcGIS 2022 congressional layer. Across the whole inventory,
+8,429 of 8,752 assets have districts (8,367 by code join, 62 in split
+cities). PSGC name-chain reconciliation remains separate fallback evidence;
+see the [methodology](METHODOLOGY.md).
 
 **288 matched bridges** carry at least one inventory-versus-spatial name
 difference. Flag counts overlap: 268 barangay, 67 municipality/city, 61 province,
 and 6 region differences. These are review signals, not measured error rates.
-Some unresolved current-catalog chains involve independent cities whose spatial
-province-level unit is named after an adjacent province.
+Independent-city chains whose spatial province-level unit is named after an
+adjacent province now reconcile by matching that city/town ancestor; NCR
+chains validate by region because the catalog has no province level there.
 
 Across the entire inventory, **8,743 points** intersect barangay polygons and
 **9 points** have no polygon hit at any level. None of those nine assets occurs
@@ -77,19 +87,21 @@ python3 bridge_inventory/scripts/match_projects.py --check
 python3 -m unittest discover -s bridge_inventory/tests -v
 ```
 
-The builder verifies the inventory, computes all-asset spatial evidence, and
-matches budget observations. It writes the generated `data/` files. The check
-rebuilds them offline in a temporary directory and compares their bytes.
-The baseline passed that reproducibility check and all 14 tests, including
-incomplete acquisition, checksum corruption, missing IDs, boundary ambiguity,
-locality disagreements, and catalog parent-chain matching.
+The builder verifies the inventory, computes all-asset spatial evidence,
+derives legislative districts, and matches budget observations. It writes the
+generated `data/` files. The check rebuilds them offline in a temporary
+directory and compares their bytes. The baseline passed that reproducibility
+check and all 20 tests, including incomplete acquisition, checksum corruption,
+missing IDs, boundary ambiguity, locality disagreements, catalog parent-chain
+matching, NCR region validation, and district joins/crosswalks.
 
 After an inventory refresh or any change to the master list, boundaries,
-catalog, or matching rules, rebuild enrichment and inspect its report before
-using the refreshed evidence. The matching audit pins these inputs. Record any
-intentional method changes and their before/after coverage. Master-list
-integration would additionally need its own method version and regression
-checks; it has not been performed by this enrichment.
+catalog, assignments, or matching rules, rebuild enrichment and inspect its
+report before using the refreshed evidence. The matching audit pins these
+inputs. Record any intentional method changes and their before/after coverage.
+Master-list integration is live as of location evidence v5/v5.1: bridge
+registry evidence scores under `location_evidence_v5`, and every assigned
+municipality-level record carries its verified legislative district.
 
 ## Next work
 
@@ -104,9 +116,11 @@ is `python3 bridge_inventory/tests/check_viewer_browser.py`.
 1. **Review locality disagreements.** Inspect bridge points, crossing endpoints,
    inventory names, boundary vintage, and project source pages. Distinguish
    jurisdiction conventions and spelling from coordinate or geometry errors.
-2. **Resolve current-catalog gaps.** Review the 74 unresolved matched hierarchies,
-   including independent-city treatment and administrative changes. Preserve
-   ambiguity rather than forcing a parent province.
+2. **Resolve current-catalog gaps.** Review the 32 unresolved matched hierarchies
+   and 323 district-less assets, preserving ambiguity rather than forcing a
+   parent province. Split cities without adopted ArcGIS coverage (Antipolo,
+   Cebu City, Caloocan, Taguig) need barangay-level assignment from PSGC +
+   COMELEC rosters.
 3. **Improve identity coverage.** Review missing inventory IDs and generate
    candidates for titles without IDs using bridge name plus road/locality
    context. Retain candidate evidence and ambiguity before accepting matches.
@@ -114,10 +128,10 @@ is `python3 bridge_inventory/tests/check_viewer_browser.py`.
    with an official retained source and obtain dated current boundary evidence
    or documented crosswalks. An old-to-current name match alone cannot establish
    that a boundary footprint stayed unchanged.
-5. **Integrate reviewed evidence.** Attach bridge coordinates and provenance to
-   master-list observations. Treat identity, coordinates, and PSGC resolution
-   as distinct evidence items; document any new score factors and rebuild the
-   master-list outputs with appropriate checks.
+5. **Extend coordinate-first districts.** Apply the direct coordinate-to-district
+   pattern to other verifiable coordinate sources (title GPS pairs, facility
+   registries), keeping PSGC chains as fallback only.
 
-The retained source snapshots are reusable now. Current-catalog candidates and
-locality differences remain inspectable evidence for those next steps.
+The retained source snapshots are reusable now. Current-catalog candidates,
+districts, and locality differences remain inspectable evidence for those
+next steps.

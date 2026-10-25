@@ -103,10 +103,20 @@ barangay-to-region `chain` of catalog units. `current_psgc_reconciliation` is
 `unresolved`. `current_psgc_assignment` remains null. Candidate count and review
 flags answer different questions; a unique candidate can still need review.
 
+`legislative_district` is the coordinate-derived district: `leg_id`,
+`jurisdiction`, `district_label`, `district_no`, `derivation`
+(`municity_polygon_code_join` or `split_city_point_in_polygon`), `source`,
+and for split-city results a `caveat` field. It is null when the point has no
+strictly containing municity polygon, only boundary touches, or sits in a
+split city without adopted ArcGIS coverage (Antipolo, Cebu City, Caloocan,
+Taguig). Districts are derived from the bridge coordinate directly; the PSGC
+name candidates above are separate fallback evidence.
+
 The coordinate CSV includes only the most detailed historical polygon-hit
 array in `spatial_2023_candidates`, along with `spatial_2023_level`,
-`spatial_review_flags`, `current_psgc_candidate_codes`, and
-`current_psgc_reconciliation`. Use spatial JSONL for the complete hierarchy and
+`spatial_review_flags`, `current_psgc_candidate_codes`,
+`current_psgc_reconciliation`, `leg_district`, `leg_derivation`, and
+`leg_source`. Use spatial JSONL for the complete hierarchy and
 inventory comparison. Multiple candidate codes are pipe-separated in CSV.
 
 ## Reuse example

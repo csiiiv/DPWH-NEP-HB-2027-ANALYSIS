@@ -51,7 +51,7 @@ Then open `http://127.0.0.1:8000/master_list/`.
 
 | File | Use |
 |---|---|
-| [projects.jsonl.gz](data/projects.jsonl.gz) | Full records, source evidence, inferred locations, candidates, parent hierarchy, and coordinate observations where available. |
+| [projects.jsonl.gz](data/projects.jsonl.gz) | Full records, source evidence, inferred locations, candidates, parent hierarchy, verified legislative district, and coordinate observations where available. |
 | [projects.csv.gz](data/projects.csv.gz) | Spreadsheet export with one row per source observation, integer PHP and string PSGC codes. Multiple values use `\|`. Decompress before opening in a spreadsheet; import code columns as text. |
 | [location_review.csv.gz](data/location_review.csv.gz) | Province-only, ambiguous, multiple-location, unresolved and flagged matches. |
 | [audit.json](data/audit.json) | Input/output hashes, dataset totals, coverage, source discrepancies and matching examples. |

@@ -89,6 +89,12 @@ links to check the named town and province. For a city without a province
 ancestor, the spatial province-level name must match a city/town ancestor.
 An adjacent province is not silently made that city's administrative parent.
 
+The 2023 shapefile represents NCR and Isabela City with adm2 units named
+like `NCR, Fourth District (Not a Province)`. Those chains are barangay →
+city → region in the current catalog — there is no province level to match —
+so they validate by **region polygon name** instead of the pseudo-province
+text. A mismatching region still blocks the chain.
+
 Normalization and documented aliases are reused from the master-list location
 module. There is no unrestricted fuzzy matching. The old region name is not
 used as a required current-catalog filter, allowing for regional changes.
@@ -99,6 +105,31 @@ evidence**. It does not verify current boundary geometry. Even a unique candidat
 can carry inventory-versus-spatial name disagreements. The field
 `current_psgc_assignment` remains null; the proposed code and its parent chain
 are stored in `current_psgc_candidates`.
+
+## Coordinates → legislative district
+
+Districts derive **directly from the bridge coordinate**, with the PSGC name
+chain above only as fallback evidence for records without coordinates:
+
+1. **Whole-unit join (primary).** The strictly containing 2023 municity
+   polygon's historical code is crosswalked to Q3 2026 PSGC codes (NIR
+   creation, Sulu transfer, Bacolod remap — the same mapping as the PSGC2LEG
+   visualization build) and joined to the verified
+   [PSGC2LEG](../../PSGC2LEG/README.md) `psgc_leg_assignments` table
+   (1,656 municipality/city → district rows, 2025/20th Congress baseline).
+2. **Split cities (fallback within cities).** For the 13 multi-district
+   cities, the point is tested against the DPWH ArcGIS 2022 congressional
+   district layer, adopted per its [validation
+   verdicts](../../PSGC2LEG/docs/arcgis_congdist_validation.md): seven
+   cities clean, Davao and Cagayan de Oro with coverage caveats, Antipolo
+   and Cebu City (overextended polygons) plus Caloocan and Taguig (missing
+   districts) **not adopted**. Exactly one containing district is required;
+   boundary touches stay unresolved.
+
+Every district records its `derivation`
+(`municity_polygon_code_join` or `split_city_point_in_polygon`) and `source`.
+Boundary touches, multiple hits, unadopted split cities, and no-hit points
+leave `legislative_district` null — they are review queues, not assignments.
 
 ## Independent locality comparison and review
 

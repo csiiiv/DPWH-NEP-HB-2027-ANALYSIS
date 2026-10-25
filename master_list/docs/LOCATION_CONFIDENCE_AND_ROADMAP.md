@@ -1,6 +1,6 @@
 # Master list location evidence: work log and roadmap
 
-**Status:** additive evidence version 5 built, verified, and published  
+**Status:** additive evidence version 5.1 built, verified, and published  
 **Score field:** `location.score`  
 **Method identifier:** `location_evidence_v5`
 
@@ -283,8 +283,11 @@ Two follow-ups to v5:
   build also writes a plain CSV locally for spreadsheet use.
 - Publish exact per-dataset and global score distributions in the audit/report.
 - Keep viewer filtering numeric, without undocumented score bands.
+- Carry the verified legislative district on every record with an assigned
+  municipality-level location (lookup only: unscored, never new evidence).
 - Maintain regression cases for hierarchy ambiguity, HUC ancestry, explicit and
-  unmarked barangays, compact locality components, and the three reported titles.
+  unmarked barangays, compact locality components, bridge registry behavior,
+  and the three reported titles.
 
 ## What we plan to do
 
@@ -309,23 +312,26 @@ release. Add road, bridge, irrigation, and facility registries where stable
 identifiers exist. Each source should emit a separate factor so agreement and
 conflict remain auditable.
 
-Bridge source acquisition is now available in the separate
-[reusable bridge inventory](../../bridge_inventory/README.md) module. It retains
-dated DPWH Detailed Bridge Inventory snapshots, all layer-1 source attributes,
-WGS84 points, source metadata, completeness checks, and SHA-256 hashes, with
-GeoJSON/JSONL/CSV exports. Refreshes preserve previous snapshots.
+Bridge registry evidence is **live as of v5/v5.1**: exact `BRIDGE_ID`
+matches score as independent factors, unresolved titles adopt the single
+registry chain as `registry_matched`, and the retained
+[bridge inventory](../../bridge_inventory/README.md) derives legislative
+districts directly from bridge coordinates (PSGC chains as fallback only).
+The inventory retains dated DPWH Detailed Bridge Inventory snapshots, all
+layer-1 source attributes, WGS84 points, source metadata, completeness
+checks, and SHA-256 hashes, with GeoJSON/JSONL/CSV exports; refreshes
+preserve previous snapshots.
 
-The [bridge matching report](../../bridge_inventory/data/REPORT.md) now records
-exact project-ID matches, coordinates, and point-in-polygon evidence from the
-retained 2023 boundaries. The first run links 1,833 source observations to 498
-distinct bridge assets; all 498 points intersect a barangay polygon. Inventory
-locality names are compared independently and discrepancies stay flagged.
-Spatial place names are reconciled to provisional current PSGC candidates using
-actual catalog parent links; historical numeric boundary codes remain separate.
-Current boundary geometry and the catalog foundation still need official-source
-validation. These separate evidence outputs do not change master-list assigned
-PSGC codes or location scores. Bridge mentions without an exact ID remain an
-identity-review queue.
+The [bridge matching report](../../bridge_inventory/data/REPORT.md) records
+exact project-ID matches (1,833 observations → 498 distinct bridges),
+coordinates, point-in-polygon evidence, and coordinate-derived districts
+(494/498 matched bridges; 8,429/8,752 inventory-wide). Inventory locality
+names are compared independently and discrepancies stay flagged. Remaining
+work under this item: the 32 unresolved matched chains, split cities
+without adopted ArcGIS coverage (Antipolo, Cebu City, Caloocan, Taguig —
+needing barangay-level PSGC + COMELEC assignment), and extending the
+coordinate-first district pattern to title GPS pairs and facility
+registries.
 
 ### 4. Normalize only after evaluation
 
