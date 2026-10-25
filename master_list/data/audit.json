@@ -120,7 +120,7 @@
   },
   "location_policy": "Provisional exact name inference only. Printed office/region context is not a project site. No generated coordinates or fuzzy matching.",
   "location_score_rules": {
-    "method": "location_evidence_v4",
+    "method": "location_evidence_v5",
     "interpretation": "Uncapped additive evidence score; not normalized and not a probability.",
     "bases": {
       "allocation_not_site": 0,
@@ -129,6 +129,7 @@
       "province_only": 2,
       "multiple_locations": 3,
       "name_matched_town": 4,
+      "registry_matched": 4,
       "name_matched_barangay": 6
     },
     "bonuses": {
@@ -137,11 +138,15 @@
       "compact_locality_component": 1,
       "title_and_source_heading": 2,
       "explicit_parent_chain": 2,
-      "source_region_agreement": 1
+      "source_region_agreement": 1,
+      "bridge_registry_id_match": 2,
+      "bridge_registry_unique_chain": 2,
+      "bridge_registry_agreement": 2
     },
     "penalties": {
       "title_or_heading_province_conflict": -5,
       "source_region_differs_from_title_location": -3,
+      "bridge_registry_conflicts_with_title_location": -3,
       "ambiguous_barangay_name": -3,
       "barangay_scope_spans_multiple_municipalities": -3,
       "barangay_mentioned_but_unmatched": -2,
@@ -161,6 +166,14 @@
     },
     "gps-analysis/coordinate_parse.py": {
       "sha256": "be246e399cc5537802bb44dfd6b2c3b6acac623e2a16a72b6aa0fedd6b37c46c"
+    },
+    "bridge_inventory/data/bridge_project_matches.jsonl.gz": {
+      "sha256": "93bf1ae552226d2ba70cb548a5796849756bdfd121a7e6694a201ad1f80eeaf7",
+      "scope": "Retained DPWH bridge inventory exact-ID match and spatial PSGC evidence (read-only)"
+    },
+    "bridge_inventory/data/bridge_spatial_evidence.jsonl.gz": {
+      "sha256": "887d862c8fe069a0fe120ee5d198b5b2032432408c38465f2f0fd8331b188101",
+      "scope": "Retained DPWH bridge inventory exact-ID match and spatial PSGC evidence (read-only)"
     },
     "analysis/data/nep_2027_source_projects.json": {
       "sha256": "2d58683888ae697c4506544b48d30ed4b6f6cfa9e796f7328ca4e4b9075423cf",
@@ -229,8 +242,8 @@
     }
   },
   "builder_sha256": {
-    "build_master_list.py": "76f13f2b4d076c1ec54ee1f2a249f9db1fcca346c5504964a96eecbf198626d9",
-    "locations.py": "c22e6fcff7f8a67fad88db8907d64b8ebb493318915659297813f515ed142ea7"
+    "build_master_list.py": "44c903aab1e856aa998b3a878bfaf24a0407bab0e5dfa8a2088b7b653c28f710",
+    "locations.py": "40c4e32b10b0356994f5575fb383020afa1c4680b50daed950ca2b4f8e94bc0c"
   },
   "records": 64645,
   "datasets": {
@@ -243,11 +256,12 @@
         "region_allocation": 51
       },
       "location_status": {
-        "unresolved": 2674,
+        "unresolved": 2307,
         "name_matched": 7411,
         "multiple_locations": 680,
         "province_only": 312,
         "ambiguous": 75,
+        "registry_matched": 367,
         "allocation_not_site": 268
       },
       "location_score_distribution": {
@@ -257,24 +271,24 @@
         "-3": 9,
         "-2": 15,
         "-1": 54,
-        "0": 2895,
-        "1": 90,
-        "2": 42,
+        "0": 2467,
+        "1": 86,
+        "2": 107,
         "3": 539,
-        "4": 72,
-        "5": 861,
+        "4": 63,
+        "5": 844,
         "6": 193,
-        "7": 1024,
-        "8": 298,
+        "7": 1029,
+        "8": 665,
         "9": 1017,
-        "10": 23,
-        "11": 3900,
+        "10": 32,
+        "11": 3912,
         "12": 62,
         "13": 307,
         "15": 3
       },
       "records_with_coordinate_pairs": 609,
-      "review_records": 5185
+      "review_records": 4818
     },
     "dpwh_house_second": {
       "records": 18792,
@@ -286,11 +300,12 @@
       },
       "location_status": {
         "allocation_not_site": 2791,
-        "unresolved": 2895,
+        "unresolved": 2539,
         "name_matched": 11719,
         "multiple_locations": 912,
         "province_only": 381,
-        "ambiguous": 94
+        "ambiguous": 94,
+        "registry_matched": 356
       },
       "location_score_distribution": {
         "-6": 1,
@@ -299,24 +314,24 @@
         "-3": 10,
         "-2": 12,
         "-1": 43,
-        "0": 5672,
-        "1": 116,
-        "2": 26,
-        "3": 716,
-        "4": 89,
-        "5": 1435,
+        "0": 5251,
+        "1": 112,
+        "2": 95,
+        "3": 715,
+        "4": 79,
+        "5": 1418,
         "6": 272,
-        "7": 1619,
-        "8": 431,
-        "9": 1368,
-        "10": 27,
-        "11": 6370,
+        "7": 1621,
+        "8": 787,
+        "9": 1369,
+        "10": 37,
+        "11": 6382,
         "12": 85,
-        "13": 484,
+        "13": 487,
         "15": 4
       },
       "records_with_coordinate_pairs": 2241,
-      "review_records": 6477
+      "review_records": 6121
     },
     "dpwh_house_third": {
       "records": 18797,
@@ -328,11 +343,12 @@
       },
       "location_status": {
         "allocation_not_site": 2791,
-        "unresolved": 2895,
+        "unresolved": 2539,
         "name_matched": 11724,
         "multiple_locations": 912,
         "province_only": 381,
-        "ambiguous": 94
+        "ambiguous": 94,
+        "registry_matched": 356
       },
       "location_score_distribution": {
         "-6": 1,
@@ -341,24 +357,24 @@
         "-3": 10,
         "-2": 12,
         "-1": 43,
-        "0": 5672,
-        "1": 116,
-        "2": 26,
-        "3": 721,
-        "4": 89,
-        "5": 1435,
+        "0": 5251,
+        "1": 112,
+        "2": 95,
+        "3": 720,
+        "4": 79,
+        "5": 1418,
         "6": 272,
-        "7": 1619,
-        "8": 431,
-        "9": 1368,
-        "10": 27,
-        "11": 6370,
+        "7": 1621,
+        "8": 787,
+        "9": 1369,
+        "10": 37,
+        "11": 6382,
         "12": 85,
-        "13": 484,
+        "13": 487,
         "15": 4
       },
       "records_with_coordinate_pairs": 2241,
-      "review_records": 6482
+      "review_records": 6126
     },
     "dpwh_nep_api": {
       "records": 11372,
@@ -368,10 +384,11 @@
       },
       "location_status": {
         "name_matched": 7488,
-        "unresolved": 2832,
+        "unresolved": 2460,
         "ambiguous": 76,
         "province_only": 285,
-        "multiple_locations": 691
+        "multiple_locations": 691,
+        "registry_matched": 372
       },
       "location_score_distribution": {
         "-8": 1,
@@ -380,24 +397,24 @@
         "-3": 8,
         "-2": 5,
         "-1": 28,
-        "0": 2820,
-        "1": 74,
-        "2": 33,
+        "0": 2387,
+        "1": 70,
+        "2": 98,
         "3": 521,
-        "4": 74,
-        "5": 888,
+        "4": 65,
+        "5": 871,
         "6": 193,
-        "7": 1044,
-        "8": 301,
+        "7": 1049,
+        "8": 673,
         "9": 1026,
-        "10": 24,
-        "11": 3946,
+        "10": 33,
+        "11": 3958,
         "12": 62,
         "13": 307,
         "15": 3
       },
       "records_with_coordinate_pairs": 617,
-      "review_records": 5288
+      "review_records": 4916
     },
     "fmr_nep": {
       "records": 704,
@@ -577,7 +594,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 0,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:unresolved",
@@ -612,7 +629,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 0,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:unresolved",
@@ -647,7 +664,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 0,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:unresolved",
@@ -691,7 +708,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 0,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:unresolved",
@@ -761,7 +778,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 5,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:name_matched_town",
@@ -833,7 +850,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 5,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:name_matched_town",
@@ -905,7 +922,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 5,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:name_matched_town",
@@ -977,7 +994,7 @@
           "review_flags": [],
           "needs_review": false,
           "score": 5,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:name_matched_town",
@@ -1070,7 +1087,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 4,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:multiple_locations",
@@ -1161,7 +1178,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 4,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:multiple_locations",
@@ -1252,7 +1269,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 4,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:multiple_locations",
@@ -1343,7 +1360,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 4,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:multiple_locations",
@@ -1428,7 +1445,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 3,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:province_only",
@@ -1567,7 +1584,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 3,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:province_only",
@@ -1657,7 +1674,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 3,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:province_only",
@@ -1738,7 +1755,7 @@
           "review_flags": [],
           "needs_review": true,
           "score": 3,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:province_only",
@@ -1889,7 +1906,7 @@
           ],
           "needs_review": true,
           "score": -3,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:ambiguous",
@@ -3458,7 +3475,7 @@
           ],
           "needs_review": true,
           "score": -4,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:ambiguous",
@@ -4074,7 +4091,7 @@
           ],
           "needs_review": true,
           "score": -4,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:ambiguous",
@@ -4206,7 +4223,7 @@
           ],
           "needs_review": true,
           "score": -3,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:ambiguous",
@@ -4219,6 +4236,419 @@
             {
               "rule": "penalty:title_or_heading_province_conflict",
               "impact": -5
+            }
+          ]
+        }
+      }
+    ],
+    "registry_matched": [
+      {
+        "record_id": "dpwh_nep_pdf:p312:r5",
+        "title": "Usugan Br . (B00995MN) along Bonifacio-Don Victoriano Rd",
+        "location": {
+          "status": "registry_matched",
+          "method": "bridge_registry_exact_id",
+          "verification_status": "provisional_registry_match",
+          "locations": [
+            {
+              "psgc_code": "1004203017",
+              "name": "Mapurog",
+              "level": "barangay",
+              "ancestry": {
+                "barangay": {
+                  "code": "1004203017",
+                  "name": "Mapurog"
+                },
+                "municipality": {
+                  "code": "1004203000",
+                  "name": "Bonifacio"
+                },
+                "province": {
+                  "code": "1004200000",
+                  "name": "Misamis Occidental"
+                },
+                "region": {
+                  "code": "1000000000",
+                  "name": "Region X (Northern Mindanao)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "1004203000",
+            "1004217000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v3",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "bonifacio",
+              "candidate_codes": [
+                "1004203000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "don victoriano",
+              "candidate_codes": [
+                "1004217000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [],
+              "resolution_rule": "bridge_registry_id_match",
+              "bridge_ids": [
+                "B00995MN"
+              ],
+              "registry_status": "exact_id_match"
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [
+                "1004203017"
+              ],
+              "resolution_rule": "bridge_registry_unique_chain"
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [
+                "1004203017"
+              ],
+              "resolution_rule": "bridge_registry_unique_chain"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": false,
+          "score": 8,
+          "score_method": "location_evidence_v5",
+          "score_factors": [
+            {
+              "rule": "base:registry_matched",
+              "impact": 4
+            },
+            {
+              "rule": "evidence:bridge_registry_id_match",
+              "impact": 2
+            },
+            {
+              "rule": "evidence:bridge_registry_unique_chain",
+              "impact": 2
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p312:r10",
+        "title": "Bocal Br . (B00532LZ) along Manila North Rd",
+        "location": {
+          "status": "registry_matched",
+          "method": "bridge_registry_exact_id",
+          "verification_status": "provisional_registry_match",
+          "locations": [
+            {
+              "psgc_code": "0102817032",
+              "name": "Susugaen",
+              "level": "barangay",
+              "ancestry": {
+                "barangay": {
+                  "code": "0102817032",
+                  "name": "Susugaen"
+                },
+                "municipality": {
+                  "code": "0102817000",
+                  "name": "Pasuquin"
+                },
+                "province": {
+                  "code": "0102800000",
+                  "name": "Ilocos Norte"
+                },
+                "region": {
+                  "code": "0100000000",
+                  "name": "Region I (Ilocos Region)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "1380600000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v3",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "manila",
+              "candidate_codes": [
+                "1380600000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [],
+              "resolution_rule": "bridge_registry_id_match",
+              "bridge_ids": [
+                "B00532LZ"
+              ],
+              "registry_status": "exact_id_match"
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [
+                "0102817032"
+              ],
+              "resolution_rule": "bridge_registry_unique_chain"
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [
+                "0102817032"
+              ],
+              "resolution_rule": "bridge_registry_unique_chain"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": false,
+          "score": 8,
+          "score_method": "location_evidence_v5",
+          "score_factors": [
+            {
+              "rule": "base:registry_matched",
+              "impact": 4
+            },
+            {
+              "rule": "evidence:bridge_registry_id_match",
+              "impact": 2
+            },
+            {
+              "rule": "evidence:bridge_registry_unique_chain",
+              "impact": 2
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p312:r11",
+        "title": "Busilac Br . (B00664LZ) along Luna-Bangar Rd",
+        "location": {
+          "status": "registry_matched",
+          "method": "bridge_registry_exact_id",
+          "verification_status": "provisional_registry_match",
+          "locations": [
+            {
+              "psgc_code": "0103306022",
+              "name": "Paratong Norte",
+              "level": "barangay",
+              "ancestry": {
+                "barangay": {
+                  "code": "0103306022",
+                  "name": "Paratong Norte"
+                },
+                "municipality": {
+                  "code": "0103306000",
+                  "name": "Bangar"
+                },
+                "province": {
+                  "code": "0103300000",
+                  "name": "La Union"
+                },
+                "region": {
+                  "code": "0100000000",
+                  "name": "Region I (Ilocos Region)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0103306000",
+            "0103310000",
+            "0203116000",
+            "1408105000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v3",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "luna",
+              "candidate_codes": [
+                "0103310000",
+                "0203116000",
+                "1408105000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "bangar",
+              "candidate_codes": [
+                "0103306000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [],
+              "resolution_rule": "bridge_registry_id_match",
+              "bridge_ids": [
+                "B00664LZ"
+              ],
+              "registry_status": "exact_id_match"
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [
+                "0103306022"
+              ],
+              "resolution_rule": "bridge_registry_unique_chain"
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [
+                "0103306022"
+              ],
+              "resolution_rule": "bridge_registry_unique_chain"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": false,
+          "score": 8,
+          "score_method": "location_evidence_v5",
+          "score_factors": [
+            {
+              "rule": "base:registry_matched",
+              "impact": 4
+            },
+            {
+              "rule": "evidence:bridge_registry_id_match",
+              "impact": 2
+            },
+            {
+              "rule": "evidence:bridge_registry_unique_chain",
+              "impact": 2
+            }
+          ]
+        }
+      },
+      {
+        "record_id": "dpwh_nep_pdf:p312:r12",
+        "title": "Carlos P. Romulo Br . (B00885LZ) along Camiling-Wawa-Bayambang-Malasiqui-Sta Barbara Rd",
+        "location": {
+          "status": "registry_matched",
+          "method": "bridge_registry_exact_id",
+          "verification_status": "provisional_registry_match",
+          "locations": [
+            {
+              "psgc_code": "0105511058",
+              "name": "San Vicente",
+              "level": "barangay",
+              "ancestry": {
+                "barangay": {
+                  "code": "0105511058",
+                  "name": "San Vicente"
+                },
+                "municipality": {
+                  "code": "0105511000",
+                  "name": "Bayambang"
+                },
+                "province": {
+                  "code": "0105500000",
+                  "name": "Pangasinan"
+                },
+                "region": {
+                  "code": "0100000000",
+                  "name": "Region I (Ilocos Region)"
+                }
+              }
+            }
+          ],
+          "candidate_codes": [
+            "0105511000",
+            "0105524000",
+            "0105538000",
+            "0306903000",
+            "0603043000"
+          ],
+          "suggestions": [],
+          "suggestion_method": "hierarchy_candidate_v3",
+          "evidence": [
+            {
+              "field": "title",
+              "text": "camiling",
+              "candidate_codes": [
+                "0306903000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "bayambang",
+              "candidate_codes": [
+                "0105511000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "malasiqui",
+              "candidate_codes": [
+                "0105524000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "title",
+              "text": "santa barbara",
+              "candidate_codes": [
+                "0105538000",
+                "0603043000"
+              ],
+              "locality_syntax": false
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [],
+              "resolution_rule": "bridge_registry_id_match",
+              "bridge_ids": [
+                "B00885LZ"
+              ],
+              "registry_status": "exact_id_match"
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [
+                "0105511058"
+              ],
+              "resolution_rule": "bridge_registry_unique_chain"
+            },
+            {
+              "field": "bridge_registry",
+              "candidate_codes": [
+                "0105511058"
+              ],
+              "resolution_rule": "bridge_registry_unique_chain"
+            }
+          ],
+          "review_flags": [],
+          "needs_review": false,
+          "score": 8,
+          "score_method": "location_evidence_v5",
+          "score_factors": [
+            {
+              "rule": "base:registry_matched",
+              "impact": 4
+            },
+            {
+              "rule": "evidence:bridge_registry_id_match",
+              "impact": 2
+            },
+            {
+              "rule": "evidence:bridge_registry_unique_chain",
+              "impact": 2
             }
           ]
         }
@@ -4242,7 +4672,7 @@
           ],
           "needs_review": false,
           "score": 0,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:allocation_not_site",
@@ -4268,7 +4698,7 @@
           ],
           "needs_review": false,
           "score": 0,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:allocation_not_site",
@@ -4294,7 +4724,7 @@
           ],
           "needs_review": false,
           "score": 0,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:allocation_not_site",
@@ -4320,7 +4750,7 @@
           ],
           "needs_review": false,
           "score": 0,
-          "score_method": "location_evidence_v4",
+          "score_method": "location_evidence_v5",
           "score_factors": [
             {
               "rule": "base:allocation_not_site",
@@ -4332,8 +4762,8 @@
     ]
   },
   "output_sha256": {
-    "projects.jsonl.gz": "b7408b6e04899c56dc5d4f7092ac40c6374c00e325a3fe1274796c7caf2af73c",
-    "projects.csv.gz": "76b7aab370479447b962afc962d3ab2f54e14220cdeb03602e3bbc584353af4f",
-    "location_review.csv.gz": "f68998db5a97c3b1843455e5ea54603ebeb7794701b10d04f164c919c55d8046"
+    "projects.jsonl.gz": "7cf4d29b31e76cd8a1b16484ae40c0ee126e31274c112e5809ce36b51272fd01",
+    "projects.csv.gz": "ae6a2b3e6680aec6f5ec84d1d4de335a80433d490d11db7d6a94ed2e3a0a79ad",
+    "location_review.csv.gz": "0783a0a71cd55136fc0bea125a1fab4f4408eaa2803fea54cf90e85c19582a23"
   }
 }

@@ -1,8 +1,8 @@
 # Master list location evidence: work log and roadmap
 
-**Status:** additive evidence version 4 built, verified, and published  
+**Status:** additive evidence version 5 built, verified, and published  
 **Score field:** `location.score`  
-**Method identifier:** `location_evidence_v4`
+**Method identifier:** `location_evidence_v5`
 
 This document records what the master-list work has done, how the location
 parser now reasons about place mentions, and how the raw scores should be
@@ -122,10 +122,10 @@ parser does not count that phrase as an independent parent assertion.
 
 ## Current corpus distribution
 
-The v4 run spans scores from `-8` to `15`. The exact distribution is
+The v5 run spans scores from `-8` to `15`. The exact distribution is
 published in [REPORT.md](../data/REPORT.md) and `audit.json`. The most common
-totals are `11` (21,666 observations), `0` (18,649), `7` (5,468), `9` (4,874),
-`5` (4,821), and `3` (3,180). These clusters reflect the rules and source
+totals are `11` (21,714 observations), `0` (16,946), `7` (5,482), `9` (4,876),
+`5` (4,753), and `8` (3,203). These clusters reflect the rules and source
 formats; they are not validated accuracy classes.
 
 Compared with the original bounded-rule corpus, the expanded hierarchy parser
@@ -216,6 +216,37 @@ Iloilo (30), Olongapo (10), General Santos (4), Iligan (1) — reflecting the
 common DPWH title style `Mandaue City, Cebu`, where the province names the
 HUC's surrounding region rather than an administrative parent.
 
+## What changed in v5: bridge registry evidence
+
+The retained [DPWH bridge inventory](../bridge_inventory/README.md) archive
+matches budget observations to existing bridges by exact `BRIDGE_ID` and
+derives current-PSGC chains from 2023 barangay polygon hits (roadmap item
+3: independent registry evidence with stable identifiers). The master list
+consumes that evidence read-only, with every registry effect recorded as
+its own factor:
+
+| Rule | Points | Condition |
+|---|---:|---|
+| `base:registry_matched` | +4 | Title asserted no location; a single registry chain is adopted as `registry_matched` (verification `provisional_registry_match`). |
+| `bridge_registry_id_match` | +2 | An exact inventory `BRIDGE_ID` appears in the title. |
+| `bridge_registry_unique_chain` | +2 | The matched bridge resolves to exactly one current-PSGC chain. |
+| `bridge_registry_agreement` | +2 | The title-assigned scope intersects the registry chain. |
+| `bridge_registry_conflicts_with_title_location` | -3 | Title assignment and the single-town registry chain are disjoint — review, never override. |
+
+Registry evidence never overrides a title-asserted location: agreements
+score, disagreements flag, and only a completely unresolved title adopts
+the registry chain. The bridge snapshot stays pinned by the inventory's own
+audit; the master-list audit records both evidence files' hashes.
+
+Measured v4 → v5: 1,451 previously `unresolved` score-0 records adopt a
+unique registry chain (`registry_matched`, scored 8 by default: base 4 +
+ID 2 + chain 2); 252 records with an exact ID but no polygon chain gain
+the ID factor only (+2); 94 records gain an agreement bonus; 16 records
+(the Sayre Highway class, titled by road endpoint but physically in the
+neighboring province) gain a conflict penalty and stay in review with
+their title answer retained. The unresolved population drops from 12,917
+to 11,466.
+
 ## What we are doing now
 
 - Preserve every candidate, selected code, evidence item, review flag, and score
@@ -249,6 +280,24 @@ Validate retained coordinate pairs against a dated official PSGC geometry
 release. Add road, bridge, irrigation, and facility registries where stable
 identifiers exist. Each source should emit a separate factor so agreement and
 conflict remain auditable.
+
+Bridge source acquisition is now available in the separate
+[reusable bridge inventory](../../bridge_inventory/README.md) module. It retains
+dated DPWH Detailed Bridge Inventory snapshots, all layer-1 source attributes,
+WGS84 points, source metadata, completeness checks, and SHA-256 hashes, with
+GeoJSON/JSONL/CSV exports. Refreshes preserve previous snapshots.
+
+The [bridge matching report](../../bridge_inventory/data/REPORT.md) now records
+exact project-ID matches, coordinates, and point-in-polygon evidence from the
+retained 2023 boundaries. The first run links 1,833 source observations to 498
+distinct bridge assets; all 498 points intersect a barangay polygon. Inventory
+locality names are compared independently and discrepancies stay flagged.
+Spatial place names are reconciled to provisional current PSGC candidates using
+actual catalog parent links; historical numeric boundary codes remain separate.
+Current boundary geometry and the catalog foundation still need official-source
+validation. These separate evidence outputs do not change master-list assigned
+PSGC codes or location scores. Bridge mentions without an exact ID remain an
+identity-review queue.
 
 ### 4. Normalize only after evaluation
 

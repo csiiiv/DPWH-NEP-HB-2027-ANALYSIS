@@ -302,6 +302,77 @@ class TitleLocations(unittest.TestCase):
         self.assertIsNone(title_coordinates('Road rehabilitation - K0026 + 000 - K0027 + 000'))
 
 
+class BridgeRegistry(unittest.TestCase):
+    """Registry evidence joins after title parsing and never overrides it."""
+
+    @classmethod
+    def setUpClass(cls):
+        sys.path.insert(0, str(ROOT / 'master_list/scripts'))
+        from build_master_list import apply_bridge_registry, load_bridge_registry
+        cls.apply = staticmethod(apply_bridge_registry)
+        cls.registry, _ = load_bridge_registry()
+        cls.matcher = Matcher([json.loads(s) for s in
+            (ROOT / 'PSGC2LEG/data/psgc_locations.jsonl').read_text().splitlines()])
+
+    def base_match(self, title, region_hint=None):
+        return self.matcher.match(title, (), region_hint)
+
+    def test_unresolved_title_adopts_unique_registry_chain(self):
+        # "Usugan Br. (B00995MN) along Bonifacio-Don Victoriano Rd" carries no
+        # title locality; the exact registry ID supplies one unique chain.
+        entry = self.registry['dpwh_nep_pdf:p312:r5']
+        match = self.base_match('Usugan Br . (B00995MN) along Bonifacio-Don Victoriano Rd')
+        self.assertEqual(match['status'], 'unresolved')
+        self.apply(match, entry, self.matcher)
+        self.assertEqual(match['status'], 'registry_matched')
+        self.assertEqual(match['locations'][0]['psgc_code'], '1004203017')
+        self.assertEqual(match['locations'][0]['name'], 'Mapurog')
+        self.assertFalse(match['needs_review'])
+        rules = {f['rule'] for f in match['score_factors']} if 'score_factors' in match else set()
+        # evidence records the three registry rules
+        recorded = {ev['resolution_rule'] for ev in match['evidence']
+                    if ev['field'] == 'bridge_registry'}
+        self.assertEqual(recorded, {'bridge_registry_id_match',
+                                    'bridge_registry_unique_chain'})
+
+    def test_title_location_is_never_overridden_by_registry(self):
+        # A title that assigns its own location keeps it; registry agreement
+        # is only an evidence factor.
+        entry = self.registry['dpwh_nep_pdf:p312:r5']
+        match = self.base_match('Usugan Br . (B00995MN) along Bonifacio-Don Victoriano Rd, Bonifacio, Misamis Occidental')
+        self.assertEqual(match['status'], 'name_matched')
+        self.apply(match, entry, self.matcher)
+        self.assertEqual(match['status'], 'name_matched')
+        self.assertEqual(match['locations'][0]['ancestry']['municipality']['name'],
+                         'Bonifacio')
+        recorded = {ev['resolution_rule'] for ev in match['evidence']
+                    if ev['field'] == 'bridge_registry'}
+        self.assertIn('bridge_registry_agreement', recorded)
+
+    def test_registry_conflict_flags_review_without_overriding(self):
+        # Sayre Highway bridge titled with a Davao City road endpoint but
+        # physically in Bukidnon: title answer stays, conflict is flagged.
+        entry = self.registry['dpwh_nep_pdf:p314:r29']
+        match = self.base_match('Omonay Br . (B01378MN) along Sayre Highway (Jct Bukidnon-Davao City Rd')
+        self.assertTrue(match['locations'])
+        self.apply(match, entry, self.matcher)
+        self.assertIn('bridge_registry_conflicts_with_title_location', match['review_flags'])
+        self.assertTrue(match['needs_review'])
+
+    def test_non_exact_mentions_attach_id_match_factor_only(self):
+        # bridge_mention_without_id: no chains, no assignment change, and no
+        # scored registry factor (an unscored audit note is retained).
+        entry = next(e for e in self.registry.values()
+                     if e['status'] == 'bridge_mention_without_id' and not e['chains'])
+        match = self.base_match('Construction of Bridge somewhere unnamed')
+        status_before = match['status']
+        self.apply(match, entry, self.matcher)
+        self.assertEqual(match['status'], status_before)
+        scored = [ev for ev in match['evidence']
+                  if ev['field'] == 'bridge_registry' and 'resolution_rule' in ev]
+        self.assertEqual(scored, [])
+
+
 class RetainedArtifacts(unittest.TestCase):
     def test_ledger_arithmetic_ids_and_psgc_integrity(self):
         data = ROOT / 'master_list/data'
@@ -321,7 +392,7 @@ class RetainedArtifacts(unittest.TestCase):
                 self.assertTrue(row['source_dataset'])
                 score = row['location']['score']
                 self.assertIsInstance(score, int)
-                self.assertEqual(row['location']['score_method'], 'location_evidence_v4')
+                self.assertEqual(row['location']['score_method'], 'location_evidence_v5')
                 self.assertTrue(row['location']['score_factors'])
                 for location in row['location']['locations']:
                     code = location['psgc_code']

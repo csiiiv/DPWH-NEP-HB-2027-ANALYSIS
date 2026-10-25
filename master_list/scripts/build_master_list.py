@@ -195,11 +195,110 @@ def compressed_text(path):
                             encoding='utf-8', newline='')
 
 
+def load_bridge_registry():
+    """Join evidence from the retained DPWH bridge inventory archive.
+
+    The inventory module matches budget observations to inventory bridges by
+    exact BRIDGE_ID and derives current-PSGC chains from 2023 barangay
+    polygon hits. This build consumes that retained evidence read-only: a
+    stable registry identifier is independent location evidence (roadmap
+    item 3), recorded as its own factors so agreement and conflict stay
+    auditable. The inventory snapshot stays pinned by its own audit.
+    """
+    matches_path = ROOT / 'bridge_inventory/data/bridge_project_matches.jsonl.gz'
+    spatial_path = ROOT / 'bridge_inventory/data/bridge_spatial_evidence.jsonl.gz'
+    registry = {}
+    spatial = {}
+    with gzip.open(spatial_path, 'rt') as stream:
+        for line in stream:
+            row = json.loads(line)
+            spatial[row['bridge_id']] = row
+    with gzip.open(matches_path, 'rt') as stream:
+        for line in stream:
+            row = json.loads(line)
+            chains = []
+            for m in row.get('matches', []):
+                evidence = spatial.get(m['bridge_id'])
+                candidates = evidence.get('current_psgc_candidates', []) if evidence else []
+                if len(candidates) == 1:
+                    chains.append(candidates[0])
+            registry[row['record_id']] = {
+                'status': row['status'],
+                'bridge_ids': row.get('bridge_ids', []),
+                'chains': chains,
+            }
+    return registry, [matches_path, spatial_path]
+
+
+def apply_bridge_registry(match, registry_entry, matcher):
+    """Attach registry evidence factors; assign only when the title gave none.
+
+    An exact BRIDGE_ID match means the project works on that existing bridge,
+    so the inventory position is strong evidence. It still cannot override a
+    title-asserted location: agreements add a factor, disagreements keep the
+    title answer with a review penalty, and an empty title parse adopts the
+    registry chain as registry_matched, subject to its single-chain rule.
+    """
+    if not registry_entry:
+        return
+    if registry_entry['status'] != 'exact_id_match':
+        # A title that only mentions a bridge, or names an ID absent from the
+        # inventory, carries no registry location evidence. Retain an unscored
+        # note for auditability only.
+        match.setdefault('evidence', []).append({
+            'field': 'bridge_registry', 'candidate_codes': [],
+            'registry_status': registry_entry['status'],
+        })
+        return
+    match.setdefault('evidence', []).append({
+        'field': 'bridge_registry', 'candidate_codes': [],
+        'resolution_rule': 'bridge_registry_id_match',
+        'bridge_ids': registry_entry['bridge_ids'],
+        'registry_status': registry_entry['status'],
+    })
+    chains = registry_entry['chains']
+    assigned_scope = {loc['psgc_code'] for loc in match['locations']}
+    for loc in match['locations']:
+        assigned_scope.update(v['code'] for v in loc['ancestry'].values())
+    chain_codes = {step['code'] for chain in chains for step in chain['chain']}
+    if len({chain['code'] for chain in chains}) == 1:
+        match['evidence'].append({
+            'field': 'bridge_registry', 'candidate_codes': [chains[0]['code']],
+            'resolution_rule': 'bridge_registry_unique_chain',
+        })
+    if assigned_scope and chain_codes:
+        if assigned_scope & chain_codes:
+            match['evidence'].append({
+                'field': 'bridge_registry', 'candidate_codes': sorted(chain_codes),
+                'resolution_rule': 'bridge_registry_agreement',
+            })
+        elif len({step['code'] for chain in chains for step in chain['chain']
+                   if step['level'] in {'municipality', 'city', 'sub_municipality'}}) == 1:
+            match['review_flags'].append('bridge_registry_conflicts_with_title_location')
+            match['needs_review'] = True
+    elif not assigned_scope and len({chain['code'] for chain in chains}) == 1:
+        chain = chains[0]
+        match.update(status='registry_matched',
+                     method='bridge_registry_exact_id',
+                     verification_status='provisional_registry_match',
+                     locations=[matcher.describe(chain['code'])],
+                     needs_review=False)
+        match['evidence'].append({
+            'field': 'bridge_registry', 'candidate_codes': [chain['code']],
+            'resolution_rule': 'bridge_registry_unique_chain',
+        })
+
+
+
 def build(out):
     catalog_rows = [json.loads(s) for s in (ROOT / CATALOG).read_text().splitlines()]
     matcher = Matcher(catalog_rows)
     inputs = {p: {'sha256': sha(ROOT / p)} for p in [CATALOG, CATALOG_SUMMARY,
               'gps-analysis/scan_gps_inventory.py', 'gps-analysis/coordinate_parse.py']}
+    bridge_registry, registry_paths = load_bridge_registry()
+    for path in registry_paths:
+        inputs[str(path.relative_to(ROOT))] = {'sha256': sha(path),
+            'scope': 'Retained DPWH bridge inventory exact-ID match and spatial PSGC evidence (read-only)'}
     counts, sums, statuses, score_counts, kinds, review = Counter(), Counter(), {}, {}, {}, Counter()
     coordinate_counts = Counter()
     examples, seen = {}, set()
@@ -247,8 +346,12 @@ def build(out):
                 match['evidence'].append({'field': 'source_region',
                     'candidate_codes': [region_hint], 'locality_syntax': True,
                     'resolution_rule': 'source_region_agreement'})
+            # Bridge-registry evidence joins after title parsing: independent
+            # factors for agreement/conflict, registry_matched only when the
+            # title parse asserted no location at all.
+            apply_bridge_registry(match, bridge_registry.get(r['record_id']), matcher)
             # Re-score after contextual flags (especially source-region
-            # disagreement) have been added by the record builder.
+            # disagreement and registry evidence) have been added.
             score_location(match)
             # Office names are retained as weak context only, never project codes.
             r['office_location_candidates'] = sorted({c for hit in matcher.find(r['implementing_office'])

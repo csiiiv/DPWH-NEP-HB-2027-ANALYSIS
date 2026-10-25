@@ -9,7 +9,7 @@ import re
 import unicodedata
 
 
-SCORE_METHOD = 'location_evidence_v4'
+SCORE_METHOD = 'location_evidence_v5'
 SUGGESTION_METHOD = 'hierarchy_candidate_v3'
 SCORE_BASES = {
     'allocation_not_site': 0,
@@ -18,6 +18,7 @@ SCORE_BASES = {
     'province_only': 2,
     'multiple_locations': 3,
     'name_matched_town': 4,
+    'registry_matched': 4,
     'name_matched_barangay': 6,
 }
 SCORE_BONUSES = {
@@ -27,10 +28,14 @@ SCORE_BONUSES = {
     'title_and_source_heading': 2,
     'explicit_parent_chain': 2,
     'source_region_agreement': 1,
+    'bridge_registry_id_match': 2,
+    'bridge_registry_unique_chain': 2,
+    'bridge_registry_agreement': 2,
 }
 SCORE_PENALTIES = {
     'title_or_heading_province_conflict': -5,
     'source_region_differs_from_title_location': -3,
+    'bridge_registry_conflicts_with_title_location': -3,
     'ambiguous_barangay_name': -3,
     'barangay_scope_spans_multiple_municipalities': -3,
     'barangay_mentioned_but_unmatched': -2,
@@ -47,13 +52,17 @@ def score_location(match):
     if status == 'name_matched':
         base_rule = ('name_matched_barangay' if 'barangay' in levels
                      else 'name_matched_town')
+    elif status == 'registry_matched':
+        base_rule = 'registry_matched'
     score = SCORE_BASES[base_rule]
     factors = [{'rule': f'base:{base_rule}', 'impact': score}]
 
     resolution_rules = {ev.get('resolution_rule') for ev in match['evidence']}
     for rule in ('explicit_barangay_marker',
                  'comma_barangay_municipality_province_chain',
-                 'compact_locality_component', 'source_region_agreement'):
+                 'compact_locality_component', 'source_region_agreement',
+                 'bridge_registry_id_match', 'bridge_registry_unique_chain',
+                 'bridge_registry_agreement'):
         if rule in resolution_rules:
             impact = SCORE_BONUSES[rule]
             score += impact
