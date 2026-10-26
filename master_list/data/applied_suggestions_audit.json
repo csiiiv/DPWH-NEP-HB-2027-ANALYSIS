@@ -1,0 +1,49 @@
+{
+  "applied": 82,
+  "applied_by_master_status": {
+    "ambiguous": 8,
+    "multiple_locations": 33,
+    "name_matched": 41
+  },
+  "blocked_by_reason": {
+    "below_min_score": 180,
+    "conflicting_top": 22,
+    "margin_too_small": 247,
+    "parent_town_not_in_title": 30,
+    "rivals_master_assignment": 18
+  },
+  "description": "Derive the applied-suggestions layer from the retained master list.",
+  "gate": {
+    "blocking_conflicts": [
+      "named_province_conflict",
+      "source_region_conflict",
+      "office_province_conflict"
+    ],
+    "min_support_score": 9,
+    "required_margin": 3
+  },
+  "input": {
+    "path": "master_list/data/projects.jsonl.gz",
+    "sha256": "eee1b566043738e38f6ffad06f5ab9afaf054ccec0315ce8bd849b40b0d2f4b3"
+  },
+  "method": "applied_suggestion_v1",
+  "output_sha256": {
+    "applied_suggestions.jsonl.gz": "be5df2f056d5dce9e9ebd9d598c7694def03b1701c49ac0d3867aed5c61c5fdb"
+  },
+  "records_with_suggestions": 579,
+  "score_base": 4,
+  "score_factors": [
+    {
+      "impact": 4,
+      "rule": "base:applied_suggestion"
+    },
+    {
+      "impact": 4,
+      "rule": "evidence:explicit_barangay_mention"
+    },
+    {
+      "impact": 3,
+      "rule": "evidence:named_parent_town"
+    }
+  ]
+}

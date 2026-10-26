@@ -5,6 +5,24 @@ farm-to-market roads (FMR), DOH health facilities (HFEP), and NIA irrigation.
 It adds **provisional PSGC locations** from titles and usable printed locality
 headings. See [coverage and totals](data/REPORT.md).
 
+The [readable processing dataset](docs/PROCESSING_DATASET.md) pre-generates
+clean display titles over the existing DPWH/FMR/HFEP/NIA comparison JSONs,
+and is now the master builder's input.
+Its 20,321 groups include matched, House-only and NEP-only records, while
+5,044 House GAS/S2O observations remain explicitly outside comparison scope.
+All 64,645 source observations are retained. Generate it with
+`python3 master_list/scripts/build_processing_dataset.py`; the webapp's
+`predev`/`prebuild` scripts also run this step. The master builder adds
+location evidence to these observations; the browser joins them to the same
+comparison groups. Run `npm run build:master-list --prefix analysis/web` to
+rebuild processing, master enrichment and the browser after its inputs exist.
+
+Documentation is split by purpose: [processing data and browser contract](docs/PROCESSING_DATASET.md),
+[scoring factors and weights](docs/SCORING_RULES.md), and
+[location methodology, current results and roadmap](docs/LOCATION_CONFIDENCE_AND_ROADMAP.md).
+Readable cleanup is versioned as `readable_title_v1`; location evidence still
+uses `location_evidence_v6.2`.
+
 Each row is a **source observation**, not a certified unique physical project.
 The same project can occur in the NEP PDF, Transparency API, and House readings.
 Source IDs, titles, amounts, and budget stages remain separate. **Do not sum
@@ -16,14 +34,26 @@ Open [index.html](index.html) in a recent browser. The complete list is embedded
 in the HTML, so it also works directly from disk without a server or internet.
 Keep it in `master_list/` so its relative PDF and CSV links continue to resolve.
 
-The table shows **title, category, value in PHP, PSGC locations, raw location
-evidence score, reference PDF, and PDF page**, with printed page numbers where
-available. Search across titles, categories, places, codes and PDF filenames;
+The default **Comparison groups** view has 20,321 rows. Expand a group to inspect
+its source observations and their individual evidence. NEP, each House reading
+and the API keep separate amounts. Retained comparison/stage details expose
+the existing match status, chainage and normalization annotations. The **All
+source observations** view contains all 64,645 rows; **Outside comparison**
+shows the 5,044 GAS/S2O allocations separately.
+
+Each source observation shows **readable title, category, value in PHP, PSGC
+locations, raw location evidence score, reference PDF, and PDF page**, with
+printed page numbers where available. Open its evidence details for the
+original title, applied cleanup rules, coordinate summary and district lookup.
+Search across titles, categories, places, codes and PDF filenames;
 filter by source, category, minimum evidence score or review flag. Click the
-title, category, value or evidence-score header to sort.
-Pagination keeps the full list responsive. Allocation rows are hidden initially
-and can be included using the checkbox. A filtered amount total appears when a
-single source is selected.
+title, category, value or evidence-score header to sort observation rows.
+In group view, amount sorting requires one source and score sorting is disabled
+because scores belong to observations. Pagination keeps the full list responsive.
+Allocation rows are included initially and can be hidden using the checkbox.
+Filters select a group through an individual matching observation; expanding
+still shows all its members. A filtered amount total appears when a single
+source is selected. Group view totals cover the comparison scope only.
 
 The [project list CSV](data/project_list.csv.gz) (gzip; deterministic build) contains
 all source rows and the same reference fields, plus the verified legislative
@@ -54,6 +84,7 @@ Then open `http://127.0.0.1:8000/master_list/`.
 | [projects.jsonl.gz](data/projects.jsonl.gz) | Full records, source evidence, inferred locations, candidates, parent hierarchy, verified legislative district, and coordinate observations where available. |
 | [projects.csv.gz](data/projects.csv.gz) | Spreadsheet export with one row per source observation, integer PHP and string PSGC codes. Multiple values use `\|`. Decompress before opening in a spreadsheet; import code columns as text. |
 | [location_review.csv.gz](data/location_review.csv.gz) | Province-only, ambiguous, multiple-location, unresolved and flagged matches. |
+| [applied_suggestions.jsonl.gz](data/applied_suggestions.jsonl.gz) | Derived layer applying decisive, conflict-free review suggestions (gate in `applied_suggestions_audit.json`). The master ledger is never mutated; consumers load this file independently. |
 | [audit.json](data/audit.json) | Input/output hashes, dataset totals, coverage, source discrepancies and matching examples. |
 | [REPORT.md](data/REPORT.md) | Readable build results. |
 | [project_list.csv.gz](data/project_list.csv.gz) | Plain table export including category and canonical PDF file/page references; deterministic gzip. The build also writes an untracked local `project_list.csv` plain copy for direct spreadsheet use. |
@@ -91,8 +122,10 @@ orientation rules and issue flags.
 
 ## How location matching and evidence scoring work
 
-1. Normalize accents, case, punctuation and `Sta.`/`Sto.` for matching; preserve
-   the original title. City word-order aliases come from the catalog name.
+1. Start from the processing release's conservative `title_clean` (including
+   split-ñ cleanup), then normalize accents, case, punctuation and `Sta.`/`Sto.`
+   for matching; preserve the original title and the readable-title rules.
+   City word-order aliases come from the catalog name.
 2. Search complete catalog names at word boundaries. Keep unqualified names in
    rivers, roads, schools and hospitals as candidates. A comma-delimited locality,
    explicit city/municipality introduction, or exact printed locality heading
@@ -112,13 +145,17 @@ orientation rules and issue flags.
    province. NCR sub-municipality codes stay distinct.
 
 `location.status` is `name_matched`, `multiple_locations`, `province_only`,
-`ambiguous`, `unresolved`, or `allocation_not_site`. Every inferred location has
-`verification_status = provisional_name_match`; **name matching does not verify
-the actual construction site**. `needs_review = false` means the parser found
-one unflagged name match, not that a human certified it.
+`ambiguous`, `unresolved`, `registry_matched`, or `allocation_not_site`.
+Name inference records `verification_status = provisional_name_match`;
+adopting a unique retained bridge-registry chain records
+`provisional_registry_match`. Allocation rows assert no site.
+**Name matching does not verify the actual construction site.**
+`needs_review = false` can describe an unflagged name match, a unique adopted
+registry chain, or an allocation without a site assertion. It is not human
+certification; inspect status, flags and score factors together.
 
 `location.score` is an uncapped integer produced by the versioned
-`location_evidence_v6` rules. It is the sum of documented evidence and penalty
+`location_evidence_v6.2` rules. It is the sum of documented evidence and penalty
 factors, not a probability or normalized confidence value. Resolution depth,
 explicit barangay syntax, valid parent chains, compact locality components, and
 agreement with source headings or regions add points. Ambiguity, unmatched
@@ -160,6 +197,7 @@ evidence to review, not a spatially verified site or PSGC match.
 Run from the repository root; Python's standard library is sufficient:
 
 ```sh
+python3 master_list/scripts/build_processing_dataset.py
 python3 master_list/scripts/build_master_list.py
 python3 master_list/scripts/build_master_list.py --check
 python3 master_list/scripts/build_viewer.py

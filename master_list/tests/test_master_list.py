@@ -20,6 +20,43 @@ class TitleLocations(unittest.TestCase):
         cls.matcher = Matcher([json.loads(s) for s in
             (ROOT / 'PSGC2LEG/data/psgc_locations.jsonl').read_text().splitlines()])
 
+    def test_applied_suggestions_layer_is_derived_and_pinned(self):
+        """The applied-suggestions dataset derives from the master list with
+        the documented gate and never mutates its input."""
+        import subprocess, sys
+        data = ROOT / 'master_list/data'
+        audit_path = data / 'applied_suggestions_audit.json'
+        self.assertTrue(audit_path.exists(), 'applied layer must be built')
+        audit = json.loads(audit_path.read_text())
+        self.assertEqual(audit['method'], 'applied_suggestion_v1')
+        # input pin matches the retained master build
+        self.assertEqual(hashlib.sha256((ROOT / 'master_list/data/projects.jsonl.gz').read_bytes()).hexdigest(),
+                         audit['input']['sha256'])
+        rows = [json.loads(s) for s in gzip.open(
+            data / 'applied_suggestions.jsonl.gz', 'rt', encoding='utf-8')]
+        self.assertEqual(len(rows), audit['applied'])
+        self.assertEqual(sum(audit['blocked_by_reason'].values()) + audit['applied'],
+                         audit['records_with_suggestions'])
+        for row in rows:
+            a = row['applied']
+            # gate invariants on every applied row
+            self.assertGreaterEqual(a['support_score'], audit['gate']['min_support_score'])
+            self.assertFalse(set(audit['gate']['blocking_conflicts'])
+                             & {c for c in a.get('conflicts', ())}, row['record_id'])
+            self.assertEqual(a['verification_status'], 'provisional_applied_suggestion')
+            # the parent town is genuinely named in the title
+            sys.path.insert(0, str(ROOT / 'master_list/scripts'))
+            from build_applied_suggestions import _normalize, town_named_in_title
+            self.assertTrue(town_named_in_title(
+                {'location': a}, _normalize(row['title'])), row['record_id'])
+        # the bad-application class stays blocked: a barangay suggestion
+        # under a town homonym riding a province pool (Lipa City title with
+        # a Batangas City chain) must never be applied.
+        lipa = [r for r in rows if 'Lipa' in r['title']]
+        self.assertFalse(any(r['applied']['ancestry'].get('city', {}).get('name')
+                             == 'Batangas City' for r in lipa))
+
+
     def test_town_disambiguated_by_province(self):
         result = self.matcher.match('Construction of Road, San Jose, Occidental Mindoro')
         self.assertEqual(result['status'], 'name_matched')

@@ -1,18 +1,63 @@
 # Master list location evidence: work log and roadmap
 
-**Status:** additive evidence version 6.2 built, verified, and published  
-**Score field:** `location.score` · **Scoring rules:** [SCORING_RULES.md](SCORING_RULES.md)  
-**Method identifier:** `location_evidence_v6.2`
+**Status:** additive evidence version 6.2 built and verified on the readable processing release (2026-10-26)\
+**Score field:** `location.score` · **Scoring rules:** [SCORING_RULES.md](SCORING_RULES.md)\
+**Method identifier:** `location_evidence_v6.2` · **Title cleanup:** `readable_title_v1`
 
 This document records what the master-list work has done, how the location
 parser now reasons about place mentions, and how the raw scores should be
 assessed before any normalization. A score may change only when source evidence
 or a documented rule changes.
 
+Use [PROCESSING_DATASET.md](PROCESSING_DATASET.md) for source selection, readable
+titles, comparison membership and the browser contract. Use
+[SCORING_RULES.md](SCORING_RULES.md) for the current factors and weights. This
+document connects that pipeline to the location methodology, historical
+changes, current build statistics and remaining review work.
+
+## Current pipeline and record layers
+
+```mermaid
+flowchart LR
+  W[Four comparison / workbench JSONs] --> P[Readable processing release]
+  S[Independent source ledgers and GAS/S2O coverage] --> P
+  P -->|observations.jsonl.gz| M[Master source observations with location evidence]
+  E[PSGC catalog / retained bridge evidence / district assignments] --> M
+  M --> V[Browser: comparison groups and expandable observations]
+  P -->|comparison_groups.jsonl.gz| V
+```
+
+`build_processing_dataset.py` preserves existing upstream matches, restores
+their enriched stage records, and adds conservative readable titles. It
+accounts for 20,321 comparison groups covering 59,601 source observations,
+plus 5,044 House GAS/S2O observations classified `not_compared`. The latter
+are outside the operations comparison scope; no counterpart matching was
+performed for them.
+
+`build_master_list.py` consumes the validated processing observations and
+adds per-observation location findings. `projects.jsonl.gz` retains all
+64,645 original `record_id` values, source titles, integer PHP amounts and
+provenance, together with `comparison_group_id`, `comparison_stage`, readable
+title metadata, and available `analysis_record` annotations. The evidence
+layer adds `location`, its score/factors/review flags, coordinate summaries,
+and legislative-district derivations. A comparison attachment does not
+certify physical-project identity or transfer a location to another member.
+
+`build_viewer.py` joins those findings to the same processing groups. It
+verifies the release hashes pinned by the master audit, group membership
+and stage/member amounts. Each source and reading keeps its own amounts;
+there is no combined group location score or multi-source budget total.
+The processing step remains independent of generated master/bridge outputs;
+the master enrichment still reads retained bridge evidence. See the
+[provenance map](../../analysis/docs/data_provenance_map.md#43-master-list-collation-master_list)
+for that existing dependency and its freshness limits.
+
 ## Version 6 changes
 
-Version 6 addresses false penalties on multi-barangay titles, split-name
+This historical summary describes the v6 release. Version 6 addresses false
+penalties on multi-barangay titles, split-name
 municipalities, numbered barangays, and city districts:
+
 1. **Initial-dropping town aliases.** PSA names carrying personal initials
    (`Pres. Manuel A. Roxas`) are also indexed without single-letter tokens
    (`pres manuel roxas`), so titles writing `Pres. Manuel, Roxas` resolve.
@@ -39,13 +84,14 @@ municipalities, numbered barangays, and city districts:
 8. **Explicit-city marker scope.** An explicit city phrase (`Iloilo City`)
    outranks same-named town homonyms when scoping barangay markers.
 
-Dataset effect: `title_or_heading_province_conflict` 323 → 169, `ambiguous`
-status 349 → 195 records; 620 records now carry the grouped-barangay bonus.
+At the v6 release: `title_or_heading_province_conflict` 323 → 169, `ambiguous`
+status 349 → 195 records; 620 records carried the grouped-barangay bonus.
+These are historical release measurements. The current snapshot is below.
 
 
 ## What we have done
 
-The master list collates 64,645 FY2027 source observations from ten retained
+The master list enriches 64,645 FY2027 source observations from ten retained
 DPWH, farm-to-market road, health-facility, and irrigation datasets. Each source
 and budget stage remains a separate ledger. Titles, categories, integer PHP
 amounts, source identifiers, PDFs, pages, coordinates, and source hashes remain
@@ -55,19 +101,35 @@ HFEP source discrepancy remains disclosed.
 The first location release used a bounded `0.00`–`1.00` rules score. We removed
 that presentation before calibration because the decimals looked probabilistic
 and the cap hid how much evidence a row actually contained. The replacement is
-an uncapped additive score. Existing binary statuses remain as explanations,
+an uncapped additive score. Existing categorical statuses remain as explanations,
 while each positive and negative factor is retained on the record.
 
-The viewer displays title, category, amount, provisional PSGC locations, raw
-evidence score, PDF, and page. It supports search, source/category/minimum-score
-filters, review filtering, sorting, pagination, and direct PDF-page links.
+The viewer starts with **Comparison groups**, showing 20,321 groups and
+separate stage amounts. Expanding a group reveals its source observations:
+readable titles, categories, original titles and cleanup rules, provisional
+PSGC locations, raw evidence scores, coordinate/district details, and PDF-page
+links. Retained comparison/stage details expose upstream match status,
+chainage, normalized geometry and review annotations.
+
+**All source observations** shows all 64,645 rows, and **Outside comparison**
+shows the 5,044 GAS/S2O observations. Allocation rows are initially included.
+Search and source/category/minimum-score/location-review filters apply to
+individual observations; a group is selected when at least one member meets
+every filter. Expansion shows all members and marks those matching the
+filters. Group amounts remain complete-stage amounts, while the filtered
+source total uses only matching observations. Amount sorting in group view
+requires one source; score sorting is available in observation views.
 
 ## How a human-style parse is approximated
 
 The parser first collects plausible place mentions, then tests their PSGC
 relationships instead of deciding from one name in isolation:
 
-1. Normalize punctuation, accents, `Sta.` and `Sto.`, and documented
+1. Start with `title_clean` from the processing release, retaining the original
+   `title`/`title_source` and cleanup metadata. The readable layer repairs
+   split `ñ`/`Ñ`, explicit HTML entities, Unicode composition and whitespace
+   without spelling guesses or numeric rewrites. Then normalize punctuation,
+   accents, `Sta.` and `Sto.`, and documented
    historical spellings (`North Cotabato` → `Cotabato`, `Compostela Valley` →
    `Davao de Oro`, `Western Samar` → `Samar`, `Pob.` → `Poblacion`), while
    retaining the source title unchanged.
@@ -90,8 +152,14 @@ relationships instead of deciding from one name in isolation:
 
 Sitios and puroks are useful text context but are not PSGC administrative units.
 Implementing-office names remain context and are never assigned as project
-sites. Coordinate evidence is retained but does not affect the score until a
-current PSGC geometry source is added.
+sites. Parsed title coordinates and normalized FMR coordinate pairs are
+retained for review and currently add no score factor. Existing bridge-registry
+evidence is an exception: exact IDs, unique retained spatial chains and
+agreement/conflict contribute their documented factors. Legislative-district
+lookups remain unscored. Coordinate parsing uses the original title to retain
+source fragments; normalized FMR coordinates take precedence in the coordinate
+summary. Location name inference uses `title_clean`, recorded in
+`location_title_field`.
 
 ## Raw additive scoring rules
 
@@ -120,6 +188,7 @@ block of `data/audit.json`, which are regenerated together on every build.
 | Evidence | Points |
 |---|---:|
 | Complete unmarked barangay → town → province suffix | +4 |
+| Province-anchored enumeration completely resolves under one town | +2 |
 | Adjacent explicit `Brgy.`/`Barangay` marker | +2 |
 | Exact inventory `BRIDGE_ID` in title | +2 |
 | Unique registry chain for matched bridge | +2 |
@@ -168,14 +237,34 @@ parser does not count that phrase as an independent parent assertion.
 
 ## Current corpus distribution
 
-The v6 run spans scores from `-8` to `15`. The exact distribution is
-published in [REPORT.md](../data/REPORT.md) and `audit.json`. The most common
-totals are `11` (22,397 observations), `0` (16,946), `7` (5,502), `5` (4,565),
-`9` (4,483), and `8` (3,338). These clusters reflect the rules and source
-formats; they are not validated accuracy classes.
+Snapshot: **2026-10-26**. The processing-backed `location_evidence_v6.2` build spans scores from `-8`
+to `15` across all 64,645 source observations. The most common totals are:
 
-Compared with the original bounded-rule corpus, the expanded hierarchy parser
-changes assigned PSGC codes for 4,847 observations and status for 2,422. That
+| Raw score | Source observations |
+|---:|---:|
+| 11 | 22,849 |
+| 0 | 17,072 |
+| 7 | 5,333 |
+| 9 | 4,572 |
+| 5 | 4,280 |
+| 8 | 3,458 |
+
+The complete distribution and per-dataset counts are in
+[REPORT.md](../data/REPORT.md) and [audit.json](../data/audit.json). The
+[viewer manifest](../data/viewer_manifest.json) records the same distribution.
+These clusters reflect the rules and source formats; they are not validated
+accuracy classes or group-level scores.
+
+Current statuses include 11,393 `unresolved`, 1,655 `registry_matched`,
+85 `ambiguous`, and 5,850 `allocation_not_site` observations. The location
+review queue contains 23,736 observations. The allocation count includes
+operations-scope allocation rows as well as the 5,044 outside-scope GAS/S2O
+observations; `allocation_not_site` and `not_compared` describe different
+properties.
+
+In the earlier comparison with the original bounded-rule corpus, the expanded
+hierarchy parser changed assigned PSGC codes for 4,847 observations and status
+for 2,422. Those measurements belong to that historical comparison. Their
 scale makes a stratified review essential before labels such as low, medium, or
 high are reintroduced. The v2 → v3 rebuild reported its exact deltas in the
 sections below; prior rules remain reproducible from git history.
@@ -264,7 +353,7 @@ HUC's surrounding region rather than an administrative parent.
 
 ## What changed in v5: bridge registry evidence
 
-The retained [DPWH bridge inventory](../bridge_inventory/README.md) archive
+The retained [DPWH bridge inventory](../../bridge_inventory/README.md) archive
 matches budget observations to existing bridges by exact `BRIDGE_ID` and
 derives current-PSGC chains from 2023 barangay polygon hits (roadmap item
 3: independent registry evidence with stable identifiers). The master list
@@ -417,19 +506,61 @@ Iloilo, all HUCs) resolve identically through existing aliases. The v6.1
 follow-up trimmed conflicts to 150 and ambiguous to 176 while attaching
 barangays the title explicitly names under their city.
 
+## Processing-release migration (2026-10-26)
+
+The master builder and browser now reuse the pregenerated comparison/source
+release described above. The location-resolution rules and weights remain
+`location_evidence_v6.2`; the input cleanup is tracked separately as
+`readable_title_v1`. The current release changes 270 DPWH NEP PDF display/matcher
+titles by joining split `ñ` sequences while preserving their original titles.
+
+Compared with the retained pre-migration master JSONL at commit `85be6d3`,
+source IDs, original titles, dataset membership and PHP amounts are unchanged.
+All location-result differences are within `dpwh_nep_pdf`: 109 observations
+change assigned-code sets, 112 change score, and 82 change status. These counts
+overlap and must not be added. The status transitions are:
+
+| Before | After | Observations |
+|---|---|---:|
+| `unresolved` | `name_matched` | 48 |
+| `province_only` | `name_matched` | 24 |
+| `name_matched` | `multiple_locations` | 10 |
+
+Those are changes in provisional evidence interpretation after readable input
+cleanup, not human verification of sites. Totals and comparison membership
+remain governed by their independent source controls and upstream matches.
+Historical version-change counts above describe their named releases;
+the dated current-corpus section describes the latest retained build.
+
 ## What we are doing now
 
+- Consume the validated readable processing observations and preserve their
+  source identity, clean/original titles, group/stage links and annotations.
 - Preserve every candidate, selected code, evidence item, review flag, and score
   factor in the full JSONL output.
 - Export the raw score and method in the retained compressed CSV; the viewer
   build also writes a plain CSV locally for spreadsheet use.
 - Publish exact per-dataset and global score distributions in the audit/report.
 - Keep viewer filtering numeric, without undocumented score bands.
+- Keep group browsing separate from per-observation location evidence and
+  retain the outside-comparison GAS/S2O view.
 - Carry the verified legislative district on every record with an assigned
   municipality-level location (lookup only: unscored, never new evidence).
 - Maintain regression cases for hierarchy ambiguity, HUC ancestry, explicit and
   unmarked barangays, compact locality components, bridge registry behavior,
   and the three reported titles.
+
+With the four workbench inputs generated, rebuild the complete consumer chain
+from the repository root with:
+
+```sh
+npm run build:master-list --prefix analysis/web
+```
+
+The webapp's normal `predev`/`prebuild` regenerates the processing release;
+the command above also rebuilds master enrichment and the embedded viewer.
+See [PROCESSING_DATASET.md](PROCESSING_DATASET.md#generate-and-verify) for
+individual commands, freshness checks and upstream generation order.
 
 ## What we plan to do
 
@@ -454,7 +585,7 @@ release. Add road, bridge, irrigation, and facility registries where stable
 identifiers exist. Each source should emit a separate factor so agreement and
 conflict remain auditable.
 
-Bridge registry evidence is **live as of v5/v5.1**: exact `BRIDGE_ID`
+Bridge registry evidence has been **included since v5/v5.1**: exact `BRIDGE_ID`
 matches score as independent factors, unresolved titles adopt the single
 registry chain as `registry_matched`, and the retained
 [bridge inventory](../../bridge_inventory/README.md) derives legislative
@@ -482,6 +613,28 @@ and rule combination. Possible outputs include calibrated probabilities,
 percentile ranks, or operational review tiers. Keep the raw score alongside any
 normalized value so the transformation remains reproducible.
 
+**Applied-suggestions layer (live, derived).** Decisive, conflict-free
+suggestions are applied in a *separate, hash-pinned dataset*
+(`data/applied_suggestions.jsonl.gz`, method `applied_suggestion_v1`,
+built by `scripts/build_applied_suggestions.py` with the same
+`--check` discipline). The master ledger is never mutated; each applied
+row records the full promoted suggestion, the gate decision, and its own
+score ledger (`base:applied_suggestion` +4 mirroring `registry_matched`),
+so any application is reversible by deleting its row. The gate:
+support_score ≥ 9, no `named_province_conflict` / `source_region_conflict`
+/ `office_province_conflict`, a margin ≥ 3 over the second suggestion (or
+sole), the chain's parent town genuinely named in the title (a town
+homonym riding a province-name pool — Batangas City via the province
+Batangas — never applies), and the application must refine or fill the
+master assignment, never rival it. First build: 82 of 579
+suggestion-bearing records applied (180 below score, 247 margin, 22
+conflicting, 30 town-not-in-title, 18 rival blocked); every application
+is a barangay refining a master municipality/city assignment or filling
+an ambiguous record. Applied rows stay `provisional_applied_suggestion`
+and remain review candidates — this is pre-review automation of the
+*strongest* suggestion class only, not a substitute for the stratified
+benchmark above.
+
 ### 5. Improve names conservatively
 
 Add reviewed historical spellings, OCR variants, and aliases. Avoid unrestricted
@@ -491,9 +644,15 @@ boundary effective dates.
 
 ## Change control
 
-Any scoring or parsing revision should receive a new method identifier, document
-changed factors, rebuild all derived outputs, report code/status/score changes,
-and run source-total, PSGC ancestry, export, and browser checks. Published raw
+Changes to location-resolution logic or scoring weights require a new location
+method identifier and documented rule changes. Readable preprocessing is
+versioned separately (`title_clean_method`); the current migration uses
+`readable_title_v1` while retaining the `location_evidence_v6.2` rules.
+Changes to either layer require rebuilding processing → master → viewer as
+applicable, reporting input/code/status/score changes, and running source-total,
+PSGC ancestry, export and browser checks. Preserve original titles, cleanup
+rules, exact input hashes and score factors so a score change can be traced
+to either changed input text or changed location rules. Published raw
 distributions and prior rules should remain reproducible.
 
 ## Known limits
