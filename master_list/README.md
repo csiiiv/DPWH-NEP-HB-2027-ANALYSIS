@@ -21,7 +21,53 @@ Documentation is split by purpose: [processing data and browser contract](docs/P
 [scoring factors and weights](docs/SCORING_RULES.md), and
 [location methodology, current results and roadmap](docs/LOCATION_CONFIDENCE_AND_ROADMAP.md).
 Readable cleanup is versioned as `readable_title_v1`; location evidence still
-uses `location_evidence_v6.2`.
+uses `location_evidence_v6.5`.
+
+The [location interpretation layer](docs/LOCATION_INTERPRETATIONS.md) adds
+alternative title/name-role and parent-chain readings. Open **Location
+interpretations** on a source row to compare title, province, region,
+heading, office, registry and spatial support. Its filter selects additional
+candidates or contextual conflicts. All candidate chains remain in the full
+`data/location_interpretations.jsonl.gz` export; the browser previews eight
+per observation. Existing assignments and additive scores remain separately
+available.
+
+[Candidate support scoring](docs/CONTEXT_SCORING.md) now adds experimental
+text, spatial, context and registry components, plus trial proposals with
+explicit blockers. **Master score** and **Candidate support** remain separate.
+Use **Ready for trial proposal** to inspect eligible suggestions; proposals
+are not applied to master assignments. GPS proposals describe the observed
+points rather than the complete project extent.
+
+Candidate cards also expose **Evidence quality, scope and hierarchy**:
+coordinate repairs/review flags, reference limitations, point roles and
+coverage, and evidence at each PSGC level. **Location alternatives** separates
+competing candidates from multiple observed/selected places. These qualitative
+assessments add no points. Use the interpretation filter to find evidence
+requiring review, partial scope or competing candidates. CSV and full record
+downloads retain the same assessments.
+
+**DEO / implementing office** details now retain original labels and aliases,
+with province/city name associations that can support title-derived review
+candidates even without coordinates. They do not establish office service-area
+boundaries or create project sites. The office-review filter exposes unresolved,
+ambiguous and conflicting context. Legislative districts remain outside this
+candidate-generation and scoring step.
+
+The separate [cleaned observation release](docs/CLEANED_DATASET.md) now adopts
+eligible trial candidates provisionally and preserves original master evidence
+in a companion file. It adds compact clarification questions against the
+[shared catalog](reference/review_catalog.json), targeting useful city/municipality
+identification. All observation IDs, source amounts and comparison links remain
+separate. Build with `python3 master_list/scripts/build_cleaned_dataset.py` or
+`npm run build:cleaned-data --prefix analysis/web`; see its generated
+[coverage report](data/cleaned/REPORT.md). The [review contract](docs/REVIEW_DATA_CONTRACT.md)
+keeps interpretation, verification and question status distinct. The viewer's
+**Cleaned data** tab now shows this release; human review events remain pending.
+Open `/master_list/#cleaned` for selected provisional locations, per-location
+support and clarification questions. Filter by location status, selection
+decision or question type, and open **View data** for the full cleaned record
+and referenced evidence. **Source data** retains the original views and scores.
 
 Each row is a **source observation**, not a certified unique physical project.
 The same project can occur in the NEP PDF, Transparency API, and House readings.
@@ -85,6 +131,7 @@ Then open `http://127.0.0.1:8000/master_list/`.
 | [projects.csv.gz](data/projects.csv.gz) | Spreadsheet export with one row per source observation, integer PHP and string PSGC codes. Multiple values use `\|`. Decompress before opening in a spreadsheet; import code columns as text. |
 | [location_review.csv.gz](data/location_review.csv.gz) | Province-only, ambiguous, multiple-location, unresolved and flagged matches. |
 | [applied_suggestions.jsonl.gz](data/applied_suggestions.jsonl.gz) | Derived layer applying decisive, conflict-free review suggestions (gate in `applied_suggestions_audit.json`). The master ledger is never mutated; consumers load this file independently. |
+| [coordinate_psgc.jsonl.gz](data/coordinate_psgc.jsonl.gz) | Derived layer resolving each record's GPS points through PSGC barangay polygons into barangay-level chains, bridged to current codes (`coordinate_psgc_audit.json`). Evidence for review, never an assignment. |
 | [audit.json](data/audit.json) | Input/output hashes, dataset totals, coverage, source discrepancies and matching examples. |
 | [REPORT.md](data/REPORT.md) | Readable build results. |
 | [project_list.csv.gz](data/project_list.csv.gz) | Plain table export including category and canonical PDF file/page references; deterministic gzip. The build also writes an untracked local `project_list.csv` plain copy for direct spreadsheet use. |
@@ -155,7 +202,7 @@ registry chain, or an allocation without a site assertion. It is not human
 certification; inspect status, flags and score factors together.
 
 `location.score` is an uncapped integer produced by the versioned
-`location_evidence_v6.2` rules. It is the sum of documented evidence and penalty
+`location_evidence_v6.5` rules. It is the sum of documented evidence and penalty
 factors, not a probability or normalized confidence value. Resolution depth,
 explicit barangay syntax, valid parent chains, compact locality components, and
 agreement with source headings or regions add points. Ambiguity, unmatched
@@ -165,6 +212,25 @@ negative. Each record retains the exact `score_factors` used to reach its total.
 No quality thresholds or score bands are asserted yet. The audit and report
 publish the observed raw-score distribution so a reviewed sample can later
 support normalization, calibration, and operational thresholds.
+
+Missing commas in complete catalog-supported locality chains are read without
+editing source titles. The browser’s **Suggested hierarchies for review** also
+consumes the [interpretation profiles](docs/LOCATION_INTERPRETATIONS.md#connected-hierarchy-suggestions):
+title, parent, province, region, headings, office, registry and spatial
+assessments stay separate. The experimental candidate support total retains
+its dimension vector and explicit trial blockers. Unmarked review hypotheses
+cannot be auto-applied.
+
+Each observation's **Record details → View data** button opens its full
+retained record, source office/region and extraction, complete location
+interpretations, coordinate/applied layers and comparison context. The modal
+also exports a per-record JSON bundle. Detail packets load on demand from
+`data/record_details/`; keep that folder for offline modal use. The list itself
+continues to open as a standalone HTML file. The manifest pins every packet.
+
+Explicit barangay names can now receive province/office-supported review
+suggestions even when another locality phrase is unreadable. No municipality
+is manufactured from unmatched text; these suggestions cannot auto-apply.
 
 The complete rationale, work log, current state, and next steps are in
 [Location evidence scoring and roadmap](docs/LOCATION_CONFIDENCE_AND_ROADMAP.md).
@@ -198,14 +264,19 @@ Run from the repository root; Python's standard library is sufficient:
 
 ```sh
 python3 master_list/scripts/build_processing_dataset.py
+python3 master_list/scripts/build_coordinate_psgc.py
 python3 master_list/scripts/build_master_list.py
 python3 master_list/scripts/build_master_list.py --check
+python3 master_list/scripts/build_applied_suggestions.py
+python3 master_list/scripts/build_location_interpretations.py
+python3 master_list/scripts/build_cleaned_dataset.py
 python3 master_list/scripts/build_viewer.py
 python3 master_list/scripts/build_viewer.py --check
 python3 -m unittest discover -s master_list/tests -v
 ```
 
-Rebuild the viewer after regenerating the master list. Optional browser checks
+Rebuild the downstream interpretation and cleaned layers before the viewer
+after regenerating the master list. Optional browser checks
 use the repo's existing Playwright/Chrome setup:
 
 ```sh

@@ -10,34 +10,71 @@
     *{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button,a,input,select{outline-offset:3px}a{color:#185a9c;text-decoration-thickness:1px;text-underline-offset:3px}button{cursor:pointer}button:disabled{cursor:default;opacity:.45}
     header{padding:28px 32px 20px;background:#fff;border-bottom:1px solid #dde3eb}.eyebrow{color:#577087;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}h1{margin:7px 0 8px;font-size:28px;letter-spacing:-.035em}header p{margin:0;color:#5c6d7c;max-width:900px;line-height:1.6}.header-top{display:flex;align-items:start;justify-content:space-between;gap:20px}.download{border:1px solid #c8d5e3;border-radius:7px;padding:9px 12px;white-space:nowrap;background:#fff;color:#185a9c;text-decoration:none}
     main{padding:22px 32px 32px}.filters{display:grid;grid-template-columns:minmax(240px,2fr) minmax(180px,1.1fr) minmax(180px,1.2fr) minmax(150px,.8fr);gap:14px;align-items:end;margin-bottom:16px}label{display:block;font-size:12px;font-weight:650;color:#526477}input[type=search],input[type=number],select{margin-top:6px;width:100%;height:40px;border:1px solid #cbd5df;border-radius:6px;background:#fff;padding:0 10px;color:#202c38}input::placeholder{color:#82909d}.options{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-bottom:17px}.check{font-size:13px;font-weight:400;display:flex;gap:7px;align-items:center}.check input{accent-color:#185a9c}.reset{border:0;background:transparent;color:#185a9c;padding:5px 0}.help{font-size:12px;color:#6a7785;line-height:1.55;margin-left:auto}.results-bar{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:11px;min-height:28px}#summary{font-weight:650}#total{font-size:12px;color:#617184;text-align:right}
-    .table-wrap{border:1px solid #d8e0e8;border-radius:8px;background:#fff;overflow:auto;max-height:calc(100vh - 340px);min-height:240px}table{width:100%;min-width:1200px;border-collapse:separate;border-spacing:0;table-layout:fixed}thead{position:sticky;top:0;z-index:1;background:#edf2f7}th{padding:11px 13px;text-align:left;border-bottom:1px solid #d8e0e8;font-size:12px;color:#45586c;font-weight:650}th button{padding:0;color:inherit;background:none;border:0;text-align:inherit;font-weight:inherit;width:100%}td{padding:14px 13px;border-bottom:1px solid #e8edf2;vertical-align:top;font-size:13px;line-height:1.5;overflow-wrap:anywhere}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#f9fbfd}.title-cell{font-weight:550}.meta{display:block;font-size:11px;font-weight:400;color:#718091;margin-top:6px}.badge{display:inline-block;font-size:10px;letter-spacing:.02em;background:#eef2f7;border:1px solid #dbe2eb;border-radius:4px;padding:1px 5px;margin-top:6px;color:#657486}.amount{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600}.location{margin-bottom:10px}.location:last-of-type{margin-bottom:0}.place-name{font-weight:550}.code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;color:#52677c}.parents{display:block;color:#6e7d8d;font-size:11px;line-height:1.45;margin:3px 0}.status{font-size:11px;color:#5f7081;margin-top:7px}.review{color:#956215}.suggestions{margin-top:10px;padding:8px;border:1px solid #e2c98f;border-radius:5px;background:#fffaf0;font-size:11px}.suggestion-heading{font-weight:700;color:#815d18;margin-bottom:5px}.suggestion{padding:7px 0;border-top:1px solid #eadbb9}.suggestion:first-of-type{border-top:0}.suggestion-score{display:block;color:#815d18;margin-top:3px}.suggestion details{margin-top:4px;color:#6d6044}.candidates{font-size:11px;color:#52677c;margin-top:8px}.candidates .candidate{padding:7px 0;border-top:1px solid #e5eaf0}.candidate .place-name{font-size:11px}.evidence{text-align:center;font-variant-numeric:tabular-nums}.score{display:inline-block;min-width:48px;border-radius:999px;padding:4px 8px;font-weight:700;background:#edf1f5;color:#536474}.score.positive{background:#e8f0f8;color:#285b85}.score.negative{background:#fae8df;color:#8a4932}.evidence details{font-size:10px;color:#667789;margin-top:7px;text-align:left}.evidence details div{margin-top:3px}.page{white-space:nowrap}.empty{padding:42px 20px;text-align:center;color:#697b8e;font-weight:400}.pagination{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-top:15px}.page-buttons{display:flex;gap:8px;align-items:center}button.nav{background:#fff;border:1px solid #ccd7e2;border-radius:5px;padding:7px 12px;color:#344d65}#page-info{font-size:12px;color:#627588;margin:0 8px}.page-size{display:flex;gap:8px;align-items:center;white-space:nowrap}.page-size select{width:auto;height:33px;margin:0}.footer{font-size:12px;color:#718091;margin-top:17px;line-height:1.6}#error{border:1px solid #ebc4ba;background:#fff3ef;padding:18px;line-height:1.6;border-radius:6px;margin-bottom:20px}noscript{display:block;padding:25px}
+    .table-wrap{border:1px solid #d8e0e8;border-radius:8px;background:#fff;overflow:auto;max-height:calc(100vh - 340px);min-height:240px}table{width:100%;min-width:1200px;border-collapse:separate;border-spacing:0;table-layout:fixed}thead{position:sticky;top:0;z-index:1;background:#edf2f7}th{padding:11px 13px;text-align:left;border-bottom:1px solid #d8e0e8;font-size:12px;color:#45586c;font-weight:650}th button{padding:0;color:inherit;background:none;border:0;text-align:inherit;font-weight:inherit;width:100%}td{padding:14px 13px;border-bottom:1px solid #e8edf2;vertical-align:top;font-size:13px;line-height:1.5;overflow-wrap:anywhere}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#f9fbfd}.title-cell{font-weight:550}.meta{display:block;font-size:11px;font-weight:400;color:#718091;margin-top:6px}.badge{display:inline-block;font-size:10px;letter-spacing:.02em;background:#eef2f7;border:1px solid #dbe2eb;border-radius:4px;padding:1px 5px;margin-top:6px;color:#657486}.amount{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600}.location{margin-bottom:10px}.location:last-of-type{margin-bottom:0}.place-name{font-weight:550}.code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;color:#52677c}.parents{display:block;color:#6e7d8d;font-size:11px;line-height:1.45;margin:3px 0}.status{font-size:11px;color:#5f7081;margin-top:7px}.review{color:#956215}.suggestions{margin-top:10px;padding:8px;border:1px solid #e2c98f;border-radius:5px;background:#fffaf0;font-size:11px}.suggestion-heading{font-weight:700;color:#815d18;margin-bottom:5px}.suggestion{padding:7px 0;border-top:1px solid #eadbb9}.suggestion:first-of-type{border-top:0}.suggestion-score{display:block;color:#815d18;margin-top:3px}.suggestion details{margin-top:4px;color:#6d6044}.applied-layer{margin-top:10px;padding:8px;border:1px solid #a9d3b0;border-radius:5px;background:#f3faf4;font-size:11px}.applied-heading{font-weight:700;color:#2e6b3e;margin-bottom:5px}.applied-layer .suggestion-score{color:#2e6b3e}.applied-layer .suggestion{border-top:1px solid #cfe6d3}.applied-layer details{color:#4c6b52}.gps-layer{margin-top:10px;padding:8px;border:1px solid #b7c9e0;border-radius:5px;background:#f4f8fd;font-size:11px}.gps-heading{font-weight:700;color:#2b5486;margin-bottom:5px}.gps-layer .suggestion-score{color:#2b5486}.gps-layer .suggestion{border-top:1px solid #d5e0ee}.gps-layer details{color:#4a6180}.candidates{font-size:11px;color:#52677c;margin-top:8px}.candidates .candidate{padding:7px 0;border-top:1px solid #e5eaf0}.candidate .place-name{font-size:11px}.evidence{text-align:center;font-variant-numeric:tabular-nums}.score{display:inline-block;min-width:48px;border-radius:999px;padding:4px 8px;font-weight:700;background:#edf1f5;color:#536474}.score.positive{background:#e8f0f8;color:#285b85}.score.negative{background:#fae8df;color:#8a4932}.score.applied{background:#e6f2e8;color:#2e6b3e;margin-left:6px}.score.applied.carry{background:#eef2f0;color:#5c7263}th button.applied-sort{color:#2e6b3e;font-size:11px;margin-top:3px}tr.applied-null td{background:#fafbf6}.evidence details{font-size:10px;color:#667789;margin-top:7px;text-align:left}.evidence details div{margin-top:3px}.page{white-space:nowrap}.empty{padding:42px 20px;text-align:center;color:#697b8e;font-weight:400}.pagination{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-top:15px}.page-buttons{display:flex;gap:8px;align-items:center}button.nav{background:#fff;border:1px solid #ccd7e2;border-radius:5px;padding:7px 12px;color:#344d65}#page-info{font-size:12px;color:#627588;margin:0 8px}.page-size{display:flex;gap:8px;align-items:center;white-space:nowrap}.page-size select{width:auto;height:33px;margin:0}.footer{font-size:12px;color:#718091;margin-top:17px;line-height:1.6}#error{border:1px solid #ebc4ba;background:#fff3ef;padding:18px;line-height:1.6;border-radius:6px;margin-bottom:20px}noscript{display:block;padding:25px}
     @media(max-width:1050px){.filters{grid-template-columns:1fr 1fr}.table-wrap{max-height:65vh}.help{margin-left:0}}@media(max-width:600px){header,main{padding:20px 16px}.header-top{display:block}.download{display:inline-block;margin-top:15px}.filters{grid-template-columns:1fr}.pagination{align-items:start;flex-direction:column}.results-bar{align-items:start;flex-direction:column;gap:5px}#total{text-align:left}h1{font-size:24px}}
+  </style>
+  <style>
+    .location-interpretations{margin-top:12px;padding:9px;border:1px solid #cbd8e5;border-radius:5px;background:#f8fbff;font-size:11px}.location-interpretations>summary{cursor:pointer;color:#185a9c;font-weight:650}.location-interpretations p{font-weight:400}.interpretation-candidate{padding:10px 0;border-top:1px solid #d9e2ec}.interpretation-candidate:first-of-type{border-top:0}.context-result{display:block;font-weight:400;margin:3px 0;color:#526477}.context-result.conflicts,.context-result.mixed{color:#9a3e25}.profile-filters{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:16px}.profile-filters label{min-width:240px}
+  </style>
+  <style>
+    .view-options{display:flex;gap:18px;align-items:end;flex-wrap:wrap;margin-bottom:18px}.view-options label{min-width:200px}.scope-note{font-size:12px;line-height:1.6;color:#526477;margin:0 0 15px;max-width:1100px}.expand{display:block;margin-top:12px;padding:6px 9px;border:1px solid #bdcddd;border-radius:5px;background:#fff;color:#185a9c;text-align:left}.group-value{margin-bottom:8px}.group-value small{display:block;font-size:10px;color:#617184;font-weight:400;white-space:normal}.expanded>td{background:#f5f8fc;padding:16px}.source-observations{border:1px solid #ced9e5;table-layout:fixed}.source-observations thead{position:static}.source-observations td{background:white}.source-observations .meta{font-size:10px}.observation-details{font-size:11px;font-weight:400;margin-top:10px}.observation-details summary{cursor:pointer;color:#185a9c}.observation-details pre,.comparison-details pre{max-height:280px;overflow:auto;white-space:pre-wrap;font-size:11px;background:#fff;padding:12px;border:1px solid #d8e0e8}.comparison-details{margin-top:12px;font-size:12px}.comparison-details summary{cursor:pointer}.filter-note{font-size:12px;color:#526477;margin:0 0 12px}.source-observations tr.matches td:first-child{border-left:3px solid #185a9c}#total{max-width:430px}th button:disabled{opacity:.7}
+
+    .record-button{padding:7px 10px;border:1px solid #bdcddd;border-radius:5px;background:#fff;color:#185a9c;cursor:pointer;font:inherit}.record-dialog{width:min(1000px,calc(100vw - 32px));max-height:calc(100vh - 40px);box-sizing:border-box;border:1px solid #bdcddd;border-radius:10px;padding:0;color:#243746}.record-dialog::backdrop{background:rgb(20 35 50 / .5)}.record-dialog-header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 22px;border-bottom:1px solid #d8e0e8;position:sticky;top:0;background:#fff;z-index:1}.record-dialog-header h2{font-size:17px;margin:0}.record-dialog-actions{display:flex;align-items:center;gap:14px}.record-dialog-body{padding:20px 22px;overflow-wrap:anywhere}.record-summary{display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr);gap:10px 18px;font-size:13px}.record-summary dt{font-weight:650;color:#526477}.record-summary dd{margin:0}.record-section{margin:14px 0;border:1px solid #d8e0e8;border-radius:6px;padding:12px}.record-section summary{cursor:pointer;font-size:13px;font-weight:600;color:#185a9c}.record-section pre{max-height:420px;overflow:auto;white-space:pre-wrap;font-size:12px;line-height:1.5;background:#f7f9fc;padding:12px;border-radius:4px}.record-error{color:#983d25}@media(max-width:600px){.record-dialog-header{align-items:flex-start;flex-direction:column}.record-summary{grid-template-columns:1fr;gap:5px}.record-summary dd{margin-bottom:10px}}
+
+    .qualitative-details,.ambiguity-details{font-size:11px;font-weight:400;margin-top:8px;text-align:left}.qualitative-details summary,.ambiguity-details summary{cursor:pointer}.qualitative-details>p,.ambiguity-details>p{line-height:1.5}.resolution-level{border-top:1px solid #d8d0e4;padding:8px 0}.resolution-level .place-name{display:block}.resolution-level p{margin:4px 0}.support-candidate{margin-top:5px;overflow-wrap:anywhere}
+    .candidate-support{margin-top:10px;padding:7px 4px;border:1px solid #c9bee0;border-radius:6px;background:#f4f0fa;color:#604486;font-size:10px}.candidate-support>span{display:block}.candidate-support strong{display:block;font-size:17px;margin:2px}.candidate-dimensions{font-size:9px;font-weight:400;line-height:1.5}.candidate-score-details{font-size:11px;margin-top:7px;text-align:left;color:#604486}.candidate-score-details summary{cursor:pointer}.candidate-score-details p{font-weight:400}.trial-proposal{margin-top:12px;padding:9px;border:1px solid #c9bee0;border-radius:6px;background:#f4f0fa;font-size:11px}.trial-heading{font-weight:700;color:#604486;margin-bottom:6px}.trial-proposal p{font-weight:400}
+  </style>
+  <style>
+    [hidden]{display:none!important}.data-tabs{display:flex;gap:6px;border-bottom:1px solid #ccd7e2;margin-bottom:20px}.data-tabs button{padding:12px 18px;background:transparent;border:0;border-bottom:3px solid transparent;font:inherit;color:#526477;cursor:pointer}.data-tabs button[aria-selected=true]{color:#185a9c;border-bottom-color:#185a9c;font-weight:650}.data-tabs button:focus-visible{outline:2px solid #185a9c;outline-offset:2px}.cleaned-filters{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 18px}.cleaned-filters label{min-width:200px}.cleaned-selection{padding:10px;border:1px solid #b7cddd;border-radius:6px;background:#f5f9fc;margin-bottom:10px}.cleaned-selection .place-name{display:block}.clarification{padding:10px;border:1px solid #e0c993;background:#fffbf1;border-radius:6px;margin-top:10px;font-size:12px}.clarification strong{display:block;color:#815d18}.clarification p{margin:6px 0;font-weight:400}.clarification button{margin-top:5px}.cleaned-status{display:block;margin:8px 0;color:#526477;font-size:12px}.cleaned-support{border:1px solid #c9bee0;border-radius:6px;padding:9px;margin-bottom:8px;background:#f6f2fb;color:#604486}.cleaned-support strong{display:block;font-size:18px}.cleaned-support .candidate-dimensions{display:block;font-size:10px}#cleaned-downloads{font-size:12px;margin-bottom:18px;line-height:1.8}#cleaned-downloads a{margin-right:16px}
   </style>
 </head>
 <body>
   <header>
-    <div class="header-top"><div><div class="eyebrow">FY2027 · Budget records</div><h1>Project master list</h1><p>Project titles, amounts, provisional PSGC locations, and the source pages behind them.</p></div><a class="download" href="data/project_list.csv.gz" download>Download full CSV (gzip) ↗</a></div>
+    <div class="header-top"><div><div class="eyebrow">FY2027 · Budget records</div><h1>Project master list</h1><p>Browse source observations and cleaned interpretations, with the evidence behind each location.</p></div><a id="main-download" class="download" href="data/project_list.csv.gz" download>Download observations CSV (gzip) ↗</a></div>
   </header>
   <main>
     <div id="error" hidden role="alert"></div>
+    <div class="data-tabs" role="tablist" aria-label="Data layer">
+      <button id="tab-source" type="button" role="tab" aria-selected="true" aria-controls="view-panel" data-tab="source" disabled>Source data</button>
+      <button id="tab-cleaned" type="button" role="tab" aria-selected="false" aria-controls="view-panel" tabindex="-1" data-tab="cleaned" disabled>Cleaned data</button>
+    </div>
+    <div id="view-panel" role="tabpanel" aria-labelledby="tab-source">
+    <div class="view-options">
+      <label for="view">Browse<select id="view" disabled><option value="groups">Comparison groups</option><option value="observations">All source observations</option><option value="outside">Outside comparison · GAS/S2O</option><option value="cleaned">Cleaned observations</option></select></label>
+      <label for="partition">Comparison membership<select id="partition" disabled><option value="">All memberships</option><option value="matched">Matched NEP–House</option><option value="house_only">House only</option><option value="nep_only">NEP only</option><option value="api_only">API only</option><option value="not_compared">Not compared</option></select></label>
+    </div>
+    <p class="scope-note" id="scope-note"></p>
+    <p id="cleaned-downloads" hidden><a href="data/cleaned/observations.jsonl.gz" download>Cleaned JSONL (gzip)</a><a href="data/cleaned/evidence.jsonl.gz" download>Full evidence (gzip)</a><a href="data/cleaned/review_catalog.json" download>Flag and status catalog</a><a href="data/cleaned/REPORT.md">Release report</a></p>
     <div class="filters">
-      <label for="search">Search the list<input id="search" type="search" placeholder="Title, category, place, PSGC code, or PDF…" autocomplete="off" disabled></label>
+      <label for="search">Search the list<input id="search" type="search" placeholder="Title, office, region, place, PSGC code, or PDF…" autocomplete="off" disabled></label>
       <label for="dataset">Source<select id="dataset" disabled><option value="">All sources (overlap)</option></select></label>
       <label for="category">Category<select id="category" disabled><option value="">All categories</option></select></label>
-      <label for="score">Minimum evidence score<input id="score" type="number" step="1" placeholder="Any score" disabled></label>
+      <label for="score">Minimum master score<input id="score" type="number" step="1" placeholder="Any score" disabled></label>
     </div>
-    <div class="options"><label class="check"><input id="allocations" type="checkbox" disabled>Include allocation rows</label><label class="check"><input id="review" type="checkbox" disabled>Needs location review</label><button id="reset" class="reset" disabled>Reset filters</button><span class="help">Sources and readings overlap. Location matches are provisional.</span></div>
+    <div class="options"><label class="check"><input id="allocations" type="checkbox" checked disabled>Include allocation rows</label><label class="check"><input id="review" type="checkbox" disabled>Needs location review</label><label class="check"><input id="applied" type="checkbox" disabled>Applied suggestion layer</label><label class="check"><input id="gpsfilter" type="checkbox" disabled>GPS-derived PSGC</label><button id="reset" class="reset" disabled>Reset filters</button><span class="help">Matches retain upstream review status. Location evidence belongs to each source observation. The applied and GPS layers are derived review support, never an assignment.</span></div>
+    <div class="profile-filters"><label for="interpretation-filter">Location interpretations<select id="interpretation-filter" disabled><option value="">All interpretations</option><option value="alternatives">Additional candidate locations</option><option value="conflict">Title / context or spatial conflict</option><option value="trial_ready">Ready for trial proposal</option><option value="quality_review">Evidence requires review</option><option value="partial_scope">Partial point coverage / scope</option><option value="competing">Competing location candidates</option><option value="office_review">DEO / office context requires review</option><option value="unresolved">No candidate reading</option><option value="not_applicable">No project-site assertion</option></select></label><span class="help">Compare title readings and contextual support within each observation.</span></div>
+    <div id="cleaned-filters" class="cleaned-filters" hidden>
+      <label for="cleaned-status">Location status<select id="cleaned-status" disabled><option value="">All location statuses</option></select></label>
+      <label for="cleaned-decision">Location selection<select id="cleaned-decision" disabled><option value="">All selection decisions</option></select></label>
+      <label for="cleaned-flag">Clarification question<select id="cleaned-flag" disabled><option value="">All questions and unflagged records</option><option value="any">Has clarification questions</option><option value="none">No questions generated</option></select></label>
+      <label for="cleaned-score">Minimum selected support<input id="cleaned-score" type="number" step="0.5" placeholder="Any support" disabled></label>
+    </div>
     <div class="results-bar"><span id="summary" role="status" aria-live="polite">Loading the complete list…</span><span id="total"></span></div>
     <div class="table-wrap" tabindex="0" aria-label="Scrollable project table">
-      <table id="projects"><colgroup><col style="width:24%"><col style="width:15%"><col style="width:11%"><col style="width:21%"><col style="width:9%"><col style="width:12%"><col style="width:8%"></colgroup>
-        <thead><tr><th scope="col" data-sort="title" aria-sort="none"><button data-sort="title">Title ↕</button></th><th scope="col" data-sort="category" aria-sort="none"><button data-sort="category">Category ↕</button></th><th scope="col" data-sort="value" class="amount" aria-sort="none"><button data-sort="value">Value (PHP) ↕</button></th><th scope="col">PSGC locations</th><th scope="col" data-sort="score" aria-sort="none"><button data-sort="score">Evidence score ↕</button></th><th scope="col">Reference PDF</th><th scope="col">Page</th></tr></thead>
-        <tbody id="rows"><tr><td colspan="7" class="empty">Preparing records…</td></tr></tbody>
+      <table id="projects"><colgroup><col style="width:22%"><col style="width:13%"><col style="width:11%"><col style="width:19%"><col style="width:9%"><col style="width:10%"><col style="width:8%"><col style="width:8%"></colgroup>
+        <thead><tr><th scope="col" data-sort="title" aria-sort="none"><button data-sort="title">Title ↕</button></th><th scope="col" data-sort="category" aria-sort="none"><button data-sort="category">Category ↕</button></th><th scope="col" data-sort="value" class="amount" aria-sort="none"><button data-sort="value">Value (PHP) ↕</button></th><th scope="col">PSGC locations</th><th scope="col" data-sort="score" aria-sort="none"><button data-sort="score">Master score ↕</button><button data-sort="applied" class="applied-sort">Applied layer ↕</button><button data-sort="support" class="applied-sort">Candidate support ↕</button></th><th scope="col">Reference PDF</th><th scope="col">Page</th><th scope="col">Record details</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="8" class="empty">Preparing records…</td></tr></tbody>
       </table>
     </div>
     <div class="pagination"><div class="page-buttons"><button class="nav" id="previous" disabled>← Previous</button><span id="page-info">Page —</span><button class="nav" id="next" disabled>Next →</button></div><label class="page-size">Rows per page<select id="page-size" disabled><option>25</option><option selected>50</option><option>100</option><option>250</option></select></label></div>
     <p class="footer">Page links use the PDF file’s page number; a printed page is shown separately when supplied. API listing rows have no asserted PDF reference. PSGC codes use the retained provisional catalog. <a href="README.md">Methods and data guide</a></p>
+    </div>
   </main>
   <noscript>Enable JavaScript to display the table, or open <a href="data/project_list.csv.gz">the full CSV (gzip)</a>.</noscript>
+  <dialog id="record-dialog" class="record-dialog" aria-labelledby="record-dialog-title">
+    <div class="record-dialog-header"><h2 id="record-dialog-title">Record details</h2><div class="record-dialog-actions"><a id="record-json-download" hidden>Download record JSON</a><button id="record-dialog-close" class="record-button" type="button" autofocus>Close</button></div></div>
+    <div id="record-dialog-body" class="record-dialog-body"></div>
+  </dialog>
   <script id="embedded-data" type="application/octet-stream">__MASTER_DATA_BASE64__</script>
   <script>
   'use strict';
@@ -45,77 +82,563 @@
   const money = new Intl.NumberFormat('en-PH', {maximumFractionDigits: 0});
   const number = new Intl.NumberFormat('en-PH');
   const labels = {name_matched:'Provisional name match',multiple_locations:'Multiple locations · review',province_only:'Province only · review',ambiguous:'Ambiguous · review',unresolved:'Unresolved',allocation_not_site:'Allocation without site'};
-  let records = [], filtered = [], datasets = {}, page = 1, sortKey = '', direction = 1, timer;
+  const stageLabels = {nep:'NEP',house:'House working copy',second:'House second reading',third:'House third reading',api:'NEP Transparency API'};
+  const partitions = {matched:'Matched NEP–House',house_only:'House only',nep_only:'NEP only',api_only:'API only',not_compared:'Not compared'};
+      let records = [], groups = [], filtered = [], matched = [], matchedIds = new Set(), datasets = {}, page = 1, sortKey = '', direction = 1, timer;
+  let byId = new Map(), byGroup = new Map(), appliedMeta = null, gpsMeta = null;
+  let reviewCatalog=null,cleanedMeta=null,sourceView='groups';
+  const decisionLabels={adopted_candidate:'Candidate selected provisionally',retained_master:'Original interpretation retained',review_required:'Clarification needed',unresolved:'No location selected',not_applicable:'No project-site selection'};
+  function cleanedMode(){return $('view').value==='cleaned';}
   function element(tag, text, className) { const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (className) node.className = className; return node; }
+  function decodeBase64(encoded) {
+    const binary=atob(encoded),bytes=new Uint8Array(binary.length);
+    for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+    return bytes;
+  }
+  function restoreAssessments(row) {
+    const scores=row.scoreAssessments;
+    if(!scores)return row;
+    const score=key=>{if(key==null)return null;if(!scores[key])throw new Error('Missing candidate assessment: '+key);return scores[key];};
+    row.contextScore.bestAssessment=score(row.contextScore.bestAssessment);
+    if(row.contextScore.proposal)row.contextScore.proposal.scoreAssessment=score(row.contextScore.proposal.scoreAssessment);
+    for(const suggestion of row.suggestions)suggestion.scoreAssessment=score(suggestion.scoreAssessment);
+    for(const candidate of row.interpretation.candidates)if(candidate.score_assessment)candidate.score_assessment=score(candidate.score_assessment);
+    for(const place of row.cleaned?.locations||[])place.scoreAssessment=score(place.scoreAssessment);
+    delete row.scoreAssessments;
+    return row;
+  }
   function fileLink(path, pageNumber) { const url = new URL('../' + path.split('/').map(encodeURIComponent).join('/'), location.href); if(pageNumber) url.hash = 'page=' + pageNumber; return url.href; }
   function sourceLink(text, path, pageNumber) {const link = element('a', text); link.href = fileLink(path,pageNumber); link.target='_blank'; link.rel='noopener'; return link;}
   function isProject(r) { return ['project','facility','fap_project'].includes(r.kind); }
+  const contextLabels={agrees:'agrees',conflicts:'conflicts',mixed:'mixed',not_assessed:'not assessed',no_province_parent:'no administrative province parent',asserted:'locality reading',reference_only:'reference mention',not_applicable:'not applicable',broad_region_only:'broad region only',possible_agreement:'possible agreement'};
+  function contextAssessment(block, c) {
+    for(const [key,label] of [['title','Title'],['named_parent','Named parent'],['printed_province','Printed province'],['region','Source region'],['headings','Locality headings'],['office_context','Office context (administrative)'],['registry','Registry']]) block.append(element('span',label+': '+(contextLabels[c[key]]||c[key]),'context-result '+c[key]));
+    for(const [level,x] of Object.entries(c.spatial)) block.append(element('span','Points / '+level.replaceAll('_',' ')+': '+(contextLabels[x.state]||x.state)+(x.compared?' · '+x.agree+'/'+x.compared+' comparable point occurrences agree':'')+(x.unassessed?' · '+x.unassessed+' unassessed':''),'context-result '+x.state));
+  }
+  function scoreDimensions(dimensions) {
+    return ['text','spatial','context','registry'].map(key=>key[0].toUpperCase()+key.slice(1)+' '+(dimensions[key]==null?'—':number.format(dimensions[key]))).join(' · ');
+  }
+  function assessmentLabel(value) { return (value||'not_assessed').replaceAll('_',' '); }
+  function levelLabel(value) { return ({region:'Region',province:'Province',municipality_city:'City / municipality',sub_municipality:'Submunicipality',barangay:'Barangay'})[value]||assessmentLabel(value); }
+  function officeDetails(office) {
+    const details=element('details',undefined,'office-context-details');
+    details.append(element('summary','DEO / implementing office: '+assessmentLabel(office.resolution)));
+    const labels=office.raw_labels||[...new Set(office.sources.map(s=>s.raw))];
+    const canonical=office.canonical_names||[...new Set(office.sources.flatMap(s=>s.canonical_names))];
+    details.append(element('p','Source labels: '+(labels.join(' · ')||'not supplied')));
+    if(canonical.length) details.append(element('p','Codebook names: '+canonical.join(' · ')));
+    details.append(element('p','Named geographic associations: '+(office.named_locations.map(p=>p.name+' ['+p.level+'] · '+p.code).join(' / ')||'No province or city identified')));
+    if(office.state)details.append(element('p','Candidate agreement: '+assessmentLabel(office.state)));
+    details.append(element('p','Administrative name associations. Office service-area boundaries are not assessed. Office context contributes at most one point; broad regional labels add no office points.'));
+    if(office.sources) for(const source of office.sources) details.append(element('p',source.field+': '+source.raw+' · '+assessmentLabel(source.codebook_match)+(source.cleanup_rules.length?' · '+source.cleanup_rules.map(assessmentLabel).join(' · '):'')));
+    if(office.sources) for(const source of office.sources) for(const alias of source.geographic_aliases) details.append(element('p','Geographic name alias: '+alias.source+' → '+alias.canonical));
+    if(office.warnings.length) details.append(element('p','Review: '+office.warnings.map(assessmentLabel).join(' · ')));
+    return details;
+  }
+  function qualitativeDetails(assessment) {
+    const details=element('details',undefined,'qualitative-details');
+    details.append(element('summary','Evidence quality, scope and hierarchy'));
+    const quality=assessment.evidence_quality,scope=assessment.scope_fit,extra=assessment.dimension_details;
+    details.append(element('p','Evidence quality: '+assessmentLabel(quality.state)));
+    details.append(element('p','Source reference: '+assessmentLabel(quality.source.locator)+'. Source and OCR accuracy: not assessed.'));
+    if(quality.title.cleanup_rules.length) details.append(element('p','Readable-title repairs: '+quality.title.cleanup_rules.map(assessmentLabel).join(' · ')));
+    const coords=quality.coordinates;
+    details.append(element('p','Coordinate extraction: '+assessmentLabel(coords.state)+' · source: '+assessmentLabel(coords.source)+'. Catalog mapping: '+coords.catalog_mapped_points+'/'+coords.point_count+' point occurrences.'));
+    if(coords.normalization_rules.length) details.append(element('p','Coordinate rules: '+coords.normalization_rules.map(assessmentLabel).join(' · ')));
+    if(coords.review_flags.length) details.append(element('p','Coordinate review: '+coords.review_flags.map(assessmentLabel).join(' · ')));
+    details.append(element('p','Coordinate reference freshness: '+assessmentLabel(coords.reference_freshness)+'. Positional accuracy: not assessed.'));
+    details.append(element('p','Image review recorded: '+(coords.image_review_recorded?'yes':'no')+'. Recorded review does not certify site accuracy.'));
+    details.append(element('p','Scope fit: '+assessmentLabel(scope.state)+' · '+assessmentLabel(scope.claim_scope)+'. Whole-project extent: not assessed.'));
+    details.append(element('p','Point occurrences: '+scope.point_count+' · unique coordinate pairs: '+scope.unique_point_count+'. Roles: '+(Object.entries(scope.point_roles).map(([k,v])=>k+' '+v).join(' · ')||'not supplied')));
+    details.append(element('p','Title-scope compatibility: '+assessmentLabel(scope.title_scope)));
+    for(const note of scope.notes) details.append(element('div',assessmentLabel(note)));
+    details.append(element('p','Text roles: '+extra.text.roles.map(assessmentLabel).join(' · ')));
+    details.append(element('p','Registry identity: '+assessmentLabel(extra.registry.link.identity)+'. Registry location: '+assessmentLabel(extra.registry.location_agreement)));
+    if(extra.registry.link.identifiers.length) details.append(element('p','Asset identifiers: '+extra.registry.link.identifiers.join(' · ')));
+    details.append(element('p','Registry reference freshness: '+assessmentLabel(extra.registry.link.reference_freshness)));
+    details.append(element('p','Context components: '+Object.entries(extra.context).map(([k,v])=>assessmentLabel(k)+': '+assessmentLabel(v)).join(' · ')));
+    details.append(officeDetails(extra.office));
+    const hierarchy=element('div',undefined,'resolution-levels');
+    for(const level of assessment.resolution) {
+      const block=element('div',undefined,'resolution-level');
+      block.append(element('span',levelLabel(level.level)+': '+(level.name||'—')+' · '+assessmentLabel(level.state),'place-name'));
+      if(level.code) {
+        block.append(element('span',level.code,'code'));
+        const p=level.spatial;
+        block.append(element('p','Text: '+assessmentLabel(level.text)+' · Points: '+assessmentLabel(p.state)+(p.compared?' ('+p.agree+'/'+p.compared+' comparable; '+p.unassessed+' unassessed)':'')+' · Registry: '+assessmentLabel(level.registry)));
+        block.append(element('p',Object.entries(level.context).map(([k,v])=>assessmentLabel(k)+': '+assessmentLabel(v)).join(' · ')));
+      }
+      hierarchy.append(block);
+    }
+    details.append(hierarchy,element('p','Catalog ancestry adds no points. Quality and scope assessments do not change the support total.'));
+    return details;
+  }
+  function ambiguityDetails(ambiguity) {
+    const details=element('details',undefined,'ambiguity-details');
+    details.append(element('summary','Location alternatives: '+assessmentLabel(ambiguity.state)));
+    for(const level of ambiguity.by_level) details.append(element('p',levelLabel(level.level)+': '+assessmentLabel(level.state)+' · '+level.codes.length+' candidate unit(s)'+(level.codes.length?' · '+level.codes.join(' / '):'')+' · '+assessmentLabel(level.basis)));
+    if(ambiguity.top_tied_codes.length) details.append(element('p','Equal best support: '+ambiguity.top_tied_codes.join(' / ')+'. Equal totals do not select a winner.'));
+    return details;
+  }
+  function matchesInterpretationFilter(row) {
+    const value=$('interpretation-filter').value;
+    if(!value)return true;
+    if(value==='conflict')return row.interpretation.hasConflict;
+    if(value==='trial_ready')return row.contextScore.trial_status==='ready_for_trial';
+    if(value==='quality_review')return row.contextScore.has_quality_review;
+    if(value==='partial_scope')return row.contextScore.has_partial_scope;
+    if(value==='competing')return row.contextScore.has_competing_candidates;
+    if(value==='office_review')return row.contextScore.has_office_review;
+    return row.interpretation.state===value;
+  }
+  function candidateScoreDetails(assessment,selectionOrigin=null) {
+    const details=element('details',undefined,'candidate-score-details');
+    details.append(element('summary','Candidate support: '+number.format(assessment.support_score)));
+    details.append(element('p',scoreDimensions(assessment.dimensions)));
+    details.append(element('p','Experimental raw support, not a probability. Spatial support counts the candidate level once.'));
+    for(const factor of assessment.factors) details.append(element('div',`${factor.impact>=0?'+':''}${factor.impact} · ${factor.dimension} · ${factor.rule.replaceAll('_',' ')}`));
+    for(const [dimension,balance] of Object.entries(assessment.support_balance)) {
+      if(assessment.dimensions[dimension]!=null) details.append(element('p',assessmentLabel(dimension)+' balance: +'+balance.support+' support · '+balance.contradictions+' contradictions'));
+    }
+    details.append(qualitativeDetails(assessment));
+    const application=assessment.application;
+    details.append(element('p',selectionOrigin==='candidate_trial_gate'?'Selected provisionally in the cleaned release for the stated scope.':selectionOrigin==='retained_master'?'Original master interpretation retained. Additional trial checks: '+(application.blockers.map(assessmentLabel).join(' · ')||'no blockers'):application.eligible_for_trial?'Checks passed for a trial proposal · not applied':'Trial blocked: '+application.blockers.map(x=>x.replaceAll('_',' ')).join(' · ')));
+    if(application.warnings.length) details.append(element('p','Review notes: '+application.warnings.map(x=>x.replaceAll('_',' ')).join(' · ')));
+    return details;
+  }
+  function interpretationDetails(profile) {
+    const details=element('details',undefined,'location-interpretations');
+    details.append(element('summary',`Location interpretations · ${number.format(profile.count)} candidates${profile.hasConflict?' · context conflict':''}`));
+    details.addEventListener('toggle',()=>{
+      if(!details.open || details.dataset.loaded) return;
+      details.dataset.loaded='true';
+      details.append(element('p','Alternative catalog chains for review. Printed province/region disagreements retain the candidate. These readings do not change the master assignment.'));
+      if(profile.context.coordinate_point_count!==undefined) details.append(element('p','Coordinate point occurrences: '+profile.context.coordinate_point_count+'. Spatial comparisons use the mapped evidence available at each level.'));
+      if(profile.context.office)details.append(officeDetails(profile.context.office));
+      if(profile.state==='not_applicable') details.append(element('p','This allocation has no project-site assertion.'));
+      for(const reading of profile.readings) details.append(element('p',(reading.kind==='title_only'?'Title-only reading: ':'Master assignment: ')+(reading.places.map(p=>p.name+' ('+p.parents+')').join(' / ')||'No assigned place')));
+      for(const c of profile.candidates) {
+        const block=element('div',undefined,'interpretation-candidate');
+        block.append(element('span',c.place.name+(c.master_selected?' · master assignment':''),'place-name'),element('span',c.place.parents,'parents'),element('span',c.code+' · '+c.place.level.replaceAll('_',' '),'code'));
+        if(c.coordinate_candidate||c.registry_candidate) block.append(element('span','Candidate supplied by '+[c.coordinate_candidate?'mapped coordinates':'',c.registry_candidate?'registry evidence':''].filter(Boolean).join(' and '),'context-result'));
+        for(const [key,label] of [['title','Title'],['named_parent','Named parent'],['printed_province','Printed province'],['region','Source region'],['headings','Locality headings'],['office_context','Office context (administrative)'],['registry','Registry']]) block.append(element('span',label+': '+(contextLabels[c[key]]||c[key]),'context-result '+c[key]));
+        const mentions=profile.mentions.filter(m=>c.evidence_ids.includes(m.id));
+        if(mentions.length) block.append(element('span','Wording: '+mentions.map(m=>m.text+' ['+m.field.replaceAll('_',' ')+']').join(' · '),'context-result'));
+        for(const [level,x] of Object.entries(c.spatial)) block.append(element('span','Points / '+level.replaceAll('_',' ')+': '+(contextLabels[x.state]||x.state)+(x.compared?' · '+x.agree+'/'+x.compared+' comparable point occurrences agree':'')+(x.unassessed?' · '+x.unassessed+' unassessed':''),'context-result '+x.state));
+        if(c.score_assessment) block.append(candidateScoreDetails(c.score_assessment));
+        details.append(block);
+      }
+      if(profile.count>profile.candidates.length) details.append(element('p',`Showing ${profile.candidates.length} of ${number.format(profile.count)} retained candidates. All candidates are in the full interpretation export.`));
+      const link=sourceLink('Download all location interpretations (gzip)','master_list/data/location_interpretations.jsonl.gz');link.download='location_interpretations.jsonl.gz';details.append(link);
+    });
+    return details;
+  }
   function populateCategories() {
     const previous = $('category').value, selected = $('dataset').value;
     const categories = [...new Set(records.filter(r => !selected || r.dataset === selected).map(r => r.category))].sort((a,b) => a.localeCompare(b));
     $('category').replaceChildren(new Option('All categories',''), ...categories.map(value => new Option(value,value)));
     if(categories.includes(previous)) $('category').value = previous;
   }
+  function updateDataMode(){
+    const cleaned=cleanedMode();
+    for(const [id,active] of [['tab-source',!cleaned],['tab-cleaned',cleaned]]){
+      $(id).setAttribute('aria-selected',String(active));$(id).tabIndex=active?0:-1;
+    }
+    $('view-panel').setAttribute('aria-labelledby',cleaned?'tab-cleaned':'tab-source');
+    $('view').closest('label').hidden=cleaned;
+    for(const id of ['score','applied','gpsfilter'])$(id).closest('label').hidden=cleaned;
+    $('interpretation-filter').closest('.profile-filters').hidden=cleaned;
+    document.querySelector('.options .help').hidden=cleaned;
+    $('review').parentElement.lastChild.textContent=cleaned?'Needs clarification':'Needs location review';
+    $('cleaned-filters').hidden=!cleaned;$('cleaned-downloads').hidden=!cleaned;
+    for(const button of document.querySelectorAll('button[data-sort]'))button.hidden=cleaned?button.dataset.sort!=='cleaned_support'&&['score','applied','support'].includes(button.dataset.sort):button.dataset.sort==='cleaned_support';
+    $('projects').querySelectorAll('thead th')[3].textContent=cleaned?'Selected PSGC locations / clarification':'PSGC locations';
+    const link=$('main-download');link.href=cleaned?'data/cleaned/observations.csv.gz':'data/project_list.csv.gz';
+    link.textContent=cleaned?'Download cleaned CSV (gzip) ↗':'Download observations CSV (gzip) ↗';
+  }
+  function switchDataTab(value){
+    if(!cleanedMode())sourceView=$('view').value;
+    $('view').value=value==='cleaned'?'cleaned':sourceView;
+    sortKey='';direction=1;applyFilters();
+    history.replaceState(null,'',value==='cleaned'?'#cleaned':'#sources');
+  }
   function applyFilters() {
+    updateDataMode();
     const terms = $('search').value.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-    const dataset = $('dataset').value, category = $('category').value;
+    const dataset = $('dataset').value, category = $('category').value, view = $('view').value, partition = $('partition').value;
     const minimumScore = $('score').value === '' ? -Infinity : Number($('score').value);
-    filtered = records.filter(r => (!$('allocations').checked ? isProject(r) : true)
+    matched = records.filter(r => (view !== 'groups' || r.groupId) && (view !== 'outside' || !r.groupId)
+      && ($('allocations').checked || isProject(r)) && (!partition || r.partition === partition)
       && (!dataset || r.dataset === dataset) && (!category || r.category === category)
-      && r.score >= minimumScore && (!$('review').checked || r.review)
-      && terms.every(term => r.search.includes(term)));
-      if(sortKey) filtered.sort((a,b) => direction * (['value','score'].includes(sortKey) ? a[sortKey]-b[sortKey] : a[sortKey].localeCompare(b[sortKey])));
+      && (view==='cleaned'||r.score >= minimumScore) && (!$('review').checked || (view==='cleaned'?r.cleaned.flags.length:r.review))
+      && (view==='cleaned'||!$('applied').checked || r.applied)
+      && (view==='cleaned'||!$('gpsfilter').checked || r.gps)
+      && (view==='cleaned'||matchesInterpretationFilter(r))
+      && (view!=='cleaned'||!failsCleanedFilters(r))
+      && terms.every(term => (view==='cleaned'?r.cleanedSearch:r.search).includes(term)));
+    matchedIds = new Set(matched.map(r=>r.id));
+    if(view === 'groups') {
+      const ids = new Set(matched.map(r=>r.groupId));
+      filtered = groups.filter(g=>ids.has(g.id));
+      // Amount sorting is meaningful only within one selected source.
+      const amounts = new Map();
+      for(const r of matched) amounts.set(r.groupId,(amounts.get(r.groupId)||0)+r.value);
+      for(const g of filtered) g.value = amounts.get(g.id)||0;
+    } else filtered = [...matched];
+    if(view === 'groups' && ['score','applied','support'].includes(sortKey) || view === 'groups' && sortKey === 'value' && !dataset) sortKey = '';
+    for(const button of document.querySelectorAll('button[data-sort]')) {
+      button.disabled = view === 'groups' && (['score','applied','support'].includes(button.dataset.sort) || (button.dataset.sort === 'value' && !dataset));
+      button.closest('th').setAttribute('aria-sort',button.dataset.sort===sortKey?(direction===1?'ascending':'descending'):'none');
+    }
+    if(sortKey === 'cleaned_support') filtered.sort((a,b)=>a.cleaned.selectedSupport==null?(b.cleaned.selectedSupport==null?0:1):b.cleaned.selectedSupport==null?-1:direction*(a.cleaned.selectedSupport-b.cleaned.selectedSupport));
+    else if(sortKey === 'support') filtered.sort((a,b)=>a.support==null?(b.support==null?0:1):b.support==null?-1:direction*(a.support-b.support));
+    else if(sortKey === 'applied') filtered.sort((a,b)=>direction*(a.appliedScore-b.appliedScore));
+    else if(sortKey) filtered.sort((a,b) => direction * (['value','score'].includes(sortKey) ? a[sortKey]-b[sortKey] : a[sortKey].localeCompare(b[sortKey])));
+    if(view==='cleaned')$('projects').querySelector('th[data-sort=score]').setAttribute('aria-sort',sortKey==='cleaned_support'?(direction===1?'ascending':'descending'):'none');
+    $('scope-note').textContent = view === 'cleaned'
+      ? `${number.format(cleanedMeta.counts.records)} cleaned source observations; ${number.format(cleanedMeta.location_decisions.adopted_candidate||0)} candidate selections are provisional. Locations describe the stated evidence scope; mapped points do not establish full project coverage. Each source keeps its own amount. No questions generated does not mean verified.`
+      : view === 'groups'
+      ? `${number.format(groups.length)} comparison groups link ${number.format(records.filter(r=>r.groupId).length)} source observations. A match is an upstream comparison attachment, not a certified physical project. Each reading keeps its own amount; missing stages mean no corresponding record, not zero funding. Expand a group to see its source evidence. Group amounts show complete stages; filters select groups through individual observations.`
+      : view === 'outside'
+      ? 'These House GAS/S2O allocations were outside the operations comparison. No counterpart comparison was performed. They remain in the source ledgers and are not classified as House-only projects.'
+      : `${number.format(records.length)} source observations, including ${number.format(records.filter(r=>!r.groupId).length)} outside comparison scope. Sources and readings overlap; choose a single source for a meaningful filtered total.` + (appliedMeta ? ` ${number.format(appliedMeta.applied)} observations carry an applied suggestion (${appliedMeta.method}: support ≥ ${appliedMeta.minSupportScore}, margin ≥ ${appliedMeta.requiredMargin}); it is a derived overlay, never a master assignment.` : '') + (gpsMeta ? ` ${number.format(gpsMeta.records)} observations carry GPS points resolved through PSGC polygons (${gpsMeta.method}, ${number.format(gpsMeta.resolvedPoints)}/${number.format(gpsMeta.resolvedPoints+gpsMeta.unresolvedPoints)} points matched); also a derived overlay.` : '');
     page = 1; render();
+  }
+  function failsCleanedFilters(row){
+    const c=row.cleaned,flag=$('cleaned-flag').value,min=$('cleaned-score').value;
+    return ($('cleaned-status').value&&c.status!==$('cleaned-status').value)
+      ||($('cleaned-decision').value&&c.decision!==$('cleaned-decision').value)
+      ||(flag==='any'&&!c.flags.length)||(flag==='none'&&c.flags.length)
+      ||(flag&&flag!=='any'&&flag!=='none'&&!c.flags.some(f=>f.code===flag))
+      ||(min!==''&&(c.selectedSupport==null||c.selectedSupport<Number(min)));
+  }
+  const recordPacketCache=new Map(), recordPacketRequests=new Map(), recordPacketReceivers=new Map();
+  let modalBundle=null, modalDownloadURL=null, modalRequest=0;
+  window.masterRecordPacketLoaded=(key,encoded)=>{const receive=recordPacketReceivers.get(key);if(receive){recordPacketReceivers.delete(key);receive(encoded);}};
+  async function loadRecordPacket(key) {
+    if(recordPacketCache.has(key)) return recordPacketCache.get(key);
+    if(recordPacketRequests.has(key)) return recordPacketRequests.get(key);
+    const pending=(async()=>{
+      const encoded=await new Promise((resolve,reject)=>{
+        const script=element('script');
+        recordPacketReceivers.set(key,resolve);
+        script.src=fileLink('master_list/data/record_details/'+key+'.js');
+        script.onload=()=>{script.remove();if(recordPacketReceivers.has(key)){recordPacketReceivers.delete(key);reject(new Error('Record detail packet did not load.'));}};
+        script.onerror=()=>{script.remove();recordPacketReceivers.delete(key);reject(new Error('Record details are unavailable. Keep the data/record_details folder beside index.html when browsing offline.'));};
+        document.head.append(script);
+      });
+      const binary=decodeBase64(encoded);
+      const stream=new Blob([binary]).stream().pipeThrough(new DecompressionStream('gzip'));
+      const text=await new Response(stream).text();
+      const packet=new Map(text.trim().split('\n').map(line=>{const b=JSON.parse(line);return [b.record.record_id,b];}));
+      recordPacketCache.set(key,packet);
+      while(recordPacketCache.size>2) recordPacketCache.delete(recordPacketCache.keys().next().value);
+      return packet;
+    })();
+    recordPacketRequests.set(key,pending);
+    try{return await pending;}finally{recordPacketRequests.delete(key);}
+  }
+  function recordSection(label,value) {
+    const details=element('details',undefined,'record-section');details.append(element('summary',label));
+    details.addEventListener('toggle',()=>{if(details.open&&!details.querySelector('pre'))details.append(element('pre',JSON.stringify(value,null,2)));});
+    return details;
+  }
+  function cleanedEvidence(bundle){
+    const profile=bundle.location_interpretation;
+    const items={master_location:bundle.record.location,
+      interpretation:Object.fromEntries(Object.entries(profile).filter(([key])=>key!=='candidates')),
+      comparison:bundle.cleaned_comparison};
+    for(const candidate of profile.candidates)items['candidate:'+candidate.code]=candidate;
+    if(bundle.coordinate_psgc)items.coordinate_psgc=bundle.coordinate_psgc;
+    return {record_id:bundle.record.record_id,items};
+  }
+  function clarificationCard(flag,row,evidence=null){
+    const definition=reviewCatalog.flags[flag.code],block=element('div',undefined,'clarification');
+    block.dataset.flagCode=flag.code;
+    block.append(element('strong',definition.label),element('span',reviewCatalog.statuses[flag.status].label,'meta'),element('p',definition.requested_information));
+    if(flag.detail)block.append(element('p',flag.detail));
+    if(evidence){
+      const resolved={};for(const ref of flag.evidence_refs){if(!(ref in evidence.items))throw new Error('Missing clarification evidence: '+ref);resolved[ref]=evidence.items[ref];}
+      block.append(recordSection('Evidence for this question',resolved));
+    }else{
+      const button=element('button','View clarification evidence','record-button');button.type='button';
+      button.addEventListener('click',()=>openRecordDetails(row,true));block.append(button);
+    }
+    return block;
+  }
+  async function openRecordDetails(row,reviewFocus=false) {
+    const dialog=$('record-dialog'),body=$('record-dialog-body'),request=++modalRequest;
+    $('record-dialog-title').textContent='Record details · '+row.id;
+    body.replaceChildren(element('p','Loading full retained evidence…'));
+    $('record-json-download').hidden=true;
+    if(!dialog.open) dialog.showModal();
+    try {
+      const packet=await loadRecordPacket(row.detailsPacket),bundle=packet.get(row.id);
+      if(request!==modalRequest||!dialog.open)return;
+      if(!bundle)throw new Error('Record not found in its detail packet.');
+      const group=byGroup.get(row.groupId);
+      const comparison=group?Object.fromEntries(Object.entries(group).filter(([k])=>!['members','title','category'].includes(k))):null;
+      const evidence=cleanedEvidence(bundle);
+      modalBundle={...bundle,cleaned_evidence:evidence,comparison_group:comparison};
+      const r=bundle.record,summary=element('dl',undefined,'record-summary');
+      for(const [label,value] of [['Source',datasets[r.dataset]],['Stage',r.stage],['Amount','₱'+money.format(r.amount_php)],['Source region',r.source_region],['Implementing office',r.implementing_office],['Master score',String(r.location.score)+' · '+r.location.score_method],['Candidate support',row.support==null?'Not assessed':String(row.support)+' · '+row.contextScore.method],['Trial status',row.contextScore.trial_status.replaceAll('_',' ')],['Structured locality headings',r.structured_localities?.join(' · ')],['Program',r.program],['Subprogram',r.subprogram],['Comparison group',r.comparison_group_id],['Original title',r.title_source],['Readable title',r.title_clean]]){
+        summary.append(element('dt',label),element('dd',value||'Not supplied'));
+      }
+      const refs=element('p');if(row.pdf)refs.append(sourceLink('Open source PDF · page '+row.page,row.pdf,row.page));else refs.append(sourceLink('Open source snapshot',row.source));
+      body.replaceChildren(summary,refs,
+        recordSection('Source extraction and printed heading path',{source_dataset:r.source_dataset,source_record_id:r.source_record_id,source_pdf:r.source_pdf,source:r.source,source_path:r.source_path,source_flags:r.source_flags}),
+        recordSection('Location candidates, suggestions and score factors',{location:r.location,structured_localities:r.structured_localities,source_region_psgc_hint:r.source_region_psgc_hint,office_province_hint:r.office_province_hint,office_location_candidates:r.office_location_candidates}),
+        recordSection('Coordinates and legislative district',{coordinate_summary:r.coordinate_summary,title_coordinate_evidence:r.title_coordinate_evidence,coordinate_psgc:bundle.coordinate_psgc,legislative_district:r.legislative_district}),
+        recordSection('DEO / implementing office context',bundle.location_interpretation.context.office||null),
+        recordSection('Retained upstream analysis · chainage and normalization',r.analysis_record||null),
+        recordSection('Full location interpretations · '+bundle.location_interpretation.candidates.length+' candidates',{profile:bundle.location_interpretation,candidate_locations:bundle.candidate_locations}),
+        recordSection('Applied suggestion layer',bundle.applied_suggestion),
+        recordSection('Comparison membership and stage evidence',comparison),
+        recordSection('Complete record and related evidence',modalBundle));
+      if(cleanedMode()){
+        $('record-dialog-title').textContent='Cleaned record details · '+row.id;
+        const section=element('section',undefined,'cleaned-record-section');
+        section.append(element('h3','Cleaned interpretation'),element('p',decisionLabels[row.cleaned.decision]+' · '+reviewCatalog.location_statuses[row.cleaned.status].label+' · '+assessmentLabel(row.cleaned.verification)));
+        for(const p of row.cleaned.locations)section.append(element('p',p.name+' · '+p.parents+' · '+p.code+' · '+assessmentLabel(p.scope)));
+        for(const flag of row.cleaned.flags)section.append(clarificationCard(flag,row,evidence));
+        if(!row.cleaned.flags.length)section.append(element('p','No clarification questions generated. This does not mean verified.'));
+        section.append(recordSection('Complete cleaned observation',bundle.cleaned_record),recordSection('Full cleaned evidence',evidence));
+        body.prepend(section);
+        if(reviewFocus)section.querySelector('.clarification')?.scrollIntoView({block:'nearest'});
+      }
+      if(modalDownloadURL)URL.revokeObjectURL(modalDownloadURL);
+      modalDownloadURL=URL.createObjectURL(new Blob([JSON.stringify(modalBundle,null,2)],{type:'application/json'}));
+      const link=$('record-json-download');link.href=modalDownloadURL;link.download=row.id.replaceAll(':','-')+(cleanedMode()?'.cleaned.json':'.json');link.hidden=false;
+    }catch(error){if(request===modalRequest&&dialog.open)body.replaceChildren(element('p',error.message,'record-error'));}
+  }
+  $('record-dialog-close').addEventListener('click',()=>$('record-dialog').close());
+  $('record-dialog').addEventListener('close',()=>{modalRequest++;modalBundle=null;$('record-dialog-body').replaceChildren();if(modalDownloadURL){URL.revokeObjectURL(modalDownloadURL);modalDownloadURL=null;}});
+  function cleanedRow(r){
+    const c=r.cleaned,tr=element('tr');tr.dataset.recordId=r.id;tr.className='cleaned-row';
+    const title=element('td',r.title,'title-cell');
+    title.append(element('span',datasets[r.dataset]+' · '+r.id,'meta'),element('span',decisionLabels[c.decision],'badge'));
+    if(!isProject(r))title.append(element('span','Allocation','badge'));
+    if(!r.groupId)title.append(element('span','Outside comparison','badge'));
+    const category=element('td',r.category),value=element('td','₱'+money.format(r.value),'amount'),places=element('td');
+    places.append(element('span',reviewCatalog.location_statuses[c.status].label,'cleaned-status'));
+    if(!c.locations.length)places.append(element('span',c.status==='not_applicable'?'No project-site assertion':'No selected location'));
+    const support=element('td',undefined,'evidence');
+    for(const p of c.locations){
+      const block=element('div',undefined,'cleaned-selection');
+      block.append(element('span',p.name,'place-name'),element('span',p.parents,'parents'),element('span',p.code+' · '+assessmentLabel(p.level),'code'),element('span',assessmentLabel(p.scope)+' · provisional','meta'));
+      places.append(block);
+      const score=element('div',undefined,'cleaned-support');score.dataset.psgcCode=p.code;
+      score.append(element('span',p.name),element('strong',p.support==null?'—':number.format(p.support.support_score)));
+      if(p.support)score.append(element('span',scoreDimensions(p.support.dimensions),'candidate-dimensions'));
+      if(p.scoreAssessment)score.append(candidateScoreDetails(p.scoreAssessment,p.origin));
+      support.append(score);
+    }
+    if(!c.locations.length)support.append(element('span','No selected support','meta'));
+    if(c.locations.length>1)support.append(element('p','Each location has its own support. Sort and minimum use the lowest value when all are assessed.','meta'));
+    const original=element('details');original.append(element('summary','Original master score: '+r.score));
+    original.append(element('p',r.scoreMethod),element('p','Best candidate support: '+(r.support==null?'not assessed':number.format(r.support))+(r.contextScore.bestPlace?' · '+r.contextScore.bestPlace.name:'')));
+    support.append(original);
+    for(const flag of c.flags)places.append(clarificationCard(flag,r));
+    if(!c.flags.length)places.append(element('span','No clarification questions generated','meta'));
+    const reference=element('td'),pageCell=element('td',undefined,'page');
+    if(r.pdf){reference.append(sourceLink(r.pdf.split('/').at(-1),r.pdf,r.page));pageCell.append(sourceLink(String(r.page),r.pdf,r.page));if(r.printed)pageCell.append(element('span','Printed '+r.printed,'meta'));}
+    else{reference.append(element('span','Not supplied (API listing)','meta'),sourceLink('Source snapshot',r.source));pageCell.textContent='—';}
+    const recordCell=element('td'),button=element('button','View data','record-button');button.type='button';button.addEventListener('click',()=>openRecordDetails(r));recordCell.append(button);
+    tr.append(title,category,value,places,support,reference,pageCell,recordCell);return tr;
+  }
+  function observationRow(r) {
+      const tr = element('tr'); tr.dataset.recordId = r.id;
+      const title = element('td', r.title, 'title-cell');
+      title.append(element('span',datasets[r.dataset] + ' · ' + r.id, 'meta'));
+      if(!isProject(r)) title.append(element('span','Allocation','badge'));
+      if(!r.groupId) title.append(element('span','Outside comparison','badge'));
+      const details=element('details',undefined,'observation-details');
+      details.append(element('summary','Source title and observation evidence'));
+      details.append(element('p','Original title: '+r.titleSource));
+      details.append(element('p','Readable title method: '+r.titleMethod+(r.titleRules.length?' · '+r.titleRules.join(', '):' · no changes')));
+      if(r.scopeReason) details.append(element('p',r.scopeReason));
+      details.append(element('pre',JSON.stringify({coordinates:r.coordinates,legislativeDistrict:r.district},null,2)));
+      title.append(details);
+      title.append(interpretationDetails(r.interpretation));
+      const category = element('td',r.category), value = element('td','₱' + money.format(r.value),'amount'), places = element('td');
+      for(const l of r.locations) {const block=element('div',undefined,'location'); block.append(element('span',l.name,'place-name'),element('span',l.parents,'parents'),element('span',l.code + ' · ' + l.level.replaceAll('_',' '),'code'));places.append(block);}
+      const status = element('div',labels[r.status] || r.status,'status' + (r.review ? ' review' : ''));
+      if(!r.locations.length) places.append(element('span','No assigned location'));
+      if(r.flags.length) {const details = element('details'); details.append(element('summary',(labels[r.status] || r.status) + (r.review && r.status==='name_matched' ? ' · review' : '')));details.className=status.className; for(const flag of r.flags) details.append(element('div',flag.replaceAll('_',' ')));places.append(details);} else places.append(status);
+      if(r.suggestions.length) {
+        const group=element('div',undefined,'suggestions');
+        group.append(element('div','Suggested hierarchies for review','suggestion-heading'));
+        for(const s of r.suggestions.slice(0,8)) {
+          const block=element('div',undefined,'suggestion');
+          block.append(element('span',s.name,'place-name'),element('span',s.parents,'parents'),element('span',s.code+' · '+s.level.replaceAll('_',' '),'code'),element('span',s.supportScore==null?'Context-based review candidate · not assigned':`Legacy suggestion support: ${s.supportScore} · not assigned`,'suggestion-score'));
+          if(s.origins?.length) block.append(element('span','Suggested from: '+s.origins.join(' · '),'context-result'));
+          const why=element('details');why.append(element('summary','Why suggested'));
+          if(s.wording?.length) why.append(element('div','Wording: '+s.wording.join(' · ')));
+          for(const factor of s.factors) why.append(element('div',`${factor.impact>=0?'+':''}${factor.impact} · ${factor.rule.replaceAll('_',' ')}`));
+          if(s.assessment) contextAssessment(why,s.assessment);
+          if(s.scoreAssessment) block.append(candidateScoreDetails(s.scoreAssessment));
+          block.append(why);group.append(block);
+        }
+        if(r.suggestions.length>8) group.append(element('div',`Showing 8 of ${number.format(r.suggestions.length)} review candidates. All are retained in the interpretation export.`));
+        group.append(sourceLink('Download full interpretation evidence','master_list/data/location_interpretations.jsonl.gz'));
+        places.append(group);
+      }
+      const trial=r.contextScore.proposal;
+      if(trial&&(!r.applied||r.applied.code!==trial.code)) {
+        const block=element('div',undefined,'trial-proposal');
+        block.append(element('div','Trial proposal · not applied','trial-heading'),element('span',trial.name,'place-name'),element('span',trial.parents,'parents'),element('span',trial.code+' · '+trial.level.replaceAll('_',' '),'code'));
+        block.append(element('p',r.contextScore.proposal_scope==='observed_coordinate_points'?'Locality of the observed coordinate points. Whole-project extent is not inferred.':'Candidate passing the existing title application checks.'));
+        block.append(candidateScoreDetails(trial.scoreAssessment));places.append(block);
+      }
+      if(r.applied) {const group=element('div',undefined,'applied-layer');group.append(element('div','Applied suggestion (derived layer)','applied-heading'));const block=element('div',undefined,'suggestion');block.append(element('span',r.applied.name,'place-name'),element('span',r.applied.parents,'parents'),element('span',r.applied.code+' · '+r.applied.level.replaceAll('_',' '),'code'),element('span',`Gate pass: support ${r.applied.supportScore} · margin ${r.applied.margin===null?'sole':r.applied.margin} · layer evidence ${r.applied.score} (${r.applied.method}) · not assigned`,'suggestion-score'));const why=element('details');why.append(element('summary','Why applied'));why.append(element('div',`Gate: support ≥ ${r.applied.gate.min_support_score} · margin ≥ ${r.applied.gate.required_margin}`));for(const factor of r.applied.scoreFactors)why.append(element('div',`${factor.impact>=0?'+':''}${factor.impact} · ${factor.rule.replaceAll('_',' ')}`));block.append(why);group.append(block);places.append(group);}
+      if(r.gps) {const group=element('div',undefined,'gps-layer');const labels={single_barangay:'single barangay',single_municipality:'one municipality',spans_municipalities:'spans municipalities',none_resolved:'no polygon match'};group.append(element('div',`GPS-derived PSGC (derived layer · ${labels[r.gps.agreement]||r.gps.agreement})`,'gps-heading'));for(const p of r.gps.points){const block=element('div',undefined,'suggestion');if(p.chain&&p.chain.name){block.append(element('span',p.chain.name,'place-name'),element('span',p.chain.parents,'parents'),element('span',(p.chain.code||'—')+' · barangay','code'));}else block.append(element('span','No polygon match for this point','place-name'));block.append(element('span',`${p.role?p.role+' point · ':''}${r.gps.method} · not assigned`,'suggestion-score'));group.append(block);}places.append(group);}
+      if(r.candidates.length) {const details=element('details',undefined,'candidates');details.append(element('summary',`${number.format(r.candidates.length)} unassigned PSGC candidate${r.candidates.length===1?'':'s'}`));for(const c of r.candidates){const block=element('div',undefined,'candidate');block.append(element('span',c.name,'place-name'),element('span',c.parents,'parents'),element('span',c.code+' · '+c.level.replaceAll('_',' '),'code'));details.append(block);}places.append(details);}
+      const evidence = element('td',undefined,'evidence'), score = element('span',String(r.score),'score ' + (r.score > 0 ? 'positive' : r.score < 0 ? 'negative' : ''));
+      score.title='Master score: text/registry evidence. GPS candidate support is scored separately.';evidence.append(score);
+      {const appliedScore=element('span',String(r.appliedScore),'score applied'+(r.appliedCarry?' carry':''));appliedScore.title=r.appliedCarry?'Applied-layer score · master evidence carried over (no applied suggestion)':'Applied-layer score ('+r.applied.method+') · gate-passing suggestion applied';evidence.append(appliedScore);}
+      if(r.support!=null) {
+        const support=element('div',undefined,'candidate-support');support.append(element('span','Candidate support'),element('strong',number.format(r.support)));
+        support.title=r.contextScore.method+' · '+r.contextScore.bestPlace.name+' · experimental raw support';
+        support.append(element('span',scoreDimensions(r.contextScore.dimensions),'candidate-dimensions'));evidence.append(support);
+        support.append(element('span',r.contextScore.bestPlace.name+' · '+r.contextScore.bestPlace.code,'support-candidate'));
+        support.append(qualitativeDetails(r.contextScore.bestAssessment),ambiguityDetails(r.contextScore.ambiguity));
+      }
+      const factors=element('details');factors.append(element('summary','Why?'));for(const factor of r.scoreFactors)factors.append(element('div',`${factor.impact >= 0 ? '+' : ''}${factor.impact} · ${factor.rule.replaceAll('_',' ')}`));evidence.append(factors);
+      const reference = element('td'), pageCell = element('td',undefined,'page');
+      if(r.pdf) {reference.append(sourceLink(r.pdf.split('/').at(-1),r.pdf,r.page));pageCell.append(sourceLink(String(r.page),r.pdf,r.page));if(r.printed)pageCell.append(element('span','Printed ' + r.printed,'meta'));}
+      else {reference.append(element('span','Not supplied (API listing)','meta'),sourceLink('Source snapshot',r.source));pageCell.textContent='—';}
+      const recordCell=element('td');const recordButton=element('button','View data','record-button');recordButton.type='button';recordButton.addEventListener('click',()=>openRecordDetails(r));recordCell.append(recordButton);
+      tr.append(title,category,value,places,evidence,reference,pageCell,recordCell); return tr;
+    }
+
+  function groupRows(g) {
+    const tr=element('tr');tr.dataset.groupId=g.id;
+    const title=element('td',g.title,'title-cell');
+    title.append(element('span',partitions[g.partition],'badge'),element('span',g.domain.toUpperCase()+' · '+g.id,'meta'));
+    const status = g.upstream.house_match || g.upstream.status;
+    if(status) title.append(element('span','Upstream: '+status.replaceAll('_',' '),'meta'));
+    const category=element('td',g.category), value=element('td',undefined,'amount');
+    const stageOrder=g.domain==='dpwh'?['nep','second','third','api']:['nep','house'];
+    for(const stage of stageOrder) {
+      const block=element('div',undefined,'group-value');
+      block.append(element('small',stageLabels[stage]),element('span',g.stages[stage]?'₱'+money.format(g.stages[stage].amount_php):'—'));
+      value.append(block);
+    }
+    const places=element('td');
+    places.append(element('div','Locations remain per source observation.'));
+    const names=[...new Set(g.members.flatMap(r=>r.locations.map(l=>l.name)))];
+    if(names.length) places.append(element('span',names.join(' · '),'meta'));
+    const evidence=element('td','Per observation','evidence');
+    const reference=element('td',number.format(g.members.length)+' source observations');
+    const count=g.members.filter(r=>matchedIds.has(r.id)).length;
+    reference.append(element('span',number.format(count)+' match the filters','meta'));
+    const pageCell=element('td','Expand below','page');
+    const button=element('button','Show '+number.format(g.members.length)+' source observations','expand');
+    button.type='button';button.setAttribute('aria-expanded','false');title.append(button);
+    const expanded=element('tr',undefined,'expanded');expanded.hidden=true;
+    expanded.id='observations-'+g.id;button.setAttribute('aria-controls',expanded.id);
+    const cell=element('td');cell.colSpan=8;expanded.append(cell);
+    button.addEventListener('click',()=>{
+      expanded.hidden=!expanded.hidden;button.setAttribute('aria-expanded',String(!expanded.hidden));
+      button.textContent=(expanded.hidden?'Show ':'Hide ')+number.format(g.members.length)+' source observations';
+      if(!expanded.hidden && !cell.childElementCount) {
+        cell.append(element('p','All source observations in this group are shown. A blue edge marks those matching the current filters. Scores and location flags apply to each observation.','filter-note'));
+        const table=element('table',undefined,'source-observations');
+        table.append($('projects').querySelector('colgroup').cloneNode(true));
+        const head=element('thead'),hr=element('tr');
+        for(const text of ['Source title','Category','Value (PHP)','PSGC locations','Master score','Reference PDF','Page','Record details']) hr.append(element('th',text));
+        head.append(hr);table.append(head);
+        const body=element('tbody');
+        for(const r of g.members) {const row=observationRow(r);if(matchedIds.has(r.id))row.classList.add('matches');body.append(row);}
+        table.append(body);cell.append(table);
+        const details=element('details',undefined,'comparison-details');
+        details.append(element('summary','Retained comparison and stage evidence'));
+        // This includes stage-level chainage, normalized coordinates, repair
+        // rules and match suggestions without treating them as site findings.
+        details.addEventListener('toggle',()=>{
+          if(details.open && !details.querySelector('pre')) details.append(element('pre',JSON.stringify({
+            titleSourceStage:g.title_source_stage,presenceByHouseReading:g.presence_by_house_reading,
+            comparison:g.upstream,stages:g.stages},null,2)));
+        });
+        cell.append(details);
+      }
+    });
+    const recordCell=element('td','Expand to inspect each record','meta');
+    tr.append(title,category,value,places,evidence,reference,pageCell,recordCell);
+    return [tr,expanded];
   }
   function render() {
     const size = Number($('page-size').value), pages = Math.max(1,Math.ceil(filtered.length/size));
     page = Math.min(Math.max(1,page),pages);
     const start = (page-1)*size, end = Math.min(start+size,filtered.length), body = document.createDocumentFragment();
-    for(const r of filtered.slice(start,end)) {
-      const tr = element('tr'); tr.dataset.recordId = r.id;
-      const title = element('td', r.title, 'title-cell');
-      title.append(element('span',datasets[r.dataset] + ' · ' + r.id, 'meta'));
-      if(!isProject(r)) title.append(element('span','Allocation','badge'));
-      const category = element('td',r.category), value = element('td','₱' + money.format(r.value),'amount'), places = element('td');
-      for(const l of r.locations) {const block=element('div',undefined,'location'); block.append(element('span',l.name,'place-name'),element('span',l.parents,'parents'),element('span',l.code + ' · ' + l.level.replaceAll('_',' '),'code'));places.append(block);}
-      const status = element('div',labels[r.status] || r.status,'status' + (r.review ? ' review' : ''));
-      if(!r.locations.length) places.append(element('span','No assigned location'));
-      if(r.flags.length) {const details = element('details'); details.append(element('summary',labels[r.status] + (r.review && r.status==='name_matched' ? ' · review' : '')));details.className=status.className; for(const flag of r.flags) details.append(element('div',flag.replaceAll('_',' ')));places.append(details);} else places.append(status);
-      if(r.suggestions.length) {const group=element('div',undefined,'suggestions');group.append(element('div','Suggested hierarchies for review','suggestion-heading'));for(const s of r.suggestions){const block=element('div',undefined,'suggestion');block.append(element('span',s.name,'place-name'),element('span',s.parents,'parents'),element('span',s.code+' · '+s.level.replaceAll('_',' '),'code'),element('span',`Raw suggestion support: ${s.supportScore} · not assigned`,'suggestion-score'));const why=element('details');why.append(element('summary','Why suggested'));for(const factor of s.factors)why.append(element('div',`${factor.impact>=0?'+':''}${factor.impact} · ${factor.rule.replaceAll('_',' ')}`));block.append(why);group.append(block);}places.append(group);}
-      if(r.candidates.length) {const details=element('details',undefined,'candidates');details.append(element('summary',`${number.format(r.candidates.length)} unassigned PSGC candidate${r.candidates.length===1?'':'s'}`));for(const c of r.candidates){const block=element('div',undefined,'candidate');block.append(element('span',c.name,'place-name'),element('span',c.parents,'parents'),element('span',c.code+' · '+c.level.replaceAll('_',' '),'code'));details.append(block);}places.append(details);}
-      const evidence = element('td',undefined,'evidence'), score = element('span',String(r.score),'score ' + (r.score > 0 ? 'positive' : r.score < 0 ? 'negative' : ''));
-      score.title='Raw additive location evidence score';evidence.append(score);
-      const factors=element('details');factors.append(element('summary','Why?'));for(const factor of r.scoreFactors)factors.append(element('div',`${factor.impact >= 0 ? '+' : ''}${factor.impact} · ${factor.rule.replaceAll('_',' ')}`));evidence.append(factors);
-      const reference = element('td'), pageCell = element('td',undefined,'page');
-      if(r.pdf) {reference.append(sourceLink(r.pdf.split('/').at(-1),r.pdf,r.page));pageCell.append(sourceLink(String(r.page),r.pdf,r.page));if(r.printed)pageCell.append(element('span','Printed ' + r.printed,'meta'));}
-      else {reference.append(element('span','Not supplied (API listing)','meta'),sourceLink('Source snapshot',r.source));pageCell.textContent='—';}
-      tr.append(title,category,value,places,evidence,reference,pageCell); body.append(tr);
-    }
-    if(!filtered.length) {const tr=element('tr'),td=element('td','No records match these filters.','empty');td.colSpan=7;tr.append(td);body.append(tr);}
+    for(const r of filtered.slice(start,end)) body.append(...($('view').value==='groups' ? groupRows(r) : [cleanedMode()?cleanedRow(r):observationRow(r)]));
+    if(!filtered.length) {const tr=element('tr'),td=element('td','No records match these filters.','empty');td.colSpan=8;tr.append(td);body.append(tr);}
     $('rows').replaceChildren(body);
-    $('summary').textContent = filtered.length ? `${number.format(start+1)}–${number.format(end)} of ${number.format(filtered.length)} records` : '0 matching records';
+    $('summary').textContent = filtered.length ? `${number.format(start+1)}–${number.format(end)} of ${number.format(filtered.length)} ${$('view').value==='groups'?'comparison groups':'records'}` : '0 matching records';
     $('page-info').textContent=`Page ${number.format(page)} of ${number.format(pages)}`;
     $('previous').disabled=page===1; $('next').disabled=page===pages;
-    $('total').textContent = $('dataset').value ? `Filtered source total: ₱${money.format(filtered.reduce((sum,r)=>sum+r.value,0))}` : 'Choose one source to show its filtered total.';
+    $('total').textContent = $('dataset').value ? `Filtered source total${$('view').value==='groups'?' (comparison scope)':''}: ₱${money.format(matched.reduce((sum,r)=>sum+r.value,0))}` : 'Choose one source to show its filtered total.';
   }
   async function load() {
     try {
       if(!globalThis.DecompressionStream) throw new Error('This viewer requires a recent Chrome, Edge, Firefox or Safari browser with gzip decompression support. The CSV remains available.');
-      const binary=atob($('embedded-data').textContent.trim()), bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
-      const data=JSON.parse(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
-      datasets=data.datasets;records=data.rows;
-      for(const r of records) r.search=[r.title,r.category,r.id,datasets[r.dataset],r.pdf || '',...r.locations.flatMap(l=>[l.name,l.code,l.parents]),...r.suggestions.flatMap(l=>[l.name,l.code,l.parents]),...r.candidates.flatMap(l=>[l.name,l.code,l.parents])].join(' ').toLocaleLowerCase();
+      const bytes=decodeBase64($('embedded-data').textContent.trim());
       $('embedded-data').remove();
+      const reader=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip')).getReader();
+      const decoder=new TextDecoder(), data={rows:[],groups:[]};let fragments=[];
+      function unpack(line) {
+        if(!line.trim())return;
+        const packet=JSON.parse(line);
+        if(packet.rows)data.rows.push(...packet.rows.map(restoreAssessments));
+        else if(packet.groups)data.groups.push(...packet.groups);
+        else Object.assign(data,packet);
+      }
+      while(true) {
+        const {done,value}=await reader.read();
+        const chunk=decoder.decode(value,{stream:!done});let start=0,end;
+        while((end=chunk.indexOf('\n',start))!==-1){
+          fragments.push(chunk.slice(start,end));unpack(fragments.join(''));fragments=[];start=end+1;
+        }
+        if(start<chunk.length)fragments.push(chunk.slice(start));
+        if(done)break;
+      }
+      unpack(fragments.join(''));
+      datasets=data.datasets;records=data.rows;groups=data.groups;appliedMeta=data.appliedSuggestion||null;gpsMeta=data.coordinatePsgc||null;
+      reviewCatalog=data.reviewCatalog;cleanedMeta=data.cleanedRelease;
+      if(!reviewCatalog||!cleanedMeta||records.some(r=>!r.cleaned))throw new Error('Cleaned release is missing from this viewer. Rebuild the viewer.');
+      byId=new Map(records.map(r=>[r.id,r]));byGroup=new Map(groups.map(g=>[g.id,g]));
+      for(const g of groups) {
+        g.title=g.title_clean;g.members=Object.values(g.stages).flatMap(s=>s.observation_ids.map(id=>byId.get(id)));
+        g.category=[...new Set(g.members.map(r=>r.category))].join(' / ');
+      }
+      for(const r of records) r.partition=byGroup.get(r.groupId)?.partition || 'not_compared';
+      for(const r of records) r.search=[r.title,r.titleSource,r.partition,r.category,r.id,r.office,r.sourceRegion,datasets[r.dataset],r.pdf || '',...r.locations.flatMap(l=>[l.name,l.code,l.parents]),...r.suggestions.flatMap(l=>[l.name,l.code,l.parents]),...(r.applied?[r.applied.name,r.applied.code,r.applied.parents]:[]),...(r.gps?r.gps.points.flatMap(p=>p.chain?[p.chain.name,p.chain.code,p.chain.parents].filter(Boolean):[]):[]),...r.candidates.flatMap(l=>[l.name,l.code,l.parents])].join(' ').toLocaleLowerCase();
+      for(const r of records) r.search+=' '+r.interpretation.candidates.flatMap(c=>[c.place.name,c.code,c.place.parents]).join(' ').toLocaleLowerCase();
+      for(const r of records)r.cleanedSearch=[r.id,r.title,r.titleSource,r.category,r.partition,r.office,r.sourceRegion,r.pdf||'',datasets[r.dataset],decisionLabels[r.cleaned.decision],reviewCatalog.location_statuses[r.cleaned.status].label,...r.cleaned.locations.flatMap(p=>[p.name,p.code,p.parents]),...r.cleaned.flags.map(f=>reviewCatalog.flags[f.code].label)].join(' ').toLocaleLowerCase();
       for(const [value,label] of Object.entries(datasets)) $('dataset').append(new Option(label,value));
+      for(const [value,item] of Object.entries(reviewCatalog.location_statuses))$('cleaned-status').append(new Option(item.label,value));
+      for(const [value,label] of Object.entries(decisionLabels))$('cleaned-decision').append(new Option(label,value));
+      for(const [value,item] of Object.entries(reviewCatalog.flags))$('cleaned-flag').append(new Option(item.label,value));
+      const selectedSort=element('button','Selected support ↕');selectedSort.type='button';selectedSort.dataset.sort='cleaned_support';selectedSort.hidden=true;$('projects').querySelector('th[data-sort=score]').append(selectedSort);
       populateCategories();
       document.querySelectorAll('input,select,#reset').forEach(node=>node.disabled=false);
+      for(const tab of document.querySelectorAll('[data-tab]')){
+        tab.disabled=false;tab.addEventListener('click',()=>switchDataTab(tab.dataset.tab));
+        tab.addEventListener('keydown',event=>{
+          if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+          event.preventDefault();const target=event.key==='Home'?'tab-source':event.key==='End'?'tab-cleaned':tab.id==='tab-source'?'tab-cleaned':'tab-source';$(target).focus();$(target).click();
+        });
+      }
       $('search').addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(applyFilters,180);});
       $('score').addEventListener('input',applyFilters);
+      $('cleaned-score').addEventListener('input',applyFilters);
       $('dataset').addEventListener('change',()=>{populateCategories();applyFilters();});
-      for(const id of ['category','allocations','review']) $(id).addEventListener('change',applyFilters);
+      for(const id of ['category','allocations','review','applied','gpsfilter','partition','view','interpretation-filter','cleaned-status','cleaned-decision','cleaned-flag']) $(id).addEventListener('change',()=>{if(id==='view'){if(!cleanedMode())sourceView=$('view').value;sortKey='';}applyFilters();});
       $('previous').addEventListener('click',()=>{page--;render();});$('next').addEventListener('click',()=>{page++;render();});$('page-size').addEventListener('change',()=>{page=1;render();});
       for(const button of document.querySelectorAll('button[data-sort]')) button.addEventListener('click',()=>{const key=button.dataset.sort;direction=sortKey===key?-direction:1;sortKey=key;document.querySelectorAll('th[data-sort]').forEach(th=>th.setAttribute('aria-sort',th.dataset.sort===key?(direction===1?'ascending':'descending'):'none'));applyFilters();});
-      $('reset').addEventListener('click',()=>{for(const id of ['search','dataset','category','score']) $(id).value='';$('allocations').checked=false;$('review').checked=false;sortKey='';document.querySelectorAll('th[data-sort]').forEach(th=>th.setAttribute('aria-sort','none'));populateCategories();applyFilters();});
+      $('reset').addEventListener('click',()=>{clearTimeout(timer);for(const id of ['search','dataset','category','score','partition','interpretation-filter','cleaned-status','cleaned-decision','cleaned-flag','cleaned-score']) $(id).value='';$('allocations').checked=true;$('review').checked=false;$('applied').checked=false;$('gpsfilter').checked=false;sortKey='';document.querySelectorAll('th[data-sort]').forEach(th=>th.setAttribute('aria-sort','none'));populateCategories();applyFilters();});
+      if(location.hash==='#cleaned')$('view').value='cleaned';
+      addEventListener('hashchange',()=>{if(location.hash==='#cleaned'&&!cleanedMode())switchDataTab('cleaned');else if(location.hash==='#sources'&&cleanedMode())switchDataTab('source');});
       applyFilters();
     } catch(error) { $('error').hidden=false;$('error').textContent=error.message;$('summary').textContent='The table could not load. Download the CSV to view the list.';$('rows').replaceChildren(); }
   }

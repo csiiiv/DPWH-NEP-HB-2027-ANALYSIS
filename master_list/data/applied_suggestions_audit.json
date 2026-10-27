@@ -1,16 +1,17 @@
 {
-  "applied": 82,
+  "applied": 90,
   "applied_by_master_status": {
-    "ambiguous": 8,
-    "multiple_locations": 33,
-    "name_matched": 41
+    "ambiguous": 14,
+    "multiple_locations": 36,
+    "name_matched": 40
   },
   "blocked_by_reason": {
-    "below_min_score": 180,
-    "conflicting_top": 22,
-    "margin_too_small": 247,
-    "parent_town_not_in_title": 30,
-    "rivals_master_assignment": 18
+    "below_min_score": 175,
+    "conflicting_top": 10,
+    "margin_too_small": 50,
+    "parent_town_not_in_title": 37,
+    "review_only_candidate": 1092,
+    "rivals_master_assignment": 10
   },
   "description": "Derive the applied-suggestions layer from the retained master list.",
   "gate": {
@@ -24,13 +25,13 @@
   },
   "input": {
     "path": "master_list/data/projects.jsonl.gz",
-    "sha256": "eee1b566043738e38f6ffad06f5ab9afaf054ccec0315ce8bd849b40b0d2f4b3"
+    "sha256": "7e6d66f5411e71c9bc57185eae64e6204ffc0d6e3d1911b331f0f1bfcf53e349"
   },
   "method": "applied_suggestion_v1",
   "output_sha256": {
-    "applied_suggestions.jsonl.gz": "be5df2f056d5dce9e9ebd9d598c7694def03b1701c49ac0d3867aed5c61c5fdb"
+    "applied_suggestions.jsonl.gz": "552327e18c2b8c4097639b202b10f25d0dfe21f3362a16fa7c25f1ccc44717d9"
   },
-  "records_with_suggestions": 579,
+  "records_with_suggestions": 1464,
   "score_base": 4,
   "score_factors": [
     {

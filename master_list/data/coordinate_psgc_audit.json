@@ -1,0 +1,26 @@
+{
+  "agreement_counts": {
+    "none_resolved": 70,
+    "single_barangay": 6544,
+    "single_municipality": 620,
+    "spans_municipalities": 144
+  },
+  "coordinate_source_counts": {
+    "coordinate_interpretation": 1668,
+    "title": 5710
+  },
+  "description": "Derive a coordinate-based PSGC layer from the retained observations.",
+  "input": {
+    "path": "master_list/data/processing/observations.jsonl.gz",
+    "sha256": "d93edd40b998e919a8f2f50256fc76a4aaf236bc33cf7847b2d4f32f14c6b26c"
+  },
+  "method": "coordinate_psgc_v1",
+  "output_sha256": {
+    "coordinate_psgc.jsonl.gz": "e22f41c6d31ae992380f65262b3a95f1d0bb905f6b55617cc495867f265e6217"
+  },
+  "points": {
+    "resolved": 9965,
+    "unresolved": 95
+  },
+  "records_with_points": 7378
+}
