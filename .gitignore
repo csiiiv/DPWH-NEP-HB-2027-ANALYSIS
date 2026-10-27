@@ -96,3 +96,9 @@ analysis/data/congress_district_index_2027.json
 
 # Local-only plain exports exceeding Git's 100 MiB blob limit
 master_list/data/project_list.csv
+
+# Readable processing release, regenerated from the comparison/workbench JSONs.
+/master_list/data/processing/
+
+# Cleaned observation consumer release; rebuilt from audited evidence layers.
+/master_list/data/cleaned/

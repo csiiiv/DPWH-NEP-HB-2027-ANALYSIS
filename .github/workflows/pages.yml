@@ -11,6 +11,7 @@ on:
       - 'analysis-nia/**'
       - 'analysis-hfep/**'
       - 'gps-analysis/**'
+      - 'master_list/**'
       - 'dpwh_coor2psgc_geomapping'
       - '.gitmodules'
       - 'site/**'
@@ -34,6 +35,7 @@ on:
       - 'analysis-nia/**'
       - 'analysis-hfep/**'
       - 'gps-analysis/**'
+      - 'master_list/**'
       - 'dpwh_coor2psgc_geomapping'
       - '.gitmodules'
       - 'site/**'
@@ -145,6 +147,14 @@ jobs:
           # would silently drop their coverage in CI.
           npm run build
           npm test
+      - name: Check processing release, enriched master list and viewer
+        run: |
+          python3 master_list/scripts/build_processing_dataset.py --check
+          python3 master_list/scripts/build_master_list.py --check
+          python3 master_list/scripts/build_location_interpretations.py --check
+          python3 master_list/scripts/build_cleaned_dataset.py
+          python3 master_list/scripts/build_viewer.py --check
+          python3 -m unittest discover -s master_list/tests -v
       - name: Package SPA, DPWH, FMR, HFEP and NIA sources
         run: python3 scripts/build_pages.py --with-react
       - name: Check React navigation, sorting and real PDF range rendering
