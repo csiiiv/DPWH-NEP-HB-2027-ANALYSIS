@@ -1,6 +1,6 @@
 # Location scoring rules
 
-**Method:** `location_evidence_v6.2` · **Suggestion method:** `hierarchy_candidate_v4`  
+**Method:** `location_evidence_v6.5` · **Suggestion method:** `hierarchy_candidate_v6`
 **Canonical source:** `scripts/locations.py` (`SCORE_BASES`, `SCORE_BONUSES`,
 `SCORE_FLAG_BONUSES`, `SCORE_PENALTIES`) · **Machine-readable copy:**
 `data/audit.json` → `location_score_rules`
@@ -12,9 +12,77 @@ changes. This document is the human-readable reference; the code constants
 and `audit.json` rule tables are regenerated together on every build, and the
 tables below must match them exactly.
 
+The [multidimensional assessment proposal](MULTIDIMENSIONAL_SCORING.md)
+inventories the available source, geographic, spatial, identity and accounting
+context, including the applied-suggestion and coordinate-PSGC layers. It
+proposes separate evidence profiles and task-specific assessments; the active
+rules and weights below remain the current implementation.
+
+[Location interpretations](LOCATION_INTERPRETATIONS.md) now provides a
+separate implemented profile for candidate title readings and contextual
+agreement/conflict, including candidates that the strict selected hierarchy
+does not adopt. It keeps catalog parents intact and retains contradictions
+without removing the candidate. Its method is `location_interpretations_v6`.
+The separate [candidate support rules](CONTEXT_SCORING.md),
+`context_evidence_v3`, add experimental text/spatial/context/registry scores
+and trial checks. They do not replace the numeric `location_evidence_v6.5`
+ledger described below. The browser labels these **Master score** and
+**Candidate support**, respectively.
+
+## Input and observation scope
+
+Version 6.3 adds explicit numbered-barangay matching against complete catalog
+names (`Barangay 898`, including `Brgy.`/`No.` forms and catalogued suffixes).
+Bare numbers and station values are not indexed as barangay names. City
+scoping follows the full ancestry through submunicipalities, so Manila's
+district level does not block a valid city match. The point weights below
+are unchanged; the parser revision is recorded in the
+[v6.3 work log](LOCATION_CONFIDENCE_AND_ROADMAP.md#what-changed-in-v63-numbered-barangays-and-manila-ancestry).
+
+The master builder consumes the validated
+[readable processing release](PROCESSING_DATASET.md), then adds location
+evidence to each source observation. Its location matcher reads `title_clean`
+alongside structured locality headings and source context; the record stores
+`location_title_field = title_clean`. Original `title`/`title_source` and the
+applied `title_clean_rules` remain available for audit.
+
+Readable cleanup is versioned as `readable_title_v1`. Joining split `ñ`,
+composing Unicode and repairing whitespace/entities can change which catalog
+names the parser recognizes without changing these scoring weights. Cleanup
+adds no points by itself. The current score method remains
+`location_evidence_v6.5`; the
+[roadmap migration entry](LOCATION_CONFIDENCE_AND_ROADMAP.md#processing-release-migration-2026-10-26)
+records the resulting code/status/score changes.
+
+`location.score`, `location.score_factors`, `location.status` and
+`location.needs_review` belong to an individual source observation. Comparison
+match methods, similarity values and membership are separate upstream findings.
+The browser expands a group into its observations without combining their
+scores or assigning one member's location to the others. Stage amounts also
+remain separate.
+
+The [v6.4 revision](LOCATION_CONFIDENCE_AND_ROADMAP.md#what-changed-in-v64-missing-commas-and-connected-review-suggestions)
+reuses complete catalog-validated compact components in ordered parent-chain
+matching. Missing commas do not require editing source titles. The same
+reader supplies unmarked parent-chain review candidates, including conflicting
+printed provinces. Their suggestion factor is +2 for an unmarked chain,
+versus +4 for an explicit barangay mention; the main score tables are unchanged.
+Unmarked hypotheses carry `review_only: true` and cannot be auto-applied.
+The browser joins interpretation dimensions into the hierarchy-review cards;
+context-only cards have no numeric title support or combined confidence score.
+
+The [v6.5 revision](LOCATION_CONFIDENCE_AND_ROADMAP.md#what-changed-in-v65-province-supported-barangay-reviews-and-record-inspection)
+also permits explicit barangay review candidates scoped by printed province
+or office province when no named-parent candidate fits. Their support includes
+only available factors: no parent-town factor is invented. They remain
+`review_only` regardless of numeric support. Station suffixes stop masking
+locality components while original titles and retained chainage stay intact.
+The main evidence weights below remain unchanged.
+
 ## How the layers apply
 
-Scores are computed bottom-up in one pass: a single resolution **base** is
+The final scoring pass follows title/heading resolution, source-region checks
+and the retained bridge-registry join. A single resolution **base** is
 chosen first, then **evidence bonuses** and **corroboration bonuses** are
 added for independently observed cues, then **coherence bonuses** for flags
 that record internally consistent structure, and finally **penalties** for
@@ -24,7 +92,8 @@ contradictions and unresolved mentions. Every applied item is recorded in
 
 ```mermaid
 flowchart TD
-    T[Title + structured headings<br/>+ source region / office hints] --> P
+    S[Processing observation:<br/>source title + cleanup metadata] --> T
+    T[Readable title_clean + structured headings<br/>+ source region / office hints] --> P
 
     subgraph P["1 · PARSE — collect candidate mentions"]
         P1[Normalize spelling<br/>Sta./Sto., Pob., historical names,<br/>stn guard for chainage,<br/>drop single-letter initials] --> P2
@@ -144,7 +213,19 @@ recorded, not punished.
 - Registry evidence never overrides a title-asserted location: agreements
   score, disagreements flag (−3), and only fully unresolved titles adopt the
   registry chain as `registry_matched`.
-- `needs_review` is any status other than `name_matched` or any flag present.
+- The name parser sets `needs_review` when its status differs from
+  `name_matched` or it has review flags. The master enrichment has explicit
+  exceptions: allocations have `allocation_not_site`, score 0 and
+  `needs_review = false`; adopting a unique registry chain sets
+  `registry_matched` and `needs_review = false`. Source-region or registry
+  conflicts can trigger review. Read the stored field alongside status and
+  factors; `false` does not establish human verification.
+- Parsed title coordinates and normalized FMR coordinate pairs are retained
+  without adding score factors. The documented bridge-registry factors use
+  retained registry/spatial evidence. Legislative-district lookups are unscored.
+- `not_compared` is a comparison-scope classification. `allocation_not_site`
+  is a location outcome. Outside-scope GAS/S2O allocations have both properties,
+  while some operations-scope allocations belong to comparison groups.
 
 ## Worked examples
 
@@ -166,3 +247,9 @@ a changelog section in
 [LOCATION_CONFIDENCE_AND_ROADMAP.md](LOCATION_CONFIDENCE_AND_ROADMAP.md).
 Rule tables in this document, the code constants, and `audit.json` are
 updated together in the same commit; a mismatch between them is a defect.
+
+Readable preprocessing uses its own method identifier. When that input layer
+changes, retain its original/clean titles and rules, rebuild processing →
+master → viewer, and report location-result changes even if the location-rule
+method stays the same. The [roadmap](LOCATION_CONFIDENCE_AND_ROADMAP.md) keeps
+historical measurements separate from the current retained-build statistics.

@@ -20,6 +20,45 @@ class TitleLocations(unittest.TestCase):
         cls.matcher = Matcher([json.loads(s) for s in
             (ROOT / 'PSGC2LEG/data/psgc_locations.jsonl').read_text().splitlines()])
 
+    def test_coordinate_psgc_layer_is_derived_and_pinned(self):
+        """The coordinate-PSGC dataset derives from the processing
+        observations' GPS points through the local shapefiles and never
+        mutates its input."""
+        data = ROOT / 'master_list/data'
+        audit_path = data / 'coordinate_psgc_audit.json'
+        self.assertTrue(audit_path.exists(), 'coordinate layer must be built')
+        audit = json.loads(audit_path.read_text())
+        self.assertEqual(audit['method'], 'coordinate_psgc_v1')
+        self.assertEqual(audit['input']['path'],
+                         'master_list/data/processing/observations.jsonl.gz')
+        self.assertEqual(hashlib.sha256(
+            (ROOT / 'master_list/data/processing/observations.jsonl.gz').read_bytes()).hexdigest(),
+            audit['input']['sha256'])
+        rows = [json.loads(s) for s in gzip.open(
+            data / 'coordinate_psgc.jsonl.gz', 'rt', encoding='utf-8')]
+        self.assertEqual(len(rows), audit['records_with_points'])
+        self.assertEqual(sum(audit['agreement_counts'].values()), len(rows))
+        self.assertEqual(audit['points']['resolved'] + audit['points']['unresolved'],
+                         sum(r['point_count'] for r in rows))
+        # Every resolved point carries a catalog-true chain; the reorg
+        # bridges must hold (pre-reorg provinces resolve to current codes).
+        for row in rows:
+            for point in row['points']:
+                if point['chain']:
+                    self.assertIn('region', point['chain'])
+                    prov = point['chain'].get('province')
+                    if prov:
+                        self.assertNotIn(prov['code'],
+                                         ('0604500000', '0704600000', '0706100000',
+                                          '1906600000', '0630200000'),
+                                         f"unbridged pre-reorg province in {row['record_id']}")
+        # The flagship source-error case: Talakag, Palawan title whose GPS
+        # points sit in San Isidro, Talakag, Bukidnon.
+        talakag = next(r for r in rows if r['record_id'] == 'fmr_hgab:ib:p701:r10')
+        self.assertEqual(talakag['agreement'], 'single_barangay')
+        codes = {p['chain']['barangay']['code'] for p in talakag['points'] if p['chain']}
+        self.assertEqual(codes, {'1001320027'})
+
     def test_applied_suggestions_layer_is_derived_and_pinned(self):
         """The applied-suggestions dataset derives from the master list with
         the documented gate and never mutates its input."""
@@ -55,6 +94,16 @@ class TitleLocations(unittest.TestCase):
         lipa = [r for r in rows if 'Lipa' in r['title']]
         self.assertFalse(any(r['applied']['ancestry'].get('city', {}).get('name')
                              == 'Batangas City' for r in lipa))
+        # a barangay under a town whose ancestry CONTAINS the master's
+        # province-only assignment is a refinement and must apply
+        # (Magsaysay, Misamis Oriental bypass: support 11, no conflicts).
+        magsaysay = [r for r in rows if r['record_id'] == 'dpwh_house_second:c2962']
+        self.assertEqual(len(magsaysay), 1, 'Magsaysay bypass record must be applied')
+        self.assertEqual(magsaysay[0]['applied']['psgc_code'], '1004317016')
+        # blocked rows still count exactly; rivals remain only where the
+        # chain's town genuinely differs from the master assignment.
+        blocked = audit['blocked_by_reason']
+        self.assertLessEqual(blocked.get('rivals_master_assignment', 0), 18)
 
 
     def test_town_disambiguated_by_province(self):
@@ -76,6 +125,32 @@ class TitleLocations(unittest.TestCase):
         self.assertEqual(result['score'], 0)
         self.assertEqual(result['locations'], [])
         self.assertIn('1400100000', result['candidate_codes'])
+
+    def test_misspelled_office_still_yields_its_province_hint(self):
+        """Office labels carry OCR slips (Misamis Occidenatal, 106 records)
+        while the printed label must stay untouched. The hint is computed
+        through the shared place-spelling home so the repair reaches this
+        weak context path too, and homonym-guarded names (Siquijor is also
+        a municipality) still yield no hint."""
+        from build_master_list import apply_place_spellings
+        self.assertEqual(
+            self.matcher.province_code(apply_place_spellings(
+                'Misamis Occidenatal 2nd District Engineering Office')),
+            '1004200000')
+        self.assertEqual(
+            self.matcher.province_code(apply_place_spellings(
+                'Marindugue District Engineering Office')),
+            '1704000000')
+        # Raw label stays what the source printed; the repair is join-time.
+        self.assertEqual(apply_place_spellings('Misamis Occidenatal 2nd District Engineering Office'),
+                         'Misamis Occidental 2nd District Engineering Office')
+        # The hint is ordering context only: it never appears as a location.
+        result = self.matcher.match('Preventive Maintenance along Gapan-Fort Magsaysay Rd',
+                                    (), None,
+                                    self.matcher.province_code(apply_place_spellings(
+                                        'Nueva Ecija 2nd District Engineering Office')))
+        self.assertEqual(result['status'], 'unresolved')
+        self.assertEqual(result['locations'], [])
 
     def test_province_name_does_not_assert_same_named_city(self):
         result = self.matcher.match('Construction of Road, Cebu')
@@ -418,11 +493,114 @@ class TitleLocations(unittest.TestCase):
         result = self.matcher.match(
             'Construction of Road with Approach of Kaibayo Bridge, '
             'Barangay 1 - Barangay 5, Catanauan, Quezon', (), '0400000000')
-        self.assertEqual(result['status'], 'name_matched')
-        self.assertEqual([l['name'] for l in result['locations']], ['Barangay 1'])
-        self.assertEqual(result['locations'][0]['ancestry']['municipality']['name'],
-                         'Catanauan')
+        self.assertEqual(result['status'], 'multiple_locations')
+        self.assertEqual({l['name'] for l in result['locations']}, {'Barangay 1', 'Barangay 5'})
+        self.assertTrue(all(l['ancestry']['municipality']['name'] == 'Catanauan'
+                            for l in result['locations']))
         self.assertNotIn('ambiguous_barangay_name', result['review_flags'])
+
+    def test_bagacay_province_and_office_offer_all_supported_review_chains(self):
+        title = ('Construction of Road, Barangay Bagacay, San Jose-Partido, '
+                 'Camarines Sur Sta. 0+706 - Sta. 1+256')
+        result = self.matcher.match(title, (), '0500000000', '0501700000')
+        self.assertEqual([l['psgc_code'] for l in result['locations']], ['0501700000'])
+        self.assertEqual({s['location']['psgc_code'] for s in result['suggestions']},
+                         {'0501718003', '0501733002', '0501737003'})
+        self.assertEqual({s['support_score'] for s in result['suggestions']}, {10})
+        for suggestion in result['suggestions']:
+            self.assertTrue(suggestion['review_only'])
+            self.assertNotIn('named_parent_town', [f['rule'] for f in suggestion['factors']])
+        san_jose = [e for e in result['evidence'] if e.get('text') == 'san jose']
+        self.assertTrue(san_jose)
+        self.assertFalse(any(e.get('locality_syntax') for e in san_jose))
+
+    def test_office_can_scope_explicit_barangay_review_without_assigning_site(self):
+        result = self.matcher.match('Road, Barangay Bagacay', (), None, '0501700000')
+        self.assertEqual(result['locations'], [])
+        self.assertEqual(len(result['suggestions']), 3)
+        self.assertTrue(all(s['review_only'] for s in result['suggestions']))
+
+    def test_station_trimming_preserves_later_comma_localities(self):
+        result = self.matcher.match('Road Sta. 0+100 - Sta. 1+200, Baliangao, Misamis Occidental')
+        self.assertEqual([l['psgc_code'] for l in result['locations']], ['1004202000'])
+
+    def test_missing_commas_preserve_mabini_barangay_parent_chain(self):
+        for suffix in ('Mabini, Baliangao Misamis Occidental',
+                       'Mabini Baliangao, Misamis Occidental',
+                       'Mabini Baliangao Misamis Occidental'):
+            with self.subTest(suffix=suffix):
+                result = self.matcher.match('Construction of Road, Sitio Bigaan, ' + suffix,
+                                            (), '1000000000')
+                self.assertEqual([l['psgc_code'] for l in result['locations']], ['1004202005'])
+                self.assertEqual(result['review_flags'], [])
+                self.assertFalse(any(e.get('text') == 'bigaan' for e in result['evidence']
+                                     if e['field'] == 'title_barangay'))
+
+    def test_unmarked_conflicting_chain_is_suggested_for_review(self):
+        from build_applied_suggestions import gate_pass
+        for suffix in ('Mabini, Baliangao, Palawan', 'Mabini, Baliangao Palawan'):
+            result = self.matcher.match('Road, ' + suffix, (), '1000000000', '1004200000')
+            candidate = next(s for s in result['suggestions']
+                             if s['location']['psgc_code'] == '1004202005')
+            self.assertIn('named_province_conflict', candidate['conflicts'])
+            self.assertTrue(candidate['review_only'])
+            # Even strong administrative context cannot auto-apply an
+            # unmarked review reading.
+            self.assertIsNone(gate_pass([{**candidate, 'support_score': 100, 'conflicts': []}]))
+
+    def test_road_qualifiers_do_not_supply_missing_comma_parent_chain(self):
+        result = self.matcher.match('Construction of Mabini Baliangao Road, Misamis Occidental')
+        self.assertNotIn('1004202005', [l['psgc_code'] for l in result['locations']])
+        self.assertFalse(self.matcher.parent_chain_mentions(
+            'Road (Mabini Baliangao Misamis Occidental)'))
+
+    def test_numbered_manila_bridge_endpoints_resolve_without_city_guess(self):
+        title = ('Construction of Cable Bridge from Punta Barangay 898 to Beata St. '
+                 'Barangay 839 Sta. 0 - Sta. 180')
+        result = self.matcher.match(title, (), '1300000000')
+        self.assertEqual(result['status'], 'multiple_locations')
+        self.assertEqual({l['psgc_code'] for l in result['locations']},
+                         {'1380614091', '1380612007'})
+        self.assertEqual({l['ancestry']['sub_municipality']['name'] for l in result['locations']},
+                         {'Santa Ana', 'Pandacan'})
+        for loc in result['locations']:
+            self.assertEqual(loc['ancestry']['city']['name'], 'City of Manila')
+            self.assertNotIn('province', loc['ancestry'])
+        self.assertFalse(result['review_flags'])
+        mentions = [e['text'] for e in result['evidence'] if e['field'] == 'title_barangay']
+        self.assertEqual(mentions, ['barangay 898', 'barangay 839'])
+        self.assertNotIn('santa', mentions)
+
+    def test_numbered_barangay_scopes_through_manila_submunicipality(self):
+        for label in ('Barangay 898', 'Brgy. 898', 'Brgy. No. 898'):
+            with self.subTest(label=label):
+                result = self.matcher.match(f'Road, {label}, City of Manila')
+                self.assertEqual([l['psgc_code'] for l in result['locations']], ['1380614091'])
+                self.assertNotIn('barangay_mentioned_but_unmatched', result['review_flags'])
+
+    def test_shared_number_is_not_automatically_manila(self):
+        result = self.matcher.match('Road, Barangay 180')
+        self.assertEqual(result['locations'], [])
+        self.assertIn('ambiguous_barangay_name', result['review_flags'])
+        self.assertEqual(len([e for e in result['evidence'] if e['field'] == 'title_barangay']), 1)
+        scoped = self.matcher.match('Road, Barangay 180, City of Caloocan')
+        self.assertEqual([l['psgc_code'] for l in scoped['locations']], ['1380100180'])
+
+    def test_station_and_unmarked_numbers_do_not_become_barangays(self):
+        for title in ('Works at Sta. 898 - Sta. 839', 'Construction between 898 and 839'):
+            result = self.matcher.match(title)
+            self.assertEqual(result['locations'], [])
+            self.assertFalse(any(e['field'] == 'title_barangay' for e in result['evidence']))
+
+    def test_numbered_suffix_is_kept_and_missing_label_does_not_reverse_to_punta(self):
+        result = self.matcher.match('Road, Barangay 18-A, Gingoog City, Misamis Oriental')
+        self.assertEqual([l['name'] for l in result['locations']], ['Barangay 18-A'])
+        for title in ('Bridge from Punta Barangay 99999', 'Bridge from Punta Barangay 898-Z'):
+            unknown = self.matcher.match(title)
+            self.assertEqual(unknown['locations'], [])
+            self.assertIn('barangay_mentioned_but_unmatched', unknown['review_flags'])
+            self.assertFalse(any(e['field'] == 'title_barangay' and e['text'] == 'punta'
+                                 for e in unknown['evidence']))
 
     def test_marker_part_before_city_of_phrase_is_not_a_town(self):
         # "Barangay Sta. Cruz, City of San Jose Del Monte": the barangay

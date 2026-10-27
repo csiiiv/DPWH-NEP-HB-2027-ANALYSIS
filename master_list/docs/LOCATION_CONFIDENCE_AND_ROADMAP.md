@@ -1,8 +1,8 @@
 # Master list location evidence: work log and roadmap
 
-**Status:** additive evidence version 6.2 built and verified on the readable processing release (2026-10-26)\
+**Status:** additive evidence version 6.5 built and verified on the readable processing release (2026-10-26)\
 **Score field:** `location.score` · **Scoring rules:** [SCORING_RULES.md](SCORING_RULES.md)\
-**Method identifier:** `location_evidence_v6.2` · **Title cleanup:** `readable_title_v1`
+**Method identifier:** `location_evidence_v6.5` · **Title cleanup:** `readable_title_v1`
 
 This document records what the master-list work has done, how the location
 parser now reasons about place mentions, and how the raw scores should be
@@ -14,6 +14,73 @@ titles, comparison membership and the browser contract. Use
 [SCORING_RULES.md](SCORING_RULES.md) for the current factors and weights. This
 document connects that pipeline to the location methodology, historical
 changes, current build statistics and remaining review work.
+
+The [multidimensional assessment inventory and proposal](MULTIDIMENSIONAL_SCORING.md)
+examines the next step: separate source fidelity, geographic identification,
+context agreement, spatial support, counterpart identity and financial
+consistency. It includes the retained applied-suggestion and coordinate-PSGC
+layers. These are proposed assessment dimensions; `location_evidence_v6.5`
+remains active.
+
+The first location-focused implementation is
+[location interpretations](LOCATION_INTERPRETATIONS.md), method
+`location_interpretations_v6`: multiple title and parent-chain readings with
+separate contextual/spatial assessments. A printed province/region mismatch
+retains the candidate for review while its catalog ancestry stays intact.
+The layer and browser preserve existing master assignments and scores.
+
+## Candidate scoring prototype (2026-10-26)
+
+[Candidate support](CONTEXT_SCORING.md), method `context_evidence_v3`, adds
+text, spatial, context and registry subscores to selected/review candidates.
+The total is experimental and uncalibrated. Explicit gates produce dry-run
+proposals with scope, blockers and warnings; a high total cannot override a
+conflict or incomplete mapping. The browser exposes these alongside the
+unchanged master score, including a trial-ready filter and per-candidate
+factors. Master assignments and the existing applied-suggestion artifacts
+remain unchanged.
+
+The Marikina Polytechnic College example retains master score 0 while its
+GPS-derived Santa Elena candidate receives support 7 (spatial 6, NCR context
+1). Its trial proposal describes the observed point, not the full project
+extent. Coordinate-reference freshness remains explicitly unassessed.
+
+The v2 candidate assessment adds qualitative evidence quality and scope fit,
+retained repairs/review flags, separate registry identity/location readings,
+per-level hierarchy support and explicit alternatives. The four component
+weights stay unchanged. Recorded coordinate review flags and point-count
+inconsistencies block a trial; missing reference freshness remains a warning.
+The viewer names the best assessed candidate and exposes quality/scope and
+ambiguity details, along with filters for review, partial scope and competing
+candidates. Audit/report counts describe the retained build.
+
+Candidate scoring v3 and profile v6 add `office_context_v1`, using the archived
+office-name/region codebook rather than legislative-district relationships.
+Exact aliases and readable office cleanup produce administrative province,
+city or multi-city associations. A title-derived barangay can receive a
+review chain through this context without coordinates; an office alone still
+creates no site. The office contribution remains capped at +1 / −1, with
+ambiguous, broad regional and conflicting source labels unscored. The viewer
+retains those labels, interpretations and review notes. Legislative-district
+derivation remains a later step after geographic identification.
+
+The [cleaned observation review contract](REVIEW_DATA_CONTRACT.md) now provides
+`review_catalog_v1`: six clarification-question codes, five question statuses
+and five location statuses, with shared wording and a reference validator.
+At that contract-only stage, flag generation, review events and candidate
+adoption were pending; the catalog did not change evidence or viewer artifacts.
+
+The subsequent [cleaned consumer release](CLEANED_DATASET.md), schema
+`cleaned_observations_v1`, now implements provisional candidate adoption and
+three conservative location-question rules. It preserves processing source
+values, original master evidence and all observation identities in separate
+audited JSONL/CSV products. City/municipality is its declared target; GPS
+selections describe observed points. See `data/cleaned/REPORT.md` for generated
+counts. Human review events remain pending. The viewer now includes a
+**Cleaned data** tab with provisional selected locations, per-location support,
+catalog-based clarification filters and exact evidence in the record modal.
+Manifest schema 7 pins the cleaned release. Source data views and the original
+evidence/scoring ledgers remain separately retained.
 
 ## Current pipeline and record layers
 
@@ -237,17 +304,17 @@ parser does not count that phrase as an independent parent assertion.
 
 ## Current corpus distribution
 
-Snapshot: **2026-10-26**. The processing-backed `location_evidence_v6.2` build spans scores from `-8`
-to `15` across all 64,645 source observations. The most common totals are:
+Snapshot: **2026-10-26**. The processing-backed `location_evidence_v6.5` build spans scores from `-8`
+to `16` across all 64,645 source observations. The most common totals are:
 
 | Raw score | Source observations |
 |---:|---:|
-| 11 | 22,849 |
-| 0 | 17,072 |
-| 7 | 5,333 |
-| 9 | 4,572 |
-| 5 | 4,280 |
-| 8 | 3,458 |
+| 11 | 23,138 |
+| 0 | 16,994 |
+| 7 | 5,651 |
+| 9 | 4,900 |
+| 5 | 3,962 |
+| 8 | 3,534 |
 
 The complete distribution and per-dataset counts are in
 [REPORT.md](../data/REPORT.md) and [audit.json](../data/audit.json). The
@@ -255,9 +322,9 @@ The complete distribution and per-dataset counts are in
 These clusters reflect the rules and source formats; they are not validated
 accuracy classes or group-level scores.
 
-Current statuses include 11,393 `unresolved`, 1,655 `registry_matched`,
-85 `ambiguous`, and 5,850 `allocation_not_site` observations. The location
-review queue contains 23,736 observations. The allocation count includes
+Current statuses include 11,291 `unresolved`, 1,655 `registry_matched`,
+71 `ambiguous`, and 5,850 `allocation_not_site` observations. The location
+review queue contains 22,903 observations. The allocation count includes
 operations-scope allocation rows as well as the 5,044 outside-scope GAS/S2O
 observations; `allocation_not_site` and `not_compared` describe different
 properties.
@@ -511,7 +578,7 @@ barangays the title explicitly names under their city.
 The master builder and browser now reuse the pregenerated comparison/source
 release described above. The location-resolution rules and weights remain
 `location_evidence_v6.2`; the input cleanup is tracked separately as
-`readable_title_v1`. The current release changes 270 DPWH NEP PDF display/matcher
+`readable_title_v1`. That migration changed 270 DPWH NEP PDF display/matcher
 titles by joining split `ñ` sequences while preserving their original titles.
 
 Compared with the retained pre-migration master JSONL at commit `85be6d3`,
@@ -531,6 +598,158 @@ cleanup, not human verification of sites. Totals and comparison membership
 remain governed by their independent source controls and upstream matches.
 Historical version-change counts above describe their named releases;
 the dated current-corpus section describes the latest retained build.
+
+## What changed in v6.3: numbered barangays and Manila ancestry
+
+An explicit `Barangay 898` marker supplies a complete catalog name. Previously
+the marker parser looked up only the following `898`, which was intentionally
+absent from the global bare-name index. Reverse fallback could then read
+`Punta` before the marker and miss both numbered endpoints.
+
+Version 6.3 matches the full numbered name only after an explicit barangay
+marker, including `Brgy. No.` forms and catalogued suffixes such as `18-A`.
+An unknown number or suffix stays unmatched rather than falling back to a
+preceding locality or shortening the label. Bare numeric text and `Sta.`
+station values do not create barangay claims.
+
+Town/city scoping follows actual catalog ancestry through submunicipalities.
+This preserves Manila's barangay → submunicipality → city → region chain,
+without inventing a province. Numbers are never assumed to imply Manila:
+`Barangay 180`, for example, has candidates in Manila, Caloocan and Pasay in
+the retained catalog and needs further context.
+
+The reported cable-bridge title now resolves both printed endpoints:
+
+| Printed locality | PSGC code | Submunicipality | City |
+|---|---|---|---|
+| Barangay 898 | `1380614091` | Santa Ana | City of Manila |
+| Barangay 839 | `1380612007` | Pandacan | City of Manila |
+
+The title's `Sta. 0 - Sta. 180` remains station notation. The record receives
+`multiple_locations`, preserving both endpoints. Matching two named barangays
+does not establish the complete bridge alignment. The same full-name rule
+also recovers both Barangay 1 and Barangay 5 in the Catanauan endpoint case,
+where the previous reverse fallback retained only Barangay 1.
+
+The numeric weights remain those of v6.2. This is a parsing revision under
+`location_evidence_v6.3`; source titles, IDs, amounts and comparison membership
+remain governed by their existing ledgers. The latest distribution is in
+the current-corpus section and the generated report/audit.
+
+Compared with the immediately preceding processing-backed v6.2 build,
+777 observations change assigned PSGC code sets, 42 change status and
+1,111 change score. The review queue falls from 23,736 to 22,931. These
+are parser effects, not measured accuracy improvements. All 64,645 source
+IDs, datasets, original titles and amounts are unchanged. The two retained
+House observations for the cable bridge change from unresolved (score -3)
+to two named endpoints (score 6); they still require review as a
+multiple-location reading. Broader effects include numbered barangays in
+Bacolod, Cagayan de Oro and other cities, and preserving both endpoints
+in titles that combine numbered and named barangays.
+
+## What changed in v6.4: missing commas and connected review suggestions
+
+The parent-chain reader now splits a compact locality component only when
+catalog names cover its complete wording. Assignment requires a coherent,
+ordered ancestry; a road/facility qualifier or balanced parenthetical
+reference cannot acquire that syntax. A leading barangay need not also be
+a municipality name. The original source title and punctuation are preserved.
+
+For example, all three suffixes identify Barangay Mabini (`1004202005`),
+Baliangao, Misamis Occidental:
+
+- `Mabini, Baliangao Misamis Occidental`
+- `Mabini Baliangao, Misamis Occidental`
+- `Mabini Baliangao Misamis Occidental`
+
+`Sitio Bigaan` remains printed sitio context without an invented PSGC code.
+The existing ordered barangay/municipality/province evidence weights apply;
+this revision changes parsing, not the point table.
+
+The same reader supplies less restrictive review hypotheses when the printed
+province disagrees. `hierarchy_candidate_v5` accepts unmarked barangay/parent
+chains instead of requiring an earlier explicit-marker match. Their title
+factor is +2 (`unmarked_barangay_parent_chain`), versus +4 for an explicit
+barangay mention; existing parent/context factors remain. These candidates
+carry `review_only: true`, which the applied-suggestion builder rejects
+regardless of support score or margin. Contradictory evidence stays visible.
+
+`location_interpretations_v3` shares those candidate readings and materializes
+`review_suggestion_codes` from all assessed candidates, before browser preview
+limits. Unassigned asserted locality alternatives with parent/context support,
+mapped-coordinate chains, registry chains and legacy suggestions can enter
+this review collection. Unscoped barangay homonyms need a named parent,
+specific heading, GPS or registry evidence; town alternatives may also use
+province, region or office agreement. Conflicts remain visible in other
+dimensions and do not remove a candidate that meets these inclusion rules.
+Selected chains and their already-explained ancestors are excluded from new
+context suggestions. Reference-only road names and office context alone do
+not create a review suggestion.
+
+The browser's **Suggested hierarchies for review** now joins the legacy title
+support with each candidate's title, named parent, printed province, source
+region, headings, office, registry and spatial assessments. It displays
+context candidates with separate assessments. The later candidate scoring
+prototype adds an experimental total and trial checks. Missing GPS remains
+unassessed, and conflicts are shown rather than deleting the candidate.
+Eight cards are previewed per observation; all candidate codes and full
+assessments remain in the interpretation JSONL. CSV suggestion-code fields
+include the joined review candidates; blank support-score slots denote
+context candidates without a legacy numeric title score.
+
+Measured against the processing-backed v6.3 build: assigned code sets change
+for 46 observations, statuses for 24 and raw scores for 54. All 64,645 source
+IDs, datasets, original titles and amounts are preserved. The Mabini road
+observations now select `1004202005` with no province-conflict flag.
+
+## What changed in v6.5: province-supported barangay reviews and record inspection
+
+A recognizable explicit barangay can have useful provincial evidence even
+when its municipality is missing or unreadable. `hierarchy_candidate_v6`
+now retains exact-name barangay chains under a printed province or an
+unambiguous office-province hint when no named-parent candidate fits.
+These chains are review-only. No municipality is invented, unmatched text
+adds no points, and an office name alone creates no site or name candidate.
+
+Station annotations are removed from the locality-reading copy of each comma
+component; later comma components survive. The source title, station range
+and upstream chainage remain unchanged. A printed `Camarines Sur Sta. 0+706 -
+Sta. 1+256` can therefore provide province context. Other road/facility
+qualifiers remain subject to the existing locality-syntax checks.
+
+For the reported `Barangay Bagacay, San Jose-Partido, Camarines Sur` title,
+three Bagacay barangays match that province: Libmanan (`0501718003`), San Jose
+(`0501733002`) and Tinambac (`0501737003`). All receive support 10: explicit
+barangay +4, printed province +2, region +2 and office province +2. No named
+parent-town factor applies. `San Jose-Partido` remains unmatched wording;
+it is not rewritten into a PSGC municipality. The three alternatives remain
+review-only even though their support reaches the numeric gate threshold.
+
+`location_interpretations_v3` carries those province/office-supported
+suggestions into the separate context profiles. The existing office is
+`Camarines Sur 4th District Engineering Office`; the retained province hint
+is Camarines Sur. Its district number is not treated as a PSGC municipality
+or legislative-district assignment.
+
+A new **Record details** column opens a modal from each observation,
+including observations inside expanded comparison groups. It shows the
+printed office/region, headings/source path and extraction, full master
+candidate/score ledger, original and readable titles, raw coordinate evidence,
+retained upstream analysis (including chainage/normalization when supplied),
+full interpretation candidates, applied/GPS layers and comparison-stage
+context. A JSON download preserves all these fields. The details are not
+limited to the eight-candidate table preview.
+
+Detail packets are companion scripts under `data/record_details/`, loaded only
+when requested. They work over HTTP and alongside the offline HTML. The
+self-contained list continues to open without them; offline modal inspection
+requires keeping that folder. The manifest pins every generated packet, and
+regressions compare every bundled master record and profile against its input.
+
+Measured against v6.4: 182 observations change assigned code sets, 154 change
+status and 757 change raw score. All 64,645 source IDs, datasets, original
+titles and amounts are unchanged. These are parsing/coverage effects rather
+than a measured accuracy increase.
 
 ## What we are doing now
 
@@ -563,6 +782,18 @@ See [PROCESSING_DATASET.md](PROCESSING_DATASET.md#generate-and-verify) for
 individual commands, freshness checks and upstream generation order.
 
 ## What we plan to do
+
+### Develop separate assessment dimensions
+
+Use the [evidence inventory](MULTIDIMENSIONAL_SCORING.md) to define the question,
+applicability and provenance of each assessment before assigning new weights.
+Begin with explicit supported/conflicting/unknown/not-applicable states,
+location precision and extent, and evidence coverage. Keep shared derivations
+visible: promoting a parser suggestion is not independent corroboration, and
+a coordinate's PSGC chain and derived district share its provenance.
+Evaluate per-claim profiles and task-specific review filters before replacing
+or combining existing numeric scores. The existing review and calibration
+work below applies to each proposed dimension.
 
 ### 1. Review a stratified benchmark
 
@@ -626,14 +857,36 @@ support_score ≥ 9, no `named_province_conflict` / `source_region_conflict`
 sole), the chain's parent town genuinely named in the title (a town
 homonym riding a province-name pool — Batangas City via the province
 Batangas — never applies), and the application must refine or fill the
-master assignment, never rival it. First build: 82 of 579
-suggestion-bearing records applied (180 below score, 247 margin, 22
-conflicting, 30 town-not-in-title, 18 rival blocked); every application
-is a barangay refining a master municipality/city assignment or filling
-an ambiguous record. Applied rows stay `provisional_applied_suggestion`
+master assignment, never rival it. A refinement is recognized in both
+directions: the master location may be the town itself or an ancestor of
+it, or the chain's ancestry may contain a province-only master assignment
+(a barangay in Magsaysay, Misamis Oriental refines a
+Misamis-Oriental-only master). Current v6.5 build: 90 of 1464
+suggestion-bearing records applied (175 below score, 50 margin, 10
+conflicting, 37 town-not-in-title, 10 rival and
+1092 review-only candidates blocked); every application
+is a barangay refining a master municipality/city/province assignment or
+filling an ambiguous record. Applied rows stay `provisional_applied_suggestion`
 and remain review candidates — this is pre-review automation of the
 *strongest* suggestion class only, not a substitute for the stratified
 benchmark above.
+
+**Coordinate-PSGC layer (live, derived).** Every master record carrying GPS
+points (`coordinate_summary.points`) is resolved through the local PSGC
+barangay shapefiles (R-tree point-in-polygon) into a barangay-level chain in
+another separate, hash-pinned dataset (`data/coordinate_psgc.jsonl.gz`,
+method `coordinate_psgc_v1`, built by `scripts/build_coordinate_psgc.py`).
+The 2023 shapefiles predate the Negros Island and Sulu reorganizations, so
+chains are bridged to the current catalog: pre-reorg provinces map through
+a fixed table, moved municipalities and renumbered barangays bridge by
+code-suffix or name inside the bridged tree, and HUC "province" duplicates
+are dropped. First build: 7,378 coordinate-bearing records, 9,965/10,060
+points resolved (99.1%); 6,544 land in a single barangay, 620 in one
+municipality, 144 span municipalities. The layer is evidence for review,
+never an assignment — it is what surfaces source errors like the
+"Talakag, Palawan" FMR title whose GPS points sit in San Isidro, Talakag,
+Bukidnon. Manila shapefile districts (66 point hits) have no PSGC catalog
+equivalent and stay unnamed.
 
 ### 5. Improve names conservatively
 
@@ -647,7 +900,7 @@ boundary effective dates.
 Changes to location-resolution logic or scoring weights require a new location
 method identifier and documented rule changes. Readable preprocessing is
 versioned separately (`title_clean_method`); the current migration uses
-`readable_title_v1` while retaining the `location_evidence_v6.2` rules.
+`readable_title_v1`; location parsing now uses `location_evidence_v6.5`.
 Changes to either layer require rebuilding processing → master → viewer as
 applicable, reporting input/code/status/score changes, and running source-total,
 PSGC ancestry, export and browser checks. Preserve original titles, cleanup
