@@ -17,10 +17,13 @@ import tempfile
 
 from locations import (SCORE_BASES, SCORE_BONUSES, SCORE_FLAG_BONUSES, SCORE_METHOD,
                        SCORE_PENALTIES, Matcher, normalize, score_location)
+from processing_release import load_release, read_jsonl
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'gps-analysis'))
 from scan_gps_inventory import analyze_text
+sys.path.insert(0, str(ROOT / 'analysis/builders'))
+from normalize_labels import apply_place_spellings
 
 title_coordinates = lru_cache(maxsize=30000)(analyze_text)
 OUTPUT = ROOT / 'master_list/data'
@@ -159,7 +162,9 @@ def observations(inputs):
 
 
 CSV_FIELDS = ['record_id', 'dataset', 'agency', 'stage', 'fiscal_year', 'record_kind',
-              'title', 'amount_php', 'program', 'subprogram', 'source_region',
+              'title', 'title_source', 'title_clean', 'title_clean_method',
+              'comparison_group_id', 'comparison_stage',
+              'amount_php', 'program', 'subprogram', 'source_region',
               'implementing_office', 'location_status', 'psgc_codes', 'psgc_names',
               'psgc_levels', 'region_codes', 'province_codes', 'municipality_city_codes',
               'barangay_codes', 'leg_district', 'leg_district_label', 'leg_district_derivation',
@@ -354,6 +359,7 @@ def build(out):
     matcher = Matcher(catalog_rows)
     inputs = {p: {'sha256': sha(ROOT / p)} for p in [CATALOG, CATALOG_SUMMARY,
               'gps-analysis/scan_gps_inventory.py', 'gps-analysis/coordinate_parse.py']}
+    processing = load_release(inputs)
     bridge_registry, registry_paths = load_bridge_registry()
     for path in registry_paths:
         inputs[str(path.relative_to(ROOT))] = {'sha256': sha(path),
@@ -361,6 +367,9 @@ def build(out):
     leg_by_code, leg_districts, leg_path = load_leg_assignments()
     inputs[str(leg_path.relative_to(ROOT))] = {'sha256': sha(leg_path),
         'scope': 'Verified PSGC2LEG municipality-to-legislative-district assignments (read-only)'}
+    inputs['analysis/builders/normalize_labels.py'] = {
+        'sha256': sha(ROOT / 'analysis/builders/normalize_labels.py'),
+        'scope': 'Single home for label normalization; supplies the place-name OCR repairs applied to office labels at join time'}
     counts, sums, statuses, score_counts, kinds, review = Counter(), Counter(), {}, {}, {}, Counter()
     district_counts = {}
     coordinate_counts = Counter()
@@ -371,7 +380,7 @@ def build(out):
         writer, review_writer = [csv.DictWriter(s, fieldnames=CSV_FIELDS) for s in (cs, rs)]
         writer.writeheader()
         review_writer.writeheader()
-        for r in observations(inputs):
+        for r in read_jsonl('observations.jsonl.gz'):
             if r['record_id'] in seen:
                 raise ValueError(f'Duplicate source record: {r["record_id"]}')
             seen.add(r['record_id'])
@@ -380,15 +389,21 @@ def build(out):
             region_hint = matcher.region_code(r['source_region'])
             # An office province hint orders review suggestions only; it is
             # never assigned as a project site and never scores the record.
-            office_hint = matcher.province_code(r['implementing_office'])
+            # The label is repaired through the shared place-spelling layer
+            # first (Occidenatal->Occidental etc.), so a misspelled office
+            # still yields its province hint; the raw label is retained
+            # untouched on the record.
+            office_hint = matcher.province_code(
+                apply_place_spellings(r['implementing_office']))
             match = json.loads(json.dumps(matcher.match(
-                r['title'], tuple(r['structured_localities']), region_hint, office_hint)))
+                r['title_clean'], tuple(r['structured_localities']), region_hint, office_hint)))
             if is_allocation:
                 match = dict(status='allocation_not_site', method=None, verification_status=None,
                              locations=[], candidate_codes=[], suggestions=[], suggestion_method=None,
                              evidence=[],
                              review_flags=['allocation_is_not_a_project_site'], needs_review=False)
             r['location'] = match
+            r['location_title_field'] = 'title_clean'
             title_gps = title_coordinates(r['title']) if not is_allocation else None
             r['title_coordinate_evidence'] = title_gps
             coord = r.get('coordinate_interpretation') or title_gps or {}
@@ -430,7 +445,7 @@ def build(out):
             r['office_location_candidates'] = sorted({c for hit in matcher.find(r['implementing_office'])
                                                         for c in hit['codes']})
             r['office_province_hint'] = office_hint
-            r['title_key'] = normalize(r['title'])
+            r['title_key'] = normalize(r['title_clean'])
             dataset = r['dataset']
             counts[dataset] += 1
             if r['coordinate_summary']['point_count']:
@@ -474,8 +489,13 @@ def build(out):
     for dataset, amount in expected.items():
         if sums[dataset] != amount:
             raise ValueError(f'{dataset}: sum differs from source control')
-    audit = {'schema_version': 3, 'scope': 'Retained FY2027 project and allocation observations; source/stage ledgers overlap. Never sum across datasets.',
-             'identity_policy': 'One row per source observation; no cross-source project identity asserted.',
+    if len(seen) != processing['source_observations']:
+        raise ValueError('Master count differs from the validated processing release')
+    audit = {'schema_version': 4, 'scope': 'Retained FY2027 project and allocation observations; source/stage ledgers overlap. Never sum across datasets.',
+             'identity_policy': 'One row per source observation, linked to the existing upstream comparison groups; no certified physical-project identity asserted.',
+             'processing_dataset': {key: processing[key] for key in
+                 ('comparison_groups', 'compared_observations', 'not_compared_observations', 'title_clean_method')},
+             'title_policy': 'Preserve title/title_source; display and match locations against title_clean. Coordinate parsing retains the original title. Stage amounts and upstream analysis_record remain separate.',
              'legislative_district_policy': 'Lookup of the final assigned location through the verified PSGC2LEG municipality-to-district assignments; unscored and never new location evidence. Bridge-registry records carry the bridge coordinate-derived district.',
              'amount_checks': {key: {'expected_ledger_php': val, 'actual_php': sums[key],
                                      'difference_php': sums[key] - val} for key, val in expected.items()},
@@ -489,7 +509,7 @@ def build(out):
                                       'penalties': SCORE_PENALTIES},
              'input_files': inputs,
              'builder_sha256': {name: sha(Path(__file__).parent / name)
-                               for name in ['build_master_list.py', 'locations.py']},
+                               for name in ['build_master_list.py', 'locations.py', 'processing_release.py']},
              'records': len(seen), 'datasets': {key: {'records': counts[key], 'amount_php': sums[key],
                  'record_kinds': dict(kinds[key]), 'location_status': dict(statuses[key]),
                  'location_score_distribution': {str(score): count for score, count in

@@ -9,8 +9,8 @@ import re
 import unicodedata
 
 
-SCORE_METHOD = 'location_evidence_v6.2'
-SUGGESTION_METHOD = 'hierarchy_candidate_v4'
+SCORE_METHOD = 'location_evidence_v6.5'
+SUGGESTION_METHOD = 'hierarchy_candidate_v6'
 SCORE_BASES = {
     'allocation_not_site': 0,
     'unresolved': 0,
@@ -272,6 +272,20 @@ class Matcher:
             code = row['parent_code']
         return result
 
+    def under_town(self, code, towns):
+        """Honor intermediate units: Manila barangays sit below districts.
+
+        Matching a city heading must work through the full catalog ancestry;
+        it must not require that city to be the barangay's immediate parent.
+        """
+        return any(c in towns for level, c in self.ancestry(code).items()
+                   if level in {'municipality', 'city', 'sub_municipality'})
+
+    def municipality_or_city(self, code):
+        chain = self.ancestry(code)
+        return next((chain[level] for level in ('municipality', 'city', 'sub_municipality')
+                     if level in chain), None)
+
     def find(self, text):
         """Longest non-overlapping catalog names, retaining homonyms."""
         words = normalize(text).split()
@@ -309,11 +323,87 @@ class Matcher:
         # Coordinates appended to the final locality do not weaken the place
         # syntax: "Misamis Occidental (8.5, 123.7)" is still that province.
         title = re.sub(r'\(\s*-?\d{1,3}(?:\.\d+)?\s*,\s*-?\d{1,3}(?:\.\d+)?\s*\)\s*$', '', title)
-        parts = [p.strip() for p in re.split(r'[,;]', title) if p.strip()]
+        # A station range after a locality is engineering context, not part
+        # of its name. Keep the original title/chainage evidence unchanged.
+        parts = [re.sub(r'\b(?:sta\.?|station|stn\.?)\s*\+?\s*(?=\d).*$', '', p,
+                        flags=re.IGNORECASE).strip() for p in re.split(r'[,;]', title)]
+        parts = [p for p in parts if p]
         bounded = parts[1:]
         if len(parts) == 1:
             bounded = [title]
         return bounded
+
+    @lru_cache(maxsize=30000)
+    def locality_units(self, title, coherent=True):
+        """Read complete compact locality components without changing the title.
+
+        Split only components completely covered by catalog town/province
+        names and administrative labels. Road/sitio/facility qualifiers or
+        parenthetical references cannot borrow this locality syntax.
+        """
+        units = []
+        labels = {'city', 'municipality', 'province', 'of'}
+        for part in self.locality_parts(title):
+            words, masks = normalized_tokens(part)
+            hits = self.find(part)
+            # A compact chain may start with a barangay that is absent
+            # from the town/province index (Poblacion Carmen Province).
+            # Accept that complete prefix only under the following town.
+            for hi, hit in enumerate(hits):
+                if not hit['start']:
+                    continue
+                prefix = ' '.join(words[:hit['start']])
+                barangays = self.all_barangays.get(prefix, ())
+                if any(self.under_town(c, set(hit['codes'])) for c in barangays):
+                    hits = [{'text': prefix, 'codes': sorted(barangays),
+                             'start': 0, 'end': hit['start']}, *hits[hi:]]
+                    break
+            covered = {i for h in hits for i in range(h['start'], h['end'])}
+            compact = (len(hits) > 1 and not any(masks)
+                       and all(i in covered or w in labels for i, w in enumerate(words)))
+            parents = set()
+            if compact:
+                parents = set(hits[0]['codes']) | set(self.all_barangays.get(hits[0]['text'], ()))
+                for hit in hits[1:]:
+                    pool = set(hit['codes']) | set(self.all_barangays.get(hit['text'], ()))
+                    parents = {parent for parent in pool
+                               if any(child != parent and parent in self.ancestry(child).values()
+                                      for child in parents)}
+            if parents or (compact and not coherent):
+                units.extend(h['text'] for h in hits)
+            else:
+                units.append(normalize(part))
+        return tuple(units)
+
+    @lru_cache(maxsize=30000)
+    def parent_chain_mentions(self, title, strict=False):
+        """Exact adjacent barangay/parent readings, including compact parents.
+
+        Review candidates preserve contradictory provinces. Assignment also
+        requires a later compatible province and no same-province town homonym.
+        """
+        units = self.locality_units(title, coherent=strict)
+        mentions = []
+        for i in range(len(units) - 1):
+            barangays = self.all_barangays.get(units[i], ())
+            towns = {c for c in self.index.get(units[i + 1], ())
+                     if self.rows[c]['level'] in {'city', 'municipality', 'sub_municipality'}}
+            provinces = {c for unit in units[i + 2:]
+                         for c in self.index.get(unit, ()) if self.rows[c]['level'] == 'province'}
+            candidates = {c for c in barangays if self.under_town(c, towns)}
+            if strict:
+                candidates = {c for c in candidates if self.ancestry(c).get('province') in provinces}
+                homonyms = {c for c in self.index.get(units[i], ())
+                            if self.rows[c]['level'] in {'city', 'municipality', 'sub_municipality'}
+                            and self.ancestry(c).get('province') in provinces}
+                if len(candidates) != 1 or homonyms:
+                    continue
+            if candidates:
+                mentions.append({'field': 'title_barangay', 'text': units[i],
+                                 'candidate_codes': sorted(candidates), 'locality_syntax': True,
+                                 'resolution_rule': ('comma_barangay_municipality_province_chain'
+                                                     if strict else 'unmarked_parent_chain_candidate')})
+        return mentions
 
     @lru_cache(maxsize=30000)
     def match(self, title, structured=(), region_hint=None, office_hint=None):
@@ -334,6 +424,9 @@ class Matcher:
             if len(part_hits) > 1 and all(i in covered or word in locality_labels
                                          for i, word in enumerate(part_words)):
                 chain_phrases.update(hit['text'] for hit in part_hits)
+            compact_units = self.locality_units(part)
+            if len(compact_units) > 1:
+                chain_phrases.update(compact_units)
         # A catalog name may span a comma inside a bounded suffix, as when a
         # PSA name with initials is written "Pres. Manuel, Roxas". Accept a
         # phrase that appears across the joined parts but not inside any one
@@ -363,34 +456,11 @@ class Matcher:
         hierarchy_barangays = set()
         hierarchy_suppressed_towns = set()
         hierarchy_evidence = []
-        normalized_parts = [normalize(part) for part in locality_parts]
-        for i in range(len(normalized_parts) - 2):
-            barangay_codes = set(self.all_barangays.get(normalized_parts[i], ()))
-            parent_towns = {c for c in self.index.get(normalized_parts[i + 1], ())
-                            if self.rows[c]['level'] in {'city', 'municipality', 'sub_municipality'}}
-            later_provinces = {c for part in normalized_parts[i + 2:]
-                               for c in self.index.get(part, ())
-                               if self.rows[c]['level'] == 'province'}
-            if not barangay_codes or not parent_towns or not later_provinces:
-                continue
-            compatible_parents = {c for c in parent_towns
-                                  if self.ancestry(c).get('province') in later_provinces}
-            candidates = {c for c in barangay_codes
-                          if self.rows[c]['parent_code'] in compatible_parents}
-            same_name_towns = {c for c in self.index.get(normalized_parts[i], ())
-                               if self.rows[c]['level'] in {'city', 'municipality', 'sub_municipality'}
-                               and self.ancestry(c).get('province') in later_provinces}
-            if len(candidates) == 1 and not same_name_towns:
-                code = next(iter(candidates))
-                hierarchy_barangays.add(code)
-                hierarchy_suppressed_towns.add(normalized_parts[i])
-                hierarchy_evidence.append({
-                    'field': 'title_barangay', 'text': normalized_parts[i],
-                    'candidate_codes': [code],
-                    'parent_code': self.rows[code]['parent_code'],
-                    'locality_syntax': True,
-                    'resolution_rule': 'comma_barangay_municipality_province_chain',
-                })
+        for mention in self.parent_chain_mentions(title, strict=True):
+            code = mention['candidate_codes'][0]
+            hierarchy_barangays.add(code)
+            hierarchy_suppressed_towns.add(mention['text'])
+            hierarchy_evidence.append({**mention, 'parent_code': self.rows[code]['parent_code']})
         groups = []
         group_phrases = []
         evidence = list(hierarchy_evidence)
@@ -648,7 +718,8 @@ class Matcher:
                 after.startswith('city ') and not after.startswith('city of'))
             # "in X" is useful only at the title end, not "in X River".
             locative_end = before.split()[-1:] in [['in'], ['at']] and hit['end'] == len(words)
-            suppressed = (phrase in hierarchy_suppressed_towns and phrase in bounded) or suppressed_num
+            suppressed = (phrase in hierarchy_suppressed_towns
+                          and (phrase in bounded or phrase in chain_phrases)) or suppressed_num
             if (exact or marker or city_suffix or locative_end) and not suppressed:
                 groups.append((set(hit['codes']), city_suffix or phrase.startswith('city of ')
                                or bool(re.search(r'(?:city of|municipality of)$', before))))
@@ -720,7 +791,7 @@ class Matcher:
                         count = 0
                         for nm in names:
                             hits = {c for c in self.all_barangays.get(nm, ())
-                                    if self.rows[c]['parent_code'] in scope}
+                                    if self.under_town(c, scope)}
                             count += len(hits) == 1
                         return count
 
@@ -749,7 +820,7 @@ class Matcher:
                 compatible = set(candidates)
                 if context_towns:
                     town_hits = {c for c in compatible
-                                 if self.rows[c]['parent_code'] in marker_scope_towns}
+                                 if self.under_town(c, marker_scope_towns)}
                     compatible = town_hits
                 elif context_provinces:
                     prov_hits = {c for c in compatible
@@ -786,14 +857,33 @@ class Matcher:
                     flags.append('barangay_list_requires_review')
                 mention_found = False
                 chosen = None
+                forward_words = local_words[i + 1:]
+                numeric_words = forward_words[1:] if forward_words[:1] == ['no'] else forward_words
+                numeric_forward = bool(numeric_words and re.match(r'^\d', numeric_words[0]))
                 for direction in ('after', 'before'):
                     if chosen is not None:
                         break
+                    if direction == 'before' and numeric_forward:
+                        break  # a missing numeric label must not become preceding Punta
                     limit = min(self.max_barangay_words,
                                 len(local_words) - i - 1 if direction == 'after' else i)
                     for size in range(limit, 0, -1):
                         name = ' '.join(local_words[i + 1:i + 1 + size]
                                         if direction == 'after' else local_words[i - size:i])
+                        # Number-only names are intentionally absent from the
+                        # global alias index. With an explicit marker, look
+                        # up the catalog's COMPLETE name (Barangay 898),
+                        # before reverse fallback can misread preceding Punta.
+                        if direction == 'after':
+                            numbered = re.fullmatch(r'(?:no )?(\d[a-z0-9]*(?: [a-z0-9]+)*)', name)
+                            if numbered:
+                                full_name = 'barangay ' + numbered[1]
+                                # Preserve suffixes such as 18-A; never shorten
+                                # an unknown numbered suffix to Barangay 18.
+                                following = forward_words[size:size + 1]
+                                suffix_follows = bool(following and re.fullmatch(r'[a-z]', following[0]))
+                                if not suffix_follows and full_name in self.all_barangays:
+                                    name = full_name
                         if name not in self.all_barangays:
                             continue
                         mention_found = True
@@ -801,7 +891,7 @@ class Matcher:
                         compatible = set(candidates)
                         if context_towns:
                             town_matches = {c for c in compatible
-                                            if self.rows[c]['parent_code'] in marker_scope_towns}
+                                            if self.under_town(c, marker_scope_towns)}
                             if town_matches:
                                 compatible = town_matches
                             else:
@@ -827,7 +917,7 @@ class Matcher:
                             short_compatible = set(short_candidates)
                             if context_towns:
                                 short_compatible = {c for c in short_compatible
-                                                    if self.rows[c]['parent_code'] in marker_scope_towns}
+                                                    if self.under_town(c, marker_scope_towns)}
                             elif context_provinces:
                                 short_compatible = {c for c in short_compatible
                                                     if self.ancestry(c).get('province') in context_provinces}
@@ -930,7 +1020,7 @@ class Matcher:
         # Resolve per-part marker outcomes: publish each marker's flag, unless
         # a same-municipality group makes the mention internally coherent.
         for part_idx, markers in barangay_by_part.items():
-            municipality_codes = {self.rows[c]['parent_code']
+            municipality_codes = {self.municipality_or_city(c)
                                   for _, c, _ in markers if c}
             same_municipality = len(markers) >= 2 and len(municipality_codes) == 1
             for name, code, flag in markers:
@@ -1052,7 +1142,7 @@ class Matcher:
             status = 'province_only'
         else:
             status = 'unresolved'
-        suggestions = (self.suggest_hierarchies(evidence, region_hint, office_hint)
+        suggestions = (self.suggest_hierarchies([*evidence, *self.parent_chain_mentions(title)], region_hint, office_hint)
                        if status != 'name_matched' or flags else [])
         assigned = {loc['psgc_code'] for loc in
                     [self.describe(c) for c in sorted(selected)]}
@@ -1069,8 +1159,9 @@ class Matcher:
     def suggest_hierarchies(self, evidence, region_hint, office_hint=None):
         """Rank coherent unassigned barangay/town/province chains for review.
 
-        Suggestions never become assigned locations. They require an explicit
-        barangay mention and a separately named parent town. A conflicting
+        Suggestions never become assigned locations. They accept explicit markers
+        or exact unmarked barangay/parent chains, including missing commas.
+        Unmarked or province/office-scoped candidates are review-only. A conflicting
         printed province is retained as a negative factor instead of being
         silently corrected; source-region agreement can help order alternatives.
 
@@ -1104,7 +1195,7 @@ class Matcher:
             # Only a mention with NO exact barangay under any named town is
             # a family mention; when a bare match exists (Poblacion under
             # Carmen), the exact chains already speak and no family expands.
-            if any(self.rows[c]['parent_code'] in named_towns
+            if any(self.under_town(c, named_towns)
                    for c in ev['candidate_codes']):
                 continue
             for town in named_towns:
@@ -1120,24 +1211,37 @@ class Matcher:
         # every suggestion is a repair candidate rather than a rival reading.
         stated_chain_exists = any(self.ancestry(town).get('province') in named_provinces
                                   for town in named_towns)
+        explicit_barangays = {c for ev in evidence if ev['field'] == 'title_barangay'
+                              and ev.get('resolution_rule') != 'unmarked_parent_chain_candidate'
+                              for c in ev['candidate_codes']}
+        # Province and office context can support review of an explicit
+        # barangay even when no municipality is readable. Do not invent an
+        # alias for unmatched text (e.g. San Jose-Partido).
+        review_provinces = named_provinces | ({office_hint} if office_hint else set())
+        has_parent_candidates = any(self.under_town(c, named_towns) for c in barangays)
         chains = []
         for code in barangays:
-            town = self.rows[code]['parent_code']
-            if town not in named_towns:
+            parent_named = self.under_town(code, named_towns)
+            context_only = (not has_parent_candidates and code in explicit_barangays
+                            and self.ancestry(code).get('province') in review_provinces)
+            if not parent_named and not context_only:
                 continue
             ancestry = self.ancestry(code)
             province, region = ancestry.get('province'), ancestry.get('region')
             factors = [
-                {'rule': 'explicit_barangay_mention', 'impact': 4},
-                {'rule': 'named_parent_town', 'impact': 3},
+                {'rule': ('explicit_barangay_mention' if code in explicit_barangays
+                          else 'unmarked_barangay_parent_chain'),
+                 'impact': 4 if code in explicit_barangays else 2},
             ]
+            if parent_named:
+                factors.append({'rule': 'named_parent_town', 'impact': 3})
             conflicts = []
             if province in named_provinces:
                 factors.append({'rule': 'named_parent_province', 'impact': 2})
             elif named_provinces:
                 factors.append({'rule': 'named_province_conflict', 'impact': -4})
                 conflicts.append('named_province_conflict')
-                if not stated_chain_exists:
+                if parent_named and not stated_chain_exists:
                     factors.append({'rule': 'stated_chain_absent_from_catalog', 'impact': 2})
             if region_hint:
                 if region == region_hint:
@@ -1157,21 +1261,24 @@ class Matcher:
                     factors.append({'rule': 'office_province_conflict', 'impact': -1})
                     conflicts.append('office_province_conflict')
             chains.append({'code': code, 'province': province, 'region': region,
-                           'factors': factors, 'conflicts': conflicts})
+                           'factors': factors, 'conflicts': conflicts,
+                           'review_only': context_only or code not in explicit_barangays})
         # A unique region-compatible repair is chain-level evidence: the
         # combination of stated barangay + town fits exactly one province in
         # the source region, so it is promoted above rival readings.
-        if not stated_chain_exists and named_provinces and region_hint:
+        if named_towns and not stated_chain_exists and named_provinces and region_hint:
             region_repairs = [c for c in chains
                               if c['region'] == region_hint
-                              and 'named_province_conflict' in c['conflicts']]
+                              and 'named_province_conflict' in c['conflicts']
+                              and any(f['rule'] == 'named_parent_town' for f in c['factors'])]
             if len(region_repairs) == 1:
                 region_repairs[0]['factors'].append(
                     {'rule': 'unique_region_compatible_repair', 'impact': 3})
         return sorted(({'location': self.describe(c['code']),
                         'support_score': sum(f['impact'] for f in c['factors']),
                         'factors': c['factors'],
-                        'conflicts': c['conflicts']} for c in chains),
+                        'conflicts': c['conflicts'],
+                        'review_only': c['review_only']} for c in chains),
                       key=lambda s: (-s['support_score'], s['location']['psgc_code']))
 
     def describe(self, code):

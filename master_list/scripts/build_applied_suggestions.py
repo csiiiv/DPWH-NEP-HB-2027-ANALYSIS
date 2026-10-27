@@ -22,6 +22,7 @@ import io
 import json
 from pathlib import Path
 import re
+import shutil
 import tempfile
 import unicodedata
 
@@ -72,7 +73,11 @@ def town_named_in_title(suggestion, title_norm):
 def refines_master(suggestion, master_locations):
     """The application must refine or fill, never rival: either the master
     asserted nothing assignable (ambiguous/unresolved handled by caller) or
-    the chain's municipality/city intersects the master assignment."""
+    the chain's municipality/city intersects the master assignment. The
+    intersection is checked in both directions: the master location may be
+    the town itself or an ancestor OF it, or the chain's ancestry may
+    CONTAIN a province-only master assignment (a barangay in Magsaysay,
+    Misamis Oriental refines a Misamis Oriental-only master)."""
     town = None
     for level in ('municipality', 'city', 'sub_municipality'):
         if level in suggestion['location']['ancestry']:
@@ -80,10 +85,13 @@ def refines_master(suggestion, master_locations):
             break
     if town is None:
         return False
+    chain_codes = {v['code'] for v in suggestion['location']['ancestry'].values()} | {suggestion['location']['psgc_code']}
     for loc in master_locations:
         if loc['psgc_code'] == town['code']:
             return True
         if town['code'] in {v['code'] for v in loc.get('ancestry', {}).values()}:
+            return True
+        if loc['psgc_code'] in chain_codes:
             return True
     return False
 
@@ -102,6 +110,8 @@ def gate_pass(suggestions):
     if not suggestions:
         return None
     top = suggestions[0]
+    if top.get('review_only'):
+        return None
     if top['support_score'] < GATE['min_support_score']:
         return None
     if BLOCKING & set(top.get('conflicts', ()))  :
@@ -126,7 +136,9 @@ def build(out_dir: Path):
             title_norm = _normalize(record.get('title_clean') or record['title'])
             master_locs = record['location']['locations']
             reason = None
-            if top['support_score'] < GATE['min_support_score']:
+            if top.get('review_only'):
+                reason = 'review_only_candidate'
+            elif top['support_score'] < GATE['min_support_score']:
                 reason = 'below_min_score'
             elif BLOCKING & set(top.get('conflicts', ())):
                 reason = 'conflicting_top'
@@ -218,7 +230,7 @@ def main():
                   f'{audit["records_with_suggestions"]} suggestion records applied.')
             return
         for name in ('applied_suggestions.jsonl.gz', 'applied_suggestions_audit.json'):
-            (out / name).replace(OUTPUT / name)
+            shutil.copyfile(out / name, OUTPUT / name)
     print(f"Applied {audit['applied']} of {audit['records_with_suggestions']} "
           f"suggestion records -> master_list/data/applied_suggestions.jsonl.gz")
 
