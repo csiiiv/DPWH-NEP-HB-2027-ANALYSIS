@@ -14,6 +14,7 @@ const docs = [
   {path: "analysis/README.md", label: "Analysis guide", note: "How the analysis/ directory is organized — web, builders, viewers, data, docs, tests, and the archive."},
   {path: "analysis/web/README.md", label: "Frontend guide", note: "React + Vite app architecture, routing, PDF viewer, and browser checks."},
   {path: "analysis/docs/data_user_guide.md", label: "Data user guide", note: "Field-by-field reference for the retained JSON datasets and how to join them safely."},
+  {path: "analysis/docs/data_provenance_map.md", label: "Data provenance map", note: "Suite-wide lineage from the retained PDFs and API snapshots through extraction, normalization, and joins to every analysis dataset."},
   {path: "analysis/docs/shareable_datasets_by_page.md", label: "Shareable datasets by page", note: "Every shareable dataset mapped to the workspace page that renders it."},
   {path: "analysis/docs/analysis_tabs_framework.md", label: "Analysis methods and counting units", note: "The rules governing Analysis-tab populations, record grains and evidence."},
   {path: "other-analysis/README.md", label: "DA · DOH · NIA orientation", note: "Where the FMR, HFEP, and irrigation line items sit inside HB 10858 Volume I-B, with page offsets and control checks."},

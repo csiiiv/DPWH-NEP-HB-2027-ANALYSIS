@@ -1,11 +1,22 @@
 # FY2027 React workbenches
 
+The standalone [master-list browser](../../master_list/README.md) is available
+at `/master_list/` on the same Vite dev server. After the four workbench JSONs
+exist, run `npm run build:master-list --prefix analysis/web` from the repository
+root to regenerate the processing release, master location evidence and embedded
+browser data. Normal `predev`/`prebuild` regenerates the processing release but
+does not rerun the heavier master enrichment. The browser starts with comparison
+groups and expands each into separate source observations.
+
 `Workbench.jsx` selects DPWH, DA farm-to-market roads, DOH health facilities, NIA irrigation, or
 Geolocation from the hash route. The shared header uses `routes.js` to render each workspace's
 navigation. Annex apps and browser datasets load when their workspace opens.
 The shared footer links to `#disclaimer`, which renders the tracked public
 notice in [`disclaimer/README.md`](../../disclaimer/README.md). Edit that file
-to update the full notice; internal drafting notes are excluded from the app.
+to update the plain-language summary and full notice. Keep its `## Full disclaimer`
+heading: the page uses it to place the detailed text in a keyboard-accessible
+scroll box below the summary. Printing expands the full text. Internal drafting
+notes are excluded from the app.
 Browser navigation checks read the workspace registry through
 `scripts/serve_pages.py::workspace_labels()` so new tabs cannot leave stale
 copies of the navigation order in the checks.
@@ -152,6 +163,12 @@ npm run dev --prefix analysis/web
 `analysis-nia/build_nia_workbench.py`, and `gps-analysis/build_gps_workbench.py`. Vite's retained
 file middleware serves JSON, source PDFs with byte ranges, review images, and
 source documentation from the checkout.
+
+After the four domain comparison payloads are ready, both scripts also run
+`master_list/scripts/build_processing_dataset.py`. This writes the local
+[readable processing release](../../master_list/docs/PROCESSING_DATASET.md),
+including all matched/source-only groups and explicitly outside-scope House
+allocations. It does not change the original master-list viewer or exports.
 
 ```sh
 npm run build --prefix analysis/web

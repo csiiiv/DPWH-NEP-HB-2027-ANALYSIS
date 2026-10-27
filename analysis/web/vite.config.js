@@ -38,6 +38,8 @@ function retainedFiles() {
           return;
         }
         const routes = [
+          ["/master_list/", [root + "/master_list"]],
+          ["/dpwh-transparency-nep-data/", [root + "/dpwh-transparency-nep-data"]],
           ["/other-analysis/", [root + "/other-analysis"]],
           ["/analysis-nia/", [root + "/analysis-nia"]],
           ["/analysis-hfep/", [root + "/analysis-hfep"]],
@@ -60,7 +62,7 @@ function retainedFiles() {
         ];
         const route = routes.find(([prefix]) => pathname.startsWith(prefix));
         if (!route) return next();
-        const suffix = pathname.slice(route[0].length);
+        const suffix = pathname.slice(route[0].length) || "index.html";
         const target = route[1]
           .map((dir) => [dir, path.resolve(dir, suffix)])
           .find(
