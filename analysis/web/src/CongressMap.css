@@ -1,0 +1,61 @@
+/* District map for #congress/map — choropleth shell, side panel, legend. */
+.congress-map { display: flex; flex-direction: column; gap: 12px; }
+.congress-map-shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 360px);
+  gap: 12px;
+  min-height: 560px;
+}
+.congress-map-canvas {
+  position: absolute;
+  inset: 0;
+  border: 1px solid #d5dee9;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #eef2f7;
+}
+.congress-map-shell > .congress-map-canvas { position: relative; width: 100%; height: 560px; }
+.congress-map-info {
+  border: 1px solid #d5dee9;
+  border-radius: 10px;
+  background: #fff;
+  padding: 16px;
+  align-self: start;
+}
+.congress-map-info-head { display: flex; justify-content: space-between; align-items: center; }
+.congress-map-info h2 { margin: 4px 0 2px; font-size: 18px; }
+.congress-map-rep { margin: 0 0 10px; color: #3c4a5a; font-size: 13.5px; }
+.congress-map-figures { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; font-size: 13.5px; }
+.congress-map-figures dt { font-weight: 650; color: #3c4a5a; }
+.congress-map-figures dd { margin: 0; font-variant-numeric: tabular-nums; }
+.congress-map-figures small { display: block; color: #516780; font-size: 12px; }
+.congress-map-figures .congress-map-flagged { color: #b45309; font-weight: 650; }
+.congress-map-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.congress-map-actions a { text-decoration: none; padding: 8px 12px; border-radius: 8px; border: 1px solid #245fa8; }
+.congress-map-actions a.primary { background: #245fa8; color: #fff; }
+.congress-map-actions a:not(.primary) { color: #245fa8; background: #fff; }
+.congress-map-legend {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #d5dee9;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  max-width: min(520px, 80%);
+}
+.congress-map-swatch { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.congress-map-swatch i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid rgba(0,0,0,.15); }
+.congress-map-note { font-size: 12.5px; }
+.fmr-map-close {
+  border: none; background: none; font-size: 20px; line-height: 1; cursor: pointer; color: #516780;
+}
+@media (max-width: 900px) {
+  .congress-map-shell { grid-template-columns: 1fr; }
+  .congress-map-info { order: 2; }
+}

@@ -318,7 +318,7 @@
   },
   "builder_sha256": {
     "build_master_list.py": "2d3891e5ea7796d2ab7852e39d987f19bf081d042f5d60b83da4da1dee1feeb9",
-    "locations.py": "6dfd0435f35abc48b3676f0b1105ed7b86fdf2e388b09e3ab13f0005a27537f7",
+    "locations.py": "24aa85b2f2fca5c7c4b0b2b5ff942f701aa32bab0cb1d24470d5801aae6b5305",
     "processing_release.py": "84f3080827a68925fbc346ed9c9ff98c8fec842d44b12cfab8498ec7998478fb"
   },
   "records": 64645,
@@ -333,9 +333,9 @@
       },
       "location_status": {
         "unresolved": 2500,
-        "name_matched": 11699,
+        "name_matched": 11702,
         "multiple_locations": 984,
-        "province_only": 391,
+        "province_only": 388,
         "ambiguous": 20,
         "allocation_not_site": 2791,
         "registry_matched": 407
@@ -349,7 +349,7 @@
         "-1": 31,
         "0": 5260,
         "1": 62,
-        "2": 52,
+        "2": 49,
         "3": 520,
         "4": 53,
         "5": 1122,
@@ -358,7 +358,7 @@
         "8": 879,
         "9": 1374,
         "10": 44,
-        "11": 6810,
+        "11": 6813,
         "12": 106,
         "13": 500,
         "14": 142,
@@ -366,9 +366,9 @@
         "16": 1
       },
       "records_with_coordinate_pairs": 2241,
-      "review_records": 5539,
+      "review_records": 5536,
       "legislative_districts": {
-        "assigned_municipality_join": 11768,
+        "assigned_municipality_join": 11771,
         "bridge_coordinate_join": 378
       }
     },
@@ -382,9 +382,9 @@
       },
       "location_status": {
         "unresolved": 2500,
-        "name_matched": 11704,
+        "name_matched": 11707,
         "multiple_locations": 984,
-        "province_only": 391,
+        "province_only": 388,
         "ambiguous": 20,
         "allocation_not_site": 2791,
         "registry_matched": 407
@@ -398,7 +398,7 @@
         "-1": 31,
         "0": 5260,
         "1": 62,
-        "2": 52,
+        "2": 49,
         "3": 520,
         "4": 53,
         "5": 1122,
@@ -407,7 +407,7 @@
         "8": 879,
         "9": 1379,
         "10": 44,
-        "11": 6810,
+        "11": 6813,
         "12": 106,
         "13": 500,
         "14": 142,
@@ -415,9 +415,9 @@
         "16": 1
       },
       "records_with_coordinate_pairs": 2241,
-      "review_records": 5539,
+      "review_records": 5536,
       "legislative_districts": {
-        "assigned_municipality_join": 11768,
+        "assigned_municipality_join": 11771,
         "bridge_coordinate_join": 378
       }
     },
@@ -428,10 +428,10 @@
         "project": 11372
       },
       "location_status": {
-        "name_matched": 7473,
+        "name_matched": 7476,
         "unresolved": 2435,
         "ambiguous": 13,
-        "province_only": 294,
+        "province_only": 291,
         "multiple_locations": 734,
         "registry_matched": 423
       },
@@ -442,7 +442,7 @@
         "-1": 19,
         "0": 2408,
         "1": 32,
-        "2": 55,
+        "2": 52,
         "3": 367,
         "4": 44,
         "5": 784,
@@ -451,7 +451,7 @@
         "8": 743,
         "9": 1038,
         "10": 40,
-        "11": 4188,
+        "11": 4191,
         "12": 77,
         "13": 314,
         "14": 102,
@@ -459,9 +459,9 @@
         "16": 1
       },
       "records_with_coordinate_pairs": 617,
-      "review_records": 4566,
+      "review_records": 4563,
       "legislative_districts": {
-        "assigned_municipality_join": 7489,
+        "assigned_municipality_join": 7492,
         "bridge_coordinate_join": 394
       }
     },
@@ -475,9 +475,9 @@
       },
       "location_status": {
         "unresolved": 2234,
-        "name_matched": 7460,
+        "name_matched": 7463,
         "multiple_locations": 730,
-        "province_only": 297,
+        "province_only": 294,
         "ambiguous": 13,
         "registry_matched": 418,
         "allocation_not_site": 268
@@ -489,7 +489,7 @@
         "-1": 23,
         "0": 2475,
         "1": 43,
-        "2": 57,
+        "2": 54,
         "3": 382,
         "4": 43,
         "5": 767,
@@ -498,7 +498,7 @@
         "8": 736,
         "9": 1040,
         "10": 40,
-        "11": 4172,
+        "11": 4175,
         "12": 78,
         "13": 314,
         "14": 103,
@@ -506,9 +506,9 @@
         "16": 1
       },
       "records_with_coordinate_pairs": 609,
-      "review_records": 4407,
+      "review_records": 4404,
       "legislative_districts": {
-        "assigned_municipality_join": 7481,
+        "assigned_municipality_join": 7484,
         "bridge_coordinate_join": 389
       }
     },
@@ -3131,8 +3131,8 @@
     ]
   },
   "output_sha256": {
-    "projects.jsonl.gz": "7e6d66f5411e71c9bc57185eae64e6204ffc0d6e3d1911b331f0f1bfcf53e349",
-    "projects.csv.gz": "ad3a566444559803c6217d10d0b5ed11da91258ddceb75df89528aed7e9aa345",
-    "location_review.csv.gz": "126bc4859b68678e3d7e9971f797dc6f9a1ddfa066a6a44a7f7d61e3e6db5998"
+    "projects.jsonl.gz": "e9feb58fe0ed2ae9b80be6b931013f1b8542b502e58f0dda743f9f1276b4821c",
+    "projects.csv.gz": "df734299cdcb8b884346d7de02a9a668db273db6527ccb8835e630cb438c1213",
+    "location_review.csv.gz": "7dfc2e42fb4f92de1bc4ce5c8ca8cba95f36d8606445c7934daedcdfd0474f08"
   }
 }

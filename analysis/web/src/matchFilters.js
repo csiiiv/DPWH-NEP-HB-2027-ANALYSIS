@@ -1,4 +1,5 @@
 import {DIFF_TAG_LABELS} from './diffTags.js';
+import {officeDiscrepancy} from '../../viewers/project_offices.mjs';
 
 /** Identity quality vs inspection flags for Compare project filters.
 
@@ -41,6 +42,7 @@ export const FLAG_OPTIONS = [
   ['group_nep_leftover', 'Grouping · unpaired NEP row (deletion candidate)'],
   ['segment_scope', 'Segment scope review (delta not booked)'],
   ['twin_review', 'Twin review · identical unmatched pair'],
+  ['changed_office', 'Changed office'],
   ...DIFF_FLAG_OPTIONS,
 ];
 
@@ -72,6 +74,7 @@ export const REVIEW_FLAG_INFO = Object.fromEntries([
   ['amount_decrease', ['NEP → HGAB decreased', 'Retained candidate pair where House amount is smaller than NEP.']],
   ['transparency_gap', ['Transparency gap', 'Printed NEP allocation missing from the retained Transparency listing.']],
   ['outside_api', ['Outside Transparency scope', 'NEP record outside the Transparency listing scope (commonly FAP).']],
+  ['changed_office', ['Changed office', 'Linked House readings, DBM NEP or DPWH Transparency API records name different implementing offices after normalization. This is a source discrepancy, not proof of an actual office transfer. Missing offices do not establish a change. Assignment follows the resolution hierarchy independently.']],
 ]);
 
 /** Map legacy status= / trace values onto the new match/flag model. */
@@ -192,6 +195,7 @@ export function rowFlags(row, counterparts = null) {
     flags.push('segment_scope');
   }
   if (row.twin_review) flags.push('twin_review');
+  if (officeDiscrepancy(row)) flags.push('changed_office');
   return flags;
 }
 

@@ -128,5 +128,16 @@ export default defineConfig({
   optimizeDeps: { include: ["react-markdown"] },
   plugins: [react(), retainedFiles()],
   build: { outDir: "dist" },
-  server: { host: "127.0.0.1" },
+  server: {
+    host: "127.0.0.1",
+    // Allow access through the Cloudflare Tunnel hostname (Vite 6 host check).
+    allowedHosts: ["test.simple-systems.dev", "test-3.simple-systems.dev"],
+    // The tunnel's Cloudflare zone stamps a 4-hour browser-cache TTL on bare
+    // .js URLs (.js is in its default cacheable-extension list; .jsx is not),
+    // so a reader's browser could hold a stale routes.js for hours after an
+    // edit and lose the tab registry entirely. no-store on every dev response
+    // keeps the tunnel honest; Vite's own no-cache would suffice without a
+    // tunnel in front of the dev server.
+    headers: { "Cache-Control": "no-store" },
+  },
 });

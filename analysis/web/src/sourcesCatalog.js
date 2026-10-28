@@ -410,6 +410,15 @@ export const sourceGroups = [
         coverage:
           "196 cards over 254 districts (159 Tier A, 32 Tier B undivided ranges, 5 with no DEO ledger); 13,547 comparison rows pinned by ID plus the 3,999-row unattributable residual and 67 office-change rows held out. Card figures tie out exactly against the published DPWH Overview across 29 numeric fields; the explorer resolves the pinned IDs against this comparison payload, so a card and its table cannot drift apart.",
       },
+      {
+        label: "Congress location-lens district index",
+        kind: "data",
+        path: "analysis/location_district_index_2027.json",
+        purpose:
+          "Per-district cards for #congress?lens=location: rows located by title GPS and PSGC point-in-polygon against district polygons, with the DEO lens, region cards and a none catch-all as the fallback chain (≈2 MB)",
+        coverage:
+          "Every comparison row on exactly one card: 5,329 located rows (₱170B+ HGAB3) across 248 districts, 29 spanning rows held out undivided, 9,401 DEO-fallback rows, 2,854 region-catch-all rows, zero in the none catch-all. Disagreements are flagged, never reconciled: 78 office↔location mismatches (Cohen's κ = 0.977 concordance between the lenses), 12 title/GPS conflicts and 1 boundary conflict demoted to the fallback chain.",
+      },
     ],
   },
   {

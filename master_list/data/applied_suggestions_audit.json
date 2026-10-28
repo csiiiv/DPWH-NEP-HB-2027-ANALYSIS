@@ -10,7 +10,7 @@
     "conflicting_top": 10,
     "margin_too_small": 50,
     "parent_town_not_in_title": 37,
-    "review_only_candidate": 1092,
+    "review_only_candidate": 1080,
     "rivals_master_assignment": 10
   },
   "description": "Derive the applied-suggestions layer from the retained master list.",
@@ -25,13 +25,13 @@
   },
   "input": {
     "path": "master_list/data/projects.jsonl.gz",
-    "sha256": "7e6d66f5411e71c9bc57185eae64e6204ffc0d6e3d1911b331f0f1bfcf53e349"
+    "sha256": "e9feb58fe0ed2ae9b80be6b931013f1b8542b502e58f0dda743f9f1276b4821c"
   },
   "method": "applied_suggestion_v1",
   "output_sha256": {
     "applied_suggestions.jsonl.gz": "552327e18c2b8c4097639b202b10f25d0dfe21f3362a16fa7c25f1ccc44717d9"
   },
-  "records_with_suggestions": 1464,
+  "records_with_suggestions": 1452,
   "score_base": 4,
   "score_factors": [
     {

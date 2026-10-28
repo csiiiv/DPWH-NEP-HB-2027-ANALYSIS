@@ -17,6 +17,8 @@ const documents = {
   "house-third-controls": { path: "HB_BUDGET_3rd_reading/2-%20HB%2010858%20FOR%203RD%20READING%20VOL%20I-B.pdf", label: "House 3rd reading · Volume I-B", pageLabel: "House 3rd · I-B" },
   "house-third": { path: "HB_BUDGET_3rd_reading/3-%20HB%2010858%20FOR%203RD%20READING%20VOL%20I-C%20.pdf", label: "House 3rd reading · Volume I-C", pageLabel: "House 3rd · I-C" },
   nep: { path: "pdfs/NEP-2027-VOLUME-2B_OCR.pdf", label: "DBM NEP · Volume II-B (retained OCR)", pageLabel: "NEP · II-B (retained OCR)" },
+  "fmr-house": { path: "HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf", label: "House FMR annex · supplied Volume I-B", pageLabel: "House FMR annex" },
+  "fmr-nep": { path: "dbm-other-nep-line-data/FMR.pdf", label: "DBM NEP · FMR schedule", pageLabel: "NEP FMR schedule" },
 };
 export function sourcePdfPath(key) {
   return documents[key] ? decodeURIComponent(documents[key].path) : null;

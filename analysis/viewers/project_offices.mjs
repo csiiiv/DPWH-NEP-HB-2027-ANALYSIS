@@ -41,6 +41,39 @@ export function recordedOffice(record) {
   return record.office ? canonicalOffice(record.office) : "";
 }
 
+// Shared with the district crosswalk join: spelling, abbreviation and dash
+// variants must not look like a changed implementing office.
+export function officeJoinKey(value) {
+  let s = canonicalOffice(value || '');
+  if (!s) return '';
+  s = s.replace(/\bsub[\s-]*deo\b/gi, 'sub district engineering office');
+  s = s.replace(/\bDEO\b/gi, 'district engineering office');
+  s = s.replace(/[-\u2010-\u2015]/g, ' ');
+  return s.replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+/** Different recorded offices on linked sources; never a claim of transfer.
+ * Missing offices and suggested counterparts provide no assignment evidence.
+ * Group members retain their own readings rather than just the group header.
+ */
+export function officeDiscrepancy(row) {
+  const assignments = [];
+  for (const [stage, source] of [['second', 'House 2nd'], ['third', 'House 3rd'],
+    ['house', 'House'], ['nep', 'DBM NEP'], ['api', 'DPWH Transparency API']]) {
+    const side = row[stage];
+    if (!side) continue;
+    const records = side.records?.length ? side.records : [side];
+    for (const record of records) {
+      const office = recordedOffice(record);
+      const key = officeJoinKey(office);
+      if (!key) continue;
+      assignments.push({stage, source, id: record.id ?? null,
+        office: record.office ?? office, office_canonical: office, key});
+    }
+  }
+  return new Set(assignments.map(a => a.key)).size > 1 ? {assignments} : null;
+}
+
 export function officeAssignments(row) {
   const sources = [["House 2nd", row.second], ["House 3rd", row.third],
     ["House", row.house], ["NEP", row.nep], ["Transparency", row.api]];

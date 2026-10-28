@@ -284,6 +284,48 @@ def package_congress(target):
           f"{counts['regional_group_only']} with no DEO ledger) "
           f"+ {manifest['count']} portraits")
 
+    # Location lens (#congress?lens=location): rebuilt from the DEO index just
+    # packaged, the PSGC2LEG assignment/polygon inputs and the cleaned
+    # observations. Same rule as the DEO index — never package a stale build,
+    # because its row IDs are only meaningful against this exact payload.
+    subprocess.run([sys.executable, str(ROOT / 'analysis/web/buildLocationLens.py')],
+                   check=True, cwd=ROOT)
+    location_path = DATA / 'location_district_index_2027.json'
+    if not location_path.is_file():
+        raise ValueError('Location lens index was not built: ' + str(location_path))
+    shutil.copyfile(location_path, target / location_path.name)
+    map_path = DATA / 'congress_district_map_2027.json'
+    if not map_path.is_file():
+        raise ValueError('Congress district map was not built: ' + str(map_path))
+    shutil.copyfile(map_path, target / map_path.name)
+    location = json.loads(location_path.read_text())
+    location_counts = location['counts']
+    print(f"Packaged Congress location lens: {location_counts['cards']} cards "
+          f"({location_counts['districts_with_location']} located, "
+          f"{location_counts['spanning_rows']} spanning rows held out, "
+          f"{location_counts['c1_deo_tier_a_rows'] + location_counts['c1_deo_tier_b_rows']} DEO-fallback rows, "
+          f"{location_counts['c2_region_rows']} region-catch-all rows) "
+          f"+ {location_counts['flags'].get('office_location_mismatch', 0)} mismatch flags")
+
+    # FMR legislative lens: refresh the formal title/coordinate extraction,
+    # build the district assignment index against it, and package the result
+    # beside the other Congress workspace indexes.
+    subprocess.run([sys.executable,
+                    str(ROOT / 'other-analysis/build_fmr_psgc_locations.py')],
+                   check=True, cwd=ROOT)
+    subprocess.run([sys.executable,
+                    str(ROOT / 'analysis/web/buildFmrLegislativeLens.py')],
+                   check=True, cwd=ROOT)
+    fmr_path = DATA / 'fmr_legislative_index_2027.json'
+    if not fmr_path.is_file():
+        raise ValueError('FMR legislative lens index was not built: ' + str(fmr_path))
+    shutil.copyfile(fmr_path, target / fmr_path.name)
+    fmr = json.loads(fmr_path.read_text())
+    fmr_counts = fmr['counts']
+    print(f"Packaged FMR legislative lens: {fmr_counts['cards']} cards "
+          f"({fmr_counts['district_rows']} district rows, "
+          f"{fmr_counts['fallback_rows']} region-fallback rows)")
+
 
 def main(with_react=True):
     validate_current_pages()

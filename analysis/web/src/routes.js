@@ -85,13 +85,15 @@ export const workspaces = {
   congress: {
     label: "Congress",
     prefix: "congress",
-    // Omit from header navigation for now, but keep direct routes available.
-    hidden: true,
-    // Only the grid is a tab. #congress/district still resolves as a page (a
-    // card deep link like ?district=<card id> opens the explorer view), but it
-    // is reached by clicking a representative, never from the tab strip.
+    // Four tabs: the DEO-lens grid (default), the DPWH location lens, the FMR
+    // legislative lens, and the district map
+    // choropleth over the PSGC2LEG polygons. #congress/district stays a
+    // deep-link page reached by clicking a representative — never a tab.
     pages: [
-      ["home", "Districts"],
+      ["home", "Districts (DEO)"],
+      ["location", "Districts (Legislative)"],
+      ["fmr", "FMR (Legislative)"],
+      ["map", "Map"],
     ],
   },
   geo: {
@@ -105,10 +107,9 @@ export const workspaces = {
   sources: { label: "Sources", prefix: "sources", pages: [["home", "Datasets"]] },
   about: { label: "About", prefix: "about", pages: [["home", "About this workbench"]] },
   disclaimer: { label: "Disclaimer", prefix: "disclaimer", pages: [["home", "Methods and limitations"]] },
-  // Experiments: unlisted exploration views reached only by direct URL.
-  // `hidden` keeps it out of the workspace nav while the router still
-  // resolves #experiments and code-split app bundles normally.
-  experiments: { label: "Experiments", prefix: "experiments", hidden: true, pages: [["home", "Experiments"]] },
+  // Experiments: visible top-level workspace for exploratory views. It remains
+  // code-split, so listing the tab does not add its bundle to the main load.
+  experiments: { label: "Experiments", prefix: "experiments", pages: [["home", "Experiments"]] },
 };
 // Tab list exports kept for existing consumers (WorkbenchHeader, tests).
 export const dpwhPages = workspaces.dpwh.pages;

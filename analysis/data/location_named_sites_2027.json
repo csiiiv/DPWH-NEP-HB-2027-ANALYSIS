@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "description": "Reviewed named sites whose project-title phrases identify a PSGC barangay inside a multi-district city. Every phrase in match_all must occur after punctuation-insensitive folding.",
+  "sites": [
+    {
+      "id": "pup-ndc-compound-pureza",
+      "match_all": ["NDC Compound", "Pureza", "Manila"],
+      "psgc_code": "1380606235",
+      "name": "Barangay 628",
+      "level": "barangay",
+      "municipality": "City of Manila",
+      "municipality_code": "1380600000",
+      "region_code": "1300000000",
+      "evidence_note": "PUP identifies its College of Engineering at the NDC Compound in Sta. Mesa; the retained campus point falls in Barangay 628 and Manila 6th in the NCR barangay geometry.",
+      "sources": [
+        "https://www.pup.edu.ph/about/campuses",
+        "https://www.pup.edu.ph/news/?go=iTeFuI%2FMZh4%3D",
+        "https://www.pup.edu.ph/about/maps"
+      ]
+    },
+    {
+      "id": "pup-rizal-campus-lepanto",
+      "match_all": ["PUP", "Rizal Campus", "Lepanto", "Manila"],
+      "psgc_code": "1380606016",
+      "name": "Barangay 410",
+      "level": "barangay",
+      "municipality": "City of Manila",
+      "municipality_code": "1380600000",
+      "region_code": "1300000000",
+      "evidence_note": "PUP places Rizal Campus on S.H. Loyola (formerly Lepanto) in Sampaloc; its P. Campa/S.H. Loyola site falls in Barangay 410 and Manila 4th.",
+      "sources": [
+        "https://www.pup.edu.ph/about/campuses",
+        "https://www.pup.edu.ph/bidnotices/view?go=ck95UaVVLTQ%3D",
+        "https://nominatim.openstreetmap.org/search?street=P.%20Campa%20Street&city=Manila&country=Philippines&format=jsonv2&addressdetails=1"
+      ]
+    },
+    {
+      "id": "up-resilience-institute-diliman",
+      "match_all": ["Resilience Institute", "UP Diliman", "Quezon City"],
+      "psgc_code": "1381300124",
+      "name": "U.P. Campus",
+      "level": "barangay",
+      "municipality": "Quezon City",
+      "municipality_code": "1381300000",
+      "region_code": "1300000000",
+      "evidence_note": "The official UP Resilience Institute record places the institute at Quezon Hall, UP Diliman; U.P. Campus barangay maps to Quezon City 4th.",
+      "sources": [
+        "https://upd.edu.ph/wp-content/uploads/2017/01/Memo-PAEP-16-67-Invitation-to-become-Research-and-Extension-fellows-of-new-UP-RI.pdf",
+        "https://upd.edu.ph/locations/"
+      ]
+    }
+  ]
+}

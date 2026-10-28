@@ -286,12 +286,55 @@ class TitleLocations(unittest.TestCase):
         self.assertEqual(result['suggestions'][0]['location']['psgc_code'], '1600208010')
         # No Magallanes exists in Lanao del Norte, so this is a repair case:
         # the chain-combination rules add stated_chain_absent_from_catalog and,
-        # because Santo Niño/Magallanes is the only Region XIII fit, the
-        # unique_region_compatible_repair promotion.
+        # because Santo Niño/Magallanes is the two-district Agusan del Norte's
+        # only Region XIII fit, the unique_region_compatible_repair promotion.
         self.assertEqual(result['suggestions'][0]['support_score'], 10)
         rules = {f['rule'] for f in result['suggestions'][0]['factors']}
         self.assertIn('unique_region_compatible_repair', rules)
         self.assertIn('stated_chain_absent_from_catalog', rules)
+
+    def test_honorific_city_prefix_resolves_through_bare_name(self):
+        # DPWH titles drop the official "Science City of" honorific. With the
+        # parent named, the homonym barangays must chain through the bare
+        # name to the official catalog unit.
+        result = self.matcher.match(
+            'Construction of Multi-Purpose Building, Barangay Bantug, '
+            'Muñoz, Nueva Ecija')
+        self.assertEqual(result['status'], 'name_matched')
+        codes = {l['psgc_code'] for l in result['locations']}
+        self.assertEqual(codes, {'0304917003'})  # Bantug, Science City of Muñoz
+        ancestry = result['locations'][0]['ancestry']
+        self.assertEqual(ancestry['city']['name'], 'Science City of Muñoz')
+        self.assertEqual(ancestry['province']['name'], 'Nueva Ecija')
+
+    def test_honorific_city_prefix_also_accepts_official_form(self):
+        # The official form keeps working and resolves to the same unit.
+        result = self.matcher.match(
+            'Construction of Water System, Barangay Bagong Sikat, '
+            'Science City of Muñoz, Nueva Ecija')
+        self.assertEqual(result['status'], 'name_matched')
+        self.assertEqual({l['psgc_code'] for l in result['locations']},
+                         {'0304917001'})  # Bagong Sikat, Science City of Muñoz
+
+    def test_bare_honorific_name_still_needs_parent_to_assign(self):
+        # A bare "Muñoz" mention alone must not silently assign the city;
+        # the homonym barangay rule keeps context-free names unassigned.
+        weak = self.matcher.match('Improvement of Muñoz Access Road')
+        self.assertTrue(not weak['locations'] or
+                        all(l['level'] != 'city' for l in weak['locations']) or
+                        len({l['psgc_code'] for l in weak['locations']}) > 1)
+
+    def test_honorific_prefix_bare_alias_collides_only_where_real(self):
+        # "Samal" alone is genuinely two units (Samal, Bataan municipality;
+        # Island Garden City of Samal); the bare alias must surface both as
+        # candidates and assign neither without parent-chain context.
+        result = self.matcher.match('Construction of Multi-Purpose Building, Samal')
+        self.assertEqual(result['status'], 'ambiguous')
+        self.assertEqual({l['psgc_code'] for l in result['locations']}, set())
+        samal_codes = {c for hit in self.matcher.find('Samal')
+                       for c in hit['codes']}
+        self.assertIn('0300812000', samal_codes)    # Samal, Bataan
+        self.assertIn('1102317000', samal_codes)    # Island Garden City of Samal
 
     def test_conflicting_poblacion_chain_has_ranked_review_suggestions(self):
         result = self.matcher.match(

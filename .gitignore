@@ -94,6 +94,20 @@ analysis/data/allocation_hierarchy_sources_2027.json
 # roster or display-size change, then commit the result.
 analysis/data/congress_district_index_2027.json
 
+# Location lens index for #congress?lens=location; derived from the DEO index,
+# PSGC2LEG assignments + district polygons and the cleaned observations.
+# Rebuilt by predev/prebuild (analysis/web/buildLocationLens.py).
+analysis/data/location_district_index_2027.json
+
+# District polygons joined to both lenses' figures for #congress/map; emitted
+# by the same builder run as the location index.
+analysis/data/congress_district_map_2027.json
+
+# FMR title/coordinate extraction and legislative lens; both are rebuilt by
+# predev/prebuild from the retained workbench and PSGC reference inputs.
+other-analysis/data/fmr_psgc_locations_2027.json
+analysis/data/fmr_legislative_index_2027.json
+
 # Local-only plain exports exceeding Git's 100 MiB blob limit
 master_list/data/project_list.csv
 

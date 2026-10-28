@@ -12,6 +12,10 @@ changes. This document is the human-readable reference; the code constants
 and `audit.json` rule tables are regenerated together on every build, and the
 tables below must match them exactly.
 
+The sector-neutral parsing and hierarchy decision that precedes this score is
+defined by the
+[shared title-to-PSGC extraction method](../../analysis/docs/title_psgc_location_extraction_method.md).
+
 The [multidimensional assessment proposal](MULTIDIMENSIONAL_SCORING.md)
 inventories the available source, geographic, spatial, identity and accounting
 context, including the applied-suggestion and coordinate-PSGC layers. It

@@ -18,8 +18,11 @@ comparison groups. Run `npm run build:master-list --prefix analysis/web` to
 rebuild processing, master enrichment and the browser after its inputs exist.
 
 Documentation is split by purpose: [processing data and browser contract](docs/PROCESSING_DATASET.md),
-[scoring factors and weights](docs/SCORING_RULES.md), and
-[location methodology, current results and roadmap](docs/LOCATION_CONFIDENCE_AND_ROADMAP.md).
+[shared title-to-PSGC extraction method](../analysis/docs/title_psgc_location_extraction_method.md),
+[shared PSGC evidence-resolution method](../analysis/docs/psgc_location_evidence_resolution_method.md),
+[scoring factors and weights](docs/SCORING_RULES.md),
+[location methodology, current results and roadmap](docs/LOCATION_CONFIDENCE_AND_ROADMAP.md),
+and [every flag, status and diagnostic across layers](docs/FLAGS_REFERENCE.md).
 Readable cleanup is versioned as `readable_title_v1`; location evidence still
 uses `location_evidence_v6.5`.
 

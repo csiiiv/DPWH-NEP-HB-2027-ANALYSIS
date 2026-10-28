@@ -191,6 +191,16 @@ def aliases(row):
         for value in list(result):
             bare = re.sub(r'^city of | city$', '', value)
             result.update({bare, f'city of {bare}', f'{bare} city'})
+        # PSA gives a few cities honorific-prefixed official names ("Science
+        # City of Muñoz", "Island Garden City of Samal") that DPWH titles
+        # write without the honorific. Index the stripped bare name too; the
+        # official forms remain, and a stated province or parent chain still
+        # disambiguates any homonym the bare name collides with (e.g. Samal,
+        # Bataan), the same way the suffix-dropped aliases below rely on it.
+        for value in list(result):
+            stripped = re.sub(r'^.+\s+city\s+of\s+', '', value)
+            if stripped != value and stripped:
+                result.add(stripped)
     if row['level'] in {'city', 'municipality', 'sub_municipality'}:
         # Some project titles omit a formal numeric suffix (e.g. Tagoloan for
         # PSGC's Tagoloan II). Retaining both aliases lets a stated province or
@@ -1081,16 +1091,23 @@ class Matcher:
                 for pool in strong_groups:
                     mentioned_towns = pool & towns
                     if mentioned_towns and not mentioned_towns & accepted_towns:
+                        # A city-district reading only exists under an actual
+                        # city. Treating a municipality as if it had named
+                        # city districts can silently waive a contradictory
+                        # municipality/province suffix (for example Bongabon,
+                        # Oriental Mindoro beside a Bongabong barangay).
+                        accepted_city = (next(iter(accepted_towns))
+                                         if len(accepted_towns) == 1 and
+                                         self.rows[next(iter(accepted_towns))]['level'] == 'city'
+                                         else None)
                         district_context = (
-                            bool(accepted_towns & barangay_parent_towns)
-                            and len(accepted_towns) == 1
+                            bool(accepted_city and accepted_towns & barangay_parent_towns)
                             and len(mentioned_towns) == 1)
                         # Even without a resolved barangay, a district part
                         # immediately before the explicit city ("Jaro, Iloilo
                         # City") whose name the city's barangay qualifiers
                         # use is a district mention, not a province conflict.
                         if not district_context:
-                            accepted_city = next(iter(accepted_towns), None) if len(accepted_towns) == 1 else None
                             if accepted_city:
                                 bidx, _ = self.barangay_index(accepted_city)
                                 quals = {re.search(r'\(([^)]+)\)', self.rows[bc]['name']).group(1).lower()

@@ -21,8 +21,27 @@
 .congress-card.tier-A { border-left-color:#245fa8; }
 .congress-card.tier-B { border-left-color:#b07a1e; }
 .congress-card.tier-none { border-left-color:#8a8f98; background:#fbfcfd; }
+.congress-card.tier-region { border-left-color:#6b5ca5; background:#fbfaff; }
 .congress-card.no-money { color:#4c5661; }
-.congress-card-head { display:flex; gap:14px; align-items:center; }
+.congress-card-head { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+.congress-profile-tiles {
+  display: grid;
+  grid-template-columns: 64px 64px;
+  grid-template-rows: repeat(3, 85px);
+  gap: 4px;
+  flex: none;
+  align-items: start;
+}
+.congress-profile-tiles img {
+  width: 64px;
+  height: 85px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 4px;
+  border: 1px solid #d9e2ed;
+  background: #eef3f9;
+}
+.congress-portrait-tile { flex:none; }
 .congress-card-title { min-width:0; flex:1; }
 .congress-card-title h3 { margin:4px 0 6px; font-size:17px; line-height:1.25; overflow-wrap:anywhere; }
 .congress-card-open { background:none; border:0; padding:0; font:inherit; font-weight:650; color:#1d4e89; cursor:pointer; text-align:left; }
@@ -31,6 +50,12 @@
 .congress-badges { display:flex; gap:6px; flex-wrap:wrap; margin:0; }
 
 .congress-portrait { width:96px; height:129px; object-fit:cover; object-position:top; border-radius:7px; border:1px solid #d9e2ed; background:#eef3f9; flex:none; }
+.congress-portrait--small { width:64px; height:85px; border-radius:4px; border:1px solid #d9e2ed; }
+.congress-portrait--count {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:64px; height:85px; border-radius:4px; border:1px solid #d9e2ed;
+  background:#eef3f9; color:#516780; font-size:12px; font-weight:600; flex:none;
+}
 .congress-portrait-empty { width:96px; height:129px; border-radius:7px; border:1px dashed #d9e2ed; background:#f4f7fb; flex:none; }
 
 /* --- tier + leadership badges ------------------------------------------ */
@@ -38,6 +63,7 @@
 .congress-tier.tier-A { color:#1d4e89; border-color:#b3cbe8; background:#eef4fb; }
 .congress-tier.tier-B { color:#7d5610; border-color:#e3cd9c; background:#fdf6e6; }
 .congress-tier.tier-none { color:#5a6270; border-color:#cfd5dd; background:#f1f3f6; }
+.congress-tier.tier-region { color:#4c3d85; border-color:#d3c9ef; background:#f3effd; }
 .congress-leadership { font-size:11px; font-weight:700; padding:3px 8px; border-radius:20px; color:#5b2d82; border:1px solid #d9c2ec; background:#f7f0fd; white-space:nowrap; }
 
 /* --- seats ------------------------------------------------------------- */
@@ -49,6 +75,10 @@
 .congress-seat-rep a { margin-left:5px; color:#1d4e89; text-decoration:none; font-size:12px; }
 .congress-seat-rep a:hover { text-decoration:underline; }
 .congress-seat-ambiguous { color:#8a5a10; font-style:italic; }
+
+/* --- implementing offices ---------------------------------------------- */
+.congress-card-offices { font-size:12px; color:#516780; margin:8px 0 0; }
+.congress-card-offices strong { font-weight:600; }
 
 /* --- bucket lines ------------------------------------------------------ */
 .congress-buckets { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px; font-size:13px; }
@@ -110,9 +140,28 @@
 .congress-basis { color:#516780; font-size:12.5px; max-width:52ch; }
 
 .congress-flag-chips { display:inline-flex; gap:4px; flex-wrap:wrap; align-items:center; }
+.congress-psgc-cell, .congress-assignment-cell { display:inline-flex; flex-direction:column; gap:2px; max-width:22em; }
+.congress-psgc-cell small, .congress-assignment-cell small { color:#516780; font-size:11.5px; overflow-wrap:anywhere; }
+.congress-assignment-cell strong { font-size:12px; }
 .congress-chainage-cell { display:inline-flex; flex-direction:column; gap:2px; font-size:12px; max-width:16em; }
 .congress-chainage-cell small { color:#516780; overflow-wrap:anywhere; }
 .congress-pdf-buttons { display:inline-flex; gap:4px; flex-wrap:wrap; }
+/* Source chips cite document volume + page; let the long citation wrap inside
+   a table cell instead of stretching the explorer column (the global
+   .source-link keeps nowrap for the one-line compare-view buttons). */
+.congress-pdf-buttons .source-link { display:inline-block; white-space:normal; max-width:20em; overflow-wrap:anywhere; text-align:left; }
+
+/* --- search summary modal ------------------------------------------------ */
+/* Reuses .congress-record-table rows; sized narrower than the record drawer
+   because it holds one table, not a full per-record dossier. */
+.congress-summary { width:min(880px,calc(100vw - 32px)); }
+.congress-summary > p:first-of-type { margin:14px 0 0; }
+.congress-summary-table { margin:14px 0 0; }
+.congress-summary-table caption { text-align:left; font-size:12.5px; color:#516780; padding-bottom:8px; }
+.congress-summary-table tfoot th, .congress-summary-table tfoot td { border-top:2px solid #c9d6e5; font-weight:650; background:#fbfcfe; }
+.congress-summary-table tbody tr:nth-child(even) { background:#fbfcfe; }
+.congress-summary-tiles { grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); margin:14px 0 0; }
+.congress-summary-note { font-size:12.5px; margin:10px 0 0; color:#516780; }
 
 /* --- record drawer ----------------------------------------------------- */
 .congress-drawer { max-width:min(920px,94vw); }
@@ -121,7 +170,34 @@
 .congress-drawer section { border-top:1px solid #e8edf4; padding-top:4px; }
 .congress-drawer-meta { display:flex; gap:6px; flex-wrap:wrap; margin:0 0 6px; }
 .congress-flags { margin:0; padding-left:18px; font-size:13.5px; }
+.congress-analysis-findings { margin:0; padding-left:20px; font-size:13.5px; }
+.congress-analysis-findings li { margin:0 0 10px; }
+.congress-analysis-findings span, .congress-analysis-findings a { display:block; margin-top:3px; }
+.congress-analysis-findings a { font-size:12.5px; }
 .congress-trace { font-size:12px; color:#516780; overflow-wrap:anywhere; }
+.congress-fmr-map-dialog { width:min(1080px,95vw); max-width:none; }
+.congress-fmr-map-dialog > h3 { margin:8px 0 10px; font-size:16px; }
+.congress-fmr-map-dialog .fmr-dialog-heading h2 { margin:0; }
+.congress-fmr-map-dialog .fmr-eyebrow { margin:0 0 2px; }
+.congress-section-heading { display:flex; align-items:center; justify-content:space-between;
+  gap:12px; flex-wrap:wrap; }
+.congress-section-heading h2 { margin-bottom:0; }
+.congress-fmr-map-instruction { margin:4px 0 10px; }
+.congress-fmr-map-legend { display:flex; flex-wrap:wrap; gap:8px 18px; margin:0 0 10px;
+  font-size:12.5px; color:#516780; }
+.congress-fmr-map-legend span { display:flex; align-items:center; gap:4px; }
+.congress-fmr-map-legend i { display:inline-block; width:22px; height:4px; border-radius:2px; }
+.congress-fmr-map-shell { position:relative; min-height:460px; border:1px solid #d5dee9;
+  border-radius:8px; overflow:hidden; background:#eef2f6; }
+/* MapLibre adds `.maplibregl-map { position:relative }` when its lazy chunk
+   mounts. Use a more specific rule and an explicit height so that late-loaded
+   library CSS cannot collapse this modal canvas to zero pixels. */
+.congress-fmr-map-shell > .congress-fmr-map-canvas { position:relative; width:100%; height:460px; }
+.congress-fmr-map-shell .fmr-map-warning { position:absolute; z-index:2; top:10px; left:50%;
+  transform:translateX(-50%); margin:0; padding:7px 11px; border-radius:6px;
+  background:rgba(255,255,255,.94); box-shadow:0 2px 10px rgba(25,38,55,.16); }
+.congress-fmr-map-empty { min-height:180px; display:grid; place-items:center; padding:20px;
+  border:1px dashed #b9c6d5; border-radius:8px; color:#516780; text-align:center; }
 .congress-record-table { width:100%; border-collapse:collapse; font-size:13px; }
 .congress-record-table th, .congress-record-table td { padding:7px 9px; border-bottom:1px solid #e8edf4; text-align:left; vertical-align:top; }
 .congress-record-table thead th { background:#f4f7fb; font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; color:#516780; }
@@ -143,6 +219,16 @@
   .congress-lens, .congress-traces { grid-template-columns:1fr; gap:2px 0; }
   .congress-lens dt, .congress-traces dt { margin-top:8px; }
   .congress-seat-district { min-width:0; }
+  .congress-fmr-map-shell { min-height:380px; }
+  .congress-fmr-map-shell > .congress-fmr-map-canvas { height:380px; }
   .congress-bucket { flex-direction:column; gap:2px; }
   .congress-bucket-label { min-width:0; }
 }
+
+/* Location lens: toggle in the hero, chain-tier badge, catch-all card line. */
+.congress-lens-toggle { display:inline-flex; border:1px solid #d5dee9; border-radius:8px; overflow:hidden; }
+.congress-lens-toggle a { padding:7px 14px; font-size:13px; color:#3c4a5a; text-decoration:none; background:#fbfcfd; }
+.congress-lens-toggle a + a { border-left:1px solid #d5dee9; }
+.congress-lens-toggle a.active { background:#245fa8; color:#fff; font-weight:600; }
+.congress-tier.location-tier { background:#eaf3ec; color:#2c6e49; }
+.congress-catchall-line { font-size:13px; color:#516780; margin:0; }

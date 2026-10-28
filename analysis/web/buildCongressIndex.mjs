@@ -3,7 +3,8 @@ import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {hydrateProjects} from './src/comparisonData.js';
 import {regionCandidates} from './src/regionCandidates.js';
-import {canonicalOffice} from '../viewers/project_offices.mjs';
+import {officeJoinKey} from '../viewers/project_offices.mjs';
+export {officeJoinKey} from '../viewers/project_offices.mjs';
 import {partition, dpwhSummary} from './src/overviewSummary.js';
 
 // The DEO lens authorized by DEO2LEG/README.md, applied to the DPWH operations
@@ -31,15 +32,6 @@ const sum = (rows, pick) => rows.reduce((total, row) => total + (pick(row) ?? 0)
 // where the ledger has already collapsed the hyphen. Canonicalize both sides
 // through the same office normalizer, then expand the DEO abbreviation and drop
 // hyphens so the two vocabularies meet on one key.
-export function officeJoinKey(value) {
-  let s = canonicalOffice(value || '');
-  if (!s) return '';
-  s = s.replace(/\bsub[\s-]*deo\b/gi, 'sub district engineering office');
-  s = s.replace(/\bDEO\b/gi, 'district engineering office');
-  s = s.replace(/[-\u2010-\u2015]/g, ' ');
-  return s.replace(/\s+/g, ' ').trim().toLowerCase();
-}
-
 // BARMM is `type: "regional_group"`, not an office, and DEO2LEG policy forbids
 // counting a regional grouping as a district-level actor. Only real engineering
 // offices may carry money to a district; everything else is residual.

@@ -394,6 +394,9 @@ buildComparisonData.mjs→ comparison_projects_2027.json (17,613 unified rows,
                          + highlights_details_2027.json
 buildCongressIndex.mjs → congress_district_index_2027.json (196 cards over
                          254 districts; reads DEO2LEG outputs)
+buildLocationLens.py  → location_district_index_2027.json (440 + 18 cards;
+                         GPS/PSGC point-in-polygon lens, DEO/region/none
+                         fallback chain, disagreement-flagged)
 buildMainOverview.mjs  → main_overview_2027.json (landing-page summaries)
 ```
 
@@ -564,7 +567,8 @@ Paths below are repository paths, not their shorter deployed aliases.
 |---|---|---|
 | `comparison_projects_2027.json`, `comparison_overview_2027.json`, `highlights_details_2027.json` | [buildComparisonData.mjs](../web/buildComparisonData.mjs) + `unifiedComparison.js` | Stage trace + House reading groups + road groups + chainage units. The compact detail uses per-side `inherit` fields and grouped `records`; hydrate it before flattening |
 | `main_overview_2027.json` | [buildMainOverview.mjs](../web/buildMainOverview.mjs) | DPWH overview/detail and FMR/HFEP/NIA workbenches; adapters reconcile each native record grain |
-| `congress_district_index_2027.json` | [buildCongressIndex.mjs](../web/buildCongressIndex.mjs) | DPWH overview/detail + `DEO2LEG/outputs/deo_leg_crosswalk.json`; office-based district associations, residuals, office-change holds and attribution tiers |
+| `congress_district_index_2027.json` | [buildCongressIndex.mjs](../web/buildCongressIndex.mjs) | DPWH overview/detail + `DEO2LEG/outputs/deo_leg_crosswalk.json`; office-based district associations, residuals, office-change holds and attribution tiers. Method reference: [congress district index method](congress_district_index_method.md) |
+| `location_district_index_2027.json` | [buildLocationLens.py](../web/buildLocationLens.py) | Cleaned master-list observations (GPS/PSGC evidence) + `PSGC2LEG` assignments and district polygons + the DEO index (fallback membership, rosters); location-based district lens with DEO-lens, region and none fallbacks, disagreement-flagged. Runs in `predev`/`prebuild` after `buildCongressIndex.mjs`. Method reference: [location district lens method](location_district_lens_method.md) |
 | `congress_portraits/manifest.json` + portraits | [build_congress_portraits.py](../../scripts/build_congress_portraits.py) | Congress index and retained DEO2LEG member portraits; copies/resizes presentation assets without creating project associations |
 | `dpwh_flow_2027.json` | [buildDpwhFlow.mjs](../web/buildDpwhFlow.mjs) | DPWH detail + overview headlines; membership/revision aggregates, stage totals and native hierarchies |
 | `budget_flow_sources_2027.json` | [buildBudgetFlowSources.mjs](../web/buildBudgetFlowSources.mjs) | Four domain comparison payloads; source-specific category/group/revision flows |

@@ -13,6 +13,7 @@ import {
   bucketTotals,
   districtSeats,
   representativeLabel,
+  deoCardLabel,
   leadershipRoles,
   coServed,
   cardCarriesMoney,
@@ -27,6 +28,7 @@ import {
   chainageView,
   pdfView,
   coordinateView,
+  assignmentEvidence,
   explorerRow,
   EXPLORER_COLUMNS,
   flagCensus,
@@ -37,6 +39,7 @@ import {
   datasetOptions,
   lensPanel,
   congressRows,
+  summaryTotals,
 } from './congressModel.js';
 import {dpwhSummary} from './overviewSummary.js';
 import {FLAG_OPTIONS} from './matchFilters.js';
@@ -63,6 +66,49 @@ const rowsById = haveData ? indexRowsById(rows) : null;
 // rowFlags()/matchesFlag() take the shared suggestedCounterparts map, so the
 // explorer must pass exactly this — an array would throw at .has().
 const counterparts = haveData ? suggestedCounterparts(rows) : null;
+
+test('assignment evidence explains each location-lens resolution route', () => {
+  const printed = [{office: 'Example District Engineering Office', deo_group_ids: ['office-group:example']}];
+  const location = {barangay: 'Barangay One', municipality: 'Example City', province: 'Example'};
+  const cases = [
+    [{basis: 'title_psgc', target_id: 'leg:example:1st', title_gate: 'named_site',
+      named_site_id: 'example-campus', title_psgc: location}, 'Reviewed named site'],
+    [{basis: 'title_psgc', target_id: 'leg:example:1st', title_gate: 'printed_deo',
+      title_psgc: location, printed_offices: printed}, 'Title location + printed DEO'],
+    [{basis: 'title_psgc', target_id: 'leg:example:1st', title_gate: 'coordinate',
+      title_psgc: {...location, clean_coordinate_points: 1}}, 'Title location + coordinate'],
+    [{basis: 'title_psgc', target_id: 'leg:example:1st', title_gate: 'title_context',
+      title_psgc: location}, 'Direct title hierarchy'],
+    [{basis: 'deo_to_leg', target_id: 'leg:example:1st', printed_offices: printed}, 'DEO → one district'],
+    [{basis: 'deo', target_id: 'office-group:example', printed_offices: printed}, 'Multi-district DEO'],
+    [{basis: 'region', target_id: 'Region XIII', printed_offices: []}, 'Region fallback'],
+    [{basis: 'unassigned', target_id: 'unassigned', printed_offices: []}, 'Unassigned fallback'],
+  ];
+  for (const [resolution, label] of cases) {
+    const evidence = assignmentEvidence(resolution);
+    assert.equal(evidence.label, label);
+    assert.equal(evidence.targetId, resolution.target_id);
+    assert.ok(evidence.detail.length > 20);
+  }
+  assert.equal(assignmentEvidence(null), null);
+});
+
+test(skip, 'Nangcaon keeps its assignment and exposes the API office discrepancy for review', () => {
+  const row = rowsById.get('house-reading:2410');
+  assert.ok(row, 'the Nangcaon source example must be present');
+  const before = JSON.stringify(row);
+  const view = explorerRow(row);
+  assert.ok(view.flags.includes('changed_office'));
+  assert.ok(view.flagLabels.includes('Changed office'));
+  assert.equal(view.office_discrepancy.assignments.length, 4);
+  assert.equal(view.office_discrepancy.assignments.find(a => a.stage === 'api').office,
+    'Misamis Oriental 2nd District Engineering Office');
+  assert.ok(view.office_discrepancy.assignments.filter(a => a.stage !== 'api')
+    .every(a => a.office === 'Central Office'));
+  assert.equal(filterExplorerRows([view], {flag: 'changed_office'}).length, 1);
+  assert.equal(flagCensus([view]).find(entry => entry.flag === 'changed_office').count, 1);
+  assert.equal(JSON.stringify(row), before, 'flagging must not mutate source assignments or amounts');
+});
 
 // Every card's rows, once, so the heavier sweeps do not rebuild them per test.
 const cardRowSets = haveData
@@ -146,14 +192,55 @@ test(skip, 'both stages rebuild the card headline from its buckets', () => {
   }
 });
 
-test(skip, 'a Tier B card never claims a single owner and names its co-served districts', () => {
-  const tierB = index.cards.filter(card => card.tier === 'B');
+test(skip, 'summaryTotals collates movements and totals across a filtered card set', () => {
+  // The grid's summary modal reads this collation. The guarantees that matter
+  // at render time: figures are pure sums over the card summaries, the row
+  // total comes from card.rows (adjustment counts are pairs, not records),
+  // and the summed movements rebuild the summed stage totals exactly.
+  const totals = summaryTotals(index.cards);
+  assert.equal(totals.cards, index.cards.length);
+  assert.equal(totals.rows, index.cards.reduce((n, card) => n + card.rows, 0));
+  for (const [bucket, side] of [['insertions', 'house'], ['deletions', 'nep']]) {
+    assert.equal(totals[bucket].count,
+      index.cards.reduce((n, card) => n + card.summary[bucket].count, 0));
+    assert.equal(totals[bucket].amount_php,
+      index.cards.reduce((n, card) => n + card.summary[bucket].amount_php, 0));
+    assert.ok(totals[bucket].amount_php >= 0, `${bucket} is a magnitude, never negative`);
+  }
+  assert.equal(totals.adjustment_net_php,
+    index.cards.reduce((n, card) => n + card.summary.adjustments.net_php, 0));
+  assert.equal(totals.adjustment_net_php, totals.increased.amount_php - totals.reduced.amount_php,
+    'net movement = increases − decreases across the set');
+  assert.equal(totals.delta_php, totals.house.amount_php - totals.nep.amount_php,
+    'HGAB3 − NEP across the set');
+  assert.equal(totals.ties, true,
+    'the collated movements must rebuild the collated stage totals');
+  // A search-sized subset must tie out as exactly as the whole grid does.
+  const subset = index.cards.filter(card => card.summary.insertions.count > 0).slice(0, 12);
+  const subTotals = summaryTotals(subset);
+  assert.equal(subTotals.cards, subset.length);
+  assert.equal(subTotals.ties, true);
+  // Empty result: all zeros, still ties, nothing undefined.
+  const empty = summaryTotals([]);
+  assert.equal(empty.cards, 0);
+  assert.equal(empty.rows, 0);
+  assert.equal(empty.delta_php, 0);
+  assert.equal(empty.ties, true);
+});
+
+test(skip, 'a Tier B card never claims a single owner and names its co-served districts', () => {  const tierB = index.cards.filter(card => card.tier === 'B');
   assert.equal(tierB.length, index.counts.tier_b);
   assert.ok(tierB.length > 0);
   for (const card of tierB) {
     assert.ok(card.districts.length > 1, card.id);
     assert.equal(card.undivided, true, `${card.id} must be marked undivided`);
     const rep = representativeLabel(card);
+    if (card.offices.length) {
+      assert.equal(deoCardLabel(card), card.offices.map(office => office.name).join(' · '),
+        `${card.id} must expose its canonical DEO name`);
+    } else {
+      assert.equal(deoCardLabel(card), null, `${card.id} has no DEO to label`);
+    }
     assert.notEqual(rep.kind, 'resolved');
     assert.match(rep.text, /undivided|representatives|No resolved/i,
       `${card.id}: "${rep.text}" must not read as a single owner`);
@@ -176,6 +263,12 @@ test(skip, 'a single-district card names exactly one representative', () => {
   assert.ok(resolved.length > 100, `only ${resolved.length} clean single-district cards`);
   for (const card of resolved) {
     const rep = representativeLabel(card);
+    if (card.offices.length) {
+      assert.equal(deoCardLabel(card), card.offices.map(office => office.name).join(' · '),
+        `${card.id} must expose its canonical DEO name`);
+    } else {
+      assert.equal(deoCardLabel(card), null, `${card.id} has no DEO to label`);
+    }
     assert.equal(rep.kind, 'resolved');
     assert.equal(rep.names.length, 1);
     assert.ok(rep.text.length > 2);
@@ -515,6 +608,9 @@ test(skip, 'pdf page references name the stage they came from', () => {
         assert.ok(Number.isInteger(ref.page) && ref.page >= 1, 'no page zero or fractional page');
         assert.ok(ref.label.length);
         assert.ok(ref.id.length);
+        // Every page reference names the physical volume it points into, so
+        // chips can cite document + page rather than a bare page number.
+        assert.ok((ref.documentLabel ?? '').length, 'every ref carries a document label');
         kinds.add(ref.kind);
         count += 1;
       }
@@ -612,7 +708,7 @@ test(skip, 'explorer columns match the card figures a user can cross-check', () 
   for (const key of ['house_php', 'nep_php', 'delta_php', 'house_office', 'nep_office']) {
     assert.ok(keys.includes(key), `missing ${key}`);
   }
-  for (const key of ['chainage', 'pdf']) assert.ok(keys.includes(key));
+  for (const key of ['psgc_location', 'assignment', 'chainage', 'pdf']) assert.ok(keys.includes(key));
   // Every column must read a field explorerRow actually produces.
   const sample = explorerRow(cardRowSets.get(index.cards.find(c => c.rows > 10).id)[0]);
   for (const column of EXPLORER_COLUMNS) {

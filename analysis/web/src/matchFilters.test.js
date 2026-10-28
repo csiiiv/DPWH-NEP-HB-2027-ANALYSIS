@@ -8,7 +8,59 @@ import {
   parseLegacyStatus,
   rowDiffTags,
   rowFlags,
+  flagLabel,
+  REVIEW_FLAG_INFO,
 } from './matchFilters.js';
+import {officeDiscrepancy} from '../../viewers/project_offices.mjs';
+
+test('changed office catches a Transparency discrepancy even when the budget stages agree', () => {
+  const row = {
+    second: {id: 'h2', office: 'Central Office'},
+    third: {id: 'h3', office: 'Central Office'},
+    nep: {id: 'n', office: 'Central Office'},
+    api: {id: 'a', office: 'Misamis Oriental 2nd District Engineering Office'},
+  };
+  assert.ok(rowFlags(row).includes('changed_office'));
+  assert.equal(matchesFlag(row, 'changed_office'), true);
+  assert.equal(flagLabel('changed_office'), 'Changed office');
+  assert.match(REVIEW_FLAG_INFO.changed_office[1], /not proof/);
+  assert.deepEqual(officeDiscrepancy(row).assignments.map(a => [a.stage, a.office]), [
+    ['second', 'Central Office'], ['third', 'Central Office'], ['nep', 'Central Office'],
+    ['api', 'Misamis Oriental 2nd District Engineering Office'],
+  ]);
+});
+
+test('changed office compares the earlier reading and each grouped source record', () => {
+  assert.ok(rowFlags({second: {office: 'Central Office'}, third: {office: 'Tarlac DEO'}})
+    .includes('changed_office'));
+  const row = {third: {records: [{id: 'h1', office: 'Central Office'},
+    {id: 'h2', office: 'Tarlac DEO'}]}, nep: {id: 'n', office: 'Central Office'}};
+  assert.ok(rowFlags(row).includes('changed_office'));
+  assert.deepEqual(officeDiscrepancy(row).assignments.map(a => a.id), ['h1', 'h2', 'n']);
+  assert.ok(rowFlags({house: {office: 'Tarlac DEO'}, nep: {office: 'Tarlac City DEO'}})
+    .includes('changed_office'));
+});
+
+test('normalization, missing offices and suggestions do not imply a changed office', () => {
+  for (const [left, right] of [
+    ['Las Pi ñ as-Muntinlupa DEO', 'Las Piñas Muntinlupa District Engineering Office'],
+    ['Camarines Norte Sub-DEO', 'Camarines Norte Sub District Engineering Office'],
+    ['Misamis Occidenatal 1st DEO', 'Misamis Occidental 1st District Engineering Office'],
+    ['Regional Office IVA', 'Regional Office IV-A'],
+    [' CENTRAL OFFICE ', 'Central Office'],
+  ]) {
+    const row = {third: {office: left}, nep: {office: right}};
+    assert.equal(officeDiscrepancy(row), null, `${left} vs ${right}`);
+    assert.equal(matchesFlag(row, 'changed_office'), false);
+  }
+  assert.equal(officeDiscrepancy({third: {office: 'OCR office', office_canonical: 'Tarlac DEO'},
+    nep: {office: 'Tarlac District Engineering Office'}}), null);
+  for (const row of [{}, {third: {office: 'Central Office'}, nep: {}},
+    {third: {office: 'Central Office'}, suggestions: [{office: 'Tarlac DEO'}]}]) {
+    assert.equal(officeDiscrepancy(row), null);
+    assert.equal(matchesFlag(row, 'changed_office'), false);
+  }
+});
 
 test('identity match status splits exact, normalized, chainage, fuzzy and no match', () => {
   assert.equal(identityMatchStatus({house_match: 'exact_candidate'}), 'matched');

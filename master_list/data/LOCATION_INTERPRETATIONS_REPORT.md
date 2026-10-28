@@ -12,7 +12,7 @@ Candidate catalog chains stay intact. Printed province/region disagreement is re
 | unresolved | 3,081 |
 | with_context_conflict | 1,853 |
 
-Candidate scoring: `context_evidence_v3`; 101,480 assessed candidates, 970 observations ready for a non-destructive trial proposal. No assignments are changed.
+Candidate scoring: `context_evidence_v3`; 101,468 assessed candidates, 970 observations ready for a non-destructive trial proposal. No assignments are changed.
 
 Qualitative assessments: `location_assessments_v2`. Quality and scope do not add points.
 
@@ -23,6 +23,6 @@ Qualitative assessments: `location_assessments_v2`. Quality and scope do not add
 | has_partial_scope | 974 |
 | has_quality_review | 145 |
 
-Review suggestions: 19,863 observations, 49,425 candidate chains. Experimental scores retain separate contextual dimensions and explicit trial checks; no automatic application.
+Review suggestions: 19,863 observations, 49,413 candidate chains. Experimental scores retain separate contextual dimensions and explicit trial checks; no automatic application.
 
 Alternative counts include reference-only names and homonyms; they do not prove ambiguity in the asserted site. Context conflicts are diagnostics, not certified source errors. See [interpretation rules](../docs/LOCATION_INTERPRETATIONS.md).

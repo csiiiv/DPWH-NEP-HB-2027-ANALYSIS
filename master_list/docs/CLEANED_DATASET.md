@@ -5,6 +5,12 @@
 **Status:** implemented consumer release and viewer tab; provisional selections,
 no human verification.
 
+This release implements a task-specific subset of the
+[shared PSGC evidence-resolution method](../../analysis/docs/psgc_location_evidence_resolution_method.md):
+useful city/municipality identification with provisional title and mapped-point
+routes. Its narrower selection policy below remains authoritative for the
+current cleaned artifacts.
+
 The [builder](../scripts/build_cleaned_dataset.py) joins the readable processing
 release, master observations, full location interpretations and coordinate-PSGC
 evidence. It creates a separate release under `data/cleaned/`. Every existing

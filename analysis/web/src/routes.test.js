@@ -81,10 +81,10 @@ test('the workspace registry exposes consistent labels, prefixes and pages', () 
     assert.ok(ws.pages.length >= 1);
     for (const [key] of ws.pages) assert.equal(typeof key, 'string');
   }
-  // Hidden workspaces resolve in the router but never join listed nav.
-  assert.equal(workspaces.experiments.hidden, true);
-  assert.equal(workspaces.congress.hidden, true);
-  assert.ok(!Object.keys(workspaces).filter(key => !workspaces[key].hidden).includes('congress'));
+  // Congress and Experiments are both listed in the workspace navigation.
+  assert.ok(!workspaces.congress.hidden);
+  assert.ok(!workspaces.experiments.hidden);
+  assert.ok(Object.keys(workspaces).filter(key => !workspaces[key].hidden).includes('congress'));
   assert.equal(readWorkspace('#congress/district?district=office-group:leg:tarlac:3rd'), 'congress');
   assert.equal(readWorkspace('#experiments'), 'experiments');
   assert.equal(readWorkspace('#experiments?chart=flow'), 'experiments');
@@ -153,9 +153,15 @@ test('congress workspace routes stay prefixed and deep-link a district', () => {
   assert.equal(route.params.get('dataset'), 'dpwh');
   assert.equal(routeHref('district', {district: 'office-group:leg:tarlac:3rd'}, 'congress'),
     '#congress/district?district=office-group%3Aleg%3Atarlac%3A3rd');
-  // Congress has one tab (the grid); the district page is a deep link reached
-  // by clicking a representative, so it must never appear in the tab strip.
-  assert.deepEqual(workspaces.congress.pages, [['home', 'Districts']]);
+  // Congress has four tabs — two DPWH lenses, FMR legislative, and the map —
+  // while the district page stays a deep link reached by clicking a
+  // representative, never a tab.
+  assert.deepEqual(workspaces.congress.pages,
+    [['home', 'Districts (DEO)'], ['location', 'Districts (Legislative)'],
+      ['fmr', 'FMR (Legislative)'], ['map', 'Map']]);
+  assert.equal(readRoute('#congress/location').key, 'location',
+    'the location tab routes to its own key');
+  assert.equal(readRoute('#congress/fmr').key, 'fmr');
   assert.equal(workspaceHref('congress', readRoute('#nia/analysis')), '#congress/home');
   assert.equal(workspaceHref('nia', readRoute('#congress/district')), '#nia/home');
   // A stale district id is dropped rather than read as the literal string

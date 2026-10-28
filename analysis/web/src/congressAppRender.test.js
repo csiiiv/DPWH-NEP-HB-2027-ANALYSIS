@@ -4,7 +4,9 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createServer } from "vite";
 import fs from "node:fs";
-import { sortedCards, parseCardSort, districtSeats } from "./congressModel.js";
+import { sortedCards, parseCardSort, districtSeats, fmrRows, fmrExplorerRow } from "./congressModel.js";
+import { locationCards } from "./congressModel.js";
+import { buildFmrRedFlags } from "./fmrRedFlags.js";
 
 /** Render-level guards for the #congress workspace.
  *
@@ -22,11 +24,18 @@ import { sortedCards, parseCardSort, districtSeats } from "./congressModel.js";
 
 const DATA = new URL("../../data/", import.meta.url);
 const INDEX = "congress_district_index_2027.json";
+const LOCATION_INDEX = "location_district_index_2027.json";
+const FMR_INDEX = "fmr_legislative_index_2027.json";
+const FMR_DETAIL = new URL("../../../other-analysis/data/fmr_workbench.json", import.meta.url);
 // The index is derived (predev/prebuild, gitignored); the drawer test also
 // reads the comparison payload, so guard on both.
 const haveIndex = fs.existsSync(new URL(INDEX, DATA)) &&
   fs.existsSync(new URL("comparison_projects_2027.json", DATA));
 const skip = haveIndex ? false : { skip: "congress datasets not built — run predev/prebuild" };
+const skipLocation = haveIndex && fs.existsSync(new URL(LOCATION_INDEX, DATA))
+  ? false : { skip: "location-lens dataset not built — run predev/prebuild" };
+const skipFmr = haveIndex && fs.existsSync(new URL(FMR_INDEX, DATA)) && fs.existsSync(FMR_DETAIL)
+  ? false : { skip: "FMR legislative datasets not built — run predev/prebuild" };
 
 const read = (name) => JSON.parse(fs.readFileSync(new URL(name, DATA), "utf8"));
 
@@ -64,6 +73,18 @@ async function render(name, props) {
 const districtLine = (card) =>
   card.districts.map((district) => district.displayName).join(" · ");
 
+/** The grid's card filter, replicated: search matches seats, ledger names and
+ * the card label (see Districts' `visible` memo). Used to reproduce a live
+ * search's exact card set for the summary modal test. */
+const matches = (card, needle) => {
+  const seats = districtSeats(card);
+  return seats.some((seat) => [seat.districtName, seat.representative, seat.jurisdiction,
+    seat.officialSeat, ...seat.candidates].some((value) =>
+    value && String(value).toLowerCase().includes(needle))) ||
+    card.ledger_names.some((name) => name.toLowerCase().includes(needle)) ||
+    card.card_label?.toLowerCase().includes(needle);
+};
+
 test("the card grid renders from the index alone, with every sort option offered", skip, async () => {
   const index = read(INDEX);
   const html = await render("Districts", {index, route: route("home")});
@@ -75,6 +96,17 @@ test("the card grid renders from the index alone, with every sort option offered
   assert.ok(html.includes("congress-card tier-B"));
   assert.ok(html.includes("congress-card tier-none"));
   assert.doesNotMatch(html, /tier-undefined|tier-null|\[object/);
+
+  // The DEO lens consistently leads with office names for both one-district
+  // Tier A cards and shared Tier B cards. Representatives remain seat details.
+  const tierA = index.cards.find((card) => card.tier === "A");
+  const tierB = index.cards.find((card) => card.tier === "B");
+  assert.ok(tierA?.offices[0]?.name);
+  assert.ok(tierB?.offices[0]?.name);
+  assert.ok(html.includes(`>${tierA.offices[0].name}</button>`));
+  assert.ok(html.includes(`>${tierB.offices[0].name}</button>`));
+  assert.ok(html.includes(tierA.districts[0].representative.name));
+  assert.doesNotMatch(html, />\d+ representatives · undivided range<\/button>/);
 
   // The sort controls are two decisions: every option key is offered, and the
   // direction select labels itself by what the measure sorts (records or
@@ -169,6 +201,22 @@ test("the explorer hero renders from the index while the payload is still loadin
   assert.ok(html.includes("Loading the comparison payload"));
 });
 
+test("the location explorer shows the evidence that assigned each project", skipLocation, async () => {
+  const index = read(INDEX);
+  const locationIndex = read(LOCATION_INDEX);
+  const detail = read("comparison_projects_2027.json");
+  const card = locationIndex.cards.find((entry) =>
+    Object.values(entry.row_ids).flat().includes("house-reading:2410"));
+  assert.ok(card, "Nangcaon location card is missing");
+
+  const html = await render("District", {index, locationIndex, detail, lens: "location",
+    route: route("district", `district=${encodeURIComponent(card.id)}&lens=location`)});
+  assert.ok(html.includes("Assignment basis"));
+  assert.ok(html.includes("Title location + printed DEO"));
+  assert.ok(html.includes("Misamis Oriental 2nd District Engineering Office"));
+  assert.ok(html.includes("Barangay Nangcaon"));
+});
+
 test("a failed payload shows a scoped error, never a blank workspace", skip, async () => {
   const index = read(INDEX);
   const card = index.cards.find((entry) => entry.tier === "A" && entry.rows > 0);
@@ -195,6 +243,121 @@ test("an unknown district id degrades to a friendly not-found page", skip, async
   assert.ok(html.includes('href="#congress/home"'), "must link back to the grid");
 });
 
+test("the Show summary button is offered on both lens grids, opening a tied-out movements table", skip, async () => {
+  const index = read(INDEX);
+  for (const [key, props] of [
+    ["home", {index, route: route("home")}],
+    ["location", {index, route: route("location"), lens: "location", locationIndex: read(LOCATION_INDEX)}],
+    ["fmr", {index, route: route("fmr"), lens: "fmr", fmrIndex: read(FMR_INDEX)}],
+  ]) {
+    const html = await render("Districts", props);
+    // The button sits in the controls row, on every lens…
+    assert.ok(html.includes(">Show summary</button>"), `${key}: button missing`);
+    // …and stays a real button so the modal can open (the gated-dataset rule).
+    assert.doesNotMatch(html, /Show summary[^>]*disabled/);
+  }
+});
+
+test("the FMR legislative grid and explorer expose assignment evidence", skipFmr, async () => {
+  const index = read(INDEX);
+  const fmrIndex = read(FMR_INDEX);
+  const detail = JSON.parse(fs.readFileSync(FMR_DETAIL, "utf8"));
+  const grid = await render("Districts", {index, fmrIndex, lens: "fmr", route: route("fmr")});
+  assert.ok(grid.includes("Farm-to-market roads by legislative district"));
+  assert.ok(grid.includes("House only"));
+  assert.ok(grid.includes("FMR → LEG"));
+
+  const card = fmrIndex.cards.find(entry =>
+    entry.row_ids.insertions.length === 0 && entry.row_ids.deletions.length === 0 &&
+    entry.row_ids.increased.length + entry.row_ids.reduced.length + entry.row_ids.unchanged.length > 5);
+  assert.ok(card, 'no paired-only FMR district card is available for the source-link render test');
+  const html = await render("District", {index, fmrIndex, detail, lens: "fmr",
+    route: route("district", `district=${encodeURIComponent(card.id)}&lens=fmr`)});
+  assert.ok(html.includes("Assignment basis"));
+  assert.ok(html.includes("candidate stages"));
+  assert.ok(html.includes("default source-analysis screens"));
+  assert.ok(html.includes(">View map</button>"));
+  assert.ok(html.includes(">View all segments</button>"));
+
+  // The default table page can change as assignment rules move rows between
+  // cards. Render a known paired row's drawer to prove both physical source
+  // documents remain disclosed without coupling the assertion to pagination.
+  const pairedId = [...card.row_ids.increased, ...card.row_ids.reduced, ...card.row_ids.unchanged][0];
+  const paired = fmrRows(detail).find(row => row.id === pairedId);
+  const drawer = await render("RecordDrawer", {
+    record: fmrExplorerRow(paired, fmrIndex.row_resolution[pairedId]),
+    onPdf: () => {}, onClose: () => {},
+  });
+  assert.ok(drawer.includes("HB 10858 · 2nd reading · Vol I-B (FMR annex)"));
+  assert.ok(drawer.includes("NEP 2027 · FMR schedule"));
+
+  const analysis = Object.fromEntries(["house", "nep"].map(stage => [stage,
+    new Map(buildFmrRedFlags(detail, stage).rows.map(row => [row.id, row]))]));
+  const reviewRow = fmrRows(detail).find(row => row.title ===
+    "Construction of NRJ, Soysoyan-Ballay-Tawangan-Lusod Proper FMR, Kabayan, Benguet");
+  const reviewDrawer = await render("RecordDrawer", {
+    record: fmrExplorerRow(reviewRow, fmrIndex.row_resolution[reviewRow.id], analysis),
+    onPdf: () => {}, onMap: () => {}, onClose: () => {},
+  });
+  assert.ok(reviewDrawer.includes("FMR source-analysis evidence"));
+  assert.ok(reviewDrawer.includes("Long endpoint span"));
+  assert.ok(reviewDrawer.includes("Coordinate/title province disagreement"));
+  assert.ok(reviewDrawer.includes("Longest section: 14.87 km"));
+  assert.ok(reviewDrawer.includes("#fmr/analysis?view=red_flags"));
+  assert.ok(reviewDrawer.includes(">Show project map</button>"));
+  assert.ok(!reviewDrawer.includes("openstreetmap.org"));
+});
+
+test("the summary modal lists one row per card with NEP, amended and increase, then totals", skipLocation, async () => {
+  const locationIndex = read(LOCATION_INDEX);
+  // The same “manila 3rd” search the live view runs. The modal is URL state
+  // (?summary=1 rides with the filters), so rendering the grid route with
+  // both params must produce the modal over the filtered set — the full
+  // share-link pipeline, not a direct component render.
+  const html = await render("Districts", {index: read(INDEX), locationIndex, lens: "location",
+    route: route("location", "q=manila+3rd&summary=1")});
+
+  // The modal is open, scoped to the search…
+  assert.ok(html.includes("congress-summary"));
+  assert.ok(html.includes("\u201Cmanila 3rd\u201D"));
+  // Allocation-table headers, sample-format vocabulary.
+  for (const header of ["District / City", "Representative", "NEP", "Amended (HGAB3)", "Increase"]) {
+    assert.ok(html.includes(header), `header missing: ${header}`);
+  }
+  // One row per surviving card — its district line prints.
+  const cards = locationCards(locationIndex).filter(card => matches(card, "manila 3rd"));
+  assert.ok(cards.length > 1, "expected multiple cards for the manila 3rd search");
+  const {districtSeats} = await import("./congressModel.js");
+  for (const card of cards) {
+    const seats = districtSeats(card);
+    const name = card.location_tier === "deo" && card.card_label ? card.card_label
+      : card.location_tier === "region" ? card.region
+      : seats.length ? seats.map(seat => seat.districtName).join(" · ")
+      : card.card_label ?? card.id;
+    assert.ok(html.includes(name), `row missing for ${card.id}`);
+  }
+  // The TOTAL row and the three tiles from the sample format.
+  assert.ok(html.includes(`Total · ${cards.length} cards`));
+  for (const tile of ["Original NEP", "Amended (HGAB3)", "Net increase"]) {
+    assert.ok(html.includes(tile), `tile missing: ${tile}`);
+  }
+  // The tie-out is declared.
+  assert.ok(html.includes("Totals are exact sums of the cards above."));
+});
+
+test("closing the summary modal clears the URL param without touching the filters", skip, async () => {
+  // Rendering with the param proves the modal opens from a shared link;
+  // closing emits setFilter({summary: null}) which navigates the param away
+  // while q/tier/sort stay. The navigate contract is covered by routes tests;
+  // here we assert the grid keeps its filtered card set alongside the modal.
+  const index = read(INDEX);
+  const html = await render("Districts", {index,
+    route: route("home", "q=road&summary=1")});
+  assert.ok(html.includes("congress-summary"));
+  // Filters survive the modal being open — the modal scopes them, not replaces.
+  assert.ok((html.match(/<article class="congress-card /g) ?? []).length < index.cards.length);
+});
+
 test("a search filter narrows the grid and the count status says so", skip, async () => {
   const index = read(INDEX);
   const needle = districtSeats(index.cards[0])[0].representative.split(" ")[0];
@@ -215,7 +378,7 @@ test("a search filter narrows the grid and the count status says so", skip, asyn
   assert.deepEqual(order, expected);
 });
 
-test("the record drawer renders flags, PDF deep-links and the title coordinate caveat", skip, async () => {
+test("the record drawer renders flags, PDF deep-links and title coordinate provenance", skip, async () => {
   const index = read(INDEX);
   // A row that exercises the drawer's richest paths: both stages, chainage and
   // a coordinate printed in the title.
@@ -247,11 +410,17 @@ test("the record drawer renders flags, PDF deep-links and the title coordinate c
   // Flags list, diff-tag badges, both stages' amounts and the signed delta.
   for (const label of chosen.flagLabels.slice(0, 3)) assert.ok(html.includes(label));
   assert.ok(html.includes("HGAB3 − NEP"));
-  // PDF buttons cite their stage label and page.
+  // PDF buttons cite their document volume and page, never a bare page number.
   assert.ok((html.match(/p\. \d+/g) ?? []).length >= 2, "each stage's page button must render");
-  // A title-printed coordinate is disclosed as not geocoded, with the OSM link.
+  for (const ref of chosen.pdf) {
+    assert.ok(html.includes(ref.documentLabel),
+      `drawer must name the document volume for ${ref.kind}: ${ref.documentLabel}`);
+    assert.ok(html.includes(`${ref.documentLabel} · p. ${ref.page}`),
+      `page button must cite document + page for ${ref.kind}`);
+  }
+  // A title-printed coordinate is disclosed as source evidence, with the OSM link.
   assert.ok(html.includes("Printed in the title:"));
-  assert.ok(html.includes("not geocoded"));
+  assert.ok(html.includes("reported as source evidence"));
   assert.ok(html.includes("openstreetmap.org"));
   // Chainage section renders whichever sides the row carries.
   assert.ok(html.includes("Chainage"));

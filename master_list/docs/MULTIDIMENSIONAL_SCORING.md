@@ -4,6 +4,11 @@
 **Active location rules:** `location_evidence_v6.5`; this document proposes
 additional assessments without changing the master assignment rules.
 
+The suite-wide orchestration rules for combining these evidence types are now
+specified in the
+[shared PSGC evidence-resolution method](../../analysis/docs/psgc_location_evidence_resolution_method.md).
+This document remains the broader inventory and assessment proposal.
+
 The first [location-focused interpretation layer](LOCATION_INTERPRETATIONS.md)
 is now implemented as `location_interpretations_v6`. It retains alternative
 title/name-role and parent-chain readings, compares contextual support at
