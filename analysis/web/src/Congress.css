@@ -204,6 +204,15 @@
 .congress-record-table .num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
 .congress-record-table code { font-size:11.5px; overflow-wrap:anywhere; }
 .congress-delta { font-size:13.5px; margin:8px 0 0; }
+.congress-repair-panel { margin:12px 0 0; padding:12px 14px; border:1px solid #f0c4c4;
+  border-left:4px solid #dc2626; border-radius:8px; background:#fef7f7; }
+.congress-repair-panel h4 { margin:0 0 6px; font-size:13.5px; color:#9b1c1c; }
+.congress-repair-panel .fmr-muted { margin:0 0 10px; }
+.congress-repair-panel .congress-record-table { background:#fff; border-radius:6px; overflow:hidden; }
+.congress-repair-controls { display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+  margin-top:10px; font-size:13px; color:#516780; }
+.congress-repair-controls label { display:flex; align-items:center; gap:6px; cursor:pointer; }
+.congress-repair-controls a, .congress-repair-controls button { font-size:12.5px; }
 .congress-chainage { font-size:13.5px; margin:4px 0; overflow-wrap:anywhere; }
 .congress-chainage span { margin-left:6px; }
 .congress-coords { margin:0; padding-left:18px; font-size:13.5px; }
