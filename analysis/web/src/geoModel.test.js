@@ -184,7 +184,7 @@ test('change-type filter buckets comparison traces and exposes non-comparison da
   assert.equal(filterRecords(rows, {change: ['none']}).map(r => r.record_id).join(), 'fmr');
   // Combining buckets unions them; the change label is human-readable.
   assert.equal(filterRecords(rows, {change: ['insertion', 'no_change']}).length, 2);
-  assert.equal(CHANGE_TYPE_LABELS.insertion, 'Insertion (House-only)');
+  assert.equal(CHANGE_TYPE_LABELS.insertion, 'Unsupported insertion (House-only)');
   assert.equal(CHANGE_TYPE_LABELS.none, 'No comparison data');
   assert.ok(MULTI_FILTER_KEYS.includes('change'));
 });

@@ -19,7 +19,7 @@ function Amount({value, exact, signed = false}) {
 }
 // Five-group vocabulary (agreed 16 October 2026): title + literal subheader.
 const POPULATION_LABELS = {
-  insertions: {title: 'Insertions', sub: 'House Only Records', note: 'House Allocations Worth'},
+  insertions: {title: 'Unsupported insertions', sub: 'House Only Records', note: 'House Allocations Worth'},
   deletions: {title: 'Deletions', sub: 'NEP Only Records', note: 'NEP Allocations Worth'},
   unchanged: {title: 'Unchanged', sub: 'Same NEP-HGAB Titles, no adjustments', note: 'Unchanged Allocations Worth'},
 };
@@ -140,11 +140,11 @@ function CoverageTables({data, exact, inModal = false}) {
     </section>
     <section className="fmr-section" aria-labelledby={`overview-changes-heading${inModal ? '-modal' : ''}`}>
       <SectionHeader title="House vs. NEP: candidate changes" id="overview-changes-heading" shareKey="candidate-changes" currentParams={{exact: exact ? '1' : ''}} share={!inModal}/>
-      <p>Insertion and deletion candidates with their allocations, unchanged matched records with equal allocations, and gross movement on paired counterparts. A candidate is a matching observation, not a certified policy change; each workspace's card states its matching basis. Unchanged records are matched House–NEP records with no change in budget allocations. Select a figure to review the underlying records in its workspace.</p>
+      <p>Unsupported insertion and deletion candidates with their allocations, unchanged matched records with equal allocations, and gross movement on paired counterparts. A candidate is a matching observation, not a certified policy change; each workspace's card states its matching basis. Unchanged records are matched House–NEP records with no change in budget allocations. Select a figure to review the underlying records in its workspace.</p>
       <div className="table-scroll" role="region" aria-label="Overview House versus NEP candidate changes" tabIndex={0}>
         <table className="highlights-table highlights-changes overview-changes-table"><caption>Candidate changes · Allocations Worth figures for every group; Increased/Decreased show the pairs' NEP-to-HGAB3 Allocations Worth with the signed total adjustment</caption>
           <thead><tr><th scope="col">Workspace</th>
-            <th scope="col">Insertions<small className="overview-subhead">House Only Records</small></th>
+            <th scope="col">Unsupported insertions<small className="overview-subhead">House Only Records</small></th>
             <th scope="col">Deletions<small className="overview-subhead">NEP Only Records</small></th>
             <th scope="col">Unchanged<small className="overview-subhead">Same NEP-HGAB Titles, no adjustments</small></th>
             <th scope="col">Increased<small className="overview-subhead">Same Titles, increased budget</small></th>
@@ -153,7 +153,7 @@ function CoverageTables({data, exact, inModal = false}) {
           <tbody>{data.workspaces.map(w => <tr key={w.key}>
             <th scope="row"><a href={w.links.home}>{w.label}</a></th>
             {[['insertions', 'House Allocations Worth'], ['deletions', 'NEP Allocations Worth']].map(([key, note]) => <td key={key}>
-              <a className="highlights-cell-link" href={w.links[key]} aria-label={`${w.label} ${key === 'insertions' ? 'insertion' : 'deletion'} candidates`}>
+              <a className="highlights-cell-link" href={w.links[key]} aria-label={`${w.label} ${key === 'insertions' ? 'unsupported insertion' : 'deletion'} candidates`}>
                 <strong>{number(w[key].count)} {w.count_unit}</strong>
                 <span title={money(w[key].amount_php)}>{note} <Amount value={w[key].amount_php} exact/></span></a></td>)}
             <td><a className="highlights-cell-link" href={w.links.unchanged} aria-label={`${w.label} unchanged pairs`}>
@@ -210,7 +210,7 @@ function CoverageTables({data, exact, inModal = false}) {
         net <Amount value={w.scope_review.net_php} exact signed/> is held separately from same-project adjustments.{' '}
         <a href={w.key === 'dpwh' ? routeHref('analysis', {view: 'relations', tab: 'overlaps'}, 'dpwh') : w.links.adjustments}>Review segment scope →</a>
       </p>)}
-      <p className="fmr-muted">Counts use each workspace's record grain, so they are not comparable across rows. "Allocations Worth" figures are total allocations; "Adjustments worth" figures are signed total adjustments (+/−) within those pairs, never allocations. Adjustments are gross movements within pairs — {data.workspaces.map(w => `${w.label}: ${w.adjustments.count_unit}`).join('; ')}. The DPWH pair counts include region-difference candidates. Unchanged allocations are equal on both stages. HFEP paired column additions/drops sit in its adjustments; its Analysis view displays NEP minus House. The Total row sums the four workspaces; add the separately shown scope-review allocations to reconstruct the full ledgers. Insertions − deletions + net adjustments + scope-review net equal House − NEP in every workspace. Record counts add across different counting grains, so treat them as record totals, not comparable project counts.</p>
+      <p className="fmr-muted">Counts use each workspace's record grain, so they are not comparable across rows. "Allocations Worth" figures are total allocations; "Adjustments worth" figures are signed total adjustments (+/−) within those pairs, never allocations. Adjustments are gross movements within pairs — {data.workspaces.map(w => `${w.label}: ${w.adjustments.count_unit}`).join('; ')}. The DPWH pair counts include region-difference candidates. Unchanged allocations are equal on both stages. HFEP paired column additions/drops sit in its adjustments; its Analysis view displays NEP minus House. The Total row sums the four workspaces; add the separately shown scope-review allocations to reconstruct the full ledgers. Unsupported insertions − deletions + net adjustments + scope-review net equal House − NEP in every workspace. Record counts add across different counting grains, so treat them as record totals, not comparable project counts.</p>
     </section>
   </>;
 }
@@ -249,16 +249,16 @@ export default function MainOverview() {
   return <><a className="fmr-skip" href="#overview-content" onClick={e => {e.preventDefault(); document.getElementById('overview-content')?.focus();}}>Skip to content</a>
     <WorkbenchHeader workspace="overview" route="home"/><main id="overview-content" tabIndex={-1} className={`shell fmr-main main-overview${exact ? ' show-exact' : ''}`}>
       <section className="hero"><p className="eyebrow">FY2027 · Retained budget schedules</p><h1>Budget allocation overview</h1>
-        <p>Explore public works, farm-to-market roads, health facilities and irrigation allocations. Inspect insertion and deletion candidates, follow paired amount changes, and verify the source records.</p>
+        <p>Explore public works, farm-to-market roads, health facilities and irrigation allocations. Inspect unsupported insertion and deletion candidates, follow paired amount changes, and verify the source records.</p>
         <div className="hero-actions"><button className="primary" onClick={() => document.getElementById('overview-summaries')?.scrollIntoView()}>Explore the summaries ↓</button><ShareLink/>
           <label><input type="checkbox" checked={exact} onChange={e => navigate({exact: e.target.checked ? '1' : null})}/> Show exact pesos</label></div>
         {data && <p className="fmr-muted">Dataset build: {new Intl.DateTimeFormat('en-PH', {dateStyle: 'long', timeZone: 'Asia/Manila'}).format(new Date(data.built_at))} · Changes shown as House minus NEP.</p>}
       </section>
-      <p className="fmr-notice">Allocations are budget figures. Insertions and deletions are provisional candidates: title, scope and OCR differences can prevent matching. Counts use each dataset's declared record grain; each source and workspace keeps its own totals.</p>
+      <p className="fmr-notice">Allocations are budget figures. Unsupported insertions and deletions are provisional candidates: title, scope and OCR differences can prevent matching. Counts use each dataset's declared record grain; each source and workspace keeps its own totals.</p>
       {error ? <section role="alert"><h2>Overview data could not load</h2><p>{error}</p><button onClick={() => setAttempt(n => n + 1)}>Retry summary</button>{' '}<a href="#home">Open DPWH</a></section>
         : !data ? <p role="status">Loading validated workspace summaries…</p> : <>
           <section id="overview-summaries" aria-label="Budget change summaries">
-            <SectionHeader title="Insertions, deletions, unchanged records and adjustments" id="overview-summaries-head" shareKey="summaries" currentParams={{exact: exact ? '1' : ''}}/>
+            <SectionHeader title="Unsupported insertions, deletions, unchanged records and adjustments" id="overview-summaries-head" shareKey="summaries" currentParams={{exact: exact ? '1' : ''}}/>
             <div className="cards overview-workspaces">{data.workspaces.map(w => <SummaryCard key={w.key} workspace={w} exact={exact}/>)}</div></section>
           <section className="fmr-section" aria-labelledby="overview-funding-heading">
             <SectionHeader title="Source funding snapshot" id="overview-funding-heading" shareKey="funding" currentParams={{exact: exact ? '1' : ''}}/>
@@ -294,7 +294,7 @@ export default function MainOverview() {
     </main>
     {/* Modal presentations: bigger dialog width, cards shrink gracefully
         inside. Gated on data so shared modal URLs survive a cold load. */}
-    {data && modalTarget === 'summaries' && <CardModal cardKey="summaries" active label="Insertions, deletions, unchanged records and adjustments" onClose={closeModal}>
+    {data && modalTarget === 'summaries' && <CardModal cardKey="summaries" active label="Unsupported insertions, deletions, unchanged records and adjustments" onClose={closeModal}>
       <ModalSummaryGrid workspaceKeys={data.workspaces.map(w => w.key)} data={data} exact={exact}/>
       <p className="fmr-muted">Single-section presentation view. <a href="#overview">Return to full overview →</a></p>
     </CardModal>}
@@ -330,7 +330,7 @@ export default function MainOverview() {
         <div className="table-scroll" role="region" aria-label="Candidate changes" tabIndex={0}>
           <table className="highlights-table highlights-changes overview-changes-table"><caption>Candidate changes · Allocations Worth figures</caption>
             <thead><tr><th scope="col">Workspace</th>
-              <th scope="col">Insertions</th><th scope="col">Deletions</th><th scope="col">Unchanged</th>
+              <th scope="col">Unsupported insertions</th><th scope="col">Deletions</th><th scope="col">Unchanged</th>
               <th scope="col">Increased</th><th scope="col">Decreased</th><th scope="col">House ledger</th></tr></thead>
             <tbody>{data.workspaces.map(w => <tr key={w.key}>
               <th scope="row">{w.label}</th>

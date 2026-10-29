@@ -23,7 +23,7 @@ const labels={'Bridge Program':'Bridges','Convergence and Special Support Progra
 const short=value=>labels[value]??value;
 const modes={no_suggestion:'House-only · no NEP suggestion',unresolved:'Unresolved NEP suggestions',third_only:'New 3rd-reading records'};
 const deletionModes={no_suggestion:'No House record · no suggestion',suggested:'Possible replacements · House rows suggest this NEP item',second_only:'HGAB2 only · dropped in HGAB3'};
-const views=[['overview','Overview'],['insertions','Insertions'],['deletions','Deletions'],['adjustments','Adjustments'],['chainage','Chainage'],['roadgroups','Groupings'],['relations','Relations'],['statistics','Statistics']];
+const views=[['overview','Overview'],['insertions','Unsupported insertions'],['deletions','Deletions'],['adjustments','Adjustments'],['chainage','Chainage'],['roadgroups','Groupings'],['relations','Relations'],['statistics','Statistics']];
 const questions={overview:'How are recorded DPWH allocations distributed across offices and programs?',
  insertions:'Which House allocation records have no NEP counterpart?',
  deletions:'Which NEP allocation records have no House counterpart?',
@@ -216,7 +216,7 @@ function Overview({stats,source,headlines,dim,change,onOpenGroup,drill,onOpenDri
   </section>
   <div className="analysis-distributions"><Distribution title="Central Office vs DEOs" buckets={stats.offices} total={stats.records}/><Distribution title="Records by program" buckets={stats.programs} total={stats.records}/></div>
   <section className="analysis-section"><h2>Explore further</h2><div className="analysis-crosslinks">
-   <a href={routeHref('analysis',{view:'insertions'})}>Insertion candidates by region, office, category and PAP →</a>
+   <a href={routeHref('analysis',{view:'insertions'})}>Unsupported insertion candidates by region, office, category and PAP →</a>
    <a href={routeHref('analysis',{view:'deletions'})}>Deletion candidates · NEP items without House records, with possible replacements →</a>
    <a href={routeHref('analysis',{view:'adjustments'})}>Reading adjustments and cross-document differences →</a>
    <a href={routeHref('analysis',{view:'chainage'})}>Chainage amendments · length Δ and OCR length review →</a>
@@ -273,7 +273,7 @@ function Distribution({title,buckets,total}){
 function Insertions({headlines,reading,ranking,dim,change,onOpenGroup}){
  const list=headlines.rankings[reading][ranking];
  const shown=Math.min(100,list.comparison_rows);
- return <section className="analysis-section"><h2>Top insertion candidates</h2>
+ return <section className="analysis-section"><h2>Top unsupported insertion candidates</h2>
   <div className="analysis-controls"><label>Candidate group<select aria-label="Analysis candidate group" value={ranking} onChange={e=>change('ranking',e.target.value)}>{Object.entries(modes).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></div>
   <DimensionChips dim={dim} change={change}/>
   <div className="cards analysis-headlines">
@@ -281,10 +281,10 @@ function Insertions({headlines,reading,ranking,dim,change,onOpenGroup}){
    <article><h3>Group allocation</h3><strong>{amount(list.amount_php)}</strong><p>{names[reading]} · ranked by amount</p></article>
    <article><h3>Showing</h3><strong>Top {shown.toLocaleString()}</strong><p>of {list.comparison_rows.toLocaleString()} rows · grouped allocations remain grouped</p></article>
   </div>
-  <p className="notice">{ranking==='no_suggestion'?'House records with no attached NEP/Transparency source and no retained NEP suggestion. These are review candidates, not confirmed insertions.':ranking==='unresolved'?'House records with possible or ambiguous NEP counterparts are separated from the no-suggestion list. Review their suggestions before claiming an insertion.':'Records present only in HGAB3 under the retained reading key. This shows a reading difference, not confirmed absence from NEP.'} Unique different-region title candidates are linked for review and excluded from the House-only groups.</p>
+  <p className="notice">{ranking==='no_suggestion'?'House records with no attached NEP/Transparency source and no retained NEP suggestion. These are review candidates, not confirmed unsupported insertions.':ranking==='unresolved'?'House records with possible or ambiguous NEP counterparts are separated from the no-suggestion list. Review their suggestions before claiming an unsupported insertion.':'Records present only in HGAB3 under the retained reading key. This shows a reading difference, not confirmed absence from NEP.'} Unique different-region title candidates are linked for review and excluded from the House-only groups.</p>
   {dim!=='overall'&&<AggregateTable tableId={`insertions-by-${dim}`} title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
    onOpenGroup={g=>onOpenGroup({scope:'insertions',reading,ranking,dim,label:g.label,displayLabel:groupLabel(dim,g.label)})}/>}
-  <SortableTable tableId="insertions-top" ariaLabel="Top insertion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
+  <SortableTable tableId="insertions-top" ariaLabel="Top unsupported insertion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
    {key:'rank',label:'#',sortable:false,width:'1%',render:(r,i)=><span>{i+1}</span>},
    {key:'title',label:'Project / assignment',scope:'row',render:r=><span className="cell-main">{r.title}<small>{r.zone==='fap'?'FAPs':short(r.program)} · {regionName(r.region)} · {officeName(r.office)||'No recorded office'}</small></span>},
    {key:'amount_php',label:'Allocation (PHP)',align:'num',render:r=>amountCell(r.amount_php)},
@@ -304,7 +304,7 @@ function Deletions({headlines,ranking,dim,change,onOpenGroup}){
    <article><h3>NEP allocation</h3><strong>{amount(list.amount_php)}</strong><p>Ranked by NEP amount · grouped allocations remain grouped</p></article>
    <article><h3>Showing</h3><strong>Top {shown.toLocaleString()}</strong><p>of {list.comparison_rows.toLocaleString()} rows</p></article>
   </div>
-  <p className="notice">{ranking==='no_suggestion'?'NEP line items with no attached House record and no House row suggesting them as a counterpart. These are review candidates, not confirmed deletions — title or assignment differences can prevent pairing.':ranking==='suggested'?'NEP-only items that unmatched House rows name as possible counterparts. Review the referring House rows: a re-titled or re-scoped line item can look like a deletion plus an insertion when it is a replacement. Suggestion counts refer to House rows, not certified identities.':'Records present only in HGAB2 under the retained reading key — dropped between readings. Currently none; the group guards future readings data.'}</p>
+  <p className="notice">{ranking==='no_suggestion'?'NEP line items with no attached House record and no House row suggesting them as a counterpart. These are review candidates, not confirmed deletions — title or assignment differences can prevent pairing.':ranking==='suggested'?'NEP-only items that unmatched House rows name as possible counterparts. Review the referring House rows: a re-titled or re-scoped line item can look like a deletion plus an unsupported insertion when it is a replacement. Suggestion counts refer to House rows, not certified identities.':'Records present only in HGAB2 under the retained reading key — dropped between readings. Currently none; the group guards future readings data.'}</p>
   {dim!=='overall'&&<AggregateTable tableId={`deletions-by-${dim}`} title={`Totals by ${dimensionTitle(dim)}`} dim={dim} groups={list.by_dim[dim]}
    onOpenGroup={g=>onOpenGroup({scope:'deletions',ranking,dim,label:g.label,displayLabel:groupLabel(dim,g.label)})}/>}
   <SortableTable tableId="deletions-top" ariaLabel="Top deletion candidates" initialSort={{key:'amount_php',direction:'desc'}} rows={list.top} columns={[
@@ -630,10 +630,10 @@ function RoadGroups({payload,open,onOpenShell,onClose}){
  const perKm=v=>v==null?'—':`${amount(v)}/km`;
  return <section className="analysis-section road-groups">
   <h2>Groupings · same-project-shell crosschecking</h2>
-  <p className="muted">Every House (HGAB) and NEP allocation grouped by funding zone + PAP + region. Roads group by chainage-stripped title base; other projects group by <strong>place shell</strong> — work phrase + municipality + province, dropping barangay/street, the axis a single allocation gets salami-sliced along. Matched pairs collapse into one final-sheet record (NEP side kept as provenance). Whatever remains <strong>unpaired</strong> is the signal: <strong>{summary.leftover_house_rows.toLocaleString()} HGAB rows worth {amount(summary.leftover_amount_php)}</strong> are on the House sheet with no NEP counterpart in their shell — <em>insertion candidates</em>. <strong>{summary.leftover_nep_rows.toLocaleString()} NEP rows worth {amount(summary.leftover_nep_amount_php)}</strong> never received House funding in their shell — <em>deletion candidates</em> (dropped or re-titled). Shell context only — identity never certified.</p>
+  <p className="muted">Every House (HGAB) and NEP allocation grouped by funding zone + PAP + region. Roads group by chainage-stripped title base; other projects group by <strong>place shell</strong> — work phrase + municipality + province, dropping barangay/street, the axis a single allocation gets salami-sliced along. Matched pairs collapse into one final-sheet record (NEP side kept as provenance). Whatever remains <strong>unpaired</strong> is the signal: <strong>{summary.leftover_house_rows.toLocaleString()} HGAB rows worth {amount(summary.leftover_amount_php)}</strong> are on the House sheet with no NEP counterpart in their shell — <em>unsupported insertion candidates</em>. <strong>{summary.leftover_nep_rows.toLocaleString()} NEP rows worth {amount(summary.leftover_nep_amount_php)}</strong> never received House funding in their shell — <em>deletion candidates</em> (dropped or re-titled). Shell context only — identity never certified.</p>
   <dl className="stat-strip">
-   <div><dt>Insertion candidates (HGAB)</dt><dd>{summary.leftover_house_rows.toLocaleString()} rows</dd></div>
-   <div><dt>Insertion amount</dt><dd>{amount(summary.leftover_amount_php)}</dd></div>
+   <div><dt>Unsupported insertion candidates (HGAB)</dt><dd>{summary.leftover_house_rows.toLocaleString()} rows</dd></div>
+   <div><dt>Unsupported insertion amount</dt><dd>{amount(summary.leftover_amount_php)}</dd></div>
    <div><dt>in {summary.exhausted_groups.toLocaleString()} shells</dt><dd>{stats.roads.toLocaleString()} roads · {stats.shells.toLocaleString()} project shells</dd></div>
    <div><dt>Deletion candidates (NEP)</dt><dd>{summary.leftover_nep_rows.toLocaleString()} rows</dd></div>
    <div><dt>Deletion amount</dt><dd>{amount(summary.leftover_nep_amount_php)}</dd></div>
@@ -645,34 +645,34 @@ function RoadGroups({payload,open,onOpenShell,onClose}){
     <option value="road">Road corridors</option>
     <option value="place_shell">Project shells (non-road)</option>
    </select></label>
-   <label>Insertion pattern<select aria-label="Insertion pattern" value={pattern} onChange={e=>setPattern(e.target.value)}>
+   <label>Insertion pattern<select aria-label="Unsupported insertion pattern" value={pattern} onChange={e=>setPattern(e.target.value)}>
     <option value="all">All patterns</option>
     <option value="split_like">Split-like · NEP scale matches leftovers</option>
     <option value="unsupplied_cluster">Unsupplied cluster · paired NEP is different work</option>
     <option value="micro_supplied">Micro-supplied · tiny NEP beside large leftovers</option>
    </select></label>
   </div>
-  <h3>Insertion candidates · HGAB rows with no NEP counterpart in the shell</h3>
-  <SortableTable tableId="groupings-region-rollup" ariaLabel="Insertion region rollup" initialSort={{key:'leftover_amount_php',direction:'desc'}} rows={regions} columns={[
+  <h3>Unsupported insertion candidates · HGAB rows with no NEP counterpart in the shell</h3>
+  <SortableTable tableId="groupings-region-rollup" ariaLabel="Unsupported insertion region rollup" initialSort={{key:'leftover_amount_php',direction:'desc'}} rows={regions} columns={[
    {key:'region',label:'Region',scope:'row'},
-   {key:'exhausted_groups',label:'Shells with insertions',align:'num',render:r=><span>{r.exhausted_groups}<small> {r.road_groups} road · {r.place_shell_groups} shell</small></span>},
-   {key:'leftover_house_rows',label:'Insertion rows (unpaired HGAB)',align:'num'},
-   {key:'leftover_amount_php',label:'Insertion amount',align:'num',render:r=>amountCell(r.leftover_amount_php)},
+   {key:'exhausted_groups',label:'Shells with unsupported insertions',align:'num',render:r=><span>{r.exhausted_groups}<small> {r.road_groups} road · {r.place_shell_groups} shell</small></span>},
+   {key:'leftover_house_rows',label:'Unsupported insertion rows (unpaired HGAB)',align:'num'},
+   {key:'leftover_amount_php',label:'Unsupported insertion amount',align:'num',render:r=>amountCell(r.leftover_amount_php)},
    {key:'nep_leftover_groups',label:'Shells with deletions',align:'num'},
    {key:'leftover_nep_rows',label:'Deletion rows (unpaired NEP)',align:'num'},
    {key:'leftover_nep_amount_php',label:'Deletion amount',align:'num',render:r=>amountCell(r.leftover_nep_amount_php)},
   ]} empty="No candidate shells."/>
-  <SortableTable tableId="groupings-insertions" ariaLabel="Insertion candidate groups" initialSort={{key:'leftover_amount_php',direction:'desc'}} rows={shown} columns={[
+  <SortableTable tableId="groupings-insertions" ariaLabel="Unsupported insertion candidate groups" initialSort={{key:'leftover_amount_php',direction:'desc'}} rows={shown} columns={[
    {key:'title',label:'Group',scope:'row',render:r=><span className="cell-main">{r.title}<small>{regionName(r.region)} · {short(r.pap||r.program||'')} · {r.kind==='road'?'road corridor':'place shell'} · {PATTERN_LABELS[r.pattern]||r.pattern}</small></span>},
    {key:'house_rows',label:'Final-sheet rows',align:'num'},
    {key:'paired_rows',label:'Paired with NEP',align:'num',render:r=><span>{r.paired_rows}<small> collapsed pairs</small></span>},
    {key:'split_ratio',label:'Final ÷ paired',align:'num',sortable:false,render:r=>`${(r.house_rows/r.paired_rows).toFixed(1)}×`},
-   {key:'leftover_house_rows',label:'Insertion rows',align:'num'},
-   {key:'leftover_amount_php',label:'Insertion amount',align:'num',render:r=>amountCell(r.leftover_amount_php)},
+   {key:'leftover_house_rows',label:'Unsupported insertion rows',align:'num'},
+   {key:'leftover_amount_php',label:'Unsupported insertion amount',align:'num',render:r=>amountCell(r.leftover_amount_php)},
    {key:'house_amount_php',label:'Final-sheet total',align:'num',render:r=>amountCell(r.house_amount_php)},
    {key:'nep_amount_php',label:'NEP paired total',align:'num',render:r=>amountCell(r.nep_amount_php)},
    {key:'members',label:'Members',sortable:false,render:r=><button type="button" className="group-open" onClick={e=>onOpenShell(r)}>{(r.house_rows).toLocaleString()} rows</button>},
-  ]} empty="No insertion-candidate groups."/>
+  ]} empty="No unsupported insertion candidate groups."/>
   <h3>Deletion candidates · NEP rows never funded by this shell at HGAB</h3>
   <p className="muted">Mirror direction: the House side of the shell is fully paired, but these NEP items remain unmatched. Overlaps the global deletion queues — here they gain shell context (roads with segments left unclaimed, shells where a lookalike was funded instead).</p>
   <SortableTable tableId="groupings-deletions" ariaLabel="Deletion candidate groups" initialSort={{key:'leftover_nep_amount_php',direction:'desc'}} rows={nepShown} columns={[
@@ -708,14 +708,14 @@ function GroupingMembersModal({g,isNep,onClose}){
   if(e.target!==e.currentTarget)return;const b=e.currentTarget.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)onClose();
  }}>
   <header className="analytics-header">
-   <div className="analytics-heading"><div><p className="eyebrow">{isNep?'DELETION CANDIDATES · SHELL GROUPING':'INSERTION CANDIDATES · SHELL GROUPING'}</p><h2 id="grouping-members-title">{g.title}</h2></div>
+   <div className="analytics-heading"><div><p className="eyebrow">{isNep?'DELETION CANDIDATES · SHELL GROUPING':'UNSUPPORTED INSERTION CANDIDATES · SHELL GROUPING'}</p><h2 id="grouping-members-title">{g.title}</h2></div>
     <button onClick={onClose} autoFocus aria-label="Close group members">Close</button></div>
    <p>{g.paired_rows.toLocaleString()} paired with {isNep?'HGAB':'NEP'} · {(g.leftover_house_rows||0).toLocaleString()} unpaired HGAB rows worth {amount(g.leftover_amount_php||0)} · {(g.leftover_nep_rows||0).toLocaleString()} unpaired NEP rows worth {amount(g.leftover_nep_amount_php||0)} · {g.kind==='road'?'road corridor':'place shell'}</p>
    <p className="muted">Member rows reflect the final budget sheet: matched pairs collapsed to one HGAB-anchored record, unpaired rows carry their shell context. Shell context only — identity never certified.</p>
   </header>
   <div className="analytics-content group-projects-content">
    <SortableTable tableId="groupings-members" ariaLabel="Group member allocations" initialSort={{key:'amount_php',direction:'desc'}} rows={g.members} columns={[
-     {key:'title',label:'Allocation',scope:'row',render:r=><span className="cell-main">{r.title}<small>{isNep?(r.attached?'paired with HGAB':'UNPAIRED NEP — deletion candidate'):(r.attached?`paired with NEP${r.delta_php!=null?` · Δ ${r.delta_php>0?'+':''}${amount(r.delta_php)}`:''}`:'UNPAIRED HGAB — insertion candidate')}</small></span>},
+     {key:'title',label:'Allocation',scope:'row',render:r=><span className="cell-main">{r.title}<small>{isNep?(r.attached?'paired with HGAB':'UNPAIRED NEP — deletion candidate'):(r.attached?`paired with NEP${r.delta_php!=null?` · Δ ${r.delta_php>0?'+':''}${amount(r.delta_php)}`:''}`:'UNPAIRED HGAB — unsupported insertion candidate')}</small></span>},
      {key:'amount_php',label:isNep?'NEP amount':'Final-sheet amount',align:'num',render:r=>amountCell(r.amount_php)},
      {key:'nep_amount_php',label:'Paired NEP amount',align:'num',render:r=>r.attached?amountCell(r.nep_amount_php??r.amount_php):<span>—</span>},
      {key:'length_m',label:'Length',align:'num',render:r=>fmtKm(r.length_m)},

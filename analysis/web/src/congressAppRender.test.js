@@ -111,7 +111,7 @@ test("the card grid renders from the index alone, with every sort option offered
   // The sort controls are two decisions: every option key is offered, and the
   // direction select labels itself by what the measure sorts (records or
   // amounts) rather than a bare ascending/descending.
-  for (const label of ["HGAB3 amount", "NEP amount", "Insertion records",
+  for (const label of ["HGAB3 amount", "NEP amount", "Unsupported insertion records",
     "Deletion records", "Adjusted pairs", "All records on the card", "District name (A→Z)"]) {
     assert.ok(html.includes(label), `sort option missing: ${label}`);
   }

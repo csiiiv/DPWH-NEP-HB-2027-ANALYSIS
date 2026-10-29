@@ -3,7 +3,7 @@ import {buildRevisionFlow, collapseRevisionFlow} from './revisionFlow.js';
 import {revisionMatrix} from './revisionMatrix.js';
 export {REVISIONS} from './revisionMatrix.js';
 
-export const FLOW_CAVEAT = 'Matching remains provisional. HGAB-only and NEP-only rows are insertion/deletion candidates, not confirmed edits. Changes do not establish transfers between projects.';
+export const FLOW_CAVEAT = 'Matching remains provisional. HGAB-only and NEP-only rows are unsupported insertion/deletion candidates, not confirmed edits. Changes do not establish transfers between projects.';
 const ensure = (ok, message) => {if (!ok) throw new Error(`Budget flow: ${message}`);};
 
 // The same matrix primitive powers the existing Allocation flows and each

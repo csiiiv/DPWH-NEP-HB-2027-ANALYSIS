@@ -70,8 +70,8 @@ const php = (value) =>
 const workspaces = [
   {href: "#highlights", title: "Highlights", body: "Ten media angles with dedicated evidence dialogs, DPWH coverage, and validated third-reading change tables."},
   {href: "#compare", title: "Compare stages", body: "PAP totals, project comparison rows, House-reading filters, NEP-only splits, fuzzy suggestions, analytics, and CSV/JSON exports."},
-  {href: "#analysis", title: "Analysis", body: "Office/program headlines, ranked insertions and deletions, adjustments, and descriptive statistics with group drill-downs into Compare."},
-  {href: "#analysis?view=insertions", title: "Insertions", body: "House-only allocation records ranked by amount — no suggestion, unresolved NEP suggestions, and HGAB3-only."},
+  {href: "#analysis", title: "Analysis", body: "Office/program headlines, ranked unsupported insertions and deletions, adjustments, and descriptive statistics with group drill-downs into Compare."},
+  {href: "#analysis?view=insertions", title: "Unsupported insertions", body: "House-only allocation records ranked by amount — no suggestion, unresolved NEP suggestions, and HGAB3-only."},
   {href: "#analysis?view=deletions", title: "Deletions", body: "NEP-only line items ranked by amount — no House suggestion vs possible replacements named by unmatched House rows."},
   {href: "#analysis?view=adjustments", title: "Adjustments", body: "2nd→3rd reading ledger and House vs NEP amount differences by region, office, program, or PAP."},
   {href: "#house", title: "House GAB", body: "Native I-B hierarchy with PS/MOOE/CO controls; switch to I-C project trees and both readings."},
@@ -101,8 +101,8 @@ function Home() {
   const insert = headlines?.rankings?.third;
   const deletions = headlines?.deletions;
   const candidates = insert && deletions ? [
-    {href: "#analysis?view=insertions&ranking=no_suggestion", title: "Insertions · no suggestion", rows: insert.no_suggestion.comparison_rows, amount_php: insert.no_suggestion.amount_php, note: "House-only rows with no NEP/Transparency anchor and no fuzzy suggestion"},
-    {href: "#analysis?view=insertions&ranking=unresolved", title: "Insertions · unresolved", rows: insert.unresolved.comparison_rows, amount_php: insert.unresolved.amount_php, note: "House-only rows with fuzzy or ambiguous NEP suggestions"},
+    {href: "#analysis?view=insertions&ranking=no_suggestion", title: "Unsupported insertions · no suggestion", rows: insert.no_suggestion.comparison_rows, amount_php: insert.no_suggestion.amount_php, note: "House-only rows with no NEP/Transparency anchor and no fuzzy suggestion"},
+    {href: "#analysis?view=insertions&ranking=unresolved", title: "Unsupported insertions · unresolved", rows: insert.unresolved.comparison_rows, amount_php: insert.unresolved.amount_php, note: "House-only rows with fuzzy or ambiguous NEP suggestions"},
     {href: "#analysis?view=deletions&ranking=no_suggestion", title: "Deletions · no suggestion", rows: deletions.no_suggestion.comparison_rows, amount_php: deletions.no_suggestion.amount_php, note: "NEP-only items that no unmatched House row names as a counterpart"},
     {href: "#analysis?view=deletions&ranking=suggested", title: "Deletions · possible replacements", rows: deletions.suggested.comparison_rows, amount_php: deletions.suggested.amount_php, note: "NEP-only items suggested as counterparts by unmatched House rows"},
     {href: "#compare?view=projects&change=third_only", title: "HGAB3 only", rows: insert.third_only.comparison_rows, amount_php: insert.third_only.amount_php, note: "Records present only in the third House reading"},
@@ -114,7 +114,7 @@ function Home() {
         <h1>Budget stage workbench</h1>
         <p>
           Compare Transparency NEP → DBM NEP → House GAB (HGAB2/HGAB3), rank
-          insertion and deletion candidates, inspect source trees, and preview
+          unsupported insertion and deletion candidates, inspect source trees, and preview
           the PDF beside each recorded reference.
         </p>
         <div className="hero-actions">
@@ -123,7 +123,7 @@ function Home() {
         </div>
         <p className="muted">
           Matches remain provisional. Source review and coverage checks are
-          still open. Unmatched rows alone do not establish insertions,
+          still open. Unmatched rows alone do not establish unsupported insertions,
           removals, or policy changes.
         </p>
       </section>

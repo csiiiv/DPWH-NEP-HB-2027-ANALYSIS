@@ -37,7 +37,7 @@ export default function FlowSankey({workspace: w, exact = false, inModal = false
       <a href={w.links.home}>{w.label}</a> · <span className="fmr-muted">flows in Allocations Worth ({exact ? 'exact pesos' : 'compact'}), House − NEP direction</span>
     </figcaption>
     <svg viewBox={`0 0 ${width} ${height}`} role="img"
-      aria-label={`${w.label}: NEP ledger of ${format(w.sources.nep.amount_php)} flows through deletions, reduced, unchanged and increased groups into the House ledger of ${format(w.sources.house.amount_php)}; insertions enter from the House side.`}>
+      aria-label={`${w.label}: NEP ledger of ${format(w.sources.nep.amount_php)} flows through deletions, reduced, unchanged and increased groups into the House ledger of ${format(w.sources.house.amount_php)}; unsupported insertions enter from the House side.`}>
       {layout.links.map((link, i) => <path key={i} className={`flow-link kind-${link.kind}`}
         d={link.d} fill={KIND_COLORS[link.kind] ?? '#8aa7c4'} opacity={0.4}>
         <title>{`${link.sourceName} → ${link.targetName}${link.label ? ` (${link.label})` : ''}: ${money(link.value)}`}</title>

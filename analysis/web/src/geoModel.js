@@ -25,7 +25,7 @@ export const FRAGMENT_KIND_LABELS = Object.fromEntries(FRAGMENT_KIND_OPTIONS);
 // pairs whose House amount moved vs the NEP baseline. Only the comparison
 // dataset carries this signal; other datasets leave change_type null.
 export const CHANGE_TYPE_OPTIONS = [
-  ['insertion', 'Insertion (House-only)'],
+  ['insertion', 'Unsupported insertion (House-only)'],
   ['deletion', 'Deletion (NEP-only)'],
   ['adjustment_increased', 'Adjustment — increased'],
   ['adjustment_decreased', 'Adjustment — decreased'],

@@ -27,7 +27,7 @@ const stacks = [
   ["Layered verification", "Unit tests over the pure models, Playwright page checks at two widths, and packaged-site checks before publication."],
 ];
 const stages = [
-  ["Overview", "The landing page: insertion, deletion and adjustment summaries for all four funding workspaces, cross-workspace coverage and candidate-change tables.", "#overview"],
+  ["Overview", "The landing page: unsupported insertion, deletion and adjustment summaries for all four funding workspaces, cross-workspace coverage and candidate-change tables.", "#overview"],
   ["DPWH", "Public works operations across Transparency NEP, DBM NEP Volume II-B, and House GAB (both readings) with native I-B/I-C trees.", "#home"],
   ["DA Farm-to-Market Roads", "FMR annexes from both documents, normalized coordinates, PSGC geocoding, and a national segment map.", "#fmr"],
   ["DOH Health Facilities", "HFEP capital outlays — infrastructure, medical equipment, motor vehicles — with per-cell provenance.", "#hfep"],
@@ -120,9 +120,9 @@ export default function AboutApp() {
       <h2>Start reading</h2>
       <p className="muted">Suggested entry points, in the order a first-time reader needs them.</p>
       <ul className="home-directory" aria-label="Suggested entry points">
-        <li><a href="#overview"><strong>Overview</strong><span>Insertions, deletions and adjustments across all four funding workspaces.</span></a></li>
+        <li><a href="#overview"><strong>Overview</strong><span>Unsupported insertions, deletions and adjustments across all four funding workspaces.</span></a></li>
         <li><a href="#highlights"><strong>DPWH Highlights</strong><span>Ten investigative angles with dedicated evidence dialogs.</span></a></li>
-        <li><a href={routeHref("analysis", { view: "overview", dim: "office" })}><strong>DPWH Analysis</strong><span>Office and program headlines, ranked insertions and deletions, adjustments.</span></a></li>
+        <li><a href={routeHref("analysis", { view: "overview", dim: "office" })}><strong>DPWH Analysis</strong><span>Office and program headlines, ranked unsupported insertions and deletions, adjustments.</span></a></li>
         <li><a href="#sources"><strong>Sources</strong><span>Every shareable dataset with its canonical repository path and limits.</span></a></li>
       </ul>
       </main>

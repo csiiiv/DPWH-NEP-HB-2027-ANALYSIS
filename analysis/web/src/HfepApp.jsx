@@ -495,7 +495,7 @@ function Insertions({comparison, route, onPdf, data}) {
       <Stat label="Matched pairs" value={comparison.rows.length} detail={`of ${comparison.rows.length + facilities.length} House rows`}/>
       <Stat label="Rest matches" value={`${Math.round(comparison.rows.length / (comparison.rows.length + facilities.length) * 100)}%`} detail="at ≥0.95 title similarity"/>
     </div>
-    <p className="fmr-notice">These are review candidates at funding-column record grain (infrastructure, medical equipment or motor vehicle on an unmatched House facility), not confirmed insertions. An unmatched House record can reflect a different title, grouping or funding column. Verify against the NEP annex before claiming an insertion.</p>
+    <p className="fmr-notice">These are review candidates at funding-column record grain (infrastructure, medical equipment or motor vehicle on an unmatched House facility), not confirmed unsupported insertions. An unmatched House record can reflect a different title, grouping or funding column. Verify against the NEP annex before claiming an unsupported insertion.</p>
     <CrossDocAggregate tableId="insertions-by-region" title="Unmatched House records by region" records={records} side="house" route={route} data={data} onPdf={onPdf}/>
     <section className="fmr-section"><h3>Top unmatched House records</h3><button onClick={() => download('hfep-house-unmatched-records.csv',recordsCsv(records))}>Export filtered records CSV</button>
       <SortableTable tableId="insertions-records" rows={[...records].sort((a, b) => (b.house_value || 0) - (a.house_value || 0)).slice(0, 150)
@@ -618,7 +618,7 @@ function Analysis({indexes, route, onPdf, data}) {
       : <label className="hero-source">Budget source
       <select aria-label="Analysis budget source" value={stageKey} onChange={e => navigate(route, {stage: e.target.value, records: null})}>
         <option value="nep">DBM NEP</option><option value="house">House GAB</option></select></label>}<ShareLink/></div></div>
-    <ViewTabs route={route} defaultView="overview" views={[['overview', 'Overview'], ['insertions', 'Insertions'], ['deletions', 'Deletions'], ['adjustments', 'Adjustments'], ['categories', 'Categories'], ['stats', 'Statistics'], ['review', 'Extraction review']]}/>
+    <ViewTabs route={route} defaultView="overview" views={[['overview', 'Overview'], ['insertions', 'Unsupported insertions'], ['deletions', 'Deletions'], ['adjustments', 'Adjustments'], ['categories', 'Categories'], ['stats', 'Statistics'], ['review', 'Extraction review']]}/>
     <h2 className="fmr-question">{questions[view] || 'Source records'}</h2>
     {!crossDocViews.includes(view) && <Filters route={route} index={index}/>}
     {!crossDocViews.includes(view) && <div className="fmr-stats">

@@ -234,7 +234,7 @@ export function overviewSummary({dpwhOverview, dpwhDetail, fmr, nia, hfep}, buil
       detail: 'House minus NEP across the retained FMR schedules.', href: '#fmr/compare'},
     {key: 'hfep', title: 'Medical equipment carries most of the HFEP control gap', amount_php: hfep.comparison.column_totals.medical_equipment.difference_php,
       detail: 'NEP medical-equipment control above House; source controls remain separate from facility-ledger sums.', href: '#hfep/compare'},
-    {key: 'nia', title: 'AI monitoring insertion candidates', count: ai.length, amount_php: sum(ai, r => r.house_php),
+    {key: 'nia', title: 'AI monitoring unsupported insertion candidates', count: ai.length, amount_php: sum(ai, r => r.house_php),
       detail: 'House-only subset of NIA; whole irrigation-project allocations, with monitoring costs not itemized.', href: '#nia/analysis?view=ai_monitoring&records=ai_insertions'}];
   return {schema_version: 1, fiscal_year: 2027, built_at: builtAt, direction: 'House minus NEP', workspaces, features};
 }

@@ -126,7 +126,7 @@ export default function BudgetCategoryFlow({payload, groupingKey = 'category', e
       {[
         ['NEP allocation', format(model.totals.nep), 'DBM original proposal'],
         ['HGAB allocation', format(model.totals.hgab), dataset.house_note],
-        ['Gross additions', `+${format(model.totals.additions)}`, 'Insertions + increases'],
+        ['Gross additions', `+${format(model.totals.additions)}`, 'Unsupported insertions + increases'],
         ['Gross reductions', `−${format(model.totals.reductions)}`, 'Deletions + decreases'],
         ['Net change', signed(model.totals.delta), 'HGAB minus NEP'],
       ].map(([label, value, note]) => <div key={label}><span>{label}</span><strong>{value}</strong><small>{note}</small></div>)}
@@ -175,7 +175,7 @@ export default function BudgetCategoryFlow({payload, groupingKey = 'category', e
       footer={[
         `Source: FY2027 ${dataset.label} · NEP → HGAB · PHP · ${grouping.label} · ${presentation}`,
         `Net ${signed(model.totals.delta)} = gross additions ${format(model.totals.additions)} − gross reductions ${format(model.totals.reductions)} + scope-review net ${signed(model.totals.scope_net || 0)}`,
-        '* Unmatched insertion/deletion candidates. Retained pair identities also remain provisional. Observed changes do not establish transfers.',
+        '* Unmatched unsupported insertion/deletion candidates. Retained pair identities also remain provisional. Observed changes do not establish transfers.',
         'Stubs and sinks also carry unbooked scope-review differences separately from additions and reductions. Deletions end at C. Zero-value cells omitted.',
         `Version: ${payload.provenance?.sha256 ? `comparison SHA-256 ${payload.provenance.sha256.slice(0, 16)}` : 'dpwh_flow_2027.json'}`,
       ]}/>
@@ -184,7 +184,7 @@ export default function BudgetCategoryFlow({payload, groupingKey = 'category', e
       {detail ? <>
         <p>{count(detail.rows)} {unit} · {percent(detail.nep, detail.hgab)}.</p>
         <p><strong>NEP {money(detail.nep)}</strong> → <strong>HGAB {money(detail.hgab)}</strong> · Δ {signed(detail.delta)}</p>
-        <p className="fmr-muted">{selectedRevision && ['insertion', 'deletion'].includes(selectedRevision.key) ? 'No verified counterpart is attached. Missing matches do not confirm insertions or deletions.' : 'Amounts compare retained project/line-item rows. Matching remains provisional.'}</p>
+        <p className="fmr-muted">{selectedRevision && ['insertion', 'deletion'].includes(selectedRevision.key) ? 'No verified counterpart is attached. Missing matches do not confirm unsupported insertions or deletions.' : 'Amounts compare retained project/line-item rows. Matching remains provisional.'}</p>
         {selectedGroup?.members ? <div className="budget-flow-others-detail">
           <p>Others combines these {selectedGroup.members.length} {plural}. Supporting rows remain available for each group:</p>
           <ul>{selectedGroup.members.map(g => {
@@ -210,7 +210,7 @@ export default function BudgetCategoryFlow({payload, groupingKey = 'category', e
     </div>
     <details className="budget-flow-provenance"><summary>Sources, reconciliation and interpretation</summary>
       <p>{dataset.scope} {dataset.house_note}. {dataset.matching}</p>
-      <p>{grouping.basis} Each intermediary repeats the same revision matrix. Insertions and gross increases enter as floating stubs; gross reductions end in that group's own sink. All monetary nodes and ribbons share one scale. Group totals rebuild both ledgers. Gross changes remain separate even at zero net change.</p>
+      <p>{grouping.basis} Each intermediary repeats the same revision matrix. Unsupported insertions and gross increases enter as floating stubs; gross reductions end in that group's own sink. All monetary nodes and ribbons share one scale. Group totals rebuild both ledgers. Gross changes remain separate even at zero net change.</p>
       {model.rollup && <p>The three largest {plural} by NEP allocation remain separate. Others contains: {model.rollup.members.map(g => g.label).join('; ')}. Cells are summed by revision type; all original amounts and counts remain included.</p>}
       <p>Counts use {unit}. Evidence links open the exact scoped population where the comparison workspace supports that grouping; other dimensions link to the unfiltered comparison workspace.</p>
       {payload.provenance && <p>Input: <code>{payload.provenance.source}</code> · SHA-256 <code>{payload.provenance.sha256}</code>.</p>}

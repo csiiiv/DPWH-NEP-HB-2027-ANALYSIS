@@ -13,7 +13,7 @@ const group = value => ({id: value || '__not_recorded__', label: value || unknow
 const choice = (key, label, plural, pick, basis) => ({key, label, plural, pick, basis});
 const commonBasis = 'One stable group per comparison row; changing grouping never rematches records or implies transfers.';
 const classes = cells => cells.map(c => ({class: c.key, rows: c.count, nep_php: c.before, third_php: c.after}));
-const caveat = 'Matching remains provisional. HGAB-only and NEP-only rows are insertion/deletion candidates, not confirmed edits. Changes do not establish transfers between projects.';
+const caveat = 'Matching remains provisional. HGAB-only and NEP-only rows are unsupported insertion/deletion candidates, not confirmed edits. Changes do not establish transfers between projects.';
 
 function dpwhOffice(row) {
   const source = row.nep || row.third;
@@ -42,7 +42,7 @@ export function normalizedFlowSources({dpwh, fmr, hfep, nia}) {
         choice('category', 'Category', 'categories', r => matchesProgram(r.source, 'fap') ? {id: 'fap', label: 'Foreign-assisted projects (FAPs)'} : group(r.source.program), 'FAPs separated by source zone; other records use retained program labels.'),
         choice('pap', 'PAP', 'PAPs', r => group(r.source.pap), 'Retained comparison-row PAP label, without inferring cross-PAP transfers.'),
         choice('region', 'Region', 'regions', r => group(r.source.region), 'Retained comparison-row region; no geographic inference from titles.'),
-        choice('deo', 'DEO / implementing office', 'offices', r => group(dpwhOffice(r.source)), 'Recorded NEP implementing office, or House office for insertions. Grouped allocations with several offices remain in a separate multiple-office bucket.'),
+        choice('deo', 'DEO / implementing office', 'offices', r => group(dpwhOffice(r.source)), 'Recorded NEP implementing office, or House office for unsupported insertions. Grouped allocations with several offices remain in a separate multiple-office bucket.'),
       ]},
     {key: 'fmr', label: 'DA Farm-to-Market Roads', defaultGrouping: 'region', records: annexRecords(fmr, fmrRows), expected: annex(fmr),
       scope: 'Locally funded farm-to-market road annex; project allocations counted once across coordinate segments.', count_unit: 'comparison rows',
@@ -65,7 +65,7 @@ export function normalizedFlowSources({dpwh, fmr, hfep, nia}) {
       house_note: 'House annex · 2nd-reading extraction, text verified identical in 3rd reading', comparison_href: '#nia/compare?view=projects', caveat,
       matching: nia.matching_note,
       groupings: [choice('subprogram', 'Sub-program', 'sub-programs', r => group(r.source.subprogram_key), 'Recorded comparison sub-program; repeated titles remain unmatched.'),
-        choice('program', 'Program group', 'program groups', r => group((r.source.nep || r.source.house)?.program_group), 'Recorded NEP program group, or House program group for insertions.') ]},
+        choice('program', 'Program group', 'program groups', r => group((r.source.nep || r.source.house)?.program_group), 'Recorded NEP program group, or House program group for unsupported insertions.') ]},
   ];
 }
 

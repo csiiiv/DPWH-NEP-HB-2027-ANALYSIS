@@ -536,7 +536,7 @@ export default function GeoMap({data, route}) {
         <FilterGroup filterKey="rule" label="Interpretation rule" options={facets.rules} selected={filters.rule} onToggle={onToggle} onBulk={onBulk}/>
         <FilterGroup filterKey="issue" label="Review issue" options={facets.issues} selected={filters.issue} onToggle={onToggle} onBulk={onBulk}/>
       </div>
-      <p className="fmr-muted">Rules record how printed text became coordinates (reordering, DMS conversion, hemisphere reading). Issues mark repair candidates and bound checks. Budget change comes from the unified DPWH comparison: insertion = House-only row, deletion = NEP-only row, adjustments = matched pairs whose amount moved. Other datasets have no comparison signal and appear under “No comparison data”. These are interpretation variations, not certified locations.</p>
+      <p className="fmr-muted">Rules record how printed text became coordinates (reordering, DMS conversion, hemisphere reading). Issues mark repair candidates and bound checks. Budget change comes from the unified DPWH comparison: unsupported insertion = House-only row, deletion = NEP-only row, adjustments = matched pairs whose amount moved. Other datasets have no comparison signal and appear under “No comparison data”. These are interpretation variations, not certified locations.</p>
     </details>
     <div className="fmr-result-bar">
       {/* The note is nested inside the counts span: `.fmr-result-bar>span`

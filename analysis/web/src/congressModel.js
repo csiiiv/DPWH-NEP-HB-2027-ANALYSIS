@@ -18,7 +18,7 @@ import {RED_FLAG_RULES, RED_FLAG_MEASUREMENT_NOTE} from './fmrRedFlags.js';
 export const BUCKETS = ['insertions', 'deletions', 'increased', 'reduced', 'unchanged', 'scope_review'];
 
 export const BUCKET_LABELS = {
-  insertions: 'Insertions',
+  insertions: 'Unsupported insertions',
   deletions: 'Deletions',
   increased: 'Increases',
   reduced: 'Decreases',
@@ -30,7 +30,7 @@ export const BUCKET_LABELS = {
 // only in the House reading; deletions only in the NEP. Increases/decreases are
 // paired rows, reported as the signed movement plus each stage's base.
 export const BUCKET_BASIS = {
-  insertions: {side: 'house', basis: 'House rows with no attached NEP record. Not confirmed insertions.'},
+  insertions: {side: 'house', basis: 'House rows with no attached NEP record. Not confirmed unsupported insertions.'},
   deletions: {side: 'nep', basis: 'NEP rows with no attached House reading. Not confirmed deletions.'},
   increased: {side: 'house', basis: 'Paired rows where the House amount exceeds the NEP amount.'},
   reduced: {side: 'nep', basis: 'Paired rows where the House amount is below the NEP amount.'},
@@ -457,7 +457,7 @@ export function cardCarriesMoney(card) {
 export const CARD_SORT_OPTIONS = [
   {key: 'house_php', kind: 'amount', label: 'HGAB3 amount'},
   {key: 'nep_php', kind: 'amount', label: 'NEP amount'},
-  {key: 'insertions', kind: 'records', label: 'Insertion records'},
+  {key: 'insertions', kind: 'records', label: 'Unsupported insertion records'},
   {key: 'deletions', kind: 'records', label: 'Deletion records'},
   {key: 'adjustments', kind: 'records', label: 'Adjusted pairs'},
   {key: 'rows', kind: 'records', label: 'All records on the card'},

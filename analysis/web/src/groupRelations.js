@@ -26,7 +26,7 @@ export const STATE_LABELS = {
   duplicate_key: "Duplicate key",
   twin_cross_referenced: "Twin cross-ref",
   open_candidate: "Open candidate",
-  unmatched_insertion: "Unmatched (insertion)",
+  unmatched_insertion: "Unmatched (unsupported insertion)",
   unmatched_deletion: "Unmatched (deletion)",
 };
 

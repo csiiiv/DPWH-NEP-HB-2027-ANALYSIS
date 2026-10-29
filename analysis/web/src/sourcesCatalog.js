@@ -42,7 +42,7 @@ export const sourceGroups = [
         kind: "text",
         purpose: "Reading the catalogs below safely",
         coverage:
-          "Amounts are integer Philippine pesos, new appropriations only. Candidate cross-document pairs are provisional, never certified insertions or deletions. House legislative readings are not independently authenticated. Each dataset's machine audit JSON records its own checks; provenance fields tie every row to a source PDF page.",
+          "Amounts are integer Philippine pesos, new appropriations only. Candidate cross-document pairs are provisional, never certified unsupported insertions or deletions. House legislative readings are not independently authenticated. Each dataset's machine audit JSON records its own checks; provenance fields tie every row to a source PDF page.",
       },
     ],
   },
@@ -376,7 +376,7 @@ export const sourceGroups = [
         label: "Overview summary",
         kind: "data",
         path: "analysis/main_overview_2027.json",
-        purpose: "Landing-page insertion/deletion/adjustment summaries per workspace",
+        purpose: "Landing-page unsupported insertion/deletion/adjustment summaries per workspace",
         coverage: "Small JSON with counts, amounts, and links; regenerated on every build.",
       },
       {
@@ -398,8 +398,8 @@ export const sourceGroups = [
         label: "Road grouping candidates",
         kind: "data",
         path: "analysis/road_group_candidates_2027.json",
-        purpose: "Same-shell groups with unpaired House (insertion) and unpaired NEP (deletion) candidates",
-        coverage: "₱23.4B insertion candidates · ₱12.2B deletion candidates across 627 shells. Powers Analysis → Groupings.",
+        purpose: "Same-shell groups with unpaired House (unsupported insertion) and unpaired NEP (deletion) candidates",
+        coverage: "₱23.4B unsupported insertion candidates · ₱12.2B deletion candidates across 627 shells. Powers Analysis → Groupings.",
       },
       {
         label: "Congress DEO-lens district index",
@@ -434,7 +434,7 @@ export const sourceGroups = [
         purpose:
           "One complete CSV of the DPWH compare-stages dataset: 17,613 comparison rows with per-stage amounts, reading status, match status, and source IDs + PDF pages",
         coverage:
-          "Row grain is comparison candidates (matched pairs, insertions, deletions, unchanged). Filtered per-population exports (insertions/deletions/unchanged/increased/decreased) are one click from each Overview card via the workspace's Export CSV button.",
+          "Row grain is comparison candidates (matched pairs, unsupported insertions, deletions, unchanged). Filtered per-population exports (insertions/deletions/unchanged/increased/decreased) are one click from each Overview card via the workspace's Export CSV button.",
       },
       {
         label: "HFEP facilities · House (HGAB 3rd reading)",

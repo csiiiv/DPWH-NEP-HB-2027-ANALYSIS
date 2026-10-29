@@ -93,7 +93,7 @@ function DistrictPanel({feature, lens, onClose}) {
       {p.located_nep_php > 0 && <>
         <dt>District-assigned NEP</dt>
         <dd>{moneyCompact(p.located_nep_php)}
-          <small>{p.insertion_count > 0 && `+${p.insertion_count.toLocaleString('en-PH')} NEP-only insertion${p.insertion_count > 1 ? 's' : ''}`}
+          <small>{p.insertion_count > 0 && `+${p.insertion_count.toLocaleString('en-PH')} NEP-only unsupported insertion${p.insertion_count > 1 ? 's' : ''}`}
             {p.insertion_count > 0 && p.deletion_count > 0 && ' · '}
             {p.deletion_count > 0 && `−${p.deletion_count.toLocaleString('en-PH')} House-only deletion${p.deletion_count > 1 ? 's' : ''}`}
             {p.insertion_count === 0 && p.deletion_count === 0 && 'no unpaired rows'}</small></dd>
@@ -292,7 +292,7 @@ export default function CongressMap({route}) {
           lens: located money (title GPS and PSGC points inside the polygon) or DEO-attributed
           money (office → district through the crosswalk), the district-assigned NEP, or the
           House↔NEP pair status — where matched money survived both stages (purple), NEP-only
-          insertions dominate (green), or House-only deletions dominate (blue). A final metric
+          unsupported insertions dominate (green), or House-only deletions dominate (blue). A final metric
           highlights the {mismatchTotal.toLocaleString('en-PH')} office↔location mismatch rows — districts where
           the two lenses disagree, flagged rather than reconciled.</p>
       </div>

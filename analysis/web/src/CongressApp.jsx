@@ -261,9 +261,9 @@ function DistrictCard({card, onOpen, rowFlags = null}) {
 
     {carries ? <>
       <ul className="congress-buckets">
-        <BucketLine label={isFmr ? 'House only' : 'Insertions'} count={headline.insertions.count}
+        <BucketLine label={isFmr ? 'House only' : 'Unsupported insertions'} count={headline.insertions.count}
           amount={headline.insertions.amount_php} side="house"
-          basis="House rows with no attached NEP record. Not confirmed insertions." />
+          basis="House rows with no attached NEP record. Not confirmed unsupported insertions." />
         <BucketLine label={isFmr ? 'NEP only' : 'Deletions'} count={headline.deletions.count}
           amount={headline.deletions.amount_php} side="nep"
           basis="NEP rows with no attached House reading. Not confirmed deletions." />
@@ -1056,7 +1056,7 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
     </section>
 
     {carries ? <div className="fmr-stats congress-card-stats">
-      <Stat label={lens === 'fmr' ? 'House only' : 'Insertions'} value={moneyCompact(headline.insertions.amount_php)}
+      <Stat label={lens === 'fmr' ? 'House only' : 'Unsupported insertions'} value={moneyCompact(headline.insertions.amount_php)}
         detail={`${headline.insertions.count.toLocaleString('en-PH')} House-only records`} />
       <Stat label={lens === 'fmr' ? 'NEP only' : 'Deletions'} value={moneyCompact(headline.deletions.amount_php)}
         detail={`${headline.deletions.count.toLocaleString('en-PH')} NEP-only records`} />

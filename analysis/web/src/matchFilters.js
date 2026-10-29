@@ -38,7 +38,7 @@ export const FLAG_OPTIONS = [
   ['amount_same', 'NEP = HGAB (unchanged pair)'],
   ['transparency_gap', 'Transparency gap (NEP not listed)'],
   ['outside_api', 'Outside Transparency scope'],
-  ['group_exhausted', 'Grouping · unpaired HGAB row (insertion candidate)'],
+  ['group_exhausted', 'Grouping · unpaired HGAB row (unsupported insertion candidate)'],
   ['group_nep_leftover', 'Grouping · unpaired NEP row (deletion candidate)'],
   ['segment_scope', 'Segment scope review (delta not booked)'],
   ['twin_review', 'Twin review · identical unmatched pair'],
@@ -62,13 +62,13 @@ export const MATCH_STATUS_INFO = Object.fromEntries([
 ]);
 
 export const REVIEW_FLAG_INFO = Object.fromEntries([
-  ['house_only', ['House only candidate', 'House record with no attached NEP or Transparency source. Not a confirmed insertion.']],
+  ['house_only', ['House only candidate', 'House record with no attached NEP or Transparency source. Not a confirmed unsupported insertion.']],
   ['nep_only', ['NEP only candidate', 'NEP record with no attached House reading. Not a confirmed deletion.']],
   ['nep_only_all', ['NEP only · all candidates', 'All NEP records without an attached House reading, including possible replacements named by unresolved House suggestions. Not confirmed deletions.']],
-  ['group_exhausted', ['Unpaired HGAB in shell grouping', 'House row on a road-corridor or project-shell grouping (work + municipality + province) whose NEP rows are all paired to other House rows — no NEP counterpart remains for this allocation. Insertion candidate with group context; identity never certified.']],
+  ['group_exhausted', ['Unpaired HGAB in shell grouping', 'House row on a road-corridor or project-shell grouping (work + municipality + province) whose NEP rows are all paired to other House rows — no NEP counterpart remains for this allocation. Unsupported insertion candidate with group context; identity never certified.']],
   ['group_nep_leftover', ['Unpaired NEP in shell grouping', 'NEP row on a shell grouping whose House side is fully paired while this NEP item remains unmatched — likely dropped or re-titled at HGAB. Deletion candidate with group context; identity never certified.']],
   ['segment_scope', ['Segment scope review', 'Paired rows on the same road whose station spans share no overlap. Delta deliberately excluded from adjustment totals — review as different-segment work (split / re-segmentation / separate project), not a same-project change.']],
-  ['twin_review', ['Twin review', 'Unmatched row whose identical normalized title + region + zone + equal amount exists unmatched on the other side (typically under a different program/PAP). Likely transfer or duplicate printing; kept unpaired — insertion/deletion candidacy stands until reviewed.']],
+  ['twin_review', ['Twin review', 'Unmatched row whose identical normalized title + region + zone + equal amount exists unmatched on the other side (typically under a different program/PAP). Likely transfer or duplicate printing; kept unpaired — unsupported insertion/deletion candidacy stands until reviewed.']],
   ['nep_only_suggested', ['NEP only · possible replacement', 'NEP-only row that an unmatched House row names as a fuzzy counterpart.']],
   ['amount_increase', ['NEP → HGAB increased', 'Retained candidate pair where House amount is larger than NEP.']],
   ['amount_decrease', ['NEP → HGAB decreased', 'Retained candidate pair where House amount is smaller than NEP.']],

@@ -34,7 +34,7 @@ export function flowGraph(w) {
       amount_php: w.sources.nep.amount_php, count: w.sources.nep.count, href: w.links.nep},
     {key: 'deletions', name: 'Deletions', sub: 'NEP Only Records', kind: 'deletion', col: 1, order: 0,
       amount_php: cells.deletion.nep, count: w.deletions.count, href: w.links.deletions},
-    {key: 'insertions', name: 'Insertions', sub: 'House Only Records', kind: 'insertion', col: 1, order: 1,
+    {key: 'insertions', name: 'Unsupported insertions', sub: 'House Only Records', kind: 'insertion', col: 1, order: 1,
       amount_php: cells.insertion.hgab, count: w.insertions.count, href: w.links.insertions},
     {key: 'additions', name: 'Increased', sub: 'paired titles, increased at House', kind: 'up', col: 1, order: 2,
       amount_php: cells.increased.hgab, count: a.increased_count, href: w.links.increases},

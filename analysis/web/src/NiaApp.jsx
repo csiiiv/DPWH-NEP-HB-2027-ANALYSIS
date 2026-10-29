@@ -392,7 +392,7 @@ function Highlights({data, route, rows, onPdf}) {
   return <><Hero title="NIA highlights"><p>Findings bounded to the retained irrigation schedules, each opening its supporting records and printed evidence.</p></Hero><ScopeNote/>
     <CoverageTables data={data} rows={rows} route={route} onPdf={onPdf}/>
     <h2>Findings to investigate</h2>
-    <p className="muted">Each finding opens its supporting records and printed evidence. Counts are source rows; candidate status never certifies insertions or deletions.</p>
+    <p className="muted">Each finding opens its supporting records and printed evidence. Counts are source rows; candidate status never certifies unsupported insertions or deletions.</p>
     <div className="fmr-highlight-grid">{cards.map((card, i) => <article key={card.id} className="fmr-highlight">
       <p className="fmr-eyebrow">{String(i + 1).padStart(2, '0')} · {card.kind}</p>
       <h3>{card.title}</h3>
@@ -432,7 +432,7 @@ function Highlights({data, route, rows, onPdf}) {
           <button onClick={() => exportComparisons(filteredRows)}>Export filtered CSV</button></div>
         <div className="comparison-table nia-analysis-ledger"><ComparisonTable tableId="highlights-records" rows={filteredRows} route={route} onPdf={onPdf} toolbar={false}
           initialSort={story.id === 'deletions' ? {key: 'nep_php', direction: 'desc'} : story.id === 'changed-pairs' ? {key: 'delta_php', direction: 'asc'} : undefined}/></div>
-        <p className="muted">Pairings are provisional; unmatched rows remain candidate observations, not certified insertions or deletions.</p></section>}
+        <p className="muted">Pairings are provisional; unmatched rows remain candidate observations, not certified unsupported insertions or deletions.</p></section>}
       {story.agency && <div className="fmr-source-audits"><section className="fmr-panel"><h3>House agency-table reconciliation</h3>
         <p className="nia-scope-equation">Annex {money(allocationStats(data.stages.house.projects).total)} + agency-only CARP {money(story.agency.find(c => c.agency_only)?.total_php)} = Operations {money(story.agency.find(c => c.label === 'Sub-total, Operations')?.total_php)}.</p>
         <p>Agency controls provide scope context. Development and Operations include the agency-only CARP row. Context-only rows have no annex difference.</p>
@@ -472,7 +472,7 @@ function CandidateAnalysis({data, route, rows, onPdf, view}) {
   const groups = candidateGroupRows(filtered, view, dim, data.stages.house.subprograms);
   const adjustment = view === 'adjustments', side = view === 'deletions' ? 'nep' : 'house';
   const resolutionCardLabel = 'Validated / unresolved rows';
-  const title = {insertions: 'Insertion candidates', deletions: 'Deletion candidates', adjustments: 'Paired amount adjustments'}[view];
+  const title = {insertions: 'Unsupported insertion candidates', deletions: 'Deletion candidates', adjustments: 'Paired amount adjustments'}[view];
   const total = filtered.reduce((s, r) => s + (adjustment ? r.delta_php : r[`${side}_php`]), 0);
   const agg = candidateAggregates(filtered);
   const group = p.group && groups.find(g => g.id === p.group);
@@ -488,7 +488,7 @@ function CandidateAnalysis({data, route, rows, onPdf, view}) {
     <div className="analysis-controls">{adjustment ? <label>Direction<select aria-label="Revision direction" value={p.direction || 'all'}
       onChange={e => filterChange(route, {direction: e.target.value, sort: null, dir: null, group: null})}>
       <option value="all">All amount changes</option><option value="increased">Increased · House above NEP</option><option value="decreased">Reduced · House below NEP</option>
-    </select></label> : <label>Candidate group<select aria-label={`Analysis ${view === 'insertions' ? 'insertion' : 'deletion'} group`} value={p.ranking || 'all'}
+    </select></label> : <label>Candidate group<select aria-label={`Analysis ${view === 'insertions' ? 'unsupported insertion' : 'deletion'} group`} value={p.ranking || 'all'}
       onChange={e => filterChange(route, {ranking: e.target.value, group: null})}>
       <option value="all">All {side === 'house' ? 'House' : 'NEP'}-only candidates</option>
       <option value="validated">Validated · no counterpart found</option><option value="unresolved">Plausible counterpart · unresolved</option>
@@ -504,7 +504,7 @@ function CandidateAnalysis({data, route, rows, onPdf, view}) {
       <article><h3>{adjustment ? 'Increased / reduced pairs' : resolutionCardLabel}</h3><strong>{adjustment ? `${agg.increased.count} / ${agg.decreased.count}` : `${validated.length} / ${unresolved.length}`}</strong>
         <p>{adjustment ? `Gross increases ${money(agg.increased.amount)} · gross reductions ${money(agg.decreased.amount)}` : `Validated ${money(validatedTotal)} · unresolved ${money(unresolvedTotal)}`}</p></article></div>
     <p className="notice">{adjustment ? 'These are amount differences between provisional House and NEP pairs. NIA has one retained House schedule; this view does not establish changes between House readings.'
-      : `${side === 'house' ? 'House rows without a unique NEP counterpart are insertion candidates' : 'NEP rows without a unique House counterpart are deletion candidates'}. Of these, ${unresolved.length} rows (${money(unresolvedTotal)}) carry a deterministic near-miss mark — a spelling, location or repeated-title variant of a plausible counterpart — and stay unresolved pending review; ${validated.length} rows (${money(validatedTotal)}) have no counterpart at all. Candidate status does not certify ${side === 'house' ? 'an insertion' : 'a deletion'}.`}</p>
+      : `${side === 'house' ? 'House rows without a unique NEP counterpart are unsupported insertion candidates' : 'NEP rows without a unique House counterpart are deletion candidates'}. Of these, ${unresolved.length} rows (${money(unresolvedTotal)}) carry a deterministic near-miss mark — a spelling, location or repeated-title variant of a plausible counterpart — and stay unresolved pending review; ${validated.length} rows (${money(validatedTotal)}) have no counterpart at all. Candidate status does not certify ${side === 'house' ? 'an unsupported insertion' : 'a deletion'}.`}</p>
     {dim !== 'overall' && <div className="aggregate-table"><h3>Totals by {dim === 'program' ? 'program' : 'sub-program'}</h3>
       <Table tableId={`${view}-by-${dim}`} route={route} rows={groups} label="NIA candidate group totals" initialSort={{key: 'amount_php', direction: 'desc'}} columns={[
         {key: 'label', label: 'Group', scope: 'row', render: g => <button className="group-open" onClick={() => navigate(route, {group: g.id, page: null})}>{g.label}</button>},
@@ -616,7 +616,7 @@ function AiMonitoringAnalysis({data, stage, rows, route, onPdf}) {
       <p>Remote monitoring, intermediate monitoring, gauges, sensors and CCTV without AI wording are outside this view. Source links below open the original records and PDF pages.</p>
     </details>
   </section>
-  <section className="fmr-section" aria-label="AI monitoring insertion summary"><h2>House AI monitoring insertion candidates</h2>
+  <section className="fmr-section" aria-label="AI monitoring unsupported insertion summary"><h2>House AI monitoring unsupported insertion candidates</h2>
     <div className="analysis-controls"><label>Matching method<select aria-label="AI monitoring matching method" value={method}
       onChange={e => filterChange(route, {match: e.target.value === 'ai_corrected' ? null : e.target.value, records: null})}>
       {method === 'strict' && <option value="strict">{matchingMethodLabels.strict}</option>}
@@ -628,7 +628,7 @@ function AiMonitoringAnalysis({data, stage, rows, route, onPdf}) {
       ? 'Corrected AI titles: matching keys normalize the verified NEP OCR readings (Al/AL/AT → AI) and treat Monitoring and Monitoring System as the same wording. Stored titles are never rewritten.'
       : 'Strict titles: raw source titles only. OCR readings and wording differences keep rows unmatched, so candidate counts are much larger here.'}
       {' '}House-only AI monitoring rows under the current filters and the selected method, regardless of the selected budget source.</p>
-    <div className="fmr-stats"><Stat label="Insertion candidates" value={insertionStats.count} detail="Unmatched House project rows"/>
+    <div className="fmr-stats"><Stat label="Unsupported insertion candidates" value={insertionStats.count} detail="Unmatched House project rows"/>
       <Stat label="Validated candidates" value={aiSplit ? aiSplit.house_only.no_counterpart.count : insertionStats.count} detail={aiSplit ? `${money(aiSplit.house_only.no_counterpart.amount_php)} · no counterpart found` : 'No counterpart found'}/>
       <Stat label="Unresolved candidates" value={aiSplit ? aiSplit.house_only.unresolved.count : 0} detail={aiSplit ? `${money(aiSplit.house_only.unresolved.amount_php)} · plausible counterpart, held out` : ''}/>
       <Stat label="Share of House AI allocation" value={percent(insertionStats.total, houseStats.total)} detail={`Of ${money(houseStats.total)}`}/></div>
@@ -643,8 +643,8 @@ function AiMonitoringAnalysis({data, stage, rows, route, onPdf}) {
         {key: 'nep_count', label: 'NEP-only rows', align: 'num'},
         {key: 'nep_php', label: 'NEP allocation (PHP)', align: 'num', render: r => money(r.nep_php)},
       ]}/></>}
-    <button className="group-open" onClick={() => navigate(route, {records: 'ai_insertions', page: null})}>Inspect insertion candidates</button>
-    {p.records === 'ai_insertions' && <Dialog label="NIA AI monitoring insertion candidates" onClose={() => navigate(route, {records: null})}>
+    <button className="group-open" onClick={() => navigate(route, {records: 'ai_insertions', page: null})}>Inspect unsupported insertion candidates</button>
+    {p.records === 'ai_insertions' && <Dialog label="NIA AI monitoring unsupported insertion candidates" onClose={() => navigate(route, {records: null})}>
       <p>{insertionStats.count} House-only candidates · {money(insertionStats.total)} in whole project allocations · {matchingMethodLabels[method]}.</p>
       <div className="comparison-table nia-analysis-ledger"><ComparisonTable rows={insertions} route={route} onPdf={onPdf} initialSort={{key: 'house_php', direction: 'desc'}}/></div>
     </Dialog>}
@@ -698,10 +698,10 @@ function Analysis({data, route, rows, onPdf}) {
   const projects = filterProjects(stage.projects, p), stats = allocationStats(projects), view = p.view || 'overview';
   const subprograms = subprogramAllocationRows(projects, stage.subprograms);
   const max = Math.max(1, ...subprograms.map(s => s.total));
-  const views = [['overview', 'Overview'], ['insertions', 'Insertions'], ['deletions', 'Deletions'], ['adjustments', 'Adjustments'],
+  const views = [['overview', 'Overview'], ['insertions', 'Unsupported insertions'], ['deletions', 'Deletions'], ['adjustments', 'Adjustments'],
     ['stats', 'Statistics'], ['ai_monitoring', 'AI monitoring'], ['candidates', 'Candidates'], ['controls', 'Agency controls']];
   return <div className="headline-analysis nia-analysis"><section className="hero"><p className="eyebrow">NIA · FY2027</p><h1>NIA allocation analysis</h1>
-    <p>Recorded allocations, candidate insertions and deletions, and paired amount adjustments.</p>
+    <p>Recorded allocations, candidate unsupported insertions and deletions, and paired amount adjustments.</p>
     <div className="hero-actions">    {['overview', 'stats', 'ai_monitoring'].includes(view) ? <label className="hero-source">Budget source<select aria-label="Analysis budget source" value={stageKey}
       onChange={e => navigate(route, {stage: e.target.value, page: null})}>{Object.entries(stageLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
       : <span className="nia-analysis-basis">{view === 'insertions' ? 'House GAB · unmatched source rows' : view === 'deletions' ? 'DBM NEP · unmatched source rows' : view === 'controls' ? 'House agency table' : 'House GAB ↔ DBM NEP'}</span>}<ShareLink/></div></section>
@@ -746,7 +746,7 @@ function Analysis({data, route, rows, onPdf}) {
           ]}/></section>
         <ConcentrationAnalysis projects={projects} stage={stage} route={route} onPdf={onPdf}/></>}
       {view === 'overview' && <section className="analysis-section"><h2>Explore further</h2><div className="analysis-crosslinks">
-        <a href={href('analysis', {view: 'insertions', subprogram: p.subprogram || ''})}>Insertion candidates · unmatched House records →</a>
+        <a href={href('analysis', {view: 'insertions', subprogram: p.subprogram || ''})}>Unsupported insertion candidates · unmatched House records →</a>
         <a href={href('analysis', {view: 'deletions', subprogram: p.subprogram || ''})}>Deletion candidates · unmatched NEP records →</a>
         <a href={href('analysis', {view: 'adjustments', subprogram: p.subprogram || ''})}>Paired allocation adjustments →</a>
       </div></section>}
@@ -791,7 +791,7 @@ function CandidateEvidence({rows, route, onPdf}) {
       <div className="fmr-pair-evidence">{['nep', 'house'].map(side => <section key={side} className="fmr-panel"><h3>{stageLabels[side]}</h3>
         {row[side] ? <><p>{row[side].title}</p><strong>{money(row[side].amount_php)}</strong><p><code>{row[side].id}</code></p>
           <SourceButton source={row[side].source} onPdf={onPdf}/><p><a href={href(side, {node: row[side].id})}>Open source record →</a></p></> : <p>No unique title counterpart in this stage.</p>}
-      </section>)}</div><p>Candidate status does not establish project identity or a certified insertion/deletion.</p></>}
+      </section>)}</div><p>Candidate status does not establish project identity or a certified unsupported insertion/deletion.</p></>}
   </Dialog>;
 }
 export default function NiaApp() {
