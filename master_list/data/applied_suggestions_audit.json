@@ -25,7 +25,7 @@
   },
   "input": {
     "path": "master_list/data/projects.jsonl.gz",
-    "sha256": "e9feb58fe0ed2ae9b80be6b931013f1b8542b502e58f0dda743f9f1276b4821c"
+    "sha256": "fcfeb5d6eefc79b5d8bad0b834016c3aadd9f4ed227eb76d371ed61aba37d5f3"
   },
   "method": "applied_suggestion_v1",
   "output_sha256": {

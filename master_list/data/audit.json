@@ -318,7 +318,7 @@
   },
   "builder_sha256": {
     "build_master_list.py": "2d3891e5ea7796d2ab7852e39d987f19bf081d042f5d60b83da4da1dee1feeb9",
-    "locations.py": "24aa85b2f2fca5c7c4b0b2b5ff942f701aa32bab0cb1d24470d5801aae6b5305",
+    "locations.py": "f32c78a3bd5bea0523a21807af23b048c2259e504563a3e13a3235f88bbaa0a1",
     "processing_release.py": "84f3080827a68925fbc346ed9c9ff98c8fec842d44b12cfab8498ec7998478fb"
   },
   "records": 64645,
@@ -519,17 +519,17 @@
         "project": 964
       },
       "location_status": {
-        "name_matched": 767,
+        "name_matched": 766,
         "multiple_locations": 186,
         "province_only": 8,
-        "ambiguous": 2,
+        "ambiguous": 3,
         "unresolved": 1
       },
       "location_score_distribution": {
         "-7": 1,
         "-4": 1,
         "-1": 1,
-        "1": 4,
+        "1": 5,
         "3": 8,
         "4": 1,
         "5": 42,
@@ -538,7 +538,7 @@
         "8": 166,
         "9": 36,
         "10": 1,
-        "11": 621,
+        "11": 620,
         "12": 8,
         "13": 6,
         "14": 9,
@@ -2574,7 +2574,6 @@
             }
           ],
           "review_flags": [
-            "city_district_context",
             "title_or_heading_province_conflict",
             "source_region_differs_from_title_location"
           ],
@@ -3131,8 +3130,8 @@
     ]
   },
   "output_sha256": {
-    "projects.jsonl.gz": "e9feb58fe0ed2ae9b80be6b931013f1b8542b502e58f0dda743f9f1276b4821c",
-    "projects.csv.gz": "df734299cdcb8b884346d7de02a9a668db273db6527ccb8835e630cb438c1213",
-    "location_review.csv.gz": "7dfc2e42fb4f92de1bc4ce5c8ca8cba95f36d8606445c7934daedcdfd0474f08"
+    "projects.jsonl.gz": "fcfeb5d6eefc79b5d8bad0b834016c3aadd9f4ed227eb76d371ed61aba37d5f3",
+    "projects.csv.gz": "97d7a4d232560f39c07d34afa0263a8150b928f7ba4f60ddbe9e65bc6067221a",
+    "location_review.csv.gz": "9851fa93249535cf8e8d150329e321d5740b44fdb008c895a7d69bdb2b4e80f4"
   }
 }

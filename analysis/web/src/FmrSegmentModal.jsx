@@ -22,7 +22,6 @@ const REPAIR_LINES = 'congress-fmr-record-repair-lines';
 const REPAIR_LINKS = 'congress-fmr-record-repair-links';
 const REPAIR_DOTS = 'congress-fmr-record-repair-dots';
 const REPAIR_LAYERS = [REPAIR_LINES, REPAIR_LINKS, REPAIR_DOTS];
-const EMPTY = {type: 'FeatureCollection', features: []};
 const km = value => Number.isFinite(value)
   ? `${value.toLocaleString('en-PH', {maximumFractionDigits: 2})} km` : '—';
 const money = value => Number.isFinite(value)

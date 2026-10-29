@@ -2,7 +2,7 @@
  "manifest": {
   "schema_version": 1,
   "fiscal_year": 2027,
-  "built_at": "2026-10-23T11:20:51+08:00",
+  "built_at": "2026-10-29T10:14:09+08:00",
   "generator": {
    "path": "analysis/builders/build_group_relations.py",
    "sha256": "9d36ff50a8e3a14de4d53901fb5d913d797b9505a5a33a8cdc3a1b0ae0d181ab"
