@@ -68,7 +68,7 @@ def main():
                     check_candidate_group(page, goto, 'insertions', 'insertions-by-region', 'Source records / changed pairs', 'Analysis source records', 'Export filtered CSV', query='road')
                     # Old candidate keys still resolve to an active canonical link.
                     goto('analysis?view=house_candidates')
-                    expect(page.get_by_role('link', name='Insertions', exact=True)).to_have_attribute('aria-current', 'page')
+                    expect(page.get_by_role('link', name='Unsupported insertions', exact=True)).to_have_attribute('aria-current', 'page')
                     goto('analysis?view=insertions&records=candidate-region:missing')
                     expect(page.get_by_role('dialog', name='Analysis source records').get_by_role('alert')).to_contain_text('Unknown analysis group')
                     goto('home')

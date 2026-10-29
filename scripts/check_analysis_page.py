@@ -30,7 +30,7 @@ with tempfile.TemporaryDirectory() as folder:
                 # rather than role=tab buttons; scope to the Analysis views
                 # nav because the workspace tab bar also has an Overview link.
                 subnav=page.get_by_role('navigation',name='Analysis views',exact=True)
-                for tab in ['Overview','Insertions','Deletions','Adjustments','Chainage','Groupings','Statistics']:
+                for tab in ['Overview','Unsupported insertions','Deletions','Adjustments','Chainage','Groupings','Statistics']:
                     expect(subnav.get_by_role('link',name=tab,exact=True)).to_be_visible()
                 office=page.get_by_role('region',name='Central Office vs DEOs',exact=True)
                 expect(office).to_contain_text(f"{data['sources']['third']['offices']['Central Office']['records']:,}")
@@ -130,9 +130,9 @@ with tempfile.TemporaryDirectory() as folder:
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 page.screenshot(path=f'/tmp/analysis-overview-{width}.png')
                 # Insertions subtab: dimension chips, candidate groups, review links.
-                subnav.get_by_role('link',name='Insertions',exact=True).click()
+                subnav.get_by_role('link',name='Unsupported insertions',exact=True).click()
                 page.get_by_label('Analysis candidate group',exact=True).select_option('third_only')
-                expect(page.get_by_role('region',name='Top insertion candidates',exact=True).locator('tbody tr')).to_have_count(5)
+                expect(page.get_by_role('region',name='Top unsupported insertion candidates',exact=True).locator('tbody tr')).to_have_count(5)
                 page.get_by_role('button',name='PAP',exact=True).click()
                 expect(page.get_by_role('region',name='Totals by PAP',exact=True)).to_contain_text('BIP')
                 page.get_by_role('button',name='Region',exact=True).click()
@@ -145,7 +145,7 @@ with tempfile.TemporaryDirectory() as folder:
                 expect(dialog).to_have_count(0)
                 expect(page.get_by_role('button',name='District office',exact=True)).to_be_visible()
                 page.reload(wait_until='networkidle')
-                expect(subnav.get_by_role('link',name='Insertions',exact=True)).to_have_attribute('aria-current','page')
+                expect(subnav.get_by_role('link',name='Unsupported insertions',exact=True)).to_have_attribute('aria-current','page')
                 expect(page.get_by_label('Analysis candidate group',exact=True)).to_have_value('third_only')
                 link=page.get_by_role('link',name='Review comparison',exact=True).first
                 href=link.get_attribute('href');assert 'record=' in href and 'region_match=ignore' in href
@@ -262,11 +262,11 @@ with tempfile.TemporaryDirectory() as folder:
                 # Groupings subtab: shell clusters with URL-routed member modal.
                 subnav.get_by_role('link',name='Groupings',exact=True).click()
                 expect(page.get_by_role('heading',name=re.compile(r'^Groupings'),exact=False)).to_be_visible(timeout=60000)
-                expect(page.get_by_role('region',name='Insertion region rollup',exact=True)).to_be_visible()
-                insertions=page.get_by_role('region',name='Insertion candidate groups',exact=True)
+                expect(page.get_by_role('region',name='Unsupported insertion region rollup',exact=True)).to_be_visible()
+                insertions=page.get_by_role('region',name='Unsupported insertion candidate groups',exact=True)
                 expect(insertions.locator('tbody tr').first).to_be_visible()
-                expect(insertions.get_by_role('columnheader',name='Insertion rows',exact=True)).to_be_visible()
-                expect(insertions.get_by_role('columnheader',name='Insertion amount',exact=True)).to_be_visible()
+                expect(insertions.get_by_role('columnheader',name='Unsupported insertion rows',exact=True)).to_be_visible()
+                expect(insertions.get_by_role('columnheader',name='Unsupported insertion amount',exact=True)).to_be_visible()
                 members=insertions.get_by_role('button',name=re.compile(r'^\d[\d,]* rows$')).first
                 expect(members).to_be_visible()
                 members.click()
@@ -275,7 +275,7 @@ with tempfile.TemporaryDirectory() as folder:
                 shell_dialog=page.get_by_role('dialog')
                 expect(shell_dialog).to_be_visible(timeout=10000)
                 expect(shell_dialog.get_by_role('heading')).to_be_visible()
-                expect(shell_dialog).to_contain_text('INSERTION CANDIDATES')
+                expect(shell_dialog).to_contain_text('UNSUPPORTED INSERTION CANDIDATES')
                 expect(shell_dialog.get_by_role('region',name='Group member allocations',exact=True).locator('tbody tr').first).to_be_visible()
                 shell_dialog.get_by_role('button',name='Close group members',exact=True).click()
                 expect(shell_dialog).to_have_count(0)

@@ -102,13 +102,13 @@ def main():
                     expect(overview_records).to_have_count(0)
                     goto('analysis')
                     assert page.get_by_role('navigation', name='Analysis views').locator('a').all_text_contents() == [
-                        'Overview', 'Insertions', 'Deletions', 'Adjustments', 'Statistics', 'AI monitoring', 'Candidates', 'Agency controls']
+                        'Overview', 'Unsupported insertions', 'Deletions', 'Adjustments', 'Statistics', 'AI monitoring', 'Candidates', 'Agency controls']
                     expect(page.get_by_label('Analysis budget source', exact=True)).to_have_value('nep')
                     expect(page.get_by_role('region', name='NIA allocation overview', exact=True)).to_contain_text('Allocation share')
                     page.get_by_label('Analysis budget source', exact=True).select_option('house')
                     expect(page.locator('.fmr-stats')).to_contain_text('₱17,999,305,000')
                     page.screenshot(path=str(captures / f'analysis-overview-{width}.png'))
-                    for label, expected_count in [('Insertions',222),('Deletions',185),('Adjustments',4),('Candidates',1013)]:
+                    for label, expected_count in [('Unsupported insertions',222),('Deletions',185),('Adjustments',4),('Candidates',1013)]:
                         page.get_by_role('link',name=label,exact=True).click()
                         expect(page.get_by_role('dialog',name='NIA candidate evidence')).to_have_count(0)
                         expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text(f'{expected_count:,} rows')
@@ -119,7 +119,7 @@ def main():
                     expect(page.locator('main')).to_contain_text('Amounts cover the whole irrigation project')
                     ai_pages = page.get_by_role('navigation', name='NIA projects pages')
                     ai_stats = page.locator('.fmr-stats').first
-                    insertion_summary = page.get_by_role('region', name='AI monitoring insertion summary')
+                    insertion_summary = page.get_by_role('region', name='AI monitoring unsupported insertion summary')
                     for side, count, total in [('nep', 327, 7015950000), ('house', 299, 6341950000)]:
                         page.get_by_label('Analysis budget source', exact=True).select_option(side)
                         expect(ai_pages).to_contain_text(f'{count} rows')
@@ -150,8 +150,8 @@ def main():
                     expect(insertion_summary).to_contain_text('110')
                     expect(insertion_summary).to_contain_text('120 of 123 candidates')
                     page.get_by_label('AI monitoring matching method', exact=True).select_option('ai_corrected')
-                    insertion_summary.get_by_role('button', name='Inspect insertion candidates', exact=True).click()
-                    insertion_dialog = page.get_by_role('dialog', name='NIA AI monitoring insertion candidates')
+                    insertion_summary.get_by_role('button', name='Inspect unsupported insertion candidates', exact=True).click()
+                    insertion_dialog = page.get_by_role('dialog', name='NIA AI monitoring unsupported insertion candidates')
                     expect(insertion_dialog).to_be_visible()
                     expect(insertion_dialog.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('26 rows')
                     with page.expect_download() as result:
@@ -169,7 +169,7 @@ def main():
                     page.get_by_label('Search', exact=True).fill(first_inserted['house_id'])
                     expect(insertion_summary).to_contain_text('Unmatched House project rows')
                     expect(insertion_summary).to_contain_text(f'₱{int(first_inserted["house_amount_php"]):,}')
-                    insertion_summary.get_by_role('button', name='Inspect insertion candidates', exact=True).click()
+                    insertion_summary.get_by_role('button', name='Inspect unsupported insertion candidates', exact=True).click()
                     expect(insertion_dialog.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('1 rows')
                     with page.expect_download() as result:
                         insertion_dialog.get_by_role('button', name='Export filtered CSV', exact=True).click()
@@ -217,7 +217,7 @@ def main():
                     page.get_by_label('Sub-program', exact=True).select_option('Other Irrigation System')
                     expect(ai_pages).to_contain_text('0 rows')
                     expect(ai_stats).not_to_contain_text('NaN')
-                    expect(insertion_summary).to_contain_text('Insertion candidates')
+                    expect(insertion_summary).to_contain_text('Unsupported insertion candidates')
                     page.get_by_role('button', name='Clear filters', exact=True).click()
                     page.screenshot(path=str(captures / f'analysis-ai-monitoring-{width}.png'))
                     page.get_by_label('AI monitoring title basis', exact=True).select_option('explicit')
@@ -274,7 +274,8 @@ def main():
                     expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text('222 rows')
                     for view, expected_count, side in [('insertions', 222, 'house'), ('deletions', 185, 'nep'), ('adjustments', 4, None)]:
                         goto('analysis?view=' + view)
-                        expect(page.get_by_role('link', name=view.title(), exact=True)).to_have_attribute('aria-current', 'page')
+                        tab_label = {'insertions': 'Unsupported insertions'}.get(view, view.title())
+                        expect(page.get_by_role('link', name=tab_label, exact=True)).to_have_attribute('aria-current', 'page')
                         expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text(f'{expected_count:,} rows')
                         with page.expect_download() as result:
                             page.get_by_role('button', name='Export filtered CSV', exact=True).click()
@@ -298,7 +299,7 @@ def main():
                     goto('analysis?view=deletions&ranking=ambiguous&dim=program')
                     ambiguous = [r for r in data['comparison'] if r['status'] == 'nep_only' and r.get('ambiguous_title')]
                     expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text(f'{len(ambiguous)} rows')
-                    page.get_by_role('link', name='Insertions', exact=True).click()
+                    page.get_by_role('link', name='Unsupported insertions', exact=True).click()
                     expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('222 rows')
                     goto('home')
                     assert page.get_by_role('navigation', name='Workbench pages').locator('a').all_text_contents() == [

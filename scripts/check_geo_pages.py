@@ -197,7 +197,7 @@ def main():
 
                     # Budget-change facet narrows to a comparison-derived bucket.
                     _, menu = open_facet('Budget change')
-                    pick(menu, 'Insertion (House-only)')
+                    pick(menu, 'Unsupported insertion (House-only)')
                     page.wait_for_timeout(800)
                     result = page.locator('.fmr-result-bar').inner_text()
                     assert f"{thousands(counts['insertion'])} records" in result, result

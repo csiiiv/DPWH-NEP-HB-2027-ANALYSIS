@@ -77,7 +77,7 @@ def main():
                         expect(card).to_contain_text('Same Titles, decreased budget')
                         expect(card).to_contain_text(f"{w['unchanged']['count']:,} {w['count_unit']}")
                         expect(card).to_contain_text(f"₱{w['unchanged']['amount_php']:,}")
-                        for key,label in [('insertions','insertions'),('deletions','deletions'),('unchanged','unchanged')]:
+                        for key,label in [('insertions','unsupported insertions'),('deletions','deletions'),('unchanged','unchanged')]:
                             expect(card.get_by_role('link',name=w['label']+' '+label,exact=True)).to_have_attribute('href',w['links'][key])
                     hfep = page.get_by_role('article',name='DOH Health Facilities →',exact=True)
                     hfep.locator('summary').click()
@@ -131,7 +131,7 @@ def main():
                         expect(row).to_contain_text(f"₱{w['deletions']['amount_php']:,}")
                         expect(row).to_contain_text(f"{w['adjustments']['increased_count']:,}")
                         expect(row).to_contain_text(f"{w['adjustments']['reduced_count']:,}")
-                        expect(row.get_by_role('link',name=f"{w['label']} insertion candidates",exact=True)).to_have_attribute('href',w['links']['insertions'])
+                        expect(row.get_by_role('link',name=f"{w['label']} unsupported insertion candidates",exact=True)).to_have_attribute('href',w['links']['insertions'])
                         expect(row.get_by_role('link',name=f"{w['label']} deletion candidates",exact=True)).to_have_attribute('href',w['links']['deletions'])
                         # Unchanged column: every workspace links into its filtered population.
                         expect(row).to_contain_text(f"{w['unchanged']['count']:,} {w['count_unit']}")
@@ -174,17 +174,17 @@ def main():
                     page.screenshot(path=str(screenshots / f'overview-{width}.png'),full_page=True)
                     # Summary destinations restore the matching populations and
                     # preserve the new global entry alongside workspace pages.
-                    page.get_by_role('article',name='NIA Irrigation →',exact=True).get_by_role('link',name='NIA Irrigation insertions',exact=True).click()
+                    page.get_by_role('article',name='NIA Irrigation →',exact=True).get_by_role('link',name='NIA Irrigation unsupported insertions',exact=True).click()
                     expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text('222 rows')
                     nav.get_by_role('link',name='Overview',exact=True).click()
                     expect(page.get_by_role('heading',name='Budget allocation overview',exact=True)).to_be_visible()
                     page.go_back(wait_until='networkidle')
-                    expect(page.get_by_role('link',name='Insertions',exact=True)).to_have_attribute('aria-current','page')
+                    expect(page.get_by_role('link',name='Unsupported insertions',exact=True)).to_have_attribute('aria-current','page')
                     page.goto(base+'#overview',wait_until='networkidle')
                     page.get_by_role('article',name='DOH Health Facilities →',exact=True).get_by_role('link',name='DOH Health Facilities deletions',exact=True).click()
                     expect(page.locator('.fmr-stats')).to_contain_text('163')
                     page.goto(base+'#overview',wait_until='networkidle')
-                    page.get_by_role('article',name='DPWH →',exact=True).get_by_role('link',name='DPWH insertions',exact=True).click()
+                    page.get_by_role('article',name='DPWH →',exact=True).get_by_role('link',name='DPWH unsupported insertions',exact=True).click()
                     expect(page.get_by_label('Review flags',exact=True)).to_have_value('house_only')
                     assert 'region_match=ignore' in page.url
                     page.goto(base+'#overview',wait_until='networkidle')
