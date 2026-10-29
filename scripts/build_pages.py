@@ -302,9 +302,9 @@ def package_congress(target):
     location_counts = location['counts']
     print(f"Packaged Congress location lens: {location_counts['cards']} cards "
           f"({location_counts['districts_with_location']} located, "
-          f"{location_counts['spanning_rows']} spanning rows held out, "
-          f"{location_counts['c1_deo_tier_a_rows'] + location_counts['c1_deo_tier_b_rows']} DEO-fallback rows, "
-          f"{location_counts['c2_region_rows']} region-catch-all rows) "
+          f"{location_counts['unassigned_rows']} unassigned rows held out, "
+          f"{location_counts['deo_to_leg_rows'] + location_counts['deo_rows']} DEO-fallback rows, "
+          f"{location_counts['region_rows']} region-catch-all rows) "
           f"+ {location_counts['flags'].get('office_location_mismatch', 0)} mismatch flags")
 
     # FMR legislative lens: refresh the formal title/coordinate extraction,

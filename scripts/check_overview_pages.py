@@ -265,10 +265,11 @@ def main():
                     page.wait_for_timeout(400)
                     assert 'fmr' in page.evaluate('''() => {const el = document.getElementById('overview-fmr');
                       const r = el.getBoundingClientRect(); return (r.top >= 0 && r.top < innerHeight) ? 'fmr' : 'scrolled-away';}''')
-                    # Experiments workspace: unlisted, direct-URL only. The
-                    # Sankey flow charts live here now, off the Overview.
+                    # Experiments workspace: listed as a regular top-level
+                    # workspace (see routes.js); the Sankey flow charts live
+                    # here now, off the Overview.
                     nav = page.get_by_role('navigation', name='Workbench workspaces')
-                    assert 'Experiments' not in nav.locator('a').all_text_contents(), 'experiments must stay hidden from nav'
+                    assert 'Experiments' in nav.locator('a').all_text_contents(), 'experiments must be listed in nav'
                     page.goto(base+'#experiments',wait_until='domcontentloaded')
                     expect(page.get_by_role('heading',name='Experiments',exact=True)).to_be_visible()
                     # Tabs: one experiment per tab, deep-linked via ?tab=.
