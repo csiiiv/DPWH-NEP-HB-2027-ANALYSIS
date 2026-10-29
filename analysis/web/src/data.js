@@ -11,6 +11,16 @@ export async function loadData(name, signal) {
 }
 export const repo =
   "https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/blob/main/";
+// The published Pages origin, derived from the repo identity above so a rename
+// updates both. Exported citations are rooted here rather than at whatever
+// origin served the app: a download outlives the session and gets opened from
+// another machine, an email or a shared drive, where a dev-server link
+// (http://127.0.0.1:5173/…) is dead on arrival. The in-app PDF viewer keeps
+// using siteUrl(), so local files and range requests still work under `npm run dev`.
+const pagesOrigin = (() => {
+  const match = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\//.exec(repo);
+  return match ? `https://${match[1]}.github.io/${match[2]}` : null;
+})();
 const documents = {
   "house-tree": { path: "HB_BUDGET/2%20-%20HB%2010858%20VOL%20IB.pdf", label: "House 2nd reading · Volume I-B", pageLabel: "House 2nd · I-B" },
   "house-projects": { path: "HB_BUDGET/3%20-%20HB%2010858%20VOL%20IC.pdf", label: "House 2nd reading · Volume I-C", pageLabel: "House 2nd · I-C" },
@@ -40,6 +50,23 @@ function documentReference(key, page, title) {
 }
 export function sourceReference(kind, page, title = "Source evidence") {
   return documentReference(["house", "house-second"].includes(kind) ? "house-projects" : kind, page, title);
+}
+/**
+ * A portable, page-anchored link to a source PDF, rooted at the published site
+ * rather than the origin currently serving the app.
+ *
+ * Use this for anything a reader takes away — CSV/JSON exports, cited links in
+ * a report — because the file outlives the session. Returns null when the page
+ * is not a positive integer or the kind is not a known document, matching
+ * sourceReference()'s contract, so callers can fall back to a bare page number
+ * instead of emitting a broken link.
+ */
+export function publishedSourceLink(kind, page) {
+  const key = ["house", "house-second"].includes(kind) ? "house-projects" : kind;
+  const document = documents[key];
+  if (!document || !pagesOrigin) return null;
+  if (!Number.isInteger(page) || page < 1) return null;
+  return `${pagesOrigin}/${document.path}#page=${page}`;
 }
 // Resolve source anchors centrally, including links emitted by retained views.
 // GitHub blob pages are HTML; PDF.js needs the raw document with CORS support.

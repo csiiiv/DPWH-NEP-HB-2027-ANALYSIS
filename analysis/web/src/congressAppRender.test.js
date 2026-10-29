@@ -425,3 +425,66 @@ test("the record drawer renders flags, PDF deep-links and title coordinate prove
   // Chainage section renders whichever sides the row carries.
   assert.ok(html.includes("Chainage"));
 });
+
+test("the export modal offers both scopes and formats, defaulting to Simple CSV", skip, async () => {
+  const html = await render("ExportModal", {
+    rows: Array.from({length: 73}, (_, i) => ({id: `row:${i}`, title: `Project ${i}`})),
+    meta: {lens: "location", card: "location:title_psgc:leg:dinagat-islands:lone",
+      filters: {q: null, bucket: null, flag: null}},
+    onClose: () => {},
+  });
+
+  // One radio per scope and per format, all inside the reusable dialog shell.
+  assert.ok(html.includes("fmr-dialog congress-export"));
+  assert.ok(html.includes("Export these projects"));
+  for (const label of ["Simple", "Full", "CSV", "JSON"])
+    assert.ok(html.includes(`>${label}</strong>`), `option ${label} must render`);
+
+  // The stated row count is the filtered set the download will contain.
+  assert.ok(html.includes("<strong>73</strong>"));
+
+  // Defaults: Simple is pre-selected, so the action button names it.
+  assert.ok(html.includes("Download Simple CSV"), "default choice is Simple CSV");
+  // React emits `checked=""` ahead of the value, so read each radio's own tag.
+  const checked = [...html.matchAll(/<input[^>]*checked=""[^>]*value="(\w+)"/g)].map((m) => m[1]);
+  assert.deepEqual(checked, ["simple", "csv"], "Simple and CSV start selected");
+
+  // Each option explains what it contains, so the choice is not a guess.
+  assert.ok(html.includes("each side\u2019s source page"), "Simple hint names the split citation");
+  assert.ok(html.includes("source record ids"), "Full hint names the extra provenance");
+
+  // An inactive-filter export says what it downloads; no filter claim is invented.
+  assert.ok(!html.includes("with your search, bucket and flag filters applied"));
+  const filteredHtml = await render("ExportModal", {
+    rows: [{id: "row:1"}],
+    meta: {lens: "deo", card: "deo:x", filters: {q: "road", bucket: "paired", flag: null}},
+    onClose: () => {},
+  });
+  assert.ok(filteredHtml.includes("with your search, bucket and flag filters applied"),
+    "an active filter must be disclosed before download");
+});
+
+test("legislative card faces lead with the district, not the representative", skipFmr, async () => {
+  const index = read(INDEX);
+  const fmrIndex = read(FMR_INDEX);
+
+  const grid = await render("Districts", {index, fmrIndex, lens: "fmr", route: route("fmr")});
+  // Every FMR card is one district: its h3 is the title-cased district name…
+  const headings = [...grid.matchAll(/class="congress-card-open"[^>]*>([^<]+)</g)].map((m) => m[1]);
+  assert.ok(headings.some((h) => /\(First District\)/.test(h)), "district headings render");
+  assert.ok(headings.includes("Ilocos Norte (First District)"), "official caps render as Title Case");
+  // …the representative is demoted to a sub-line, never the heading.
+  assert.ok(grid.includes("congress-card-sub"), "rep sub-line renders on the card face");
+  const repHeadings = headings.filter((h) => /, [A-Z]\./.test(h));
+  assert.deepEqual(repHeadings, [], "no representative name remains a card heading");
+  // The eyebrow announces what the lens is, so the heading needs no context.
+  assert.ok(grid.includes(">FMR legislative district<"));
+
+  // The explorer h1 follows the same rule, with the rep in the secondary line.
+  const card = fmrIndex.cards[0];
+  const page = await render("District", {index, fmrIndex, detail: null, lens: "fmr",
+    route: route("district", `district=${encodeURIComponent(card.id)}&lens=fmr`)});
+  assert.match(page, /<h1>Ilocos Norte \(First District\)<\/h1>/);
+  assert.ok(page.includes(card.districts[0].representative.name),
+    "the representative stays visible below the heading");
+});

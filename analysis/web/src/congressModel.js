@@ -389,6 +389,47 @@ export function deoCardLabel(card) {
   return printed.length ? printed.join(' · ') : null;
 }
 
+/**
+ * The emphasized heading for a legislative-lens card (location or FMR): the
+ * district, not the representative. The legislative lenses answer "where did
+ * this money land by district", so the district leads; who holds the seat is
+ * secondary detail, printed by the caller from districtSeats().
+ *
+ * Returns {heading, sub} — `sub` is the representative label that used to be
+ * the heading, so nothing is lost, only re-weighted. Returns null for cards
+ * that are deliberately not one district (multi-district DEO groups, region /
+ * unassigned / evidence-conflict catch-alls): those keep their existing
+ * heading so money is never dressed up as a district.
+ *
+ * `heading` renders the official ALL-CAPS displayName as Title Case — the
+ * big line reads "Ilocos Norte (First District)" while sub lines keep the
+ * official caps. Particles stay lowercase (San Jose del Monte) and hyphenated
+ * names case each half (Lapu-Lapu, Tawi-Tawi).
+ */
+const TITLE_CASE_PARTICLES = /\b(De|Del|Of|The|Y)\b/g;
+
+function titleCaseDistrictName(name) {
+  return name
+    .toLowerCase()
+    // Capitalize each word after a space, an opening paren, or a hyphen.
+    .replace(/(^|[\s(-])([a-z])/g, (_, lead, letter) => lead + letter.toUpperCase())
+    .replace(TITLE_CASE_PARTICLES, particle => particle.toLowerCase());
+}
+
+export function districtHeading(card) {
+  // Only legislative-lens cards carry location_tier; a DEO-lens card (no
+  // location_tier) keeps its office-name heading regardless of where it is
+  // rendered, because the DEO lens is organized by implementing office.
+  if (!card.location_tier) return null;
+  const seats = districtSeats(card);
+  // Catch-all and undivided tiers are not one district: they keep their own
+  // heading so money is never dressed up as a district.
+  const isDistrictCard = seats.length === 1 && !['deo', 'region', 'unassigned',
+    'fmr_spanning', 'fmr_region', 'location_evidence_conflict'].includes(card.location_tier);
+  if (!isDistrictCard) return null;
+  return {heading: titleCaseDistrictName(seats[0].districtName), sub: representativeLabel(card).text};
+}
+
 /** Leadership badges — only what the crosswalk records, on the card that holds it. */
 export function leadershipRoles(card) {
   return card.districts.flatMap(district => (district.representative.leadershipRoles ?? [])

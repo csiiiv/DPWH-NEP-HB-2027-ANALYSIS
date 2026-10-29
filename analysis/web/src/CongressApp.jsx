@@ -29,7 +29,7 @@ import {
   FMR_TIER_LABELS, FMR_TIER_SHORT, FMR_TIER_FILTER, FMR_FLAG_LABELS,
   CARD_SORT_OPTIONS, parseCardSort, cardSortParams,
   money, moneyCompact, signedMoney, percent,
-  cardHeadline, bucketTotals, districtSeats, representativeLabel, deoCardLabel, leadershipRoles,
+  cardHeadline, bucketTotals, districtSeats, representativeLabel, deoCardLabel, districtHeading, leadershipRoles,
   cardCarriesMoney, sortedCards, indexRowsById, cardRows,
   explorerRow, EXPLORER_COLUMNS, flagCensus, bucketCensus, filterExplorerRows,
   residualPanel, officeChangePanel, datasetOptions, lensPanel, congressRows,
@@ -182,6 +182,11 @@ function DistrictCard({card, onOpen, rowFlags = null}) {
   const first = seats[0];
   const flags = rowFlags ? cardLocationFlags(card, rowFlags) : [];
   const isFmr = card.id.startsWith('fmr:');
+  // Legislative lenses (location, FMR) answer "where did money land by
+  // district", so the district leads and the representative follows. The DEO
+  // lens keeps its office-name heading. Catch-all cards never get a district
+  // heading — money is not dressed up as a district.
+  const legislative = districtHeading(card);
 
   return <article className={`congress-card tier-${card.tier}${carries ? '' : ' no-money'}`}>
     <header className="congress-card-head">
@@ -190,11 +195,13 @@ function DistrictCard({card, onOpen, rowFlags = null}) {
           district. */}
       {seats.length > 1 ? <ProfileTiles seats={seats} /> : first ? <Portrait seat={first} /> : <span className="congress-portrait-empty" aria-hidden="true" />}
       <div className="congress-card-title">
-        <p className="congress-district">{seats.length
-          ? seats.map(seat => seat.districtName).join(' · ')
-          : card.location_tier === 'deo' ? 'District Engineering Office'
-          : card.location_tier === 'unassigned' ? 'Unassigned catch-all'
-          : 'Region catch-all'}</p>
+        <p className="congress-district">{legislative
+          ? (isFmr ? 'FMR legislative district' : 'Legislative district')
+          : seats.length
+            ? seats.map(seat => seat.districtName).join(' · ')
+            : card.location_tier === 'deo' ? 'District Engineering Office'
+            : card.location_tier === 'unassigned' ? 'Unassigned catch-all'
+            : 'Region catch-all'}</p>
         <h3>
           <button type="button" className="congress-card-open" onClick={onOpen}
             title={carries ? 'Explore the projects on this card' : 'Read why this card shows no attributed amount'}>
@@ -203,10 +210,11 @@ function DistrictCard({card, onOpen, rowFlags = null}) {
                 "Region catch-all" demoted to the subheader above, so money is
                 never dressed up as a district. Cards in the DEO lens lead
                 with the office name; representatives remain in the seat list. */}
-            {card.location_tier === 'deo' && card.card_label
-              ? card.card_label
-              : (deoLabel ?? (seats.length || !card.card_label ? rep.text
-                : card.location_tier === 'region' ? regionName(card.card_label) : card.card_label))}
+            {legislative?.heading
+              ?? (card.location_tier === 'deo' && card.card_label
+                ? card.card_label
+                : (deoLabel ?? (seats.length || !card.card_label ? rep.text
+                  : card.location_tier === 'region' ? regionName(card.card_label) : card.card_label)))}
           </button>
         </h3>
         <p className="congress-badges">
@@ -214,6 +222,7 @@ function DistrictCard({card, onOpen, rowFlags = null}) {
           <LeadershipBadge roles={roles} />
           <LocationFlagBadges flags={flags} />
         </p>
+        {legislative?.sub && <p className="congress-card-sub">{legislative.sub}</p>}
       </div>
     </header>
 
@@ -775,6 +784,45 @@ export function RecordDrawer({record, onPdf, onMap, onClose}) {
   </Dialog>;
 }
 
+/** Export chooser: scope (Simple/Full) × format (CSV/JSON) for the filtered rows.
+ * Simple is the reviewer's shortlist; Full is everything the explorer holds,
+ * including per-side source records. Both split HGAB3 and NEP page citations.
+ * Exported for the static-markup render test, like District and Districts. */
+export function ExportModal({rows, meta, onClose}) {
+  const [scope, setScope] = useState('simple');
+  const [format, setFormat] = useState('csv');
+  const scopes = [
+    ['simple', 'Simple', 'Title, bucket, match status, flags, region, program, both offices, both amounts, delta, and each side’s source page.'],
+    ['full', 'Full', 'Everything Simple has plus assignment basis, PAP, source record ids, PDF pages and links, reading status, match basis, trace, chainage and coordinates.'],
+  ];
+  const formats = [['csv', 'CSV', 'Spreadsheet. Opens in Excel with the same headings as the table.'],
+    ['json', 'JSON', 'Structured. Keeps provenance, filters and nested source citations.']];
+  const choose = (options, value, setValue, name) => <div className="congress-export-choice">
+    {options.map(([key, label, hint]) => <label key={key}
+      className={value === key ? 'congress-export-option selected' : 'congress-export-option'}>
+      <input type="radio" name={name} value={key} checked={value === key}
+        onChange={() => setValue(key)} />
+      <span><strong>{label}</strong><small>{hint}</small></span></label>)}</div>;
+
+  return <Dialog label="Export these projects" className="congress-export" onClose={onClose}>
+    <p className="fmr-muted">Downloads all <strong>{rows.length.toLocaleString('en-PH')}</strong> rows
+      currently in this table{Object.values(meta.filters ?? {}).some(value => value)
+        ? ', with your search, bucket and flag filters applied' : ''}. Amounts are in Philippine pesos.
+      Source columns cite each ledger side separately and link straight to the page.</p>
+    <h3>What to include</h3>
+    {choose(scopes, scope, setScope, 'export-scope')}
+    <h3>File format</h3>
+    {choose(formats, format, setFormat, 'export-format')}
+    <div className="fmr-dialog-actions">
+      <button type="button" className="secondary" onClick={onClose}>Cancel</button>
+      <button type="button" className="primary" onClick={() => {
+        downloadExplorer(rows, {...meta, scope}, format);
+        onClose();
+      }}>Download {scope === 'simple' ? 'Simple' : 'Full'} {format.toUpperCase()}</button>
+    </div>
+  </Dialog>;
+}
+
 /** The project explorer for one card. */
 export function District({index, detail, detailError = '', route, lens = 'deo', locationIndex = null,
   fmrIndex = null}) {
@@ -795,6 +843,7 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
   const [pdfSource, setPdfSource] = useState(null);
   const [mapRecord, setMapRecord] = useState(null);
   const [districtMapOpen, setDistrictMapOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
   const setFilter = patch => navigate(route, patch);
   // Same debounce contract as the card grid: keystrokes stay local, the URL
   // and the row filtering catch up once typing pauses (or on Enter/blur).
@@ -864,6 +913,9 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
   const roles = leadershipRoles(card);
   const carries = cardCarriesMoney(card);
   const totals = bucketTotals(card);
+  // District-first heading for the legislative lenses (location, FMR); null on
+  // the DEO lens and on catch-all cards, which keep their own headings.
+  const legislative = lens === 'deo' ? null : districtHeading(card);
 
   const columns = EXPLORER_COLUMNS
     .filter(column => lens !== 'deo' || column.key !== 'assignment')
@@ -961,22 +1013,25 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
       <p className="fmr-eyebrow">FY2027 · Congress · {seats.length ? seats[0].region
         : card.location_tier === 'deo' ? 'District Engineering Office'
         : card.location_tier === 'unassigned' ? 'Unassigned catch-all' : 'Region catch-all'}</p>
-      {/* DEO-lens headings name the implementing office for both Tier A and
-          Tier B cards. Representatives remain in the secondary line. Region
-          catch-all cards have no representative — the heading is the region
-          name (emphasized, like a representative name), with "Region
-          catch-all" demoted to the eyebrow above, so money is never dressed
-          up as a district. */}
-      <h1>{card.location_tier === 'deo' && card.card_label
+      {/* Legislative lenses (location, FMR) lead with the district; the
+          representative stays in the secondary line, because the question
+          these pages answer is "where did this money land by district".
+          DEO-lens headings name the implementing office. Region catch-all
+          cards have no representative — the heading is the region name, with
+          "Region catch-all" demoted to the eyebrow above, so money is never
+          dressed up as a district. */}
+      <h1>{legislative?.heading
+        ?? (card.location_tier === 'deo' && card.card_label
         ? card.card_label
         : deoLabel ?? (seats.length || !card.card_label ? rep.text
-          : card.location_tier === 'region' ? regionName(card.card_label) : card.card_label)}</h1>
+          : card.location_tier === 'region' ? regionName(card.card_label) : card.card_label))}</h1>
       <p className="congress-rep-line">
         {card.location_tier ? <LocationTierBadge card={card} /> : <TierBadge tier={card.tier} />}
         <LeadershipBadge roles={roles} />
+        {legislative?.sub && <span className="congress-rep-name">{legislative.sub}</span>}
         {seats.length > 0 ? <>
-          <span>{seats.map(seat => seat.districtName).join(' · ')}</span>
-          {seats.some(seat => seat.representative) &&
+          {seats.length > 1 && <span>{seats.map(seat => seat.districtName).join(' · ')}</span>}
+          {seats.some(seat => seat.representative) && !legislative &&
             <span className="fmr-muted"> · {seats.map(seat => seat.representative).filter(Boolean).join(' · ')}</span>}
           {seats.length > 1 && <span className="fmr-muted"> · undivided range, never split</span>}
         </> : card.location_tier === 'deo' ? <>
@@ -1067,15 +1122,12 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
         {prepared && <>
           <button type="button" className="secondary"
             disabled={!filtered.length || searchDraft !== query}
-            onClick={() => downloadExplorer(filtered, {
-              lens, card: card.id, filters: {q: query || null, bucket: bucket || null, flag: flag || null},
-            }, 'csv')}>Export CSV</button>
-          <button type="button" className="secondary"
-            disabled={!filtered.length || searchDraft !== query}
-            onClick={() => downloadExplorer(filtered, {
-              lens, card: card.id, filters: {q: query || null, bucket: bucket || null, flag: flag || null},
-            }, 'json')}>Export JSON</button></>}
+            onClick={() => setExportOpen(true)}>Export…</button></>}
       </div>
+      {exportOpen && filtered.length > 0 &&
+        <ExportModal rows={filtered} meta={{
+          lens, card: card.id, filters: {q: query || null, bucket: bucket || null, flag: flag || null},
+        }} onClose={() => setExportOpen(false)} />}
 
       <table className="congress-bucket-table">
         <caption>What each bucket counts, restated from the rows in this table</caption>

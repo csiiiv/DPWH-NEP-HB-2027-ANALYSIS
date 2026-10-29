@@ -47,6 +47,11 @@
 .congress-card-open { background:none; border:0; padding:0; font:inherit; font-weight:650; color:#1d4e89; cursor:pointer; text-align:left; }
 .congress-card-open:hover { text-decoration:underline; }
 .congress-district { font-size:12.5px; color:#516780; text-transform:uppercase; letter-spacing:.04em; margin:0; }
+/* District-first headings (legislative lenses): the representative line that
+   used to be the heading is demoted to a quiet sub-line on the card face and
+   a plain name in the explorer's rep line. */
+.congress-card-sub { margin:0; font-size:13px; color:#3c4a5a; overflow-wrap:anywhere; }
+.congress-rep-name { font-weight:600; }
 .congress-badges { display:flex; gap:6px; flex-wrap:wrap; margin:0; }
 
 .congress-portrait { width:96px; height:129px; object-fit:cover; object-position:top; border-radius:7px; border:1px solid #d9e2ed; background:#eef3f9; flex:none; }
@@ -233,6 +238,23 @@
   .congress-bucket { flex-direction:column; gap:2px; }
   .congress-bucket-label { min-width:0; }
 }
+
+/* Export chooser: scope × format as two rows of selectable option cards.
+   Narrower than the record drawer because it holds a short decision, not a
+   dossier. */
+.congress-export { width:min(560px,94vw); }
+.congress-export h3 { margin:18px 0 8px; font-size:13px; text-transform:uppercase;
+  letter-spacing:.04em; color:#516780; }
+.congress-export > p:first-of-type { margin:12px 0 0; }
+.congress-export-choice { display:flex; flex-direction:column; gap:8px; }
+.congress-export-option { display:flex; gap:10px; align-items:flex-start; padding:11px 13px;
+  border:1px solid #c9d6e5; border-radius:9px; background:#fff; cursor:pointer; }
+.congress-export-option:hover { border-color:#9fb6cf; background:#fbfcfe; }
+.congress-export-option.selected { border-color:#245fa8; background:#f2f7fd; box-shadow:inset 0 0 0 1px #245fa8; }
+.congress-export-option input { margin-top:3px; flex:none; }
+.congress-export-option span { display:flex; flex-direction:column; gap:3px; min-width:0; }
+.congress-export-option strong { font-size:13.5px; }
+.congress-export-option small { font-size:12px; color:#516780; line-height:1.45; }
 
 /* Location lens: toggle in the hero, chain-tier badge, catch-all card line. */
 .congress-lens-toggle { display:inline-flex; border:1px solid #d5dee9; border-radius:8px; overflow:hidden; }

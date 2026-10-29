@@ -14,6 +14,7 @@ import {
   districtSeats,
   representativeLabel,
   deoCardLabel,
+  districtHeading,
   leadershipRoles,
   coServed,
   cardCarriesMoney,
@@ -325,6 +326,59 @@ test(skip, 'districtSeats carries the roster links the card body renders', () =>
   // A Tier B card yields one seat per district, in card order.
   const tierB = districtSeats(index.cards.find(c => c.tier === 'B'));
   assert.equal(tierB.length, index.cards.find(c => c.tier === 'B').districts.length);
+});
+
+test('districtHeading leads with the district on legislative cards only', () => {
+  // A representative-lens card: the district is the heading, the person the
+  // sub-line — nothing is lost, only re-weighted. (representativeLabel reads
+  // the card-level rollup, so the fixture carries both levels like real cards.)
+  const person = 'Marcos, Ferdinand Alexander A.';
+  const district = {displayName: 'ILOCOS NORTE (FIRST DISTRICT)', districtLabel: '1st',
+    id: 'leg:ilocos-norte:1st', jurisdiction: 'ILOCOS NORTE', region: 'I',
+    representative: {name: person, resolutionStatus: 'resolved'}};
+  const card = {location_tier: 'title_psgc', districts: [district],
+    representative: {name: person, resolutionStatus: 'resolved'}};
+  const heading = districtHeading(card);
+  assert.equal(heading.heading, 'Ilocos Norte (First District)');
+  assert.equal(heading.sub, person);
+
+  // Official ALL-CAPS names render as Title Case, with the Filipino/Spanish
+  // particles lowercase and La Union's leading name-part kept capitalized.
+  const cases = [
+    ['CITY OF SAN JOSE DEL MONTE (LONE DISTRICT)', 'City of San Jose del Monte (Lone District)'],
+    ['LA UNION (FIRST DISTRICT)', 'La Union (First District)'],
+    ['SURIGAO DEL SUR (SECOND DISTRICT)', 'Surigao del Sur (Second District)'],
+    ['BUTUAN CITY (LONE DISTRICT)', 'Butuan City (Lone District)'],
+  ];
+  for (const [official, expected] of cases) {
+    const h = districtHeading({location_tier: 'fmr_district',
+      districts: [{...district, displayName: official}]});
+    assert.equal(h.heading, expected, `${official} must render as ${expected}`);
+  }
+
+  // Hyphenated place names case each half.
+  const hyphen = districtHeading({location_tier: 'fmr_district',
+    districts: [{...district, displayName: 'TAWI-TAWI (LONE DISTRICT)'}]});
+  assert.equal(hyphen.heading, 'Tawi-Tawi (Lone District)');
+
+  // A DEO-lens card (no location_tier) keeps its office heading.
+  assert.equal(districtHeading({districts: [district]}), null);
+  // Legislative catch-alls and undivided DEO groups are not one district.
+  for (const tier of ['deo', 'region', 'unassigned', 'fmr_spanning',
+    'fmr_region', 'location_evidence_conflict']) {
+    assert.equal(districtHeading({location_tier: tier, districts: [district]}), null,
+      `${tier} must keep its own heading, not a district's`);
+  }
+  // Multi-district cards keep their range heading.
+  assert.equal(districtHeading({location_tier: 'fmr_spanning', districts: [district, district]}), null);
+
+  // The sub-line surfaces unresolved seats rather than hiding them.
+  const contested = districtHeading({location_tier: 'fmr_district',
+    representative: {resolutionStatus: 'protest', candidates: ['A', 'B']},
+    districts: [{...district, representative: {name: null,
+      resolutionStatus: 'protest', candidates: ['A', 'B']}}]});
+  assert.ok(/not resolved|Unknown|candidates/i.test(contested.sub),
+    'an unresolved seat must say so in the sub-line');
 });
 
 test(skip, 'cards without a DEO ledger carry no attributed money', () => {
