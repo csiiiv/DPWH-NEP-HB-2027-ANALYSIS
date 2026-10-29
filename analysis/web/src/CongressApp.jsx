@@ -37,6 +37,7 @@ import {
 } from './congressModel.js';
 import './Fmr.css';
 import './Congress.css';
+import {downloadExplorer} from './explorerExport.js';
 
 const PdfPreview = lazy(() => import('./PdfPreview.jsx'));
 const CongressMap = lazy(() => import('./CongressMap.jsx'));
@@ -1063,6 +1064,17 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
         {(query || bucket || flag) &&
           <button type="button" onClick={() => setFilter({q: null, bucket: null, flag: null})}>
             Clear filters</button>}
+        {prepared && <>
+          <button type="button" className="secondary"
+            disabled={!filtered.length || searchDraft !== query}
+            onClick={() => downloadExplorer(filtered, {
+              lens, card: card.id, filters: {q: query || null, bucket: bucket || null, flag: flag || null},
+            }, 'csv')}>Export CSV</button>
+          <button type="button" className="secondary"
+            disabled={!filtered.length || searchDraft !== query}
+            onClick={() => downloadExplorer(filtered, {
+              lens, card: card.id, filters: {q: query || null, bucket: bucket || null, flag: flag || null},
+            }, 'json')}>Export JSON</button></>}
       </div>
 
       <table className="congress-bucket-table">
