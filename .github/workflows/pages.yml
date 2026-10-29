@@ -147,13 +147,14 @@ jobs:
           # would silently drop their coverage in CI.
           npm run build
           npm test
-      - name: Check processing release, enriched master list and viewer
+      - name: Build master list viewer and run data tests
+        # Prototype mode: no committed-artifact hash gates. The site deploys
+        # from freshly rebuilt data (prebuild regenerates the whole chain), so
+        # code changes no longer require recommitting derived data in lockstep.
+        # The viewer is rebuilt here so the unittest suite reads a consistent
+        # working tree (manifest pins match freshly built artifacts).
         run: |
-          python3 master_list/scripts/build_processing_dataset.py --check
-          python3 master_list/scripts/build_master_list.py --check
-          python3 master_list/scripts/build_location_interpretations.py --check
-          python3 master_list/scripts/build_cleaned_dataset.py
-          python3 master_list/scripts/build_viewer.py --check
+          python3 master_list/scripts/build_viewer.py
           python3 -m unittest discover -s master_list/tests -v
       - name: Package SPA, DPWH, FMR, HFEP and NIA sources
         run: python3 scripts/build_pages.py --with-react
