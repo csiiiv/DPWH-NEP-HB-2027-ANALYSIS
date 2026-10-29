@@ -329,11 +329,22 @@ test(mapSkip, 'the map artifact covers all 254 districts with lens figures', () 
   assert.equal(map.type, 'FeatureCollection');
   assert.equal(map.features.length, 254);
   const lensIds = new Set(Object.keys(index.districts));
+  const statuses = new Set(['matched', 'nep_only', 'house_only', 'none']);
   for (const feature of map.features) {
     const p = feature.properties;
     assert.ok(lensIds.has(p.district_id), `${p.psgc_leg_id} bridges to unknown lens id`);
     assert.ok(Number.isFinite(p.located_house_php) && p.located_house_php >= 0);
+    assert.ok(Number.isFinite(p.located_nep_php) && p.located_nep_php >= 0);
     assert.ok(Number.isFinite(p.deo_house_php) && p.deo_house_php >= 0);
+    assert.ok(Number.isFinite(p.matched_house_php) && p.matched_house_php >= 0);
+    assert.ok(Number.isFinite(p.matched_nep_php) && p.matched_nep_php >= 0);
+    assert.ok(Number.isInteger(p.insertion_count) && p.insertion_count >= 0);
+    assert.ok(Number.isInteger(p.deletion_count) && p.deletion_count >= 0);
+    assert.ok(statuses.has(p.pair_status), `${p.district_id} bad pair_status ${p.pair_status}`);
+    // Matched money (unchanged + adjustments) never exceeds stage totals and
+    // is never negative; unpaired figures are the residual, not additive.
+    assert.ok(p.matched_house_php <= p.located_house_php, `${p.district_id} matched house > total`);
+    assert.ok(p.matched_nep_php <= p.located_nep_php, `${p.district_id} matched nep > total`);
     assert.ok(Array.isArray(p.deo_card_ids));
     assert.ok(['Polygon', 'MultiPolygon'].includes(feature.geometry.type));
   }

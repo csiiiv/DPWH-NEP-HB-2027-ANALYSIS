@@ -465,6 +465,33 @@ def build_map_artifact(geojson, bridge, index, deo_cards_by_district, mismatch_d
         # District-assigned figures can arrive through title PSGC or a
         # one-to-one DEO fallback. Keep both bases, without combining their cards.
         loc_cards = index.get(deo_id, [])
+        # NEP-side figures and House↔NEP pair status come from the location
+        # cards' summaries. Unpaired rows (insertions/deletions) carry money on
+        # both stages' totals, so matched money is read from the paired-row
+        # figures directly: unchanged + adjustments (increased/reduced).
+        loc_nep = sum(c['summary']['sources']['nep']['amount_php'] for c in loc_cards)
+        matched_house = sum(c['summary']['unchanged']['amount_php']
+                            + c['summary']['adjustments']['increased_house_php']
+                            + c['summary']['adjustments']['reduced_house_php'] for c in loc_cards)
+        matched_nep = sum(c['summary']['unchanged']['amount_php']
+                          + c['summary']['adjustments']['increased_nep_php']
+                          + c['summary']['adjustments']['reduced_nep_php'] for c in loc_cards)
+        insertion_count = sum(c['summary']['insertions']['count'] for c in loc_cards)
+        deletion_count = sum(c['summary']['deletions']['count'] for c in loc_cards)
+        insertion_php = sum(c['summary']['insertions']['amount_php'] for c in loc_cards)
+        deletion_php = sum(c['summary']['deletions']['amount_php'] for c in loc_cards)
+        # Dominant pair status for the categorical choropleth: a district is
+        # "matched" when most of its located money survived House→NEP, "nep_only"
+        # when NEP-only insertions dominate, "house_only" when House-only
+        # deletions dominate. Zero-activity districts read as none.
+        if matched_nep > 0 and matched_nep >= max(insertion_php, deletion_php):
+            pair_status = 'matched'
+        elif insertion_php >= deletion_php and insertion_php > 0:
+            pair_status = 'nep_only'
+        elif deletion_php > 0:
+            pair_status = 'house_only'
+        else:
+            pair_status = 'none'
         props = {
             'district_id': deo_id,
             'psgc_leg_id': p['leg_id'],
@@ -478,10 +505,19 @@ def build_map_artifact(geojson, bridge, index, deo_cards_by_district, mismatch_d
             'deo_card_ids': [c['id'] for c in deo_cards],
             'located_house_php': sum(c['summary']['sources']['house']['amount_php'] for c in loc_cards),
             'located_rows': sum(c['rows'] for c in loc_cards),
+            'located_nep_php': loc_nep,
+            'matched_house_php': matched_house,
+            'matched_nep_php': matched_nep,
+            'insertion_count': insertion_count,
+            'insertion_php': insertion_php,
+            'deletion_count': deletion_count,
+            'deletion_php': deletion_php,
+            'pair_status': pair_status,
             'location_card_id': loc_cards[0]['id'] if len(loc_cards) == 1 else None,
             'location_card_ids': [c['id'] for c in loc_cards],
             'mismatch_rows': len(mismatch_districts.get(deo_id, [])),
         }
+
         features.append({'type': 'Feature', 'properties': props, 'geometry': f['geometry']})
     return {
         'type': 'FeatureCollection',

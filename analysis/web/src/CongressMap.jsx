@@ -31,13 +31,17 @@ const METRICS = [
     field: 'located_house_php', colors: ['#c7e5c9', '#8fd09a', '#57b96f', '#2e9e52', '#187a3d']},
   {key: 'deo_house_php', label: 'DEO-attributed HGAB3 (DEO lens)',
     field: 'deo_house_php', colors: ['#cfe0f3', '#9cc2e8', '#6ba0d6', '#3d7cbf', '#1f5a9e']},
+  {key: 'located_nep_php', label: 'District-assigned NEP',
+    field: 'located_nep_php', colors: ['#dcd7f0', '#b9b0e3', '#9488d4', '#6f60c2', '#4c3aa0']},
+  {key: 'pair_status', label: 'House↔NEP pair status',
+    kind: 'category', field: 'pair_status', colors: {matched: '#7e57c2', nep_only: '#2e8b57', house_only: '#1f77b4'}},
   {key: 'mismatch_rows', label: 'Office↔location mismatch rows (flagged)',
     field: 'mismatch_rows', colors: ['#fde8d2', '#fbd0a5', '#f7b06a', '#f08c3c', '#e06b12']},
 ];
-
 // Even-step ramps keyed by the metric's own max, so the legend and the fill
 // expression share one scale. Values are absolute ₱ thresholds per metric.
 function breaksFor(metric, features) {
+  if (metric.kind === 'category') return [1, 1, 1, 1];
   const values = features.map(f => f.properties[metric.field]).filter(v => v > 0).sort((a, b) => a - b);
   if (!values.length) return [1, 1, 1, 1];
   const at = q => values[Math.min(values.length - 1, Math.floor(q * values.length))];
@@ -45,7 +49,12 @@ function breaksFor(metric, features) {
 }
 
 function colorExpression(metric, breaks) {
-  const [f] = metric.field;
+  if (metric.kind === 'category') {
+    // match(status, 'matched', color, 'nep_only', color, …, fallback)
+    const pairs = Object.entries(metric.colors)
+      .flatMap(([value, color]) => [value, color]);
+    return ['match', ['get', metric.field], ...pairs, '#eceff3'];
+  }
   return ['step', ['get', metric.field],
     '#eceff3', ...metric.colors.flatMap((color, i) =>
       i < breaks.length ? [breaks[i], color] : []).slice(0, 8), metric.colors[metric.colors.length - 1]];
@@ -81,6 +90,20 @@ function DistrictPanel({feature, lens, onClose}) {
       <dt>DEO-attributed HGAB3</dt>
       <dd>{deo ? moneyCompact(p.deo_house_php) : '—'}
         <small>{p.deo_rows.toLocaleString('en-PH')} rows on {p.deo_card_ids.length} office card{p.deo_card_ids.length > 1 ? 's' : ''}</small></dd>
+      {p.located_nep_php > 0 && <>
+        <dt>District-assigned NEP</dt>
+        <dd>{moneyCompact(p.located_nep_php)}
+          <small>{p.insertion_count > 0 && `+${p.insertion_count.toLocaleString('en-PH')} NEP-only insertion${p.insertion_count > 1 ? 's' : ''}`}
+            {p.insertion_count > 0 && p.deletion_count > 0 && ' · '}
+            {p.deletion_count > 0 && `−${p.deletion_count.toLocaleString('en-PH')} House-only deletion${p.deletion_count > 1 ? 's' : ''}`}
+            {p.insertion_count === 0 && p.deletion_count === 0 && 'no unpaired rows'}</small></dd>
+      </>}
+      {p.located_house_php > 0 && p.located_nep_php > 0 && <>
+        <dt>House→NEP on matched pairs</dt>
+        <dd>{moneyCompact(p.matched_house_php)} → {moneyCompact(p.matched_nep_php)}
+          <small>{p.matched_nep_php === p.matched_house_php ? 'no change' :
+            `${p.matched_nep_php > p.matched_house_php ? '+' : '−'}${moneyCompact(Math.abs(p.matched_nep_php - p.matched_house_php))} between stages`}</small></dd>
+      </>}
       {p.mismatch_rows > 0 && <>
         <dt className="congress-map-flagged">Office↔location mismatch</dt>
         <dd className="congress-map-flagged">{p.mismatch_rows.toLocaleString('en-PH')} rows
@@ -107,8 +130,17 @@ function DistrictPanel({feature, lens, onClose}) {
   </aside>;
 }
 
-/** Legend entry swatches mirror the metric's ramp breaks. */
+/** Legend entry swatches mirror the metric's ramp breaks (or category colors). */
 function Legend({metric, breaks, features}) {
+  if (metric.kind === 'category') {
+    const labels = {matched: 'Matched pairs', nep_only: 'NEP only', house_only: 'House only', none: 'No located money'};
+    return <div className="congress-map-legend" aria-label={`${metric.label} legend`}>
+      {Object.entries(metric.colors).map(([value, color]) =>
+        <span key={value} className="congress-map-swatch">
+          <i style={{background: color}}/>{labels[value] ?? value}
+        </span>)}
+    </div>;
+  }
   const max = Math.max(...features.map(f => metricValue(metric, f)), 1);
   return <div className="congress-map-legend" aria-label={`${metric.label} legend`}>
     {[0, ...breaks].map((lo, i) => {
@@ -240,6 +272,8 @@ export default function CongressMap({route}) {
     features.reduce((total, f) => total + (f.properties.located_house_php ?? 0), 0), [features]);
   const deoTotal = useMemo(() =>
     features.reduce((total, f) => total + (f.properties.deo_house_php ?? 0), 0), [features]);
+  const nepTotal = useMemo(() =>
+    features.reduce((total, f) => total + (f.properties.located_nep_php ?? 0), 0), [features]);
   const mismatchTotal = useMemo(() =>
     features.reduce((total, f) => total + (f.properties.mismatch_rows ?? 0), 0), [features]);
 
@@ -256,8 +290,10 @@ export default function CongressMap({route}) {
         <h1>Where the budget documents place the work</h1>
         <p>The 254 legislative district polygons from the PSGC2LEG build, choroplethed by either
           lens: located money (title GPS and PSGC points inside the polygon) or DEO-attributed
-          money (office → district through the crosswalk). A third metric highlights the
-          {' '}{mismatchTotal.toLocaleString('en-PH')} office↔location mismatch rows — districts where
+          money (office → district through the crosswalk), the district-assigned NEP, or the
+          House↔NEP pair status — where matched money survived both stages (purple), NEP-only
+          insertions dominate (green), or House-only deletions dominate (blue). A final metric
+          highlights the {mismatchTotal.toLocaleString('en-PH')} office↔location mismatch rows — districts where
           the two lenses disagree, flagged rather than reconciled.</p>
       </div>
       <ShareLink/>
@@ -272,7 +308,7 @@ export default function CongressMap({route}) {
           <option value="light">Light</option><option value="dark">Dark</option>
         </select></label>
       <span role="status" className="congress-count">
-        Located {moneyCompact(locatedTotal)} · DEO {moneyCompact(deoTotal)} across 254 districts</span>
+        House {moneyCompact(locatedTotal)} · NEP {moneyCompact(nepTotal)} · DEO {moneyCompact(deoTotal)} across 254 districts</span>
       <button type="button" onClick={() => {setSelected(null); map.current?.fitBounds(
         new LngLatBounds([117, 5], [127, 19]), {padding: 40, duration: 600});}}>
         Reset view</button>
