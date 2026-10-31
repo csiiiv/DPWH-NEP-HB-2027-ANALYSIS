@@ -100,55 +100,94 @@ function BarComparisonFigure({payload, groupingKey, datasets, exact, route, setP
       const SVG_NS = 'http://www.w3.org/2000/svg';
       // Self-contained export: a header block (title, scale note, revision
       // legend) above the chart, so the card reads standalone in a report.
-      const headerHeight = 74;
-      const width = chartWidth, height = headerHeight + chartHeight;
+      // Header text carries its own presentation attributes — classes resolve
+      // against this page's stylesheet, which never travels with the file.
       const svg = document.createElementNS(SVG_NS, 'svg');
       svg.setAttribute('xmlns', SVG_NS);
-      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-      svg.setAttribute('width', width); svg.setAttribute('height', height);
-      const title = document.createElementNS(SVG_NS, 'text');
-      title.setAttribute('x', 12); title.setAttribute('y', 24);
-      title.setAttribute('class', 'bar-comparison-export-title');
-      title.textContent = `${dataset.label} · ${grouping.label} · NEP beside HGAB, segmented by revision`;
-      svg.appendChild(title);
-      const note = document.createElementNS(SVG_NS, 'text');
-      note.setAttribute('x', 12); note.setAttribute('y', 42);
-      note.setAttribute('class', 'bar-comparison-export-note');
-      note.textContent = 'Segment width represents pesos on one shared scale. Hover a segment for its paired NEP→HGAB amounts.';
-      svg.appendChild(note);
-      let x = 12;
-      for (const item of [...legendItems, {note: legendNote}]) {
-        const entry = document.createElementNS(SVG_NS, 'text');
-        entry.setAttribute('y', 64);
-        entry.setAttribute('class', 'bar-comparison-export-note');
-        if (item.color) {
-          const swatch = document.createElementNS(SVG_NS, 'rect');
-          swatch.setAttribute('x', x); swatch.setAttribute('y', 55);
-          swatch.setAttribute('width', 12); swatch.setAttribute('height', 12);
-          swatch.setAttribute('rx', 2); swatch.setAttribute('fill', item.color);
-          svg.appendChild(swatch);
-          x += 17;
+      svg.setAttribute('font-family', 'Arial, sans-serif');
+      // Legend text must be measured while rendered: getComputedTextLength
+      // returns 0 on detached nodes, which stacked every entry on the next.
+      // The off-screen copy is detached again before serialization.
+      svg.setAttribute('aria-hidden', 'true');
+      svg.style.cssText = 'position:fixed;left:-100000px;top:0;';
+      document.body.appendChild(svg);
+      const noteAttributes = {'font-size': 12, fill: '#52647a'};
+      const headerText = (x, y, text, attributes = noteAttributes) => {
+        const node = document.createElementNS(SVG_NS, 'text');
+        node.setAttribute('x', x); node.setAttribute('y', y);
+        for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, value);
+        node.textContent = text;
+        svg.appendChild(node);
+        return node;
+      };
+      const measureText = text => {
+        const probe = document.createElementNS(SVG_NS, 'text');
+        probe.setAttribute('font-size', 12);
+        probe.textContent = text;
+        svg.appendChild(probe);
+        const length = probe.getComputedTextLength();
+        probe.remove();
+        return length;
+      };
+      let svgBlob, width, height;
+      try {
+        headerText(12, 24, `${dataset.label} · ${grouping.label} · NEP beside HGAB, segmented by revision`,
+          {'font-size': 17, 'font-weight': 700, fill: '#203147'});
+        headerText(12, 42, 'Segment width represents pesos on one shared scale. Hover a segment for its paired NEP→HGAB amounts.');
+        // Legend entries flow like the on-page legend, wrapping to a new row
+        // when the next entry would cross the chart's right edge.
+        const entries = [...legendItems.map(item => ({...item, text: item.label})), {text: legendNote}];
+        const rows = [[]];
+        let rowWidth = 12;
+        for (const entry of entries) {
+          const advance = (entry.color ? 17 : 0) + measureText(entry.text) + 18;
+          if (rows.at(-1).length && rowWidth + advance > chartWidth) {rows.push([]); rowWidth = 12;}
+          rows.at(-1).push({...entry, advance});
+          rowWidth += advance;
         }
-        entry.setAttribute('x', x);
-        entry.textContent = item.color ? item.label : item.note;
-        svg.appendChild(entry);
-        x += entry.getComputedTextLength() + 18;
-      }
-      // Chart clone keeps its inline computed styles; the header carries its
-      // own classes resolved against this document's stylesheet.
-      const copy = chart.cloneNode(true);
-      const viewBox = chart.getAttribute('viewBox');
-      copy.setAttribute('xmlns', SVG_NS);
-      copy.setAttribute('viewBox', viewBox);
-      copy.setAttribute('y', headerHeight);
-      const properties = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'opacity', 'font-family', 'font-size', 'font-weight', 'text-anchor', 'paint-order'];
-      const originals = [chart, ...chart.querySelectorAll('*')], clones = [copy, ...copy.querySelectorAll('*')];
-      originals.forEach((node, index) => {
-        const style = getComputedStyle(node);
-        for (const property of properties) clones[index].style.setProperty(property, style.getPropertyValue(property));
-      });
-      svg.appendChild(copy);
-      const svgBlob = new Blob([new XMLSerializer().serializeToString(copy.parentNode)], {type: 'image/svg+xml;charset=utf-8'});
+        let legendBaseline = 58;
+        for (const row of rows) {
+          let x = 12;
+          for (const entry of row) {
+            if (entry.color) {
+              const swatch = document.createElementNS(SVG_NS, 'rect');
+              swatch.setAttribute('x', x); swatch.setAttribute('y', legendBaseline - 9);
+              swatch.setAttribute('width', 12); swatch.setAttribute('height', 12);
+              swatch.setAttribute('rx', 2); swatch.setAttribute('fill', entry.color);
+              svg.appendChild(swatch);
+              x += 17;
+            }
+            headerText(x, legendBaseline, entry.text);
+            x += entry.advance - (entry.color ? 17 : 0);
+          }
+          legendBaseline += 20;
+        }
+        const headerHeight = legendBaseline - 20 + 12;
+        width = chartWidth; height = headerHeight + chartHeight;
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        svg.setAttribute('width', width); svg.setAttribute('height', height);
+        const background = document.createElementNS(SVG_NS, 'rect');
+        background.setAttribute('width', width); background.setAttribute('height', height);
+        background.setAttribute('fill', '#fff');
+        svg.insertBefore(background, svg.firstChild);
+        // Chart clone keeps its inline computed styles; its explicit
+        // width/height pin the nested SVG to its viewBox — without them it
+        // would stretch to the taller export viewport and crop both sides.
+        const copy = chart.cloneNode(true);
+        copy.setAttribute('xmlns', SVG_NS);
+        copy.setAttribute('viewBox', chart.getAttribute('viewBox'));
+        copy.setAttribute('x', 0); copy.setAttribute('y', headerHeight);
+        copy.setAttribute('width', chartWidth); copy.setAttribute('height', chartHeight);
+        const properties = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'opacity', 'font-family', 'font-size', 'font-weight', 'text-anchor', 'paint-order'];
+        const originals = [chart, ...chart.querySelectorAll('*')], clones = [copy, ...copy.querySelectorAll('*')];
+        originals.forEach((node, index) => {
+          const style = getComputedStyle(node);
+          for (const property of properties) clones[index].style.setProperty(property, style.getPropertyValue(property));
+        });
+        svg.appendChild(copy);
+        svg.removeAttribute('style'); svg.removeAttribute('aria-hidden');
+        svgBlob = new Blob([new XMLSerializer().serializeToString(svg)], {type: 'image/svg+xml;charset=utf-8'});
+      } finally {svg.remove();}
       if (type === 'svg') return saveBlob(svgBlob, `${filename}.svg`);
       const url = URL.createObjectURL(svgBlob);
       try {

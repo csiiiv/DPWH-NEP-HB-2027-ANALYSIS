@@ -458,6 +458,29 @@ def main():
                         'Unchanged', 'Increased', 'Decreased', 'Deleted · NEP side only', 'Inserted · HGAB side only', 'Largest NEP first · All 18 regions']:
                         assert fragment in bar_text, fragment
                     assert '₱' in bar_text
+                    # The exported card must be geometrically sound: the nested
+                    # chart SVG carries explicit width/height (an unsized nested
+                    # viewBox stretches to the taller export viewport and crops
+                    # both sides), and legend entries never overlap — each
+                    # starts after the previous label's measured width.
+                    nested = bar_svg.find('{http://www.w3.org/2000/svg}svg')
+                    assert nested is not None, 'export must nest the chart SVG'
+                    nested_width, nested_height = float(nested.get('width')), float(nested.get('height'))
+                    root_viewbox = [float(v) for v in bar_svg.get('viewBox').split()]
+                    assert nested_width == root_viewbox[2] and nested_height == root_viewbox[3] - float(nested.get('y', 0)), \
+                        'nested chart must keep its own viewBox size'
+                    legend = [(float(t.get('x')), float(t.get('y')), t.text) for t in bar_svg.iter('{http://www.w3.org/2000/svg}text')
+                        if t.text and t.get('font-size') == '12' and t.get('x') and ('side only' in t.text or t.text in ('Unchanged', 'Increased', 'Decreased', 'Scope review'))]
+                    legend_rows = {}
+                    for x, y, text in legend: legend_rows.setdefault(y, []).append((x, text))
+                    assert any(len(row) >= 4 for row in legend_rows.values()), 'revision legend must be present'
+                    for y, row in sorted(legend_rows.items()):
+                        row.sort()
+                        for (x1, t1), (x2, _) in zip(row, row[1:]):
+                            # Conservative spacing floor: the shortest label
+                            # ('Unchanged') is ~58px at font-size 12; entries
+                            # measured at true width never land within 40px.
+                            assert x2 - x1 >= 40, f'legend entries overlap at y={y}: {t1!r} ends before next starts {x2 - x1:.0f}px later'
                     with page.expect_download() as result:
                         page.get_by_role('button', name='Download PNG', exact=True).click()
                     bar_png = Path(result.value.path()).read_bytes()
