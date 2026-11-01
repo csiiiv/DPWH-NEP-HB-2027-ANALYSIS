@@ -1,0 +1,97 @@
+{
+  "version": "review_catalog_v1",
+  "description": "Shared wording for clarification questions in the cleaned observation layer.",
+  "interpretation": {
+    "empty_flags": "No clarification questions were generated; this does not mean the record was verified.",
+    "resolved_location": "The stated location scope has a selected interpretation; verification is recorded separately.",
+    "resolved_question": "The clarification question was addressed; this does not certify the entire record.",
+    "attribution": "Inclusion, office associations and flags do not establish who proposed, inserted, endorsed or was responsible for a budget item."
+  },
+  "flags": {
+    "location_unclear": {
+      "label": "Location needs clarification",
+      "description": "The evidence does not identify a locality at a useful level for the stated task.",
+      "requested_information": "Provide the intended province, city or municipality, barangay, or project coordinates.",
+      "trigger_guidance": "Use for a material location gap. Missing coordinates alone are insufficient when other evidence establishes a useful locality."
+    },
+    "location_alternatives": {
+      "label": "Several locations are possible",
+      "description": "Competing interpretations remain for the same location claim.",
+      "requested_information": "Identify the intended location, or confirm that the project covers several locations.",
+      "trigger_guidance": "Use for competing supported interpretations, not every national name match or a valid project covering several places."
+    },
+    "location_conflict": {
+      "label": "Location details disagree",
+      "description": "Retained evidence indicates incompatible places for the same location claim.",
+      "requested_information": "Confirm the project locality and clarify which title, coordinate or other source detail describes it.",
+      "trigger_guidance": "Compare evidence for the same claim and scope. A DEO name association or a score penalty alone does not establish a project-site conflict."
+    },
+    "project_coverage_unclear": {
+      "label": "Project coverage needs clarification",
+      "description": "A known point or locality does not establish the coverage needed for the stated task.",
+      "requested_information": "Provide endpoints, alignment, covered barangays or a site plan, as applicable.",
+      "trigger_guidance": "Use when incomplete coverage materially limits interpretation. Do not flag every point-based record merely because full project extent is unassessed."
+    },
+    "description_unclear": {
+      "label": "Project description needs clarification",
+      "description": "Wording, truncation or extraction uncertainty materially affects project identification.",
+      "requested_information": "Provide the intended project description or a supporting source document.",
+      "trigger_guidance": "Use for a documented identification gap. Readability cleanup, an unfamiliar name or a technical parser warning alone is insufficient."
+    },
+    "record_relationship_unclear": {
+      "label": "Record relationship needs clarification",
+      "description": "Retained comparison evidence leaves uncertainty about whether records describe the same project, separate phases or separate works.",
+      "requested_information": "Clarify the relationship between the referenced records and provide supporting documentation if available.",
+      "trigger_guidance": "Reference the related records and the specific matching uncertainty. House-only, NEP-only and not-compared membership alone do not establish a problem."
+    }
+  },
+  "statuses": {
+    "open": {
+      "label": "Awaiting clarification",
+      "description": "A clarification question remains open; this does not mean a request has been sent.",
+      "requires_review_event": false
+    },
+    "response_received": {
+      "label": "Response received",
+      "description": "A response has been recorded and awaits assessment.",
+      "requires_review_event": true
+    },
+    "under_review": {
+      "label": "Clarification under review",
+      "description": "A recorded review is in progress; no correction is implied.",
+      "requires_review_event": true
+    },
+    "resolved": {
+      "label": "Clarification completed",
+      "description": "A recorded assessment explains how the question was addressed.",
+      "requires_review_event": true
+    },
+    "closed_no_change": {
+      "label": "Review closed without a data change",
+      "description": "A recorded assessment closes the review without changing the data; remaining uncertainty is retained.",
+      "requires_review_event": true
+    }
+  },
+  "location_statuses": {
+    "resolved": {
+      "label": "Location interpretation selected",
+      "description": "A location interpretation is selected for the declared scope; it may remain provisional."
+    },
+    "partially_resolved": {
+      "label": "Location partly identified",
+      "description": "Some useful administrative levels or parts of the declared scope are identified; the remaining gap is explicit."
+    },
+    "ambiguous": {
+      "label": "Competing location interpretations",
+      "description": "Competing interpretations remain for the declared scope; no single interpretation resolves them."
+    },
+    "unresolved": {
+      "label": "Location not identified",
+      "description": "No location interpretation has been selected for the declared scope."
+    },
+    "not_applicable": {
+      "label": "Project-site location not applicable",
+      "description": "A project-site location is not applicable to this record's declared kind and scope."
+    }
+  }
+}

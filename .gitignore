@@ -91,8 +91,9 @@ DEO2LEG/legislative_profiles/*.html
 analysis/builders/crosscheck_dpwh_details_xlsx.py
 analysis/data/dpwh_details_xlsx_crosscheck.json
 
-analysis/data/budget_flow_sources_2027.json
-analysis/data/allocation_hierarchy_sources_2027.json
+# Committed derived artifacts (fast-deploy packaging gates their freshness):
+#analysis/data/budget_flow_sources_2027.json
+#analysis/data/allocation_hierarchy_sources_2027.json
 # Congress DEO lens: the index is rebuilt by analysis/web/buildCongressIndex.mjs
 # from the (larger) comparison payload. The WebP portraits are pre-rendered and
 # COMMITTED — they change only when the roster changes, and
@@ -118,8 +119,12 @@ analysis/data/allocation_hierarchy_sources_2027.json
 # Local-only plain exports exceeding Git's 100 MiB blob limit
 master_list/data/project_list.csv
 
-# Readable processing release, regenerated from the comparison/workbench JSONs.
+# Readable processing release, regenerated from the comparison/workbench JSONs
+# by npm run generate:data; stays local-only (large intermediate), while the
+# committed location index pins its hash so CI can verify consistency.
 /master_list/data/processing/
 
 # Cleaned observation consumer release; rebuilt from audited evidence layers.
-/master_list/data/cleaned/
+# Committed so the location-lens chain is verifiable in CI without a local
+# master-list rebuild (89 MB compressed).
+#/master_list/data/cleaned/
