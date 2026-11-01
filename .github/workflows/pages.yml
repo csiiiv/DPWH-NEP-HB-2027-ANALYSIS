@@ -188,12 +188,12 @@ jobs:
           unzip -q dist/PH_Adm2_ProvDists.shp.zip -d data/2023/Provdists
           unzip -q dist/PH_Adm3_MuniCities.shp.zip -d data/2023/Municities
           unzip -q dist/PH_Adm4_BgySubMuns.shp.zip -d data/2023/BgySubMuns
-      - name: Generate FMR datasets
+      - name: Check FMR final datasets (non-mutating)
         if: needs.changes.outputs.level == 'comprehensive'
         run: |
           python3 -m pip install geopandas==1.1.1 shapely==2.1.2 pandas==2.2.3 pyogrio==0.12.1
-          python3 other-analysis/build_fmr_final_dataset.py
-          python3 other-analysis/build_fmr_workbench.py
+          python3 other-analysis/build_fmr_final_dataset.py --check
+          python3 other-analysis/build_fmr_workbench.py --check
       - name: Check FMR extraction, normalization and matching
         if: needs.changes.outputs.level == 'comprehensive'
         run: |
