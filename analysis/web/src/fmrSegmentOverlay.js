@@ -230,14 +230,16 @@ export function fmrDistrictMapOverlay(records) {
 /**
  * Nationwide / multi-record FMR overlay for the Congress map tab.
  *
- * Primary geometry is the printed (normalized) reading. Where an accepted
- * digit repair moved a point, the corrected position is added as a separate
- * marker and a dashed connector links printed → corrected — same evidence
- * shape as the per-row repair overlay, but with printed lines as the base.
+ * Primary geometry is the reviewed (accepted) reading, so matched pairs draw
+ * as 'Matched' at their corrected position. Where an accepted digit repair
+ * moved a point, the ORIGINAL (pre-acceptance printed) position is retained
+ * as a separate red marker and a dashed connector links incorrect original →
+ * accepted — same evidence shape as the per-row repair overlay, with the
+ * corrected lines as the base.
  */
-export function fmrPrintedMapOverlay(records) {
-  const primary = fmrRecordsOverlay(records, 'normalized');
-  const connectors = [], correctedPoints = [];
+export function fmrNationalMapOverlay(records) {
+  const primary = fmrRecordsOverlay(records, 'reviewed');
+  const connectors = [], originalPoints = [];
   for (const record of records) {
     const repair = fmrRecordRepairOverlay(record);
     if (!repair.hasRepairs) continue;
@@ -253,27 +255,26 @@ export function fmrPrintedMapOverlay(records) {
         },
       });
     }
-    for (const {key: stage, project} of fmrStageProjects(record)) {
-      for (const point of project.points || []) {
-        const before = DIGIT_REPAIR_PRINTED[point.id];
-        const after = reviewedPointCoordinates(point);
-        const ruled = (point.rules || []).some(rule => REPAIR_RULES.includes(rule));
-        if (!before || !after || !ruled) continue;
-        if (before[0] === after[0] && before[1] === after[1]) continue;
-        correctedPoints.push({
+    // The per-row repair overlay already lists every moved point per stage;
+    // emit one ORIGINAL marker per (stage, point) from its printed reading.
+    for (const stage of repair.stages) {
+      for (const entry of stage.points) {
+        originalPoints.push({
           type: 'Feature',
-          id: `corrected:${record.id}:${stage}:${point.id}`,
+          id: `original:${record.id}:${stage.key}:${entry.pointId}`,
           properties: {
             recordId: record.id,
-            projectId: project.id,
+            projectId: stage.project.id,
             title: record.title,
-            stage,
-            pointId: point.id,
-            role: 'corrected',
+            stage: stage.key,
+            stageLabel: stage.label,
+            pointId: entry.pointId,
+            role: 'original',
             objectKind: 'fmr_repair',
             color: REPAIR_COLOR,
+            shiftKm: entry.shiftKm,
           },
-          geometry: {type: 'Point', coordinates: after},
+          geometry: {type: 'Point', coordinates: entry.before},
         });
       }
     }
@@ -281,7 +282,7 @@ export function fmrPrintedMapOverlay(records) {
   return {
     ...primary,
     connectors: {type: 'FeatureCollection', features: connectors},
-    correctedPoints: {type: 'FeatureCollection', features: correctedPoints},
-    repairCount: correctedPoints.length,
+    originalPoints: {type: 'FeatureCollection', features: originalPoints},
+    repairCount: originalPoints.length,
   };
 }

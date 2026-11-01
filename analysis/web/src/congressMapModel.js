@@ -20,8 +20,8 @@ export const DEFAULT_CONGRESS_MAP_OBJECTS = Object.fromEntries(
 export const CONGRESS_MAP_TYPE_OPTIONS = {
   fmr: Object.entries(DISTRICT_SEGMENT_CLASSES).map(([id, style]) => [id, style.label]),
   fmr_repairs: [
-    ['link', 'Printed → corrected link'],
-    ['point', 'Corrected coordinate'],
+    ['link', 'Incorrect original → accepted link'],
+    ['point', 'Incorrect original coordinate'],
   ],
   mpb: Object.entries(MPB_POINT_CLASSES).map(([id, style]) => [id, style.label]),
   // Dashed PSGC-centroid markers for rows that print no title coordinate.

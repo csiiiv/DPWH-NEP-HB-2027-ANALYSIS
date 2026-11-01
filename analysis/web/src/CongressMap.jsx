@@ -6,7 +6,7 @@ import {loadData, siteUrl} from './data.js';
 import {routeHref} from './routes.js';
 import ShareLink from './ShareLink.jsx';
 import {districtLensCounts} from './congressModel.js';
-import {fmrPrintedMapOverlay, DISTRICT_SEGMENT_CLASSES, REPAIR_COLOR} from './fmrSegmentOverlay.js';
+import {fmrNationalMapOverlay, DISTRICT_SEGMENT_CLASSES, REPAIR_COLOR} from './fmrSegmentOverlay.js';
 import {MPB_POINT_CLASSES, MPB_BOX_ICON_IMAGE, ensureMpbBoxIcon,
   ensureMpbBadgeIcons, ensureMpbTotalBadgeIcons, ensureMpbApproxIcons,
   mpbApproxSwatchBackground,
@@ -44,8 +44,8 @@ const FMR_LINE = 'congress-map-fmr-line';
 const FMR_POINT = 'congress-map-fmr-point';
 const FMR_LINKS = 'congress-map-fmr-repair-links';
 const FMR_LINK = 'congress-map-fmr-repair-link';
-const FMR_CORRECTED = 'congress-map-fmr-corrected';
-const FMR_CORRECTED_POINT = 'congress-map-fmr-corrected-point';
+const FMR_ORIGINAL = 'congress-map-fmr-original';
+const FMR_ORIGINAL_POINT = 'congress-map-fmr-original-point';
 const MPB_LINES = 'congress-map-mpb-lines';
 const MPB_LINE_HALO = 'congress-map-mpb-line-halo';
 const MPB_LINE = 'congress-map-mpb-line';
@@ -58,11 +58,11 @@ const MPB_BADGE = 'congress-map-mpb-badge';
 const MPB_UNMAPPED_TOTAL = 'congress-map-mpb-unmapped-total';
 const MPB_BADGE_TOTAL = 'congress-map-mpb-badge-total';
 
-const MARKER_LAYERS = [FMR_LINE, FMR_POINT, FMR_LINK, FMR_CORRECTED_POINT, MPB_LINE, MPB_POINT];
+const MARKER_LAYERS = [FMR_LINE, FMR_POINT, FMR_LINK, FMR_ORIGINAL_POINT, MPB_LINE, MPB_POINT];
 const OBJECT_LAYERS = {
   districts: [DISTRICTS_FILL, DISTRICTS_LINE],
   fmr: [FMR_HALO, FMR_LINE, FMR_POINT],
-  fmr_repairs: [FMR_LINK, FMR_CORRECTED_POINT],
+  fmr_repairs: [FMR_LINK, FMR_ORIGINAL_POINT],
   mpb: [MPB_LINE_HALO, MPB_LINE, MPB_POINT],
   mpb_approx: [MPB_APPROX_POINT],
   mpb_unmapped: [MPB_BADGE, MPB_BADGE_TOTAL],
@@ -90,7 +90,7 @@ function applyLayerFilters(instance, objects, types) {
   }
 
   setVisible(FMR_LINK, objects.fmr_repairs && types?.fmr_repairs?.link);
-  setVisible(FMR_CORRECTED_POINT, objects.fmr_repairs && types?.fmr_repairs?.point);
+  setVisible(FMR_ORIGINAL_POINT, objects.fmr_repairs && types?.fmr_repairs?.point);
 
   const mpbOn = Boolean(objects.mpb);
   const mpbFilter = congressMapCategoryFilter(enabledCongressMapCategories(types, 'mpb'));
@@ -141,7 +141,7 @@ function DistrictPanel({feature, fmrIndex, mpbIndex, onClose}) {
     {p.representative && <p className="congress-map-rep">Rep. {p.representative}</p>}
     <p className="fmr-muted congress-map-note">
       Legislative district polygon from the PSGC2LEG viz build. Markers on the map are
-      FMR segment endpoints (printed GPS) and MPB title coordinates.
+      FMR segment endpoints (accepted GPS) and MPB title coordinates.
     </p>
     {(lensCounts?.fmr.cardId || lensCounts?.mpb.cardId) && <div className="congress-lens-counts">
       {lensCounts.fmr.cardId && <a href={routeHref('district',
@@ -207,7 +207,7 @@ function syncLayers(instance, districts, fmrOverlay, mpbOverlay, fillAlpha = DEF
   ensure(FMR_LINES, fmrOverlay?.lines || emptyFc());
   ensure(FMR_POINTS, fmrOverlay?.points || emptyFc());
   ensure(FMR_LINKS, fmrOverlay?.connectors || emptyFc());
-  ensure(FMR_CORRECTED, fmrOverlay?.correctedPoints || emptyFc());
+  ensure(FMR_ORIGINAL, fmrOverlay?.originalPoints || emptyFc());
   ensure(MPB_LINES, mpbOverlay?.lines || emptyFc());
   ensure(MPB_POINTS, mpbOverlay?.points || emptyFc());
   const approxViews = mpbApproxMarkerViews(mpbApprox, types);
@@ -287,7 +287,7 @@ function syncLayers(instance, districts, fmrOverlay, mpbOverlay, fillAlpha = DEF
       layout: {'line-cap': 'round'},
     });
     instance.addLayer({
-      id: FMR_CORRECTED_POINT, type: 'circle', source: FMR_CORRECTED,
+      id: FMR_ORIGINAL_POINT, type: 'circle', source: FMR_ORIGINAL,
       paint: {
         'circle-color': REPAIR_COLOR,
         'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 3, 10, 5, 14, 7],
@@ -385,8 +385,8 @@ function syncLayers(instance, districts, fmrOverlay, mpbOverlay, fillAlpha = DEF
 
 const LAYER_HINTS = {
   districts: 'Province-hued legislative district polygons',
-  fmr: 'Printed FMR segment lines and endpoints',
-  fmr_repairs: 'Dashed links from printed GPS to accepted corrections',
+  fmr: 'FMR segments at accepted (corrected) geometry',
+  fmr_repairs: 'Dashed links from incorrect original GPS to accepted position',
   mpb: 'Multi-purpose building title coordinates',
   mpb_approx: 'PSGC-centroid approx. markers (class color + light gray slash; not printed GPS)',
   mpb_unmapped: 'Per-district badges for rows with neither title GPS nor PSGC centroid',
@@ -863,11 +863,11 @@ function FullscreenMapDialog({children, onClose}) {
 }
 
 /**
- * Congress map tab: PSGC2LEG viz district polygons, nationwide FMR printed
- * segments (with dashed connectors to accepted corrections), and MPB title
- * points. Marker clicks bubble a recordId up to the parent RecordDrawer.
- * `full=1` opens the same map in a full-window dialog (its own instance,
- * shared URL-driven state).
+ * Congress map tab: PSGC2LEG viz district polygons, nationwide FMR segments
+ * at accepted geometry (with dashed connectors back to incorrect original
+ * positions), and MPB title points. Marker clicks bubble a recordId up to the
+ * parent RecordDrawer. `full=1` opens the same map in a full-window dialog
+ * (its own instance, shared URL-driven state).
  */
 export default function CongressMap({
   route, fmrRecords = [], mpbRecords = [], fmrIndex = null, mpbIndex = null,
@@ -884,7 +884,7 @@ export default function CongressMap({
   const [approxSupplement, setApproxSupplement] = useState(null);
   const [error, setError] = useState('');
 
-  const fmrOverlay = useMemo(() => fmrPrintedMapOverlay(fmrRecords), [fmrRecords]);
+  const fmrOverlay = useMemo(() => fmrNationalMapOverlay(fmrRecords), [fmrRecords]);
   // Title-GPS overlay only — approx-placed rows are looked up via recordsById
   // for the cluster modal and must not inflate the solid-box legend counts.
   const mpbOverlay = useMemo(

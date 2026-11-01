@@ -110,7 +110,7 @@ may move them slightly):
 | `congress_district_map_2027.json` | Feature ↔ `leg_id` bridge + roster fields for info panel |
 | `mpb_legislative_index_2027.json` | Title-GPS points + district badge denominators |
 | `mpb_psgc_approx_overlay_2027.json` | Collapsed PSGC-centroid markers (optional fetch; map degrades if absent) |
-| FMR workbench (via map parent) | Printed FMR segments / repair links |
+| FMR workbench (via map parent) | Accepted-geometry FMR segments / repair links |
 | DPWH comparison rows with `row_points` | Solid MPB title-GPS boxes |
 
 Layer toggles persist in the URL (`objects=`, `types=`). Defaults: districts,
@@ -130,9 +130,13 @@ into a Congress card. This is geography context, not an allocation choropleth.
 ### 5.2 FMR overlay
 
 Straight-line segments and endpoints from the FMR workbench / legislative
-index geometry, coloured by House-only / NEP-only / paired vocabulary
-(`DISTRICT_SEGMENT_CLASSES`). Repair links and corrected points are separate
-toggleable subtypes. Clicking a feature opens the ordinary FMR evidence path.
+index geometry at the **accepted (reviewed) reading**, coloured by House-only /
+NEP-only / paired vocabulary (`DISTRICT_SEGMENT_CLASSES`); matched pairs
+therefore draw at their corrected position. Where an accepted digit repair
+moved a point, the incorrect original position is retained as a red marker
+("FMR corrections" subtype: *Incorrect original coordinate*) with a dashed
+link back to the accepted position. Clicking a feature opens the ordinary
+FMR evidence path.
 
 ### 5.3 MPB title GPS (solid boxes)
 

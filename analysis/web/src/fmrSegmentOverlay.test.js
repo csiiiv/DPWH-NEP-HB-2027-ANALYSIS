@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
 import {
-  REPAIR_COLOR, fmrRecordMapOverlay, fmrRecordRepairOverlay, fmrPrintedMapOverlay,
+  REPAIR_COLOR, fmrRecordMapOverlay, fmrRecordRepairOverlay, fmrNationalMapOverlay,
   overlayFrameCoordinates,
 } from './fmrSegmentOverlay.js';
 import {DIGIT_REPAIR_PRINTED, reviewedPointCoordinates} from './fmrMapModel.js';
@@ -228,19 +228,24 @@ test(skipWorkbench, 'every retained printed reading differs from the accepted wo
   }
 });
 
-test('printed map overlay keeps source GPS and links to corrected points', () => {
-  const overlay = fmrPrintedMapOverlay([tampacRecord()]);
+test('national map overlay draws accepted geometry and marks incorrect originals', () => {
+  const overlay = fmrNationalMapOverlay([tampacRecord()]);
   assert.equal(overlay.lines.features.length, 2);
   for (const feature of overlay.lines.features) {
-    assert.equal(feature.properties.coordinateBasis, 'normalized');
-    assert.deepEqual(feature.geometry.coordinates[1], [129.8030109, 15.6377206]);
+    // Primary segments now use the accepted (reviewed) reading, so matched
+    // pairs render at their corrected position under the 'Matched' class.
+    assert.equal(feature.properties.coordinateBasis, 'reviewed');
+    assert.deepEqual(feature.geometry.coordinates[1], [120.8030109, 15.6377206]);
     assert.equal(feature.properties.objectKind, 'fmr');
   }
   assert.equal(overlay.connectors.features.length, 2);
-  assert.equal(overlay.correctedPoints.features.length, 2);
+  assert.equal(overlay.originalPoints.features.length, 2);
   assert.equal(overlay.repairCount, 2);
-  for (const feature of overlay.correctedPoints.features) {
-    assert.deepEqual(feature.geometry.coordinates, [120.8030109, 15.6377206]);
+  for (const feature of overlay.originalPoints.features) {
+    // Red markers retain the INCORRECT ORIGINAL printed position…
+    assert.deepEqual(feature.geometry.coordinates, [129.8030109, 15.6377206]);
     assert.equal(feature.properties.color, REPAIR_COLOR);
+    assert.equal(feature.properties.role, 'original');
+    assert.ok(feature.properties.shiftKm > 960, 'retained displacement evidence');
   }
 });
