@@ -84,7 +84,9 @@ export function mpbBadgeIconImage(count, size = 128) {
   // Square badge sized by digit count: 3 digits need a wider box than 1.
   const box = Math.min(size, Math.round(size * (0.62 + digits * 0.13)));
   const offset = Math.round((size - box) / 2);
-  ctx.fillStyle = 'rgba(37, 99, 235, 0.92)';
+  // Red: a district total that cannot be located — matches the shared
+  // red-flag vocabulary the FMR corrections already use.
+  ctx.fillStyle = 'rgba(220, 38, 38, 0.92)';
   ctx.strokeStyle = '#ffffff';
   ctx.lineWidth = Math.max(3, Math.round(size * 0.045));
   const radius = Math.round(box * 0.18);
