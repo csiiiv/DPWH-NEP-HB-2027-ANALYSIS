@@ -2,7 +2,7 @@
 
 Updated: **2 November 2026**.
 
-This is the catalog for the Congress workspace (`#congress/…`): which retained
+This is the catalog for the Legislative workspace (`#congress/…`, historically "Congress"): which retained
 files each tab loads, which builders produce them, how the nationwide map
 layers relate to those indexes, and which method docs govern the numbers.
 

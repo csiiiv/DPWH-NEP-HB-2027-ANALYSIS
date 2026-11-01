@@ -83,7 +83,7 @@ export const workspaces = {
     ],
   },
   congress: {
-    label: "Congress",
+    label: "Legislative",
     prefix: "congress",
     // Five tabs: the DEO-lens grid (default), the DPWH location lens, the FMR
     // legislative lens, the MPB legislative lens, and the district map

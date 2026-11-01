@@ -72,7 +72,7 @@ test('unregistered hash prefixes fall back to the DPWH workspace', () => {
 });
 test('the workspace registry exposes consistent labels, prefixes and pages', () => {
   // Every workspace needs a label, at least one tab, and a unique prefix.
-  assert.deepEqual(workspaceLabels, {overview: 'Overview', dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities', nia: 'NIA Irrigation', congress: 'Congress', geo: 'Geolocation', sources: 'Sources', about: 'About', disclaimer: 'Disclaimer', experiments: 'Experiments'});
+  assert.deepEqual(workspaceLabels, {overview: 'Overview', dpwh: 'DPWH', fmr: 'DA Farm-to-Market Roads', hfep: 'DOH Health Facilities', nia: 'NIA Irrigation', congress: 'Legislative', geo: 'Geolocation', sources: 'Sources', about: 'About', disclaimer: 'Disclaimer', experiments: 'Experiments'});
   assert.deepEqual(Object.keys(workspaces), ['overview', 'dpwh', 'fmr', 'hfep', 'nia', 'congress', 'geo', 'sources', 'about', 'disclaimer', 'experiments']);
   const prefixes = Object.values(workspaces).map(ws => ws.prefix);
   assert.equal(new Set(prefixes).size, prefixes.length, 'prefixes must be unique');
@@ -81,7 +81,7 @@ test('the workspace registry exposes consistent labels, prefixes and pages', () 
     assert.ok(ws.pages.length >= 1);
     for (const [key] of ws.pages) assert.equal(typeof key, 'string');
   }
-  // Congress and Experiments are both listed in the workspace navigation.
+  // Legislative and Experiments are both listed in the workspace navigation.
   assert.ok(!workspaces.congress.hidden);
   assert.ok(!workspaces.experiments.hidden);
   assert.ok(Object.keys(workspaces).filter(key => !workspaces[key].hidden).includes('congress'));
@@ -153,7 +153,7 @@ test('congress workspace routes stay prefixed and deep-link a district', () => {
   assert.equal(route.params.get('dataset'), 'dpwh');
   assert.equal(routeHref('district', {district: 'office-group:leg:tarlac:3rd'}, 'congress'),
     '#congress/district?district=office-group%3Aleg%3Atarlac%3A3rd');
-  // Congress has five tabs — two DPWH lenses, FMR legislative, MPB
+  // Legislative has five tabs — two DPWH lenses, FMR legislative, MPB
   // legislative, and the map — while the district page stays a deep link
   // reached by clicking a representative, never a tab.
   assert.deepEqual(workspaces.congress.pages,

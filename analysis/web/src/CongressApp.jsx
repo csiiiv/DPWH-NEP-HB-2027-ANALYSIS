@@ -468,7 +468,7 @@ export function Districts({index, route, lens = 'deo', locationIndex = null, fmr
 
   return <>
     <section className="hero hero-compact">
-      <p className="fmr-eyebrow">FY2027 · Congress</p>
+      <p className="fmr-eyebrow">FY2027 · Legislative</p>
       {isMpb ? <>
         <h1>Multi-purpose buildings by legislative district</h1>
         <p>The MPB lens scopes the DPWH comparison ledger to the BIP multi-purpose building
@@ -1204,7 +1204,7 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
 
   return <>
     <section className="hero hero-compact">
-      <p className="fmr-eyebrow">FY2027 · Congress · {seats.length ? seats[0].region
+      <p className="fmr-eyebrow">FY2027 · Legislative · {seats.length ? seats[0].region
         : card.location_tier === 'deo' ? 'District Engineering Office'
         : card.location_tier === 'unassigned' ? 'Unassigned catch-all' : 'Region catch-all'}</p>
       {/* Legislative lenses (location, FMR) lead with the district; the
@@ -1560,7 +1560,7 @@ export default function CongressApp() {
       : route.key === 'map' ? 'Map'
       : lens === 'fmr' ? 'FMR (Legislative)'
       : lens === 'mpb' ? 'MPB (Legislative)'
-      : lens === 'location' ? 'Districts (Legislative)' : 'Districts (DEO)'} · Congress FY2027`;
+      : lens === 'location' ? 'Districts (Legislative)' : 'Districts (DEO)'} · Legislative FY2027`;
   }, [route.key, lens]);
 
   // Nationwide FMR explorer rows for the map tab (printed geometry + RecordDrawer).
@@ -1670,7 +1670,7 @@ export default function CongressApp() {
               locationIndex={locationIndex} fmrIndex={fmrIndex} mpbIndex={mpbIndex} />}
     </main>
     <footer className={`shell fmr-footer${route.key === 'map' ? ' is-map' : ''}`}>
-      <span>FY2027 · Congress — {lens === 'fmr'
+      <span>FY2027 · Legislative — {lens === 'fmr'
         ? 'the FMR legislative lens, title and accepted coordinate PSGC evidence'
         : lens === 'mpb'
         ? 'the MPB legislative lens, location-lens resolution reused over the BIP building scope'

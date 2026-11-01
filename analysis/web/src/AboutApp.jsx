@@ -31,7 +31,7 @@ const stacks = [
 const stages = [
   ["Overview", "The landing page: unsupported insertion, deletion and adjustment summaries for all four funding workspaces, cross-workspace coverage and candidate-change tables.", "#overview"],
   ["DPWH", "Public works operations across Transparency NEP, DBM NEP Volume II-B, and House GAB (both readings) with native I-B/I-C trees.", "#home"],
-  ["Congress", "Legislative-district reading of DPWH, FMR, and multi-purpose buildings: DEO and title-PSGC lenses, plus a nationwide map of segments, title GPS, and PSGC-centroid approx markers.", "#congress"],
+  ["Legislative", "Legislative-district reading of DPWH, FMR, and multi-purpose buildings: DEO and title-PSGC lenses, plus a nationwide map of segments, title GPS, and PSGC-centroid approx markers.", "#congress"],
   ["DA Farm-to-Market Roads", "FMR annexes from both documents, normalized coordinates, PSGC geocoding, and a national segment map.", "#fmr"],
   ["DOH Health Facilities", "HFEP capital outlays — infrastructure, medical equipment, motor vehicles — with per-cell provenance.", "#hfep"],
   ["NIA Irrigation", "Six irrigation sub-programs with sub-program controls, candidate pairing, and the AI-monitoring lens.", "#nia"],
@@ -55,7 +55,7 @@ export default function AboutApp() {
           General Appropriations Bill. It follows the printed records — every
           amount traces to a retained PDF page, a committed dataset, and a
           reproducible build. Four funding workspaces (DPWH, farm-to-market
-          roads, health facilities, irrigation) plus a Congress district lens
+          roads, health facilities, irrigation) plus a Legislative district lens
           and map share one shell, one Overview landing page, one dataset
           catalog, and one PDF evidence viewer.
         </p>
@@ -127,8 +127,8 @@ export default function AboutApp() {
         <li><a href="#overview"><strong>Overview</strong><span>Unsupported insertions, deletions and adjustments across all four funding workspaces.</span></a></li>
         <li><a href="#highlights"><strong>DPWH Highlights</strong><span>Ten investigative angles with dedicated evidence dialogs.</span></a></li>
         <li><a href={routeHref("analysis", { view: "overview", dim: "office" })}><strong>DPWH Analysis</strong><span>Office and program headlines, ranked unsupported insertions and deletions, adjustments.</span></a></li>
-        <li><a href="#congress"><strong>Congress</strong><span>District cards and the nationwide map — DEO / legislative / FMR / MPB lenses.</span></a></li>
-        <li><a href="#congress/map"><strong>Congress Map</strong><span>District polygons with FMR segments, MPB title GPS, and PSGC-approx markers.</span></a></li>
+        <li><a href="#congress"><strong>Legislative</strong><span>District cards and the nationwide map — DEO / legislative / FMR / MPB lenses.</span></a></li>
+        <li><a href="#congress/map"><strong>Legislative Map</strong><span>District polygons with FMR segments, MPB title GPS, and PSGC-approx markers.</span></a></li>
         <li><a href="#sources"><strong>Sources</strong><span>Every shareable dataset with its canonical repository path and limits.</span></a></li>
       </ul>
       </main>

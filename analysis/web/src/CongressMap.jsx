@@ -970,7 +970,7 @@ export default function CongressMap({
   return <section className="congress-map" aria-label="Congress district map">
     <div className="congress-map-title">
       <div>
-        <p className="fmr-eyebrow">FY2027 · Congress · Map</p>
+        <p className="fmr-eyebrow">FY2027 · Legislative · Map</p>
         <h1>Where the documents place the work</h1>
       </div>
       <div className="congress-map-title-actions">

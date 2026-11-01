@@ -422,7 +422,7 @@ export const sourceGroups = [
   },
   {
     id: "congress",
-    title: "Congress · district lenses and map",
+    title: "Legislative · district lenses and map",
     blurb:
       "Packaged indexes behind #congress: DEO and title-PSGC district cards, FMR and MPB legislative lenses, and map supplements (title GPS, PSGC-centroid approx markers, leftover badges). Nothing here implies a representative requested or controls an allocation. Full catalog: analysis/docs/congress_tab_data_sources.md.",
     workspace: "congress/home",

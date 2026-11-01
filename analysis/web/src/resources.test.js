@@ -18,7 +18,7 @@ test('sources catalog covers every workspace plus the folded-in DPWH resources',
   assert.ok(items.some((item) => item.path?.endsWith('hb_native_ib_rollup_checks.md')));
   assert.ok(items.some((item) => item.path?.endsWith('gab_fy2027_reference_crosscheck.md')));
   assert.ok(items.some((item) => item.path?.endsWith('source_verification_overview.json')));
-  // Annex workspaces, Congress lenses/map, and the packaged payloads.
+  // Annex workspaces, Legislative lenses/map, and the packaged payloads.
   assert.ok(sourceGroups.some((group) => ['fmr', 'hfep', 'nia', 'geo'].includes(group.id)));
   const congressGroup = sourceGroups.find((group) => group.id === 'congress');
   assert.ok(congressGroup, 'congress group missing');
