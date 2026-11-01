@@ -82,9 +82,9 @@ test('mpb badge sprite stacks one colored tier per non-zero class', () => {
     // Zero-count class draws no tier: two chips, not three.
     assert.deepEqual(recorded.texts, ['3', '12']);
     // Tier order follows the class vocabulary: House first, then pairs.
-    // House only ↔ Matched colors are swapped in the shared class palette.
+    // House only is orange, Matched blue (shared class palette).
     const colors = recorded.fills;
-    assert.deepEqual(colors, ['#7c3aed', '#2563eb']);
+    assert.deepEqual(colors, ['#ea580c', '#2563eb']);
   } finally {
     globalThis.document = original;
   }

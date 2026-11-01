@@ -5,10 +5,10 @@ import {STAGE_COLORS} from './fmrMapModel.js';
  * pairs (e.g. multiple units), a thin line joins those same-title points
  * left-to-right (west→east) so the path stays x-monotone and does not
  * self-intersect — never between unrelated buildings. Colors follow the
- * shared class vocabulary (House only ↔ Matched swapped; see
+ * shared class vocabulary (House only orange, Matched blue; see
  * DISTRICT_SEGMENT_CLASSES). */
 export const MPB_POINT_CLASSES = {
-  house_only: {label: 'House only', color: '#7c3aed'},
+  house_only: {label: 'House only', color: '#ea580c'},
   nep_only: {label: 'NEP only', color: STAGE_COLORS.nep},
   paired: {label: 'Matched pair', color: '#2563eb'},
 };

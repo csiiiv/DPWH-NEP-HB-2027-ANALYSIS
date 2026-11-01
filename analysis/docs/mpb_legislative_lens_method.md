@@ -154,7 +154,7 @@ district page. The explorer reuses the shared columns plus:
    cites them.
 
 Coordinates render as dots on a MapLibre overlay, coloured by comparison
-class (House-only purple, NEP-only teal, matched pair blue, per
+class (House-only orange, NEP-only teal, matched pair blue, per
 `MPB_POINT_CLASSES` in `mpbSegmentOverlay.js`); lines are never drawn between
 unrelated buildings. A building row with no retained coordinate shows an
 explicit no-geometry state. Clicking a point opens the row's ordinary evidence

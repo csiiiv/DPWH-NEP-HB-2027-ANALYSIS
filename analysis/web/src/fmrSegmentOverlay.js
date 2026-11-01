@@ -3,13 +3,13 @@ import {
   reviewedPointCoordinates, PAIRED_COLOR, STAGE_COLORS,
 } from './fmrMapModel.js';
 
-/** Shared comparison-class palette. House only and Matched deliberately swap
- *  the intuitive stage hues (blue/violet) so the most common class — matched
- *  pairs — reads as the primary blue at country zoom. */
+/** Shared comparison-class palette. House only reads orange, Matched takes
+ *  the primary blue, NEP only keeps teal — three maximally separated hues
+ *  for the three comparison classes at country zoom. */
 export const DISTRICT_SEGMENT_CLASSES = {
   nep_only: {label: 'NEP only', color: STAGE_COLORS.nep},
-  house_only: {label: 'House only', color: PAIRED_COLOR},
-  paired: {label: 'Matched', color: STAGE_COLORS.house},
+  house_only: {label: 'House only', color: '#ea580c'},
+  paired: {label: 'Matched', color: '#2563eb'},
 };
 
 /** Pre-repair printed geometry is drawn in red, distinct from both stage colors. */
