@@ -44,6 +44,9 @@ button.fmr-text-button:hover { text-decoration:underline; }
 .fmr-badge.balanced { background:#e7f3eb; color:#285c3d; }
 .fmr-badge.interpreted { background:#e8eef8; color:#2a4a78; }
 .fmr-badge.review { background:#fff0d4; color:#775217; }
+/* Provenance is disclosure, not warning: a distinct violet family keeps it
+   visually separate from the analytic (amber/green) flag chips. */
+.fmr-badge.provenance { background:#ece7f6; color:#4527a0; }
 .fmr-notice { border:1px solid #d5e0ec; border-left:3px solid #5d7fa7; background:#edf3fa; border-radius:7px; padding:16px; margin:20px 0; font-size:13px; }
 .fmr-notice p:last-child { margin-bottom:0; }
 .fmr-provenance { border:1px solid #d9e2ed; border-radius:8px; padding:14px 16px; margin:16px 0; background:#f7f9fc; }

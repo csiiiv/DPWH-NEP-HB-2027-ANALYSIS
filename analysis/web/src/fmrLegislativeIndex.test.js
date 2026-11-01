@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
-import {locationCards, summaryTotals, fmrRows, fmrExplorerRow, indexRowsById, cardRows} from './congressModel.js';
+import {locationCards, summaryTotals, fmrRows, fmrExplorerRow, fmrGridExportRows,
+  indexRowsById, cardRows} from './congressModel.js';
 import {buildFmrRedFlags} from './fmrRedFlags.js';
 import {fmrDistrictMapOverlay, fmrRecordMapOverlay} from './fmrSegmentOverlay.js';
 
@@ -157,6 +158,58 @@ test(skip, 'FMR explorer record exposes reviewed House and NEP segment overlays'
       ? [feature.geometry.coordinates] : feature.geometry.coordinates;
     assert.ok(coordinates.every(pair => pair.length === 2 && pair.every(Number.isFinite)));
   }
+});
+
+test(skip, 'corrected coordinates surface as a provenance flag and drawer evidence', () => {
+  const rows = fmrRows(workbench);
+  // Tampac I (Guimba, Nueva Ecija): the NEP cell prints longitude 129.8030109
+  // and both sides carry an accepted off-by-one-digit repair (129.8 → 120.8).
+  // The row must disclose the amendment even though it normalizes cleanly.
+  const row = rows.find(candidate => candidate.id === 'pair:nep_fmr:p18:r15:ib:p685:r5');
+  assert.ok(row, 'Tampac I comparison row missing');
+  const view = fmrExplorerRow(row, index.row_resolution[row.id]);
+  // Provenance is its own dimension now: warning flags stay clean, the
+  // correction surfaces through provenanceFlags/labels plus drawer evidence.
+  assert.ok(view.provenanceFlags.includes('coordinate_correction_applied'));
+  assert.ok(view.provenanceFlagLabels.includes('Coordinate correction applied'));
+  assert.ok(!view.flags.includes('coordinate_correction_applied'));
+  assert.deepEqual(view.correctionEvidence.map(entry => entry.stage).sort(), ['house', 'nep']);
+  for (const entry of view.correctionEvidence) {
+    assert.ok(entry.rules.includes('off_by_one_digit_repair_accepted'));
+    assert.equal(entry.projectId, entry.stage === 'house' ? 'ib:p685:r5' : 'nep_fmr:p18:r15');
+  }
+
+  // The OCR-transcription variant (image-reviewed text) is also disclosed.
+  const valeriana = rows.find(candidate => candidate.id === 'nep_only:nep_fmr:p20:r14');
+  assert.ok(valeriana, 'Valeriana deletion row missing');
+  const valView = fmrExplorerRow(valeriana, index.row_resolution[valeriana.id]);
+  assert.ok(valView.provenanceFlags.includes('coordinate_correction_applied'));
+  assert.equal(valView.correctionEvidence.length, 1);
+  assert.equal(valView.correctionEvidence[0].stage, 'nep');
+  assert.ok(valView.correctionEvidence[0].imageReviewed);
+  assert.ok(valView.correctionEvidence[0].rules.includes('image_reviewed_ocr_transcription'));
+
+  // An ordinary row with no correction lineage stays unflagged.
+  const plain = rows.find(candidate =>
+    !['house', 'nep'].some(stage => (candidate[stage === 'house' ? 'third' : 'nep']
+      ?.normalization_rules ?? []).length));
+  const plainView = fmrExplorerRow(plain, index.row_resolution[plain.id]);
+  assert.ok(!plainView.provenanceFlags.length);
+  assert.deepEqual(plainView.correctionEvidence, []);
+});
+
+test(skip, 'grid export covers every comparison row exactly once with card placement', () => {
+  const rows = fmrGridExportRows(index, workbench);
+  assert.equal(rows.length, workbench.comparison.length);
+  assert.equal(new Set(rows.map(row => row.id)).size, rows.length);
+  assert.ok(rows.every(row => row.card_id && row.card_label),
+    'every exported row must identify the card it landed on');
+  assert.equal(rows.filter(row => row.card_id === 'fmr:unclaimed').length, 0);
+  // Tampac I must keep its provenance disclosure in the all-districts download.
+  const tampac = rows.find(row => row.id === 'pair:nep_fmr:p18:r15:ib:p685:r5');
+  assert.ok(tampac);
+  assert.equal(tampac.card_id, 'fmr:district:leg:nueva-ecija:1st');
+  assert.ok(tampac.provenanceFlags.includes('coordinate_correction_applied'));
 });
 
 test(skip, 'segment overlay retains point-only source geometry', () => {

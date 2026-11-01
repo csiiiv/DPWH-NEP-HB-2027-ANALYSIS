@@ -46,6 +46,7 @@ function retainedFiles() {
           ["/gps-analysis/", [root + "/gps-analysis"]],
           ["/dbm-other-nep-line-data/", [root + "/dbm-other-nep-line-data"]],
           ["/dbm-nep-data/", [root + "/dbm-nep-data"]],
+          ["/PSGC2LEG/", [root + "/PSGC2LEG"]],
           [
             "/analysis/",
             [
@@ -87,6 +88,7 @@ function retainedFiles() {
             ".png": "image/png",
             ".md": "text/plain; charset=utf-8",
             ".csv": "text/csv; charset=utf-8",
+            ".geojson": "application/geo+json",
           }[path.extname(file)] || "application/octet-stream",
         );
         res.setHeader("Accept-Ranges", "bytes");

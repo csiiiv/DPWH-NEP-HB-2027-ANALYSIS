@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
 import {
-  REPAIR_COLOR, fmrRecordMapOverlay, fmrRecordRepairOverlay, overlayFrameCoordinates,
+  REPAIR_COLOR, fmrRecordMapOverlay, fmrRecordRepairOverlay, fmrPrintedMapOverlay,
+  overlayFrameCoordinates,
 } from './fmrSegmentOverlay.js';
 import {DIGIT_REPAIR_PRINTED, reviewedPointCoordinates} from './fmrMapModel.js';
 
@@ -224,5 +225,22 @@ test(skipWorkbench, 'every retained printed reading differs from the accepted wo
     assert.ok(printed.every(Number.isFinite), `${pointId} printed pair is not numeric`);
     assert.ok((point.rules || []).some(rule => rule.endsWith('repair_accepted')),
       `${pointId} lost its accepted-repair rule in the workbench payload`);
+  }
+});
+
+test('printed map overlay keeps source GPS and links to corrected points', () => {
+  const overlay = fmrPrintedMapOverlay([tampacRecord()]);
+  assert.equal(overlay.lines.features.length, 2);
+  for (const feature of overlay.lines.features) {
+    assert.equal(feature.properties.coordinateBasis, 'normalized');
+    assert.deepEqual(feature.geometry.coordinates[1], [129.8030109, 15.6377206]);
+    assert.equal(feature.properties.objectKind, 'fmr');
+  }
+  assert.equal(overlay.connectors.features.length, 2);
+  assert.equal(overlay.correctedPoints.features.length, 2);
+  assert.equal(overlay.repairCount, 2);
+  for (const feature of overlay.correctedPoints.features) {
+    assert.deepEqual(feature.geometry.coordinates, [120.8030109, 15.6377206]);
+    assert.equal(feature.properties.color, REPAIR_COLOR);
   }
 });

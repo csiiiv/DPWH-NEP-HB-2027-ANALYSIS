@@ -85,14 +85,15 @@ export const workspaces = {
   congress: {
     label: "Congress",
     prefix: "congress",
-    // Four tabs: the DEO-lens grid (default), the DPWH location lens, the FMR
-    // legislative lens, and the district map
+    // Five tabs: the DEO-lens grid (default), the DPWH location lens, the FMR
+    // legislative lens, the MPB legislative lens, and the district map
     // choropleth over the PSGC2LEG polygons. #congress/district stays a
     // deep-link page reached by clicking a representative — never a tab.
     pages: [
       ["home", "Districts (DEO)"],
       ["location", "Districts (Legislative)"],
       ["fmr", "FMR (Legislative)"],
+      ["mpb", "MPB (Legislative)"],
       ["map", "Map"],
     ],
   },

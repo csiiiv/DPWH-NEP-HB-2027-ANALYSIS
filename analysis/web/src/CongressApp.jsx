@@ -27,13 +27,16 @@ import {
   BUCKET_LABELS, TIER_LABELS, TIER_SHORT,
   LOCATION_TIER_LABELS, LOCATION_TIER_SHORT, LOCATION_TIER_FILTER, LOCATION_FLAG_LABELS,
   FMR_TIER_LABELS, FMR_TIER_SHORT, FMR_TIER_FILTER, FMR_FLAG_LABELS,
+  MPB_TIER_LABELS, MPB_TIER_SHORT, MPB_TIER_FILTER,
   CARD_SORT_OPTIONS, parseCardSort, cardSortParams,
   money, moneyCompact, signedMoney, percent,
   cardHeadline, bucketTotals, districtSeats, representativeLabel, deoCardLabel, districtHeading, leadershipRoles,
   cardCarriesMoney, sortedCards, indexRowsById, cardRows,
   explorerRow, EXPLORER_COLUMNS, flagCensus, bucketCensus, filterExplorerRows,
   residualPanel, officeChangePanel, datasetOptions, lensPanel, congressRows,
-  locationCards, cardLocationFlags, summaryTotals, fmrRows, fmrExplorerRow,
+  locationCards, cardLocationFlags, summaryTotals, fmrRows, fmrExplorerRow, mpbExplorerRow,
+  correctionRuleLabel, coordinateProvenanceLabel, coordinateProvenanceTip, provenanceCensus,
+  fmrGridExportRows, mpbGridExportRows, districtLensCounts,
 } from './congressModel.js';
 import './Fmr.css';
 import './Congress.css';
@@ -43,10 +46,12 @@ const PdfPreview = lazy(() => import('./PdfPreview.jsx'));
 const CongressMap = lazy(() => import('./CongressMap.jsx'));
 const FmrSegmentModal = lazy(() => import('./FmrSegmentModal.jsx'));
 const FmrDistrictSegmentsModal = lazy(() => import('./FmrDistrictSegmentsModal.jsx'));
+const MpbPointsModal = lazy(() => import('./MpbPointsModal.jsx'));
 const FMR_BUCKET_LABELS = {
   insertions: 'House only', deletions: 'NEP only', increased: 'Increases',
   reduced: 'Decreases', unchanged: 'Unchanged pairs', scope_review: 'Scope review',
 };
+const MPB_BUCKET_LABELS = {insertions: 'House only', deletions: 'NEP only'};
 
 const href = (key, params = {}) => routeHref(key, params, 'congress');
 const paramsOf = route => Object.fromEntries(route.params);
@@ -75,8 +80,8 @@ function TierBadge({tier}) {
  * the DEO badge stays for fallback cards whose tier is borrowed from DEO. */
 function LocationTierBadge({card}) {
   const key = card.location_tier;
-  const labels = {...LOCATION_TIER_LABELS, ...FMR_TIER_LABELS};
-  const short = {...LOCATION_TIER_SHORT, ...FMR_TIER_SHORT};
+  const labels = {...LOCATION_TIER_LABELS, ...FMR_TIER_LABELS, ...MPB_TIER_LABELS};
+  const short = {...LOCATION_TIER_SHORT, ...FMR_TIER_SHORT, ...MPB_TIER_SHORT};
   if (!key || !(key in labels)) return null;
   return <span className={`congress-tier tier-${card.tier} location-tier`} title={labels[key]}>
     {short[key]}</span>;
@@ -182,7 +187,8 @@ function DistrictCard({card, onOpen, rowFlags = null}) {
   const first = seats[0];
   const flags = rowFlags ? cardLocationFlags(card, rowFlags) : [];
   const isFmr = card.id.startsWith('fmr:');
-  // Legislative lenses (location, FMR) answer "where did money land by
+  const isMpb = card.id.startsWith('mpb:');
+  // Legislative lenses (location, FMR, MPB) answer "where did money land by
   // district", so the district leads and the representative follows. The DEO
   // lens keeps its office-name heading. Catch-all cards never get a district
   // heading — money is not dressed up as a district.
@@ -196,7 +202,8 @@ function DistrictCard({card, onOpen, rowFlags = null}) {
       {seats.length > 1 ? <ProfileTiles seats={seats} /> : first ? <Portrait seat={first} /> : <span className="congress-portrait-empty" aria-hidden="true" />}
       <div className="congress-card-title">
         <p className="congress-district">{legislative
-          ? (isFmr ? 'FMR legislative district' : 'Legislative district')
+          ? (isFmr ? 'FMR legislative district'
+            : isMpb ? 'MPB legislative district' : 'Legislative district')
           : seats.length
             ? seats.map(seat => seat.districtName).join(' · ')
             : card.location_tier === 'deo' ? 'District Engineering Office'
@@ -261,10 +268,10 @@ function DistrictCard({card, onOpen, rowFlags = null}) {
 
     {carries ? <>
       <ul className="congress-buckets">
-        <BucketLine label={isFmr ? 'House only' : 'Unsupported insertions'} count={headline.insertions.count}
+        <BucketLine label={isFmr || isMpb ? 'House only' : 'Unsupported insertions'} count={headline.insertions.count}
           amount={headline.insertions.amount_php} side="house"
           basis="House rows with no attached NEP record. Not confirmed unsupported insertions." />
-        <BucketLine label={isFmr ? 'NEP only' : 'Deletions'} count={headline.deletions.count}
+        <BucketLine label={isFmr || isMpb ? 'NEP only' : 'Deletions'} count={headline.deletions.count}
           amount={headline.deletions.amount_php} side="nep"
           basis="NEP rows with no attached House reading. Not confirmed deletions." />
         <BucketLine label="Increases" count={headline.increased.count}
@@ -364,7 +371,7 @@ export function SearchSummary({cards, query = '', lensLabel, onClose}) {
  * `lens` selects which index: 'deo' (office groups) or 'location' (project
  * location). The location index supplies its own hero copy, tier vocabulary
  * and row flags; the card face and explorer are shared. */
-export function Districts({index, route, lens = 'deo', locationIndex = null, fmrIndex = null}) {
+export function Districts({index, route, lens = 'deo', locationIndex = null, fmrIndex = null, mpbIndex = null}) {
   // Filters live in the URL, not in state, so a filtered grid is shareable and
   // a copied link restores the exact view (same convention as the FMR tabs).
   const params = paramsOf(route);
@@ -374,6 +381,13 @@ export function Districts({index, route, lens = 'deo', locationIndex = null, fmr
   const sortKind = CARD_SORT_OPTIONS.find(option => option.key === sortState.key)?.kind ?? 'amount';
   const sortIsNameOnly = sortKind === 'name';
   const [showPanels, setShowPanels] = useState(false);
+  // Grid-level export (FMR / MPB): the full-row export needs the comparison
+  // payload, which the grid never loads — fetched on demand only when the
+  // export is requested, mirroring how the district explorer defers it.
+  const [exportRows, setExportRows] = useState(null);
+  const [exportError, setExportError] = useState('');
+  const [exportLoading, setExportLoading] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
   // The summary modal rides as ?summary=1 rather than local state: filters are
   // URL state, so the summary they scope must be too — a shared link reopens
   // the grid with the modal open over the same filtered set.
@@ -386,8 +400,9 @@ export function Districts({index, route, lens = 'deo', locationIndex = null, fmr
 
   const isLocation = lens === 'location' && locationIndex;
   const isFmr = lens === 'fmr' && fmrIndex;
-  const isLegislative = isLocation || isFmr;
-  const activeIndex = isFmr ? fmrIndex : isLocation ? locationIndex : index;
+  const isMpb = lens === 'mpb' && mpbIndex;
+  const isLegislative = isLocation || isFmr || isMpb;
+  const activeIndex = isMpb ? mpbIndex : isFmr ? fmrIndex : isLocation ? locationIndex : index;
   const lensInfo = lensPanel(activeIndex);
   const residual = residualPanel(index);
   const change = officeChangePanel(index);
@@ -416,10 +431,54 @@ export function Districts({index, route, lens = 'deo', locationIndex = null, fmr
   const counts = index.counts;
   const locationCounts = isLocation ? locationIndex.counts : null;
   const fmrCounts = isFmr ? fmrIndex.counts : null;
+  const mpbCounts = isMpb ? mpbIndex.counts : null;
+
+  // Switching lenses must drop a cached export — FMR and MPB rows are different
+  // populations rebuilt from different payloads.
+  useEffect(() => {
+    setExportRows(null);
+    setExportOpen(false);
+    setExportError('');
+    setExportLoading(false);
+  }, [lens]);
+
+  // Full-lens export: fetch the comparison payload once (the grid never loads
+  // it), rebuild every explorer row exactly as the per-district explorer does,
+  // then reuse the same ExportModal the district page uses. Re-opening just
+  // re-shows the already-built rows.
+  const openGridExport = () => {
+    if (exportRows) {setExportOpen(true); return;}
+    setExportLoading(true);
+    setExportError('');
+    const build = isMpb
+      ? loadData('comparison_projects_2027.json')
+          .then(detail => mpbGridExportRows(mpbIndex, detail))
+      : fetch(siteUrl('other-analysis/data/fmr_workbench.json'))
+          .then(response => {
+            if (!response.ok) throw new Error(
+              `Could not load the FMR comparison payload (${response.status}).`);
+            return response.json();
+          })
+          .then(detail => fmrGridExportRows(fmrIndex, detail));
+    build
+      .then(rows => {setExportRows(rows); setExportOpen(true);})
+      .catch(event => setExportError(event.message))
+      .finally(() => setExportLoading(false));
+  };
+
   return <>
     <section className="hero hero-compact">
       <p className="fmr-eyebrow">FY2027 · Congress</p>
-      {isFmr ? <>
+      {isMpb ? <>
+        <h1>Multi-purpose buildings by legislative district</h1>
+        <p>The MPB lens scopes the DPWH comparison ledger to the BIP multi-purpose building
+          programme line and MPB-titled rows, then reuses the Districts (Legislative) resolution
+          verbatim — the two tabs cannot disagree about a row. It places
+          {' '}{mpbCounts.district_rows.toLocaleString('en-PH')} of {mpbCounts.rows.toLocaleString('en-PH')}
+          {' '}rows on legislative cards across {mpbCounts.districts_with_mpb.toLocaleString('en-PH')}
+          {' '}districts. {mpbCounts.rows_with_coordinates.toLocaleString('en-PH')} rows print a
+          coordinate pair in the title, mapped as points on each card.</p>
+      </> : isFmr ? <>
         <h1>Farm-to-market roads by legislative district</h1>
         <p>The FMR lens resolves each House/NEP comparison row independently from its title PSGC and
           accepted coordinate evidence, then maps clean results through PSGC2LEG. It places
@@ -449,7 +508,16 @@ export function Districts({index, route, lens = 'deo', locationIndex = null, fmr
     </section>
 
     <div className="fmr-stats">
-      {isFmr ? <>
+      {isMpb ? <>
+        <Stat label="Districts with MPBs" value={mpbCounts.districts_with_mpb.toLocaleString('en-PH')}
+          detail={`${mpbCounts.district_rows.toLocaleString('en-PH')} rows on district cards`} />
+        <Stat label="House MPB allocation" value={moneyCompact(mpbIndex.reconciliation.whole.sources.house.amount_php)}
+          detail={`${mpbIndex.reconciliation.whole.sources.house.count.toLocaleString('en-PH')} source records`} />
+        <Stat label="NEP MPB allocation" value={moneyCompact(mpbIndex.reconciliation.whole.sources.nep.amount_php)}
+          detail={`${mpbIndex.reconciliation.whole.sources.nep.count.toLocaleString('en-PH')} source records`} />
+        <Stat label="Mapped buildings" value={mpbCounts.rows_with_coordinates.toLocaleString('en-PH')}
+          detail={`${mpbCounts.coordinate_points.toLocaleString('en-PH')} unique title points · ${mpbCounts.region_rows.toLocaleString('en-PH')} region-fallback rows`} />
+      </> : isFmr ? <>
         <Stat label="Districts with FMRs" value={fmrCounts.districts_with_projects.toLocaleString('en-PH')}
           detail={`${fmrCounts.district_rows.toLocaleString('en-PH')} comparison rows assigned`} />
         <Stat label="House FMR allocation" value={moneyCompact(fmrIndex.reconciliation.whole.sources.house.amount_php)}
@@ -493,6 +561,9 @@ export function Districts({index, route, lens = 'deo', locationIndex = null, fmr
           <option value="">All tiers</option>
           {isFmr
             ? FMR_TIER_FILTER.map(([value, label]) => <option key={value} value={value}>{label}</option>)
+            : isMpb
+            ? MPB_TIER_FILTER.map(([value, label]) => <option key={value} value={value}>
+                {label}</option>)
             : isLocation
             ? LOCATION_TIER_FILTER.map(([value, label]) => <option key={value} value={value}>
                 {label}</option>)
@@ -528,9 +599,30 @@ export function Districts({index, route, lens = 'deo', locationIndex = null, fmr
           {q: null, tier: null, sort: null, dir: null, summary: null})}>Reset view</button>}
       <button type="button" className="secondary" onClick={() => setFilter({summary: '1'})}>
         Show summary</button>
+      {(isFmr || isMpb) &&
+        <button type="button" className="secondary" disabled={exportLoading}
+          onClick={openGridExport}>{exportLoading
+            ? 'Loading full dataset…' : 'Export all districts…'}</button>}
       <span role="status" className="congress-count">
         {visible.length.toLocaleString('en-PH')} of {allCards.length.toLocaleString('en-PH')} cards</span>
     </div>
+
+    {exportError && <p role="alert" className="congress-detail-error">
+      <strong>The full export could not load.</strong> {exportError}</p>}
+    {exportOpen && exportRows &&
+      <ExportModal rows={exportRows}
+        dialogLabel={isMpb
+          ? 'Export the MPB lens across all districts'
+          : 'Export the FMR lens across all districts'}
+        intro={<p className="fmr-muted">Downloads all <strong>{exportRows.length.toLocaleString('en-PH')}</strong>
+          {' '}comparison rows across every card in the {isMpb ? 'MPB' : 'FMR'} legislative lens —
+          districts{isMpb ? ', multi-district DEOs and region catch-alls' : ', region and conflict catch-alls'} alike —
+          with the same columns, flags{isMpb ? ', scope rules' : ' and provenance'} as the per-district
+          explorer. Each row also carries the card it landed on (Card ID / Card columns), so the
+          download stays navigable without opening a district page. Amounts are in Philippine pesos.</p>}
+        meta={{lens: isMpb ? 'mpb' : 'fmr', card: 'all', multiCard: true,
+          filters: {q: query || null, tier: tier || null}}}
+        onClose={() => setExportOpen(false)} />}
 
     <div className="congress-grid">
       {/* The district page is lens-agnostic in its route, so the lens rides as
@@ -538,13 +630,13 @@ export function Districts({index, route, lens = 'deo', locationIndex = null, fmr
           and a shared link must reopen in the right lens. */}
       {visible.map(card => <DistrictCard key={card.id} card={card} rowFlags={rowFlags}
         onOpen={() => {window.location.hash = href('district',
-          {district: card.id, lens: isFmr ? 'fmr' : isLocation ? 'location' : null});}} />)}
+          {district: card.id, lens: isMpb ? 'mpb' : isFmr ? 'fmr' : isLocation ? 'location' : null});}} />)}
     </div>
     {!visible.length && <p className="congress-empty">No card matches those filters.
       {' '}<button type="button" onClick={() => setFilter({q: null, tier: null})}>Clear filters</button></p>}
 
     {showSummary && <SearchSummary cards={visible} query={query}
-      lensLabel={isFmr ? 'FMR legislative lens' : isLocation ? 'Legislative lens' : 'DEO lens'}
+      lensLabel={isMpb ? 'MPB legislative lens' : isFmr ? 'FMR legislative lens' : isLocation ? 'Legislative lens' : 'DEO lens'}
       onClose={() => setFilter({summary: null})} />}
 
     <div className="congress-result-bar">
@@ -552,7 +644,32 @@ export function Districts({index, route, lens = 'deo', locationIndex = null, fmr
         {showPanels ? 'Hide' : 'Show'} what is deliberately not on a card</button>
     </div>
 
-    {showPanels && isFmr ? <>
+    {showPanels && isMpb ? <>
+      <section className="fmr-section congress-panel">
+        <h2>How MPB scoping works</h2>
+        <p>A row is in scope when its PAP is the BIP multi-purpose building programme line or its
+          title names a multi-purpose building — the two rules are a union, and every row records
+          which rule admitted it. District placement is not re-derived: it is the committed
+          Districts (Legislative) resolution, reused verbatim, so title PSGC, DEO→LEG and DEO
+          cards here always agree with that tab.</p>
+      </section>
+      <section className="fmr-section congress-panel">
+        <h2>What this lens is</h2>
+        <dl className="congress-lens">
+          <dt>Authority</dt><dd>{lensInfo.authority}</dd>
+          <dt>Grouping unit</dt><dd>{lensInfo.grouping_unit}</dd>
+          <dt>Grain</dt><dd>{lensInfo.grain}</dd>
+          <dt>Stages</dt><dd>{lensInfo.stages}</dd>
+          {Object.entries(MPB_TIER_LABELS).map(([key, label]) =>
+            <React.Fragment key={key}><dt>{MPB_TIER_SHORT[key]}</dt><dd>{label}</dd></React.Fragment>)}
+          <dt>Not claimed</dt><dd>{lensInfo.not_claimed}</dd>
+          <dt>Rows reconciled</dt>
+          <dd>{lensInfo.reconciliation.row_counts.total.toLocaleString('en-PH')} scoped rows, every one on
+            exactly one card, across {lensInfo.reconciliation.tied_numeric_fields} numeric fields tied out
+            exactly against the scoped ledger.</dd>
+        </dl>
+      </section>
+    </> : showPanels && isFmr ? <>
       <section className="fmr-section congress-panel">
         <h2>How FMR resolution works</h2>
         <p>Each source stage resolves independently: title PSGC plus accepted coordinates, title PSGC
@@ -656,6 +773,8 @@ export function RecordDrawer({record, onPdf, onMap, onClose}) {
       <span className={`fmr-badge ${record.status === 'unmatched' ? 'review' : 'balanced'}`}>
         {record.statusLabel}</span>
       {record.diffTagLabels.map(label => <span key={label} className="fmr-badge">{label}</span>)}
+      {(record.provenanceFlagLabels ?? []).map(label =>
+        <span key={label} className="fmr-badge provenance">{label}</span>)}
     </p>
 
     <section><h4>Analytic flags</h4>
@@ -678,6 +797,22 @@ export function RecordDrawer({record, onPdf, onMap, onClose}) {
         </li>)}</ul>
       {record.analysisMeasurementNote &&
         <p className="fmr-muted">{record.analysisMeasurementNote}</p>}
+    </section>}
+
+    {record.correctionEvidence?.length > 0 && <section><h4>Coordinate corrections applied</h4>
+      <p className="fmr-muted">A printed coordinate on this row was amended during normalization —
+        an image-reviewed OCR transcription and/or an accepted digit-level repair. The raw printed
+        text is retained unchanged; this is provenance, not an open problem.</p>
+      <ul className="congress-analysis-findings">{record.correctionEvidence.map((entry, index) =>
+        <li key={`${entry.stage}-${entry.projectId}-${index}`}>
+          <strong>{entry.stage === 'house' ? 'House FMR annex' : 'NEP FMR schedule'} · {entry.projectId}</strong>
+          <span>{entry.imageReviewed
+            ? 'Reviewed against the rendered source cell (216 dpi image evidence). '
+            : ''}
+            Rules: {entry.rules.length ? entry.rules.map(rule => correctionRuleLabel(rule)).join('; ')
+              : 'rendered-cell review only'}.</span>
+          <a href={routeHref(entry.stage, {node: entry.projectId}, 'fmr')}>Open the source coordinate record →</a>
+        </li>)}</ul>
     </section>}
 
     {record.office_discrepancy && <section><h4>Changed office</h4>
@@ -755,6 +890,8 @@ export function RecordDrawer({record, onPdf, onMap, onClose}) {
           : 'No coordinate on this row. DPWH ledgers print no coordinate column; nothing is inferred.'}</p>}
       {record.fmr && onMap && <button type="button" className="secondary"
         onClick={onMap}>Show project map</button>}
+      {record.mpb && onMap && <button type="button" className="secondary"
+        onClick={onMap}>Show building map</button>}
     </section>
 
     <section><h4>Derived traces</h4>
@@ -775,6 +912,13 @@ export function RecordDrawer({record, onPdf, onMap, onClose}) {
             <br /><span className="fmr-muted">{record.assignment.detail}</span>
             <br />Target: <code>{record.assignment.targetId}</code></dd>
         </>}
+        {record.mpb && <>
+          <dt>MPB scope rule</dt>
+          <dd><strong>{record.scopeLabel}</strong>{record.titleFragment && <>
+            {' '}· matched title fragment “{record.titleFragment}”</>}
+            <br /><span className="fmr-muted">The union rule that admitted this row into the MPB
+              lens. District placement is the Districts (Legislative) resolution, reused verbatim.</span></dd>
+        </>}
         {record.scope_review && <>
           <dt>Segment scope</dt>
           <dd>Same road, non-overlapping station spans. The amount delta is deliberately not booked
@@ -787,13 +931,16 @@ export function RecordDrawer({record, onPdf, onMap, onClose}) {
 /** Export chooser: scope (Simple/Full) × format (CSV/JSON) for the filtered rows.
  * Simple is the reviewer's shortlist; Full is everything the explorer holds,
  * including per-side source records. Both split HGAB3 and NEP page citations.
- * Exported for the static-markup render test, like District and Districts. */
-export function ExportModal({rows, meta, onClose}) {
+ * `intro`/`dialogLabel` override the single-card copy for the multi-card grid
+ * export. Exported for the static-markup render test, like District and Districts. */
+export function ExportModal({rows, meta, onClose, intro = null, dialogLabel = 'Export these projects'}) {
   const [scope, setScope] = useState('simple');
   const [format, setFormat] = useState('csv');
   const scopes = [
     ['simple', 'Simple', 'Title, bucket, match status, flags, region, program, both offices, both amounts, delta, and each side’s source page.'],
-    ['full', 'Full', 'Everything Simple has plus assignment basis, PAP, source record ids, PDF pages and links, reading status, match basis, trace, chainage and coordinates.'],
+    ['full', 'Full', meta?.lens === 'mpb'
+      ? 'Everything Simple has plus MPB scope rule, assignment basis, PAP, source record ids, PDF pages and links, reading status, match basis, trace, chainage and coordinates.'
+      : 'Everything Simple has plus assignment basis, PAP, source record ids, PDF pages and links, reading status, match basis, trace, chainage and coordinates.'],
   ];
   const formats = [['csv', 'CSV', 'Spreadsheet. Opens in Excel with the same headings as the table.'],
     ['json', 'JSON', 'Structured. Keeps provenance, filters and nested source citations.']];
@@ -804,11 +951,11 @@ export function ExportModal({rows, meta, onClose}) {
         onChange={() => setValue(key)} />
       <span><strong>{label}</strong><small>{hint}</small></span></label>)}</div>;
 
-  return <Dialog label="Export these projects" className="congress-export" onClose={onClose}>
-    <p className="fmr-muted">Downloads all <strong>{rows.length.toLocaleString('en-PH')}</strong> rows
+  return <Dialog label={dialogLabel} className="congress-export" onClose={onClose}>
+    {intro ?? <p className="fmr-muted">Downloads all <strong>{rows.length.toLocaleString('en-PH')}</strong> rows
       currently in this table{Object.values(meta.filters ?? {}).some(value => value)
         ? ', with your search, bucket and flag filters applied' : ''}. Amounts are in Philippine pesos.
-      Source columns cite each ledger side separately and link straight to the page.</p>
+      Source columns cite each ledger side separately and link straight to the page.</p>}
     <h3>What to include</h3>
     {choose(scopes, scope, setScope, 'export-scope')}
     <h3>File format</h3>
@@ -825,18 +972,20 @@ export function ExportModal({rows, meta, onClose}) {
 
 /** The project explorer for one card. */
 export function District({index, detail, detailError = '', route, lens = 'deo', locationIndex = null,
-  fmrIndex = null}) {
+  fmrIndex = null, mpbIndex = null}) {
   // As in Districts, every filter and the open record live in the URL, so an
   // explorer view is shareable and restores exactly on a copied link.
   const params = paramsOf(route);
   const cardId = params.district ?? '';
-  const activeIndex = lens === 'fmr' && fmrIndex ? fmrIndex
+  const activeIndex = lens === 'mpb' && mpbIndex ? mpbIndex
+    : lens === 'fmr' && fmrIndex ? fmrIndex
     : lens === 'location' && locationIndex ? locationIndex : index;
   const card = locationCards(activeIndex).find(entry => entry.id === cardId)
     ?? index.cards.find(entry => entry.id === cardId);
-  const dataset = params.dataset ?? (lens === 'fmr' ? 'fmr' : 'dpwh');
+  const dataset = params.dataset ?? (lens === 'fmr' ? 'fmr' : lens === 'mpb' ? 'mpb' : 'dpwh');
   const bucket = params.bucket ?? '';
   const flag = params.flag ?? '';
+  const provenance = params.provenance ?? '';
   const query = params.q ?? '';
   const openId = params.record ?? '';
   const [gated, setGated] = useState(null);
@@ -867,26 +1016,37 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
     if (!card || !prepared) return [];
     // The built location index supplies both the selected PSGC chain and the
     // exact policy route that placed each row. The browser only reports them.
-    const psgcMap = lens === 'location' && locationIndex ? locationIndex.row_psgc ?? {} : {};
+    const psgcMap = (lens === 'location' && locationIndex) || (lens === 'mpb' && mpbIndex)
+      ? (lens === 'mpb' ? mpbIndex : locationIndex).row_psgc ?? {} : {};
     const resolutionMap = lens === 'fmr' && fmrIndex ? fmrIndex.row_resolution ?? {}
+      : lens === 'mpb' && mpbIndex ? mpbIndex.row_resolution ?? {}
       : lens === 'location' && locationIndex ? locationIndex.row_resolution ?? {} : {};
     return cardRows(card, prepared.byId)
       .map(row => lens === 'fmr' ? fmrExplorerRow(row, resolutionMap[row.id], prepared.fmrAnalysis)
+        : lens === 'mpb' ? mpbExplorerRow(row, mpbIndex?.row_scope?.[row.id],
+          mpbIndex?.row_points?.[row.id], resolutionMap[row.id], psgcMap[row.id])
         : explorerRow(row, {counterparts: prepared.counterparts, psgc: psgcMap[row.id],
           resolution: resolutionMap[row.id]}));
-  }, [card, prepared, lens, locationIndex, fmrIndex]);
+  }, [card, prepared, lens, locationIndex, fmrIndex, mpbIndex]);
 
   const datasets = useMemo(() => lens === 'fmr'
     ? [{key: 'fmr', label: 'FMR', status: 'active', attributable: true,
         basis: 'FMR title PSGC and accepted coordinate evidence mapped through PSGC2LEG.'}]
+    : lens === 'mpb'
+    ? [{key: 'mpb', label: 'MPB', status: 'active', attributable: true,
+        basis: 'BIP multi-purpose building PAP and MPB-title scope; district assignment reused from the location lens.'}]
     : datasetOptions(index), [index, lens]);
   const active = datasets.find(entry => entry.key === dataset) ?? datasets[0];
-  const filtered = useMemo(() => filterExplorerRows(explorerRows, {bucket, flag, query}),
-    [explorerRows, bucket, flag, query]);
+  const filtered = useMemo(() => filterExplorerRows(explorerRows, {bucket, flag, provenance, query}),
+    [explorerRows, bucket, flag, provenance, query]);
   const census = useMemo(() => flagCensus(explorerRows, lens === 'fmr' ? FMR_FLAG_LABELS : null),
     [explorerRows, lens]);
+  const provCensus = useMemo(() => provenanceCensus(explorerRows), [explorerRows]);
   const buckets = useMemo(() => bucketCensus(explorerRows).map(entry => lens === 'fmr'
-    ? {...entry, label: FMR_BUCKET_LABELS[entry.bucket] ?? entry.label} : entry), [explorerRows, lens]);
+    ? {...entry, label: FMR_BUCKET_LABELS[entry.bucket] ?? entry.label}
+    : lens === 'mpb'
+    ? {...entry, label: MPB_BUCKET_LABELS[entry.bucket] ?? entry.label} : entry),
+    [explorerRows, lens]);
   const openRecord = useMemo(() => explorerRows.find(row => row.id === openId) ?? null,
     [explorerRows, openId]);
 
@@ -916,15 +1076,31 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
   // District-first heading for the legislative lenses (location, FMR); null on
   // the DEO lens and on catch-all cards, which keep their own headings.
   const legislative = lens === 'deo' ? null : districtHeading(card);
-
+  // Quick FMR/MPB record census for a district card: every row on the card
+  // counts (mapped or not), with the drawable share shown alongside.
+  const lensCounts = useMemo(() => {
+    if (lens === 'deo' || !card?.districts?.length) return null;
+    return districtLensCounts(fmrIndex, mpbIndex, card.districts[0].id);
+  }, [lens, card, fmrIndex, mpbIndex]);
   const columns = EXPLORER_COLUMNS
     .filter(column => lens !== 'deo' || column.key !== 'assignment')
-    .filter(column => lens === 'fmr' || column.key !== 'map')
+    .filter(column => lens === 'fmr' || lens === 'mpb' || column.key !== 'map')
+    // Provenance column appears only where the dataset actually carries
+    // provenance flags (FMR lens); other lenses never see an all-dash column.
+    .filter(column => provCensus.length > 0 || column.key !== 'provenanceLabels')
     .filter(column => lens !== 'fmr' || ['title', 'bucket', 'statusLabel', 'flagLabels',
-      'psgc_location', 'assignment', 'region', 'house_php', 'nep_php', 'delta_php', 'map', 'pdf'].includes(column.key))
+      'provenanceLabels', 'psgc_location', 'assignment', 'region', 'house_php', 'nep_php',
+      'delta_php', 'map', 'pdf'].includes(column.key))
+    // The MPB lens keeps the location lens's columns plus the point map.
+    .filter(column => lens !== 'mpb' || ['title', 'bucket', 'statusLabel', 'flagLabels',
+      'psgc_location', 'assignment', 'region', 'house_php', 'nep_php',
+      'delta_php', 'map', 'pdf'].includes(column.key))
     .map(column => {
     if (column.key === 'bucket' && lens === 'fmr') {
       return {...column, render: row => FMR_BUCKET_LABELS[row.bucket] ?? row.bucket};
+    }
+    if (column.key === 'bucket' && lens === 'mpb') {
+      return {...column, render: row => MPB_BUCKET_LABELS[row.bucket] ?? BUCKET_LABELS[row.bucket] ?? row.bucket};
     }
     if (column.key === 'title') {
       return {...column, render: row => <button type="button" className="fmr-text-button"
@@ -937,6 +1113,16 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
             <span key={label} className="fmr-badge">{label}</span>)}
             {row.flagLabels.length > 3 && <span className="fmr-muted">+{row.flagLabels.length - 3}</span>}</span>
         : <span className="fmr-muted">—</span>};
+    }
+    if (column.key === 'provenanceLabels') {
+      // Provenance is disclosure, not warning: cell names the amended stages,
+      // tooltip lists rule-level detail, drawer keeps the full evidence.
+      return {...column, render: row => {
+        if (!(row.provenanceFlags ?? []).length) return <span className="fmr-muted">—</span>;
+        return <span className="congress-flag-chips" title={coordinateProvenanceTip(row)}>
+          {coordinateProvenanceLabel(row) && <span key="coord" className="fmr-badge provenance">{coordinateProvenanceLabel(row)}</span>}
+        </span>;
+      }};
     }
     if (column.key === 'psgc_location') {
       return {...column, render: row => {
@@ -992,8 +1178,16 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
         : <span className="fmr-muted">—</span>};
     }
     if (column.key === 'map') {
-      return {...column, render: row => <button type="button" className="source-link"
-        onClick={() => setMapRecord(row)}>View map</button>};
+      // FMR rows always offer the segment map (source geometry is retained
+      // for every FMR row); MPB rows offer the point map only when a parsed
+      // title coordinate survived the PH-box screen.
+      return {...column, render: row => row.mpb
+        ? (row.mpbPoints.length
+          ? <button type="button" className="source-link"
+              onClick={() => setMapRecord(row)}>View map</button>
+          : <span className="fmr-muted">—</span>)
+        : <button type="button" className="source-link"
+            onClick={() => setMapRecord(row)}>View map</button>};
     }
     if (column.key === 'delta_php') {
       return {...column, render: row => row.delta_php == null
@@ -1043,6 +1237,7 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
         {/* Back to whichever grid tab is active — the location tab when the
             card was opened from the location lens, the DEO grid otherwise. */}
         <a className="secondary" href={lens === 'fmr' ? href('fmr')
+          : lens === 'mpb' ? href('mpb')
           : lens === 'location' ? href('location') : href('home')}>← All districts</a>
         <ShareLink /></div>
       <p className="fmr-muted congress-disclaimer">
@@ -1055,10 +1250,30 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
       </p>
     </section>
 
+    {lensCounts && <div className="congress-lens-counts" role="group"
+      aria-label="FMR and MPB record counts for this district">
+      {lensCounts.fmr.cardId &&
+        <a href={routeHref('district', {district: lensCounts.fmr.cardId, lens: 'fmr'}, 'congress')}
+          title="Open the FMR legislative card for this district">
+          <strong>FMR</strong>
+          <span>{lensCounts.fmr.rows.toLocaleString('en-PH')} records</span>
+          {lensCounts.fmr.rows > 0 &&
+            <small>{lensCounts.fmr.mapped.toLocaleString('en-PH')} with printed geometry</small>}
+        </a>}
+      {lensCounts.mpb.cardId &&
+        <a href={routeHref('district', {district: lensCounts.mpb.cardId, lens: 'mpb'}, 'congress')}
+          title="Open the MPB legislative card for this district">
+          <strong>MPB</strong>
+          <span>{lensCounts.mpb.rows.toLocaleString('en-PH')} records</span>
+          {lensCounts.mpb.rows > 0 &&
+            <small>{lensCounts.mpb.mapped.toLocaleString('en-PH')} with title coordinates</small>}
+        </a>}
+    </div>}
+
     {carries ? <div className="fmr-stats congress-card-stats">
-      <Stat label={lens === 'fmr' ? 'House only' : 'Unsupported insertions'} value={moneyCompact(headline.insertions.amount_php)}
+      <Stat label={lens === 'fmr' || lens === 'mpb' ? 'House only' : 'Unsupported insertions'} value={moneyCompact(headline.insertions.amount_php)}
         detail={`${headline.insertions.count.toLocaleString('en-PH')} House-only records`} />
-      <Stat label={lens === 'fmr' ? 'NEP only' : 'Deletions'} value={moneyCompact(headline.deletions.amount_php)}
+      <Stat label={lens === 'fmr' || lens === 'mpb' ? 'NEP only' : 'Deletions'} value={moneyCompact(headline.deletions.amount_php)}
         detail={`${headline.deletions.count.toLocaleString('en-PH')} NEP-only records`} />
       <Stat label="Increases" value={moneyCompact(headline.increased.amount_php)}
         detail={`${headline.increased.count.toLocaleString('en-PH')} pairs`} />
@@ -1088,6 +1303,9 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
         <h2>Project explorer</h2>
         {lens === 'fmr' && prepared && <button type="button" className="secondary"
           onClick={() => setDistrictMapOpen(true)}>View all segments</button>}
+        {lens === 'mpb' && prepared && explorerRows.some(row => row.mpbPoints.length) &&
+          <button type="button" className="secondary"
+            onClick={() => setDistrictMapOpen(true)}>View all buildings</button>}
       </div>
       <p>{prepared
         ? <>{filtered.length.toLocaleString('en-PH')} of {explorerRows.length.toLocaleString('en-PH')} records.
@@ -1097,7 +1315,14 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
         {searchDraft !== query ? ' · Updating search…' : ''}</p>
       {lens === 'fmr' && <p className="fmr-muted">Analytic flags combine location-assignment
         review with the default source-analysis screens from the FMR workspace. Geometry and
-        allocation screens are review leads; open a flagged record for its source-stage evidence.</p>}
+        allocation screens are review leads; open a flagged record for its source-stage evidence.
+        The Provenance column separately discloses accepted amendments to printed sources
+        (e.g. corrected coordinates) — disclosure, not a warning.</p>}
+      {lens === 'mpb' && <p className="fmr-muted">Each row is a DPWH comparison row scoped to the
+        BIP multi-purpose building programme line or an MPB title; the scope rule that admitted it
+        is disclosed in its evidence drawer. District placement is the Districts (Legislative)
+        resolution, reused verbatim. Rows that print a coordinate pair in the title offer a point
+        map — printed evidence, not a surveyed position.</p>}
       <div className="congress-controls">
         <label>Search
           <input type="search" value={searchDraft} placeholder="Title, office, PAP, region…"
@@ -1116,8 +1341,15 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
             {census.map(entry => <option key={entry.flag} value={entry.flag}>
               {entry.label} ({entry.count})</option>)}
           </select></label>
-        {(query || bucket || flag) &&
-          <button type="button" onClick={() => setFilter({q: null, bucket: null, flag: null})}>
+        {provCensus.length > 0 &&
+          <label>Provenance
+            <select value={provenance} onChange={event => setFilter({provenance: event.target.value})}>
+              <option value="">All provenance</option>
+              {provCensus.map(entry => <option key={entry.flag} value={entry.flag}>
+                {entry.label} ({entry.count})</option>)}
+            </select></label>}
+        {(query || bucket || flag || provenance) &&
+          <button type="button" onClick={() => setFilter({q: null, bucket: null, flag: null, provenance: null})}>
             Clear filters</button>}
         {prepared && <>
           <button type="button" className="secondary"
@@ -1126,7 +1358,8 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
       </div>
       {exportOpen && filtered.length > 0 &&
         <ExportModal rows={filtered} meta={{
-          lens, card: card.id, filters: {q: query || null, bucket: bucket || null, flag: flag || null},
+          lens, card: card.id, filters: {q: query || null, bucket: bucket || null,
+            flag: flag || null, provenance: provenance || null},
         }} onClose={() => setExportOpen(false)} />}
 
       <table className="congress-bucket-table">
@@ -1170,21 +1403,37 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
     </section>
 
     {openRecord && <RecordDrawer record={openRecord} onPdf={openPdf}
-      onMap={openRecord.fmr ? () => setMapRecord(openRecord) : null}
+      onMap={(openRecord.fmr || openRecord.mpb) ? () => setMapRecord(openRecord) : null}
       onClose={() => setFilter({record: null})} />}
-    {mapRecord && <Suspense fallback={<Dialog label="Loading FMR segment map"
-      onClose={() => setMapRecord(null)}><p role="status">Loading map…</p></Dialog>}>
-      <FmrSegmentModal record={mapRecord} onClose={() => setMapRecord(null)} />
-    </Suspense>}
-    {districtMapOpen && <Suspense fallback={<Dialog label="Loading district FMR segments"
-      onClose={() => setDistrictMapOpen(false)}><p role="status">Loading map…</p></Dialog>}>
-      <FmrDistrictSegmentsModal
-        label={seats.length ? seats.map(seat => seat.districtName).join(' · ')
-          : card.card_label ?? card.id}
-        records={explorerRows}
-        onSelectRecord={recordId => setFilter({record: recordId})}
-        onClose={() => setDistrictMapOpen(false)} />
-    </Suspense>}
+    {mapRecord && (mapRecord.mpb
+      ? <Suspense fallback={<Dialog label="Loading MPB map"
+          onClose={() => setMapRecord(null)}><p role="status">Loading map…</p></Dialog>}>
+          <MpbPointsModal label={mapRecord.title} record={mapRecord}
+            onClose={() => setMapRecord(null)} />
+        </Suspense>
+      : <Suspense fallback={<Dialog label="Loading FMR segment map"
+          onClose={() => setMapRecord(null)}><p role="status">Loading map…</p></Dialog>}>
+          <FmrSegmentModal record={mapRecord} onClose={() => setMapRecord(null)} />
+        </Suspense>)}
+    {districtMapOpen && (lens === 'mpb'
+      ? <Suspense fallback={<Dialog label="Loading district MPB points"
+          onClose={() => setDistrictMapOpen(false)}><p role="status">Loading map…</p></Dialog>}>
+          <MpbPointsModal
+            label={seats.length ? seats.map(seat => seat.districtName).join(' · ')
+              : card.card_label ?? card.id}
+            records={explorerRows}
+            onSelectRecord={recordId => setFilter({record: recordId})}
+            onClose={() => setDistrictMapOpen(false)} />
+        </Suspense>
+      : <Suspense fallback={<Dialog label="Loading district FMR segments"
+          onClose={() => setDistrictMapOpen(false)}><p role="status">Loading map…</p></Dialog>}>
+          <FmrDistrictSegmentsModal
+            label={seats.length ? seats.map(seat => seat.districtName).join(' · ')
+              : card.card_label ?? card.id}
+            records={explorerRows}
+            onSelectRecord={recordId => setFilter({record: recordId})}
+            onClose={() => setDistrictMapOpen(false)} />
+        </Suspense>)}
     {gated && <Dialog label={`${gated.label} is not attributable to a district`} onClose={() => setGated(null)}>
       <p>{gated.reason}</p>
       <p className="fmr-muted">Showing {gated.label} rows here would mean inventing an office from free
@@ -1209,6 +1458,7 @@ export default function CongressApp() {
   const [index, setIndex] = useState(null);
   const [locationIndex, setLocationIndex] = useState(null);
   const [fmrIndex, setFmrIndex] = useState(null);
+  const [mpbIndex, setMpbIndex] = useState(null);
   const [detail, setDetail] = useState(null);
   const [fmrDetail, setFmrDetail] = useState(null);
   const [error, setError] = useState('');
@@ -1216,6 +1466,10 @@ export default function CongressApp() {
   // keeps the card grid alive: a district page shows a scoped error instead of
   // blanking the whole workspace, and going back recovers without a reload.
   const [detailError, setDetailError] = useState('');
+  // Map-tab marker selection: opens the same RecordDrawer the district explorer uses.
+  const [mapRecordId, setMapRecordId] = useState(null);
+  const [mapFocusRecord, setMapFocusRecord] = useState(null);
+  const [mapPdfSource, setMapPdfSource] = useState(null);
   // The lens is a URL param, not state: a shared #congress?lens=location link
   // must open the same view. The location index (~2 MB) is only fetched when
   // the lens asks for it, so the default view stays as light as before.
@@ -1224,6 +1478,7 @@ export default function CongressApp() {
   // tab), while ?lens=location survives only as a legacy share-link form that
   // still opens the same view. Anything else is the DEO lens.
   const lens = route.key === 'fmr' || params.lens === 'fmr' ? 'fmr'
+    : route.key === 'mpb' || params.lens === 'mpb' ? 'mpb'
     : route.key === 'location' || params.lens === 'location' ? 'location' : 'deo';
 
   useEffect(() => {
@@ -1251,20 +1506,32 @@ export default function CongressApp() {
   }, [lens, locationIndex]);
 
   useEffect(() => {
-    if (lens !== 'fmr' || fmrIndex) return;
+    if ((lens !== 'fmr' && route.key !== 'map' && route.key !== 'district') || fmrIndex) return;
     const controller = new AbortController();
     loadData('fmr_legislative_index_2027.json', controller.signal)
       .then(setFmrIndex)
       .catch(event => {if (event.name !== 'AbortError') setError(event.message);});
     return () => controller.abort();
-  }, [lens, fmrIndex]);
+  }, [lens, fmrIndex, route.key]);
+
+  // The MPB index (~2 MB) is fetched only when the MPB lens, map, or a
+  // district page (for the FMR/MPB census chips) asks for it.
+  useEffect(() => {
+    if ((lens !== 'mpb' && route.key !== 'map' && route.key !== 'district') || mpbIndex) return;
+    const controller = new AbortController();
+    loadData('mpb_legislative_index_2027.json', controller.signal)
+      .then(setMpbIndex)
+      .catch(event => {if (event.name !== 'AbortError') setError(event.message);});
+    return () => controller.abort();
+  }, [lens, mpbIndex, route.key]);
 
   // The comparison payload is 50 MB, so it is fetched only once a district is
-  // opened — the card grid never needs it. A failure here must not take the
-  // grid down with it, and a retry (re-entering the district page) must be
-  // possible, so the error is cleared before each attempt.
+  // opened — the card grid never needs it. The map tab also needs it for MPB
+  // marker drawers. A failure here must not take the grid down with it, and a
+  // retry (re-entering the district page) must be possible, so the error is
+  // cleared before each attempt.
   useEffect(() => {
-    if (route.key !== 'district' || lens === 'fmr' || detail) return;
+    if ((route.key !== 'district' && route.key !== 'map') || (route.key === 'district' && lens === 'fmr') || detail) return;
     const controller = new AbortController();
     setDetailError('');
     loadData('comparison_projects_2027.json', controller.signal)
@@ -1274,7 +1541,8 @@ export default function CongressApp() {
   }, [route.key, lens, detail]);
 
   useEffect(() => {
-    if (route.key !== 'district' || lens !== 'fmr' || fmrDetail) return;
+    if ((route.key !== 'district' || lens !== 'fmr') && route.key !== 'map') return;
+    if (fmrDetail) return;
     const controller = new AbortController();
     setDetailError('');
     fetch(siteUrl('other-analysis/data/fmr_workbench.json'), {signal: controller.signal})
@@ -1291,36 +1559,108 @@ export default function CongressApp() {
     document.title = `${route.key === 'district' ? 'District'
       : route.key === 'map' ? 'Map'
       : lens === 'fmr' ? 'FMR (Legislative)'
+      : lens === 'mpb' ? 'MPB (Legislative)'
       : lens === 'location' ? 'Districts (Legislative)' : 'Districts (DEO)'} · Congress FY2027`;
   }, [route.key, lens]);
 
-  return <>
+  // Nationwide FMR explorer rows for the map tab (printed geometry + RecordDrawer).
+  const fmrMapRecords = useMemo(() => {
+    if (!fmrDetail) return [];
+    const resolutionMap = fmrIndex?.row_resolution ?? {};
+    return fmrRows(fmrDetail).map(row => fmrExplorerRow(row, resolutionMap[row.id]));
+  }, [fmrDetail, fmrIndex]);
+
+  // Nationwide MPB explorer rows that carry title coordinates.
+  const mpbMapRecords = useMemo(() => {
+    if (!mpbIndex || !detail) return [];
+    const byId = indexRowsById(detail.projects ?? detail);
+    const out = [];
+    for (const [rowId, points] of Object.entries(mpbIndex.row_points ?? {})) {
+      const row = byId.get(rowId);
+      if (!row || !points?.length) continue;
+      out.push(mpbExplorerRow(row, mpbIndex.row_scope?.[rowId], points,
+        mpbIndex.row_resolution?.[rowId], mpbIndex.row_psgc?.[rowId]));
+    }
+    return out;
+  }, [mpbIndex, detail]);
+
+  const mapRecordsById = useMemo(() => {
+    const map = new Map();
+    for (const record of fmrMapRecords) map.set(record.id, record);
+    for (const record of mpbMapRecords) map.set(record.id, record);
+    return map;
+  }, [fmrMapRecords, mpbMapRecords]);
+
+  const mapOpenRecord = mapRecordId ? mapRecordsById.get(mapRecordId) ?? null : null;
+  const mapMarkersPending = route.key === 'map'
+    && (!fmrDetail || !detail || !fmrIndex || !mpbIndex)
+    && !detailError;
+
+  return <div className={`congress-app${route.key === 'map' ? ' is-map' : ''}`}>
     <a className="fmr-skip" href="#congress-content" onClick={event => {
       event.preventDefault(); document.getElementById('congress-content')?.focus();}}>Skip to content</a>
     {/* The district explorer is a deep-link page, not a tab: keep whichever
         grid tab is active (DEO or Legislative) current so the tab strip does not
         go blank one level down. */}
     <WorkbenchHeader route={route.key === 'district'
-      ? (lens === 'fmr' ? 'fmr' : lens === 'location' ? 'location' : 'home') : route.key} workspace="congress" />
-    <main id="congress-content" tabIndex={-1} className="shell fmr-main">
+      ? (lens === 'fmr' ? 'fmr' : lens === 'mpb' ? 'mpb'
+        : lens === 'location' ? 'location' : 'home') : route.key} workspace="congress" />
+    <main id="congress-content" tabIndex={-1}
+      className={`shell fmr-main${route.key === 'map' ? ' is-map' : ''}`}>
       {error ? <div role="alert"><h1>Congress data could not load</h1><p>{error}</p>
         <button type="button" onClick={() => window.location.reload()}>Reload</button></div>
         : route.key === 'map'
-          ? <Suspense fallback={<p role="status">Loading the district map…</p>}>
-              <CongressMap route={route} /></Suspense>
+          ? (detailError && !fmrDetail && !detail
+            ? <div role="alert"><h1>Map data could not load</h1><p>{detailError}</p>
+              <button type="button" onClick={() => window.location.reload()}>Reload</button></div>
+            : <Suspense fallback={<p role="status">Loading the district map…</p>}>
+                <CongressMap route={route}
+                  fmrRecords={fmrMapRecords} mpbRecords={mpbMapRecords}
+                  fmrIndex={fmrIndex} mpbIndex={mpbIndex}
+                  selectedRecordId={mapRecordId}
+                  markersPending={mapMarkersPending}
+                  onSelectRecord={setMapRecordId} />
+                {mapOpenRecord && <RecordDrawer record={mapOpenRecord}
+                  onPdf={ref => {
+                    const reference = sourceReference(ref.kind, ref.page, ref.label);
+                    if (reference) setMapPdfSource(reference);
+                  }}
+                  onMap={() => setMapFocusRecord(mapOpenRecord)}
+                  onClose={() => setMapRecordId(null)} />}
+                {mapFocusRecord && (mapFocusRecord.mpb
+                  ? <Suspense fallback={<Dialog label="Loading MPB map"
+                      onClose={() => setMapFocusRecord(null)}><p role="status">Loading map…</p></Dialog>}>
+                      <MpbPointsModal label={mapFocusRecord.title} record={mapFocusRecord}
+                        onClose={() => setMapFocusRecord(null)} />
+                    </Suspense>
+                  : <Suspense fallback={<Dialog label="Loading FMR segment map"
+                      onClose={() => setMapFocusRecord(null)}><p role="status">Loading map…</p></Dialog>}>
+                      <FmrSegmentModal record={mapFocusRecord}
+                        onClose={() => setMapFocusRecord(null)} />
+                    </Suspense>)}
+                {mapPdfSource && <Dialog label={`${mapPdfSource.document} · p. ${mapPdfSource.page}`}
+                  className="fmr-pdf-dialog" onClose={() => setMapPdfSource(null)}>
+                  <Suspense fallback={<p role="status">Loading PDF viewer…</p>}>
+                    <PdfPreview source={mapPdfSource} onClose={() => setMapPdfSource(null)}
+                      closeLabel="Close PDF viewer" downloadOriginal /></Suspense>
+                </Dialog>}
+              </Suspense>)
         : !index ? <p role="status">Loading the district index…</p>
         : lens === 'location' && !locationIndex ? <p role="status">Loading the location index…</p>
         : lens === 'fmr' && !fmrIndex ? <p role="status">Loading the FMR legislative index…</p>
+        : lens === 'mpb' && !mpbIndex ? <p role="status">Loading the MPB legislative index…</p>
         : route.key === 'district'
           ? <District index={index} detail={lens === 'fmr' ? fmrDetail : detail}
               detailError={detailError} route={route} lens={lens}
-              locationIndex={locationIndex} fmrIndex={fmrIndex} />
+              locationIndex={locationIndex} fmrIndex={fmrIndex} mpbIndex={mpbIndex} />
           : <Districts index={index} route={route} lens={lens}
-              locationIndex={locationIndex} fmrIndex={fmrIndex} />}
+              locationIndex={locationIndex} fmrIndex={fmrIndex} mpbIndex={mpbIndex} />}
     </main>
-    <footer className="shell fmr-footer">
+    <footer className={`shell fmr-footer${route.key === 'map' ? ' is-map' : ''}`}>
       <span>FY2027 · Congress — {lens === 'fmr'
         ? 'the FMR legislative lens, title and accepted coordinate PSGC evidence'
+        : lens === 'mpb'
+        ? 'the MPB legislative lens, location-lens resolution reused over the BIP building scope'
         : lens === 'location'
         ? 'the location lens, layered title-location and office resolution'
         : 'the DEO lens, bounded and tier-labelled'}</span>
@@ -1328,8 +1668,10 @@ export default function CongressApp() {
           goes to the repository, the same way AboutApp cites it. */}
       <a href={repo + (lens === 'fmr'
         ? 'analysis/docs/fmr_legislative_lens_method.md'
+        : lens === 'mpb'
+        ? 'analysis/docs/mpb_legislative_lens_method.md'
         : lens === 'location'
         ? 'analysis/docs/location_district_lens_method.md'
         : 'DEO2LEG/README.md')} target="_blank" rel="noreferrer">Mapping methodology</a></footer>
-  </>;
+  </div>;
 }

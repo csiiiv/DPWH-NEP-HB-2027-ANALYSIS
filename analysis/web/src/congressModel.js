@@ -4,7 +4,7 @@ import {DIFF_TAG_LABELS} from './diffTags.js';
 import {hydrateProjects} from './comparisonData.js';
 import {regionCandidates} from './regionCandidates.js';
 import {officeDiscrepancy} from '../../viewers/project_offices.mjs';
-import {RED_FLAG_RULES, RED_FLAG_MEASUREMENT_NOTE} from './fmrRedFlags.js';
+import {RED_FLAG_RULES, RED_FLAG_MEASUREMENT_NOTE, buildFmrRedFlags} from './fmrRedFlags.js';
 
 // View-model helpers for the #congress workspace. Pure functions over the
 // committed congress_district_index_2027.json and the shared comparison payload,
@@ -94,6 +94,7 @@ export const FMR_TIER_FILTER = [
 ];
 
 export const FMR_FLAG_LABELS = {
+  coordinate_correction_applied: 'Coordinate correction applied',
   title_coordinate_conflict: 'Title vs coordinate conflict',
   stage_location_conflict: 'House vs NEP location conflict',
   multi_district_span: 'Multi-district span',
@@ -106,6 +107,31 @@ export const FMR_FLAG_LABELS = {
   title_or_heading_province_conflict: 'Printed hierarchy conflict',
   ...Object.fromEntries(RED_FLAG_RULES.map(rule => [rule.id, rule.label])),
 };
+
+// MPB-lens vocabulary. The MPB lens reuses the location lens's resolution
+// verbatim (see analysis/docs/mpb_legislative_lens_method.md), so its tiers
+// name the same bases; only the label copy changes, to say "MPB".
+export const MPB_TIER_LABELS = {
+  title_psgc: 'Funded-section title location resolves cleanly to one legislative district '
+    + '(location-lens basis, reused)',
+  deo_to_leg: 'Title PSGC not clean; printed DEO maps one-to-one to one legislative district',
+  deo: 'Printed DEO serves multiple legislative districts; full allocation retained on the DEO',
+  region: 'No printed DEO across linked sources; assigned to region',
+  unassigned: 'No printed DEO or region; retained on the unassigned catch-all',
+};
+
+export const MPB_TIER_SHORT = {
+  title_psgc: 'Title PSGC', deo_to_leg: 'DEO → LEG', deo: 'DEO',
+  region: 'Region', unassigned: 'Unassigned',
+};
+
+export const MPB_TIER_FILTER = [
+  ['title_psgc', 'Title PSGC → LEG'],
+  ['deo_to_leg', 'DEO → LEG'],
+  ['deo', 'Multi-district DEO'],
+  ['region', 'Region'],
+  ['unassigned', 'Unassigned'],
+];
 
 /**
  * Disagreement flags the location lens raises. These label the flag select in
@@ -850,6 +876,39 @@ export function fmrRows(detail) {
   });
 }
 
+// Coordinate-text provenance the retained FMR sources carry: image-reviewed
+// OCR transcriptions and accepted digit-level repairs. These are provenance,
+// not warnings — the projects normalize cleanly afterwards — so they get their
+// own explorer column and filter rather than hiding inside analytic flags.
+const COORDINATE_CORRECTION_RULES = new Set(['image_reviewed_ocr_transcription',
+  'off_by_one_digit_repair_accepted', 'source_numeric_repair_accepted']);
+const CORRECTION_RULE_LABELS = {
+  image_reviewed_ocr_transcription: 'Image-reviewed OCR transcription accepted',
+  off_by_one_digit_repair_accepted: 'Off-by-one-digit repair accepted',
+  source_numeric_repair_accepted: 'Source numeric repair accepted',
+};
+export const correctionRuleLabel = rule => CORRECTION_RULE_LABELS[rule] ?? rule.replaceAll('_', ' ');
+const coordinateCorrectionEvidence = (row) => [['house', row.third], ['nep', row.nep]]
+  .flatMap(([stage, project]) => {
+    const rules = (project?.normalization_rules ?? []).filter(rule => COORDINATE_CORRECTION_RULES.has(rule));
+    const reviewed = Boolean(project?.image_review);
+    if (!rules.length && !reviewed) return [];
+    return [{stage, projectId: project.id, rules, imageReviewed: reviewed}];
+  });
+// Column cell: which stages carry a corrected printed coordinate. Detail and
+// raw rules stay on correctionEvidence for the drawer and exports.
+export const coordinateProvenanceLabel = row => {
+  const stages = (row.correctionEvidence ?? []).map(entry =>
+    entry.stage === 'house' ? 'House' : 'NEP');
+  if (!stages.length) return null;
+  return `Corrected · ${stages.join('+')}`;
+};
+export const coordinateProvenanceTip = row => (row.correctionEvidence ?? [])
+  .map(entry => `${entry.stage === 'house' ? 'House' : 'NEP'} ${entry.projectId}: ${
+    [entry.imageReviewed ? 'rendered-cell review' : null,
+     ...entry.rules.map(correctionRuleLabel)].filter(Boolean).join('; ')}`)
+  .join('\n');
+
 export function fmrExplorerRow(row, resolution, analysisByStage = null) {
   const view = explorerRow(row);
   const assignmentFlags = resolution?.flags ?? [];
@@ -865,7 +924,7 @@ export function fmrExplorerRow(row, resolution, analysisByStage = null) {
       }));
     });
   const analysisFlags = [...new Set(analysisFindings.map(finding => finding.id))];
-  const flags = [...new Set([...assignmentFlags, ...analysisFlags])];
+  const correctionEvidence = coordinateCorrectionEvidence(row);
   const coordinates = [['house', row.third], ['nep', row.nep]].flatMap(([stage, project]) =>
     (project?.points ?? []).map(point => ({
       side: stage, id: point.id, from_title: false,
@@ -879,11 +938,17 @@ export function fmrExplorerRow(row, resolution, analysisByStage = null) {
     status: row.status,
     statusLabel: row.status === 'paired' ? 'Candidate pair'
       : row.status === 'house_only' ? 'House only' : 'NEP only',
-    flags,
-    flagLabels: flags.map(flag => FMR_FLAG_LABELS[flag] ?? flag.replaceAll('_', ' ')),
+    // Analytic flags stay warning-only; coordinate corrections surface through
+    // the dedicated provenance column/filter instead.
+    flags: [...new Set([...assignmentFlags, ...analysisFlags])],
+    flagLabels: [...new Set([...assignmentFlags, ...analysisFlags])]
+      .map(flag => FMR_FLAG_LABELS[flag] ?? flag.replaceAll('_', ' ')),
+    provenanceFlagLabels: correctionEvidence.length ? ['Coordinate correction applied'] : [],
+    provenanceFlags: correctionEvidence.length ? ['coordinate_correction_applied'] : [],
     assignmentFlags,
     analysisFlags,
     analysisFindings,
+    correctionEvidence,
     analysisMeasurementNote: analysisFindings.length ? RED_FLAG_MEASUREMENT_NOTE : null,
     // Keep references to the retained source projects for the lazy segment-map
     // modal. Geometry stays at source-project grain and never duplicates money.
@@ -898,6 +963,96 @@ export function fmrExplorerRow(row, resolution, analysisByStage = null) {
       .flatMap(stage => stage.selected_locations ?? [])[0] ?? null,
     assignment: fmrAssignmentEvidence(resolution),
     location_resolution: resolution ?? null,
+  };
+}
+
+/**
+ * Every FMR explorer row across all cards, for the lens grid's full export.
+ * Rebuilds exactly what the per-district explorer shows — assignment flags,
+ * source-analysis screens, provenance — and stamps each row with the card it
+ * landed on, so a cross-district download identifies its district without
+ * opening a card page. Rows not claimed by any card (none today) are still
+ * disclosed rather than dropped.
+ */
+export function fmrGridExportRows(fmrIndex, detail) {
+  const rows = fmrRows(detail);
+  const byId = indexRowsById(rows);
+  const resolutionMap = fmrIndex?.row_resolution ?? {};
+  const analysis = Object.fromEntries(['house', 'nep'].map(stage => [stage,
+    new Map(buildFmrRedFlags(detail, stage).rows.map(row => [row.id, row]))]));
+  const claimed = new Map();
+  const out = [];
+  for (const card of locationCards(fmrIndex)) {
+    const label = locationCardLabel(card);
+    for (const row of cardRows(card, byId)) {
+      claimed.set(row.id, true);
+      out.push({...fmrExplorerRow(row, resolutionMap[row.id], analysis),
+        card_id: card.id, card_label: label});
+    }
+  }
+  // Payload rows no card claims (index drift) still export, labelled as such.
+  for (const row of rows) {
+    if (!claimed.has(row.id)) {
+      out.push({...fmrExplorerRow(row, resolutionMap[row.id], analysis),
+        card_id: 'fmr:unclaimed', card_label: 'Not on any card (index drift)'});
+    }
+  }
+  return out;
+}
+
+/**
+ * Every MPB explorer row across all cards, for the lens grid's full export.
+ * Same contract as fmrGridExportRows: rebuilds exactly what the per-district
+ * explorer shows (scope rule, assignment, title points) and stamps each row
+ * with the card it landed on. The population is the MPB index's scoped subset
+ * of the DPWH comparison payload — never the whole ledger.
+ */
+export function mpbGridExportRows(mpbIndex, comparison) {
+  const byId = indexRowsById(comparison.projects ?? comparison);
+  const out = [];
+  for (const card of locationCards(mpbIndex)) {
+    const label = mpbCardLabel(card);
+    for (const row of cardRows(card, byId)) {
+      out.push({
+        ...mpbExplorerRow(row, mpbIndex.row_scope?.[row.id],
+          mpbIndex.row_points?.[row.id], mpbIndex.row_resolution?.[row.id],
+          mpbIndex.row_psgc?.[row.id]),
+        card_id: card.id,
+        card_label: label,
+      });
+    }
+  }
+  return out;
+}
+
+/** MPB adapter: the shared DPWH explorer row plus the MPB lens's own evidence.
+ *
+ * The MPB lens filters the same comparison payload every DPWH view reads, so
+ * the heavy lifting (both stages, flags, offices, chainage, PDF pages) is
+ * already done by explorerRow(). This adds what only the MPB index carries:
+ * the scope rule(s) that admitted the row, its retained title coordinate
+ * points (for the map), and a restated assignment disclosure. The location
+ * resolution itself is the committed location-lens record, never re-derived.
+ */
+export function mpbExplorerRow(row, scope, points, resolution, psgc = null) {
+  const view = explorerRow(row, {psgc, resolution});
+  const scopeRules = scope?.rules ?? [];
+  const scopeLabels = scopeRules.map(rule =>
+    rule === 'pap' ? 'BIP MPB programme line' : 'MPB title');
+  const coordinates = (points ?? []).map((point, index) => ({
+    side: 'title', id: `${row.id}#${index}`, from_title: true,
+    coordinates: {lng: point.lng, lat: point.lat},
+    stages: point.stages ?? [], issues: point.issues ?? [],
+  }));
+  return {
+    ...view,
+    mpb: true,
+    scopeRules,
+    scopeLabel: scopeLabels.join(' + ') || null,
+    titleFragment: scope?.title_fragment ?? null,
+    // Map evidence: one point facility per retained pair; never money.
+    mpbPoints: points ?? [],
+    coordinates: coordinates.length ? coordinates : view.coordinates,
   };
 }
 
@@ -961,6 +1116,8 @@ export const EXPLORER_COLUMNS = [
   {key: 'bucket', label: 'Bucket', value: row => BUCKET_LABELS[row.bucket] ?? row.bucket},
   {key: 'statusLabel', label: 'Match status'},
   {key: 'flagLabels', label: 'Analytic flags', sortable: false},
+  {key: 'provenanceLabels', label: 'Provenance', sortable: false,
+    value: row => row.provenanceFlagLabels ?? null},
   {key: 'psgc_location', label: 'Title PSGC location', sortable: false},
   {key: 'assignment', label: 'Assignment basis', sortable: false},
   {key: 'region', label: 'Region'},
@@ -1000,12 +1157,39 @@ export function bucketCensus(rows) {
   }));
 }
 
-/** Filter an explorer row set by bucket, flag and free text. */
-export function filterExplorerRows(rows, {bucket = '', flag = '', query = ''} = {}) {
+/**
+ * Counts of provenance flags across a row set, for the explorer's dedicated
+ * provenance filter. Provenance flags disclose an accepted amendment to a
+ * printed source (e.g. a corrected coordinate) — they are not warnings, so
+ * they are counted separately from the analytic-flag census.
+ */
+export function provenanceCensus(rows) {
+  const counts = new Map();
+  for (const row of rows) {
+    for (const flag of row.provenanceFlags ?? []) {
+      counts.set(flag, (counts.get(flag) ?? 0) + 1);
+    }
+  }
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([flag, count]) => ({
+      flag, count,
+      label: FMR_FLAG_LABELS[flag] ?? flagLabel(flag),
+    }));
+}
+
+/**
+ * Filter an explorer row set by bucket, analytic flag, provenance flag and
+ * free text. `provenance` selects rows whose printed source was amended
+ * during normalization (e.g. corrected coordinates); it is independent of
+ * `flag`, which selects analytic warnings.
+ */
+export function filterExplorerRows(rows, {bucket = '', flag = '', provenance = '', query = ''} = {}) {
   const needle = String(query ?? '').trim().toLowerCase();
   return rows.filter(row => {
     if (bucket && row.bucket !== bucket) return false;
     if (flag && !row.flags.includes(flag)) return false;
+    if (provenance && !(row.provenanceFlags ?? []).includes(provenance)) return false;
     if (!needle) return true;
     return [row.title, row.region, row.program, row.pap, row.id,
       row.house?.office, row.nep?.office, row.assignment?.label,
@@ -1140,6 +1324,17 @@ export const LOCATION_TIER_FILTER = [
   ['unassigned', 'Unassigned'],
 ];
 
+/** A printable card label for any MPB card tier. District cards lead with the
+ * district display name (plus a · -joined range for multi-district DEO cards);
+ * catch-alls fall back to their own label, never a raw id. Used by the
+ * grid-level export so every row names where the budget documents place it. */
+export function mpbCardLabel(card) {
+  if (card?.districts?.length) {
+    return card.districts.map(district => district.displayName).join(' · ');
+  }
+  return card?.card_label ?? card?.offices?.map(office => office.name).join(' · ') ?? card?.id ?? '';
+}
+
 /** The disagreement flags a card's rows carry, for a badge on the card face. */
 export function cardLocationFlags(card, rowFlags) {
   const out = new Set();
@@ -1149,4 +1344,41 @@ export function cardLocationFlags(card, rowFlags) {
     }
   }
   return [...out];
+}
+
+/**
+ * Quick FMR + MPB record counts under one legislative district card. Counts
+ * come from the lens cards' own row_ids (all records on the card, including
+ * rows that print no coordinate), while `mapped` reports how many rows could
+ * actually be drawn — FMR rows with any retained point geometry (stages are
+ * per project, so a row counts once), MPB rows with cleaned title points.
+ * Returns null when neither lens index has a card for the district.
+ */
+export function districtLensCounts(fmrIndex, mpbIndex, districtId) {
+  if (!districtId) return null;
+  const collect = (index, hasGeometry) => {
+    if (!index) return null;
+    const card = locationCards(index).find(entry =>
+      (entry.districts ?? []).some(district => district.id === districtId));
+    if (!card) return null;
+    const ids = new Set(Object.values(card.row_ids ?? {}).flat());
+    if (!ids.size) return null;
+    let mapped = 0;
+    for (const id of ids) {
+      if (hasGeometry(id)) mapped++;
+    }
+    return {rows: ids.size, mapped, cardId: card.id};
+  };
+  const fmr = collect(fmrIndex,
+    id => {
+      const resolution = fmrIndex.row_resolution?.[id];
+      return (resolution?.house?.point_districts?.length ?? 0)
+        + (resolution?.nep?.point_districts?.length ?? 0) > 0;
+    });
+  const mpb = collect(mpbIndex, id => (mpbIndex.row_points?.[id]?.length ?? 0) > 0);
+  if (!fmr && !mpb) return null;
+  return {
+    fmr: fmr ?? {rows: 0, mapped: 0, cardId: null},
+    mpb: mpb ?? {rows: 0, mapped: 0, cardId: null},
+  };
 }

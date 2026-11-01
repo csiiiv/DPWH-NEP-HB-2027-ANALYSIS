@@ -1,61 +1,528 @@
-/* District map for #congress/map — choropleth shell, side panel, legend. */
-.congress-map { display: flex; flex-direction: column; gap: 12px; }
-.congress-map-shell {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr minmax(280px, 360px);
-  gap: 12px;
-  min-height: 560px;
+/* District map for #congress/map — viz polygons + FMR/MPB markers. */
+.workbench-shell:has(.congress-app.is-map) {
+  height: 100dvh;
+  overflow: hidden;
 }
-.congress-map-canvas {
+.workbench-content:has(.congress-app.is-map) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.congress-app.is-map {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.congress-app.is-map > header.shell {
+  flex: none;
+}
+.fmr-main.is-map {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  max-width: none;
+  width: 100%;
+  box-sizing: border-box;
+  padding-top: 8px;
+  padding-bottom: 6px;
+}
+.fmr-footer.is-map {
+  flex: none;
+  max-width: none;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: 11px;
+  gap: 10px;
+}
+.congress-map {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+}
+.congress-map-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+  margin: 0;
+}
+.congress-map-title-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+.congress-map-expand {
+  border: 1px solid #cdd9e6;
+  background: #fff;
+  border-radius: 8px;
+  padding: 6px 11px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2a4a78;
+  cursor: pointer;
+}
+.congress-map-expand:hover { background: #f3f6fa; }
+/* Inline header action: sits with ShareLink in the page title row. */
+.congress-map-title .congress-map-expand { white-space: nowrap; }
+.congress-map-expand-float {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  box-shadow: 0 4px 14px rgba(24, 47, 75, 0.14);
+}
+.congress-map-fullclose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+  border: 1px solid #cdd9e6;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: #24354d;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(24, 47, 75, 0.16);
+}
+.congress-map-fullclose:hover { background: #fff; }
+
+/* Full-window dialog: the stage fills the viewport, chrome floats on top.
+   Keep the UA's fixed positioning for showModal(); only size it. */
+dialog.congress-map-fullscreen {
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  margin: 0;
+  background: #eef2f7;
+  overflow: hidden;
+}
+.congress-map-fullscreen::backdrop { background: rgba(15, 26, 38, 0.55); }
+.congress-map-fullscreen .congress-map-stage.is-full {
   position: absolute;
   inset: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+.congress-map-title .fmr-eyebrow { margin: 0 0 2px; }
+.congress-map-title h1 {
+  margin: 0;
+  font-size: clamp(18px, 2.4vw, 24px);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.congress-map-stage {
+  position: relative;
   border: 1px solid #d5dee9;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
   background: #eef2f7;
 }
-.congress-map-shell > .congress-map-canvas { position: relative; width: 100%; height: 560px; }
+.congress-map-stage.is-inline {
+  flex: 1;
+  min-height: min(560px, 72dvh);
+}
+
+/* District panel floats on the map as an overlay card, so the stage keeps
+   its full size with or without a selection. */
+.congress-map-stage .congress-map-info {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  width: min(320px, calc(100% - 24px));
+  max-height: calc(100% - 24px);
+  box-shadow: 0 10px 28px rgba(24, 47, 75, 0.14);
+}
+.congress-map-stage.is-inline .congress-map-info {
+  top: 52px;
+}
+/* keep clear of the floating exit pill in the full-window dialog */
+.congress-map-stage.is-full .congress-map-info {
+  top: 56px;
+}
+
+.congress-map-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .congress-map-info {
   border: 1px solid #d5dee9;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #fff;
   padding: 16px;
-  align-self: start;
+  align-self: stretch;
+  overflow: auto;
+  min-height: 0;
 }
 .congress-map-info-head { display: flex; justify-content: space-between; align-items: center; }
 .congress-map-info h2 { margin: 4px 0 2px; font-size: 18px; }
 .congress-map-rep { margin: 0 0 10px; color: #3c4a5a; font-size: 13.5px; }
-.congress-map-figures { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; font-size: 13.5px; }
-.congress-map-figures dt { font-weight: 650; color: #3c4a5a; }
-.congress-map-figures dd { margin: 0; font-variant-numeric: tabular-nums; }
-.congress-map-figures small { display: block; color: #516780; font-size: 12px; }
-.congress-map-figures .congress-map-flagged { color: #b45309; font-weight: 650; }
+/* Census chips stack inside the narrow floating panel; shared base styles
+   live in Congress.css under .congress-lens-counts. */
+.congress-map-info .congress-lens-counts { flex-direction: column; gap: 6px; margin: 0 0 6px; }
+.congress-map-info .congress-lens-counts a { padding: 7px 10px; border-radius: 8px; }
 .congress-map-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
 .congress-map-actions a { text-decoration: none; padding: 8px 12px; border-radius: 8px; border: 1px solid #245fa8; }
 .congress-map-actions a.primary { background: #245fa8; color: #fff; }
 .congress-map-actions a:not(.primary) { color: #245fa8; background: #fff; }
-.congress-map-legend {
+
+/* Floating layer panel */
+.congress-map-panel {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  width: min(320px, calc(100% - 24px));
+  max-height: calc(100% - 24px);
+  overflow: auto;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #d5dee9;
+  border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(24, 47, 75, 0.12);
+  backdrop-filter: blur(8px);
+}
+.congress-map-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 8px 8px 10px;
+  border-bottom: 1px solid #e8eef5;
+}
+.congress-map-panel-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  padding: 4px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  color: #203147;
+}
+.congress-map-panel-toggle:hover { background: #f3f6fa; }
+.congress-map-panel-toggle strong { font-size: 13px; font-weight: 700; }
+.congress-map-panel-toggle span {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: #5b6f86;
+  background: #eef3f9;
+  border-radius: 999px;
+  padding: 2px 7px;
+}
+.congress-map-panel-quick {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.congress-map-basemap {
+  display: inline-flex;
+  border: 1px solid #d5dee9;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+.congress-map-basemap button {
+  border: 0;
+  background: transparent;
+  padding: 5px 9px;
+  font: inherit;
+  font-size: 12px;
+  color: #516780;
+  cursor: pointer;
+}
+.congress-map-basemap button + button { border-left: 1px solid #d5dee9; }
+.congress-map-basemap button.is-active {
+  background: #203147;
+  color: #fff;
+}
+.congress-map-reset {
+  border: 1px solid #d5dee9;
+  background: #fff;
+  border-radius: 8px;
+  padding: 5px 9px;
+  font: inherit;
+  font-size: 12px;
+  color: #516780;
+  cursor: pointer;
+}
+.congress-map-reset:hover,
+.congress-map-basemap button:hover { background: #f3f6fa; }
+.congress-map-basemap button.is-active:hover { background: #203147; }
+
+.congress-map-panel-body { padding: 8px; }
+.congress-layer-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.congress-layer-list > li {
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: #f7f9fc;
+}
+.congress-layer-list > li.is-on {
+  background: #fff;
+  border-color: #dce5ef;
+}
+.congress-layer-list > li.is-off { opacity: 0.72; }
+.congress-layer-row {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  cursor: pointer;
+  margin: 0;
+}
+.congress-layer-row input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #245fa8;
+}
+.congress-layer-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.congress-layer-copy strong {
+  font-size: 13px;
+  font-weight: 650;
+  color: #203147;
+}
+.congress-layer-copy small {
+  font-size: 11px;
+  color: #677b92;
+  line-height: 1.3;
+}
+.congress-layer-swatch {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  flex: 0 0 auto;
+}
+.congress-layer-swatch-line {
+  height: 3px;
+  border-radius: 2px;
+  border: 0;
+}
+.congress-layer-swatch-dash {
+  height: 3px;
+  border-radius: 2px;
+  border: 0;
+  background-color: transparent;
+}
+.congress-layer-swatch-box { border-radius: 2px; }
+.congress-layer-swatch-fill { border-radius: 4px; }
+
+.congress-layer-fill {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 0 10px 10px 38px;
+  font-size: 11px;
+  color: #5b6f86;
+}
+.congress-layer-fill input[type="range"] {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  accent-color: #245fa8;
+}
+.congress-layer-fill em {
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  min-width: 2.4em;
+  text-align: right;
+}
+
+.congress-layer-key {
+  list-style: none;
+  margin: 0;
+  padding: 0 8px 8px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.congress-layer-key > li {
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  opacity: 1;
+  font-size: 11px;
+  color: #516780;
+  line-height: 1.25;
+}
+.congress-layer-key > li.is-off { opacity: 0.55; }
+.congress-layer-type {
+  display: grid;
+  grid-template-columns: 18px 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  padding: 4px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.congress-layer-type:hover { background: #f3f6fa; }
+.congress-layer-type input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: #245fa8;
+}
+.congress-layer-key em {
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  color: #677b92;
+}
+.congress-layer-key-note {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 6px;
+  color: #677b92;
+}
+.congress-layer-key-mark {
+  display: inline-block;
+  flex: 0 0 auto;
+  justify-self: center;
+}
+.congress-layer-key-line {
+  width: 16px;
+  height: 3px;
+  border-radius: 2px;
+}
+.congress-layer-key-line.is-dashed {
+  background-color: transparent;
+}
+.congress-layer-key-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
+}
+.congress-layer-key-box {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+}
+
+.congress-layer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 6px 4px 2px;
+}
+.congress-layer-actions button {
+  border: 0;
+  background: transparent;
+  color: #2a4a78;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 0;
+}
+.congress-layer-actions button:hover { text-decoration: underline; }
+
+.congress-map-status {
   position: absolute;
   left: 12px;
   bottom: 12px;
+  z-index: 2;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid #d5dee9;
-  border-radius: 8px;
-  padding: 8px 10px;
-  font-size: 12px;
-  max-width: min(520px, 80%);
+  gap: 6px;
+  max-width: min(520px, calc(100% - 24px));
+  pointer-events: none;
 }
-.congress-map-swatch { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
-.congress-map-swatch i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid rgba(0,0,0,.15); }
+.congress-map-stage.is-full .congress-map-status {
+  /* keep clear of the bottom-right navigation + scale controls */
+  right: 170px;
+  max-width: min(520px, calc(100% - 200px));
+}
+.congress-map-status span,
+.congress-map-status:not(:has(span)) {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #d5dee9;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  color: #3c4a5a;
+  box-shadow: 0 4px 14px rgba(24, 47, 75, 0.08);
+}
+
+.congress-map-hoverchip {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 2;
+  margin: 0;
+  background: rgba(32, 49, 71, 0.92);
+  color: #fff;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  pointer-events: none;
+  white-space: nowrap;
+  max-width: min(70%, 420px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .congress-map-note { font-size: 12.5px; }
 .fmr-map-close {
   border: none; background: none; font-size: 20px; line-height: 1; cursor: pointer; color: #516780;
 }
+.fmr-map-warning {
+  position: absolute; left: 12px; top: 72px; z-index: 2;
+  background: rgba(255,255,255,.94); padding: 8px 10px; border-radius: 8px;
+  border: 1px solid #d5dee9;
+}
+
 @media (max-width: 900px) {
-  .congress-map-shell { grid-template-columns: 1fr; }
+  .congress-map-shell,
+  .congress-map-shell:not(:has(.congress-map-info)) {
+    grid-template-columns: 1fr;
+  }
   .congress-map-info { order: 2; }
+  .congress-map-stage { min-height: 70vh; }
+  .congress-map-panel { width: min(320px, calc(100% - 24px)); }
+  .congress-map-hoverchip { bottom: 48px; }
 }

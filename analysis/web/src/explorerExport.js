@@ -21,6 +21,7 @@ const SIMPLE_COLUMNS = [
   ['bucket', 'Bucket'],
   ['statusLabel', 'Match Status'],
   ['flagLabels', 'Analytic Flags'],
+  ['provenanceFlagLabels', 'Provenance Flags'],
   ['region', 'Region'],
   ['program', 'Program'],
   ['nep_office', 'NEP Office'],
@@ -38,6 +39,7 @@ const FULL_COLUMNS = [
   ['bucket', 'Bucket'],
   ['statusLabel', 'Match status'],
   ['flagLabels', 'Analytic flags'],
+  ['provenanceFlagLabels', 'Provenance flags'],
   ['psgc_location', 'Title PSGC location'],
   ['assignment', 'Assignment basis'],
   ['region', 'Region'],
@@ -65,9 +67,27 @@ const FULL_COLUMNS = [
   ['scope_review', 'Scope review'],
 ];
 
-/** Column set for the requested scope; defaults to full. */
+/**
+ * Column set for the requested scope; defaults to full. Multi-card exports —
+ * a lens grid's all-districts download — additionally identify the card each
+ * row sits on, since one file spans many cards (`card_id` / `card_label`).
+ * The MPB lens's Full schema also discloses the scope rule that admitted each
+ * row; Simple stays the shortlist shared by every lens.
+ */
 function columnsFor(meta) {
-  return meta?.scope === 'simple' ? SIMPLE_COLUMNS : FULL_COLUMNS;
+  const base = [...(meta?.scope === 'simple' ? SIMPLE_COLUMNS : FULL_COLUMNS)];
+  if (meta?.lens === 'mpb' && meta?.scope !== 'simple') {
+    const after = base.findIndex(([key]) => key === 'provenanceFlagLabels');
+    const at = after >= 0 ? after + 1 : base.length;
+    base.splice(at, 0,
+      ['mpb_scope', 'MPB scope rule'],
+      ['mpb_title_fragment', 'MPB matched title fragment']);
+  }
+  if (!meta?.multiCard) return base;
+  // Card identity goes right after the row's own id/title: what the row is,
+  // where it landed, then its measures.
+  const [head, ...tail] = base;
+  return [head, ['card_id', 'Card ID'], ['card_label', 'Card'], ...tail];
 }
 
 function stringValue(value) {
@@ -149,8 +169,11 @@ function cell(row, key) {
   if (key === 'assignment') return assignmentLabel(row);
   if (key === 'house_source_link') return sideSourceLinks(row, 'house');
   if (key === 'nep_source_link') return sideSourceLinks(row, 'nep');
+  if (key === 'mpb_scope') return row.scopeLabel ?? '';
+  if (key === 'mpb_title_fragment') return row.titleFragment ?? '';
   const value = row[key];
   if (key === 'flagLabels') return (row.flagLabels ?? []).join('; ');
+  if (key === 'provenanceFlagLabels') return (row.provenanceFlagLabels ?? []).join('; ');
   if (value && typeof value === 'object' && !Array.isArray(value)) {
     // Record views (house/nep) keep their ids; anything else stringifies.
     return JSON.stringify(value);
@@ -201,7 +224,10 @@ export function exportExplorerCsv(rows, meta) {
 /** Serialize filtered explorer rows to JSON with provenance metadata. */
 export function exportExplorerJson(rows, meta) {
   const columns = columnsFor(meta);
-  const isSimple = columns === SIMPLE_COLUMNS;
+  // Compare against the requested scope, not column-array identity: multiCard
+  // and MPB Full both rebuild the column list, so `columns === SIMPLE_COLUMNS`
+  // would mis-label a Simple multi-card export as Full.
+  const isSimple = meta?.scope === 'simple';
   return JSON.stringify({
     schema_version: 1,
     exported_at: new Date().toISOString(),
@@ -210,6 +236,7 @@ export function exportExplorerJson(rows, meta) {
     scope: isSimple ? 'simple' : 'full',
     lens: meta?.lens ?? null,
     card: meta?.card ?? null,
+    multi_card: Boolean(meta?.multiCard),
     filters: meta?.filters ?? {},
     row_count: rows.length,
     columns: Object.fromEntries(columns),
@@ -224,6 +251,9 @@ export function exportExplorerJson(rows, meta) {
         if (SKIP.includes(key)) continue;
         else if (key === 'assignment') out[key] = assignmentLabel(row) || null;
         else if (key === 'flagLabels') out.flags = row.flagLabels ?? [];
+        else if (key === 'provenanceFlagLabels') out.provenance_flags = row.provenanceFlagLabels ?? [];
+        else if (key === 'mpb_scope') out.mpb_scope = row.scopeLabel ?? null;
+        else if (key === 'mpb_title_fragment') out.mpb_title_fragment = row.titleFragment ?? null;
         else if (key in row) out[key] = row[key] ?? null;
       }
       // Split source citation: one entry per ledger side, page numbers plus the

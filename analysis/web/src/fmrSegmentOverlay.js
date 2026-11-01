@@ -160,17 +160,16 @@ function comparisonClass(record) {
     : record.status === 'house_only' ? 'house_only' : 'nep_only';
 }
 
-/** Every retained segment/point for all comparison rows on one district card. */
-export function fmrDistrictMapOverlay(records) {
+function fmrRecordsOverlay(records, basis) {
   const lines = [], points = [];
   for (const record of records) {
     const category = comparisonClass(record);
     const style = DISTRICT_SEGMENT_CLASSES[category];
     for (const {key: stage, project} of fmrStageProjects(record)) {
-      for (const segment of drawableSegments(project, 'reviewed')) {
+      for (const segment of drawableSegments(project, basis)) {
         lines.push({
           type: 'Feature',
-          id: `line:${record.id}:${stage}:${segment.id}`,
+          id: `line:${record.id}:${stage}:${segment.id}:${basis}`,
           properties: {
             recordId: record.id,
             projectId: project.id,
@@ -181,17 +180,19 @@ export function fmrDistrictMapOverlay(records) {
             segmentId: segment.id,
             sectionLabel: segment.section_label || `Section ${segment.segment_index}`,
             distanceKm: segment.straight_line_distance_km ?? null,
+            coordinateBasis: basis,
             color: style.color,
+            objectKind: 'fmr',
           },
           geometry: {type: 'LineString', coordinates: segment.coordinates},
         });
       }
       for (const point of project.points || []) {
-        const coordinates = pointCoordinates(point, 'reviewed');
+        const coordinates = pointCoordinates(point, basis);
         if (!coordinates) continue;
         points.push({
           type: 'Feature',
-          id: `point:${record.id}:${stage}:${point.id}`,
+          id: `point:${record.id}:${stage}:${point.id}:${basis}`,
           properties: {
             recordId: record.id,
             projectId: project.id,
@@ -201,7 +202,9 @@ export function fmrDistrictMapOverlay(records) {
             stage,
             pointId: point.id,
             role: point.role || 'point',
+            coordinateBasis: basis,
             color: style.color,
+            objectKind: 'fmr',
           },
           geometry: {type: 'Point', coordinates},
         });
@@ -216,5 +219,69 @@ export function fmrDistrictMapOverlay(records) {
     lines: {type: 'FeatureCollection', features: lines},
     points: {type: 'FeatureCollection', features: points},
     counts,
+  };
+}
+
+/** Every retained segment/point for all comparison rows on one district card. */
+export function fmrDistrictMapOverlay(records) {
+  return fmrRecordsOverlay(records, 'reviewed');
+}
+
+/**
+ * Nationwide / multi-record FMR overlay for the Congress map tab.
+ *
+ * Primary geometry is the printed (normalized) reading. Where an accepted
+ * digit repair moved a point, the corrected position is added as a separate
+ * marker and a dashed connector links printed → corrected — same evidence
+ * shape as the per-row repair overlay, but with printed lines as the base.
+ */
+export function fmrPrintedMapOverlay(records) {
+  const primary = fmrRecordsOverlay(records, 'normalized');
+  const connectors = [], correctedPoints = [];
+  for (const record of records) {
+    const repair = fmrRecordRepairOverlay(record);
+    if (!repair.hasRepairs) continue;
+    for (const feature of repair.connectors.features) {
+      connectors.push({
+        ...feature,
+        properties: {
+          ...feature.properties,
+          recordId: record.id,
+          title: record.title,
+          objectKind: 'fmr_repair',
+          color: REPAIR_COLOR,
+        },
+      });
+    }
+    for (const {key: stage, project} of fmrStageProjects(record)) {
+      for (const point of project.points || []) {
+        const before = DIGIT_REPAIR_PRINTED[point.id];
+        const after = reviewedPointCoordinates(point);
+        const ruled = (point.rules || []).some(rule => REPAIR_RULES.includes(rule));
+        if (!before || !after || !ruled) continue;
+        if (before[0] === after[0] && before[1] === after[1]) continue;
+        correctedPoints.push({
+          type: 'Feature',
+          id: `corrected:${record.id}:${stage}:${point.id}`,
+          properties: {
+            recordId: record.id,
+            projectId: project.id,
+            title: record.title,
+            stage,
+            pointId: point.id,
+            role: 'corrected',
+            objectKind: 'fmr_repair',
+            color: REPAIR_COLOR,
+          },
+          geometry: {type: 'Point', coordinates: after},
+        });
+      }
+    }
+  }
+  return {
+    ...primary,
+    connectors: {type: 'FeatureCollection', features: connectors},
+    correctedPoints: {type: 'FeatureCollection', features: correctedPoints},
+    repairCount: correctedPoints.length,
   };
 }

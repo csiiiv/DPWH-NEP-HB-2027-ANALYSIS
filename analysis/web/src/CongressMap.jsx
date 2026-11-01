@@ -1,13 +1,24 @@
-import React, {Suspense, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Map as MapLibreMap, NavigationControl, ScaleControl, LngLatBounds, setWorkerUrl} from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
-import {openModalDialog} from './modalLifecycle.js';
 import {loadData, siteUrl} from './data.js';
 import {routeHref} from './routes.js';
 import ShareLink from './ShareLink.jsx';
-import {money, moneyCompact, percent} from './congressModel.js';
+import {districtLensCounts} from './congressModel.js';
+import {fmrPrintedMapOverlay, DISTRICT_SEGMENT_CLASSES, REPAIR_COLOR} from './fmrSegmentOverlay.js';
+import {MPB_POINT_CLASSES, MPB_BOX_ICON_IMAGE, ensureMpbBoxIcon} from './mpbSegmentOverlay.js';
+import {
+  colorDistrictFeatures, decorateDistrictIds, districtIdBridge,
+  mpbNationalMapOverlay, districtCardId,
+  CONGRESS_MAP_OBJECT_OPTIONS, DEFAULT_CONGRESS_MAP_OBJECTS,
+  CONGRESS_MAP_TYPE_OPTIONS, DEFAULT_CONGRESS_MAP_TYPES,
+  readCongressMapObjects, congressMapObjectsParam,
+  readCongressMapTypes, congressMapTypesParam,
+  enabledCongressMapCategories, congressMapCategoryFilter,
+} from './congressMapModel.js';
 import './CongressMap.css';
+import './Fmr.css';
 
 setWorkerUrl(workerUrl);
 
@@ -15,67 +26,84 @@ const STYLES = {
   light: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
   dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
 };
-const SOURCE_ID = 'congress-districts';
-const FILL_LAYER = 'districts-fill';
-const LINE_LAYER = 'districts-line';
 
-/**
- * Choropleth metrics over the district polygons. `field` reads the map
- * artifact's per-feature properties; the ramps are runtime maplibre
- * expressions so switching metric never needs a data rebuild. Breaks are
- * quantile-ish hand values over the FY2027 distributions, kept far enough
- * apart to stay distinguishable at 0.78 fill opacity.
- */
-const METRICS = [
-  {key: 'located_house_php', label: 'District-assigned HGAB3 (layered lens)',
-    field: 'located_house_php', colors: ['#c7e5c9', '#8fd09a', '#57b96f', '#2e9e52', '#187a3d']},
-  {key: 'deo_house_php', label: 'DEO-attributed HGAB3 (DEO lens)',
-    field: 'deo_house_php', colors: ['#cfe0f3', '#9cc2e8', '#6ba0d6', '#3d7cbf', '#1f5a9e']},
-  {key: 'located_nep_php', label: 'District-assigned NEP',
-    field: 'located_nep_php', colors: ['#dcd7f0', '#b9b0e3', '#9488d4', '#6f60c2', '#4c3aa0']},
-  {key: 'pair_status', label: 'House↔NEP pair status',
-    kind: 'category', field: 'pair_status', colors: {matched: '#7e57c2', nep_only: '#2e8b57', house_only: '#1f77b4'}},
-  {key: 'mismatch_rows', label: 'Office↔location mismatch rows (flagged)',
-    field: 'mismatch_rows', colors: ['#fde8d2', '#fbd0a5', '#f7b06a', '#f08c3c', '#e06b12']},
-];
-// Even-step ramps keyed by the metric's own max, so the legend and the fill
-// expression share one scale. Values are absolute ₱ thresholds per metric.
-function breaksFor(metric, features) {
-  if (metric.kind === 'category') return [1, 1, 1, 1];
-  const values = features.map(f => f.properties[metric.field]).filter(v => v > 0).sort((a, b) => a - b);
-  if (!values.length) return [1, 1, 1, 1];
-  const at = q => values[Math.min(values.length - 1, Math.floor(q * values.length))];
-  return [at(0.2), at(0.4), at(0.6), at(0.8)];
-}
+const DISTRICTS = 'congress-map-districts';
+const DISTRICTS_FILL = 'congress-map-districts-fill';
+const DISTRICTS_LINE = 'congress-map-districts-line';
+const FMR_LINES = 'congress-map-fmr-lines';
+const FMR_POINTS = 'congress-map-fmr-points';
+const FMR_HALO = 'congress-map-fmr-halo';
+const FMR_LINE = 'congress-map-fmr-line';
+const FMR_POINT = 'congress-map-fmr-point';
+const FMR_LINKS = 'congress-map-fmr-repair-links';
+const FMR_LINK = 'congress-map-fmr-repair-link';
+const FMR_CORRECTED = 'congress-map-fmr-corrected';
+const FMR_CORRECTED_POINT = 'congress-map-fmr-corrected-point';
+const MPB_LINES = 'congress-map-mpb-lines';
+const MPB_LINE_HALO = 'congress-map-mpb-line-halo';
+const MPB_LINE = 'congress-map-mpb-line';
+const MPB_POINTS = 'congress-map-mpb-points';
+const MPB_POINT = 'congress-map-mpb-point';
 
-function colorExpression(metric, breaks) {
-  if (metric.kind === 'category') {
-    // match(status, 'matched', color, 'nep_only', color, …, fallback)
-    const pairs = Object.entries(metric.colors)
-      .flatMap(([value, color]) => [value, color]);
-    return ['match', ['get', metric.field], ...pairs, '#eceff3'];
+const MARKER_LAYERS = [FMR_LINE, FMR_POINT, FMR_LINK, FMR_CORRECTED_POINT, MPB_LINE, MPB_POINT];
+const OBJECT_LAYERS = {
+  districts: [DISTRICTS_FILL, DISTRICTS_LINE],
+  fmr: [FMR_HALO, FMR_LINE, FMR_POINT],
+  fmr_repairs: [FMR_LINK, FMR_CORRECTED_POINT],
+  mpb: [MPB_LINE_HALO, MPB_LINE, MPB_POINT],
+};
+const emptyFc = () => ({type: 'FeatureCollection', features: []});
+
+function applyLayerFilters(instance, objects, types) {
+  if (!instance?.getStyle()) return;
+  const setVisible = (layerId, on) => {
+    if (instance.getLayer(layerId)) {
+      instance.setLayoutProperty(layerId, 'visibility', on ? 'visible' : 'none');
+    }
+  };
+  const setFilter = (layerId, filter) => {
+    if (instance.getLayer(layerId)) instance.setFilter(layerId, filter);
+  };
+
+  for (const layerId of OBJECT_LAYERS.districts) setVisible(layerId, objects.districts);
+
+  const fmrOn = Boolean(objects.fmr);
+  const fmrFilter = congressMapCategoryFilter(enabledCongressMapCategories(types, 'fmr'));
+  for (const layerId of OBJECT_LAYERS.fmr) {
+    setVisible(layerId, fmrOn);
+    if (fmrOn) setFilter(layerId, fmrFilter);
   }
-  return ['step', ['get', metric.field],
-    '#eceff3', ...metric.colors.flatMap((color, i) =>
-      i < breaks.length ? [breaks[i], color] : []).slice(0, 8), metric.colors[metric.colors.length - 1]];
+
+  setVisible(FMR_LINK, objects.fmr_repairs && types?.fmr_repairs?.link);
+  setVisible(FMR_CORRECTED_POINT, objects.fmr_repairs && types?.fmr_repairs?.point);
+
+  const mpbOn = Boolean(objects.mpb);
+  const mpbFilter = congressMapCategoryFilter(enabledCongressMapCategories(types, 'mpb'));
+  for (const layerId of OBJECT_LAYERS.mpb) {
+    setVisible(layerId, mpbOn);
+    if (mpbOn) setFilter(layerId, mpbFilter);
+  }
 }
 
-function metricValue(metric, feature) {
-  return feature.properties[metric.field] ?? 0;
+async function loadJson(url, signal) {
+  const response = await fetch(url, {signal});
+  if (!response.ok) throw new Error(`Could not load ${url} (${response.status}).`);
+  return response.json();
 }
 
-function Dialog({label, onClose, children, className = ''}) {
-  const ref = useRef(null);
-  useEffect(() => openModalDialog(ref.current), []);
-  return <dialog ref={ref} className={`fmr-dialog ${className}`} aria-label={label}
-    onCancel={e => {e.preventDefault(); onClose();}}>{children}</dialog>;
+function fitPhilippines(instance) {
+  instance?.fitBounds(new LngLatBounds([117, 5], [127, 19]), {padding: 40, duration: 600});
 }
 
-/** Side panel for one clicked district: both lenses' figures and card links. */
-function DistrictPanel({feature, lens, onClose}) {
+function DistrictPanel({feature, fmrIndex, mpbIndex, onClose}) {
   const p = feature.properties;
-  const located = p.located_house_php > 0;
-  const deo = p.deo_house_php > 0;
+  const districtId = p.district_id;
+  const fmrCard = districtCardId(fmrIndex, districtId);
+  const mpbCard = districtCardId(mpbIndex, districtId);
+  // Same census as the explorer's district page: every row on the lens card
+  // counts (with or without coordinates), mapped share shown alongside.
+  const lensCounts = useMemo(
+    () => districtLensCounts(fmrIndex, mpbIndex, districtId), [fmrIndex, mpbIndex, districtId]);
   return <aside className="congress-map-info" role="region" aria-label="Selected district">
     <div className="congress-map-info-head">
       <span className="fmr-eyebrow">{p.region}</span>
@@ -83,103 +111,620 @@ function DistrictPanel({feature, lens, onClose}) {
     </div>
     <h2>{p.jurisdiction} · {p.district_label}</h2>
     {p.representative && <p className="congress-map-rep">Rep. {p.representative}</p>}
-    <dl className="congress-map-figures">
-      <dt>District-assigned HGAB3</dt>
-      <dd>{located ? moneyCompact(p.located_house_php) : '—'}
-        <small>{p.located_rows.toLocaleString('en-PH')} rows via title PSGC or DEO → LEG</small></dd>
-      <dt>DEO-attributed HGAB3</dt>
-      <dd>{deo ? moneyCompact(p.deo_house_php) : '—'}
-        <small>{p.deo_rows.toLocaleString('en-PH')} rows on {p.deo_card_ids.length} office card{p.deo_card_ids.length > 1 ? 's' : ''}</small></dd>
-      {p.located_nep_php > 0 && <>
-        <dt>District-assigned NEP</dt>
-        <dd>{moneyCompact(p.located_nep_php)}
-          <small>{p.insertion_count > 0 && `+${p.insertion_count.toLocaleString('en-PH')} NEP-only unsupported insertion${p.insertion_count > 1 ? 's' : ''}`}
-            {p.insertion_count > 0 && p.deletion_count > 0 && ' · '}
-            {p.deletion_count > 0 && `−${p.deletion_count.toLocaleString('en-PH')} House-only deletion${p.deletion_count > 1 ? 's' : ''}`}
-            {p.insertion_count === 0 && p.deletion_count === 0 && 'no unpaired rows'}</small></dd>
-      </>}
-      {p.located_house_php > 0 && p.located_nep_php > 0 && <>
-        <dt>House→NEP on matched pairs</dt>
-        <dd>{moneyCompact(p.matched_house_php)} → {moneyCompact(p.matched_nep_php)}
-          <small>{p.matched_nep_php === p.matched_house_php ? 'no change' :
-            `${p.matched_nep_php > p.matched_house_php ? '+' : '−'}${moneyCompact(Math.abs(p.matched_nep_php - p.matched_house_php))} between stages`}</small></dd>
-      </>}
-      {p.mismatch_rows > 0 && <>
-        <dt className="congress-map-flagged">Office↔location mismatch</dt>
-        <dd className="congress-map-flagged">{p.mismatch_rows.toLocaleString('en-PH')} rows
-          <small>DEO and geometry disagree; both readings kept, never overridden</small></dd>
-      </>}
-    </dl>
     <p className="fmr-muted congress-map-note">
-      {located
-        ? 'District-assigned rows use clean funded-section title locations supported by a usable DEO, coordinate, direct title hierarchy, or reviewed named site, or a one-to-one DEO fallback.'
-        : 'No row resolved to this district; its money, if any, remains on a DEO, region or unassigned card.'}
+      Legislative district polygon from the PSGC2LEG viz build. Markers on the map are
+      FMR segment endpoints (printed GPS) and MPB title coordinates.
     </p>
+    {(lensCounts?.fmr.cardId || lensCounts?.mpb.cardId) && <div className="congress-lens-counts">
+      {lensCounts.fmr.cardId && <a href={routeHref('district',
+        {district: lensCounts.fmr.cardId, lens: 'fmr'}, 'congress')}
+        title="Open the FMR legislative card for this district">
+        <strong>FMR</strong>
+        <span>{lensCounts.fmr.rows.toLocaleString('en-PH')} records</span>
+        {lensCounts.fmr.rows > 0 &&
+          <small>{lensCounts.fmr.mapped.toLocaleString('en-PH')} with printed geometry</small>}
+      </a>}
+      {lensCounts.mpb.cardId && <a href={routeHref('district',
+        {district: lensCounts.mpb.cardId, lens: 'mpb'}, 'congress')}
+        title="Open the MPB legislative card for this district">
+        <strong>MPB</strong>
+        <span>{lensCounts.mpb.rows.toLocaleString('en-PH')} records</span>
+        {lensCounts.mpb.rows > 0 &&
+          <small>{lensCounts.mpb.mapped.toLocaleString('en-PH')} with title coordinates</small>}
+      </a>}
+    </div>}
     <div className="congress-map-actions">
-      {(p.location_card_ids ?? (p.location_card_id ? [p.location_card_id] : [])).map((id, i) =>
-        <a key={id} className={i === 0 ? 'primary' : ''}
-          href={routeHref('district', {district: id, lens: 'location'}, 'congress')}>
-          Resolution card {i + 1} →</a>)}
-      {p.deo_card_ids.length === 1 && <a
-        href={routeHref('district', {district: p.deo_card_ids[0]}, 'congress')}>
-        DEO-lens card →</a>}
-      {p.deo_card_ids.length > 1 && p.deo_card_ids.map(id => <a key={id}
-        href={routeHref('district', {district: id}, 'congress')}>
-        DEO card {id.split(':').pop()} →</a>)}
+      {fmrCard && <a className="primary"
+        href={routeHref('district', {district: fmrCard, lens: 'fmr'}, 'congress')}>
+        FMR legislative card →</a>}
+      {mpbCard && <a
+        href={routeHref('district', {district: mpbCard, lens: 'mpb'}, 'congress')}>
+        MPB legislative card →</a>}
+      {districtId && <a
+        href={routeHref('district', {district: `location:title_psgc:${districtId}`, lens: 'location'}, 'congress')}>
+        Districts (Legislative) card →</a>}
     </div>
   </aside>;
 }
 
-/** Legend entry swatches mirror the metric's ramp breaks (or category colors). */
-function Legend({metric, breaks, features}) {
-  if (metric.kind === 'category') {
-    const labels = {matched: 'Matched pairs', nep_only: 'NEP only', house_only: 'House only', none: 'No located money'};
-    return <div className="congress-map-legend" aria-label={`${metric.label} legend`}>
-      {Object.entries(metric.colors).map(([value, color]) =>
-        <span key={value} className="congress-map-swatch">
-          <i style={{background: color}}/>{labels[value] ?? value}
-        </span>)}
-    </div>;
+const DEFAULT_FILL_ALPHA = 0.10;
+
+function parseFillAlpha(params) {
+  const raw = params?.get?.('fill');
+  if (raw == null || raw === '') return DEFAULT_FILL_ALPHA;
+  const pct = Number(raw);
+  if (!Number.isFinite(pct)) return DEFAULT_FILL_ALPHA;
+  return Math.min(1, Math.max(0, pct / 100));
+}
+
+function fillOpacityExpression(base) {
+  const hover = Math.min(1, base + 0.18);
+  const selected = Math.min(1, base + 0.25);
+  return ['case',
+    ['boolean', ['feature-state', 'selected'], false], selected,
+    ['boolean', ['feature-state', 'hover'], false], hover,
+    base];
+}
+
+function syncLayers(instance, districts, fmrOverlay, mpbOverlay, fillAlpha = DEFAULT_FILL_ALPHA,
+  objects = DEFAULT_CONGRESS_MAP_OBJECTS, types = DEFAULT_CONGRESS_MAP_TYPES) {
+  if (!instance?.getStyle()) return;
+  const ensure = (id, data) => {
+    if (!instance.getSource(id)) instance.addSource(id, {type: 'geojson', data, generateId: true});
+    else instance.getSource(id).setData(data);
+  };
+
+  ensure(DISTRICTS, districts || emptyFc());
+  ensure(FMR_LINES, fmrOverlay?.lines || emptyFc());
+  ensure(FMR_POINTS, fmrOverlay?.points || emptyFc());
+  ensure(FMR_LINKS, fmrOverlay?.connectors || emptyFc());
+  ensure(FMR_CORRECTED, fmrOverlay?.correctedPoints || emptyFc());
+  ensure(MPB_LINES, mpbOverlay?.lines || emptyFc());
+  ensure(MPB_POINTS, mpbOverlay?.points || emptyFc());
+
+  if (!instance.getLayer(DISTRICTS_FILL)) {
+    instance.addLayer({
+      id: DISTRICTS_FILL, type: 'fill', source: DISTRICTS,
+      paint: {
+        'fill-color': ['string', ['get', 'color'], '#cccccc'],
+        'fill-opacity': fillOpacityExpression(fillAlpha),
+      },
+    });
+    instance.addLayer({
+      id: DISTRICTS_LINE, type: 'line', source: DISTRICTS,
+      paint: {
+        'line-color': ['case',
+          ['boolean', ['feature-state', 'selected'], false], '#111827',
+          ['boolean', ['feature-state', 'hover'], false], '#111827',
+          '#ffffff'],
+        'line-width': ['case',
+          ['boolean', ['feature-state', 'selected'], false], 2.2,
+          ['boolean', ['feature-state', 'hover'], false], 1.6,
+          0.8],
+        'line-opacity': 0.95,
+      },
+    });
+  } else {
+    instance.setPaintProperty(DISTRICTS_FILL, 'fill-opacity', fillOpacityExpression(fillAlpha));
   }
-  const max = Math.max(...features.map(f => metricValue(metric, f)), 1);
-  return <div className="congress-map-legend" aria-label={`${metric.label} legend`}>
-    {[0, ...breaks].map((lo, i) => {
-      const hi = i < breaks.length ? breaks[i] : max;
-      return <span key={i} className="congress-map-swatch">
-        <i style={{background: metric.colors[i]}}/>
-        {i === 0 ? '₱0' : moneyCompact(lo)}–{moneyCompact(hi)}
-      </span>;
+
+  if (!instance.getLayer(FMR_HALO)) {
+    instance.addLayer({
+      id: FMR_HALO, type: 'line', source: FMR_LINES,
+      paint: {'line-color': '#ffffff', 'line-width': 5, 'line-opacity': 0.7},
+      layout: {'line-cap': 'round', 'line-join': 'round'},
+    });
+    instance.addLayer({
+      id: FMR_LINE, type: 'line', source: FMR_LINES,
+      paint: {
+        'line-color': ['get', 'color'],
+        'line-width': ['interpolate', ['linear'], ['zoom'], 5, 1.6, 10, 3.5, 14, 6],
+        'line-opacity': 0.92,
+      },
+      layout: {'line-cap': 'round', 'line-join': 'round'},
+    });
+    instance.addLayer({
+      id: FMR_POINT, type: 'circle', source: FMR_POINTS,
+      paint: {
+        'circle-color': ['get', 'color'],
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 2.5, 10, 4.5, 14, 6.5],
+        'circle-stroke-color': '#ffffff',
+        'circle-stroke-width': 1.2,
+        'circle-opacity': 0.95,
+      },
+    });
+    instance.addLayer({
+      id: FMR_LINK, type: 'line', source: FMR_LINKS,
+      paint: {
+        'line-color': REPAIR_COLOR,
+        'line-width': 2,
+        'line-opacity': 0.85,
+        'line-dasharray': [1.5, 1.5],
+      },
+      layout: {'line-cap': 'round'},
+    });
+    instance.addLayer({
+      id: FMR_CORRECTED_POINT, type: 'circle', source: FMR_CORRECTED,
+      paint: {
+        'circle-color': REPAIR_COLOR,
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 3, 10, 5, 14, 7],
+        'circle-stroke-color': '#ffffff',
+        'circle-stroke-width': 1.4,
+        'circle-opacity': 0.95,
+      },
+    });
+    ensureMpbBoxIcon(instance);
+    instance.addLayer({
+      id: MPB_LINE_HALO, type: 'line', source: MPB_LINES,
+      paint: {
+        'line-color': '#ffffff', 'line-width': 4, 'line-opacity': 0.7,
+        'line-dasharray': [1.2, 1.4],
+      },
+      layout: {'line-cap': 'butt', 'line-join': 'round'},
+    });
+    instance.addLayer({
+      id: MPB_LINE, type: 'line', source: MPB_LINES,
+      paint: {
+        'line-color': ['get', 'color'],
+        'line-width': ['interpolate', ['linear'], ['zoom'], 5, 1.4, 10, 2.4, 14, 3.5],
+        'line-opacity': 0.9,
+        'line-dasharray': [1.2, 1.4],
+      },
+      layout: {'line-cap': 'butt', 'line-join': 'round'},
+    });
+    instance.addLayer({
+      id: MPB_POINT, type: 'symbol', source: MPB_POINTS,
+      layout: {
+        'icon-image': MPB_BOX_ICON_IMAGE,
+        // Match FMR circle diameters (radius 2.5/4.5/6.5 → ~5/9/13 px on a 64px sprite).
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 5, 0.09, 10, 0.15, 14, 0.22],
+        'icon-allow-overlap': true,
+        'icon-ignore-placement': true,
+      },
+      paint: {
+        'icon-opacity': 1,
+      },
+    });
+  }
+  applyLayerFilters(instance, objects, types);
+}
+
+const LAYER_HINTS = {
+  districts: 'Province-hued legislative district polygons',
+  fmr: 'Printed FMR segment lines and endpoints',
+  fmr_repairs: 'Dashed links from printed GPS to accepted corrections',
+  mpb: 'Multi-purpose building title coordinates',
+};
+
+function LayerSwatch({id}) {
+  if (id === 'districts') {
+    return <i className="congress-layer-swatch congress-layer-swatch-fill" aria-hidden="true"
+      style={{background: 'linear-gradient(135deg, #5b8def, #3aa76d)'}}/>;
+  }
+  if (id === 'fmr') {
+    return <i className="congress-layer-swatch congress-layer-swatch-line" aria-hidden="true"
+      style={{background: DISTRICT_SEGMENT_CLASSES.paired.color}}/>;
+  }
+  if (id === 'fmr_repairs') {
+    return <i className="congress-layer-swatch congress-layer-swatch-dash" aria-hidden="true"
+      style={{backgroundImage: `repeating-linear-gradient(90deg, ${REPAIR_COLOR} 0 4px, transparent 4px 7px)`}}/>;
+  }
+  return <i className="congress-layer-swatch congress-layer-swatch-box" aria-hidden="true"
+    style={{background: MPB_POINT_CLASSES.paired.color}}/>;
+}
+
+function LineKey({color, dashed = false}) {
+  return <i className={`congress-layer-key-mark congress-layer-key-line${dashed ? ' is-dashed' : ''}`}
+    aria-hidden="true"
+    style={dashed
+      ? {backgroundImage: `repeating-linear-gradient(90deg, ${color} 0 4px, transparent 4px 7px)`}
+      : {background: color}}/>;
+}
+
+function DotKey({color}) {
+  return <i className="congress-layer-key-mark congress-layer-key-dot" aria-hidden="true"
+    style={{background: color}}/>;
+}
+
+function BoxKey({color}) {
+  return <i className="congress-layer-key-mark congress-layer-key-box" aria-hidden="true"
+    style={{background: color}}/>;
+}
+
+function subtypeMark(objectId, subtypeId) {
+  if (objectId === 'fmr') {
+    return <LineKey color={DISTRICT_SEGMENT_CLASSES[subtypeId].color}/>;
+  }
+  if (objectId === 'mpb') {
+    return <BoxKey color={MPB_POINT_CLASSES[subtypeId].color}/>;
+  }
+  if (subtypeId === 'link') return <LineKey color={REPAIR_COLOR} dashed/>;
+  return <DotKey color={REPAIR_COLOR}/>;
+}
+
+function subtypeCount(objectId, subtypeId, fmrCounts, mpbCounts, repairCount) {
+  if (objectId === 'fmr') return fmrCounts?.[subtypeId]?.segments;
+  if (objectId === 'mpb') return mpbCounts?.[subtypeId]?.points;
+  if (objectId === 'fmr_repairs' && subtypeId === 'point') return repairCount;
+  return null;
+}
+
+function LayerTypeToggles({
+  id, types, onToggleType, fmrCounts, mpbCounts, repairCount,
+}) {
+  const entries = CONGRESS_MAP_TYPE_OPTIONS[id];
+  if (!entries?.length) return null;
+  return <ul className="congress-layer-key" aria-label={`${id} type toggles`}>
+    {entries.map(([subtypeId, label]) => {
+      const checked = Boolean(types?.[id]?.[subtypeId]);
+      const count = subtypeCount(id, subtypeId, fmrCounts, mpbCounts, repairCount);
+      return <li key={subtypeId} className={checked ? 'is-on' : 'is-off'}>
+        <label className="congress-layer-type">
+          {subtypeMark(id, subtypeId)}
+          <span>{label}</span>
+          {count != null && <em>{count.toLocaleString('en-PH')}</em>}
+          <input type="checkbox" checked={checked}
+            aria-label={label}
+            onChange={() => onToggleType(id, subtypeId)}/>
+        </label>
+      </li>;
     })}
+    {id === 'mpb' &&
+      <li className="congress-layer-key-note">
+        <LineKey color={MPB_POINT_CLASSES.paired.color} dashed/>
+        <span>Same-title links follow the building status color</span>
+      </li>}
+  </ul>;
+}
+
+function MapLayersPanel({
+  objects, onChangeObjects, types, onChangeTypes,
+  fillPct, onChangeFill, style, onChangeStyle, onResetView,
+  fmrCounts = null, mpbCounts = null, repairCount = null,
+}) {
+  const [open, setOpen] = useState(true);
+  const toggle = id => onChangeObjects({...objects, [id]: !objects[id]});
+  const toggleType = (objectId, subtypeId) => onChangeTypes({
+    ...types,
+    [objectId]: {
+      ...types[objectId],
+      [subtypeId]: !types[objectId][subtypeId],
+    },
+  });
+  const activeCount = CONGRESS_MAP_OBJECT_OPTIONS.filter(([id]) => objects[id]).length;
+
+  return <div className={`congress-map-panel ${open ? 'is-open' : ''}`}>
+    <div className="congress-map-panel-head">
+      <button type="button" className="congress-map-panel-toggle" aria-expanded={open}
+        onClick={() => setOpen(value => !value)}>
+        <strong>Layers</strong>
+        <span>{activeCount}/{CONGRESS_MAP_OBJECT_OPTIONS.length}</span>
+      </button>
+      <div className="congress-map-panel-quick">
+        <div className="congress-map-basemap" role="group" aria-label="Basemap">
+          {[['light', 'Light'], ['dark', 'Dark']].map(([value, label]) =>
+            <button key={value} type="button"
+              className={style === value ? 'is-active' : ''}
+              aria-pressed={style === value}
+              onClick={() => onChangeStyle(value)}>{label}</button>)}
+        </div>
+        <button type="button" className="congress-map-reset" onClick={onResetView}>Reset</button>
+      </div>
+    </div>
+    {open && <div className="congress-map-panel-body">
+      <ul className="congress-layer-list" aria-label="Map layers">
+        {CONGRESS_MAP_OBJECT_OPTIONS.map(([id, label]) =>
+          <li key={id} className={objects[id] ? 'is-on' : 'is-off'}>
+            <label className="congress-layer-row" title={LAYER_HINTS[id]}>
+              <LayerSwatch id={id}/>
+              <span className="congress-layer-copy">
+                <strong>{label}</strong>
+                <small>{LAYER_HINTS[id]}</small>
+              </span>
+              <input type="checkbox" checked={Boolean(objects[id])}
+                aria-label={label}
+                onChange={() => toggle(id)}/>
+            </label>
+            {id === 'districts' && objects.districts &&
+              <div className="congress-layer-fill">
+                <span>Fill opacity</span>
+                <input type="range" min="0" max="100" step="5" value={fillPct}
+                  aria-label="District fill opacity"
+                  aria-valuetext={`${fillPct}%`}
+                  onChange={event => onChangeFill(Number(event.target.value))}/>
+                <em>{fillPct}%</em>
+              </div>}
+            {objects[id] && id !== 'districts' &&
+              <LayerTypeToggles id={id} types={types} onToggleType={toggleType}
+                fmrCounts={fmrCounts} mpbCounts={mpbCounts} repairCount={repairCount}/>}
+          </li>)}
+      </ul>
+      <div className="congress-layer-actions">
+        <button type="button" onClick={() => {
+          onChangeObjects({...DEFAULT_CONGRESS_MAP_OBJECTS});
+          onChangeTypes(structuredClone(DEFAULT_CONGRESS_MAP_TYPES));
+        }}>Show all</button>
+        <button type="button" onClick={() => onChangeObjects(Object.fromEntries(
+          CONGRESS_MAP_OBJECT_OPTIONS.map(([id]) => [id, false])))}>
+          Hide all</button>
+      </div>
+    </div>}
   </div>;
 }
 
-export default function CongressMap({route}) {
-  const params = route?.params ?? new URLSearchParams();
-  const lens = params.get('lens') === 'location' ? 'location' : 'deo';
-  const metricKey = params.get('metric') || 'located_house_php';
-  const metric = METRICS.find(m => m.key === metricKey) ?? METRICS[0];
-  const style = params.get('basemap') === 'dark' ? 'dark' : 'light';
-
-  const [data, setData] = useState(null);
-  const [error, setError] = useState('');
-  const [selected, setSelected] = useState(null);
-  const [ready, setReady] = useState(false);
-  const container = useRef(null);
+/**
+ * One live map instance bound to a container div. The same stage component
+ * can therefore mount twice — inline on the page and in the full-window
+ * dialog — each with its own MapLibre instance sharing URL-driven state.
+ */
+function useCongressMapInstance(containerRef, error, syncRef, handlers) {
   const map = useRef(null);
+  const hoverId = useRef(null);
+  const [ready, setReady] = useState(false);
+  const handlersRef = useRef(handlers);
+  handlersRef.current = handlers;
+
+  useEffect(() => {
+    if (!containerRef.current || map.current || error) return undefined;
+    const instance = new MapLibreMap({
+      container: containerRef.current,
+      style: STYLES.light,
+      center: [122.5, 12.5],
+      zoom: 5.2,
+      attributionControl: {compact: true},
+    });
+    instance.addControl(new NavigationControl({showCompass: false}), 'bottom-right');
+    instance.addControl(new ScaleControl({unit: 'metric'}), 'bottom-right');
+    instance.on('error', e => handlersRef.current.onError?.(String(e?.error?.message ?? e)));
+
+    const paint = () => {
+      if (!instance.getStyle()) return;
+      ensureMpbBoxIcon(instance);
+      const payload = syncRef.current;
+      if (payload) {
+        syncLayers(instance, payload.districts, payload.fmrOverlay, payload.mpbOverlay,
+          payload.fillAlpha, payload.objects, payload.types);
+      }
+      setReady(true);
+    };
+    instance.on('load', paint);
+    instance.on('style.load', paint);
+
+    const setCursor = value => {
+      const canvas = instance.getCanvas?.();
+      if (canvas?.style) canvas.style.cursor = value;
+    };
+
+    const pick = e => {
+      const markers = instance.queryRenderedFeatures(e.point, {layers: MARKER_LAYERS});
+      if (markers.length) {
+        const recordId = markers[0].properties?.recordId;
+        if (recordId) handlersRef.current.onSelectRecord?.(recordId);
+        return;
+      }
+      const hits = instance.queryRenderedFeatures(e.point, {layers: [DISTRICTS_FILL]});
+      if (!hits.length) {
+        handlersRef.current.onPickDistrict(null);
+        return;
+      }
+      const full = (syncRef.current?.districts?.features ?? [])
+        .find(f => f.properties.leg_id === hits[0].properties.leg_id);
+      if (full) handlersRef.current.onPickDistrict(full);
+    };
+    instance.on('click', pick);
+
+    instance.on('mousemove', DISTRICTS_FILL, e => {
+      setCursor('pointer');
+      const feature = e.features?.[0];
+      if (!feature || feature.id == null) return;
+      if (hoverId.current != null && hoverId.current !== feature.id) {
+        instance.setFeatureState({source: DISTRICTS, id: hoverId.current}, {hover: false});
+      }
+      hoverId.current = feature.id;
+      instance.setFeatureState({source: DISTRICTS, id: feature.id}, {hover: true});
+      handlersRef.current.onHoverDistrict?.(feature.properties?.leg_id ?? null);
+    });
+    instance.on('mouseleave', DISTRICTS_FILL, () => {
+      setCursor('');
+      if (hoverId.current != null) {
+        instance.setFeatureState({source: DISTRICTS, id: hoverId.current}, {hover: false});
+        hoverId.current = null;
+      }
+      handlersRef.current.onHoverDistrict?.(null);
+    });
+    for (const layer of MARKER_LAYERS) {
+      instance.on('mouseenter', layer, () => setCursor('pointer'));
+      instance.on('mouseleave', layer, () => setCursor(''));
+    }
+
+    map.current = instance;
+    return () => {instance.remove(); map.current = null; setReady(false);};
+  }, [error, containerRef, syncRef]);
+
+  return [map, ready];
+}
+
+function MapStage({
+  variant = 'inline', syncRef, style, fillAlpha, objects, types,
+  districts, fmrOverlay, mpbOverlay, markersPending,
+  fmrIndex, mpbIndex, onSelectRecord, onExpand = null, onContract = null,
+  objectsControls, typeControls, fillControl, styleControl,
+  selectParam = null,
+}) {
+  const container = useRef(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [hoveredId, setHoveredId] = useState(null);
   const appliedStyle = useRef('light');
-  const appliedMetric = useRef(metric.key);
-  const dataRef = useRef(null);
+  const [map, ready] = useCongressMapInstance(container, false, syncRef, {
+    onSelectRecord,
+    onPickDistrict: setSelectedDistrict,
+    onHoverDistrict: setHoveredId,
+  });
+
+  // A shareable selection (?select=<leg_id>) restores the district panel on
+  // load. Clicking the map clears the param so the URL stays honest.
+  useEffect(() => {
+    if (selectedDistrict || !districts || !selectParam) return;
+    const feature = districts.features.find(f => f.properties.leg_id === selectParam);
+    if (feature) setSelectedDistrict(feature);
+  }, [selectedDistrict, districts, selectParam]);
+
+  useEffect(() => {
+    if (!ready || !map.current) return;
+    syncLayers(map.current, districts, fmrOverlay, mpbOverlay, fillAlpha, objects, types);
+  }, [ready, map, districts, fmrOverlay, mpbOverlay, fillAlpha, objects, types]);
+
+  useEffect(() => {
+    if (!ready || !map.current || !container.current) return undefined;
+    const instance = map.current;
+    const observer = new ResizeObserver(() => instance.resize());
+    observer.observe(container.current);
+    instance.resize();
+    return () => observer.disconnect();
+  }, [ready, map]);
+
+  useEffect(() => {
+    if (!ready || !map.current || appliedStyle.current === style) return;
+    appliedStyle.current = style;
+    map.current.setStyle(STYLES[style], {diff: false});
+  }, [style, ready, map]);
+
+  useEffect(() => {
+    const instance = map.current;
+    if (!ready || !instance || !districts) return;
+    const wanted = selectedDistrict?.properties?.leg_id;
+    const rendered = instance.querySourceFeatures(DISTRICTS)
+      .find(f => f.properties?.leg_id === wanted);
+    if (rendered?.id != null) {
+      instance.setFeatureState({source: DISTRICTS, id: rendered.id}, {selected: true});
+    }
+    return () => {
+      if (rendered?.id != null) {
+        try {
+          instance.setFeatureState({source: DISTRICTS, id: rendered.id}, {selected: false});
+        } catch { /* source may have been rebuilt on style swap */ }
+      }
+    };
+  }, [ready, map, districts, selectedDistrict]);
+
+  const fmrSegmentCount = fmrOverlay.lines.features.length;
+  const mpbPointCount = mpbOverlay.points.features.length;
+  const repairCount = fmrOverlay.repairCount ?? 0;
+  const hoverLabel = hoveredId
+    ? districts?.features.find(f => f.properties.leg_id === hoveredId)?.properties
+    : null;
+
+  return <div className={`congress-map-stage is-${variant}`}>
+    <div ref={container} className="congress-map-canvas" role="application"
+      aria-label="Interactive legislative districts with FMR and MPB markers"/>
+    <MapLayersPanel
+      objects={objects}
+      onChangeObjects={objectsControls.set}
+      types={types}
+      onChangeTypes={typeControls.set}
+      fillPct={Math.round(fillAlpha * 100)}
+      onChangeFill={fillControl.set}
+      style={style}
+      onChangeStyle={styleControl.set}
+      onResetView={() => {setSelectedDistrict(null); fitPhilippines(map.current);}}
+      fmrCounts={fmrOverlay.counts}
+      mpbCounts={mpbOverlay.counts}
+      repairCount={repairCount}
+    />
+    {onExpand && variant === 'inline' &&
+      <button type="button" className="congress-map-expand congress-map-expand-float"
+        onClick={onExpand}>Full window ⤢</button>}
+    {variant === 'full' &&
+      <button type="button" className="congress-map-fullclose"
+        onClick={onContract}>Exit full window ✕</button>}
+    {!districts && <p className="fmr-map-warning" role="status">Loading district geometry…</p>}
+    {hoverLabel && !selectedDistrict &&
+      <p className="congress-map-hoverchip" role="status">
+        {hoverLabel.jurisdiction} · {hoverLabel.district_label}
+      </p>}
+    {selectedDistrict &&
+      <DistrictPanel feature={selectedDistrict} fmrIndex={fmrIndex} mpbIndex={mpbIndex}
+        onClose={() => setSelectedDistrict(null)}/>}
+    <div className="congress-map-status" role="status">
+      {markersPending
+        ? 'Loading FMR segments and MPB points…'
+        : <>
+            <span>{fmrSegmentCount.toLocaleString('en-PH')} FMR segments</span>
+            <span>{mpbPointCount.toLocaleString('en-PH')} MPB points</span>
+            {repairCount > 0 &&
+              <span>{repairCount.toLocaleString('en-PH')} corrections</span>}
+          </>}
+    </div>
+  </div>;
+}
+
+function FullscreenMapDialog({children, onClose}) {
+  const dialog = useRef(null);
+  useEffect(() => {
+    if (!dialog.current) return undefined;
+    const element = dialog.current;
+    element.showModal();
+    document.body.style.overflow = 'hidden';
+    const onKey = event => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      element.close();
+      document.body.style.overflow = '';
+    };
+  }, []);
+  return <dialog ref={dialog} className="congress-map-fullscreen"
+    onCancel={event => {event.preventDefault(); onClose();}}
+    aria-label="Congress district map, full window">
+    {children}
+  </dialog>;
+}
+
+/**
+ * Congress map tab: PSGC2LEG viz district polygons, nationwide FMR printed
+ * segments (with dashed connectors to accepted corrections), and MPB title
+ * points. Marker clicks bubble a recordId up to the parent RecordDrawer.
+ * `full=1` opens the same map in a full-window dialog (its own instance,
+ * shared URL-driven state).
+ */
+export default function CongressMap({
+  route, fmrRecords = [], mpbRecords = [], fmrIndex = null, mpbIndex = null,
+  onSelectRecord, selectedRecordId = null, markersPending = false,
+}) {
+  const params = route?.params ?? new URLSearchParams();
+  const style = params.get('basemap') === 'dark' ? 'dark' : 'light';
+  const fillAlpha = parseFillAlpha(params);
+  const objects = useMemo(() => readCongressMapObjects(params), [params.get('objects')]);
+  const types = useMemo(() => readCongressMapTypes(params), [params.get('types')]);
+  const full = params.get('full') === '1';
+
+  const [districts, setDistricts] = useState(null);
+  const [error, setError] = useState('');
+
+  const fmrOverlay = useMemo(() => fmrPrintedMapOverlay(fmrRecords), [fmrRecords]);
+  const mpbOverlay = useMemo(() => mpbNationalMapOverlay(mpbRecords), [mpbRecords]);
+
+  // Latest payload for whichever map instance (re)paints its basemap style.
+  const syncRef = useRef(null);
+  syncRef.current = {districts, fmrOverlay, mpbOverlay, fillAlpha, objects, types};
 
   useEffect(() => {
     const controller = new AbortController();
-    loadData('congress_district_map_2027.json', controller.signal)
-      .then(setData)
-      .catch(event => {if (event.name !== 'AbortError') setError(event.message);});
+    Promise.all([
+      loadJson(siteUrl('PSGC2LEG/viz/leg_districts.geojson'), controller.signal),
+      loadJson(siteUrl('PSGC2LEG/viz/province_hues.json'), controller.signal),
+      loadData('congress_district_map_2027.json', controller.signal),
+    ]).then(([geojson, hues, mapArtifact]) => {
+      const colored = colorDistrictFeatures(geojson, hues);
+      const bridge = districtIdBridge(mapArtifact);
+      setDistricts(decorateDistrictIds(colored, bridge));
+    }).catch(event => {
+      if (event.name !== 'AbortError') setError(event.message);
+    });
     return () => controller.abort();
   }, []);
-
-  const features = useMemo(() => data?.features ?? [], [data]);
-  const breaks = useMemo(() => breaksFor(metric, features), [metric, features]);
 
   const updateRoute = patch => {
     const next = new URLSearchParams(params);
@@ -189,173 +734,50 @@ export default function CongressMap({route}) {
     window.location.hash = routeHref('map', Object.fromEntries(next), 'congress');
   };
 
-  // Deep link: ?district=<lens id> selects and flies to the district.
-  useEffect(() => {
-    if (!ready || !data) return;
-    const wanted = params.get('district');
-    if (!wanted) {setSelected(null); return;}
-    const feature = features.find(f =>
-      f.properties.district_id === wanted ||
-      f.properties.location_card_id === wanted ||
-      f.properties.deo_card_ids.includes(wanted));
-    if (feature) {
-      setSelected(feature);
-      const bounds = new LngLatBounds();
-      const walk = c => Array.isArray(c[0])
-        ? c.forEach(walk)
-        : bounds.extend(c);
-      walk(feature.geometry.coordinates);
-      if (bounds.isEmpty()) return;
-      map.current?.fitBounds(bounds, {padding: 60, maxZoom: 10, duration: 600});
-    }
-  }, [ready, data, params.get('district')]);
+  const objectsControls = {
+    set: next => updateRoute({objects: congressMapObjectsParam(next)}),
+  };
+  const typeControls = {
+    set: next => updateRoute({types: congressMapTypesParam(next)}),
+  };
+  const fillControl = {
+    set: next => updateRoute({
+      fill: next === Math.round(DEFAULT_FILL_ALPHA * 100) ? null : String(next),
+    }),
+  };
+  const styleControl = {
+    set: next => updateRoute({basemap: next === 'light' ? null : next}),
+  };
 
-  useEffect(() => {
-    if (!container.current || map.current || error) return;
-    const instance = new MapLibreMap({
-      container: container.current,
-      style: STYLES.light,
-      center: [122.5, 12.5],
-      zoom: 5.2,
-      attributionControl: {compact: true},
-    });
-    instance.addControl(new NavigationControl({showCompass: false}), 'top-right');
-    instance.addControl(new ScaleControl({unit: 'metric'}), 'bottom-left');
-    instance.on('error', e => setError(String(e?.error?.message ?? e)));
-    const onStyle = () => {
-      if (!dataRef.current || !instance.getStyle()) return;
-      syncLayers(instance, dataRef.current, metricRef.current, breaksRef.current);
-      setReady(true);
-    };
-    instance.on('load', onStyle);
-    instance.on('style.load', onStyle);
-    const pick = e => {
-      const hits = instance.queryRenderedFeatures(e.point, {layers: [FILL_LAYER]});
-      if (!hits.length) {setSelected(null); return;}
-      // queryRenderedFeatures returns a clone; find the full feature for the panel.
-      const full = (dataRef.current?.features ?? [])
-        .find(f => f.properties.district_id === hits[0].properties.district_id);
-      if (full) setSelected(full);
-    };
-    instance.on('click', FILL_LAYER, pick);
-    instance.on('mousemove', FILL_LAYER, () => {
-      const canvas = instance.getCanvas?.();
-      if (canvas?.style) canvas.style.cursor = 'pointer';
-    });
-    instance.on('mouseleave', FILL_LAYER, () => {
-      const canvas = instance.getCanvas?.();
-      if (canvas?.style) canvas.style.cursor = '';
-    });
-    map.current = instance;
-    return () => {instance.remove(); map.current = null; setReady(false);};
-  }, []);
-
-  // Keep refs current for the style-reload callback without re-subscribing.
-  const metricRef = useRef(metric);
-  const breaksRef = useRef(breaks);
-  metricRef.current = metric;
-  breaksRef.current = breaks;
-  dataRef.current = data;
-
-  useEffect(() => {
-    if (!ready || !map.current) return;
-    syncLayers(map.current, data, metric, breaks);
-  }, [ready, data, metric, breaks]);
-
-  useEffect(() => {
-    if (!ready || !map.current || appliedStyle.current === style) return;
-    appliedStyle.current = style;
-    map.current.setStyle(STYLES[style], {diff: false});
-  }, [style, ready]);
-
-  const locatedTotal = useMemo(() =>
-    features.reduce((total, f) => total + (f.properties.located_house_php ?? 0), 0), [features]);
-  const deoTotal = useMemo(() =>
-    features.reduce((total, f) => total + (f.properties.deo_house_php ?? 0), 0), [features]);
-  const nepTotal = useMemo(() =>
-    features.reduce((total, f) => total + (f.properties.located_nep_php ?? 0), 0), [features]);
-  const mismatchTotal = useMemo(() =>
-    features.reduce((total, f) => total + (f.properties.mismatch_rows ?? 0), 0), [features]);
-
-  if (error && !data) {
+  if (error && !districts) {
     return <section className="fmr-section" role="alert">
       <h1>District map could not load</h1><p>{error}</p>
       <button type="button" onClick={() => window.location.reload()}>Reload</button></section>;
   }
 
-  return <section className="congress-map" aria-label="Congress district map">
-    <div className="fmr-page-title">
-      <div>
-        <p className="fmr-eyebrow">FY2027 · Congress · District map</p>
-        <h1>Where the budget documents place the work</h1>
-        <p>The 254 legislative district polygons from the PSGC2LEG build, choroplethed by either
-          lens: located money (title GPS and PSGC points inside the polygon) or DEO-attributed
-          money (office → district through the crosswalk), the district-assigned NEP, or the
-          House↔NEP pair status — where matched money survived both stages (purple), NEP-only
-          unsupported insertions dominate (green), or House-only deletions dominate (blue). A final metric
-          highlights the {mismatchTotal.toLocaleString('en-PH')} office↔location mismatch rows — districts where
-          the two lenses disagree, flagged rather than reconciled.</p>
-      </div>
-      <ShareLink/>
-    </div>
-    <div className="congress-controls">
-      <label>Metric
-        <select value={metric.key} onChange={e => updateRoute({metric: e.target.value === 'located_house_php' ? null : e.target.value})}>
-          {METRICS.map(m => <option key={m.key} value={m.key}>{m.label}</option>)}
-        </select></label>
-      <label>Basemap
-        <select value={style} onChange={e => updateRoute({basemap: e.target.value === 'light' ? null : e.target.value})}>
-          <option value="light">Light</option><option value="dark">Dark</option>
-        </select></label>
-      <span role="status" className="congress-count">
-        House {moneyCompact(locatedTotal)} · NEP {moneyCompact(nepTotal)} · DEO {moneyCompact(deoTotal)} across 254 districts</span>
-      <button type="button" onClick={() => {setSelected(null); map.current?.fitBounds(
-        new LngLatBounds([117, 5], [127, 19]), {padding: 40, duration: 600});}}>
-        Reset view</button>
-    </div>
-    <div className="congress-map-shell">
-      <div ref={container} className="congress-map-canvas" role="application"
-        aria-label="Interactive legislative district choropleth"/>
-      {!data && <p className="fmr-map-warning" role="status">Loading district geometry…</p>}
-      {data && ready && <Legend metric={metric} breaks={breaks} features={features}/>}
-      {selected && <DistrictPanel feature={selected} lens={lens} onClose={() => setSelected(null)}/>}
-    </div>
-    <p className="fmr-muted congress-map-note">
-      District boundaries: PSGC2LEG municipal dissolves (2025 district composition). Located figures
-      come from the location lens — title GPS points and PSGC representative points inside the
-      polygon; corridor projects anchor at their named endpoints, so endpoint districts can read
-      high. DEO figures are the office-lens attribution and are not split across a shared range.
-      Neither lens claims a representative requested or controlled any project.
-    </p>
-  </section>;
-}
+  const stageProps = {
+    syncRef, style, fillAlpha, objects, types,
+    districts, fmrOverlay, mpbOverlay, markersPending,
+    fmrIndex, mpbIndex, onSelectRecord,
+    objectsControls, typeControls, fillControl, styleControl,
+    selectParam: params.get('select'),
+  };
 
-function syncLayers(instance, data, metric, breaks) {
-  if (!instance?.getStyle() || !data) return;
-  if (!instance.getSource(SOURCE_ID)) {
-    instance.addSource(SOURCE_ID, {type: 'geojson', data, generateId: true});
-  }
-  if (!instance.getLayer(FILL_LAYER)) {
-    instance.addLayer({
-      id: FILL_LAYER, type: 'fill', source: SOURCE_ID,
-      paint: {
-        'fill-color': colorExpression(metric, breaks),
-        'fill-opacity': ['case',
-          ['boolean', ['feature-state', 'selected'], false], 0.95,
-          ['boolean', ['feature-state', 'hover'], false], 0.9,
-          0.78],
-      },
-    });
-    instance.addLayer({
-      id: LINE_LAYER, type: 'line', source: SOURCE_ID,
-      paint: {
-        'line-color': '#ffffff',
-        'line-width': ['interpolate', ['linear'], ['zoom'], 4, 0.5, 8, 1.4, 12, 2.4],
-        'line-opacity': 0.9,
-      },
-    });
-  } else {
-    instance.setPaintProperty(FILL_LAYER, 'fill-color', colorExpression(metric, breaks));
-    instance.getSource(SOURCE_ID)?.setData(data);
-  }
+  return <section className="congress-map" aria-label="Congress district map">
+    <div className="congress-map-title">
+      <div>
+        <p className="fmr-eyebrow">FY2027 · Congress · Map</p>
+        <h1>Where the documents place the work</h1>
+      </div>
+      <div className="congress-map-title-actions">
+        <ShareLink/>
+      </div>
+    </div>
+    {!full && <MapStage {...stageProps} variant="inline"
+      onExpand={() => updateRoute({full: '1'})}/>}
+    {full && <FullscreenMapDialog onClose={() => updateRoute({full: null})}>
+      <MapStage {...stageProps} variant="full"
+        onContract={() => updateRoute({full: null})}/>
+    </FullscreenMapDialog>}
+  </section>;
 }

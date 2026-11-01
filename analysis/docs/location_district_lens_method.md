@@ -21,6 +21,12 @@ in [`fmr_legislative_lens_method.md`](fmr_legislative_lens_method.md). It uses a
 new FMR-specific builder because FMR has no DEO field and carries multi-point
 coordinate evidence with different review semantics.
 
+The DPWH multi-purpose-building legislative lens is documented in
+[`mpb_legislative_lens_method.md`](mpb_legislative_lens_method.md). It does not
+re-derive placement: it scopes the DPWH comparison ledger to the BIP
+multi-purpose-building PAP and MPB-titled rows, then reuses this document's
+committed row resolutions verbatim, so the two tabs cannot disagree about a row.
+
 Nothing here establishes that a representative requested, sponsored or
 controlled a project or amount. The result describes how the linked budget
 records resolve through the evidence hierarchy below.

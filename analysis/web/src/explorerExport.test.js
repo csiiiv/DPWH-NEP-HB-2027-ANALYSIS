@@ -112,7 +112,7 @@ test('simple scope exports exactly the requested columns and no more', () => {
   const csv = exportExplorerCsv(rows, {scope: 'simple'});
   const headings = csv.split('\r\n')[0].replace('\ufeff', '').split(',');
   assert.deepEqual(headings, [
-    'Project Title', 'Bucket', 'Match Status', 'Analytic Flags', 'Region', 'Program',
+    'Project Title', 'Bucket', 'Match Status', 'Analytic Flags', 'Provenance Flags', 'Region', 'Program',
     'NEP Office', 'HGAB3 Office', 'HGAB3 Value', 'NEP Value', 'DELTA PESO',
     'HGAB3 Source Page', 'NEP Source Page',
   ]);
@@ -130,7 +130,7 @@ test('scope is echoed in JSON and defaults to full', () => {
   assert.equal(JSON.parse(exportExplorerJson(rows, {})).scope, 'full');
   const simple = JSON.parse(exportExplorerJson(rows, {scope: 'simple'})).rows[0];
   assert.deepEqual(Object.keys(simple).filter(k => k !== 'source_pages'), [
-    'title', 'bucket', 'statusLabel', 'flags', 'region', 'program',
+    'title', 'bucket', 'statusLabel', 'flags', 'provenance_flags', 'region', 'program',
     'nep_office', 'house_office', 'house_php', 'nep_php', 'delta_php',
   ]);
   assert.equal(simple.evidence, undefined, 'simple drops the evidence blob');
@@ -240,4 +240,66 @@ test('file name records the chosen scope', () => {
   assert.match(explorerExportFileName({...meta, scope: 'simple'}, 'csv'), /dinagat-islands_simple\.csv$/);
   assert.match(explorerExportFileName({...meta, scope: 'full'}, 'json'), /dinagat-islands_full\.json$/);
   assert.match(explorerExportFileName(meta, 'csv'), /dinagat-islands_full\.csv$/, 'defaults to full');
+});
+
+test('multi-card exports identify each row\'s card without changing single-card exports', () => {
+  const stamped = rows.map((row, i) => ({
+    ...row,
+    card_id: i === 0 ? 'fmr:district:leg:nueva-ecija:1st' : 'fmr:region:VII',
+    card_label: i === 0 ? 'NUEVA ECIJA (FIRST DISTRICT)' : 'Region VII',
+  }));
+  const csv = exportExplorerCsv(stamped, {scope: 'simple', multiCard: true, lens: 'fmr', card: 'all'});
+  const headings = csv.split('\r\n')[0].replace('\ufeff', '').split(',');
+  assert.deepEqual(headings.slice(0, 4),
+    ['Project Title', 'Card ID', 'Card', 'Bucket']);
+  assert.match(csv, /NUEVA ECIJA \(FIRST DISTRICT\)/);
+  assert.match(csv, /fmr:district:leg:nueva-ecija:1st/);
+
+  const json = JSON.parse(exportExplorerJson(stamped, {
+    scope: 'simple', multiCard: true, lens: 'fmr', card: 'all',
+  }));
+  assert.equal(json.rows[0].card_id, 'fmr:district:leg:nueva-ecija:1st');
+  assert.equal(json.rows[1].card_label, 'Region VII');
+  // Single-card exports stay free of the placement columns.
+  const single = exportExplorerCsv(stamped, {scope: 'simple'}).split('\r\n')[0];
+  assert.doesNotMatch(single, /Card ID|,Card,/);
+  assert.match(explorerExportFileName({lens: 'fmr', card: 'all', multiCard: true, scope: 'full'}, 'csv'),
+    /^fmr_all_full\.csv$/);
+});
+
+test('MPB multi-card Full exports disclose scope and stay Simple-free of it', () => {
+  const stamped = [{
+    ...rows[0],
+    card_id: 'mpb:title_psgc:leg:la-union:1st',
+    card_label: 'LA UNION (FIRST DISTRICT)',
+    scopeLabel: 'BIP MPB programme line + MPB title',
+    titleFragment: 'Multi-purpose Building',
+  }];
+  const full = exportExplorerCsv(stamped, {
+    scope: 'full', multiCard: true, lens: 'mpb', card: 'all',
+  });
+  const headings = full.split('\r\n')[0].replace('\ufeff', '').split(',');
+  assert.ok(headings.includes('MPB scope rule'));
+  assert.ok(headings.includes('MPB matched title fragment'));
+  assert.ok(headings.includes('Card ID'));
+  assert.match(full, /BIP MPB programme line \+ MPB title/);
+  assert.match(full, /Multi-purpose Building/);
+
+  const json = JSON.parse(exportExplorerJson(stamped, {
+    scope: 'full', multiCard: true, lens: 'mpb', card: 'all',
+  }));
+  assert.equal(json.scope, 'full');
+  assert.equal(json.multi_card, true);
+  assert.equal(json.rows[0].mpb_scope, 'BIP MPB programme line + MPB title');
+  assert.equal(json.rows[0].card_id, 'mpb:title_psgc:leg:la-union:1st');
+
+  // Simple stays the shortlist: no scope columns, but card placement still
+  // rides because the download spans every district.
+  const simple = exportExplorerCsv(stamped, {
+    scope: 'simple', multiCard: true, lens: 'mpb', card: 'all',
+  }).split('\r\n')[0];
+  assert.doesNotMatch(simple, /MPB scope rule/);
+  assert.match(simple, /Card ID/);
+  assert.match(explorerExportFileName({lens: 'mpb', card: 'all', multiCard: true, scope: 'full'}, 'json'),
+    /^mpb_all_full\.json$/);
 });

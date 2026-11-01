@@ -326,6 +326,34 @@ def package_congress(target):
           f"({fmr_counts['district_rows']} district rows, "
           f"{fmr_counts['fallback_rows']} region-fallback rows)")
 
+    # MPB legislative lens: scopes the DPWH ledger to the BIP multi-purpose
+    # building programme and MPB titles, reusing the location lens's committed
+    # resolution (built above). Depends on the location index being fresh.
+    subprocess.run([sys.executable,
+                    str(ROOT / 'analysis/web/buildMpbLegislativeLens.py')],
+                   check=True, cwd=ROOT)
+    mpb_path = DATA / 'mpb_legislative_index_2027.json'
+    if not mpb_path.is_file():
+        raise ValueError('MPB legislative lens index was not built: ' + str(mpb_path))
+    shutil.copyfile(mpb_path, target / mpb_path.name)
+    mpb = json.loads(mpb_path.read_text())
+    mpb_counts = mpb['counts']
+    print(f"Packaged MPB legislative lens: {mpb_counts['cards']} cards "
+          f"({mpb_counts['district_rows']} district rows, "
+          f"{mpb_counts['rows_with_coordinates']} rows with title coordinates)")
+
+    # Congress map tab reads the PSGC2LEG viz polygons + province hues as-is
+    # (no choropleth). Keep them next to the other packaged static assets.
+    viz_src = ROOT / 'PSGC2LEG' / 'viz'
+    viz_out = OUTPUT / 'PSGC2LEG' / 'viz'
+    viz_out.mkdir(parents=True, exist_ok=True)
+    for name in ('leg_districts.geojson', 'province_hues.json'):
+        src = viz_src / name
+        if not src.is_file():
+            raise ValueError(f'PSGC2LEG viz asset missing: {src}')
+        shutil.copyfile(src, viz_out / name)
+    print('Packaged PSGC2LEG viz district polygons + province hues for #congress/map')
+
 
 def main(with_react=True):
     validate_current_pages()

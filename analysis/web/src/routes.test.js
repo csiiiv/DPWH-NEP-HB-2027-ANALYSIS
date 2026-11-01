@@ -153,15 +153,17 @@ test('congress workspace routes stay prefixed and deep-link a district', () => {
   assert.equal(route.params.get('dataset'), 'dpwh');
   assert.equal(routeHref('district', {district: 'office-group:leg:tarlac:3rd'}, 'congress'),
     '#congress/district?district=office-group%3Aleg%3Atarlac%3A3rd');
-  // Congress has four tabs — two DPWH lenses, FMR legislative, and the map —
-  // while the district page stays a deep link reached by clicking a
-  // representative, never a tab.
+  // Congress has five tabs — two DPWH lenses, FMR legislative, MPB
+  // legislative, and the map — while the district page stays a deep link
+  // reached by clicking a representative, never a tab.
   assert.deepEqual(workspaces.congress.pages,
     [['home', 'Districts (DEO)'], ['location', 'Districts (Legislative)'],
-      ['fmr', 'FMR (Legislative)'], ['map', 'Map']]);
+      ['fmr', 'FMR (Legislative)'], ['mpb', 'MPB (Legislative)'], ['map', 'Map']]);
   assert.equal(readRoute('#congress/location').key, 'location',
     'the location tab routes to its own key');
   assert.equal(readRoute('#congress/fmr').key, 'fmr');
+  assert.equal(readRoute('#congress/mpb').key, 'mpb',
+    'the MPB tab routes to its own key');
   assert.equal(workspaceHref('congress', readRoute('#nia/analysis')), '#congress/home');
   assert.equal(workspaceHref('nia', readRoute('#congress/district')), '#nia/home');
   // A stale district id is dropped rather than read as the literal string

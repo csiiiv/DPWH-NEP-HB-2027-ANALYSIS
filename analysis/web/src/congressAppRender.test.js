@@ -4,8 +4,8 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createServer } from "vite";
 import fs from "node:fs";
-import { sortedCards, parseCardSort, districtSeats, fmrRows, fmrExplorerRow } from "./congressModel.js";
-import { locationCards } from "./congressModel.js";
+import { sortedCards, parseCardSort, districtSeats, fmrRows, fmrExplorerRow, mpbExplorerRow } from "./congressModel.js";
+import { locationCards, cardRows } from "./congressModel.js";
 import { buildFmrRedFlags } from "./fmrRedFlags.js";
 
 /** Render-level guards for the #congress workspace.
@@ -26,6 +26,7 @@ const DATA = new URL("../../data/", import.meta.url);
 const INDEX = "congress_district_index_2027.json";
 const LOCATION_INDEX = "location_district_index_2027.json";
 const FMR_INDEX = "fmr_legislative_index_2027.json";
+const MPB_INDEX = "mpb_legislative_index_2027.json";
 const FMR_DETAIL = new URL("../../../other-analysis/data/fmr_workbench.json", import.meta.url);
 // The index is derived (predev/prebuild, gitignored); the drawer test also
 // reads the comparison payload, so guard on both.
@@ -36,6 +37,8 @@ const skipLocation = haveIndex && fs.existsSync(new URL(LOCATION_INDEX, DATA))
   ? false : { skip: "location-lens dataset not built — run predev/prebuild" };
 const skipFmr = haveIndex && fs.existsSync(new URL(FMR_INDEX, DATA)) && fs.existsSync(FMR_DETAIL)
   ? false : { skip: "FMR legislative datasets not built — run predev/prebuild" };
+const skipMpb = haveIndex && fs.existsSync(new URL(MPB_INDEX, DATA))
+  ? false : { skip: "MPB legislative dataset not built — run predev/prebuild" };
 
 const read = (name) => JSON.parse(fs.readFileSync(new URL(name, DATA), "utf8"));
 
@@ -258,6 +261,17 @@ test("the Show summary button is offered on both lens grids, opening a tied-out 
   }
 });
 
+test("the FMR grid offers an all-districts export that other lenses do not", skipFmr, async () => {
+  const index = read(INDEX);
+  const fmr = await render("Districts", {index, fmrIndex: read(FMR_INDEX), lens: "fmr",
+    route: route("fmr")});
+  assert.ok(fmr.includes(">Export all districts…</button>"),
+    "FMR grid must offer the full-lens export");
+  // Other lenses keep the grid light — they never promise a full-row download.
+  const home = await render("Districts", {index, route: route("home")});
+  assert.ok(!home.includes("Export all districts"), "DEO grid must not offer FMR export");
+});
+
 test("the FMR legislative grid and explorer expose assignment evidence", skipFmr, async () => {
   const index = read(INDEX);
   const fmrIndex = read(FMR_INDEX);
@@ -306,6 +320,53 @@ test("the FMR legislative grid and explorer expose assignment evidence", skipFmr
   assert.ok(reviewDrawer.includes("#fmr/analysis?view=red_flags"));
   assert.ok(reviewDrawer.includes(">Show project map</button>"));
   assert.ok(!reviewDrawer.includes("openstreetmap.org"));
+
+  // A corrected coordinate discloses its provenance in the drawer: the flag
+  // chip, the per-stage evidence list and a link into the source record.
+  const correctedRow = fmrRows(detail).find(row => row.id === "pair:nep_fmr:p18:r15:ib:p685:r5");
+  assert.ok(correctedRow, "Tampac I comparison row missing");
+  const correctedDrawer = await render("RecordDrawer", {
+    record: fmrExplorerRow(correctedRow, fmrIndex.row_resolution[correctedRow.id]),
+    onPdf: () => {}, onMap: () => {}, onClose: () => {},
+  });
+  assert.ok(correctedDrawer.includes("Coordinate correction applied"));
+  assert.ok(correctedDrawer.includes("Coordinate corrections applied"));
+  assert.ok(correctedDrawer.includes("Off-by-one-digit repair accepted"));
+  assert.ok(correctedDrawer.includes("nep_fmr:p18:r15"));
+  assert.ok(correctedDrawer.includes("#fmr/nep?node=nep_fmr%3Ap18%3Ar15"));
+  assert.ok(correctedDrawer.includes("provenance, not an open problem"));
+  // Provenance is a first-class dimension: the correction badge sits in the
+  // drawer's meta chips, and the analytic-flags list stays warning-only.
+  assert.match(correctedDrawer, /class="fmr-badge provenance"[^>]*>Coordinate correction applied</);
+  assert.ok(!correctedDrawer.includes('<li>Coordinate correction applied</li>'));
+});
+
+test("the FMR explorer exposes provenance as its own column and filter", skipFmr, async () => {
+  const index = read(INDEX);
+  const fmrIndex = read(FMR_INDEX);
+  const detail = JSON.parse(fs.readFileSync(FMR_DETAIL, "utf8"));
+  // Nueva Ecija 1st carries both correction variants: the accepted digit
+  // repair (Tampac I) and the image-reviewed OCR transcription (Valeriana).
+  const html = await render("District", {index, fmrIndex, detail, lens: "fmr",
+    route: route("district", "district=fmr%3Adistrict%3Aleg%3Anueva-ecija%3A1st&lens=fmr")});
+
+  // The dedicated column and filter select appear once the census is nonzero…
+  assert.ok(html.includes("All provenance"), "provenance filter default option missing");
+  assert.ok(html.includes("Coordinate correction applied (2)"),
+    "provenance filter must count both corrected rows on Nueva Ecija 1st");
+  const headers = html.match(/<th[^>]*>.*?<\/th>/gs) ?? [];
+  assert.ok(headers.some(th => th.includes(">Provenance<")),
+    "provenance column header missing from the explorer table");
+
+  // …and filtering by provenance narrows to the corrected rows only, without
+  // touching the analytic-flag filter.
+  const filtered = await render("District", {index, fmrIndex, detail, lens: "fmr",
+    route: route("district", "district=fmr%3Adistrict%3Aleg%3Anueva-ecija%3A1st&lens=fmr&provenance=coordinate_correction_applied")});
+  assert.ok(filtered.includes("2 of "), "provenance filter must narrow the row count");
+  assert.ok(filtered.includes('value="coordinate_correction_applied" selected'),
+    "provenance select must hold the active filter");
+  assert.ok(filtered.includes("Corrected · House+NEP"),
+    "provenance cell must name the amended stages");
 });
 
 test("the summary modal lists one row per card with NEP, amended and increase, then totals", skipLocation, async () => {
@@ -488,3 +549,117 @@ test("legislative card faces lead with the district, not the representative", sk
   assert.ok(page.includes(card.districts[0].representative.name),
     "the representative stays visible below the heading");
 });
+
+test("the MPB grid renders from the MPB index with its own lens copy", skipMpb, async () => {
+  const index = read(INDEX);
+  const mpbIndex = read(MPB_INDEX);
+  const grid = await render("Districts", {index, mpbIndex, lens: "mpb", route: route("mpb")});
+
+  // One article per MPB card (district cards plus region catch-alls).
+  const articles = grid.match(/<article class="congress-card /g) ?? [];
+  assert.equal(articles.length, locationCards(mpbIndex).length);
+  // The hero states the reuse contract: placement is the committed location
+  // lens, so the two tabs cannot disagree about a row.
+  assert.ok(grid.includes("Multi-purpose buildings by legislative district"));
+  assert.ok(grid.includes("reuses the Districts (Legislative) resolution"));
+  assert.ok(grid.includes(">MPB legislative district<"));
+  // MPB-specific stats tiles.
+  assert.ok(grid.includes("Districts with MPBs"));
+  assert.ok(grid.includes("Mapped buildings"));
+  // The grid offers the all-districts export — the comparison payload is
+  // fetched only when the button is clicked, so the button itself must render
+  // from the index alone.
+  assert.ok(grid.includes(">Export all districts…</button>"),
+    "MPB grid must offer the cross-district export");
+  // The tier filter offers the MPB vocabulary, never a raw basis key.
+  for (const label of ["Title PSGC → LEG", "DEO → LEG", "Multi-district DEO", "Region", "Unassigned"])
+    assert.ok(grid.includes(label), `tier option missing: ${label}`);
+  // No tier ever prints raw.
+  assert.doesNotMatch(grid, /tier-undefined|tier-null|\[object/);
+});
+
+test("the MPB explorer maps La Union 1st's buildings and discloses scope", skipMpb, async () => {
+  const index = read(INDEX);
+  const mpbIndex = read(MPB_INDEX);
+  const detail = read("comparison_projects_2027.json");
+  const card = locationCards(mpbIndex).find(entry => entry.id === "mpb:title_psgc:leg:la-union:1st");
+  assert.ok(card, "La Union 1st MPB card is missing");
+
+  const html = await render("District", {index, mpbIndex, detail, lens: "mpb",
+    route: route("district", `district=${encodeURIComponent(card.id)}&lens=mpb`)});
+  // Bucket labels follow the MPB vocabulary.
+  assert.ok(html.includes("House only"));
+  assert.ok(html.includes("NEP only"));
+  // The lens explanation states scope + reuse + point-map evidence policy.
+  assert.ok(html.includes("BIP multi-purpose building programme line"));
+  assert.ok(html.includes("reused verbatim"));
+  assert.ok(html.includes("printed evidence, not a surveyed position"));
+  // Rows with retained points offer the map; the card offers all buildings.
+  assert.ok(html.includes(">View map</button>"));
+  assert.ok(html.includes(">View all buildings</button>"));
+  // The reuse disclosure also names the assignment basis column.
+  assert.ok(html.includes("Assignment basis"));
+
+  // A mapped row's drawer carries the scope rule and the printed point.
+  const sevilla = cardRows(card, mpbRowsById(detail)).find(row => row.id === "house-reading:11076");
+  assert.ok(sevilla, "Sevilla multi-purpose building row missing");
+  const view = mpbExplorerRow(sevilla, mpbIndex.row_scope[sevilla.id],
+    mpbIndex.row_points[sevilla.id], mpbIndex.row_resolution[sevilla.id], mpbIndex.row_psgc[sevilla.id]);
+  const drawer = await render("RecordDrawer", {record: view, onPdf: () => {}, onMap: () => {}, onClose: () => {}});
+  assert.ok(drawer.includes(sevilla.title.slice(0, 30)));
+  assert.ok(drawer.includes("BIP MPB programme line + MPB title"),
+    "the drawer must disclose which scope rule admitted the row");
+});
+
+test("the MPB point modal renders the legend, counts and empty state", skipMpb, async () => {
+  const mpbIndex = read(MPB_INDEX);
+  const detail = read("comparison_projects_2027.json");
+  const card = locationCards(mpbIndex).find(entry => entry.id === "mpb:title_psgc:leg:la-union:1st");
+  const views = cardRows(card, mpbRowsById(detail))
+    .map(row => mpbExplorerRow(row, mpbIndex.row_scope[row.id],
+      mpbIndex.row_points[row.id], mpbIndex.row_resolution[row.id], mpbIndex.row_psgc[row.id]));
+
+  const server = await createServer({
+    root: new URL("..", import.meta.url).pathname,
+    cacheDir: new URL(`../node_modules/.vite-tests/${process.pid}-mpb`, import.meta.url).pathname,
+    server: { middlewareMode: true, hmr: false },
+    optimizeDeps: { noDiscovery: true, include: [] },
+    appType: "custom",
+  });
+  try {
+    const mod = await server.ssrLoadModule("/src/MpbPointsModal.jsx");
+    const modal = renderToStaticMarkup(React.createElement(mod.default, {
+      label: "La Union (First District)", records: views, onSelectRecord: () => {}, onClose: () => {},
+    }));
+    assert.ok(modal.includes("All mapped buildings"));
+    assert.ok(modal.includes("House only"));
+    assert.ok(modal.includes("Matched pair"));
+    // The legend counts points and rows separately.
+    assert.ok(modal.includes("point(s)"));
+    assert.ok(modal.includes("project row(s)"));
+    assert.ok(modal.includes("Click any point or same-title link to open its project evidence"));
+    assert.ok(modal.includes("printed title evidence, not surveyed positions"));
+
+    // The record form prints the single-building copy, and a pointless record
+    // falls back to the explicit empty state instead of a blank canvas.
+    const withPoints = views.find(view => view.mpbPoints.length);
+    const single = renderToStaticMarkup(React.createElement(mod.default, {
+      label: withPoints.title, record: withPoints, onClose: () => {},
+    }));
+    assert.ok(single.includes("Building location"));
+
+    const bare = renderToStaticMarkup(React.createElement(mod.default, {
+      label: "No coordinates", record: {id: "x", title: "No coordinates", house_php: 1, mpbPoints: []},
+      onClose: () => {},
+    }));
+    assert.ok(bare.includes("no retained title coordinate to draw"));
+  } finally {
+    await server.close();
+  }
+});
+
+/** Index the comparison payload the way District's prepare memo does. */
+function mpbRowsById(detail) {
+  const rows = detail.projects ?? detail;
+  return new Map(rows.map(row => [row.id, row]));
+}

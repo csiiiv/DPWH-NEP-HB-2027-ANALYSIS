@@ -60,6 +60,9 @@ DEO2LEG/legislative_profiles/*.html
 # React migration dependencies and build output
 /analysis/web/node_modules/
 /analysis/web/dist/
+# Vite dev-server optimize cache (analysis/node_modules/.vite-*)
+/analysis/node_modules/
+/analysis/web/node_modules/.vite-*/
 
 # Derived compact comparison payloads (rebuilt for dev and packaging)
 analysis/data/comparison_overview_2027.json
