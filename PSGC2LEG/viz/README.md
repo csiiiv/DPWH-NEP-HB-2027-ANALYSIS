@@ -31,6 +31,11 @@ striped unresolved-city placeholders. See
 - `rep_photos.json` and `photos/` — 254 representative photos and manifest.
 - `preview.png` — browser-test render of the map.
 
+The Congress workbench map (`#congress/map`) packages `leg_districts.geojson`
+and `province_hues.json` as its district base layer (plus FMR/MPB overlays
+built elsewhere). See
+[`analysis/docs/congress_tab_data_sources.md`](../../analysis/docs/congress_tab_data_sources.md).
+
 ## Run
 
 ```bash

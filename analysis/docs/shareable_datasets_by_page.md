@@ -1,6 +1,6 @@
 # Shareable datasets by workbench page
 
-Updated: **22 October 2026**. FY 2027 budget project/facility lists for
+Updated: **2 November 2026**. FY 2027 budget project/facility lists for
 journalists, citizens, and data analysts.
 
 This guide maps each workbench page family to the **best retained file to
@@ -46,6 +46,7 @@ by workspace, and Geolocation remains a per-artifact exploration tool.
 | Workspace | App routes | Project/facility list pages |
 | --- | --- | --- |
 | DPWH | `#home`, `#highlights`, `#compare`, `#analysis`, `#house`, `#nep`, `#transparency` | House I-C projects, NEP source projects, Transparency listing, Compare/Analysis populations |
+| Congress | `#congress/…` | District cards (DEO / legislative / FMR / MPB), nationwide Map overlays |
 | DA FMR | `#fmr/…` | House / NEP project tables, Map, Compare projects, Analysis drill-downs |
 | NIA | `#nia/…` | House / NEP irrigation annex rows, Compare projects, Analysis populations |
 | DOH HFEP | `#hfep/…` | House / NEP facility tables, Compare pairs, Analysis populations |
@@ -145,7 +146,30 @@ Docs: [analysis/README.md](../README.md),
 
 ---
 
-## 5. Page-family cheat sheet (all workspaces)
+## 5. Congress (`#congress/…`)
+
+Full catalog of loads, builders, and map layers:
+[congress_tab_data_sources.md](congress_tab_data_sources.md). Indexes hold row
+IDs and district rollups; cite the stage ledgers below for project lists.
+Nothing here implies a representative requested or controls an allocation.
+
+| Page / list | Best shareable dataset | Why |
+| --- | --- | --- |
+| **Districts (DEO)** (`#congress`) | [congress_district_index_2027.json](../data/congress_district_index_2027.json) + [comparison_projects_2027.json](../data/comparison_projects_2027.json) | Office→district cards; hydrate row bodies from the comparison ledger. Crosswalk: [deo_leg_crosswalk.json](../../DEO2LEG/deo_leg_crosswalk.json) |
+| **Districts (Legislative)** (`#congress/location`) | [location_district_index_2027.json](../data/location_district_index_2027.json) + comparison ledger | Title-PSGC → DEO → region assignment; same money grain as DEO lens |
+| **FMR (Legislative)** (`#congress/fmr`) | [fmr_legislative_index_2027.json](../data/fmr_legislative_index_2027.json) + FMR stage CSVs in §1 | District cards over the DA annex; cite House/NEP normalized CSVs for project lists |
+| **MPB (Legislative)** (`#congress/mpb`) | [mpb_legislative_index_2027.json](../data/mpb_legislative_index_2027.json) + comparison ledger | BIP / title-scoped MPB rows; reuses location-lens resolution |
+| **Map** (`#congress/map`) | District polygons [leg_districts.geojson](../../PSGC2LEG/viz/leg_districts.geojson); MPB title GPS from the MPB index; approx placements [mpb_psgc_approx_overlay_2027.json](../data/mpb_psgc_approx_overlay_2027.json); FMR geometry from §1 | Approx markers are PSGC centroids (not survey GPS). Leftover district badges cover rows with neither title coordinate nor approx placement |
+| **Roster / portraits** | [congress_portraits/](../data/congress_portraits/) + DEO2LEG profiles | Presentation only |
+
+Method docs: [congress_district_index_method.md](congress_district_index_method.md),
+[location_district_lens_method.md](location_district_lens_method.md),
+[fmr_legislative_lens_method.md](fmr_legislative_lens_method.md),
+[mpb_legislative_lens_method.md](mpb_legislative_lens_method.md).
+
+---
+
+## 6. Page-family cheat sheet (all workspaces)
 
 | Page family | Citizen / journalist default | Analyst default |
 | --- | --- | --- |
@@ -155,11 +179,12 @@ Docs: [analysis/README.md](../README.md),
 | **Analysis** | Stage ledger filtered to the claim; quote population and stage | Aggregations + source IDs/pages retained in export |
 | **Highlights** | Story’s supporting CSV export + link to stage ledger | Same; do not promote candidate identity |
 | **Map (FMR)** | Normalized project CSV or points CSV | Final dataset JSON (PSGC) |
+| **Congress map** | Stage ledger + MPB/FMR index; label approx vs title GPS | `mpb_psgc_approx_overlay_2027.json` (centroids only) |
 | **Transparency (DPWH)** | `fy2027-combined.json` with incomplete-coverage caveat | Tree + API reconciliation docs |
 
 ---
 
-## 6. What not to share as “the” project list
+## 7. What not to share as “the” project list
 
 | Artifact | Role | Limit |
 | --- | --- | --- |
@@ -171,7 +196,7 @@ Docs: [analysis/README.md](../README.md),
 
 ---
 
-## 7. Source PDFs (evidence behind every list)
+## 8. Source PDFs (evidence behind every list)
 
 | Program | House detail | NEP detail |
 | --- | --- | --- |
@@ -184,8 +209,9 @@ Orientation for the three annexes: [other-analysis/README.md](../../other-analys
 
 ---
 
-## 8. Related docs
+## 9. Related docs
 
+- [congress_tab_data_sources.md](congress_tab_data_sources.md) — Congress tabs, indexes, map overlays
 - [shareable_findings.md](shareable_findings.md) — URL parameters to reopen filtered views
 - [other-analysis/data/shareable/FMR_DATA_README.md](../../other-analysis/data/shareable/FMR_DATA_README.md) — FMR public package description
 - [UI_CONSISTENCY_PLAN.md](../UI_CONSISTENCY_PLAN.md) — shared citizen questions across pages

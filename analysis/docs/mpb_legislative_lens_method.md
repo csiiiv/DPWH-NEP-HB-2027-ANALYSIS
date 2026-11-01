@@ -160,6 +160,23 @@ unrelated buildings. A building row with no retained coordinate shows an
 explicit no-geometry state. Clicking a point opens the row's ordinary evidence
 drawer, and the drawer separately discloses which scope rule admitted the row.
 
+## Nationwide map (`#congress/map`)
+
+The Map tab consumes this index without changing it:
+
+1. **Title GPS** — solid class-coloured boxes from `row_points`.
+2. **PSGC approx** — a separate supplement,
+   `mpb_psgc_approx_overlay_2027.json` from
+   `analysis/web/buildMpbPsgcApproxOverlay.py`, places coordinate-less rows at
+   2023 PSA barangay/municipality centroids (class fill + light gray slash;
+   collapsed by PSGC with counts; cluster modal on click).
+3. **Still-unplaced badges** — stacked district chips for rows with neither
+   title GPS nor a PSGC-centroid placement (approx-placed ids are excluded so
+   the layers never double-count).
+
+Catalog and layer rules:
+[`congress_tab_data_sources.md`](congress_tab_data_sources.md).
+
 ## Not claimed
 
 Nothing in this lens establishes that a representative requested, sponsored,

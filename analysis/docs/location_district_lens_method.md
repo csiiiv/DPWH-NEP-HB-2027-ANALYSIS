@@ -27,6 +27,10 @@ re-derive placement: it scopes the DPWH comparison ledger to the BIP
 multi-purpose-building PAP and MPB-titled rows, then reuses this document's
 committed row resolutions verbatim, so the two tabs cannot disagree about a row.
 
+The Congress workspace catalog (all five tabs, packaged indexes, and map
+overlays including MPB PSGC-centroid approx markers) is
+[`congress_tab_data_sources.md`](congress_tab_data_sources.md).
+
 Nothing here establishes that a representative requested, sponsored or
 controlled a project or amount. The result describes how the linked budget
 records resolve through the evidence hierarchy below.

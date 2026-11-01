@@ -18,8 +18,13 @@ test('sources catalog covers every workspace plus the folded-in DPWH resources',
   assert.ok(items.some((item) => item.path?.endsWith('hb_native_ib_rollup_checks.md')));
   assert.ok(items.some((item) => item.path?.endsWith('gab_fy2027_reference_crosscheck.md')));
   assert.ok(items.some((item) => item.path?.endsWith('source_verification_overview.json')));
-  // Annex workspaces and the packaged payloads.
+  // Annex workspaces, Congress lenses/map, and the packaged payloads.
   assert.ok(sourceGroups.some((group) => ['fmr', 'hfep', 'nia', 'geo'].includes(group.id)));
+  const congressGroup = sourceGroups.find((group) => group.id === 'congress');
+  assert.ok(congressGroup, 'congress group missing');
+  assert.equal(congressGroup.workspace, 'congress/home');
+  assert.ok(items.some((item) => item.path?.endsWith('congress_tab_data_sources.md')));
+  assert.ok(items.some((item) => item.path?.endsWith('mpb_psgc_approx_overlay_2027.json')));
   assert.ok(items.some((item) => item.path?.endsWith('main_overview_2027.json')));
   // CSV dataset exports: one complete CSV per dataset, all packaged for download.
   const csvGroup = sourceGroups.find((group) => group.id === 'csv-exports');

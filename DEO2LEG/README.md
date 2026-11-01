@@ -265,7 +265,10 @@ These are recorded in the output's `metadata` and `validation` blocks.
   office and 33 offices span more than one district; many-to-many is the intended pattern.
 - **DO NOT** treat an office's absence from a district as evidence of no relationship.
 
-### The one authorized project-level use: the DEO lens
+Congress workspace data catalog (DEO lens plus sister tabs and map):
+[`analysis/docs/congress_tab_data_sources.md`](../analysis/docs/congress_tab_data_sources.md).
+
+## The one authorized project-level use: the DEO lens
 
 An earlier version of this section prohibited using the mappings "to assign projects to
 DEOs or districts" outright. That was correct about *districts* and wrong about *offices*:

@@ -55,8 +55,9 @@ export default function Sources() {
         <p className="eyebrow">FY2027 · all workspaces</p>
         <h1>Sources and datasets</h1>
         <p>
-          The shareable, normalized data behind every workspace. Each entry
-          links to its canonical file in the{" "}
+          The shareable, normalized data behind every workspace — including the
+          Congress district indexes and map overlays. Each entry links to its
+          canonical file in the{" "}
           <a href={repo} target="_blank" rel="noreferrer">GitHub repository</a>{" "}
           (or downloads from this site when packaged), explains what it
           contains, and states its limits. Rebuild any artifact from the

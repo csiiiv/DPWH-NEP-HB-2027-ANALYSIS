@@ -28,6 +28,8 @@ DEO2LEG crosswalk (2.1.0) ─────┘         │
   Overview anchor), and `DEO2LEG/outputs/deo_leg_crosswalk.json` (schema 2.1.0).
 - **Output**: `analysis/data/congress_district_index_2027.json`, consumed by the
   `#congress` workspace (grid + district pages) via `src/congressModel.js`.
+  Sister lenses, map overlays, and packaging order:
+  [congress_tab_data_sources.md](congress_tab_data_sources.md).
 - **Why Node, not Python**: the buckets a card reports are produced by `partition()` in
   `src/overviewSummary.js` — the same function behind the published Overview. Importing
   it makes it impossible for a district roll-up to silently disagree with the Overview;

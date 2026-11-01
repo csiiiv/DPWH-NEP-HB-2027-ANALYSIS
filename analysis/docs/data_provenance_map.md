@@ -1,6 +1,6 @@
 # Data provenance map — from source PDFs to analysis datasets
 
-Updated: **26 October 2026**.
+Updated: **2 November 2026**.
 
 This document maps the active FY2027 dataset families and their supporting
 reference, geographic, and review layers back to PDF pages, API snapshots,
@@ -32,6 +32,7 @@ Quick navigation: [source PDFs](#1-layer-0--retained-sources) ·
 [comparisons and master list](#4-layer-3--joins-comparisons-collation) ·
 [diagrams](#6-end-to-end-lineage-diagrams) ·
 [artifact index](#7-dataset-index-principal-artifacts) ·
+[Congress tabs](congress_tab_data_sources.md) ·
 [verification findings](#11-verification-results-and-open-gaps) ·
 [recommended reuse](#12-which-datasets-to-reuse-for-a-simpler-processing-list).
 
@@ -394,11 +395,18 @@ buildComparisonData.mjs→ comparison_projects_2027.json (17,613 unified rows,
                          + highlights_details_2027.json
 buildCongressIndex.mjs → congress_district_index_2027.json (196 cards over
                          254 districts; reads DEO2LEG outputs)
-buildLocationLens.py  → location_district_index_2027.json (440 + 18 cards;
-                         GPS/PSGC point-in-polygon lens, DEO/region/none
-                         fallback chain, disagreement-flagged)
+buildLocationLens.py  → location_district_index_2027.json (439 + 18 cards;
+                         title-PSGC → DEO → region chain) +
+                         congress_district_map_2027.json (viz id bridge)
+buildFmrLegislativeLens.py → fmr_legislative_index_2027.json (after
+                         build_fmr_psgc_locations.py)
+buildMpbLegislativeLens.py → mpb_legislative_index_2027.json (reuses
+                         location row_resolution; BIP/title scope)
+buildMpbPsgcApproxOverlay.py → mpb_psgc_approx_overlay_2027.json
+                         (map supplement; 2023 PSA centroids; no index mutate)
 buildMainOverview.mjs  → main_overview_2027.json (landing-page summaries)
 ```
+Congress tab catalog: [congress_tab_data_sources.md](congress_tab_data_sources.md).
 
 Packaging is a **gate**: `validate_current_pages.py` rebuilds stages 5–6 in
 memory and deep-compares against disk before anything ships; mixed-build
@@ -569,6 +577,10 @@ Paths below are repository paths, not their shorter deployed aliases.
 | `main_overview_2027.json` | [buildMainOverview.mjs](../web/buildMainOverview.mjs) | DPWH overview/detail and FMR/HFEP/NIA workbenches; adapters reconcile each native record grain |
 | `congress_district_index_2027.json` | [buildCongressIndex.mjs](../web/buildCongressIndex.mjs) | DPWH overview/detail + `DEO2LEG/outputs/deo_leg_crosswalk.json`; office-based district associations, residuals, office-change holds and attribution tiers. Method reference: [congress district index method](congress_district_index_method.md) |
 | `location_district_index_2027.json` | [buildLocationLens.py](../web/buildLocationLens.py) | Cleaned master-list observations (GPS/PSGC evidence) + `PSGC2LEG` assignments and district polygons + the DEO index (fallback membership, rosters); location-based district lens with DEO-lens, region and none fallbacks, disagreement-flagged. Runs in `predev`/`prebuild` after `buildCongressIndex.mjs`. Method reference: [location district lens method](location_district_lens_method.md) |
+| `congress_district_map_2027.json` | [buildLocationLens.py](../web/buildLocationLens.py) | Viz feature ↔ `leg_id` bridge for `#congress/map` info panel and card deep-links |
+| `fmr_legislative_index_2027.json` | [buildFmrLegislativeLens.py](../web/buildFmrLegislativeLens.py) | FMR workbench + formal title/coordinate PSGC extraction + PSGC2LEG; district cards for `#congress/fmr`. Method: [fmr legislative lens](fmr_legislative_lens_method.md) |
+| `mpb_legislative_index_2027.json` | [buildMpbLegislativeLens.py](../web/buildMpbLegislativeLens.py) | DPWH comparison scoped to BIP MPB PAP / MPB titles; reuses location-lens `row_resolution` + title coordinates from cleaned observations. Method: [mpb legislative lens](mpb_legislative_lens_method.md) |
+| `mpb_psgc_approx_overlay_2027.json` | [buildMpbPsgcApproxOverlay.py](../web/buildMpbPsgcApproxOverlay.py) | Map-only supplement: centroid markers for coordinate-less MPB rows joined through title PSGC to 2023 PSA barangay/municipality polygons; does not mutate the MPB index. Catalog: [congress tab data sources](congress_tab_data_sources.md) |
 | `congress_portraits/manifest.json` + portraits | [build_congress_portraits.py](../../scripts/build_congress_portraits.py) | Congress index and retained DEO2LEG member portraits; copies/resizes presentation assets without creating project associations |
 | `dpwh_flow_2027.json` | [buildDpwhFlow.mjs](../web/buildDpwhFlow.mjs) | DPWH detail + overview headlines; membership/revision aggregates, stage totals and native hierarchies |
 | `budget_flow_sources_2027.json` | [buildBudgetFlowSources.mjs](../web/buildBudgetFlowSources.mjs) | Four domain comparison payloads; source-specific category/group/revision flows |

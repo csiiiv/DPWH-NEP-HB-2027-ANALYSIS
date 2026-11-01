@@ -38,6 +38,23 @@ export const sourceGroups = [
           "Includes optional region-independent candidates, with original source assignments flagged and strict matching as the default.",
       },
       {
+        label: "Shareable datasets by page",
+        kind: "doc",
+        path: "analysis/docs/shareable_datasets_by_page.md",
+        purpose: "Best retained file to download or cite for each workbench page family",
+        coverage:
+          "Includes the Congress workspace (§5): district indexes, MPB PSGC-approx overlay, and map geometry.",
+      },
+      {
+        label: "Congress tab data sources",
+        kind: "doc",
+        path: "analysis/docs/congress_tab_data_sources.md",
+        purpose:
+          "Catalog of #congress loads: DEO / location / FMR / MPB indexes, map layers, builders, and rebuild order",
+        coverage:
+          "Title GPS vs PSGC-centroid approx vs leftover district badges; honesty caveats for representative attribution.",
+      },
+      {
         label: "Conventions and caveats",
         kind: "text",
         purpose: "Reading the catalogs below safely",
@@ -330,7 +347,7 @@ export const sourceGroups = [
     id: "deo2leg",
     title: "DEO ↔ legislative districts",
     blurb:
-      "Reusable many-to-many mapping between DPWH District Engineering Offices and the 254 geographic House districts, built from the complete allocation-table transcription. Representatives are checked against the official congress.gov.ph directory and enriched with scraped member profiles; verification is against that one authority, not multiple independent ones.",
+      "Reusable many-to-many mapping between DPWH District Engineering Offices and the 254 geographic House districts, built from the complete allocation-table transcription. Representatives are checked against the official congress.gov.ph directory and enriched with scraped member profiles; verification is against that one authority, not multiple independent ones. The #congress DEO lens is the authorized project-level consumer — see the Congress group below.",
     items: [
       {
         label: "DEO–LEG crosswalk (schema 2.1.0)",
@@ -401,23 +418,80 @@ export const sourceGroups = [
         purpose: "Same-shell groups with unpaired House (unsupported insertion) and unpaired NEP (deletion) candidates",
         coverage: "₱23.4B unsupported insertion candidates · ₱12.2B deletion candidates across 627 shells. Powers Analysis → Groupings.",
       },
+    ],
+  },
+  {
+    id: "congress",
+    title: "Congress · district lenses and map",
+    blurb:
+      "Packaged indexes behind #congress: DEO and title-PSGC district cards, FMR and MPB legislative lenses, and map supplements (title GPS, PSGC-centroid approx markers, leftover badges). Nothing here implies a representative requested or controls an allocation. Full catalog: analysis/docs/congress_tab_data_sources.md.",
+    workspace: "congress/home",
+    items: [
       {
-        label: "Congress DEO-lens district index",
+        label: "Congress tab data sources",
+        kind: "doc",
+        path: "analysis/docs/congress_tab_data_sources.md",
+        purpose: "Workspace catalog: tabs, builders, SPA loads, map layer partition, rebuild commands",
+        coverage:
+          "Title GPS → PSGC approx → still-unplaced badges; packaging order in scripts/build_pages.py.",
+      },
+      {
+        label: "DEO-lens district index",
         kind: "data",
         path: "analysis/congress_district_index_2027.json",
         purpose:
-          "Per-office-group cards for the #congress workspace: districts, representatives, tier labels, headline figures, and the row IDs each bucket holds (≈1 MB)",
+          "Per-office-group cards for #congress (Districts DEO): districts, representatives, tier labels, headline figures, and row IDs",
         coverage:
-          "196 cards over 254 districts (159 Tier A, 32 Tier B undivided ranges, 5 with no DEO ledger); 13,547 comparison rows pinned by ID plus the 3,999-row unattributable residual and 67 office-change rows held out. Card figures tie out exactly against the published DPWH Overview across 29 numeric fields; the explorer resolves the pinned IDs against this comparison payload, so a card and its table cannot drift apart.",
+          "196 cards over 254 districts (159 Tier A, 32 Tier B, 5 with no DEO ledger). Explorer hydrates IDs from comparison_projects_2027.json. Method: analysis/docs/congress_district_index_method.md",
       },
       {
-        label: "Congress location-lens district index",
+        label: "Location-lens district index",
         kind: "data",
         path: "analysis/location_district_index_2027.json",
         purpose:
-          "Per-district cards for #congress?lens=location: rows located by title GPS and PSGC point-in-polygon against district polygons, with the DEO lens, region cards and a none catch-all as the fallback chain (≈2 MB)",
+          "Per-district cards for #congress/location: title-PSGC → DEO → region → unassigned",
         coverage:
-          "Every comparison row on exactly one card: 5,329 located rows (₱170B+ HGAB3) across 248 districts, 29 spanning rows held out undivided, 9,401 DEO-fallback rows, 2,854 region-catch-all rows, zero in the none catch-all. Disagreements are flagged, never reconciled: 78 office↔location mismatches (Cohen's κ = 0.977 concordance between the lenses), 12 title/GPS conflicts and 1 boundary conflict demoted to the fallback chain.",
+          "439 cards + 18 region cards; 16,481 located rows (13,969 title_psgc · 2,512 deo_to_leg · 645 multi-district DEO · 487 region). Method: analysis/docs/location_district_lens_method.md",
+      },
+      {
+        label: "FMR legislative index",
+        kind: "data",
+        path: "analysis/fmr_legislative_index_2027.json",
+        purpose: "DA farm-to-market-road annex rows by legislative district for #congress/fmr",
+        coverage:
+          "202 cards · 1,059 rows (1,006 on district cards). Cite House/NEP FMR CSVs for project lists. Method: analysis/docs/fmr_legislative_lens_method.md",
+      },
+      {
+        label: "MPB legislative index",
+        kind: "data",
+        path: "analysis/mpb_legislative_index_2027.json",
+        purpose:
+          "DPWH multi-purpose-building scope (BIP PAP ∪ MPB titles) for #congress/mpb; reuses location-lens row_resolution",
+        coverage:
+          "266 cards · 6,123 in-scope rows · 1,827 with title coordinates. Method: analysis/docs/mpb_legislative_lens_method.md",
+      },
+      {
+        label: "MPB PSGC approx overlay",
+        kind: "data",
+        path: "analysis/mpb_psgc_approx_overlay_2027.json",
+        purpose:
+          "Map-only supplement for #congress/map: barangay/municipality centroids for MPB rows without title GPS (class color + gray slash)",
+        coverage:
+          "3,376 markers · 4,251 rows placed · 45 unplaced. Not survey GPS; does not mutate the MPB index.",
+      },
+      {
+        label: "District map id bridge",
+        kind: "data",
+        path: "analysis/congress_district_map_2027.json",
+        purpose: "Feature ↔ leg_id bridge so #congress/map polygons open the matching district card",
+        coverage: "Emitted beside the location lens; polygons from PSGC2LEG/viz/leg_districts.geojson",
+      },
+      {
+        label: "Legislative district polygons",
+        kind: "repo",
+        path: "PSGC2LEG/viz/leg_districts.geojson",
+        purpose: "254 simplified district features packaged for the Congress map base layer",
+        coverage: "Province hues: PSGC2LEG/viz/province_hues.json. Guide: PSGC2LEG/viz/README.md",
       },
     ],
   },

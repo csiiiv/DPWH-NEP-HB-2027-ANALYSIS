@@ -10,7 +10,9 @@ this document remains the governing contract for further review.
 
 **Route:** `#congress/fmr`, labelled **FMR (Legislative)**. Project
 explorer links should retain `lens=fmr` so shared district links reopen the
-same evidence policy.
+same evidence policy. Workspace-wide data loads and the nationwide map's FMR
+segment layer are catalogued in
+[`congress_tab_data_sources.md`](congress_tab_data_sources.md).
 
 The purpose of this lens is to organize the FY2027 DA farm-to-market-road
 annex by geographic legislative district using the locality printed in the

@@ -1,6 +1,6 @@
 # FY2027 DPWH analysis workbench
 
-Updated: **12 October 2026**. Generated monetary values are integer PHP unless
+Updated: **2 November 2026**. Generated monetary values are integer PHP unless
 stated otherwise.
 
 [Open the SPA](https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/)
@@ -56,9 +56,12 @@ is preserved; two archived helpers still support active House repairs. See the
 | `#house-nep` | Printed budgets, local/FAP program controls, House extraction gaps, and candidates |
 | `#nep-detail` | Detailed expense/program tree and native-text evidence |
 
-The shared header also switches into the FMR (`#fmr/`), NIA (`#nia/`), and HFEP
-(`#hfep/`) annex workspaces, plus the shared Overview (`#overview`), Sources
-(`#sources`) and About (`#about`) workspaces. NIA Analysis retains the shared
+The shared header also switches into the Congress workspace (`#congress/`:
+DEO and legislative district lenses, FMR and MPB legislative lenses, and the
+nationwide map — see [congress tab data sources](docs/congress_tab_data_sources.md)),
+the FMR (`#fmr/`), NIA (`#nia/`), and HFEP (`#hfep/`) annex workspaces, plus the
+shared Overview (`#overview`), Sources (`#sources`) and About (`#about`)
+workspaces. NIA Analysis retains the shared
 page format and adds allocation shares, funding reconciliation, pairing
 coverage and top-ten concentration within its existing views; see
 [NIA_WORKBENCH.md](../analysis-nia/NIA_WORKBENCH.md). The former DPWH
