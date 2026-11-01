@@ -199,7 +199,7 @@ and the verified district-id bridge: [`location_district_lens_method.md`](locati
 node analysis/web/buildCongressIndex.mjs
 ```
 
-Runs in `prebuild`/`predev` of `analysis/web` (see `package.json`), so a Vite build or
+Runs in `npm run generate:data` of `analysis/web` (see `package.json`; formerly the `prebuild`/`predev` hooks), so a data regeneration or
 dev server refreshes it automatically; it can also be run standalone. The build prints
 card counts, the row equation (`total = cards + residual + office_change`), the
 unattributable share, and the number of tied numeric fields.

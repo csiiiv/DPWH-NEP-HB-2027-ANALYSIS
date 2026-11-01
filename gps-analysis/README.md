@@ -232,7 +232,7 @@ lookalikes), and NIA prints a lone DMS pair. The variation tables make those
 differences explicit instead of hiding them behind a single “parsed” count.
 
 Rebuild the browser dataset with `python3 gps-analysis/build_gps_workbench.py`
-(it runs automatically in the web `predev`/`prebuild` chain). Packaging is
+(it runs in the web `npm run generate:data` chain). Packaging is
 wired through `scripts/package_geo.py`, invoked by `scripts/build_pages.py`.
 
 ## Limits

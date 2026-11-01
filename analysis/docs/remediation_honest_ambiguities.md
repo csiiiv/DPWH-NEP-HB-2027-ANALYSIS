@@ -291,7 +291,7 @@ had never been reconciled with the test suites:
 
 ### Build integration
 
-`build_group_relations.py` runs at the end of both `prebuild` and `predev`
+`build_group_relations.py` runs at the end of `npm run generate:data`
 in `analysis/web/package.json`, so the sidecars regenerate from
 `source_comparison_2027.json` before every build/dev session. The dev server
 already serves `/analysis/data/` via the retained-files middleware in

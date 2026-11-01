@@ -1,12 +1,11 @@
 # FY2027 React workbenches
 
 The standalone [master-list browser](../../master_list/README.md) is available
-at `/master_list/` on the same Vite dev server. After the four workbench JSONs
-exist, run `npm run build:master-list --prefix analysis/web` from the repository
-root to regenerate the processing release, master location evidence and embedded
-browser data. Normal `predev`/`prebuild` regenerates the processing release but
-does not rerun the heavier master enrichment. The browser starts with comparison
-groups and expands each into separate source observations.
+at `/master_list/` on the same Vite dev server. Run
+`npm run build:master-list --prefix analysis/web` from the repository root to
+regenerate the processing release, master location evidence and embedded
+browser data. The browser starts with comparison groups and expands each into
+separate source observations.
 
 `Workbench.jsx` selects DPWH, DA farm-to-market roads, DOH health facilities, NIA irrigation, or
 Geolocation from the hash route. The shared header uses `routes.js` to render each workspace's

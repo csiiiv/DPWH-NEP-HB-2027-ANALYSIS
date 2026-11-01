@@ -177,7 +177,7 @@ Missing amounts remain missing stages, rather than zero appropriations.
 
 ## Generate and verify
 
-The webapp's `predev` and `prebuild` scripts generate this layer after the four
+The webapp's `npm run generate:data` script (formerly `predev`/`prebuild`) generates this layer after the four
 comparison inputs. With those inputs already generated, run independently:
 
 ```sh
@@ -200,8 +200,8 @@ annex partition accounting. It preserves the NEP HFEP ledger/control gap.
 
 With the four workbench inputs already generated, the complete local chain is
 also available as `npm run build:master-list --prefix analysis/web`. Run
-`npm run prebuild --prefix analysis/web` first when those workbench inputs need
-regeneration. The normal web `predev`/`prebuild` regenerates the processing
+`npm run generate:data --prefix analysis/web` first when those workbench inputs need
+regeneration. The web `npm run generate:data` regenerates the processing
 release; the separate master-list command rebuilds the heavier enrichment
 and embedded browser data.
 
