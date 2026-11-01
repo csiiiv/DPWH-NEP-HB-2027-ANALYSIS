@@ -776,7 +776,7 @@ from the repository root with:
 npm run build:master-list --prefix analysis/web
 ```
 
-The webapp's normal `predev`/`prebuild` regenerates the processing release;
+The webapp's `npm run generate:data` regenerates the processing release;
 the command above also rebuilds master enrichment and the embedded viewer.
 See [PROCESSING_DATASET.md](PROCESSING_DATASET.md#generate-and-verify) for
 individual commands, freshness checks and upstream generation order.

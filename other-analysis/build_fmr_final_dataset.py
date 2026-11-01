@@ -330,6 +330,18 @@ def main():
         if args.check:
             if not stage["out"].exists():
                 raise SystemExit(f"--check: missing {stage['out'].name}; rebuild first")
+            try:
+                committed = json.loads(stage["out"].read_text())
+            except json.JSONDecodeError:
+                raise SystemExit(f"--check: committed {stage['out'].name} is not valid JSON")
+            # generated_date is a build stamp, not content: verify everything
+            # else matches regardless of when the committed file was produced.
+            committed_meta = committed.get("metadata") or {}
+            payload_meta = payload.get("metadata") or {}
+            stamp = committed_meta.get("generated_date")
+            if stamp:
+                payload_meta["generated_date"] = stamp
+                blob = json.dumps(payload, indent=1, ensure_ascii=False) + "\n"
             if stage["out"].read_text() != blob:
                 raise SystemExit(f"--check: committed {stage['out'].name} drifted")
             print(f"{stage['out'].name} check passed:",

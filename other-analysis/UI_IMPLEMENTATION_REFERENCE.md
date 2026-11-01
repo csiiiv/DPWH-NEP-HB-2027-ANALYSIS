@@ -386,7 +386,7 @@ python scripts/build_fmr_pages.py && python scripts/serve_pages.py --port 8000
 python scripts/check_fmr_pages.py                  # Playwright browser QA
 ```
 
-`predev`/`prebuild` run the workbench builder, so the dev server can't serve a
+`npm run generate:data` runs the workbench builder (formerly via `predev`/`prebuild`), so the dev server can't serve a
 stale payload by accident.
 
 **What the browser QA covers** (`check_fmr_pages.py`, ~63 s): all routes at

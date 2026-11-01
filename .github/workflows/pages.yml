@@ -3,94 +3,175 @@ name: Publish dashboards
 on:
   push:
     branches: [main]
-    paths:
-      - 'disclaimer/**'
-      - 'DEO2LEG/**'
-      - 'analysis/**'
-      - 'other-analysis/**'
-      - 'analysis-nia/**'
-      - 'analysis-hfep/**'
-      - 'gps-analysis/**'
-      - 'master_list/**'
-      - 'dpwh_coor2psgc_geomapping'
-      - '.gitmodules'
-      - 'site/**'
-      - 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
-      - 'dbm-nep-data/NEP-2027-VOLUME-2A_OCR.pdf'
-      - 'dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf'
-      - 'dbm-other-nep-line-data/FMR.pdf'
-      - 'dbm-other-nep-line-data/NIA.pdf'
-      - 'dbm-other-nep-line-data/HFEP_2.pdf'
-      - 'scripts/**'
-      - 'dpwh-transparency-nep-data/**'
-      - 'HB_BUDGET/*.pdf'
-      - 'HB_BUDGET_3rd_reading/*.pdf'
-      - '.github/workflows/pages.yml'
   pull_request:
-    paths:
-      - 'disclaimer/**'
-      - 'DEO2LEG/**'
-      - 'analysis/**'
-      - 'other-analysis/**'
-      - 'analysis-nia/**'
-      - 'analysis-hfep/**'
-      - 'gps-analysis/**'
-      - 'master_list/**'
-      - 'dpwh_coor2psgc_geomapping'
-      - '.gitmodules'
-      - 'site/**'
-      - 'dbm-nep-data/NEP-2027-VOLUME-2B_OCR.pdf'
-      - 'dbm-nep-data/NEP-2027-VOLUME-2A_OCR.pdf'
-      - 'dbm-nep-data/NEP-2027-VOLUME-1_OCR.pdf'
-      - 'dbm-other-nep-line-data/FMR.pdf'
-      - 'dbm-other-nep-line-data/NIA.pdf'
-      - 'dbm-other-nep-line-data/HFEP_2.pdf'
-      - 'scripts/**'
-      - 'dpwh-transparency-nep-data/**'
-      - 'HB_BUDGET/*.pdf'
-      - 'HB_BUDGET_3rd_reading/*.pdf'
-      - '.github/workflows/pages.yml'
   workflow_dispatch:
+    inputs:
+      validation:
+        description: 'Validation level'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - fast
+          - comprehensive
 
 permissions:
   contents: read
 
 concurrency:
   group: pages-${{ github.ref }}
-  cancel-in-progress: false
+  # Obsolete pushes to the same ref no longer queue behind the running build.
+  # Pull-request validation is a separate group (validation-) so cancelling a
+  # superseded push never cancels an unrelated PR check.
+  cancel-in-progress: true
 
 jobs:
-  build:
+  changes:
     runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      data: ${{ steps.filter.outputs.data }}
+      generators: ${{ steps.filter.outputs.generators }}
+      sources: ${{ steps.filter.outputs.sources }}
+      pipeline: ${{ steps.filter.outputs.pipeline }}
+      any: ${{ steps.any.outputs.any }}
+      level: ${{ steps.level.outputs.level }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Push diff needs the before-commit available.
+          fetch-depth: 2
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'analysis/web/src/**'
+              - 'analysis/web/public/**'
+              - 'analysis/web/index.html'
+              - 'analysis/web/vite.config.js'
+              - 'analysis/web/package.json'
+              - 'analysis/web/package-lock.json'
+              - 'site/**'
+              - 'disclaimer/**'
+            data:
+              - 'analysis/data/**'
+              - 'other-analysis/data/**'
+              - 'analysis-nia/data/**'
+              - 'analysis-hfep/data/**'
+              - 'gps-analysis/data/**'
+              - 'master_list/data/**'
+              - 'master_list/index.html'
+              - 'analysis/viewers/**'
+            generators:
+              - 'analysis/web/build*.mjs'
+              - 'analysis/web/build*.py'
+              - 'other-analysis/*.py'
+              - 'analysis-nia/*.py'
+              - 'analysis-hfep/*.py'
+              - 'gps-analysis/*.py'
+              - 'master_list/scripts/**'
+              - 'analysis/builders/**'
+              - 'scripts/build_congress_portraits.py'
+              - 'DEO2LEG/**'
+              - 'PSGC2LEG/**'
+            sources:
+              - 'HB_BUDGET/**'
+              - 'HB_BUDGET_3rd_reading/**'
+              - 'dbm-nep-data/**'
+              - 'dbm-other-nep-line-data/**'
+              - 'dpwh-transparency-nep-data/**'
+              - 'dpwh_coor2psgc_geomapping'
+              - '.gitmodules'
+            pipeline:
+              - 'scripts/**'
+              - '.github/workflows/pages.yml'
+      - id: any
+        run: |
+          if [ "${{ steps.filter.outputs.changes }}" != "[]" ]; then
+            echo "any=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "any=false" >> "$GITHUB_OUTPUT"
+          fi
+      - id: level
+        run: |
+          level="fast"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.validation }}" != "auto" ] && [ -n "${{ inputs.validation }}" ]; then
+            level="${{ inputs.validation }}"
+          elif [ "${{ steps.filter.outputs.generators }}" = "true" ] || \
+               [ "${{ steps.filter.outputs.sources }}" = "true" ] || \
+               [ "${{ steps.filter.outputs.pipeline }}" = "true" ] || \
+               [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            level="comprehensive"
+          elif [ "${{ steps.filter.outputs.data }}" = "true" ]; then
+            level="data"
+          fi
+          echo "level=$level" >> "$GITHUB_OUTPUT"
+          echo "Validation level: $level (frontend=${{ steps.filter.outputs.frontend }} data=${{ steps.filter.outputs.data }} generators=${{ steps.filter.outputs.generators }} sources=${{ steps.filter.outputs.sources }} pipeline=${{ steps.filter.outputs.pipeline }})"
+      - name: Timings summary header
+        run: |
+          echo "## Publish dashboards - validation: ${{ steps.level.outputs.level }}" >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    needs: changes
+    if: needs.changes.outputs.any == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: analysis/web/package-lock.json
+
+      # ---------- Fast gates (every deployment) ----------
+      # Manifest/hash verification over the committed derived artifacts. This
+      # replaces regenerating datasets on the build machine: a raw-source or
+      # generator change without refreshed committed artifacts fails here.
+      - name: Verify committed derived artifacts (fast gate)
+        run: python3 scripts/derived_artifacts.py
+
+      # DPWH current-page accounting and provenance gates (reads committed
+      # inputs; recomputes joins in memory).
+      - name: Check current accounting, data freshness and matching
+        if: needs.changes.outputs.level != 'fast'
+        run: |
+          python3 -m unittest discover -s analysis/tests -p test_current_pages.py -v
+          python3 -m unittest discover -s analysis/tests -p test_house_readings.py -v
+      - name: Check stage trace and README navigation
+        if: needs.changes.outputs.level != 'fast'
+        run: |
+          python3 -m unittest discover -s analysis/tests -p test_stage_trace.py -v
+          python3 -m unittest discover -s analysis/tests -p test_static_pages.py -v
+          python3 -m unittest discover -s analysis/tests -p test_pdf_range_server.py -v
+
+      # ---------- Comprehensive-only data checks ----------
       - name: Check native House extraction and source-title regressions
+        if: needs.changes.outputs.level == 'comprehensive'
         run: |
           python3 -m pip install PyMuPDF==1.28.2 numpy==2.1.0 opencv-python-headless==4.10.0.84 pytest==8.3.4
           python3 scripts/hb_native_ic_rollup.py --check
           python3 scripts/hb_native_ic_rollup.py --check --pdf "HB_BUDGET_3rd_reading/3- HB 10858 FOR 3RD READING VOL I-C .pdf" --ib-rollup analysis/data/hb_dpwh_native_rollup_3rd_reading.json --out analysis/data/hb_dpwh_native_ic_projects_3rd_reading.json --report analysis/data/hb_dpwh_native_ic_rollup_audit_3rd_reading.json
           python3 -m unittest scripts.tests.test_hb_native_ic_rollup scripts.tests.test_hb_native_rollup -v
-      - name: Check current accounting, data freshness and matching
-        run: |
-          python3 -m unittest discover -s analysis/tests -p test_current_pages.py -v
-          python3 -m unittest discover -s analysis/tests -p test_house_readings.py -v
       - name: Check budget display units, signs and numeric sorting
+        if: needs.changes.outputs.level == 'comprehensive'
         run: node --test analysis/tests/test_budget_display.cjs
       - name: Check independent source verification and snapshot accounting
+        if: needs.changes.outputs.level == 'comprehensive'
         run: python3 -m unittest discover -s analysis/tests -p test_source_verification.py -v
       - name: Check source filters and NEP API project drilldown
+        if: needs.changes.outputs.level == 'comprehensive'
         run: node --test analysis/tests/test_source_verification_viewer.cjs
-      - name: Check stage trace and README navigation
-        run: |
-          python3 -m unittest discover -s analysis/tests -p test_stage_trace.py -v
-          python3 -m unittest discover -s analysis/tests -p test_static_pages.py -v
-          python3 -m unittest discover -s analysis/tests -p test_pdf_range_server.py -v
       - name: Initialize FMR geomapper
+        if: needs.changes.outputs.level == 'comprehensive'
         run: git submodule update --init dpwh_coor2psgc_geomapping
       - name: Fetch audited PSGC boundaries
+        if: needs.changes.outputs.level == 'comprehensive'
         uses: actions/checkout@v6
         with:
           repository: altcoder/philippines-psgc-shapefiles
@@ -98,6 +179,7 @@ jobs:
           path: dpwh_coor2psgc_geomapping/philippines-psgc-shapefiles
           sparse-checkout: dist
       - name: Download and unpack PSGC shapefiles
+        if: needs.changes.outputs.level == 'comprehensive'
         working-directory: dpwh_coor2psgc_geomapping/philippines-psgc-shapefiles
         run: |
           git lfs pull --include="dist/PH_Adm[1-4]*.shp.zip" --exclude=""
@@ -106,12 +188,14 @@ jobs:
           unzip -q dist/PH_Adm2_ProvDists.shp.zip -d data/2023/Provdists
           unzip -q dist/PH_Adm3_MuniCities.shp.zip -d data/2023/Municities
           unzip -q dist/PH_Adm4_BgySubMuns.shp.zip -d data/2023/BgySubMuns
-      - name: Generate FMR datasets
+      - name: Check FMR final datasets (non-mutating)
+        if: needs.changes.outputs.level == 'comprehensive'
         run: |
           python3 -m pip install geopandas==1.1.1 shapely==2.1.2 pandas==2.2.3 pyogrio==0.12.1
-          python3 other-analysis/build_fmr_final_dataset.py
-          python3 other-analysis/build_fmr_workbench.py
+          python3 other-analysis/build_fmr_final_dataset.py --check
+          python3 other-analysis/build_fmr_workbench.py --check
       - name: Check FMR extraction, normalization and matching
+        if: needs.changes.outputs.level == 'comprehensive'
         run: |
           python3 -m unittest discover -s other-analysis/tests -v
           python3 other-analysis/extract_hgab_fmr.py --check
@@ -119,54 +203,54 @@ jobs:
           python3 other-analysis/extract_nep_fmr.py --check
           python3 other-analysis/normalize_nep_fmr_coordinates.py --check --render-review-images
           python3 other-analysis/build_fmr_workbench.py --check
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
-          cache-dependency-path: analysis/web/package-lock.json
       - name: Check NIA extraction and browser accounting
+        if: needs.changes.outputs.level == 'comprehensive'
         run: |
           python3 -m unittest discover -s analysis-nia/tests -v
-          python3 analysis-nia/build_nia_workbench.py
           python3 analysis-nia/build_nia_workbench.py --check
       - name: Check HFEP extraction and browser accounting
+        if: needs.changes.outputs.level == 'comprehensive'
         run: |
           python3 -m pytest analysis-hfep/tests -q
           python3 analysis-hfep/extract_hgab_hfep.py --check
           python3 analysis-hfep/build_hgab_data_list.py --check
           python3 analysis-hfep/extract_nep_hfep.py --check
-          python3 other-analysis/build_hfep_workbench.py
           python3 other-analysis/build_hfep_workbench.py --check
-      - name: Build and check React workbench
+      - name: Check master list data tests
+        if: needs.changes.outputs.level == 'comprehensive'
+        run: python3 -m unittest discover -s master_list/tests -v
+      - name: Deep workbench regeneration-integrity checks
+        if: needs.changes.outputs.level == 'comprehensive'
+        run: python3 scripts/derived_artifacts.py --deep
+
+      # ---------- Frontend build (fast: vite only, no implicit generation) ----------
+      - name: Build React workbench and run unit tests
         working-directory: analysis/web
         run: |
           npm ci
-          # Build first: prebuild regenerates the derived datasets (comparison
-          # payload, congress index/portraits, group-relations sidecars) that
-          # the test suite reads. Without them the congress suites skip, which
-          # would silently drop their coverage in CI.
           npm run build
           npm test
-      - name: Build master list viewer and run data tests
-        # Prototype mode: no committed-artifact hash gates. The site deploys
-        # from freshly rebuilt data (prebuild regenerates the whole chain), so
-        # code changes no longer require recommitting derived data in lockstep.
-        # The viewer is rebuilt here so the unittest suite reads a consistent
-        # working tree (manifest pins match freshly built artifacts).
-        run: |
-          python3 master_list/scripts/build_viewer.py
-          python3 -m unittest discover -s master_list/tests -v
-      - name: Package SPA, DPWH, FMR, HFEP and NIA sources
-        run: python3 scripts/build_pages.py --with-react
-      - name: Check React navigation, sorting and real PDF range rendering
+
+      # ---------- Packaging: consume committed artifacts ----------
+      - name: Package site from committed artifacts
+        run: python3 scripts/build_pages.py --with-react --no-regenerate
+
+      # ---------- Browser checks ----------
+      - name: Install Playwright
         run: |
           python3 -m pip install playwright==1.55.0
           if [ ! -x /usr/bin/google-chrome ]; then
             python3 -m playwright install --with-deps chromium
           fi
-          # Desktop-only passes: the workbench targets desktop, and the mobile
-          # (390px) pass roughly doubles the browser-check runtime. Unset
-          # SKIP_MOBILE_CHECKS to restore mobile coverage.
+      - name: Fast smoke checks (SPA serves, key routes render)
+        if: needs.changes.outputs.level == 'fast'
+        run: |
+          export SKIP_MOBILE_CHECKS=1
+          python3 scripts/check_react_pages.py
+          node --test analysis/tests/test_static_navigation.cjs
+      - name: Full browser checks (all workspaces, real PDF ranges)
+        if: needs.changes.outputs.level != 'fast'
+        run: |
           export SKIP_MOBILE_CHECKS=1
           python3 scripts/check_react_pages.py
           python3 scripts/check_overview_pages.py
@@ -179,8 +263,24 @@ jobs:
           python3 scripts/check_budget_flow_pages.py
           python3 scripts/check_flow_source_pages.py
           python3 scripts/check_hierarchy_pages.py
-      - name: Check root and historical route redirects under project base
-        run: node --test analysis/tests/test_static_navigation.cjs
+          node --test analysis/tests/test_static_navigation.cjs
+
+      # ---------- Timing summary ----------
+      - name: Write timing summary
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "### Job timings"
+            echo '```'
+            gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
+              --jq '.jobs[] | .name as $j | (.steps // [])[] | select(.conclusion != "skipped") |
+                    "\($j) :: \(.name) :: \(.started_at) → \(.completed_at)"' \
+              || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Configure Pages
         if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5

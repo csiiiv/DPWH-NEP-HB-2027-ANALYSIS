@@ -1,0 +1,270 @@
+{
+  "adoption_policy": "candidate_trial_adoption_v1",
+  "counts": {
+    "records": 64645,
+    "selected_locations": 52089,
+    "with_review_questions": 13958
+  },
+  "datasets": {
+    "dpwh_house_second": {
+      "amount_php": 639179718000,
+      "records": 18792
+    },
+    "dpwh_house_third": {
+      "amount_php": 639179718000,
+      "records": 18797
+    },
+    "dpwh_nep_api": {
+      "amount_php": 445378063000,
+      "records": 11372
+    },
+    "dpwh_nep_pdf": {
+      "amount_php": 572924074000,
+      "records": 11420
+    },
+    "fmr_hgab": {
+      "amount_php": 19628100000,
+      "records": 964
+    },
+    "fmr_nep": {
+      "amount_php": 16000000000,
+      "records": 704
+    },
+    "hfep_hgab": {
+      "amount_php": 10021659000,
+      "records": 513
+    },
+    "hfep_nep": {
+      "amount_php": 14472519000,
+      "records": 464
+    },
+    "nia_hgab": {
+      "amount_php": 17999305000,
+      "records": 828
+    },
+    "nia_nep": {
+      "amount_php": 17598181000,
+      "records": 791
+    }
+  },
+  "flag_policy": "review_questions_v1",
+  "input_files": {
+    "PSGC2LEG/data/psgc_locations.jsonl": {
+      "sha256": "e554dec87c0c4b8ce4859dddc81f099aede1a48a267133c4124161c2a4445ba4"
+    },
+    "analysis-hfep/data/hgab_hfep_tree.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "3d93535f64f01919fab729c37aee5b6181ad952bffe75af352be46574d0cef05"
+    },
+    "analysis-hfep/data/nep_hfep_audit.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "eefc2f35fd1022cc80c0906525b550c680c56fcfaa36ab77b01d7b8df55d9c10"
+    },
+    "analysis-hfep/data/nep_hfep_tree.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "0e1fc837bf1f553fcba71ea941e4fae09fd4d8117f59cdf614e068cdc48dce7f"
+    },
+    "analysis-nia/data/hgab_nia_tree.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "5c4808b5e28745b405b5222b0b4a3c2fca536ee0d32a7bb20bf81051787cac4f"
+    },
+    "analysis-nia/data/nep_nia_dataset.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "685dabfc819030a02d6e53b43a038bea59b11dd872e9a4bb262cf13e8a4aa50c"
+    },
+    "analysis-nia/data/nia_workbench.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "69a7eda465baf266b4e52a22114bf1c4d4569c08bf2019c38b6431650f83603a"
+    },
+    "analysis/data/chainage_units_2027.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "efa347de1ef6df14e828d621345951767d99eb156c4a79c4f7cf5d8240fab387"
+    },
+    "analysis/data/comparison_projects_2027.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "cb964990c9d09535353d9c0ecd8dd1f89ffe9ec4e680be803670c9cdf728be0f"
+    },
+    "analysis/data/hb_dpwh_native_ic_projects.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "7ca94948ba16fd46fabf3cd1061d1b04657f7d19e3c00c9891d7d2becf6ced51"
+    },
+    "analysis/data/hb_dpwh_native_ic_projects_3rd_reading.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "4ab63aea525784ce342d4911c7859f77380b8504eb5483d8e65d48be9377078c"
+    },
+    "analysis/data/house_reading_changes_2027.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "9079aa55e12e015c4b9851d99fd0b4fd4d263375830d4317f46807dc04d65b71"
+    },
+    "analysis/data/nep_2027_source_projects.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "2d58683888ae697c4506544b48d30ed4b6f6cfa9e796f7328ca4e4b9075423cf"
+    },
+    "analysis/data/road_group_candidates_2027.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "f914a2d270f883f26288de1fb0b79a7ab8227bf3fbb4e7bafa0971bae49c7295"
+    },
+    "analysis/data/stage_trace_2027.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "7073c9dc4be2c9118fa654be6cdd4fbc2e08a9490badb6a988fee427a0cfed73"
+    },
+    "dpwh-transparency-nep-data/json/fy2027-combined.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "dd57319349db0174fb59ae2a1939274a6ee072f889a48e85712818980a480e2e"
+    },
+    "master_list/data/audit.json": {
+      "sha256": "ef265b7dcdd89a12850253c7cac4886d2f82f1c583e54728e2f06967be131476"
+    },
+    "master_list/data/coordinate_psgc.jsonl.gz": {
+      "sha256": "e22f41c6d31ae992380f65262b3a95f1d0bb905f6b55617cc495867f265e6217"
+    },
+    "master_list/data/coordinate_psgc_audit.json": {
+      "sha256": "05f8e479cb962018f5c4adc987a54ef9c336ef30771c9d01232cf441ebea20b2"
+    },
+    "master_list/data/location_interpretations.jsonl.gz": {
+      "sha256": "fff765368d7e158b906236576a2b8b5533b5ece592d3d9a05e11e78c37971531"
+    },
+    "master_list/data/location_interpretations_audit.json": {
+      "sha256": "7c0ca3c2424be2ef94e1ca04c3f0a6c6decfb93c111494b10329efe795d8bc7b"
+    },
+    "master_list/data/processing/audit.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "afd31dbdec185a0b1697055ace2968ad51fb946af33ee889c47ecf97aac2a3dc"
+    },
+    "master_list/data/processing/comparison_groups.jsonl.gz": {
+      "sha256": "74fb5aba979ca65476a355764ea7b6f6ebb0b3a48e9a8d43ba3b50d21b6e44d3"
+    },
+    "master_list/data/processing/observations.jsonl.gz": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "d93edd40b998e919a8f2f50256fc76a4aaf236bc33cf7847b2d4f32f14c6b26c"
+    },
+    "master_list/data/processing/outside_comparison.jsonl.gz": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "2b39a358248b675ba24c2d6bd6ac392cb64e428b0799563ee49e186946776a3f"
+    },
+    "master_list/data/projects.jsonl.gz": {
+      "sha256": "fcfeb5d6eefc79b5d8bad0b834016c3aadd9f4ed227eb76d371ed61aba37d5f3"
+    },
+    "master_list/reference/review_catalog.json": {
+      "sha256": "69f1ea1262a0a58ae7cfff9434af0f8495823b573a4ee52ff20718c9e49d84a9"
+    },
+    "master_list/scripts/build_cleaned_dataset.py": {
+      "sha256": "9e3997d6f078ad35ee08a99a29c571a5db03dc74a29e0c20f59e5e3e9926ac6e"
+    },
+    "master_list/scripts/build_master_list.py": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "2d3891e5ea7796d2ab7852e39d987f19bf081d042f5d60b83da4da1dee1feeb9"
+    },
+    "master_list/scripts/build_processing_dataset.py": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "15eb5ddcc390aee77740759b768ca4859587e6031c182480a173c46ee9950cb4"
+    },
+    "master_list/scripts/cleaned_policy.py": {
+      "sha256": "206b9e1ea325c95c49ff7e76931fea4678faa4cdd2de6fcc04e34d9bdc268c6f"
+    },
+    "master_list/scripts/readable_titles.py": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "745b3ed99d74ff8f742fdeb76b5d3ef48acf6f5f5ac027d1048f0205cdfcc14a"
+    },
+    "master_list/scripts/review_catalog.py": {
+      "sha256": "47bfc42071aa3966ba8be6d4de47cb081596e8f6c2f9376dfd72f5807a23e4ca"
+    },
+    "other-analysis/data/fmr_workbench.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "dc8b8a2c644198d4af90c05c05014804545c7c11e3dc093ba8ee83b794056fd9"
+    },
+    "other-analysis/data/hfep_workbench.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "056050de3f80aeb1effd28ed7768de7a680d519335f61e859e3e167bcd9c95f7"
+    },
+    "other-analysis/data/hgab_fmr_coordinates_normalized.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "c8c360514ad9ac908f435c7782bca879cfda01d26b102c97f2348f58dd7243c0"
+    },
+    "other-analysis/data/hgab_fmr_tree.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "40907bb12528a76d955bda746e364ec8c28e14b19134eb6b2f90d07ead0bfdb5"
+    },
+    "other-analysis/data/nep_fmr_coordinates_normalized.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "53d76f3a3bd928a355e9c25b641ed156820b4aeee4a4d3308ff6f951441ce2fc"
+    },
+    "other-analysis/data/nep_fmr_tree.json": {
+      "scope": "Validated readable processing release and its direct provenance",
+      "sha256": "182b67acb063cc0c3501bcbb2f56f0b8e2014105ecae2df3c1a87c4372cb3e62"
+    }
+  },
+  "location_decisions": {
+    "adopted_candidate": 970,
+    "not_applicable": 5850,
+    "retained_master": 46552,
+    "review_required": 11273
+  },
+  "location_statuses": {
+    "ambiguous": 732,
+    "not_applicable": 5850,
+    "partially_resolved": 3200,
+    "resolved": 43606,
+    "unresolved": 11257
+  },
+  "observation_partitions": {
+    "house_only": 13136,
+    "matched": 43380,
+    "nep_only": 3085,
+    "not_compared": 5044
+  },
+  "output_sha256": {
+    "REPORT.md": "33cbba1cff7ac4c999c0730dc7fd02323af447430956dafdf39bc0a3788bb581",
+    "comparison_groups.jsonl.gz": "74fb5aba979ca65476a355764ea7b6f6ebb0b3a48e9a8d43ba3b50d21b6e44d3",
+    "evidence.jsonl.gz": "31b0f06759c6815263d59f028f2b457bd25f30273c4144066545aee5dba2a474",
+    "observations.csv.gz": "e4380163ce2b88e33d6e1d342ea663dca29b5fc55f9e2e6f533f92e6b7c7cc64",
+    "observations.jsonl.gz": "f5c2edd71906bf03f83a2ada743dcb30fe558d1519118b34f0f0497762ce0e9d",
+    "review_catalog.json": "69f1ea1262a0a58ae7cfff9434af0f8495823b573a4ee52ff20718c9e49d84a9"
+  },
+  "policy": {
+    "candidate_support_method": "context_evidence_v3",
+    "coordinate_reference_freshness": "not_assessed",
+    "enabled_flags": [
+      "location_unclear",
+      "location_alternatives",
+      "location_conflict"
+    ],
+    "initial_review_status": "open",
+    "legacy_legislative_district": "Preserved only; not recomputed from cleaned locations.",
+    "score_change_on_adoption": 0,
+    "selection": "Pinned ready_for_trial proposal, passing retained gates; otherwise retain master interpretation.",
+    "verification": "provisional"
+  },
+  "reference_collections": {
+    "comparison_groups": {
+      "key": "id",
+      "path": "comparison_groups.jsonl.gz",
+      "records": 20321
+    },
+    "evidence": {
+      "key": "record_id",
+      "local_items": "items",
+      "path": "evidence.jsonl.gz"
+    }
+  },
+  "review_catalog": {
+    "path": "review_catalog.json",
+    "sha256": "69f1ea1262a0a58ae7cfff9434af0f8495823b573a4ee52ff20718c9e49d84a9",
+    "version": "review_catalog_v1"
+  },
+  "review_flags": {
+    "description_unclear": 0,
+    "location_alternatives": 116,
+    "location_conflict": 616,
+    "location_unclear": 13226,
+    "project_coverage_unclear": 0,
+    "record_relationship_unclear": 0
+  },
+  "schema_version": "cleaned_observations_v1",
+  "task": {
+    "legislative_district_derivation": "deferred",
+    "purpose": "Identify project localities for later geographic processing",
+    "target_level": "municipality_city",
+    "whole_project_extent_required": false
+  }
+}

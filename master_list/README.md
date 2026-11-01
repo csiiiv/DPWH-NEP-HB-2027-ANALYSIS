@@ -12,7 +12,7 @@ Its 20,321 groups include matched, House-only and NEP-only records, while
 5,044 House GAS/S2O observations remain explicitly outside comparison scope.
 All 64,645 source observations are retained. Generate it with
 `python3 master_list/scripts/build_processing_dataset.py`; the webapp's
-`predev`/`prebuild` scripts also run this step. The master builder adds
+`npm run generate:data` also runs this step. The master builder adds
 location evidence to these observations; the browser joins them to the same
 comparison groups. Run `npm run build:master-list --prefix analysis/web` to
 rebuild processing, master enrichment and the browser after its inputs exist.

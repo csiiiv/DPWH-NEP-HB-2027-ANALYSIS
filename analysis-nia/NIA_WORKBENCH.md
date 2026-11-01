@@ -239,7 +239,7 @@ python analysis-nia/build_nia_workbench.py --check
 python -m unittest discover -s analysis-nia/tests -v
 npm test --prefix analysis/web
 npm run build --prefix analysis/web
-python scripts/build_pages.py --with-react
+python scripts/build_pages.py --with-react --no-regenerate
 python scripts/check_nia_pages.py
 python scripts/serve_pages.py --port 8000
 ```

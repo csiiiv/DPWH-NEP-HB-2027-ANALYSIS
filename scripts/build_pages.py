@@ -13,6 +13,7 @@ from urllib.parse import unquote, urlsplit
 from validate_current_pages import validate_current_pages
 from package_nia import package_nia
 from package_geo import package_geo
+from derived_artifacts import verify_derived_artifacts
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / '_site'
@@ -233,14 +234,14 @@ def package_hfep():
     print(f'Packaged HFEP workbench evidence and PDFs for {len(pdfs)} source documents')
 
 
-def package_congress(target):
+def package_congress(target, regenerate=True):
     """Package the Congress DEO-lens index and its WebP portraits.
 
-    The index is derived from the comparison payload (gitignored), so it is
-    rebuilt here rather than trusted to exist — the same reason
-    buildComparisonData.mjs is run above. The index carries row IDs only; the
-    explorer reads the shared comparison payload, so no per-district record
-    shard is packaged.
+    The index is derived from the comparison payload, so with ``regenerate``
+    (the historical default) it is rebuilt here rather than trusted to exist.
+    In ``--no-regenerate`` mode the committed index is consumed after the
+    derived-artifact gates in ``derived_artifacts.py`` proved it is fresh
+    against its pinned inputs.
 
     The WebP portraits are PRE-RENDERED and committed: they change only when
     the roster changes, and rebuilding them here would drag Pillow into every
@@ -250,11 +251,12 @@ def package_congress(target):
     import subprocess
 
     # The index is derived from comparison_projects_2027.json (pinned by
-    # SHA-256), which is rebuilt just above. Rebuild the index too, always, so
-    # a stale index can never be packaged against a fresh payload — the row IDs
-    # it pins are only meaningful against the exact build it classified.
-    subprocess.run(['node', str(ROOT / 'analysis/web/buildCongressIndex.mjs')],
-                   check=True, cwd=ROOT)
+    # SHA-256). Rebuild it when regenerating so a stale index can never be
+    # packaged against a fresh payload — the row IDs it pins are only
+    # meaningful against the exact build it classified.
+    if regenerate:
+        subprocess.run(['node', str(ROOT / 'analysis/web/buildCongressIndex.mjs')],
+                       check=True, cwd=ROOT)
     index_path = DATA / 'congress_district_index_2027.json'
     if not index_path.is_file():
         raise ValueError('Congress index was not built: ' + str(index_path))
@@ -288,8 +290,11 @@ def package_congress(target):
     # packaged, the PSGC2LEG assignment/polygon inputs and the cleaned
     # observations. Same rule as the DEO index — never package a stale build,
     # because its row IDs are only meaningful against this exact payload.
-    subprocess.run([sys.executable, str(ROOT / 'analysis/web/buildLocationLens.py')],
-                   check=True, cwd=ROOT)
+    # In --no-regenerate mode the committed build ships after the
+    # derived-artifact gates verified its input hashes.
+    if regenerate:
+        subprocess.run([sys.executable, str(ROOT / 'analysis/web/buildLocationLens.py')],
+                       check=True, cwd=ROOT)
     location_path = DATA / 'location_district_index_2027.json'
     if not location_path.is_file():
         raise ValueError('Location lens index was not built: ' + str(location_path))
@@ -310,12 +315,13 @@ def package_congress(target):
     # FMR legislative lens: refresh the formal title/coordinate extraction,
     # build the district assignment index against it, and package the result
     # beside the other Congress workspace indexes.
-    subprocess.run([sys.executable,
-                    str(ROOT / 'other-analysis/build_fmr_psgc_locations.py')],
-                   check=True, cwd=ROOT)
-    subprocess.run([sys.executable,
-                    str(ROOT / 'analysis/web/buildFmrLegislativeLens.py')],
-                   check=True, cwd=ROOT)
+    if regenerate:
+        subprocess.run([sys.executable,
+                        str(ROOT / 'other-analysis/build_fmr_psgc_locations.py')],
+                       check=True, cwd=ROOT)
+        subprocess.run([sys.executable,
+                        str(ROOT / 'analysis/web/buildFmrLegislativeLens.py')],
+                       check=True, cwd=ROOT)
     fmr_path = DATA / 'fmr_legislative_index_2027.json'
     if not fmr_path.is_file():
         raise ValueError('FMR legislative lens index was not built: ' + str(fmr_path))
@@ -329,9 +335,10 @@ def package_congress(target):
     # MPB legislative lens: scopes the DPWH ledger to the BIP multi-purpose
     # building programme and MPB titles, reusing the location lens's committed
     # resolution (built above). Depends on the location index being fresh.
-    subprocess.run([sys.executable,
-                    str(ROOT / 'analysis/web/buildMpbLegislativeLens.py')],
-                   check=True, cwd=ROOT)
+    if regenerate:
+        subprocess.run([sys.executable,
+                        str(ROOT / 'analysis/web/buildMpbLegislativeLens.py')],
+                       check=True, cwd=ROOT)
     mpb_path = DATA / 'mpb_legislative_index_2027.json'
     if not mpb_path.is_file():
         raise ValueError('MPB legislative lens index was not built: ' + str(mpb_path))
@@ -348,7 +355,7 @@ def package_congress(target):
     approx_path = DATA / 'mpb_psgc_approx_overlay_2027.json'
     shape_root = (ROOT / 'dpwh_coor2psgc_geomapping' / 'philippines-psgc-shapefiles'
                   / 'data' / '2023')
-    if (shape_root / 'Municities' / 'Municities.shp.shp').is_file():
+    if regenerate and (shape_root / 'Municities' / 'Municities.shp.shp').is_file():
         subprocess.run([sys.executable,
                         str(ROOT / 'analysis/web/buildMpbPsgcApproxOverlay.py')],
                        check=True, cwd=ROOT)
@@ -374,7 +381,23 @@ def package_congress(target):
     print('Packaged PSGC2LEG viz district polygons + province hues for #congress/map')
 
 
-def main(with_react=True):
+def run_builder(command, regenerate):
+    """Run a dataset generator unless packaging in --no-regenerate mode."""
+    import subprocess
+    if not regenerate:
+        return
+    subprocess.run(command, check=True, cwd=ROOT)
+
+
+def main(with_react=True, regenerate=True):
+    if not regenerate:
+        # Consume committed derived artifacts. Fail loudly — with actionable
+        # rebuild commands — if any required artifact is missing or its
+        # provenance no longer matches the committed inputs.
+        print('Packaging from committed artifacts (--no-regenerate)')
+        failures = verify_derived_artifacts()
+        if failures:
+            raise SystemExit('\n'.join(f'FAIL {message}' for message in failures))
     validate_current_pages()
     OUTPUT.mkdir(exist_ok=True)
     for path in OUTPUT.iterdir():
@@ -385,11 +408,10 @@ def main(with_react=True):
     target = OUTPUT / 'analysis'
     target.mkdir()
     if with_react:
-        import subprocess
-        subprocess.run(['node', str(ROOT / 'analysis/web/buildComparisonData.mjs')], check=True, cwd=ROOT)
+        run_builder(['node', str(ROOT / 'analysis/web/buildComparisonData.mjs')], regenerate)
         for name in ('comparison_overview_2027.json', 'comparison_projects_2027.json', 'highlights_details_2027.json'):
             shutil.copyfile(DATA / name, target / name)
-        package_congress(target)
+        package_congress(target, regenerate=regenerate)
     index = hosted_report_links((ROOT / 'site/index.html').read_text(), ROOT / 'site/index.html')
     # Site template still uses ../analysis/<viewer>.html — rewrite to packaged layout.
     index = index.replace('href="../analysis/', 'href="analysis/').replace('src="../analysis/', 'src="analysis/')
@@ -459,21 +481,21 @@ def main(with_react=True):
         package_hfep()
         package_nia(OUTPUT)
         package_geo(OUTPUT)
-        subprocess.run(['node', str(ROOT / 'analysis/web/buildMainOverview.mjs')], check=True, cwd=ROOT)
+        run_builder(['node', str(ROOT / 'analysis/web/buildMainOverview.mjs')], regenerate)
         shutil.copyfile(DATA / 'main_overview_2027.json', target / 'main_overview_2027.json')
         # Three-stage membership flow powering the experiments alluvial, the
         # category grouping contract for the five-stage revision figure, and
         # the NEP/HGAB3 hierarchies.
-        subprocess.run(['node', str(ROOT / 'analysis/web/buildDpwhFlow.mjs')], check=True, cwd=ROOT)
+        run_builder(['node', str(ROOT / 'analysis/web/buildDpwhFlow.mjs')], regenerate)
         shutil.copyfile(DATA / 'dpwh_flow_2027.json', target / 'dpwh_flow_2027.json')
-        subprocess.run(['node', str(ROOT / 'analysis/web/buildBudgetFlowSources.mjs')], check=True, cwd=ROOT)
+        run_builder(['node', str(ROOT / 'analysis/web/buildBudgetFlowSources.mjs')], regenerate)
         shutil.copyfile(DATA / 'budget_flow_sources_2027.json', target / 'budget_flow_sources_2027.json')
-        subprocess.run(['node', str(ROOT / 'analysis/web/buildHierarchySources.mjs')], check=True, cwd=ROOT)
+        run_builder(['node', str(ROOT / 'analysis/web/buildHierarchySources.mjs')], regenerate)
         shutil.copyfile(DATA / 'allocation_hierarchy_sources_2027.json', target / 'allocation_hierarchy_sources_2027.json')
         # Complete per-dataset CSV exports for the Sources workspace: the
         # DPWH comparison CSV is built beside the overview payload; HFEP
         # facility/controls CSVs come from the retained HFEP trees.
-        subprocess.run(['node', str(ROOT / 'analysis/web/buildCsvExports.mjs')], check=True, cwd=ROOT)
+        run_builder(['node', str(ROOT / 'analysis/web/buildCsvExports.mjs')], regenerate)
         shutil.copyfile(DATA / 'dpwh_comparison_all_2027.csv', target / 'dpwh_comparison_all_2027.csv')
         for name in ('hgab_hfep_facilities.csv', 'nep_hfep_facilities.csv', 'hgab_hfep_controls.csv', 'nep_hfep_controls.csv'):
             shutil.copyfile(ROOT / 'analysis-hfep/data' / name, OUTPUT / 'analysis-hfep' / name)
@@ -485,4 +507,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--with-react', action='store_true', help='Compatibility flag; the SPA is included by default')
     parser.add_argument('--static-only', action='store_true', help='Build historical standalone viewers for diagnostics')
-    main(with_react=not parser.parse_args().static_only)
+    parser.add_argument('--no-regenerate', action='store_true',
+                        help='Package committed derived artifacts without rerunning dataset '
+                             'generators; fails with rebuild commands when artifacts are missing '
+                             'or their provenance no longer matches committed inputs')
+    args = parser.parse_args()
+    main(with_react=not args.static_only, regenerate=not args.no_regenerate)

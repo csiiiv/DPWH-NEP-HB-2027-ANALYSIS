@@ -121,7 +121,10 @@ python scripts/serve_pages.py --port 8000
 Open `http://127.0.0.1:8000/`. `analysis/web/dist/` and `_site/` are generated,
 git-ignored outputs. Packaging validates retained inputs and copies source data;
 it does not rerun OCR or matching. The exact retained DBM PDF is checked by hash.
-`--static-only` packages standalone viewers for diagnostics. See
+`--static-only` packages standalone viewers for diagnostics. Default packaging
+regenerates the derived datasets; `--no-regenerate` packages the committed
+artifacts after `scripts/derived_artifacts.py` proves them fresh (this is what
+CI uses — see [docs/ci_fast_deploys.md](../docs/ci_fast_deploys.md)). See
 [web/README.md](web/README.md) for frontend tests and browser validation.
 
 ## Rebuild source-dependent outputs

@@ -53,15 +53,17 @@ npm ci --prefix analysis/web
 npm run dev --prefix analysis/web
 ```
 
-Open the URL printed by Vite. The predev step rebuilds the annex browser datasets
-from retained JSON. Development serves the source PDFs, images, and datasets
-from this checkout; no API server is needed.
+Open the URL printed by Vite. Development serves the source PDFs, images, and
+datasets (including the committed derived artifacts) from this checkout; no
+API server is needed. Dataset generation is explicit — when inputs change, run
+`npm run generate:data --prefix analysis/web` before starting the dev server
+(see [docs/ci_fast_deploys.md](docs/ci_fast_deploys.md)).
 
 To preview the complete static package:
 
 ```sh
 npm run build --prefix analysis/web
-python scripts/build_pages.py --with-react
+python scripts/build_pages.py --with-react --no-regenerate
 python scripts/serve_pages.py --port 8000
 ```
 
