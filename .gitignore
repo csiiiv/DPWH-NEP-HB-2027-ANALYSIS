@@ -9,6 +9,7 @@ venv/
 env/
 .coverage
 htmlcov/
+prompts/
 
 external_work/*
 dpwh_coor2psgc_geomapping/*
@@ -64,24 +65,27 @@ DEO2LEG/legislative_profiles/*.html
 /analysis/node_modules/
 /analysis/web/node_modules/.vite-*/
 
-# Derived compact comparison payloads (rebuilt for dev and packaging)
-analysis/data/comparison_overview_2027.json
-analysis/data/comparison_projects_2027.json
-analysis/data/highlights_details_2027.json
-analysis/data/main_overview_2027.json
+# Derived compact comparison payloads — now COMMITTED so deploys package
+# committed artifacts (scripts/derived_artifacts.py gates freshness).
+# Rerun `npm run generate:data` (analysis/web) after changing inputs and
+# commit the refreshed files.
+#analysis/data/comparison_overview_2027.json
+#analysis/data/comparison_projects_2027.json
+#analysis/data/highlights_details_2027.json
+#analysis/data/main_overview_2027.json
 # Complete DPWH comparison CSV built from the comparison payload
-analysis/data/dpwh_comparison_all_2027.csv
+#analysis/data/dpwh_comparison_all_2027.csv
 # Three-stage membership flow for the experiments alluvial
-analysis/data/dpwh_flow_2027.json
+#analysis/data/dpwh_flow_2027.json
 # Rebuilt from retained FMR trees and normalization audits.
-other-analysis/data/fmr_workbench.json
-analysis-nia/data/nia_workbench.json
-gps-analysis/data/gps_workbench.json
+#other-analysis/data/fmr_workbench.json
+#analysis-nia/data/nia_workbench.json
+#gps-analysis/data/gps_workbench.json
 # Rebuilt from retained HFEP trees and audits.
-other-analysis/data/hfep_workbench.json
+#other-analysis/data/hfep_workbench.json
 # Per-document FMR final datasets (rebuilt from retained normalized layers).
-other-analysis/data/hgab_fmr_final_dataset.json
-other-analysis/data/nep_fmr_final_dataset.json
+#other-analysis/data/hgab_fmr_final_dataset.json
+#other-analysis/data/nep_fmr_final_dataset.json
 
 # Senate xlsx crosscheck: builder + machine audit (rebuilt from external_work/)
 analysis/builders/crosscheck_dpwh_details_xlsx.py
@@ -95,21 +99,21 @@ analysis/data/allocation_hierarchy_sources_2027.json
 # scripts/build_congress_portraits.py --check (hash-only, no Pillow) verifies
 # staleness in CI. Run the builder without arguments to re-render after a
 # roster or display-size change, then commit the result.
-analysis/data/congress_district_index_2027.json
+#analysis/data/congress_district_index_2027.json
 
 # Location lens index for #congress?lens=location; derived from the DEO index,
 # PSGC2LEG assignments + district polygons and the cleaned observations.
-# Rebuilt by predev/prebuild (analysis/web/buildLocationLens.py).
-analysis/data/location_district_index_2027.json
+# Rebuilt by npm run generate:data:congress (analysis/web/buildLocationLens.py).
+#analysis/data/location_district_index_2027.json
 
 # District polygons joined to both lenses' figures for #congress/map; emitted
 # by the same builder run as the location index.
-analysis/data/congress_district_map_2027.json
+#analysis/data/congress_district_map_2027.json
 
 # FMR title/coordinate extraction and legislative lens; both are rebuilt by
-# predev/prebuild from the retained workbench and PSGC reference inputs.
-other-analysis/data/fmr_psgc_locations_2027.json
-analysis/data/fmr_legislative_index_2027.json
+# generate:data from the retained workbench and PSGC reference inputs.
+#other-analysis/data/fmr_psgc_locations_2027.json
+#analysis/data/fmr_legislative_index_2027.json
 
 # Local-only plain exports exceeding Git's 100 MiB blob limit
 master_list/data/project_list.csv

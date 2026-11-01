@@ -158,9 +158,12 @@ npm ci --prefix analysis/web
 npm run dev --prefix analysis/web
 ```
 
-`predev` and `prebuild` rebuild the comparison payloads and run
-`other-analysis/build_fmr_workbench.py`, `other-analysis/build_hfep_workbench.py`,
-`analysis-nia/build_nia_workbench.py`, and `gps-analysis/build_gps_workbench.py`. Vite's retained
+`predev`/`prebuild` data hooks were removed in November 2026: dataset
+generation is now explicit via `npm run generate:data` (plus
+`:workbenches` / `:congress` subsets). `npm run dev`/`npm run build` start
+immediately from whatever artifacts are already committed/present — run the
+generator when inputs change, then commit the refreshed artifacts (see
+[docs/ci_fast_deploys.md](../../docs/ci_fast_deploys.md)). Vite's retained
 file middleware serves JSON, source PDFs with byte ranges, review images, and
 source documentation from the checkout.
 
@@ -172,7 +175,7 @@ allocations. It does not change the original master-list viewer or exports.
 
 ```sh
 npm run build --prefix analysis/web
-python scripts/build_pages.py --with-react
+python scripts/build_pages.py --with-react --no-regenerate
 python scripts/serve_pages.py --port 8000
 ```
 
