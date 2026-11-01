@@ -142,7 +142,7 @@ FMR evidence path.
 
 Rows with retained title-printed coordinates from `mpb_legislative_index_2027.json`
 → `row_points`. Rendered as solid class-coloured squares (`MPB_POINT_CLASSES`:
-House-only blue, NEP-only teal, paired purple). These are the only MPB markers
+House-only purple, NEP-only teal, matched pair blue). These are the only MPB markers
 that claim a printed coordinate in the title text.
 
 ### 5.4 MPB PSGC approx (class color + light gray slash)
