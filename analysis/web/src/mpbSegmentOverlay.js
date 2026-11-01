@@ -70,12 +70,73 @@ export function ensureMpbBoxIcon(instance) {
 export const MPB_BADGE_ICON = 'mpb-unmapped-badge';
 
 /**
- * Count badge sprite for coordinate-less MPB rows. One geometry for every
- * count: fixed height with digits at a constant share of it (so a "1" and a
- * "427" read at the same size), and width grows only as far as the label
- * needs. Rendered on a canvas so digits stay crisp; one sprite per count.
+ * Count badge sprite for coordinate-less MPB rows: one stacked chip per
+ * comparison class (House only / NEP only / Matched pair), each in its
+ * shared MPB color so the badge reads like a vertical slice of the point
+ * legend. Zero-count classes draw no tier, so a single-class district gets
+ * one small chip instead of a stack of empty boxes. Digits always render at
+ * the same share of tier height (a "1" and a "427" read identically); tier
+ * width grows only as far as its label needs. One sprite per distinct
+ * count triple.
  */
-export function mpbBadgeIconImage(count, size = 128) {
+export function mpbBadgeIconImage(counts, size = 128) {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const tiers = Object.entries(MPB_POINT_CLASSES)
+    .map(([category, style]) => ({...style, count: counts[category] || 0}))
+    .filter(tier => tier.count > 0);
+  const tierHeight = Math.round(size * 0.21);
+  const fontPx = Math.round(tierHeight * 0.6);
+  const gap = Math.round(size * 0.025);
+  ctx.font = `700 ${fontPx}px system-ui, sans-serif`;
+  const widths = tiers.map(tier =>
+    Math.max(tierHeight, Math.ceil(ctx.measureText(String(tier.count)).width)
+      + Math.round(tierHeight * 0.5)));
+  const stackHeight = tiers.length * tierHeight + (tiers.length - 1) * gap;
+  const stackWidth = Math.max(...widths);
+  let y = Math.round((size - stackHeight) / 2);
+  const stroke = Math.max(2, Math.round(size * 0.018));
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.lineWidth = stroke;
+  ctx.strokeStyle = '#ffffff';
+  tiers.forEach((tier, index) => {
+    const width = widths[index];
+    const x0 = Math.round((size - width) / 2);
+    ctx.fillStyle = tier.color;
+    ctx.beginPath();
+    ctx.roundRect(x0, y, width, tierHeight, Math.round(tierHeight * 0.24));
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(String(tier.count), size / 2, y + tierHeight / 2 + Math.round(tierHeight * 0.04));
+    y += tierHeight + gap;
+  });
+  return {width: size, height: size, data: ctx.getImageData(0, 0, size, size).data};
+}
+
+/** Register one stacked badge sprite per distinct unmapped count triple. */
+export function ensureMpbBadgeIcons(instance, countTuples) {
+  if (!instance) return;
+  for (const counts of countTuples) {
+    const id = mpbBadgeIconId(counts);
+    if (!instance.hasImage(id)) instance.addImage(id, mpbBadgeIconImage(counts));
+  }
+}
+
+export const mpbBadgeIconId = counts =>
+  `${MPB_BADGE_ICON}-${counts.house_only}-${counts.nep_only}-${counts.paired}`;
+
+export const MPB_TOTAL_BADGE_ICON = 'mpb-unmapped-total';
+
+/**
+ * Aggregate red count badge — the opt-in "all without coordinates" square.
+ * Same digit-sizing rules as the stacked chips; red matches the earlier
+ * cannot-be-located warning vocabulary.
+ */
+export function mpbTotalBadgeIconImage(count, size = 128) {
   const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
@@ -88,14 +149,11 @@ export function mpbBadgeIconImage(count, size = 128) {
     + Math.round(height * 0.42));
   const x0 = Math.round((size - width) / 2);
   const y0 = Math.round((size - height) / 2);
-  // Red: a district total that cannot be located — matches the shared
-  // red-flag vocabulary the FMR corrections already use.
   ctx.fillStyle = 'rgba(220, 38, 38, 0.92)';
   ctx.strokeStyle = '#ffffff';
   ctx.lineWidth = Math.max(2, Math.round(size * 0.018));
-  const radius = Math.round(height * 0.28);
   ctx.beginPath();
-  ctx.roundRect(x0, y0, width, height, radius);
+  ctx.roundRect(x0, y0, width, height, Math.round(height * 0.28));
   ctx.fill();
   ctx.stroke();
   ctx.fillStyle = '#ffffff';
@@ -105,16 +163,15 @@ export function mpbBadgeIconImage(count, size = 128) {
   return {width: size, height: size, data: ctx.getImageData(0, 0, size, size).data};
 }
 
-/** Register one badge sprite per distinct unmapped count on the map. */
-export function ensureMpbBadgeIcons(instance, counts) {
+export function ensureMpbTotalBadgeIcons(instance, counts) {
   if (!instance) return;
   for (const count of new Set(counts)) {
-    const id = `${MPB_BADGE_ICON}-${count}`;
-    if (!instance.hasImage(id)) instance.addImage(id, mpbBadgeIconImage(count));
+    const id = mpbTotalBadgeIconId(count);
+    if (!instance.hasImage(id)) instance.addImage(id, mpbTotalBadgeIconImage(count));
   }
 }
 
-export const mpbBadgeIconId = count => `${MPB_BADGE_ICON}-${count}`;
+export const mpbTotalBadgeIconId = count => `${MPB_TOTAL_BADGE_ICON}-${count}`;
 
 function comparisonClass(record) {
   // An MPB row is "paired" when both amount stages are present on the

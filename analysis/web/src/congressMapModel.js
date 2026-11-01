@@ -23,22 +23,38 @@ export const CONGRESS_MAP_TYPE_OPTIONS = {
     ['point', 'Corrected coordinate'],
   ],
   mpb: Object.entries(MPB_POINT_CLASSES).map(([id, style]) => [id, style.label]),
+  // Class chips default on; the red aggregate "total" square is opt-in.
+  mpb_unmapped: [
+    ...Object.entries(MPB_POINT_CLASSES).map(([id, style]) => [id, style.label]),
+    ['total', 'All without coordinates'],
+  ],
 };
 
 function typeToken(objectId, subtypeId) {
   return `${objectId}:${subtypeId}`;
 }
 
-function allTypeTokens() {
-  return Object.entries(CONGRESS_MAP_TYPE_OPTIONS).flatMap(([objectId, entries]) =>
-    entries.map(([subtypeId]) => typeToken(objectId, subtypeId)));
-}
-
 export const DEFAULT_CONGRESS_MAP_TYPES = Object.fromEntries(
   Object.entries(CONGRESS_MAP_TYPE_OPTIONS).map(([objectId, entries]) => [
     objectId,
-    Object.fromEntries(entries.map(([subtypeId]) => [subtypeId, true])),
+    Object.fromEntries(entries.map(([subtypeId]) => [
+      subtypeId,
+      // Red district-total square stays off until the user asks for it.
+      !(objectId === 'mpb_unmapped' && subtypeId === 'total'),
+    ])),
   ]));
+
+function congressMapTypesMatchDefault(types) {
+  for (const [objectId, entries] of Object.entries(CONGRESS_MAP_TYPE_OPTIONS)) {
+    for (const [subtypeId] of entries) {
+      if (Boolean(types?.[objectId]?.[subtypeId])
+        !== Boolean(DEFAULT_CONGRESS_MAP_TYPES[objectId][subtypeId])) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
 
 function emptyCongressMapTypes() {
   return Object.fromEntries(
@@ -81,16 +97,15 @@ export function readCongressMapTypes(params = new URLSearchParams()) {
   return next;
 }
 
-/** Serialize subtype toggles; omit when every subtype is on. */
+/** Serialize subtype toggles; omit when they match the defaults. */
 export function congressMapTypesParam(types) {
+  if (congressMapTypesMatchDefault(types)) return null;
   const selected = [];
   for (const [objectId, entries] of Object.entries(CONGRESS_MAP_TYPE_OPTIONS)) {
     for (const [subtypeId] of entries) {
       if (types?.[objectId]?.[subtypeId]) selected.push(typeToken(objectId, subtypeId));
     }
   }
-  const all = allTypeTokens();
-  if (selected.length === all.length) return null;
   return selected.length ? selected.join(',') : 'none';
 }
 
@@ -213,36 +228,103 @@ export function mpbNationalMapOverlay(records) {
 
 /**
  * Catch-all badges for MPB rows a district owns but that print no title
- * coordinate: one badge per legislative district, anchored at the
- * district polygon's centroid, carrying the unmapped row count. Rows are
- * aggregated across every MPB card the district appears on (title-PSGC and
- * DEO→LEG cards can both carry the same district), so the badge states the
- * district total, not one card's share.
+ * coordinate: one stacked badge per legislative district (House only / NEP
+ * only / Matched pair, in the shared MPB colors), anchored at the district
+ * polygon's centroid. Rows are aggregated across every MPB card the district
+ * appears on (title-PSGC and DEO→LEG cards can both carry the same
+ * district), so the badge states the district total, not one card's share.
+ * Class split mirrors the comparison vocabulary the explorer prints:
+ * insertions = House only, deletions = NEP only, remaining buckets = pairs.
  */
 export function mpbUnmappedDistrictBadges(mpbIndex, districtsGeojson) {
   if (!mpbIndex || !districtsGeojson) return {type: 'FeatureCollection', features: []};
   const unmapped = new Map();
   for (const card of [...(mpbIndex.cards ?? []), ...(mpbIndex.region_cards ?? [])]) {
     for (const district of card.districts ?? []) {
-      const ids = Object.values(card.row_ids ?? {}).flat();
-      const count = ids.filter(id => !(mpbIndex.row_points ?? {})[id]?.length).length;
-      if (count > 0) unmapped.set(district.id, (unmapped.get(district.id) ?? 0) + count);
+      const rowIds = card.row_ids ?? {};
+      const withoutPoints = ids => ids.filter(id => !(mpbIndex.row_points ?? {})[id]?.length);
+      const entry = unmapped.get(district.id) ?? {house_only: 0, nep_only: 0, paired: 0};
+      entry.house_only += withoutPoints(rowIds.insertions ?? []).length;
+      entry.nep_only += withoutPoints(rowIds.deletions ?? []).length;
+      entry.paired += withoutPoints([...(rowIds.increased ?? []), ...(rowIds.reduced ?? []),
+        ...(rowIds.unchanged ?? []), ...(rowIds.scope_review ?? [])]).length;
+      unmapped.set(district.id, entry);
     }
   }
   const features = (districtsGeojson.features ?? [])
     .filter(feature => unmapped.has(feature.properties.district_id))
-    .map(feature => ({
-      type: 'Feature',
-      id: `mpb-unmapped:${feature.properties.district_id}`,
-      properties: {
-        objectKind: 'mpb_unmapped',
-        districtId: feature.properties.district_id,
-        districtLabel: `${feature.properties.jurisdiction} · ${feature.properties.district_label}`,
-        unmapped: unmapped.get(feature.properties.district_id),
-      },
-      geometry: {type: 'Point', coordinates: polygonCentroid(feature.geometry)},
-    }));
+    .map(feature => {
+      const counts = unmapped.get(feature.properties.district_id);
+      const total = counts.house_only + counts.nep_only + counts.paired;
+      return {
+        type: 'Feature',
+        id: `mpb-unmapped:${feature.properties.district_id}`,
+        properties: {
+          objectKind: 'mpb_unmapped',
+          districtId: feature.properties.district_id,
+          districtLabel: `${feature.properties.jurisdiction} · ${feature.properties.district_label}`,
+          unmapped: total,
+          // Flat copies for the icon-image expression: MapLibre's `get`
+          // cannot reach into nested objects, so sprite ids concatenate
+          // these top-level props instead of the unmappedByClass dict.
+          house_only: counts.house_only,
+          nep_only: counts.nep_only,
+          paired: counts.paired,
+          unmappedByClass: counts,
+        },
+        geometry: {type: 'Point', coordinates: polygonCentroid(feature.geometry)},
+      };
+    });
   return {type: 'FeatureCollection', features};
+}
+
+/**
+ * Apply subtype toggles to unmapped badges: zero out disabled class tiers
+ * for the stacked sprite, and optionally emit a separate red total feature
+ * per district. Districts with nothing left to draw drop out of each view.
+ */
+export function mpbUnmappedBadgeViews(mpbBadges, types) {
+  const toggles = types?.mpb_unmapped ?? DEFAULT_CONGRESS_MAP_TYPES.mpb_unmapped;
+  const stack = [];
+  const total = [];
+  for (const feature of mpbBadges?.features ?? []) {
+    const props = feature.properties ?? {};
+    const counts = {
+      house_only: toggles.house_only ? (props.house_only || 0) : 0,
+      nep_only: toggles.nep_only ? (props.nep_only || 0) : 0,
+      paired: toggles.paired ? (props.paired || 0) : 0,
+    };
+    if (counts.house_only + counts.nep_only + counts.paired > 0) {
+      stack.push({
+        ...feature,
+        properties: {...props, ...counts, unmappedByClass: counts},
+      });
+    }
+    if (toggles.total && (props.unmapped || 0) > 0) {
+      total.push({
+        ...feature,
+        id: `${feature.id}:total`,
+        properties: {...props, badgeKind: 'total'},
+      });
+    }
+  }
+  return {
+    stack: {type: 'FeatureCollection', features: stack},
+    total: {type: 'FeatureCollection', features: total},
+  };
+}
+
+/** Nationwide sums for the unmapped-layer subtype toggles. */
+export function mpbUnmappedClassTotals(mpbBadges) {
+  const totals = {house_only: 0, nep_only: 0, paired: 0, total: 0};
+  for (const feature of mpbBadges?.features ?? []) {
+    const props = feature.properties ?? {};
+    totals.house_only += props.house_only || 0;
+    totals.nep_only += props.nep_only || 0;
+    totals.paired += props.paired || 0;
+    totals.total += props.unmapped || 0;
+  }
+  return totals;
 }
 
 /** Area-weighted centroid of a polygon ring set — a stable anchor point. */
@@ -274,7 +356,8 @@ function polygonCentroid(geometry) {
  * First legislative-lens card id for a district. The reverse `districts`
  * index on FMR/MPB payloads still carries DEO office-group ids, so card
  * lookup walks `cards[].districts` instead.
- */export function districtCardId(index, districtId) {
+ */
+export function districtCardId(index, districtId) {
   if (!index || !districtId) return null;
   const matches = (index.cards ?? []).filter(card =>
     (card.districts ?? []).some(district => district.id === districtId));

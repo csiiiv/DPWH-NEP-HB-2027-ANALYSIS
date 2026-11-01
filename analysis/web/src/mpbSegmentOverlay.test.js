@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mpbRecordMapOverlay, leftToRightOrder, mpbBoxIconImage} from './mpbSegmentOverlay.js';
+import {mpbRecordMapOverlay, leftToRightOrder, mpbBoxIconImage,
+  mpbBadgeIconImage, mpbBadgeIconId} from './mpbSegmentOverlay.js';
 
 test('mpb box icon is an opaque colored square', () => {
   const icon = mpbBoxIconImage('#2563eb', 32);
@@ -39,4 +40,57 @@ test('mpb overlay links multi-point titles west to east', () => {
   assert.equal(overlay.lines.features[0].properties.linkOrder, 'left_to_right');
   assert.deepEqual(overlay.lines.features[0].geometry.coordinates,
     [[120.0, 15.5], [120.1, 14.5], [120.2, 15.0]]);
+});
+
+// Minimal canvas stub: mpbBadgeIconImage only needs measureText/fillText and
+// the final image dump, so record draws instead of rasterizing.
+function stubCanvas() {
+  const recorded = {fills: [], texts: []};
+  const ctx = {
+    font: '',
+    textAlign: '',
+    textBaseline: '',
+    fillStyle: '',
+    strokeStyle: '',
+    lineWidth: 0,
+    measureText: text => ({width: String(text).length * 10}),
+    beginPath() {},
+    roundRect() {},
+    fill() { recorded.fills.push(this.fillStyle); },
+    stroke() {},
+    fillText: text => recorded.texts.push(String(text)),
+    getImageData: () => ({data: new Uint8Array(1)}),
+  };
+  const canvas = {
+    width: 0,
+    height: 0,
+    getContext: () => ctx,
+  };
+  return {canvas, recorded};
+}
+
+test('mpb badge sprite stacks one colored tier per non-zero class', () => {
+  const original = globalThis.document;
+  const {canvas, recorded} = stubCanvas();
+  globalThis.document = {createElement: () => canvas};
+
+  try {
+    const icon = mpbBadgeIconImage({house_only: 3, nep_only: 0, paired: 12});
+    assert.equal(icon.width, 128);
+    assert.equal(icon.height, 128);
+    // Zero-count class draws no tier: two chips, not three.
+    assert.deepEqual(recorded.texts, ['3', '12']);
+    // Tier order follows the class vocabulary: House first, then pairs.
+    const colors = recorded.fills;
+    assert.deepEqual(colors, ['#2563eb', '#7c3aed']);
+  } finally {
+    globalThis.document = original;
+  }
+});
+
+test('mpb badge icon ids are unique per count triple', () => {
+  assert.equal(mpbBadgeIconId({house_only: 1, nep_only: 2, paired: 3}),
+    'mpb-unmapped-badge-1-2-3');
+  assert.notEqual(mpbBadgeIconId({house_only: 1, nep_only: 2, paired: 3}),
+    mpbBadgeIconId({house_only: 3, nep_only: 2, paired: 1}));
 });

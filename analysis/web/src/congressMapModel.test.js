@@ -4,6 +4,7 @@ import {existsSync, readFileSync} from 'node:fs';
 import {
   colorDistrictFeatures, decorateDistrictIds, districtIdBridge,
   mpbNationalMapOverlay, districtCardId, mpbUnmappedDistrictBadges,
+  mpbUnmappedBadgeViews, mpbUnmappedClassTotals,
   readCongressMapObjects, congressMapObjectsParam, DEFAULT_CONGRESS_MAP_OBJECTS,
   readCongressMapTypes, congressMapTypesParam, DEFAULT_CONGRESS_MAP_TYPES,
   congressMapCategoryFilter,
@@ -64,18 +65,22 @@ test('congress map objects default to all on and serialize sparse selections', (
   });
 });
 
-test('congress map types default to all on and serialize sparse selections', () => {
+test('congress map types default to class chips on and total off', () => {
   assert.deepEqual(readCongressMapTypes(new URLSearchParams()), DEFAULT_CONGRESS_MAP_TYPES);
+  assert.equal(DEFAULT_CONGRESS_MAP_TYPES.mpb_unmapped.total, false);
+  assert.equal(DEFAULT_CONGRESS_MAP_TYPES.mpb_unmapped.house_only, true);
   assert.equal(congressMapTypesParam(DEFAULT_CONGRESS_MAP_TYPES), null);
   assert.equal(congressMapTypesParam({
     ...DEFAULT_CONGRESS_MAP_TYPES,
     fmr: {nep_only: true, house_only: false, paired: true},
     mpb: {nep_only: false, house_only: false, paired: true},
-  }), 'fmr:nep_only,fmr:paired,fmr_repairs:link,fmr_repairs:point,mpb:paired');
+  }), 'fmr:nep_only,fmr:paired,fmr_repairs:link,fmr_repairs:point,mpb:paired,'
+    + 'mpb_unmapped:house_only,mpb_unmapped:nep_only,mpb_unmapped:paired');
   assert.deepEqual(readCongressMapTypes(new URLSearchParams('types=mpb:paired,fmr:house_only')), {
     fmr: {nep_only: false, house_only: true, paired: false},
     fmr_repairs: {link: false, point: false},
     mpb: {nep_only: false, house_only: false, paired: true},
+    mpb_unmapped: {house_only: false, nep_only: false, paired: false, total: false},
   });
   assert.equal(congressMapCategoryFilter(['paired', 'nep_only'])[0], 'in');
   assert.deepEqual(congressMapCategoryFilter(['paired']), ['==', ['get', 'category'], 'paired']);
@@ -159,12 +164,12 @@ test('mpbUnmappedDistrictBadges aggregates coordinate-less rows per district', (
   const mpbIndex = {
     cards: [
       {id: 'mpb:title_psgc:leg:sample:1st', districts: [{id: 'leg:sample:1st'}],
-        row_ids: {unchanged: ['m1', 'm2', 'm3']}},
+        row_ids: {unchanged: ['m1', 'm2', 'm3'], insertions: ['m7']}},
       // Same district also served by a DEO→LEG card — counts must add.
       {id: 'mpb:deo_to_leg:leg:sample:1st', districts: [{id: 'leg:sample:1st'}],
         row_ids: {unchanged: ['m4']}},
       {id: 'mpb:title_psgc:leg:other:2nd', districts: [{id: 'leg:other:2nd'}],
-        row_ids: {unchanged: ['m5', 'm6']}},
+        row_ids: {unchanged: ['m5', 'm6'], deletions: ['m8']}},
     ],
     region_cards: [],
     row_points: {m1: [{lng: 121, lat: 14}], m3: [{lng: 122, lat: 15}]},
@@ -181,13 +186,44 @@ test('mpbUnmappedDistrictBadges aggregates coordinate-less rows per district', (
     ],
   };
   const badges = mpbUnmappedDistrictBadges(mpbIndex, districts);
-  assert.equal(badgeBy(badges, 'leg:sample:1st').properties.unmapped, 2); // m2 + m4
-  assert.equal(badgeBy(badges, 'leg:other:2nd').properties.unmapped, 2); // m5 + m6
+  // Per-class split: insertions = House only, deletions = NEP only, the
+  // pair buckets (unchanged here) = matched pairs; cross-card totals add.
+  assert.deepEqual(badgeBy(badges, 'leg:sample:1st').properties.unmappedByClass,
+    {house_only: 1, nep_only: 0, paired: 2}); // m7 + (m2, m4)
+  assert.deepEqual(badgeBy(badges, 'leg:other:2nd').properties.unmappedByClass,
+    {house_only: 0, nep_only: 1, paired: 2}); // m8 + (m5, m6)
+  // Flat copies ride along for the icon-image expression (MapLibre `get`
+  // cannot traverse nested objects).
+  const flat = badgeBy(badges, 'leg:sample:1st').properties;
+  assert.equal(flat.house_only, 1);
+  assert.equal(flat.nep_only, 0);
+  assert.equal(flat.paired, 2);
+  assert.equal(badgeBy(badges, 'leg:sample:1st').properties.unmapped, 3);
+  assert.equal(badgeBy(badges, 'leg:other:2nd').properties.unmapped, 3);
   // Badge sits inside its district polygon (centroid of the triangle ring).
   const [cx, cy] = badgeBy(badges, 'leg:sample:1st').geometry.coordinates;
   assert.ok(cx > 120 && cx < 121 && cy >= 14 && cy <= 15, `centroid in bounds: ${cx},${cy}`);
   // Districts without unmapped rows get no badge.
   assert.equal(badgeBy(badges, 'leg:quiet:3rd'), undefined);
+
+  assert.deepEqual(mpbUnmappedClassTotals(badges),
+    {house_only: 1, nep_only: 1, paired: 4, total: 6});
+
+  // Class toggles zero disabled tiers; total square is opt-in.
+  const houseOnly = mpbUnmappedBadgeViews(badges, {
+    mpb_unmapped: {house_only: true, nep_only: false, paired: false, total: false},
+  });
+  assert.equal(houseOnly.stack.features.length, 1);
+  assert.deepEqual(houseOnly.stack.features[0].properties.unmappedByClass,
+    {house_only: 1, nep_only: 0, paired: 0});
+  assert.equal(houseOnly.total.features.length, 0);
+
+  const withTotal = mpbUnmappedBadgeViews(badges, {
+    mpb_unmapped: {house_only: false, nep_only: false, paired: false, total: true},
+  });
+  assert.equal(withTotal.stack.features.length, 0);
+  assert.equal(withTotal.total.features.length, 2);
+  assert.equal(withTotal.total.features[0].properties.unmapped, 3);
 });
 
 function badgeBy(badges, districtId) {

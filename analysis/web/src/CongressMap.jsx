@@ -7,10 +7,12 @@ import {routeHref} from './routes.js';
 import ShareLink from './ShareLink.jsx';
 import {districtLensCounts} from './congressModel.js';
 import {fmrPrintedMapOverlay, DISTRICT_SEGMENT_CLASSES, REPAIR_COLOR} from './fmrSegmentOverlay.js';
-import {MPB_POINT_CLASSES, MPB_BOX_ICON_IMAGE, ensureMpbBoxIcon, ensureMpbBadgeIcons} from './mpbSegmentOverlay.js';
+import {MPB_POINT_CLASSES, MPB_BOX_ICON_IMAGE, ensureMpbBoxIcon,
+  ensureMpbBadgeIcons, ensureMpbTotalBadgeIcons} from './mpbSegmentOverlay.js';
 import {
   colorDistrictFeatures, decorateDistrictIds, districtIdBridge,
   mpbNationalMapOverlay, districtCardId, mpbUnmappedDistrictBadges,
+  mpbUnmappedBadgeViews, mpbUnmappedClassTotals,
   CONGRESS_MAP_OBJECT_OPTIONS, DEFAULT_CONGRESS_MAP_OBJECTS,
   CONGRESS_MAP_TYPE_OPTIONS, DEFAULT_CONGRESS_MAP_TYPES,
   readCongressMapObjects, congressMapObjectsParam,
@@ -46,6 +48,8 @@ const MPB_POINTS = 'congress-map-mpb-points';
 const MPB_POINT = 'congress-map-mpb-point';
 const MPB_UNMAPPED = 'congress-map-mpb-unmapped';
 const MPB_BADGE = 'congress-map-mpb-badge';
+const MPB_UNMAPPED_TOTAL = 'congress-map-mpb-unmapped-total';
+const MPB_BADGE_TOTAL = 'congress-map-mpb-badge-total';
 
 const MARKER_LAYERS = [FMR_LINE, FMR_POINT, FMR_LINK, FMR_CORRECTED_POINT, MPB_LINE, MPB_POINT];
 const OBJECT_LAYERS = {
@@ -53,7 +57,7 @@ const OBJECT_LAYERS = {
   fmr: [FMR_HALO, FMR_LINE, FMR_POINT],
   fmr_repairs: [FMR_LINK, FMR_CORRECTED_POINT],
   mpb: [MPB_LINE_HALO, MPB_LINE, MPB_POINT],
-  mpb_unmapped: [MPB_BADGE],
+  mpb_unmapped: [MPB_BADGE, MPB_BADGE_TOTAL],
 };
 const emptyFc = () => ({type: 'FeatureCollection', features: []});
 
@@ -86,7 +90,18 @@ function applyLayerFilters(instance, objects, types) {
     setVisible(layerId, mpbOn);
     if (mpbOn) setFilter(layerId, mpbFilter);
   }
-  setVisible(MPB_BADGE, objects.mpb_unmapped);
+  const unmappedOn = Boolean(objects.mpb_unmapped);
+  const unmappedTypes = types?.mpb_unmapped ?? {};
+  const stackOn = unmappedOn && (unmappedTypes.house_only || unmappedTypes.nep_only
+    || unmappedTypes.paired);
+  const totalOn = unmappedOn && Boolean(unmappedTypes.total);
+  setVisible(MPB_BADGE, stackOn);
+  setVisible(MPB_BADGE_TOTAL, totalOn);
+  // Nudge the red total square aside when class chips are also drawn so the
+  // two badges at a district centroid do not bury each other.
+  if (instance.getLayer(MPB_BADGE_TOTAL)) {
+    instance.setLayoutProperty(MPB_BADGE_TOTAL, 'icon-offset', stackOn ? [22, 0] : [0, 0]);
+  }
 }
 
 async function loadJson(url, signal) {
@@ -186,8 +201,13 @@ function syncLayers(instance, districts, fmrOverlay, mpbOverlay, fillAlpha = DEF
   ensure(FMR_CORRECTED, fmrOverlay?.correctedPoints || emptyFc());
   ensure(MPB_LINES, mpbOverlay?.lines || emptyFc());
   ensure(MPB_POINTS, mpbOverlay?.points || emptyFc());
-  ensure(MPB_UNMAPPED, mpbBadges || emptyFc());
-  if (mpbBadges) ensureMpbBadgeIcons(instance, mpbBadges.features.map(f => f.properties.unmapped));
+  const unmappedViews = mpbUnmappedBadgeViews(mpbBadges, types);
+  ensure(MPB_UNMAPPED, unmappedViews.stack);
+  ensure(MPB_UNMAPPED_TOTAL, unmappedViews.total);
+  ensureMpbBadgeIcons(instance,
+    unmappedViews.stack.features.map(f => f.properties.unmappedByClass));
+  ensureMpbTotalBadgeIcons(instance,
+    unmappedViews.total.features.map(f => f.properties.unmapped));
 
   if (!instance.getLayer(DISTRICTS_FILL)) {
     instance.addLayer({
@@ -295,12 +315,30 @@ function syncLayers(instance, districts, fmrOverlay, mpbOverlay, fillAlpha = DEF
     instance.addLayer({
       id: MPB_BADGE, type: 'symbol', source: MPB_UNMAPPED,
       layout: {
-        'icon-image': ['concat', 'mpb-unmapped-badge-', ['get', 'unmapped']],
-        // Sprite content is 36% of the 128px canvas, so these multipliers
-        // land at ≈15px tall at country view (a touch under the first
-        // version) and ≈39px zoomed in (matching it). Larger than point
-        // boxes: it is a district-level summary, not a building.
-        'icon-size': ['interpolate', ['linear'], ['zoom'], 5, 0.32, 10, 0.55, 14, 0.85],
+        'icon-image': ['concat', 'mpb-unmapped-badge-',
+          ['get', 'house_only'], '-',
+          ['get', 'nep_only'], '-',
+          ['get', 'paired']],
+        // Sprite content is 36-70% of the 128px canvas (1-3 tiers). Country
+        // view stays compact; zoomed-in ramps higher so stacked counts are
+        // readable at district scale. Larger than point boxes: it is a
+        // district-level summary, not a building.
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 5, 0.32, 10, 0.65, 14, 1.1],
+        'icon-allow-overlap': true,
+        'icon-ignore-placement': true,
+      },
+      paint: {
+        'icon-opacity': ['case',
+          ['boolean', ['feature-state', 'hover'], false], 1,
+          0.92],
+      },
+    });
+    instance.addLayer({
+      id: MPB_BADGE_TOTAL, type: 'symbol', source: MPB_UNMAPPED_TOTAL,
+      layout: {
+        'icon-image': ['concat', 'mpb-unmapped-total-', ['get', 'unmapped']],
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 5, 0.32, 10, 0.65, 14, 1.1],
+        'icon-offset': [0, 0],
         'icon-allow-overlap': true,
         'icon-ignore-placement': true,
       },
@@ -336,7 +374,13 @@ function LayerSwatch({id}) {
       style={{backgroundImage: `repeating-linear-gradient(90deg, ${REPAIR_COLOR} 0 4px, transparent 4px 7px)`}}/>;
   }
   if (id === 'mpb_unmapped') {
-    return <i className="congress-layer-swatch congress-layer-swatch-badge" aria-hidden="true">3</i>;
+    // Mini stacked chip: same House/NEP/Pair colors and stacking order the
+    // map badges use, without numbers at legend size.
+    return <i className="congress-layer-swatch congress-layer-swatch-stack" aria-hidden="true">
+      {Object.values(MPB_POINT_CLASSES).map(style =>
+        <b key={style.label} style={{background: style.color}}/>,
+      )}
+    </i>;
   }
   return <i className="congress-layer-swatch congress-layer-swatch-box" aria-hidden="true"
     style={{background: MPB_POINT_CLASSES.paired.color}}/>;
@@ -364,29 +408,33 @@ function subtypeMark(objectId, subtypeId) {
   if (objectId === 'fmr') {
     return <LineKey color={DISTRICT_SEGMENT_CLASSES[subtypeId].color}/>;
   }
-  if (objectId === 'mpb') {
+  if (objectId === 'mpb' || (objectId === 'mpb_unmapped' && subtypeId !== 'total')) {
     return <BoxKey color={MPB_POINT_CLASSES[subtypeId].color}/>;
+  }
+  if (objectId === 'mpb_unmapped' && subtypeId === 'total') {
+    return <i className="congress-layer-key-mark congress-layer-key-badge" aria-hidden="true">Σ</i>;
   }
   if (subtypeId === 'link') return <LineKey color={REPAIR_COLOR} dashed/>;
   return <DotKey color={REPAIR_COLOR}/>;
 }
 
-function subtypeCount(objectId, subtypeId, fmrCounts, mpbCounts, repairCount) {
+function subtypeCount(objectId, subtypeId, fmrCounts, mpbCounts, repairCount, unmappedCounts) {
   if (objectId === 'fmr') return fmrCounts?.[subtypeId]?.segments;
   if (objectId === 'mpb') return mpbCounts?.[subtypeId]?.points;
+  if (objectId === 'mpb_unmapped') return unmappedCounts?.[subtypeId];
   if (objectId === 'fmr_repairs' && subtypeId === 'point') return repairCount;
   return null;
 }
 
 function LayerTypeToggles({
-  id, types, onToggleType, fmrCounts, mpbCounts, repairCount,
+  id, types, onToggleType, fmrCounts, mpbCounts, repairCount, unmappedCounts,
 }) {
   const entries = CONGRESS_MAP_TYPE_OPTIONS[id];
   if (!entries?.length) return null;
   return <ul className="congress-layer-key" aria-label={`${id} type toggles`}>
     {entries.map(([subtypeId, label]) => {
       const checked = Boolean(types?.[id]?.[subtypeId]);
-      const count = subtypeCount(id, subtypeId, fmrCounts, mpbCounts, repairCount);
+      const count = subtypeCount(id, subtypeId, fmrCounts, mpbCounts, repairCount, unmappedCounts);
       return <li key={subtypeId} className={checked ? 'is-on' : 'is-off'}>
         <label className="congress-layer-type">
           {subtypeMark(id, subtypeId)}
@@ -409,7 +457,7 @@ function LayerTypeToggles({
 function MapLayersPanel({
   objects, onChangeObjects, types, onChangeTypes,
   fillPct, onChangeFill, style, onChangeStyle, onResetView,
-  fmrCounts = null, mpbCounts = null, repairCount = null,
+  fmrCounts = null, mpbCounts = null, repairCount = null, unmappedCounts = null,
 }) {
   const [open, setOpen] = useState(true);
   const toggle = id => onChangeObjects({...objects, [id]: !objects[id]});
@@ -465,7 +513,8 @@ function MapLayersPanel({
               </div>}
             {objects[id] && id !== 'districts' &&
               <LayerTypeToggles id={id} types={types} onToggleType={toggleType}
-                fmrCounts={fmrCounts} mpbCounts={mpbCounts} repairCount={repairCount}/>}
+                fmrCounts={fmrCounts} mpbCounts={mpbCounts} repairCount={repairCount}
+                unmappedCounts={unmappedCounts}/>}
           </li>)}
       </ul>
       <div className="congress-layer-actions">
@@ -531,8 +580,9 @@ function useCongressMapInstance(containerRef, error, syncRef, handlers) {
         if (recordId) handlersRef.current.onSelectRecord?.(recordId);
         return;
       }
-      // Catch-all badge: open the district panel for its district.
-      const badges = instance.queryRenderedFeatures(e.point, {layers: [MPB_BADGE]});
+      // Catch-all badge (class stack or red total): open the district panel.
+      const badges = instance.queryRenderedFeatures(e.point,
+        {layers: [MPB_BADGE, MPB_BADGE_TOTAL]});
       if (badges.length) {
         const full = (syncRef.current?.districts?.features ?? [])
           .find(f => f.properties.district_id === badges[0].properties.districtId);
@@ -573,9 +623,11 @@ function useCongressMapInstance(containerRef, error, syncRef, handlers) {
       instance.on('mouseenter', layer, () => setCursor('pointer'));
       instance.on('mouseleave', layer, () => setCursor(''));
     }
-    // Badge hover: label the count under the cursor via the district chip.
-    instance.on('mouseenter', MPB_BADGE, () => setCursor('pointer'));
-    instance.on('mouseleave', MPB_BADGE, () => setCursor(''));
+    // Badge hover: class stack and red total both open the district panel.
+    for (const layer of [MPB_BADGE, MPB_BADGE_TOTAL]) {
+      instance.on('mouseenter', layer, () => setCursor('pointer'));
+      instance.on('mouseleave', layer, () => setCursor(''));
+    }
 
     map.current = instance;
     return () => {instance.remove(); map.current = null; setReady(false);};
@@ -612,7 +664,7 @@ function MapStage({
   useEffect(() => {
     if (!ready || !map.current) return;
     syncLayers(map.current, districts, fmrOverlay, mpbOverlay, fillAlpha, objects, types, mpbBadges);
-  }, [ready, map, districts, fmrOverlay, mpbOverlay, fillAlpha, objects, types]);
+  }, [ready, map, districts, fmrOverlay, mpbOverlay, fillAlpha, objects, types, mpbBadges]);
 
   useEffect(() => {
     if (!ready || !map.current || !container.current) return undefined;
@@ -650,7 +702,8 @@ function MapStage({
   const fmrSegmentCount = fmrOverlay.lines.features.length;
   const mpbPointCount = mpbOverlay.points.features.length;
   const repairCount = fmrOverlay.repairCount ?? 0;
-  const unmappedTotal = mpbBadges.features.reduce((sum, f) => sum + f.properties.unmapped, 0);
+  const unmappedCounts = useMemo(() => mpbUnmappedClassTotals(mpbBadges), [mpbBadges]);
+  const unmappedTotal = unmappedCounts.total;
   const hoverLabel = hoveredId
     ? districts?.features.find(f => f.properties.leg_id === hoveredId)?.properties
     : null;
@@ -671,6 +724,7 @@ function MapStage({
       fmrCounts={fmrOverlay.counts}
       mpbCounts={mpbOverlay.counts}
       repairCount={repairCount}
+      unmappedCounts={unmappedCounts}
     />
     {onExpand && variant === 'inline' &&
       <button type="button" className="congress-map-expand congress-map-expand-float"
@@ -816,8 +870,8 @@ export default function CongressMap({
         <h1>Where the documents place the work</h1>
       </div>
       <div className="congress-map-title-actions">
-        <ShareLink/>
-      </div>
+      <ShareLink/>
+    </div>
     </div>
     {!full && <MapStage {...stageProps} variant="inline"
       onExpand={() => updateRoute({full: '1'})}/>}

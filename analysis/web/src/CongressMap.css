@@ -345,18 +345,19 @@ dialog.congress-map-fullscreen {
 }
 .congress-layer-swatch-box { border-radius: 2px; }
 .congress-layer-swatch-fill { border-radius: 4px; }
-/* Badge swatch mirrors the map's count badge: red square with a digit —
-   red matches the cannot-be-located warning vocabulary. */
-.congress-layer-swatch-badge {
+/* Stacked badge swatch: mini version of the map's House/NEP/Pair count
+   stack, three tiers in the shared MPB colors. */
+.congress-layer-swatch-stack {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  background: rgba(220, 38, 38, 0.92);
-  color: #fff;
-  font-size: 9px;
-  font-weight: 700;
-  line-height: 1;
+  flex-direction: column;
+  gap: 1px;
+  padding: 1px;
+  background: #fff;
+  border-radius: 3px;
+}
+.congress-layer-swatch-stack b {
+  flex: 1;
+  border-radius: 1px;
 }
 
 .congress-layer-fill {
@@ -454,6 +455,18 @@ dialog.congress-map-fullscreen {
   height: 10px;
   border-radius: 2px;
   border: 1px solid rgba(0, 0, 0, 0.14);
+}
+.congress-layer-key-badge {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: rgba(220, 38, 38, 0.92);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 12px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.85);
 }
 
 .congress-layer-actions {
