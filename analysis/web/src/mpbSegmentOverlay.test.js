@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mpbRecordMapOverlay, leftToRightOrder, mpbBoxIconImage,
-  mpbBadgeIconImage, mpbBadgeIconId} from './mpbSegmentOverlay.js';
+  mpbBadgeIconImage, mpbBadgeIconId, mpbApproxIconImage, mpbApproxIconId,
+  mpbApproxDominantCategory} from './mpbSegmentOverlay.js';
 
 test('mpb box icon is an opaque colored square', () => {
   const icon = mpbBoxIconImage('#2563eb', 32);
@@ -93,4 +94,55 @@ test('mpb badge icon ids are unique per count triple', () => {
     'mpb-unmapped-badge-1-2-3');
   assert.notEqual(mpbBadgeIconId({house_only: 1, nep_only: 2, paired: 3}),
     mpbBadgeIconId({house_only: 3, nep_only: 2, paired: 1}));
+});
+
+test('mpb approx dominant category prefers majority and ties to paired', () => {
+  assert.equal(mpbApproxDominantCategory({house_only: 4, nep_only: 1, paired: 0}),
+    'house_only');
+  assert.equal(mpbApproxDominantCategory({house_only: 2, nep_only: 2, paired: 0}),
+    'paired');
+  assert.equal(mpbApproxIconId('nep_only', 12), 'mpb-approx-marker-nep_only-12');
+});
+
+test('mpb approx sprite: class color with a single light-gray slash', () => {
+  const original = globalThis.document;
+  const recorded = {fills: [], strokeStyles: [], texts: [], moveTos: 0};
+  const ctx = {
+    font: '', textAlign: '', textBaseline: '', fillStyle: '', strokeStyle: '', lineWidth: 0,
+    shadowColor: '', shadowBlur: 0,
+    measureText: text => ({width: String(text).length * 10}),
+    beginPath() {},
+    roundRect() {},
+    clip() {},
+    save() {},
+    restore() {},
+    fillRect() { recorded.fills.push(this.fillStyle); },
+    fill() {},
+    stroke() { recorded.strokeStyles.push(this.strokeStyle); },
+    moveTo() { recorded.moveTos += 1; },
+    lineTo() {},
+    setLineDash() {},
+    fillText(text) { recorded.texts.push(String(text)); },
+    getImageData: () => ({data: new Uint8Array(1)}),
+  };
+  globalThis.document = {createElement: () => ({width: 0, height: 0, getContext: () => ctx})};
+  try {
+    const house = mpbApproxIconImage('#2563eb', 1, null, 'house_only');
+    assert.equal(house.width, 64);
+    assert.equal(recorded.fills[0], '#2563eb');
+    assert.equal(recorded.moveTos, 1, 'single thick slash');
+    assert.ok(recorded.strokeStyles.some(style => String(style).includes('203, 213, 225')));
+
+    recorded.fills.length = 0;
+    recorded.strokeStyles.length = 0;
+    recorded.moveTos = 0;
+    recorded.texts.length = 0;
+    const nep = mpbApproxIconImage('#0f766e', 7, null, 'nep_only');
+    assert.equal(nep.width, 96);
+    assert.deepEqual(recorded.texts, ['7']);
+    assert.equal(recorded.fills[0], '#0f766e');
+    assert.equal(recorded.moveTos, 1);
+  } finally {
+    globalThis.document = original;
+  }
 });

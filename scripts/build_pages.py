@@ -342,6 +342,25 @@ def package_congress(target):
           f"({mpb_counts['district_rows']} district rows, "
           f"{mpb_counts['rows_with_coordinates']} rows with title coordinates)")
 
+    # PSGC-centroid approximate overlay for coordinate-less MPB rows. Supplement
+    # only — does not mutate the MPB index. Rebuild when 2023 shapefiles are
+    # present; otherwise ship the committed artifact.
+    approx_path = DATA / 'mpb_psgc_approx_overlay_2027.json'
+    shape_root = (ROOT / 'dpwh_coor2psgc_geomapping' / 'philippines-psgc-shapefiles'
+                  / 'data' / '2023')
+    if (shape_root / 'Municities' / 'Municities.shp.shp').is_file():
+        subprocess.run([sys.executable,
+                        str(ROOT / 'analysis/web/buildMpbPsgcApproxOverlay.py')],
+                       check=True, cwd=ROOT)
+    if not approx_path.is_file():
+        raise ValueError('MPB PSGC approx overlay missing: ' + str(approx_path))
+    shutil.copyfile(approx_path, target / approx_path.name)
+    approx = json.loads(approx_path.read_text())
+    approx_counts = approx['counts']
+    print(f"Packaged MPB PSGC approx overlay: {approx_counts['markers']} markers "
+          f"({approx_counts['rows_placed']} rows placed, "
+          f"{approx_counts['rows_unplaced']} unplaced)")
+
     # Congress map tab reads the PSGC2LEG viz polygons + province hues as-is
     # (no choropleth). Keep them next to the other packaged static assets.
     viz_src = ROOT / 'PSGC2LEG' / 'viz'

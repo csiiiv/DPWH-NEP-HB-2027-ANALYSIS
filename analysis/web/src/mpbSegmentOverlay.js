@@ -173,6 +173,117 @@ export function ensureMpbTotalBadgeIcons(instance, counts) {
 
 export const mpbTotalBadgeIconId = count => `${MPB_TOTAL_BADGE_ICON}-${count}`;
 
+export const MPB_APPROX_ICON = 'mpb-approx-marker';
+/** Light gray slash used on all PSGC-approx markers. */
+export const MPB_APPROX_STRIPE = 'rgba(203, 213, 225, 0.95)';
+/** @deprecated Kept for any leftover legend imports; approx markers no longer split orange. */
+export const MPB_APPROX_ACCENT = '#ea580c';
+export const mpbApproxIconId = (category, count) =>
+  `${MPB_APPROX_ICON}-${category}-${count}`;
+
+function fillApproxStriped(ctx, x0, y0, width, height, radius, classColor) {
+  // Solid class color with one thick light-gray diagonal so the marker still
+  // reads its status but cannot be mistaken for printed GPS.
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(x0, y0, width, height, radius);
+  ctx.clip();
+  ctx.fillStyle = classColor;
+  ctx.fillRect(x0, y0, width, height);
+  ctx.strokeStyle = MPB_APPROX_STRIPE;
+  ctx.lineWidth = Math.max(6, Math.round(Math.min(width, height) * 0.38));
+  ctx.lineCap = 'butt';
+  ctx.beginPath();
+  // Corner-to-corner slash through the box.
+  ctx.moveTo(x0 - width * 0.05, y0 + height * 0.85);
+  ctx.lineTo(x0 + width * 1.05, y0 + height * 0.15);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/**
+ * PSGC-centroid approximate markers: class color + one light-gray slash.
+ * - count === 1: same 64px footprint as a solid title-GPS box, no digit
+ * - count > 1: compact counted chip
+ */
+export function mpbApproxIconImage(color = '#2563eb', count = 1, size = null,
+  category = 'house_only') {
+  const singleton = count <= 1;
+  const canvasSize = size ?? (singleton ? 64 : 96);
+  const canvas = document.createElement('canvas');
+  canvas.width = canvasSize;
+  canvas.height = canvasSize;
+  const ctx = canvas.getContext('2d');
+
+  if (singleton) {
+    const pad = Math.max(1, Math.round(canvasSize * 0.06));
+    const side = canvasSize - pad * 2;
+    fillApproxStriped(ctx, pad, pad, side, side, Math.round(side * 0.16), color);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = Math.max(2, Math.round(canvasSize * 0.05));
+    ctx.beginPath();
+    ctx.roundRect(pad, pad, side, side, Math.round(side * 0.16));
+    ctx.stroke();
+    return {
+      width: canvasSize, height: canvasSize,
+      data: ctx.getImageData(0, 0, canvasSize, canvasSize).data,
+    };
+  }
+
+  const label = String(count);
+  const height = Math.round(canvasSize * 0.46);
+  const fontPx = Math.round(height * 0.55);
+  ctx.font = `700 ${fontPx}px system-ui, sans-serif`;
+  const width = Math.max(height, Math.ceil(ctx.measureText(label).width)
+    + Math.round(height * 0.45));
+  const x0 = Math.round((canvasSize - width) / 2);
+  const y0 = Math.round((canvasSize - height) / 2);
+  const radius = Math.round(height * 0.22);
+  fillApproxStriped(ctx, x0, y0, width, height, radius, color);
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = Math.max(2, Math.round(canvasSize * 0.03));
+  ctx.beginPath();
+  ctx.roundRect(x0, y0, width, height, radius);
+  ctx.stroke();
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+  ctx.shadowBlur = Math.round(canvasSize * 0.04);
+  ctx.fillText(label, canvasSize / 2, y0 + height / 2 + Math.round(height * 0.04));
+  ctx.shadowBlur = 0;
+  return {
+    width: canvasSize, height: canvasSize,
+    data: ctx.getImageData(0, 0, canvasSize, canvasSize).data,
+  };
+}
+
+export function ensureMpbApproxIcons(instance, specs) {
+  if (!instance) return;
+  for (const {category, count, color} of specs) {
+    const id = mpbApproxIconId(category, count);
+    if (!instance.hasImage(id)) {
+      instance.addImage(id, mpbApproxIconImage(color, count, null, category));
+    }
+  }
+}
+
+/** CSS background for approx legend/key chips by category. */
+export function mpbApproxSwatchBackground(category, classColor) {
+  // One thick gray slash over the class color (matches the map sprite).
+  return `linear-gradient(-45deg, ${classColor} 34%, rgba(203, 213, 225, 0.95) 34% 56%, ${classColor} 56%)`;
+}
+
+/** Majority (or paired-on-tie) class for a collapsed approx marker. */
+export function mpbApproxDominantCategory(counts = {}) {
+  const ranked = Object.keys(MPB_POINT_CLASSES)
+    .map(category => [category, counts[category] || 0])
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  if (!ranked[0][1]) return 'paired';
+  if (ranked[1] && ranked[0][1] === ranked[1][1]) return 'paired';
+  return ranked[0][0];
+}
+
 function comparisonClass(record) {
   // An MPB row is "paired" when both amount stages are present on the
   // comparison row, matching the bucket vocabulary the explorer prints.

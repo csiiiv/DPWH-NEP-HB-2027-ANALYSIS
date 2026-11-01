@@ -359,6 +359,64 @@ dialog.congress-map-fullscreen {
   flex: 1;
   border-radius: 1px;
 }
+/* Half-orange / half-class: PSGC-centroid approximate placements. */
+.congress-layer-swatch-approx {
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+}
+.congress-layer-key-approx {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-sizing: border-box;
+}
+
+.congress-approx-cluster-dialog {
+  width: min(1100px, 96vw);
+  max-width: none;
+}
+.congress-approx-cluster-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+.congress-approx-cluster-meta .congress-layer-key-approx {
+  width: 14px;
+  height: 14px;
+}
+.congress-approx-cluster-table-wrap {
+  overflow: auto;
+  max-height: min(60vh, 520px);
+  margin-top: 10px;
+  border: 1px solid #e8edf4;
+  border-radius: 6px;
+}
+.congress-approx-cluster-table {
+  margin: 0;
+  width: 100%;
+}
+.congress-approx-cluster-table th[scope="row"] {
+  text-align: left;
+  font-weight: 600;
+  max-width: 28rem;
+}
+.congress-approx-cluster-title {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.congress-approx-cluster-table td .congress-pdf-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.congress-approx-cluster-table .primary {
+  white-space: nowrap;
+}
 
 .congress-layer-fill {
   display: grid;

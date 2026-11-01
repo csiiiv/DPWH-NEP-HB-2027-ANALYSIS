@@ -8,19 +8,24 @@ import ShareLink from './ShareLink.jsx';
 import {districtLensCounts} from './congressModel.js';
 import {fmrPrintedMapOverlay, DISTRICT_SEGMENT_CLASSES, REPAIR_COLOR} from './fmrSegmentOverlay.js';
 import {MPB_POINT_CLASSES, MPB_BOX_ICON_IMAGE, ensureMpbBoxIcon,
-  ensureMpbBadgeIcons, ensureMpbTotalBadgeIcons} from './mpbSegmentOverlay.js';
+  ensureMpbBadgeIcons, ensureMpbTotalBadgeIcons, ensureMpbApproxIcons,
+  mpbApproxSwatchBackground,
+} from './mpbSegmentOverlay.js';
 import {
   colorDistrictFeatures, decorateDistrictIds, districtIdBridge,
   mpbNationalMapOverlay, districtCardId, mpbUnmappedDistrictBadges,
   mpbUnmappedBadgeViews, mpbUnmappedClassTotals,
+  mpbApproxMapOverlay, mpbApproxMarkerViews, mpbApproxPlacedRowIds,
   CONGRESS_MAP_OBJECT_OPTIONS, DEFAULT_CONGRESS_MAP_OBJECTS,
   CONGRESS_MAP_TYPE_OPTIONS, DEFAULT_CONGRESS_MAP_TYPES,
   readCongressMapObjects, congressMapObjectsParam,
   readCongressMapTypes, congressMapTypesParam,
   enabledCongressMapCategories, congressMapCategoryFilter,
 } from './congressMapModel.js';
+import MpbApproxClusterModal from './MpbApproxClusterModal.jsx';
 import './CongressMap.css';
 import './Fmr.css';
+import './Congress.css';
 
 setWorkerUrl(workerUrl);
 
@@ -46,6 +51,8 @@ const MPB_LINE_HALO = 'congress-map-mpb-line-halo';
 const MPB_LINE = 'congress-map-mpb-line';
 const MPB_POINTS = 'congress-map-mpb-points';
 const MPB_POINT = 'congress-map-mpb-point';
+const MPB_APPROX = 'congress-map-mpb-approx';
+const MPB_APPROX_POINT = 'congress-map-mpb-approx-point';
 const MPB_UNMAPPED = 'congress-map-mpb-unmapped';
 const MPB_BADGE = 'congress-map-mpb-badge';
 const MPB_UNMAPPED_TOTAL = 'congress-map-mpb-unmapped-total';
@@ -57,6 +64,7 @@ const OBJECT_LAYERS = {
   fmr: [FMR_HALO, FMR_LINE, FMR_POINT],
   fmr_repairs: [FMR_LINK, FMR_CORRECTED_POINT],
   mpb: [MPB_LINE_HALO, MPB_LINE, MPB_POINT],
+  mpb_approx: [MPB_APPROX_POINT],
   mpb_unmapped: [MPB_BADGE, MPB_BADGE_TOTAL],
 };
 const emptyFc = () => ({type: 'FeatureCollection', features: []});
@@ -90,6 +98,7 @@ function applyLayerFilters(instance, objects, types) {
     setVisible(layerId, mpbOn);
     if (mpbOn) setFilter(layerId, mpbFilter);
   }
+  setVisible(MPB_APPROX_POINT, Boolean(objects.mpb_approx));
   const unmappedOn = Boolean(objects.mpb_unmapped);
   const unmappedTypes = types?.mpb_unmapped ?? {};
   const stackOn = unmappedOn && (unmappedTypes.house_only || unmappedTypes.nep_only
@@ -187,7 +196,7 @@ function fillOpacityExpression(base) {
 
 function syncLayers(instance, districts, fmrOverlay, mpbOverlay, fillAlpha = DEFAULT_FILL_ALPHA,
   objects = DEFAULT_CONGRESS_MAP_OBJECTS, types = DEFAULT_CONGRESS_MAP_TYPES,
-  mpbBadges = null) {
+  mpbBadges = null, mpbApprox = null) {
   if (!instance?.getStyle()) return;
   const ensure = (id, data) => {
     if (!instance.getSource(id)) instance.addSource(id, {type: 'geojson', data, generateId: true});
@@ -201,6 +210,13 @@ function syncLayers(instance, districts, fmrOverlay, mpbOverlay, fillAlpha = DEF
   ensure(FMR_CORRECTED, fmrOverlay?.correctedPoints || emptyFc());
   ensure(MPB_LINES, mpbOverlay?.lines || emptyFc());
   ensure(MPB_POINTS, mpbOverlay?.points || emptyFc());
+  const approxViews = mpbApproxMarkerViews(mpbApprox, types);
+  ensure(MPB_APPROX, approxViews);
+  ensureMpbApproxIcons(instance, approxViews.features.map(f => ({
+    category: f.properties.category,
+    count: f.properties.count,
+    color: f.properties.color,
+  })));
   const unmappedViews = mpbUnmappedBadgeViews(mpbBadges, types);
   ensure(MPB_UNMAPPED, unmappedViews.stack);
   ensure(MPB_UNMAPPED_TOTAL, unmappedViews.total);
@@ -313,6 +329,21 @@ function syncLayers(instance, districts, fmrOverlay, mpbOverlay, fillAlpha = DEF
       },
     });
     instance.addLayer({
+      id: MPB_APPROX_POINT, type: 'symbol', source: MPB_APPROX,
+      layout: {
+        'icon-image': ['concat', 'mpb-approx-marker-', ['get', 'category'], '-', ['get', 'count']],
+        // Singles (64px): match solid title-GPS boxes. Counted chips (96px):
+        // clearly smaller than district unmapped badges.
+        'icon-size': ['interpolate', ['linear'], ['zoom'],
+          5, ['case', ['==', ['get', 'count'], 1], 0.09, 0.22],
+          10, ['case', ['==', ['get', 'count'], 1], 0.15, 0.4],
+          14, ['case', ['==', ['get', 'count'], 1], 0.22, 0.65]],
+        'icon-allow-overlap': true,
+        'icon-ignore-placement': true,
+      },
+      paint: {'icon-opacity': 0.95},
+    });
+    instance.addLayer({
       id: MPB_BADGE, type: 'symbol', source: MPB_UNMAPPED,
       layout: {
         'icon-image': ['concat', 'mpb-unmapped-badge-',
@@ -357,7 +388,8 @@ const LAYER_HINTS = {
   fmr: 'Printed FMR segment lines and endpoints',
   fmr_repairs: 'Dashed links from printed GPS to accepted corrections',
   mpb: 'Multi-purpose building title coordinates',
-  mpb_unmapped: 'Per-district count badges for rows printing no coordinate',
+  mpb_approx: 'PSGC-centroid approx. markers (class color + light gray slash; not printed GPS)',
+  mpb_unmapped: 'Per-district badges for rows with neither title GPS nor PSGC centroid',
 };
 
 function LayerSwatch({id}) {
@@ -372,6 +404,10 @@ function LayerSwatch({id}) {
   if (id === 'fmr_repairs') {
     return <i className="congress-layer-swatch congress-layer-swatch-dash" aria-hidden="true"
       style={{backgroundImage: `repeating-linear-gradient(90deg, ${REPAIR_COLOR} 0 4px, transparent 4px 7px)`}}/>;
+  }
+  if (id === 'mpb_approx') {
+    return <i className="congress-layer-swatch congress-layer-swatch-approx" aria-hidden="true"
+      style={{background: mpbApproxSwatchBackground('paired', MPB_POINT_CLASSES.paired.color)}}/>;
   }
   if (id === 'mpb_unmapped') {
     // Mini stacked chip: same House/NEP/Pair colors and stacking order the
@@ -411,6 +447,10 @@ function subtypeMark(objectId, subtypeId) {
   if (objectId === 'mpb' || (objectId === 'mpb_unmapped' && subtypeId !== 'total')) {
     return <BoxKey color={MPB_POINT_CLASSES[subtypeId].color}/>;
   }
+  if (objectId === 'mpb_approx') {
+    return <i className="congress-layer-key-mark congress-layer-key-approx" aria-hidden="true"
+      style={{background: mpbApproxSwatchBackground(subtypeId, MPB_POINT_CLASSES[subtypeId].color)}}/>;
+  }
   if (objectId === 'mpb_unmapped' && subtypeId === 'total') {
     return <i className="congress-layer-key-mark congress-layer-key-badge" aria-hidden="true">Σ</i>;
   }
@@ -418,23 +458,26 @@ function subtypeMark(objectId, subtypeId) {
   return <DotKey color={REPAIR_COLOR}/>;
 }
 
-function subtypeCount(objectId, subtypeId, fmrCounts, mpbCounts, repairCount, unmappedCounts) {
+function subtypeCount(objectId, subtypeId, fmrCounts, mpbCounts, repairCount,
+  unmappedCounts, approxCounts) {
   if (objectId === 'fmr') return fmrCounts?.[subtypeId]?.segments;
   if (objectId === 'mpb') return mpbCounts?.[subtypeId]?.points;
+  if (objectId === 'mpb_approx') return approxCounts?.[subtypeId];
   if (objectId === 'mpb_unmapped') return unmappedCounts?.[subtypeId];
   if (objectId === 'fmr_repairs' && subtypeId === 'point') return repairCount;
   return null;
 }
 
 function LayerTypeToggles({
-  id, types, onToggleType, fmrCounts, mpbCounts, repairCount, unmappedCounts,
+  id, types, onToggleType, fmrCounts, mpbCounts, repairCount, unmappedCounts, approxCounts,
 }) {
   const entries = CONGRESS_MAP_TYPE_OPTIONS[id];
   if (!entries?.length) return null;
   return <ul className="congress-layer-key" aria-label={`${id} type toggles`}>
     {entries.map(([subtypeId, label]) => {
       const checked = Boolean(types?.[id]?.[subtypeId]);
-      const count = subtypeCount(id, subtypeId, fmrCounts, mpbCounts, repairCount, unmappedCounts);
+      const count = subtypeCount(id, subtypeId, fmrCounts, mpbCounts, repairCount,
+        unmappedCounts, approxCounts);
       return <li key={subtypeId} className={checked ? 'is-on' : 'is-off'}>
         <label className="congress-layer-type">
           {subtypeMark(id, subtypeId)}
@@ -457,7 +500,8 @@ function LayerTypeToggles({
 function MapLayersPanel({
   objects, onChangeObjects, types, onChangeTypes,
   fillPct, onChangeFill, style, onChangeStyle, onResetView,
-  fmrCounts = null, mpbCounts = null, repairCount = null, unmappedCounts = null,
+  fmrCounts = null, mpbCounts = null, repairCount = null,
+  unmappedCounts = null, approxCounts = null,
 }) {
   const [open, setOpen] = useState(true);
   const toggle = id => onChangeObjects({...objects, [id]: !objects[id]});
@@ -514,7 +558,7 @@ function MapLayersPanel({
             {objects[id] && id !== 'districts' &&
               <LayerTypeToggles id={id} types={types} onToggleType={toggleType}
                 fmrCounts={fmrCounts} mpbCounts={mpbCounts} repairCount={repairCount}
-                unmappedCounts={unmappedCounts}/>}
+                unmappedCounts={unmappedCounts} approxCounts={approxCounts}/>}
           </li>)}
       </ul>
       <div className="congress-layer-actions">
@@ -561,7 +605,8 @@ function useCongressMapInstance(containerRef, error, syncRef, handlers) {
       const payload = syncRef.current;
       if (payload) {
         syncLayers(instance, payload.districts, payload.fmrOverlay, payload.mpbOverlay,
-          payload.fillAlpha, payload.objects, payload.types, payload.mpbBadges);
+          payload.fillAlpha, payload.objects, payload.types, payload.mpbBadges,
+          payload.mpbApprox);
       }
       setReady(true);
     };
@@ -578,6 +623,28 @@ function useCongressMapInstance(containerRef, error, syncRef, handlers) {
       if (markers.length) {
         const recordId = markers[0].properties?.recordId;
         if (recordId) handlersRef.current.onSelectRecord?.(recordId);
+        return;
+      }
+      // PSGC-approx marker: open the cluster list modal (one or many rows).
+      const approx = instance.queryRenderedFeatures(e.point, {layers: [MPB_APPROX_POINT]});
+      if (approx.length) {
+        const props = approx[0].properties ?? {};
+        const text = value => {
+          const raw = value == null ? '' : String(value);
+          return (!raw || raw === 'null' || raw === 'undefined') ? null : raw;
+        };
+        handlersRef.current.onPickApprox?.({
+          psgcCode: text(props.psgcCode),
+          level: text(props.level),
+          name: text(props.name),
+          barangay: text(props.barangay),
+          municipality: text(props.municipality),
+          province: text(props.province),
+          category: text(props.category),
+          count: Number(props.count) || 0,
+          rowIds: String(props.rowIds || '').split(',').filter(Boolean),
+          districtIds: String(props.districtIds || '').split(',').filter(Boolean),
+        });
         return;
       }
       // Catch-all badge (class stack or red total): open the district panel.
@@ -623,8 +690,7 @@ function useCongressMapInstance(containerRef, error, syncRef, handlers) {
       instance.on('mouseenter', layer, () => setCursor('pointer'));
       instance.on('mouseleave', layer, () => setCursor(''));
     }
-    // Badge hover: class stack and red total both open the district panel.
-    for (const layer of [MPB_BADGE, MPB_BADGE_TOTAL]) {
+    for (const layer of [MPB_APPROX_POINT, MPB_BADGE, MPB_BADGE_TOTAL]) {
       instance.on('mouseenter', layer, () => setCursor('pointer'));
       instance.on('mouseleave', layer, () => setCursor(''));
     }
@@ -638,18 +704,21 @@ function useCongressMapInstance(containerRef, error, syncRef, handlers) {
 
 function MapStage({
   variant = 'inline', syncRef, style, fillAlpha, objects, types,
-  districts, fmrOverlay, mpbOverlay, mpbBadges, markersPending,
-  fmrIndex, mpbIndex, onSelectRecord, onExpand = null, onContract = null,
+  districts, fmrOverlay, mpbOverlay, mpbBadges, mpbApprox, markersPending,
+  fmrIndex, mpbIndex, recordsById, onSelectRecord, onPdf = null,
+  onExpand = null, onContract = null,
   objectsControls, typeControls, fillControl, styleControl,
   selectParam = null,
 }) {
   const container = useRef(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [approxCluster, setApproxCluster] = useState(null);
   const [hoveredId, setHoveredId] = useState(null);
   const appliedStyle = useRef('light');
   const [map, ready] = useCongressMapInstance(container, false, syncRef, {
     onSelectRecord,
     onPickDistrict: setSelectedDistrict,
+    onPickApprox: setApproxCluster,
     onHoverDistrict: setHoveredId,
   });
 
@@ -663,8 +732,10 @@ function MapStage({
 
   useEffect(() => {
     if (!ready || !map.current) return;
-    syncLayers(map.current, districts, fmrOverlay, mpbOverlay, fillAlpha, objects, types, mpbBadges);
-  }, [ready, map, districts, fmrOverlay, mpbOverlay, fillAlpha, objects, types, mpbBadges]);
+    syncLayers(map.current, districts, fmrOverlay, mpbOverlay, fillAlpha, objects, types,
+      mpbBadges, mpbApprox);
+  }, [ready, map, districts, fmrOverlay, mpbOverlay, fillAlpha, objects, types,
+    mpbBadges, mpbApprox]);
 
   useEffect(() => {
     if (!ready || !map.current || !container.current) return undefined;
@@ -704,6 +775,10 @@ function MapStage({
   const repairCount = fmrOverlay.repairCount ?? 0;
   const unmappedCounts = useMemo(() => mpbUnmappedClassTotals(mpbBadges), [mpbBadges]);
   const unmappedTotal = unmappedCounts.total;
+  const approxCounts = mpbApprox?.counts ?? null;
+  const approxRowTotal = approxCounts
+    ? (approxCounts.house_only || 0) + (approxCounts.nep_only || 0) + (approxCounts.paired || 0)
+    : 0;
   const hoverLabel = hoveredId
     ? districts?.features.find(f => f.properties.leg_id === hoveredId)?.properties
     : null;
@@ -725,6 +800,7 @@ function MapStage({
       mpbCounts={mpbOverlay.counts}
       repairCount={repairCount}
       unmappedCounts={unmappedCounts}
+      approxCounts={approxCounts}
     />
     {onExpand && variant === 'inline' &&
       <button type="button" className="congress-map-expand congress-map-expand-float"
@@ -740,6 +816,11 @@ function MapStage({
     {selectedDistrict &&
       <DistrictPanel feature={selectedDistrict} fmrIndex={fmrIndex} mpbIndex={mpbIndex}
         onClose={() => setSelectedDistrict(null)}/>}
+    {approxCluster &&
+      <MpbApproxClusterModal cluster={approxCluster} recordsById={recordsById}
+        onOpenRecord={id => onSelectRecord?.(id)}
+        onPdf={onPdf}
+        onClose={() => setApproxCluster(null)}/>}
     <div className="congress-map-status" role="status">
       {markersPending
         ? 'Loading FMR segments and MPB points…'
@@ -748,8 +829,10 @@ function MapStage({
             <span>{mpbPointCount.toLocaleString('en-PH')} MPB points</span>
             {repairCount > 0 &&
               <span>{repairCount.toLocaleString('en-PH')} corrections</span>}
+            {objects.mpb_approx && approxRowTotal > 0 &&
+              <span>{approxRowTotal.toLocaleString('en-PH')} MPB approx. (PSGC)</span>}
             {objects.mpb_unmapped && unmappedTotal > 0 &&
-              <span>{unmappedTotal.toLocaleString('en-PH')} MPB rows without coordinates</span>}
+              <span>{unmappedTotal.toLocaleString('en-PH')} MPB still unplaced</span>}
           </>}
     </div>
   </div>;
@@ -788,7 +871,7 @@ function FullscreenMapDialog({children, onClose}) {
  */
 export default function CongressMap({
   route, fmrRecords = [], mpbRecords = [], fmrIndex = null, mpbIndex = null,
-  onSelectRecord, selectedRecordId = null, markersPending = false,
+  onSelectRecord, onPdf = null, selectedRecordId = null, markersPending = false,
 }) {
   const params = route?.params ?? new URLSearchParams();
   const style = params.get('basemap') === 'dark' ? 'dark' : 'light';
@@ -798,17 +881,36 @@ export default function CongressMap({
   const full = params.get('full') === '1';
 
   const [districts, setDistricts] = useState(null);
+  const [approxSupplement, setApproxSupplement] = useState(null);
   const [error, setError] = useState('');
 
   const fmrOverlay = useMemo(() => fmrPrintedMapOverlay(fmrRecords), [fmrRecords]);
-  const mpbOverlay = useMemo(() => mpbNationalMapOverlay(mpbRecords), [mpbRecords]);
-  // Catch-all badges: MPB rows per district that print no title coordinate.
+  // Title-GPS overlay only — approx-placed rows are looked up via recordsById
+  // for the cluster modal and must not inflate the solid-box legend counts.
+  const mpbOverlay = useMemo(
+    () => mpbNationalMapOverlay(mpbRecords.filter(record => record.mpbPoints?.length)),
+    [mpbRecords]);
+  const recordsById = useMemo(() => {
+    const map = new Map();
+    for (const record of fmrRecords) map.set(record.id, record);
+    for (const record of mpbRecords) map.set(record.id, record);
+    return map;
+  }, [fmrRecords, mpbRecords]);
+  const mpbApprox = useMemo(
+    () => mpbApproxMapOverlay(approxSupplement), [approxSupplement]);
+  const placedApproxIds = useMemo(
+    () => mpbApproxPlacedRowIds(approxSupplement), [approxSupplement]);
+  // Catch-all badges: only rows that still lack both title GPS and a PSGC
+  // centroid placement (province-only / unresolved leftovers).
   const mpbBadges = useMemo(
-    () => mpbUnmappedDistrictBadges(mpbIndex, districts), [mpbIndex, districts]);
+    () => mpbUnmappedDistrictBadges(mpbIndex, districts, placedApproxIds),
+    [mpbIndex, districts, placedApproxIds]);
 
   // Latest payload for whichever map instance (re)paints its basemap style.
   const syncRef = useRef(null);
-  syncRef.current = {districts, fmrOverlay, mpbOverlay, fillAlpha, objects, types, mpbBadges};
+  syncRef.current = {
+    districts, fmrOverlay, mpbOverlay, fillAlpha, objects, types, mpbBadges, mpbApprox,
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -816,10 +918,12 @@ export default function CongressMap({
       loadJson(siteUrl('PSGC2LEG/viz/leg_districts.geojson'), controller.signal),
       loadJson(siteUrl('PSGC2LEG/viz/province_hues.json'), controller.signal),
       loadData('congress_district_map_2027.json', controller.signal),
-    ]).then(([geojson, hues, mapArtifact]) => {
+      loadData('mpb_psgc_approx_overlay_2027.json', controller.signal).catch(() => null),
+    ]).then(([geojson, hues, mapArtifact, approx]) => {
       const colored = colorDistrictFeatures(geojson, hues);
       const bridge = districtIdBridge(mapArtifact);
       setDistricts(decorateDistrictIds(colored, bridge));
+      setApproxSupplement(approx);
     }).catch(event => {
       if (event.name !== 'AbortError') setError(event.message);
     });
@@ -857,8 +961,8 @@ export default function CongressMap({
 
   const stageProps = {
     syncRef, style, fillAlpha, objects, types,
-    districts, fmrOverlay, mpbOverlay, mpbBadges, markersPending,
-    fmrIndex, mpbIndex, onSelectRecord,
+    districts, fmrOverlay, mpbOverlay, mpbBadges, mpbApprox, markersPending,
+    fmrIndex, mpbIndex, recordsById, onSelectRecord, onPdf,
     objectsControls, typeControls, fillControl, styleControl,
     selectParam: params.get('select'),
   };

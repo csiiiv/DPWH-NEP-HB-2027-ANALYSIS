@@ -1,4 +1,4 @@
-import {MPB_POINT_CLASSES, mpbRecordMapOverlay} from './mpbSegmentOverlay.js';
+import {MPB_POINT_CLASSES, mpbRecordMapOverlay, mpbApproxDominantCategory} from './mpbSegmentOverlay.js';
 import {DISTRICT_SEGMENT_CLASSES} from './fmrSegmentOverlay.js';
 
 /** Toggleable map objects for #congress/map (URL `objects=`). */
@@ -7,6 +7,7 @@ export const CONGRESS_MAP_OBJECT_OPTIONS = [
   ['fmr', 'FMR segments'],
   ['fmr_repairs', 'FMR corrections'],
   ['mpb', 'MPB buildings'],
+  ['mpb_approx', 'MPB approx. (PSGC)'],
   ['mpb_unmapped', 'MPB without coordinates'],
 ];
 export const DEFAULT_CONGRESS_MAP_OBJECTS = Object.fromEntries(
@@ -23,6 +24,8 @@ export const CONGRESS_MAP_TYPE_OPTIONS = {
     ['point', 'Corrected coordinate'],
   ],
   mpb: Object.entries(MPB_POINT_CLASSES).map(([id, style]) => [id, style.label]),
+  // Dashed PSGC-centroid markers for rows that print no title coordinate.
+  mpb_approx: Object.entries(MPB_POINT_CLASSES).map(([id, style]) => [id, style.label]),
   // Class chips default on; the red aggregate "total" square is opt-in.
   mpb_unmapped: [
     ...Object.entries(MPB_POINT_CLASSES).map(([id, style]) => [id, style.label]),
@@ -228,27 +231,29 @@ export function mpbNationalMapOverlay(records) {
 
 /**
  * Catch-all badges for MPB rows a district owns but that print no title
- * coordinate: one stacked badge per legislative district (House only / NEP
- * only / Matched pair, in the shared MPB colors), anchored at the district
- * polygon's centroid. Rows are aggregated across every MPB card the district
- * appears on (title-PSGC and DEO→LEG cards can both carry the same
- * district), so the badge states the district total, not one card's share.
- * Class split mirrors the comparison vocabulary the explorer prints:
+ * coordinate AND could not be placed on a PSGC-centroid approx marker.
+ * Pass `excludeRowIds` (rows already on the approx overlay) so the two
+ * layers never double-count. Class split mirrors the explorer vocabulary:
  * insertions = House only, deletions = NEP only, remaining buckets = pairs.
  */
-export function mpbUnmappedDistrictBadges(mpbIndex, districtsGeojson) {
+export function mpbUnmappedDistrictBadges(mpbIndex, districtsGeojson, excludeRowIds = null) {
   if (!mpbIndex || !districtsGeojson) return {type: 'FeatureCollection', features: []};
+  const excluded = excludeRowIds instanceof Set ? excludeRowIds
+    : new Set(excludeRowIds ?? []);
+  const keep = id => !(mpbIndex.row_points ?? {})[id]?.length && !excluded.has(id);
   const unmapped = new Map();
   for (const card of [...(mpbIndex.cards ?? []), ...(mpbIndex.region_cards ?? [])]) {
     for (const district of card.districts ?? []) {
       const rowIds = card.row_ids ?? {};
-      const withoutPoints = ids => ids.filter(id => !(mpbIndex.row_points ?? {})[id]?.length);
+      const withoutPoints = ids => ids.filter(keep);
       const entry = unmapped.get(district.id) ?? {house_only: 0, nep_only: 0, paired: 0};
       entry.house_only += withoutPoints(rowIds.insertions ?? []).length;
       entry.nep_only += withoutPoints(rowIds.deletions ?? []).length;
       entry.paired += withoutPoints([...(rowIds.increased ?? []), ...(rowIds.reduced ?? []),
         ...(rowIds.unchanged ?? []), ...(rowIds.scope_review ?? [])]).length;
-      unmapped.set(district.id, entry);
+      if (entry.house_only + entry.nep_only + entry.paired > 0) {
+        unmapped.set(district.id, entry);
+      }
     }
   }
   const features = (districtsGeojson.features ?? [])
@@ -325,6 +330,87 @@ export function mpbUnmappedClassTotals(mpbBadges) {
     totals.total += props.unmapped || 0;
   }
   return totals;
+}
+
+/** Row ids already placed on the PSGC-approx supplement (exclude from badges). */
+export function mpbApproxPlacedRowIds(approxOverlay) {
+  const ids = new Set();
+  for (const marker of approxOverlay?.markers ?? []) {
+    for (const rid of marker.row_ids ?? []) ids.add(rid);
+  }
+  return ids;
+}
+
+/**
+ * GeoJSON for the PSGC-centroid approximate overlay. One feature per collapsed
+ * barangay/municipality marker from the supplement JSON. Not survey GPS —
+ * `placement` stays `psgc_centroid` so the map can style dashed boxes.
+ */
+export function mpbApproxMapOverlay(approxOverlay) {
+  const features = (approxOverlay?.markers ?? []).map(marker => {
+    const counts = marker.counts ?? {};
+    const category = mpbApproxDominantCategory(counts);
+    return {
+      type: 'Feature',
+      id: marker.id,
+      properties: {
+        objectKind: 'mpb_approx',
+        placement: 'psgc_centroid',
+        psgcCode: marker.psgc_code,
+        level: marker.level,
+        name: marker.name,
+        barangay: marker.barangay,
+        municipality: marker.municipality,
+        province: marker.province,
+        // MapLibre GeoJSON properties must be scalars; join for query/click.
+        districtIds: (marker.district_ids ?? []).join(','),
+        rowIds: (marker.row_ids ?? []).join(','),
+        house_only: counts.house_only || 0,
+        nep_only: counts.nep_only || 0,
+        paired: counts.paired || 0,
+        count: counts.total || 0,
+        category,
+        categoryLabel: MPB_POINT_CLASSES[category].label,
+        color: MPB_POINT_CLASSES[category].color,
+        centroidSource: marker.centroid_source,
+      },
+      geometry: {type: 'Point', coordinates: [marker.lng, marker.lat]},
+    };
+  });
+  return {
+    type: 'FeatureCollection',
+    features,
+    counts: approxOverlay?.counts?.rows_by_class ?? {house_only: 0, nep_only: 0, paired: 0},
+  };
+}
+
+/** Apply class subtype toggles to approx markers (drop empties). */
+export function mpbApproxMarkerViews(approxOverlayFc, types) {
+  const toggles = types?.mpb_approx ?? DEFAULT_CONGRESS_MAP_TYPES.mpb_approx;
+  const features = [];
+  for (const feature of approxOverlayFc?.features ?? []) {
+    const props = feature.properties ?? {};
+    const counts = {
+      house_only: toggles.house_only ? (props.house_only || 0) : 0,
+      nep_only: toggles.nep_only ? (props.nep_only || 0) : 0,
+      paired: toggles.paired ? (props.paired || 0) : 0,
+    };
+    const total = counts.house_only + counts.nep_only + counts.paired;
+    if (total <= 0) continue;
+    const category = mpbApproxDominantCategory(counts);
+    features.push({
+      ...feature,
+      properties: {
+        ...props,
+        ...counts,
+        count: total,
+        category,
+        categoryLabel: MPB_POINT_CLASSES[category].label,
+        color: MPB_POINT_CLASSES[category].color,
+      },
+    });
+  }
+  return {type: 'FeatureCollection', features};
 }
 
 /** Area-weighted centroid of a polygon ring set — a stable anchor point. */

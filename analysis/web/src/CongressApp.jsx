@@ -1570,16 +1570,25 @@ export default function CongressApp() {
     return fmrRows(fmrDetail).map(row => fmrExplorerRow(row, resolutionMap[row.id]));
   }, [fmrDetail, fmrIndex]);
 
-  // Nationwide MPB explorer rows that carry title coordinates.
+  // Nationwide MPB explorer rows for the map: title-GPS markers plus
+  // PSGC-approx cluster modal / RecordDrawer lookups (coordinate-less rows).
   const mpbMapRecords = useMemo(() => {
     if (!mpbIndex || !detail) return [];
     const byId = indexRowsById(detail.projects ?? detail);
     const out = [];
-    for (const [rowId, points] of Object.entries(mpbIndex.row_points ?? {})) {
-      const row = byId.get(rowId);
-      if (!row || !points?.length) continue;
-      out.push(mpbExplorerRow(row, mpbIndex.row_scope?.[rowId], points,
-        mpbIndex.row_resolution?.[rowId], mpbIndex.row_psgc?.[rowId]));
+    const seen = new Set();
+    for (const card of [...(mpbIndex.cards ?? []), ...(mpbIndex.region_cards ?? [])]) {
+      for (const ids of Object.values(card.row_ids ?? {})) {
+        for (const rowId of ids) {
+          if (seen.has(rowId)) continue;
+          seen.add(rowId);
+          const row = byId.get(rowId);
+          if (!row) continue;
+          out.push(mpbExplorerRow(row, mpbIndex.row_scope?.[rowId],
+            mpbIndex.row_points?.[rowId],
+            mpbIndex.row_resolution?.[rowId], mpbIndex.row_psgc?.[rowId]));
+        }
+      }
     }
     return out;
   }, [mpbIndex, detail]);
@@ -1619,7 +1628,11 @@ export default function CongressApp() {
                   fmrIndex={fmrIndex} mpbIndex={mpbIndex}
                   selectedRecordId={mapRecordId}
                   markersPending={mapMarkersPending}
-                  onSelectRecord={setMapRecordId} />
+                  onSelectRecord={setMapRecordId}
+                  onPdf={ref => {
+                    const reference = sourceReference(ref.kind, ref.page, ref.label);
+                    if (reference) setMapPdfSource(reference);
+                  }} />
                 {mapOpenRecord && <RecordDrawer record={mapOpenRecord}
                   onPdf={ref => {
                     const reference = sourceReference(ref.kind, ref.page, ref.label);
