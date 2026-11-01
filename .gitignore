@@ -119,10 +119,10 @@ analysis/data/dpwh_details_xlsx_crosscheck.json
 # Local-only plain exports exceeding Git's 100 MiB blob limit
 master_list/data/project_list.csv
 
-# Readable processing release, regenerated from the comparison/workbench JSONs
-# by npm run generate:data; stays local-only (large intermediate), while the
-# committed location index pins its hash so CI can verify consistency.
-/master_list/data/processing/
+# Readable processing release, regenerated from the comparison/workbench
+# JSONs by npm run generate:data; committed (14 MB, deterministic gzip) so
+# master-list unit tests and the viewer run in CI without local rebuilds.
+#/master_list/data/processing/
 
 # Cleaned observation consumer release; rebuilt from audited evidence layers.
 # Committed so the location-lens chain is verifiable in CI without a local

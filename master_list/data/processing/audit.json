@@ -1,0 +1,328 @@
+{
+  "builder_sha256": {
+    "build_master_list.py": "2d3891e5ea7796d2ab7852e39d987f19bf081d042f5d60b83da4da1dee1feeb9",
+    "build_processing_dataset.py": "15eb5ddcc390aee77740759b768ca4859587e6031c182480a173c46ee9950cb4",
+    "readable_titles.py": "745b3ed99d74ff8f742fdeb76b5d3ef48acf6f5f5ac027d1048f0205cdfcc14a"
+  },
+  "compared_observations": 59601,
+  "comparison_groups": 20321,
+  "dataset_checks": {
+    "dpwh_house_second": {
+      "compared_amount_php": 586941661000,
+      "compared_observations": 16270,
+      "not_compared_amount_php": 52238057000,
+      "not_compared_observations": 2522,
+      "source_amount_php": 639179718000,
+      "source_observations": 18792,
+      "title_clean_changed": 0
+    },
+    "dpwh_house_third": {
+      "compared_amount_php": 587075661000,
+      "compared_observations": 16275,
+      "not_compared_amount_php": 52104057000,
+      "not_compared_observations": 2522,
+      "source_amount_php": 639179718000,
+      "source_observations": 18797,
+      "title_clean_changed": 0
+    },
+    "dpwh_nep_api": {
+      "compared_amount_php": 445378063000,
+      "compared_observations": 11372,
+      "not_compared_amount_php": 0,
+      "not_compared_observations": 0,
+      "source_amount_php": 445378063000,
+      "source_observations": 11372,
+      "title_clean_changed": 0
+    },
+    "dpwh_nep_pdf": {
+      "compared_amount_php": 572924074000,
+      "compared_observations": 11420,
+      "not_compared_amount_php": 0,
+      "not_compared_observations": 0,
+      "source_amount_php": 572924074000,
+      "source_observations": 11420,
+      "title_clean_changed": 270
+    },
+    "fmr_hgab": {
+      "compared_amount_php": 19628100000,
+      "compared_observations": 964,
+      "not_compared_amount_php": 0,
+      "not_compared_observations": 0,
+      "source_amount_php": 19628100000,
+      "source_observations": 964,
+      "title_clean_changed": 0
+    },
+    "fmr_nep": {
+      "compared_amount_php": 16000000000,
+      "compared_observations": 704,
+      "not_compared_amount_php": 0,
+      "not_compared_observations": 0,
+      "source_amount_php": 16000000000,
+      "source_observations": 704,
+      "title_clean_changed": 0
+    },
+    "hfep_hgab": {
+      "compared_amount_php": 10021659000,
+      "compared_observations": 513,
+      "not_compared_amount_php": 0,
+      "not_compared_observations": 0,
+      "source_amount_php": 10021659000,
+      "source_observations": 513,
+      "title_clean_changed": 0
+    },
+    "hfep_nep": {
+      "compared_amount_php": 14472519000,
+      "compared_observations": 464,
+      "not_compared_amount_php": 0,
+      "not_compared_observations": 0,
+      "source_amount_php": 14472519000,
+      "source_observations": 464,
+      "title_clean_changed": 0
+    },
+    "nia_hgab": {
+      "compared_amount_php": 17999305000,
+      "compared_observations": 828,
+      "not_compared_amount_php": 0,
+      "not_compared_observations": 0,
+      "source_amount_php": 17999305000,
+      "source_observations": 828,
+      "title_clean_changed": 0
+    },
+    "nia_nep": {
+      "compared_amount_php": 17598181000,
+      "compared_observations": 791,
+      "not_compared_amount_php": 0,
+      "not_compared_observations": 0,
+      "source_amount_php": 17598181000,
+      "source_observations": 791,
+      "title_clean_changed": 0
+    }
+  },
+  "input_files": {
+    "analysis-hfep/data/hgab_hfep_tree.json": {
+      "legislative_stage": "not_independently_authenticated",
+      "scope": "DOH FY 2027 Health Facilities Enhancement Program (HFEP) annex; not the entire DOH appropriation. The I-A HFEP allocation of PHP 10,088,832,000 additionally includes PHP 67,173,000 MOOE, which is outside this annex.",
+      "sha256": "3d93535f64f01919fab729c37aee5b6181ad952bffe75af352be46574d0cef05"
+    },
+    "analysis-hfep/data/nep_hfep_audit.json": {
+      "role": "source_control_discrepancy",
+      "sha256": "eefc2f35fd1022cc80c0906525b550c680c56fcfaa36ab77b01d7b8df55d9c10"
+    },
+    "analysis-hfep/data/nep_hfep_tree.json": {
+      "legislative_stage": "executive_proposal",
+      "scope": "DOH FY 2027 Health Facilities Enhancement Program capital outlays",
+      "sha256": "0e1fc837bf1f553fcba71ea941e4fae09fd4d8117f59cdf614e068cdc48dce7f"
+    },
+    "analysis-nia/data/hgab_nia_tree.json": {
+      "legislative_stage": "not_independently_authenticated",
+      "scope": "NIA FY 2027 Irrigation Program detailed annex (printed 874-919); not the whole NIA appropriation of PHP 45,172,024,000 and not the agency's separately listed major locally-funded and foreign-assisted projects",
+      "sha256": "5c4808b5e28745b405b5222b0b4a3c2fca536ee0d32a7bb20bf81051787cac4f"
+    },
+    "analysis-nia/data/nep_nia_dataset.json": {
+      "scope": "NEP NIA project annex",
+      "sha256": "685dabfc819030a02d6e53b43a038bea59b11dd872e9a4bb262cf13e8a4aa50c"
+    },
+    "analysis-nia/data/nia_workbench.json": {
+      "role": "primary_comparison",
+      "sha256": "69a7eda465baf266b4e52a22114bf1c4d4569c08bf2019c38b6431650f83603a"
+    },
+    "analysis/data/chainage_units_2027.json": {
+      "role": "dpwh_comparison_dependency",
+      "sha256": "efa347de1ef6df14e828d621345951767d99eb156c4a79c4f7cf5d8240fab387"
+    },
+    "analysis/data/comparison_projects_2027.json": {
+      "role": "primary_comparison",
+      "sha256": "cb964990c9d09535353d9c0ecd8dd1f89ffe9ec4e680be803670c9cdf728be0f"
+    },
+    "analysis/data/hb_dpwh_native_ic_projects.json": {
+      "scope": "DPWH VOL I-C project details pp9–942 (native text layer)",
+      "sha256": "7ca94948ba16fd46fabf3cd1061d1b04657f7d19e3c00c9891d7d2becf6ced51"
+    },
+    "analysis/data/hb_dpwh_native_ic_projects_3rd_reading.json": {
+      "scope": "DPWH VOL I-C project details pp9–942 (native text layer)",
+      "sha256": "4ab63aea525784ce342d4911c7859f77380b8504eb5483d8e65d48be9377078c"
+    },
+    "analysis/data/house_reading_changes_2027.json": {
+      "role": "dpwh_comparison_dependency",
+      "sha256": "9079aa55e12e015c4b9851d99fd0b4fd4d263375830d4317f46807dc04d65b71"
+    },
+    "analysis/data/nep_2027_source_projects.json": {
+      "scope": "FY2027 DPWH operations only; GAS/S2O excluded",
+      "sha256": "2d58683888ae697c4506544b48d30ed4b6f6cfa9e796f7328ca4e4b9075423cf"
+    },
+    "analysis/data/road_group_candidates_2027.json": {
+      "role": "dpwh_comparison_dependency",
+      "sha256": "f914a2d270f883f26288de1fb0b79a7ab8227bf3fbb4e7bafa0971bae49c7295"
+    },
+    "analysis/data/stage_trace_2027.json": {
+      "role": "dpwh_comparison_dependency",
+      "sha256": "7073c9dc4be2c9118fa654be6cdd4fbc2e08a9490badb6a988fee427a0cfed73"
+    },
+    "dpwh-transparency-nep-data/json/fy2027-combined.json": {
+      "scope": "DPWH Transparency NEP listing; overlaps PDF observations",
+      "sha256": "dd57319349db0174fb59ae2a1939274a6ee072f889a48e85712818980a480e2e"
+    },
+    "other-analysis/data/fmr_workbench.json": {
+      "role": "primary_comparison",
+      "sha256": "dc8b8a2c644198d4af90c05c05014804545c7c11e3dc093ba8ee83b794056fd9"
+    },
+    "other-analysis/data/hfep_workbench.json": {
+      "role": "primary_comparison",
+      "sha256": "056050de3f80aeb1effd28ed7768de7a680d519335f61e859e3e167bcd9c95f7"
+    },
+    "other-analysis/data/hgab_fmr_coordinates_normalized.json": {
+      "scope": "Retained FMR coordinate interpretation; not a new geocode",
+      "sha256": "c8c360514ad9ac908f435c7782bca879cfda01d26b102c97f2348f58dd7243c0"
+    },
+    "other-analysis/data/hgab_fmr_tree.json": {
+      "legislative_stage": "not_independently_authenticated",
+      "scope": "DA locally-funded FMR annex; not the full DA budget or FMR planning/bridges activities",
+      "sha256": "40907bb12528a76d955bda746e364ec8c28e14b19134eb6b2f90d07ead0bfdb5"
+    },
+    "other-analysis/data/nep_fmr_coordinates_normalized.json": {
+      "scope": "Retained FMR coordinate interpretation; not a new geocode",
+      "sha256": "53d76f3a3bd928a355e9c25b641ed156820b4aeee4a4d3308ff6f951441ce2fc"
+    },
+    "other-analysis/data/nep_fmr_tree.json": {
+      "legislative_stage": "NEP executive proposal; not an enacted appropriation",
+      "scope": "DA locally-funded FMR annex; not the full DA budget or FMR planning/bridges activities",
+      "sha256": "182b67acb063cc0c3501bcbb2f56f0b8e2014105ecae2df3c1a87c4372cb3e62"
+    }
+  },
+  "matching_notes": {
+    "dpwh": "Partitions retain both House readings; source scope is operations. See per-reading presence and upstream review status.",
+    "fmr": "Unique, one-to-one candidates within the same region: canonical title + exact clean coordinates, then title, then exact clean coordinates. No fuzzy or distance matching. Source-only rows are unmatched observations, not certified insertions or deletions.",
+    "hfep": "Pairs are title-similarity suggestions for review, not asserted identities. Similarity is computed on normalized titles within the same (region, province) block; every pair carries its score and both source row ids. Rows may be the same facility with OCR label variants, and House rows without an NEP counterpart typically reflect the two annexes recording different grains, not omissions.",
+    "nia": "Two labeled methods share one ledger. strict: unique one-to-one candidates within the same sub-program by canonical title, no fuzzy matching. ai_corrected: additionally normalizes AI-monitoring matching keys only (verified NEP OCR readings Al/AL/AT→AI; Monitoring/Monitoring System equivalence); stored titles are never rewritten. Every row carries status (corrected) and strict_status. Unmatched rows carry deterministic variant marks (repeated_title, location_variant, exact_variant, spelling_variant, no_counterpart) — equal-amount review pointers that never create pairs or certify identity. Source-only rows are observations, not certified insertions or deletions."
+  },
+  "not_compared_observations": 5044,
+  "output_sha256": {
+    "comparison_groups.jsonl.gz": "74fb5aba979ca65476a355764ea7b6f6ebb0b3a48e9a8d43ba3b50d21b6e44d3",
+    "observations.jsonl.gz": "d93edd40b998e919a8f2f50256fc76a4aaf236bc33cf7847b2d4f32f14c6b26c",
+    "outside_comparison.jsonl.gz": "2b39a358248b675ba24c2d6bd6ac392cb64e428b0799563ee49e186946776a3f"
+  },
+  "outside_comparison_sections": {
+    "GENERAL ADMINISTRATIVE AND SUPPORT": 114,
+    "SUPPORT TO OPERATIONS": 4930
+  },
+  "partition_definition": "matched = NEP and at least one House side attached in an upstream comparison group, not a certified unique physical project. Suggestions alone never consume records.",
+  "partitions": {
+    "dpwh": {
+      "house_only": 6193,
+      "matched": 10079,
+      "nep_only": 1341
+    },
+    "fmr": {
+      "house_only": 355,
+      "matched": 609,
+      "nep_only": 95
+    },
+    "hfep": {
+      "house_only": 172,
+      "matched": 341,
+      "nep_only": 123
+    },
+    "nia": {
+      "house_only": 222,
+      "matched": 606,
+      "nep_only": 185
+    }
+  },
+  "schema_version": 1,
+  "scope": "Existing FY2027 comparison partitions plus separately retained House GAS/S2O observations. Not every agency budget; amounts remain separate by source and stage.",
+  "source_discrepancies": {
+    "hfep_nep": {
+      "infrastructure": 0,
+      "medical_equipment": -140000,
+      "motor_vehicle": 0,
+      "total": -140000
+    }
+  },
+  "source_observations": 64645,
+  "title_clean_examples": [
+    {
+      "record_id": "dpwh_nep_pdf:p198:r7",
+      "title_clean": "Dipolog-Punta-Dansullan-S Osmeña-Zamboanga del Norte / Sur Bdry Rd",
+      "title_clean_rules": [
+        "split_enye_joined"
+      ],
+      "title_source": "Dipolog-Punta-Dansullan-S Osme ñ a-Zamboanga del Norte / Sur Bdry Rd"
+    },
+    {
+      "record_id": "dpwh_nep_pdf:p198:r8",
+      "title_clean": "Dipolog-Punta-Dansullan-S Osmeña-Zamboanga del Norte / Sur Bdry Rd - K1848 + 093 - K1850 + 572",
+      "title_clean_rules": [
+        "split_enye_joined"
+      ],
+      "title_source": "Dipolog-Punta-Dansullan-S Osme ñ a-Zamboanga del Norte / Sur Bdry Rd - K1848 + 093 - K1850 + 572"
+    },
+    {
+      "record_id": "dpwh_nep_pdf:p198:r9",
+      "title_clean": "Dipolog-Punta-Dansullan-S Osmeña-Zamboanga del Norte / Sur Bdry Rd - K1874 + 687 - K1883 + 420",
+      "title_clean_rules": [
+        "split_enye_joined"
+      ],
+      "title_source": "Dipolog-Punta-Dansullan-S Osme ñ a-Zamboanga del Norte / Sur Bdry Rd - K1874 + 687 - K1883 + 420"
+    },
+    {
+      "record_id": "dpwh_nep_pdf:p203:r29",
+      "title_clean": "Dipolog-Punta-Dansullan-S Osmeña-Zamboanga del Norte / Sur Bdry Rd - K1852 + 000 - K1853 + 580",
+      "title_clean_rules": [
+        "split_enye_joined"
+      ],
+      "title_source": "Dipolog-Punta-Dansullan-S Osme ñ a-Zamboanga del Norte / Sur Bdry Rd - K1852 + 000 - K1853 + 580"
+    },
+    {
+      "record_id": "dpwh_nep_pdf:p213:r35",
+      "title_clean": "Sto Niño-Banago Rd (North ) - K0001 + (- 422 ) - K0001 + (- 181 ), K0001 + (- 018 ) - K0001 + 464",
+      "title_clean_rules": [
+        "split_enye_joined"
+      ],
+      "title_source": "Sto Ni ñ o-Banago Rd (North ) - K0001 + (- 422 ) - K0001 + (- 181 ), K0001 + (- 018 ) - K0001 + 464"
+    },
+    {
+      "record_id": "dpwh_nep_pdf:p220:r30",
+      "title_clean": "Bacoor-Dasmariñas National Rd - K0021 + 910 - K0022 + 102, K0022 + 397 - K0022 + 921, K0023 + 410 - K0023 + 577",
+      "title_clean_rules": [
+        "split_enye_joined"
+      ],
+      "title_source": "Bacoor-Dasmari ñ as National Rd - K0021 + 910 - K0022 + 102, K0022 + 397 - K0022 + 921, K0023 + 410 - K0023 + 577"
+    },
+    {
+      "record_id": "dpwh_nep_pdf:p229:r10",
+      "title_clean": "Dipolog-Punta-Dansullan-S Osmeña-Zamboanga del Norte / Sur Bdry Rd - K1850 + 572 - K1852 + 000",
+      "title_clean_rules": [
+        "split_enye_joined"
+      ],
+      "title_source": "Dipolog-Punta-Dansullan-S Osme ñ a-Zamboanga del Norte / Sur Bdry Rd - K1850 + 572 - K1852 + 000"
+    },
+    {
+      "record_id": "dpwh_nep_pdf:p240:r18",
+      "title_clean": "Bacoor-Dasmariñas National Rd - K0031 + 000 - K0031 + 125",
+      "title_clean_rules": [
+        "split_enye_joined"
+      ],
+      "title_source": "Bacoor-Dasmari ñ as National Rd - K0031 + 000 - K0031 + 125"
+    },
+    {
+      "record_id": "dpwh_nep_pdf:p242:r14",
+      "title_clean": "Dipolog-Polanco-Piñan-Jct Oroquieta Rd - K1813 + 073 - K1813 + 541, K1819 + 912 - K1820 + 077",
+      "title_clean_rules": [
+        "split_enye_joined"
+      ],
+      "title_source": "Dipolog-Polanco-Pi ñ an-Jct Oroquieta Rd - K1813 + 073 - K1813 + 541, K1819 + 912 - K1820 + 077"
+    },
+    {
+      "record_id": "dpwh_nep_pdf:p263:r7",
+      "title_clean": "Dipolog-Punta-Dansullan-S Osmeña-Zamboanga del Norte / Sur Bdry Rd - K1891 + 454 - K1893 + 696",
+      "title_clean_rules": [
+        "split_enye_joined"
+      ],
+      "title_source": "Dipolog-Punta-Dansullan-S Osme ñ a-Zamboanga del Norte / Sur Bdry Rd - K1891 + 454 - K1893 + 696"
+    }
+  ],
+  "title_clean_method": "readable_title_v1",
+  "title_clean_rules": {
+    "split_enye_joined": 270
+  }
+}
