@@ -296,8 +296,11 @@ function syncLayers(instance, districts, fmrOverlay, mpbOverlay, fillAlpha = DEF
       id: MPB_BADGE, type: 'symbol', source: MPB_UNMAPPED,
       layout: {
         'icon-image': ['concat', 'mpb-unmapped-badge-', ['get', 'unmapped']],
-        // Larger than point boxes: it is a district-level summary, not a building.
-        'icon-size': ['interpolate', ['linear'], ['zoom'], 5, 0.16, 10, 0.26, 14, 0.36],
+        // Sprite content is 36% of the 128px canvas, so these multipliers
+        // land at ≈15px tall at country view (a touch under the first
+        // version) and ≈39px zoomed in (matching it). Larger than point
+        // boxes: it is a district-level summary, not a building.
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 5, 0.32, 10, 0.55, 14, 0.85],
         'icon-allow-overlap': true,
         'icon-ignore-placement': true,
       },

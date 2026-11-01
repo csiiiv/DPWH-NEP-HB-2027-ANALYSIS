@@ -70,9 +70,10 @@ export function ensureMpbBoxIcon(instance) {
 export const MPB_BADGE_ICON = 'mpb-unmapped-badge';
 
 /**
- * Square badge sprite with the unmapped count printed in the middle.
- * Rendered on a canvas so digits stay crisp; sized by digit count so a
- * 4-figure total still fits. One sprite per distinct count value.
+ * Count badge sprite for coordinate-less MPB rows. One geometry for every
+ * count: fixed height with digits at a constant share of it (so a "1" and a
+ * "427" read at the same size), and width grows only as far as the label
+ * needs. Rendered on a canvas so digits stay crisp; one sprite per count.
  */
 export function mpbBadgeIconImage(count, size = 128) {
   const canvas = document.createElement('canvas');
@@ -80,25 +81,27 @@ export function mpbBadgeIconImage(count, size = 128) {
   canvas.height = size;
   const ctx = canvas.getContext('2d');
   const label = String(count);
-  const digits = label.length;
-  // Square badge sized by digit count: 3 digits need a wider box than 1.
-  const box = Math.min(size, Math.round(size * (0.62 + digits * 0.13)));
-  const offset = Math.round((size - box) / 2);
+  const height = Math.round(size * 0.34);
+  const fontPx = Math.round(height * 0.62);
+  ctx.font = `700 ${fontPx}px system-ui, sans-serif`;
+  const width = Math.max(height, Math.ceil(ctx.measureText(label).width)
+    + Math.round(height * 0.42));
+  const x0 = Math.round((size - width) / 2);
+  const y0 = Math.round((size - height) / 2);
   // Red: a district total that cannot be located — matches the shared
   // red-flag vocabulary the FMR corrections already use.
   ctx.fillStyle = 'rgba(220, 38, 38, 0.92)';
   ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = Math.max(3, Math.round(size * 0.045));
-  const radius = Math.round(box * 0.18);
+  ctx.lineWidth = Math.max(2, Math.round(size * 0.018));
+  const radius = Math.round(height * 0.28);
   ctx.beginPath();
-  ctx.roundRect(offset, offset, box, box, radius);
+  ctx.roundRect(x0, y0, width, height, radius);
   ctx.fill();
   ctx.stroke();
   ctx.fillStyle = '#ffffff';
-  ctx.font = `700 ${Math.round(box / (digits * 0.72 + 0.35))}px system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(label, size / 2, size / 2 + Math.round(box * 0.02));
+  ctx.fillText(label, size / 2, y0 + height / 2 + Math.round(height * 0.03));
   return {width: size, height: size, data: ctx.getImageData(0, 0, size, size).data};
 }
 
