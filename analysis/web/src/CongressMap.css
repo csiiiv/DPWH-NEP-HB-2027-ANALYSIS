@@ -345,6 +345,18 @@ dialog.congress-map-fullscreen {
 }
 .congress-layer-swatch-box { border-radius: 2px; }
 .congress-layer-swatch-fill { border-radius: 4px; }
+/* Badge swatch mirrors the map's count badge: blue square with a digit. */
+.congress-layer-swatch-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: rgba(37, 99, 235, 0.92);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+}
 
 .congress-layer-fill {
   display: grid;

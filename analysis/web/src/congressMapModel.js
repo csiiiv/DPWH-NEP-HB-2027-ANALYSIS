@@ -7,6 +7,7 @@ export const CONGRESS_MAP_OBJECT_OPTIONS = [
   ['fmr', 'FMR segments'],
   ['fmr_repairs', 'FMR corrections'],
   ['mpb', 'MPB buildings'],
+  ['mpb_unmapped', 'MPB without coordinates'],
 ];
 export const DEFAULT_CONGRESS_MAP_OBJECTS = Object.fromEntries(
   CONGRESS_MAP_OBJECT_OPTIONS.map(([id]) => [id, true]));
@@ -211,11 +212,69 @@ export function mpbNationalMapOverlay(records) {
 }
 
 /**
+ * Catch-all badges for MPB rows a district owns but that print no title
+ * coordinate: one badge per legislative district, anchored at the
+ * district polygon's centroid, carrying the unmapped row count. Rows are
+ * aggregated across every MPB card the district appears on (title-PSGC and
+ * DEO→LEG cards can both carry the same district), so the badge states the
+ * district total, not one card's share.
+ */
+export function mpbUnmappedDistrictBadges(mpbIndex, districtsGeojson) {
+  if (!mpbIndex || !districtsGeojson) return {type: 'FeatureCollection', features: []};
+  const unmapped = new Map();
+  for (const card of [...(mpbIndex.cards ?? []), ...(mpbIndex.region_cards ?? [])]) {
+    for (const district of card.districts ?? []) {
+      const ids = Object.values(card.row_ids ?? {}).flat();
+      const count = ids.filter(id => !(mpbIndex.row_points ?? {})[id]?.length).length;
+      if (count > 0) unmapped.set(district.id, (unmapped.get(district.id) ?? 0) + count);
+    }
+  }
+  const features = (districtsGeojson.features ?? [])
+    .filter(feature => unmapped.has(feature.properties.district_id))
+    .map(feature => ({
+      type: 'Feature',
+      id: `mpb-unmapped:${feature.properties.district_id}`,
+      properties: {
+        objectKind: 'mpb_unmapped',
+        districtId: feature.properties.district_id,
+        districtLabel: `${feature.properties.jurisdiction} · ${feature.properties.district_label}`,
+        unmapped: unmapped.get(feature.properties.district_id),
+      },
+      geometry: {type: 'Point', coordinates: polygonCentroid(feature.geometry)},
+    }));
+  return {type: 'FeatureCollection', features};
+}
+
+/** Area-weighted centroid of a polygon ring set — a stable anchor point. */
+function polygonCentroid(geometry) {
+  const rings = geometry?.type === 'Polygon' ? [geometry.coordinates]
+    : geometry?.type === 'MultiPolygon' ? geometry.coordinates : [];
+  let bestArea = -1, bestPoint = [122.5, 12.5];
+  for (const polygon of rings) {
+    const ring = polygon?.[0] ?? [];
+    let twiceArea = 0, cx = 0, cy = 0;
+    for (let i = 0; i < ring.length - 1; i += 1) {
+      const [x1, y1] = ring[i], [x2, y2] = ring[i + 1];
+      const cross = x1 * y2 - x2 * y1;
+      twiceArea += cross;
+      cx += (x1 + x2) * cross;
+      cy += (y1 + y2) * cross;
+    }
+    if (twiceArea === 0) continue;
+    const area = Math.abs(twiceArea);
+    if (area > bestArea) {
+      bestArea = area;
+      bestPoint = [cx / (3 * twiceArea), cy / (3 * twiceArea)];
+    }
+  }
+  return bestPoint;
+}
+
+/**
  * First legislative-lens card id for a district. The reverse `districts`
  * index on FMR/MPB payloads still carries DEO office-group ids, so card
  * lookup walks `cards[].districts` instead.
- */
-export function districtCardId(index, districtId) {
+ */export function districtCardId(index, districtId) {
   if (!index || !districtId) return null;
   const matches = (index.cards ?? []).filter(card =>
     (card.districts ?? []).some(district => district.id === districtId));

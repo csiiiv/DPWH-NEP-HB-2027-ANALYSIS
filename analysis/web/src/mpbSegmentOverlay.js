@@ -67,6 +67,50 @@ export function ensureMpbBoxIcon(instance) {
   }
 }
 
+export const MPB_BADGE_ICON = 'mpb-unmapped-badge';
+
+/**
+ * Square badge sprite with the unmapped count printed in the middle.
+ * Rendered on a canvas so digits stay crisp; sized by digit count so a
+ * 4-figure total still fits. One sprite per distinct count value.
+ */
+export function mpbBadgeIconImage(count, size = 128) {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const label = String(count);
+  const digits = label.length;
+  // Square badge sized by digit count: 3 digits need a wider box than 1.
+  const box = Math.min(size, Math.round(size * (0.62 + digits * 0.13)));
+  const offset = Math.round((size - box) / 2);
+  ctx.fillStyle = 'rgba(37, 99, 235, 0.92)';
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = Math.max(3, Math.round(size * 0.045));
+  const radius = Math.round(box * 0.18);
+  ctx.beginPath();
+  ctx.roundRect(offset, offset, box, box, radius);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `700 ${Math.round(box / (digits * 0.72 + 0.35))}px system-ui, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(label, size / 2, size / 2 + Math.round(box * 0.02));
+  return {width: size, height: size, data: ctx.getImageData(0, 0, size, size).data};
+}
+
+/** Register one badge sprite per distinct unmapped count on the map. */
+export function ensureMpbBadgeIcons(instance, counts) {
+  if (!instance) return;
+  for (const count of new Set(counts)) {
+    const id = `${MPB_BADGE_ICON}-${count}`;
+    if (!instance.hasImage(id)) instance.addImage(id, mpbBadgeIconImage(count));
+  }
+}
+
+export const mpbBadgeIconId = count => `${MPB_BADGE_ICON}-${count}`;
+
 function comparisonClass(record) {
   // An MPB row is "paired" when both amount stages are present on the
   // comparison row, matching the bucket vocabulary the explorer prints.

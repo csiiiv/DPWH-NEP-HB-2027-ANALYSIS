@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
 import {
   colorDistrictFeatures, decorateDistrictIds, districtIdBridge,
-  mpbNationalMapOverlay, districtCardId,
+  mpbNationalMapOverlay, districtCardId, mpbUnmappedDistrictBadges,
   readCongressMapObjects, congressMapObjectsParam, DEFAULT_CONGRESS_MAP_OBJECTS,
   readCongressMapTypes, congressMapTypesParam, DEFAULT_CONGRESS_MAP_TYPES,
   congressMapCategoryFilter,
@@ -54,13 +54,13 @@ test(haveViz && haveMap ? false : {skip: 'viz or map artifact missing'},
 test('congress map objects default to all on and serialize sparse selections', () => {
   assert.deepEqual(readCongressMapObjects(new URLSearchParams()), DEFAULT_CONGRESS_MAP_OBJECTS);
   assert.equal(congressMapObjectsParam(DEFAULT_CONGRESS_MAP_OBJECTS), null);
-  assert.equal(congressMapObjectsParam({districts: true, fmr: false, fmr_repairs: false, mpb: true}),
-    'districts,mpb');
+  assert.equal(congressMapObjectsParam({districts: true, fmr: false, fmr_repairs: false,
+    mpb: true, mpb_unmapped: false}), 'districts,mpb');
   assert.deepEqual(readCongressMapObjects(new URLSearchParams('objects=mpb')), {
-    districts: false, fmr: false, fmr_repairs: false, mpb: true,
+    districts: false, fmr: false, fmr_repairs: false, mpb: true, mpb_unmapped: false,
   });
   assert.deepEqual(readCongressMapObjects(new URLSearchParams('objects=none')), {
-    districts: false, fmr: false, fmr_repairs: false, mpb: false,
+    districts: false, fmr: false, fmr_repairs: false, mpb: false, mpb_unmapped: false,
   });
 });
 
@@ -154,3 +154,42 @@ test('districtLensCounts counts all card rows and reports the mapped share', () 
   assert.equal(fmrOnly.mpb.rows, 0);
   assert.equal(fmrOnly.mpb.cardId, null);
 });
+
+test('mpbUnmappedDistrictBadges aggregates coordinate-less rows per district', () => {
+  const mpbIndex = {
+    cards: [
+      {id: 'mpb:title_psgc:leg:sample:1st', districts: [{id: 'leg:sample:1st'}],
+        row_ids: {unchanged: ['m1', 'm2', 'm3']}},
+      // Same district also served by a DEO→LEG card — counts must add.
+      {id: 'mpb:deo_to_leg:leg:sample:1st', districts: [{id: 'leg:sample:1st'}],
+        row_ids: {unchanged: ['m4']}},
+      {id: 'mpb:title_psgc:leg:other:2nd', districts: [{id: 'leg:other:2nd'}],
+        row_ids: {unchanged: ['m5', 'm6']}},
+    ],
+    region_cards: [],
+    row_points: {m1: [{lng: 121, lat: 14}], m3: [{lng: 122, lat: 15}]},
+  };
+  const districts = {
+    type: 'FeatureCollection',
+    features: [
+      {type: 'Feature', properties: {district_id: 'leg:sample:1st',
+        jurisdiction: 'Sample', district_label: '1st District', leg_id: 'leg:ph:sample:1st:2025'},
+        geometry: {type: 'Polygon', coordinates: [[[120, 14], [121, 14], [121, 15], [120, 14]]]}},
+      {type: 'Feature', properties: {district_id: 'leg:other:2nd',
+        jurisdiction: 'Other', district_label: '2nd District', leg_id: 'leg:ph:other:2nd:2025'},
+        geometry: {type: 'Polygon', coordinates: [[[122, 10], [123, 10], [123, 11], [122, 10]]]}},
+    ],
+  };
+  const badges = mpbUnmappedDistrictBadges(mpbIndex, districts);
+  assert.equal(badgeBy(badges, 'leg:sample:1st').properties.unmapped, 2); // m2 + m4
+  assert.equal(badgeBy(badges, 'leg:other:2nd').properties.unmapped, 2); // m5 + m6
+  // Badge sits inside its district polygon (centroid of the triangle ring).
+  const [cx, cy] = badgeBy(badges, 'leg:sample:1st').geometry.coordinates;
+  assert.ok(cx > 120 && cx < 121 && cy >= 14 && cy <= 15, `centroid in bounds: ${cx},${cy}`);
+  // Districts without unmapped rows get no badge.
+  assert.equal(badgeBy(badges, 'leg:quiet:3rd'), undefined);
+});
+
+function badgeBy(badges, districtId) {
+  return badges.features.find(f => f.properties.districtId === districtId);
+}
