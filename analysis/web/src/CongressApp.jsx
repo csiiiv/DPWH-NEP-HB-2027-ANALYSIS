@@ -1626,6 +1626,7 @@ export default function CongressApp() {
                 <CongressMap route={route}
                   fmrRecords={fmrMapRecords} mpbRecords={mpbMapRecords}
                   fmrIndex={fmrIndex} mpbIndex={mpbIndex}
+                  exportPopulations={{fmr: fmrMapRecords.length, mpb: mpbMapRecords.length}}
                   selectedRecordId={mapRecordId}
                   markersPending={mapMarkersPending}
                   onSelectRecord={setMapRecordId}

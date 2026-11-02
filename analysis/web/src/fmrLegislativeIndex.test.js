@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
 import {locationCards, summaryTotals, fmrRows, fmrExplorerRow, fmrGridExportRows,
+  fmrDistrictExportRows,
   indexRowsById, cardRows} from './congressModel.js';
 import {buildFmrRedFlags} from './fmrRedFlags.js';
 import {fmrDistrictMapOverlay, fmrRecordMapOverlay} from './fmrSegmentOverlay.js';
@@ -210,6 +211,23 @@ test(skip, 'grid export covers every comparison row exactly once with card place
   assert.ok(tampac);
   assert.equal(tampac.card_id, 'fmr:district:leg:nueva-ecija:1st');
   assert.ok(tampac.provenanceFlags.includes('coordinate_correction_applied'));
+});
+
+test(skip, 'district export returns exactly that district card\'s rows', () => {
+  // The map district panel exports by district_id (the lens district id the
+  // polygon bridge carries), not by card id — verify both the happy path and
+  // the no-card miss behave.
+  const card = locationCards(index).find(entry => entry.id === 'fmr:district:leg:nueva-ecija:1st');
+  const districtId = card.districts[0].id;
+  const rows = fmrDistrictExportRows(index, workbench, districtId);
+  const expected = cardRows(card, indexRowsById(fmrRows(workbench)));
+  assert.equal(rows.length, expected.length);
+  assert.ok(rows.length > 0);
+  assert.ok(rows.every(row => row.card_id === card.id));
+  assert.equal(new Set(rows.map(row => row.id)).size, rows.length,
+    'district export must not duplicate rows across buckets');
+  // Unknown district yields an empty export, not an error.
+  assert.deepEqual(fmrDistrictExportRows(index, workbench, 'leg:nowhere:0st'), []);
 });
 
 test(skip, 'segment overlay retains point-only source geometry', () => {

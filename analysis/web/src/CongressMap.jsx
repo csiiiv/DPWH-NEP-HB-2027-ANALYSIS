@@ -23,6 +23,8 @@ import {
   enabledCongressMapCategories, congressMapCategoryFilter,
 } from './congressMapModel.js';
 import MpbApproxClusterModal from './MpbApproxClusterModal.jsx';
+import MapSourcesModal, {MapSourcesButton} from './MapSourcesModal.jsx';
+import {downloadExplorer} from './explorerExport.js';
 import './CongressMap.css';
 import './Fmr.css';
 import './Congress.css';
@@ -123,7 +125,7 @@ function fitPhilippines(instance) {
   instance?.fitBounds(new LngLatBounds([117, 5], [127, 19]), {padding: 40, duration: 600});
 }
 
-function DistrictPanel({feature, fmrIndex, mpbIndex, onClose}) {
+function DistrictPanel({feature, fmrIndex, mpbIndex, onClose, onExport = null}) {
   const p = feature.properties;
   const districtId = p.district_id;
   const fmrCard = districtCardId(fmrIndex, districtId);
@@ -132,6 +134,16 @@ function DistrictPanel({feature, fmrIndex, mpbIndex, onClose}) {
   // counts (with or without coordinates), mapped share shown alongside.
   const lensCounts = useMemo(
     () => districtLensCounts(fmrIndex, mpbIndex, districtId), [fmrIndex, mpbIndex, districtId]);
+  const [exportBusy, setExportBusy] = useState('');
+  const [exportError, setExportError] = useState('');
+  const exportDistrict = kind => {
+    if (!onExport || exportBusy) return;
+    setExportBusy(kind);
+    setExportError('');
+    onExport(kind, districtId)
+      .catch(event => setExportError(event.message))
+      .finally(() => setExportBusy(''));
+  };
   return <aside className="congress-map-info" role="region" aria-label="Selected district">
     <div className="congress-map-info-head">
       <span className="fmr-eyebrow">{p.region}</span>
@@ -172,6 +184,16 @@ function DistrictPanel({feature, fmrIndex, mpbIndex, onClose}) {
         href={routeHref('district', {district: `location:title_psgc:${districtId}`, lens: 'location'}, 'congress')}>
         Districts (Legislative) card →</a>}
     </div>
+    {onExport && (lensCounts?.fmr.rows > 0 || lensCounts?.mpb.rows > 0) &&
+      <div className="congress-map-actions congress-map-export-actions">
+        {lensCounts?.fmr.rows > 0 && <button type="button" className="secondary"
+          disabled={Boolean(exportBusy)} onClick={() => exportDistrict('fmr')}>
+          {exportBusy === 'fmr' ? 'Building…' : `Export FMR (${lensCounts.fmr.rows.toLocaleString('en-PH')})`}</button>}
+        {lensCounts?.mpb.rows > 0 && <button type="button" className="secondary"
+          disabled={Boolean(exportBusy)} onClick={() => exportDistrict('mpb')}>
+          {exportBusy === 'mpb' ? 'Building…' : `Export MPB (${lensCounts.mpb.rows.toLocaleString('en-PH')})`}</button>}
+      </div>}
+    {exportError && <p role="alert" className="fmr-map-warning">{exportError}</p>}
   </aside>;
 }
 
@@ -708,11 +730,12 @@ function MapStage({
   fmrIndex, mpbIndex, recordsById, onSelectRecord, onPdf = null,
   onExpand = null, onContract = null,
   objectsControls, typeControls, fillControl, styleControl,
-  selectParam = null,
+  selectParam = null, exportPopulations = null,
 }) {
   const container = useRef(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [approxCluster, setApproxCluster] = useState(null);
+  const [sourcesOpen, setSourcesOpen] = useState(false);
   const [hoveredId, setHoveredId] = useState(null);
   const appliedStyle = useRef('light');
   const [map, ready] = useCongressMapInstance(container, false, syncRef, {
@@ -802,12 +825,14 @@ function MapStage({
       unmappedCounts={unmappedCounts}
       approxCounts={approxCounts}
     />
-    {onExpand && variant === 'inline' &&
+    {onExpand && variant === 'inline' && <>
+      <MapSourcesButton onOpen={() => setSourcesOpen(true)}/>
       <button type="button" className="congress-map-expand congress-map-expand-float"
-        onClick={onExpand}>Full window ⤢</button>}
-    {variant === 'full' &&
+        onClick={onExpand}>Full window ⤢</button></>}
+    {variant === 'full' && <>
+      <MapSourcesButton variant="full" onOpen={() => setSourcesOpen(true)}/>
       <button type="button" className="congress-map-fullclose"
-        onClick={onContract}>Exit full window ✕</button>}
+        onClick={onContract}>Exit full window ✕</button></>}
     {!districts && <p className="fmr-map-warning" role="status">Loading district geometry…</p>}
     {hoverLabel && !selectedDistrict &&
       <p className="congress-map-hoverchip" role="status">
@@ -815,12 +840,50 @@ function MapStage({
       </p>}
     {selectedDistrict &&
       <DistrictPanel feature={selectedDistrict} fmrIndex={fmrIndex} mpbIndex={mpbIndex}
-        onClose={() => setSelectedDistrict(null)}/>}
+        onClose={() => setSelectedDistrict(null)}
+        onExport={async (kind, districtId) => {
+          const {fmrDistrictExportRows, mpbDistrictExportRows} = await import('./congressModel.js');
+          if (kind === 'fmr') {
+            const [detail, fmrLensIndex] = await Promise.all([
+              fetch(siteUrl('other-analysis/data/fmr_workbench.json')).then(response => {
+                if (!response.ok) throw new Error(
+                  `Could not load the FMR comparison payload (${response.status}).`);
+                return response.json();
+              }),
+              loadData('fmr_legislative_index_2027.json'),
+            ]);
+            const rows = fmrDistrictExportRows(fmrLensIndex, detail, districtId);
+            downloadExplorer(rows, {lens: 'fmr', card: `district:${districtId}`,
+              multiCard: false, filters: {}, scope: 'simple'}, 'csv');
+          } else {
+            const [comparison, mpbLensIndex] = await Promise.all([
+              loadData('comparison_projects_2027.json'),
+              loadData('mpb_legislative_index_2027.json'),
+            ]);
+            const rows = mpbDistrictExportRows(mpbLensIndex, comparison, districtId);
+            downloadExplorer(rows, {lens: 'mpb', card: `district:${districtId}`,
+              multiCard: false, filters: {}, scope: 'simple'}, 'csv');
+          }
+        }}/>}
     {approxCluster &&
       <MpbApproxClusterModal cluster={approxCluster} recordsById={recordsById}
         onOpenRecord={id => onSelectRecord?.(id)}
         onPdf={onPdf}
         onClose={() => setApproxCluster(null)}/>}
+    {sourcesOpen &&
+      <MapSourcesModal
+        fmrCounts={fmrOverlay.counts}
+        mpbCounts={mpbOverlay.counts}
+        repairCount={repairCount}
+        unmappedCounts={unmappedCounts}
+        approxCounts={approxCounts}
+        exportPopulations={exportPopulations}
+        onExport={(kind, rows) => {
+          downloadExplorer(rows, {lens: kind, card: 'map', multiCard: true,
+            filters: {}, scope: 'simple'}, 'csv');
+          setSourcesOpen(false);
+        }}
+        onClose={() => setSourcesOpen(false)}/>}
     <div className="congress-map-status" role="status">
       {markersPending
         ? 'Loading FMR segments and MPB points…'
@@ -872,6 +935,7 @@ function FullscreenMapDialog({children, onClose}) {
 export default function CongressMap({
   route, fmrRecords = [], mpbRecords = [], fmrIndex = null, mpbIndex = null,
   onSelectRecord, onPdf = null, selectedRecordId = null, markersPending = false,
+  exportPopulations = null,
 }) {
   const params = route?.params ?? new URLSearchParams();
   const style = params.get('basemap') === 'dark' ? 'dark' : 'light';
@@ -965,6 +1029,7 @@ export default function CongressMap({
     fmrIndex, mpbIndex, recordsById, onSelectRecord, onPdf,
     objectsControls, typeControls, fillControl, styleControl,
     selectParam: params.get('select'),
+    exportPopulations,
   };
 
   return <section className="congress-map" aria-label="Congress district map">

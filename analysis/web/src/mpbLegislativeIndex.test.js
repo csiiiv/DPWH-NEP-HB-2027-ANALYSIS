@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
 import {locationCards, summaryTotals, indexRowsById, cardRows,
-  mpbExplorerRow, mpbGridExportRows, MPB_TIER_LABELS, MPB_TIER_FILTER} from './congressModel.js';
+  mpbExplorerRow, mpbGridExportRows, mpbDistrictExportRows, MPB_TIER_LABELS, MPB_TIER_FILTER} from './congressModel.js';
 import {mpbRecordMapOverlay, mpbDistrictMapOverlay, MPB_POINT_CLASSES,
   mpbOverlayFrame} from './mpbSegmentOverlay.js';
 
@@ -175,4 +175,16 @@ test(skip, 'grid export covers every scoped row exactly once with card placement
   assert.match(sevilla.card_label, /LA UNION \(FIRST DISTRICT\)/i);
   assert.equal(sevilla.scopeLabel, 'BIP MPB programme line + MPB title');
   assert.equal(sevilla.mpbPoints.length, 1);
+});
+
+test(skip, 'district export returns exactly that district card\'s MPB rows', () => {
+  const card = locationCards(index).find(entry => entry.id === 'mpb:title_psgc:leg:la-union:1st');
+  const districtId = card.districts[0].id;
+  const rows = mpbDistrictExportRows(index, comparison, districtId);
+  const expected = cardRows(card, indexRowsById(comparison.projects ?? comparison));
+  assert.equal(rows.length, expected.length);
+  assert.ok(rows.length > 0);
+  assert.ok(rows.every(row => row.card_id === card.id && row.mpb));
+  // Unknown district yields an empty export, not an error.
+  assert.deepEqual(mpbDistrictExportRows(index, comparison, 'leg:nowhere:0st'), []);
 });

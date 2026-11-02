@@ -1001,6 +1001,42 @@ export function fmrGridExportRows(fmrIndex, detail) {
 }
 
 /**
+ * FMR explorer rows for ONE legislative district (map district panel export).
+ * Takes the lens index and the district id (the map's district_id), finds the
+ * card that owns it, and rebuilds that card's rows exactly as fmrGridExportRows
+ * does per card — same scope as clicking into the FMR card page, without
+ * requiring the grid to be open.
+ */
+export function fmrDistrictExportRows(fmrIndex, detail, districtId) {
+  const card = locationCards(fmrIndex).find(entry =>
+    (entry.districts ?? []).some(district => district.id === districtId));
+  if (!card) return [];
+  const byId = indexRowsById(fmrRows(detail));
+  const analysis = Object.fromEntries(['house', 'nep'].map(stage => [stage,
+    new Map(buildFmrRedFlags(detail, stage).rows.map(row => [row.id, row]))]));
+  const resolutionMap = fmrIndex?.row_resolution ?? {};
+  return cardRows(card, byId).map(row =>
+    ({...fmrExplorerRow(row, resolutionMap[row.id], analysis),
+      card_id: card.id, card_label: locationCardLabel(card)}));
+}
+
+/** MPB explorer rows for ONE legislative district (map district panel export).
+ * Same contract as fmrDistrictExportRows against the MPB lens index. */
+export function mpbDistrictExportRows(mpbIndex, comparison, districtId) {
+  const card = locationCards(mpbIndex).find(entry =>
+    (entry.districts ?? []).some(district => district.id === districtId));
+  if (!card) return [];
+  const byId = indexRowsById(comparison.projects ?? comparison);
+  return cardRows(card, byId).map(row => ({
+    ...mpbExplorerRow(row, mpbIndex.row_scope?.[row.id],
+      mpbIndex.row_points?.[row.id], mpbIndex.row_resolution?.[row.id],
+      mpbIndex.row_psgc?.[row.id]),
+    card_id: card.id,
+    card_label: mpbCardLabel(card),
+  }));
+}
+
+/**
  * Every MPB explorer row across all cards, for the lens grid's full export.
  * Same contract as fmrGridExportRows: rebuilds exactly what the per-district
  * explorer shows (scope rule, assignment, title points) and stamps each row

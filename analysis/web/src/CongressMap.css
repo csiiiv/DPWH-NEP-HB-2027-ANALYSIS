@@ -83,6 +83,36 @@
   z-index: 3;
   box-shadow: 0 4px 14px rgba(24, 47, 75, 0.14);
 }
+/* Sources sits to the LEFT of the full-window control at the upper right. */
+.congress-map-sources-btn {
+  position: absolute;
+  top: 12px;
+  /* 12px right edge + full-window button (~118px wide) + 8px gap. */
+  right: 140px;
+  z-index: 3;
+  border: 1px solid #cdd9e6;
+  background: #fff;
+  border-radius: 8px;
+  padding: 6px 11px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2a4a78;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(24, 47, 75, 0.14);
+}
+.congress-map-sources-btn:hover { background: #f3f6fa; }
+/* Full-window variant: keep clear of the round exit chip on the right. */
+.congress-map-sources-btn-full {
+  right: 150px;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: #24354d;
+  background: rgba(255, 255, 255, 0.96);
+  z-index: 5;
+}
 .congress-map-fullclose {
   position: absolute;
   top: 12px;
@@ -188,6 +218,28 @@ dialog.congress-map-fullscreen {
 .congress-map-actions a { text-decoration: none; padding: 8px 12px; border-radius: 8px; border: 1px solid #245fa8; }
 .congress-map-actions a.primary { background: #245fa8; color: #fff; }
 .congress-map-actions a:not(.primary) { color: #245fa8; background: #fff; }
+.congress-map-export-actions { flex-direction: row; flex-wrap: wrap; }
+.congress-map-export-actions button {
+  font: inherit; font-size: 12px; padding: 6px 10px; border-radius: 8px;
+  border: 1px solid #cdd9e6; background: #fff; color: #245fa8; cursor: pointer;
+}
+.congress-map-export-actions button:hover:not(:disabled) { background: #f3f6fa; }
+.congress-map-export-actions button:disabled { opacity: 0.6; cursor: wait; }
+
+/* Sources & exports modal */
+.congress-map-sources ul { list-style: none; padding: 0; margin: 0 0 10px; }
+.congress-map-sources-list li {
+  padding: 8px 0; border-bottom: 1px solid #e6edf5; display: grid; gap: 3px;
+}
+.congress-map-sources-list li strong { font-size: 13.5px; }
+.congress-map-sources-list li a code { font-size: 11.5px; color: #245fa8; }
+.congress-map-sources-list p { margin: 0; font-size: 12.5px; }
+.congress-map-sources h3 { margin: 14px 0 8px; font-size: 14px; }
+.congress-map-sources-legend ul {
+  list-style: none; padding: 0; margin: 0; display: grid; gap: 6px;
+}
+.congress-map-sources-legend li { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.congress-map-sources-export .fmr-dialog-actions { margin-top: 10px; }
 
 /* Floating layer panel */
 .congress-map-panel {
