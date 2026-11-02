@@ -242,6 +242,7 @@ export function mpbUnmappedDistrictBadges(mpbIndex, districtsGeojson) {
   if (!mpbIndex || !districtsGeojson) return {type: 'FeatureCollection', features: []};
   const keep = id => !(mpbIndex.row_points ?? {})[id]?.length;
   const unmapped = new Map();
+  const unmappedRows = new Map();
   // Distinct-record totals (returned as `counts`): a row on a multi-district
   // card lights up every district badge it belongs to, but it is still ONE
   // record, so national figures dedupe by row id.
@@ -257,18 +258,23 @@ export function mpbUnmappedDistrictBadges(mpbIndex, districtsGeojson) {
     for (const id of pairedRows) distinct.paired.add(id);
     for (const district of card.districts ?? []) {
       const entry = unmapped.get(district.id) ?? {house_only: 0, nep_only: 0, paired: 0};
+      const rows = unmappedRows.get(district.id)
+        ?? {house_only_rows: [], nep_only_rows: [], paired_rows: []};
       entry.house_only += houseOnly.length;
       entry.nep_only += nepOnly.length;
       entry.paired += pairedRows.length;
-      if (entry.house_only + entry.nep_only + entry.paired > 0) {
-        unmapped.set(district.id, entry);
-      }
+      rows.house_only_rows.push(...houseOnly);
+      rows.nep_only_rows.push(...nepOnly);
+      rows.paired_rows.push(...pairedRows);
+      unmapped.set(district.id, entry);
+      unmappedRows.set(district.id, rows);
     }
   }
   const features = (districtsGeojson.features ?? [])
     .filter(feature => unmapped.has(feature.properties.district_id))
     .map(feature => {
       const counts = unmapped.get(feature.properties.district_id);
+      const rows = unmappedRows.get(feature.properties.district_id);
       const total = counts.house_only + counts.nep_only + counts.paired;
       return {
         type: 'Feature',
@@ -285,6 +291,9 @@ export function mpbUnmappedDistrictBadges(mpbIndex, districtsGeojson) {
           nep_only: counts.nep_only,
           paired: counts.paired,
           unmappedByClass: counts,
+          // Comma-joined row ids so a map click can reopen the full record
+          // list without another payload (same trick as approx markers).
+          rowIds: [...rows.house_only_rows, ...rows.nep_only_rows, ...rows.paired_rows].join(','),
         },
         geometry: {type: 'Point', coordinates: polygonCentroid(feature.geometry)},
       };
@@ -292,6 +301,14 @@ export function mpbUnmappedDistrictBadges(mpbIndex, districtsGeojson) {
   return {
     type: 'FeatureCollection',
     features,
+    // Per-district per-class row id arrays keyed by district_id — the badge
+    // records modal consumes these to group records by class.
+    district_rows: Object.fromEntries([...unmappedRows.entries()].map(([districtId, rows]) =>
+      [districtId, {
+        house_only: [...new Set(rows.house_only_rows)],
+        nep_only: [...new Set(rows.nep_only_rows)],
+        paired: [...new Set(rows.paired_rows)],
+      }])),
     counts: {
       house_only: distinct.house_only.size,
       nep_only: distinct.nep_only.size,

@@ -171,6 +171,13 @@ singles match solid-box visual weight. Click opens `MpbApproxClusterModal`
 legislative index. The base index is never mutated; district money and card
 membership stay on the lens artifacts.
 
+**Overlap with §5.5 badges:** rows placed here are a *subset* of the
+without-coordinates badge population — they still lack title GPS. The badge
+count is a completeness measure and does not exclude them. **Double counting
+warning:** combining this layer’s per-place record lists with the §5.5 badge
+record lists for the same district counts each approx-placed record twice;
+see §5.5’s “No double counting” note.
+
 ### 5.5 MPB without-coordinates district badges
 
 Stacked class chips at legislative-district centroids counting **every** MPB
@@ -180,9 +187,31 @@ places at centroids (they lack title coordinates all the same).
 without printed GPS" independently of the approx overlay, so the two layers
 deliberately overlap in coverage rather than partition the population.
 Subtype toggles mirror House / NEP / paired; the red Σ total square is
-optional.
+optional. Clicking a badge (class stack or Σ) opens
+`MpbUnmappedRecordsModal` — the per-district record list grouped by class,
+with amounts, PDF source buttons and open-full drawer hand-offs (same
+interaction model as approx cluster markers).
 
 Status line wording: “MPB approx. (PSGC)” vs “MPB without title coordinates”.
+
+**No double counting.** A row without title coordinates can be drawn as an
+approx marker **and** counted on its district badge. That is intentional:
+
+- **Approx markers (§5.4)** answer *“where might this record be?”* — a
+  barangay/municipality centroid estimate, visually disclosed as not printed
+  GPS (gray slash, dashed styling, modal eyebrow).
+- **Without-coordinates badges (§5.5)** answer *“how many records lack
+  printed GPS here?”* — a completeness measure over the same population.
+
+Each record is still **one record**: it appears on exactly one badge row in
+the modal, exports include it once, and national totals dedupe by row id
+(4,296 distinct = 6,123 in-scope − 1,827 with title coordinates). **Double
+counting warning:** using MPB approx data together with MPB
+without-coordinates data for the same district double counts every
+approx-placed record — the 4,251 approx rows are a *subset* of the 4,296
+badge rows, not an addition to it. Tally a district from either its badge
+record list *or* its approx marker lists, never both. Both record-list
+modals carry this warning inline.
 
 ---
 
@@ -190,11 +219,17 @@ Status line wording: “MPB approx. (PSGC)” vs “MPB without title coordinate
 
 ```text
 MPB in-scope rows (mpb_legislative_index_2027.json)
-├─ with title coordinates ──────────► solid GPS boxes (§5.3)
-└─ without title coordinates ────────► ALL counted on district badges (§5.5)
-    ├─ barangay/municipality/city PSGC ─► also drawn as approx markers (§5.4)
-    └─ province-only / unresolved ──────► badge-only (no point on the map)
+├─ with title coordinates (1,827) ──► solid GPS boxes (§5.3)
+└─ without title coordinates (4,296) ► ALL counted on district badges (§5.5)
+    ├─ PSGC-locatable (4,251) ─────► also drawn as approx markers (§5.4)
+    └─ province-only / unresolved ► badge-only (no point on the map)
 ```
+
+The two right-hand layers **overlap on purpose**: every approx row is also on
+its district badge. They answer different questions (placement estimate vs
+completeness count). **Never add their totals** — approx rows are a subset of
+the badge population, so summing them double counts 4,251 records. See the
+“No double counting” note in §5.5.
 
 Card money on `#congress/mpb` is unchanged by map placement. Approx markers
 are a cartographic aid for rows the documents locate by place-name but not by

@@ -172,7 +172,15 @@ The Map tab consumes this index without changing it:
    collapsed by PSGC with counts; cluster modal on click).
 3. **Without-coordinates badges** — stacked district chips counting every row
    with no title-printed GPS, including rows the approx layer places at PSGC
-   centroids (they lack title coordinates all the same).
+   centroids (they lack title coordinates all the same). Clicking a badge
+   lists the district's records grouped by class (`MpbUnmappedRecordsModal`).
+
+Layers 2 and 3 overlap on purpose: approx markers estimate *where* a
+coordinate-less row might be, badges count *how many* rows lack printed GPS.
+A row can appear on both layers yet is always one record — national totals
+dedupe by row id. **Double counting warning:** combining MPB approx data
+with without-coordinates data for the same district counts every
+approx-placed record twice; use one or the other per district, never both.
 
 Catalog and layer rules:
 [`congress_tab_data_sources.md`](congress_tab_data_sources.md).

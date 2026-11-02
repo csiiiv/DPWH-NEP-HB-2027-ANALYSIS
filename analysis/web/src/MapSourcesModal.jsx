@@ -1,7 +1,6 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {openModalDialog} from './modalLifecycle.js';
 import {repo, siteUrl} from './data.js';
-import {downloadExplorer} from './explorerExport.js';
 import {
   DISTRICT_SEGMENT_CLASSES, REPAIR_COLOR,
 } from './fmrSegmentOverlay.js';
@@ -52,13 +51,13 @@ export default function MapSourcesModal({
     {
       name: 'MPB legislative index',
       file: 'analysis/data/mpb_legislative_index_2027.json',
-      note: 'Title-printed GPS coordinates for multi-purpose building rows; the solid class-coloured boxes.',
+      note: 'Title-printed GPS coordinates for multi-purpose building rows; the solid class-coloured boxes. The same index also drives the without-coordinates district badges.',
       link: `${repo}/blob/main/analysis/data/mpb_legislative_index_2027.json`,
     },
     {
       name: 'MPB PSGC approx supplement',
       file: 'analysis/data/mpb_psgc_approx_overlay_2027.json',
-      note: 'PSGC-centroid approx. markers for rows without title GPS — not printed GPS; dashed styling discloses this.',
+      note: 'PSGC-centroid approx. markers for rows without title GPS — not printed GPS; dashed styling discloses this. These same records also count on the without-coordinates badges: the two layers overlap on purpose (one record stays one record — no double counting).',
       link: `${repo}/blob/main/analysis/data/mpb_psgc_approx_overlay_2027.json`,
     },
     {
@@ -132,13 +131,26 @@ export default function MapSourcesModal({
           aria-hidden="true" style={{background: REPAIR_COLOR}}/>
           <span>Incorrect original coordinate</span></li>
       </ul>
+      {unmappedCounts?.total != null &&
+        <p className="fmr-muted">
+          Reading the MPB layers together: solid boxes = title-printed GPS;
+          approx. markers = PSGC-centroid estimates for rows with no printed
+          coordinates; district badges = <strong>all</strong> rows without title
+          coordinates ({unmappedCounts.total.toLocaleString('en-PH')} distinct
+          records). <strong>Double counting warning:</strong> approx rows are a
+          subset of the badge population — using MPB approx data together with
+          MPB without-coordinates data for the same district counts those
+          records twice. Pick one layer per question; every record remains one
+          record in exports and national totals.
+        </p>}
     </section>
 
     <section className="congress-map-sources-export">
       <h3>Export the map's populations</h3>
       <p className="fmr-muted">Same explorer rows, columns and source-page links
         as the FMR (Legislative) and MPB (Legislative) tabs — every row the lens
-        booked, including records without coordinates. Simple scope, CSV.</p>
+        booked, including records without coordinates. Each button opens the
+        shared export chooser so you can pick Simple or Full and CSV or JSON.</p>
       <div className="fmr-dialog-actions">
         <button type="button" className="secondary" onClick={exportFmr}
           disabled={Boolean(busy)}>

@@ -40,13 +40,16 @@ import {
 } from './congressModel.js';
 import './Fmr.css';
 import './Congress.css';
-import {downloadExplorer} from './explorerExport.js';
+import ExportModal from './ExportModal.jsx';
 
 const PdfPreview = lazy(() => import('./PdfPreview.jsx'));
 const CongressMap = lazy(() => import('./CongressMap.jsx'));
 const FmrSegmentModal = lazy(() => import('./FmrSegmentModal.jsx'));
 const FmrDistrictSegmentsModal = lazy(() => import('./FmrDistrictSegmentsModal.jsx'));
 const MpbPointsModal = lazy(() => import('./MpbPointsModal.jsx'));
+
+// Re-export for congressAppRender.test.js (ssrLoadModule("/src/CongressApp.jsx")).
+export {ExportModal};
 const FMR_BUCKET_LABELS = {
   insertions: 'House only', deletions: 'NEP only', increased: 'Increases',
   reduced: 'Decreases', unchanged: 'Unchanged pairs', scope_review: 'Scope review',
@@ -925,48 +928,6 @@ export function RecordDrawer({record, onPdf, onMap, onClose}) {
             as a same-project adjustment.</dd></>}
       </dl>
     </section>
-  </Dialog>;
-}
-
-/** Export chooser: scope (Simple/Full) × format (CSV/JSON) for the filtered rows.
- * Simple is the reviewer's shortlist; Full is everything the explorer holds,
- * including per-side source records. Both split HGAB3 and NEP page citations.
- * `intro`/`dialogLabel` override the single-card copy for the multi-card grid
- * export. Exported for the static-markup render test, like District and Districts. */
-export function ExportModal({rows, meta, onClose, intro = null, dialogLabel = 'Export these projects'}) {
-  const [scope, setScope] = useState('simple');
-  const [format, setFormat] = useState('csv');
-  const scopes = [
-    ['simple', 'Simple', 'Title, bucket, match status, flags, region, program, both offices, both amounts, delta, and each side’s source page.'],
-    ['full', 'Full', meta?.lens === 'mpb'
-      ? 'Everything Simple has plus MPB scope rule, assignment basis, PAP, source record ids, PDF pages and links, reading status, match basis, trace, chainage and coordinates.'
-      : 'Everything Simple has plus assignment basis, PAP, source record ids, PDF pages and links, reading status, match basis, trace, chainage and coordinates.'],
-  ];
-  const formats = [['csv', 'CSV', 'Spreadsheet. Opens in Excel with the same headings as the table.'],
-    ['json', 'JSON', 'Structured. Keeps provenance, filters and nested source citations.']];
-  const choose = (options, value, setValue, name) => <div className="congress-export-choice">
-    {options.map(([key, label, hint]) => <label key={key}
-      className={value === key ? 'congress-export-option selected' : 'congress-export-option'}>
-      <input type="radio" name={name} value={key} checked={value === key}
-        onChange={() => setValue(key)} />
-      <span><strong>{label}</strong><small>{hint}</small></span></label>)}</div>;
-
-  return <Dialog label={dialogLabel} className="congress-export" onClose={onClose}>
-    {intro ?? <p className="fmr-muted">Downloads all <strong>{rows.length.toLocaleString('en-PH')}</strong> rows
-      currently in this table{Object.values(meta.filters ?? {}).some(value => value)
-        ? ', with your search, bucket and flag filters applied' : ''}. Amounts are in Philippine pesos.
-      Source columns cite each ledger side separately and link straight to the page.</p>}
-    <h3>What to include</h3>
-    {choose(scopes, scope, setScope, 'export-scope')}
-    <h3>File format</h3>
-    {choose(formats, format, setFormat, 'export-format')}
-    <div className="fmr-dialog-actions">
-      <button type="button" className="secondary" onClick={onClose}>Cancel</button>
-      <button type="button" className="primary" onClick={() => {
-        downloadExplorer(rows, {...meta, scope}, format);
-        onClose();
-      }}>Download {scope === 'simple' ? 'Simple' : 'Full'} {format.toUpperCase()}</button>
-    </div>
   </Dialog>;
 }
 

@@ -62,6 +62,14 @@ export default function MpbApproxClusterModal({
     <p className="fmr-muted">Anchored at the 2023 PSA polygon centroid for this place.
       Amounts and PDF pages come from the comparison row; open a record for the
       full evidence drawer.</p>
+    <p className="congress-approx-cluster-warning" role="note">
+      <i className="congress-note-alert" aria-hidden="true"/>
+      <span><strong>Avoid double counting:</strong> these records have no
+        title-printed coordinates, so each one is <em>also</em> counted on this
+        district’s “MPB without coordinates” badge. Add amounts from either
+        this modal or the badge’s record list — never both — for the same
+        district.</span>
+    </p>
 
     {rows.length === 0
       ? <p role="status">Comparison rows for this marker are still loading…</p>

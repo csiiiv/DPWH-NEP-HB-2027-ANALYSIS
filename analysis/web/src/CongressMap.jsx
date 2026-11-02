@@ -23,8 +23,9 @@ import {
   enabledCongressMapCategories, congressMapCategoryFilter,
 } from './congressMapModel.js';
 import MpbApproxClusterModal from './MpbApproxClusterModal.jsx';
+import MpbUnmappedRecordsModal from './MpbUnmappedRecordsModal.jsx';
 import MapSourcesModal, {MapSourcesButton} from './MapSourcesModal.jsx';
-import {downloadExplorer} from './explorerExport.js';
+import ExportModal from './ExportModal.jsx';
 import './CongressMap.css';
 import './Fmr.css';
 import './Congress.css';
@@ -119,6 +120,42 @@ async function loadJson(url, signal) {
   const response = await fetch(url, {signal});
   if (!response.ok) throw new Error(`Could not load ${url} (${response.status}).`);
   return response.json();
+}
+
+/** Heavy-payload builders for the map's exports. Each fetches the comparison
+ * payload(s) on demand (the map itself never loads them), then rebuilds the
+ * exact explorer rows the corresponding grid/district page would export.
+ * Shared by the Sources modal (whole-lens) and the district panel (one
+ * district); the results feed the same ExportModal (scope × format) the
+ * FMR / MPB tabs use. */
+async function buildFmrExportRows(districtId = null) {
+  const {fmrGridExportRows, fmrDistrictExportRows} = await import('./congressModel.js');
+  const [detail, fmrIndex] = await Promise.all([
+    fetch(siteUrl('other-analysis/data/fmr_workbench.json')).then(response => {
+      if (!response.ok) throw new Error(
+        `Could not load the FMR comparison payload (${response.status}).`);
+      return response.json();
+    }),
+    loadData('fmr_legislative_index_2027.json'),
+  ]);
+  return districtId
+    ? fmrDistrictExportRows(fmrIndex, detail, districtId)
+    : fmrGridExportRows(fmrIndex, detail);
+}
+
+async function buildMpbExportRows(districtId = null) {
+  const {mpbGridExportRows, mpbDistrictExportRows} = await import('./congressModel.js');
+  const [mpbIndex, comparison] = await Promise.all([
+    loadData('mpb_legislative_index_2027.json'),
+    loadData('comparison_projects_2027.json'),
+  ]);
+  return districtId
+    ? mpbDistrictExportRows(mpbIndex, comparison, districtId)
+    : mpbGridExportRows(mpbIndex, comparison);
+}
+
+export function buildMapExportRows(kind, districtId = null) {
+  return kind === 'fmr' ? buildFmrExportRows(districtId) : buildMpbExportRows(districtId);
 }
 
 function fitPhilippines(instance) {
@@ -410,8 +447,8 @@ const LAYER_HINTS = {
   fmr: 'FMR segments at accepted (corrected) geometry',
   fmr_repairs: 'Dashed links from incorrect original GPS to accepted position',
   mpb: 'Multi-purpose building title coordinates',
-  mpb_approx: 'PSGC-centroid approx. markers (class color + light gray slash; not printed GPS)',
-  mpb_unmapped: 'Per-district badges counting all rows with no title-printed GPS (incl. PSGC-approx rows)',
+  mpb_approx: 'PSGC-centroid approx. markers (class color + light gray slash; not printed GPS — rows also counted on the without-coordinates badges)',
+  mpb_unmapped: 'Per-district badges counting all rows with no title-printed GPS (incl. PSGC-approx rows) — click to list the records',
 };
 
 function LayerSwatch({id}) {
@@ -515,6 +552,22 @@ function LayerTypeToggles({
       <li className="congress-layer-key-note">
         <LineKey color={MPB_POINT_CLASSES.paired.color} dashed/>
         <span>Same-title links follow the building status color</span>
+      </li>}
+    {id === 'mpb_approx' &&
+      <li className="congress-layer-key-note">
+        <i className="congress-note-alert" aria-hidden="true"/>
+        <span>Estimated PSGC centroids — not printed GPS. These records also
+          count on “MPB without coordinates”; adding both layers’ totals would
+          double count them.</span>
+      </li>}
+    {id === 'mpb_unmapped' &&
+      <li className="congress-layer-key-note">
+        <i className="congress-note-alert" aria-hidden="true"/>
+        <span>Every record with no title-printed GPS{unmappedCounts?.total != null
+            ? ` (${unmappedCounts.total.toLocaleString('en-PH')} distinct nationwide)` : ''},
+          including ones drawn as approx. markers — those are the same records,
+          so do not add the two layers’ totals (that would double count).
+          Click a badge to list its records.</span>
       </li>}
   </ul>;
 }
@@ -669,13 +722,17 @@ function useCongressMapInstance(containerRef, error, syncRef, handlers) {
         });
         return;
       }
-      // Catch-all badge (class stack or red total): open the district panel.
+      // Without-coordinates badge (class stack or red total): open the
+      // per-district record list modal, same interaction as approx clusters.
       const badges = instance.queryRenderedFeatures(e.point,
         {layers: [MPB_BADGE, MPB_BADGE_TOTAL]});
       if (badges.length) {
-        const full = (syncRef.current?.districts?.features ?? [])
-          .find(f => f.properties.district_id === badges[0].properties.districtId);
-        if (full) handlersRef.current.onPickDistrict(full);
+        const props = badges[0].properties ?? {};
+        handlersRef.current.onPickUnmapped?.({
+          districtId: props.districtId,
+          districtLabel: props.districtLabel ?? null,
+          rowIds: String(props.rowIds || '').split(',').filter(Boolean),
+        });
         return;
       }
       const hits = instance.queryRenderedFeatures(e.point, {layers: [DISTRICTS_FILL]});
@@ -735,13 +792,18 @@ function MapStage({
   const container = useRef(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [approxCluster, setApproxCluster] = useState(null);
+  const [unmappedBadge, setUnmappedBadge] = useState(null);
   const [sourcesOpen, setSourcesOpen] = useState(false);
   const [hoveredId, setHoveredId] = useState(null);
+  // Pending export handed to the shared ExportModal (scope × format chooser):
+  // {kind: 'fmr'|'mpb', districtId: string|null, rows, label}.
+  const [exportRequest, setExportRequest] = useState(null);
   const appliedStyle = useRef('light');
   const [map, ready] = useCongressMapInstance(container, false, syncRef, {
     onSelectRecord,
     onPickDistrict: setSelectedDistrict,
     onPickApprox: setApproxCluster,
+    onPickUnmapped: setUnmappedBadge,
     onHoverDistrict: setHoveredId,
   });
 
@@ -841,35 +903,23 @@ function MapStage({
     {selectedDistrict &&
       <DistrictPanel feature={selectedDistrict} fmrIndex={fmrIndex} mpbIndex={mpbIndex}
         onClose={() => setSelectedDistrict(null)}
-        onExport={async (kind, districtId) => {
-          const {fmrDistrictExportRows, mpbDistrictExportRows} = await import('./congressModel.js');
-          if (kind === 'fmr') {
-            const [detail, fmrLensIndex] = await Promise.all([
-              fetch(siteUrl('other-analysis/data/fmr_workbench.json')).then(response => {
-                if (!response.ok) throw new Error(
-                  `Could not load the FMR comparison payload (${response.status}).`);
-                return response.json();
-              }),
-              loadData('fmr_legislative_index_2027.json'),
-            ]);
-            const rows = fmrDistrictExportRows(fmrLensIndex, detail, districtId);
-            downloadExplorer(rows, {lens: 'fmr', card: `district:${districtId}`,
-              multiCard: false, filters: {}, scope: 'simple'}, 'csv');
-          } else {
-            const [comparison, mpbLensIndex] = await Promise.all([
-              loadData('comparison_projects_2027.json'),
-              loadData('mpb_legislative_index_2027.json'),
-            ]);
-            const rows = mpbDistrictExportRows(mpbLensIndex, comparison, districtId);
-            downloadExplorer(rows, {lens: 'mpb', card: `district:${districtId}`,
-              multiCard: false, filters: {}, scope: 'simple'}, 'csv');
-          }
-        }}/>}
+        onExport={(kind, districtId) =>
+          buildMapExportRows(kind, districtId).then(rows => {
+            setExportRequest({kind, districtId, rows});
+          })}/>}
     {approxCluster &&
       <MpbApproxClusterModal cluster={approxCluster} recordsById={recordsById}
         onOpenRecord={id => onSelectRecord?.(id)}
         onPdf={onPdf}
         onClose={() => setApproxCluster(null)}/>}
+    {unmappedBadge &&
+      <MpbUnmappedRecordsModal
+        district={unmappedBadge}
+        rowsByClass={mpbBadges?.district_rows?.[unmappedBadge.districtId] ?? null}
+        recordsById={recordsById}
+        onOpenRecord={id => onSelectRecord?.(id)}
+        onPdf={onPdf}
+        onClose={() => setUnmappedBadge(null)}/>}
     {sourcesOpen &&
       <MapSourcesModal
         fmrCounts={fmrOverlay.counts}
@@ -879,11 +929,36 @@ function MapStage({
         approxCounts={approxCounts}
         exportPopulations={exportPopulations}
         onExport={(kind, rows) => {
-          downloadExplorer(rows, {lens: kind, card: 'map', multiCard: true,
-            filters: {}, scope: 'simple'}, 'csv');
+          // Rows arrive pre-built from the modal's own loaders; hand them to
+          // the shared ExportModal for scope (Simple/Full) × format (CSV/JSON).
+          setExportRequest({kind, districtId: null, rows});
           setSourcesOpen(false);
         }}
         onClose={() => setSourcesOpen(false)}/>}
+    {exportRequest?.rows &&
+      <ExportModal rows={exportRequest.rows}
+        dialogLabel={exportRequest.districtId
+          ? `Export ${exportRequest.kind === 'fmr' ? 'FMR' : 'MPB'} records for this district`
+          : exportRequest.kind === 'fmr'
+            ? 'Export the FMR lens across all districts'
+            : 'Export the MPB lens across all districts'}
+        meta={{lens: exportRequest.kind,
+          card: exportRequest.districtId
+            ? `district:${exportRequest.districtId}` : 'map',
+          multiCard: !exportRequest.districtId, filters: {}}}
+        intro={<p className="fmr-muted">
+          Downloads the <strong>{exportRequest.rows.length.toLocaleString('en-PH')}</strong>{' '}
+          {exportRequest.districtId
+            ? <>comparison rows this legislative district owns on the{' '}
+                {exportRequest.kind === 'fmr' ? 'FMR' : 'MPB'} lens — same columns and
+                provenance as the district explorer.</>
+            : <>comparison rows across every card in the{' '}
+                {exportRequest.kind === 'fmr' ? 'FMR' : 'MPB'} legislative lens —
+                including records without coordinates, matching the map's
+                population.</>}
+          {' '}Amounts are in Philippine pesos. Choose Simple or Full and CSV or JSON
+          below — same chooser as the FMR / MPB legislative tabs.</p>}
+        onClose={() => setExportRequest(null)}/>}
     <div className="congress-map-status" role="status">
       {markersPending
         ? 'Loading FMR segments and MPB points…'

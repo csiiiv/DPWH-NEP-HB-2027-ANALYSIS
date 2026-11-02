@@ -238,6 +238,14 @@ test('mpbUnmappedDistrictBadges aggregates coordinate-less rows per district', (
   assert.deepEqual(badgeBy(withApproxPlaced, 'leg:sample:1st').properties.unmappedByClass,
     {house_only: 1, nep_only: 0, paired: 2});
 
+  // Row ids ride along for the click-to-list modal: flat comma-joined prop
+  // per feature (MapLibre) and per-class arrays per district (modal groups).
+  assert.equal(badgeBy(badges, 'leg:sample:1st').properties.rowIds, 'm7,m2,m4');
+  assert.deepEqual(badges.district_rows['leg:sample:1st'],
+    {house_only: ['m7'], nep_only: [], paired: ['m2', 'm4']});
+  assert.deepEqual(badges.district_rows['leg:other:2nd'],
+    {house_only: [], nep_only: ['m8'], paired: ['m5', 'm6']});
+
   // A row shared by two districts lights both badges (ownership) but is
   // ONE record nationally: `counts` dedupes by row id.
   const shared = mpbUnmappedDistrictBadges({
