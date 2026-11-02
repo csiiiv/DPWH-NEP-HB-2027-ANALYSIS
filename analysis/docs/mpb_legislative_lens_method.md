@@ -170,9 +170,9 @@ The Map tab consumes this index without changing it:
    `analysis/web/buildMpbPsgcApproxOverlay.py`, places coordinate-less rows at
    2023 PSA barangay/municipality centroids (class fill + light gray slash;
    collapsed by PSGC with counts; cluster modal on click).
-3. **Still-unplaced badges** — stacked district chips for rows with neither
-   title GPS nor a PSGC-centroid placement (approx-placed ids are excluded so
-   the layers never double-count).
+3. **Without-coordinates badges** — stacked district chips counting every row
+   with no title-printed GPS, including rows the approx layer places at PSGC
+   centroids (they lack title coordinates all the same).
 
 Catalog and layer rules:
 [`congress_tab_data_sources.md`](congress_tab_data_sources.md).

@@ -5,7 +5,7 @@ import {
   colorDistrictFeatures, decorateDistrictIds, districtIdBridge,
   mpbNationalMapOverlay, districtCardId, mpbUnmappedDistrictBadges,
   mpbUnmappedBadgeViews, mpbUnmappedClassTotals,
-  mpbApproxMapOverlay, mpbApproxMarkerViews, mpbApproxPlacedRowIds,
+  mpbApproxMapOverlay, mpbApproxMarkerViews,
   readCongressMapObjects, congressMapObjectsParam, DEFAULT_CONGRESS_MAP_OBJECTS,
   readCongressMapTypes, congressMapTypesParam, DEFAULT_CONGRESS_MAP_TYPES,
   congressMapCategoryFilter,
@@ -213,6 +213,8 @@ test('mpbUnmappedDistrictBadges aggregates coordinate-less rows per district', (
 
   assert.deepEqual(mpbUnmappedClassTotals(badges),
     {house_only: 1, nep_only: 1, paired: 4, total: 6});
+  assert.deepEqual(badges.counts,
+    {house_only: 1, nep_only: 1, paired: 4, total: 6});
 
   // Class toggles zero disabled tiers; total square is opt-in.
   const houseOnly = mpbUnmappedBadgeViews(badges, {
@@ -230,11 +232,26 @@ test('mpbUnmappedDistrictBadges aggregates coordinate-less rows per district', (
   assert.equal(withTotal.total.features.length, 2);
   assert.equal(withTotal.total.features[0].properties.unmapped, 3);
 
-  // Rows already on the PSGC-approx overlay drop out of district badges.
-  const leftover = mpbUnmappedDistrictBadges(mpbIndex, districts, new Set(['m2', 'm4', 'm5', 'm7']));
-  assert.equal(badgeBy(leftover, 'leg:sample:1st'), undefined);
-  assert.deepEqual(badgeBy(leftover, 'leg:other:2nd').properties.unmappedByClass,
-    {house_only: 0, nep_only: 1, paired: 1}); // m8 + m6
+  // Badges count ALL rows without title GPS — even rows the PSGC-approx
+  // layer places keep the district "without coordinates" total honest.
+  const withApproxPlaced = mpbUnmappedDistrictBadges(mpbIndex, districts);
+  assert.deepEqual(badgeBy(withApproxPlaced, 'leg:sample:1st').properties.unmappedByClass,
+    {house_only: 1, nep_only: 0, paired: 2});
+
+  // A row shared by two districts lights both badges (ownership) but is
+  // ONE record nationally: `counts` dedupes by row id.
+  const shared = mpbUnmappedDistrictBadges({
+    cards: [{id: 'mpb:title_psgc:multi', districts: [{id: 'leg:sample:1st'}, {id: 'leg:other:2nd'}],
+      row_ids: {insertions: ['m1', 'm2']}}],
+    region_cards: [],
+    row_points: {},
+  }, districts);
+  assert.equal(shared.features.length, 2);
+  assert.equal(badgeBy(shared, 'leg:sample:1st').properties.unmapped, 2);
+  assert.equal(badgeBy(shared, 'leg:other:2nd').properties.unmapped, 2);
+  assert.deepEqual(shared.counts, {house_only: 2, nep_only: 0, paired: 0, total: 2});
+  assert.deepEqual(mpbUnmappedClassTotals(shared),
+    {house_only: 2, nep_only: 0, paired: 0, total: 2});
 });
 
 test('mpbApproxMapOverlay collapses supplement markers into dashed features', () => {
@@ -264,8 +281,6 @@ test('mpbApproxMapOverlay collapses supplement markers into dashed features', ()
   assert.equal(props.count, 3);
   assert.equal(props.category, 'house_only'); // majority
   assert.equal(props.rowIds, 'house-reading:a,house-reading:b,house-reading:c');
-  assert.deepEqual(mpbApproxPlacedRowIds(supplement),
-    new Set(['house-reading:a', 'house-reading:b', 'house-reading:c']));
 
   const houseOnly = mpbApproxMarkerViews(overlay, {
     mpb_approx: {house_only: true, nep_only: false, paired: false},

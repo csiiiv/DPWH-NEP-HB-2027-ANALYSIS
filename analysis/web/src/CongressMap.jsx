@@ -15,7 +15,7 @@ import {
   colorDistrictFeatures, decorateDistrictIds, districtIdBridge,
   mpbNationalMapOverlay, districtCardId, mpbUnmappedDistrictBadges,
   mpbUnmappedBadgeViews, mpbUnmappedClassTotals,
-  mpbApproxMapOverlay, mpbApproxMarkerViews, mpbApproxPlacedRowIds,
+  mpbApproxMapOverlay, mpbApproxMarkerViews,
   CONGRESS_MAP_OBJECT_OPTIONS, DEFAULT_CONGRESS_MAP_OBJECTS,
   CONGRESS_MAP_TYPE_OPTIONS, DEFAULT_CONGRESS_MAP_TYPES,
   readCongressMapObjects, congressMapObjectsParam,
@@ -411,7 +411,7 @@ const LAYER_HINTS = {
   fmr_repairs: 'Dashed links from incorrect original GPS to accepted position',
   mpb: 'Multi-purpose building title coordinates',
   mpb_approx: 'PSGC-centroid approx. markers (class color + light gray slash; not printed GPS)',
-  mpb_unmapped: 'Per-district badges for rows with neither title GPS nor PSGC centroid',
+  mpb_unmapped: 'Per-district badges counting all rows with no title-printed GPS (incl. PSGC-approx rows)',
 };
 
 function LayerSwatch({id}) {
@@ -895,7 +895,7 @@ function MapStage({
             {objects.mpb_approx && approxRowTotal > 0 &&
               <span>{approxRowTotal.toLocaleString('en-PH')} MPB approx. (PSGC)</span>}
             {objects.mpb_unmapped && unmappedTotal > 0 &&
-              <span>{unmappedTotal.toLocaleString('en-PH')} MPB still unplaced</span>}
+              <span>{unmappedTotal.toLocaleString('en-PH')} MPB without title coordinates</span>}
           </>}
     </div>
   </div>;
@@ -962,13 +962,12 @@ export default function CongressMap({
   }, [fmrRecords, mpbRecords]);
   const mpbApprox = useMemo(
     () => mpbApproxMapOverlay(approxSupplement), [approxSupplement]);
-  const placedApproxIds = useMemo(
-    () => mpbApproxPlacedRowIds(approxSupplement), [approxSupplement]);
-  // Catch-all badges: only rows that still lack both title GPS and a PSGC
-  // centroid placement (province-only / unresolved leftovers).
+  // District badges count every row lacking TITLE-printed GPS — including
+  // rows the approx layer places at PSGC centroids (no title coordinate
+  // either way, so they still belong in the "without coordinates" total).
   const mpbBadges = useMemo(
-    () => mpbUnmappedDistrictBadges(mpbIndex, districts, placedApproxIds),
-    [mpbIndex, districts, placedApproxIds]);
+    () => mpbUnmappedDistrictBadges(mpbIndex, districts),
+    [mpbIndex, districts]);
 
   // Latest payload for whichever map instance (re)paints its basemap style.
   const syncRef = useRef(null);

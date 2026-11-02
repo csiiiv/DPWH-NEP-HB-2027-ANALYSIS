@@ -317,7 +317,7 @@ def main() -> None:
           f"(by level {counts['markers_by_level']})")
     print(f"  rows placed: {counts['rows_placed']} / "
           f"{counts['rows_without_title_coordinates']} without title coordinates")
-    print(f"  unplaced (stay on district badges): {counts['rows_unplaced']}")
+    print(f"  unplaced (no point on map; still on district badges): {counts['rows_unplaced']}")
     print(f"  placement: {counts['placement_reasons']}")
     print(f"  class rows: {counts['rows_by_class']}")
 

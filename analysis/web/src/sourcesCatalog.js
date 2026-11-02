@@ -424,7 +424,7 @@ export const sourceGroups = [
     id: "congress",
     title: "Legislative · district lenses and map",
     blurb:
-      "Packaged indexes behind #congress: DEO and title-PSGC district cards, FMR and MPB legislative lenses, and map supplements (title GPS, PSGC-centroid approx markers, leftover badges). Nothing here implies a representative requested or controls an allocation. Full catalog: analysis/docs/congress_tab_data_sources.md.",
+      "Packaged indexes behind #congress: DEO and title-PSGC district cards, FMR and MPB legislative lenses, and map supplements (title GPS, PSGC-centroid approx markers, without-coordinates district badges). Nothing here implies a representative requested or controls an allocation. Full catalog: analysis/docs/congress_tab_data_sources.md.",
     workspace: "congress/home",
     items: [
       {
@@ -433,7 +433,7 @@ export const sourceGroups = [
         path: "analysis/docs/congress_tab_data_sources.md",
         purpose: "Workspace catalog: tabs, builders, SPA loads, map layer partition, rebuild commands",
         coverage:
-          "Title GPS → PSGC approx → still-unplaced badges; packaging order in scripts/build_pages.py.",
+          "Title GPS → PSGC approx → without-coordinates badges (count every row lacking title GPS); packaging order in scripts/build_pages.py.",
       },
       {
         label: "DEO-lens district index",

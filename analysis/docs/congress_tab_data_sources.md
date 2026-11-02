@@ -27,7 +27,7 @@ never a nav tab.
 | `#congress/location` | Districts (Legislative) | Same ledger, resolved once through title PSGC → DEO → region → unassigned | `location_district_index_2027.json` |
 | `#congress/fmr` | FMR (Legislative) | DA farm-to-market-road annex rows by title/coordinate → district | `fmr_legislative_index_2027.json` |
 | `#congress/mpb` | MPB (Legislative) | DPWH multi-purpose-building scope; **reuses** location-lens `row_resolution` | `mpb_legislative_index_2027.json` |
-| `#congress/map` | Map | Nationwide district polygons + FMR segments + MPB title GPS / PSGC-approx / leftover badges | indexes above + map supplements (below) |
+| `#congress/map` | Map | Nationwide district polygons + FMR segments + MPB title GPS / PSGC-approx / without-coordinates badges | indexes above + map supplements (below) |
 
 Shared UI shell: `analysis/web/src/CongressApp.jsx`. Map stage:
 `CongressMap.jsx` + `congressMapModel.js` + `mpbSegmentOverlay.js` /
@@ -171,15 +171,18 @@ singles match solid-box visual weight. Click opens `MpbApproxClusterModal`
 legislative index. The base index is never mutated; district money and card
 membership stay on the lens artifacts.
 
-### 5.5 MPB still-unplaced district badges
+### 5.5 MPB without-coordinates district badges
 
-Stacked class chips at legislative-district centroids for MPB rows that have
-**neither** title GPS **nor** a PSGC-approx placement. The map passes
-approx-placed row ids into `mpbUnmappedDistrictBadges(…, excludeRowIds)` so the
-two layers never double-count. Subtype toggles mirror House / NEP / paired;
-the red Σ total square is optional.
+Stacked class chips at legislative-district centroids counting **every** MPB
+row with no title-printed GPS — **including** rows the PSGC-approx layer
+places at centroids (they lack title coordinates all the same).
+`mpbUnmappedDistrictBadges(…)` therefore reports "rows this district owns
+without printed GPS" independently of the approx overlay, so the two layers
+deliberately overlap in coverage rather than partition the population.
+Subtype toggles mirror House / NEP / paired; the red Σ total square is
+optional.
 
-Status line wording: “MPB approx. (PSGC)” vs “MPB still unplaced”.
+Status line wording: “MPB approx. (PSGC)” vs “MPB without title coordinates”.
 
 ---
 
@@ -188,9 +191,9 @@ Status line wording: “MPB approx. (PSGC)” vs “MPB still unplaced”.
 ```text
 MPB in-scope rows (mpb_legislative_index_2027.json)
 ├─ with title coordinates ──────────► solid GPS boxes (§5.3)
-└─ without title coordinates
-   ├─ barangay/municipality/city PSGC ─► approx markers (§5.4)
-   └─ province-only / unresolved ──────► district leftover badges (§5.5)
+└─ without title coordinates ────────► ALL counted on district badges (§5.5)
+    ├─ barangay/municipality/city PSGC ─► also drawn as approx markers (§5.4)
+    └─ province-only / unresolved ──────► badge-only (no point on the map)
 ```
 
 Card money on `#congress/mpb` is unchanged by map placement. Approx markers

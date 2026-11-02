@@ -159,7 +159,7 @@ Nothing here implies a representative requested or controls an allocation.
 | **Districts (Legislative)** (`#congress/location`) | [location_district_index_2027.json](../data/location_district_index_2027.json) + comparison ledger | Title-PSGC → DEO → region assignment; same money grain as DEO lens |
 | **FMR (Legislative)** (`#congress/fmr`) | [fmr_legislative_index_2027.json](../data/fmr_legislative_index_2027.json) + FMR stage CSVs in §1 | District cards over the DA annex; cite House/NEP normalized CSVs for project lists |
 | **MPB (Legislative)** (`#congress/mpb`) | [mpb_legislative_index_2027.json](../data/mpb_legislative_index_2027.json) + comparison ledger | BIP / title-scoped MPB rows; reuses location-lens resolution |
-| **Map** (`#congress/map`) | District polygons [leg_districts.geojson](../../PSGC2LEG/viz/leg_districts.geojson); MPB title GPS from the MPB index; approx placements [mpb_psgc_approx_overlay_2027.json](../data/mpb_psgc_approx_overlay_2027.json); FMR geometry from §1 | Approx markers are PSGC centroids (not survey GPS). Leftover district badges cover rows with neither title coordinate nor approx placement |
+| **Map** (`#congress/map`) | District polygons [leg_districts.geojson](../../PSGC2LEG/viz/leg_districts.geojson); MPB title GPS from the MPB index; approx placements [mpb_psgc_approx_overlay_2027.json](../data/mpb_psgc_approx_overlay_2027.json); FMR geometry from §1 | Approx markers are PSGC centroids (not survey GPS). District badges count ALL rows without title coordinates, including approx-placed ones |
 | **Roster / portraits** | [congress_portraits/](../data/congress_portraits/) + DEO2LEG profiles | Presentation only |
 
 Method docs: [congress_district_index_method.md](congress_district_index_method.md),

@@ -230,27 +230,36 @@ export function mpbNationalMapOverlay(records) {
 }
 
 /**
- * Catch-all badges for MPB rows a district owns but that print no title
- * coordinate AND could not be placed on a PSGC-centroid approx marker.
- * Pass `excludeRowIds` (rows already on the approx overlay) so the two
- * layers never double-count. Class split mirrors the explorer vocabulary:
- * insertions = House only, deletions = NEP only, remaining buckets = pairs.
+ * Per-district badges for MPB rows that print no TITLE coordinate —
+ * including rows the PSGC-approx layer places at centroids. The badge
+ * answers "how many MPB rows does this district own without printed GPS",
+ * independently of where (or whether) approx markers visualize them, so the
+ * two layers deliberately overlap in coverage. Class split mirrors the
+ * explorer vocabulary: insertions = House only, deletions = NEP only,
+ * remaining buckets = pairs.
  */
-export function mpbUnmappedDistrictBadges(mpbIndex, districtsGeojson, excludeRowIds = null) {
+export function mpbUnmappedDistrictBadges(mpbIndex, districtsGeojson) {
   if (!mpbIndex || !districtsGeojson) return {type: 'FeatureCollection', features: []};
-  const excluded = excludeRowIds instanceof Set ? excludeRowIds
-    : new Set(excludeRowIds ?? []);
-  const keep = id => !(mpbIndex.row_points ?? {})[id]?.length && !excluded.has(id);
+  const keep = id => !(mpbIndex.row_points ?? {})[id]?.length;
   const unmapped = new Map();
+  // Distinct-record totals (returned as `counts`): a row on a multi-district
+  // card lights up every district badge it belongs to, but it is still ONE
+  // record, so national figures dedupe by row id.
+  const distinct = {house_only: new Set(), nep_only: new Set(), paired: new Set()};
   for (const card of [...(mpbIndex.cards ?? []), ...(mpbIndex.region_cards ?? [])]) {
+    const rowIds = card.row_ids ?? {};
+    const houseOnly = (rowIds.insertions ?? []).filter(keep);
+    const nepOnly = (rowIds.deletions ?? []).filter(keep);
+    const pairedRows = [...(rowIds.increased ?? []), ...(rowIds.reduced ?? []),
+      ...(rowIds.unchanged ?? []), ...(rowIds.scope_review ?? [])].filter(keep);
+    for (const id of houseOnly) distinct.house_only.add(id);
+    for (const id of nepOnly) distinct.nep_only.add(id);
+    for (const id of pairedRows) distinct.paired.add(id);
     for (const district of card.districts ?? []) {
-      const rowIds = card.row_ids ?? {};
-      const withoutPoints = ids => ids.filter(keep);
       const entry = unmapped.get(district.id) ?? {house_only: 0, nep_only: 0, paired: 0};
-      entry.house_only += withoutPoints(rowIds.insertions ?? []).length;
-      entry.nep_only += withoutPoints(rowIds.deletions ?? []).length;
-      entry.paired += withoutPoints([...(rowIds.increased ?? []), ...(rowIds.reduced ?? []),
-        ...(rowIds.unchanged ?? []), ...(rowIds.scope_review ?? [])]).length;
+      entry.house_only += houseOnly.length;
+      entry.nep_only += nepOnly.length;
+      entry.paired += pairedRows.length;
       if (entry.house_only + entry.nep_only + entry.paired > 0) {
         unmapped.set(district.id, entry);
       }
@@ -280,7 +289,16 @@ export function mpbUnmappedDistrictBadges(mpbIndex, districtsGeojson, excludeRow
         geometry: {type: 'Point', coordinates: polygonCentroid(feature.geometry)},
       };
     });
-  return {type: 'FeatureCollection', features};
+  return {
+    type: 'FeatureCollection',
+    features,
+    counts: {
+      house_only: distinct.house_only.size,
+      nep_only: distinct.nep_only.size,
+      paired: distinct.paired.size,
+      total: distinct.house_only.size + distinct.nep_only.size + distinct.paired.size,
+    },
+  };
 }
 
 /**
@@ -319,8 +337,13 @@ export function mpbUnmappedBadgeViews(mpbBadges, types) {
   };
 }
 
-/** Nationwide sums for the unmapped-layer subtype toggles. */
+/**
+ * Nationwide sums for the unmapped-layer subtype toggles. Prefers the
+ * distinct-record `counts` from `mpbUnmappedDistrictBadges` (a row shared by
+ * several districts is one record); falls back to summing badge features.
+ */
 export function mpbUnmappedClassTotals(mpbBadges) {
+  if (mpbBadges?.counts?.total != null) return {...mpbBadges.counts};
   const totals = {house_only: 0, nep_only: 0, paired: 0, total: 0};
   for (const feature of mpbBadges?.features ?? []) {
     const props = feature.properties ?? {};
@@ -330,15 +353,6 @@ export function mpbUnmappedClassTotals(mpbBadges) {
     totals.total += props.unmapped || 0;
   }
   return totals;
-}
-
-/** Row ids already placed on the PSGC-approx supplement (exclude from badges). */
-export function mpbApproxPlacedRowIds(approxOverlay) {
-  const ids = new Set();
-  for (const marker of approxOverlay?.markers ?? []) {
-    for (const rid of marker.row_ids ?? []) ids.add(rid);
-  }
-  return ids;
 }
 
 /**
