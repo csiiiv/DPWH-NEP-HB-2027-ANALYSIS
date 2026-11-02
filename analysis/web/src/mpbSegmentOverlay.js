@@ -175,23 +175,30 @@ export function ensureMpbTotalBadgeIcons(instance, counts) {
 export const mpbTotalBadgeIconId = count => `${MPB_TOTAL_BADGE_ICON}-${count}`;
 
 export const MPB_APPROX_ICON = 'mpb-approx-marker';
-/** Light gray slash used on all PSGC-approx markers. */
+/** Default light-gray slash on PSGC-approx markers (NEP / Matched). */
 export const MPB_APPROX_STRIPE = 'rgba(203, 213, 225, 0.95)';
+/** Black slash for House-only approx markers (reads clearly on orange fill). */
+export const MPB_APPROX_STRIPE_HOUSE = 'rgba(15, 23, 42, 0.92)';
 /** @deprecated Kept for any leftover legend imports; approx markers no longer split orange. */
 export const MPB_APPROX_ACCENT = '#ea580c';
 export const mpbApproxIconId = (category, count) =>
   `${MPB_APPROX_ICON}-${category}-${count}`;
 
-function fillApproxStriped(ctx, x0, y0, width, height, radius, classColor) {
-  // Solid class color with one thick light-gray diagonal so the marker still
-  // reads its status but cannot be mistaken for printed GPS.
+export function mpbApproxSlashColor(category) {
+  return category === 'house_only' ? MPB_APPROX_STRIPE_HOUSE : MPB_APPROX_STRIPE;
+}
+
+function fillApproxStriped(ctx, x0, y0, width, height, radius, classColor, category) {
+  // Solid class color with one thick diagonal so the marker still reads its
+  // status but cannot be mistaken for printed GPS. House-only uses black;
+  // other classes keep the light-gray slash.
   ctx.save();
   ctx.beginPath();
   ctx.roundRect(x0, y0, width, height, radius);
   ctx.clip();
   ctx.fillStyle = classColor;
   ctx.fillRect(x0, y0, width, height);
-  ctx.strokeStyle = MPB_APPROX_STRIPE;
+  ctx.strokeStyle = mpbApproxSlashColor(category);
   ctx.lineWidth = Math.max(6, Math.round(Math.min(width, height) * 0.38));
   ctx.lineCap = 'butt';
   ctx.beginPath();
@@ -203,7 +210,8 @@ function fillApproxStriped(ctx, x0, y0, width, height, radius, classColor) {
 }
 
 /**
- * PSGC-centroid approximate markers: class color + one light-gray slash.
+ * PSGC-centroid approximate markers: class color + one slash
+ * (black for House only; light gray for NEP / Matched).
  * - count === 1: same 64px footprint as a solid title-GPS box, no digit
  * - count > 1: compact counted chip
  */
@@ -219,7 +227,7 @@ export function mpbApproxIconImage(color = '#2563eb', count = 1, size = null,
   if (singleton) {
     const pad = Math.max(1, Math.round(canvasSize * 0.06));
     const side = canvasSize - pad * 2;
-    fillApproxStriped(ctx, pad, pad, side, side, Math.round(side * 0.16), color);
+    fillApproxStriped(ctx, pad, pad, side, side, Math.round(side * 0.16), color, category);
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = Math.max(2, Math.round(canvasSize * 0.05));
     ctx.beginPath();
@@ -240,7 +248,7 @@ export function mpbApproxIconImage(color = '#2563eb', count = 1, size = null,
   const x0 = Math.round((canvasSize - width) / 2);
   const y0 = Math.round((canvasSize - height) / 2);
   const radius = Math.round(height * 0.22);
-  fillApproxStriped(ctx, x0, y0, width, height, radius, color);
+  fillApproxStriped(ctx, x0, y0, width, height, radius, color, category);
   ctx.strokeStyle = '#ffffff';
   ctx.lineWidth = Math.max(2, Math.round(canvasSize * 0.03));
   ctx.beginPath();
@@ -271,8 +279,9 @@ export function ensureMpbApproxIcons(instance, specs) {
 
 /** CSS background for approx legend/key chips by category. */
 export function mpbApproxSwatchBackground(category, classColor) {
-  // One thick gray slash over the class color (matches the map sprite).
-  return `linear-gradient(-45deg, ${classColor} 34%, rgba(203, 213, 225, 0.95) 34% 56%, ${classColor} 56%)`;
+  // One thick slash over the class color (matches the map sprite).
+  const slash = mpbApproxSlashColor(category);
+  return `linear-gradient(-45deg, ${classColor} 34%, ${slash} 34% 56%, ${classColor} 56%)`;
 }
 
 /** Majority (or paired-on-tie) class for a collapsed approx marker. */

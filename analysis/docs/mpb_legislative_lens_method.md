@@ -168,7 +168,8 @@ The Map tab consumes this index without changing it:
 2. **PSGC approx** — a separate supplement,
    `mpb_psgc_approx_overlay_2027.json` from
    `analysis/web/buildMpbPsgcApproxOverlay.py`, places coordinate-less rows at
-   2023 PSA barangay/municipality centroids (class fill + light gray slash;
+   2023 PSA barangay/municipality centroids (class fill + slash — black for
+   House only, light gray otherwise;
    collapsed by PSGC with counts; cluster modal on click).
 3. **Without-coordinates badges** — stacked district chips counting every row
    with no title-printed GPS, including rows the approx layer places at PSGC

@@ -145,7 +145,7 @@ Rows with retained title-printed coordinates from `mpb_legislative_index_2027.js
 House-only orange, NEP-only teal, matched pair blue). These are the only MPB markers
 that claim a printed coordinate in the title text.
 
-### 5.4 MPB PSGC approx (class color + light gray slash)
+### 5.4 MPB PSGC approx (class color + slash; black for House only)
 
 **Supplement file:** `mpb_psgc_approx_overlay_2027.json`
 
@@ -162,10 +162,11 @@ city with a polygon, place it at that polygon’s centroid. Many rows at one
 PSGC code collapse to **one marker** with `counts` by House-only / NEP-only /
 paired. Province-only and unresolved rows stay in `unplaced_row_ids`.
 
-**Map style:** class fill + a single light-gray diagonal slash (sprite
-`mpb-approx-marker-…`). Count chips are smaller than district unmapped badges;
-singles match solid-box visual weight. Click opens `MpbApproxClusterModal`
-(title, NEP/HGAB3 amounts, PDF source buttons, open-full drawer).
+**Map style:** class fill + a single diagonal slash (sprite
+`mpb-approx-marker-…`) — **black** for House only, light gray for NEP only /
+Matched. Count chips are smaller than district unmapped badges; singles match
+solid-box visual weight. Click opens `MpbApproxClusterModal` (title, NEP/HGAB3
+amounts, PDF source buttons, open-full drawer).
 
 **Not claimed:** survey GPS, surveyed site accuracy, or a change to the MPB
 legislative index. The base index is never mutated; district money and card
@@ -199,7 +200,7 @@ approx marker **and** counted on its district badge. That is intentional:
 
 - **Approx markers (§5.4)** answer *“where might this record be?”* — a
   barangay/municipality centroid estimate, visually disclosed as not printed
-  GPS (gray slash, dashed styling, modal eyebrow).
+  GPS (slash styling, modal eyebrow).
 - **Without-coordinates badges (§5.5)** answer *“how many records lack
   printed GPS here?”* — a completeness measure over the same population.
 

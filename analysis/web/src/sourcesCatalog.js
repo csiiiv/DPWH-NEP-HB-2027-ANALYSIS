@@ -475,7 +475,7 @@ export const sourceGroups = [
         kind: "data",
         path: "analysis/mpb_psgc_approx_overlay_2027.json",
         purpose:
-          "Map-only supplement for #congress/map: barangay/municipality centroids for MPB rows without title GPS (class color + gray slash)",
+          "Map-only supplement for #congress/map: barangay/municipality centroids for MPB rows without title GPS (class color + slash; black for House only)",
         coverage:
           "3,376 markers · 4,251 rows placed · 45 unplaced. Not survey GPS; does not mutate the MPB index.",
       },

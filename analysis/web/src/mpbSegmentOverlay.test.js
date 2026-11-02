@@ -105,7 +105,7 @@ test('mpb approx dominant category prefers majority and ties to paired', () => {
   assert.equal(mpbApproxIconId('nep_only', 12), 'mpb-approx-marker-nep_only-12');
 });
 
-test('mpb approx sprite: class color with a single light-gray slash', () => {
+test('mpb approx sprite: House only black slash; other classes light-gray slash', () => {
   const original = globalThis.document;
   const recorded = {fills: [], strokeStyles: [], texts: [], moveTos: 0};
   const ctx = {
@@ -128,11 +128,12 @@ test('mpb approx sprite: class color with a single light-gray slash', () => {
   };
   globalThis.document = {createElement: () => ({width: 0, height: 0, getContext: () => ctx})};
   try {
-    const house = mpbApproxIconImage('#2563eb', 1, null, 'house_only');
+    const house = mpbApproxIconImage('#ea580c', 1, null, 'house_only');
     assert.equal(house.width, 64);
-    assert.equal(recorded.fills[0], '#2563eb');
+    assert.equal(recorded.fills[0], '#ea580c');
     assert.equal(recorded.moveTos, 1, 'single thick slash');
-    assert.ok(recorded.strokeStyles.some(style => String(style).includes('203, 213, 225')));
+    assert.ok(recorded.strokeStyles.some(style => String(style).includes('15, 23, 42')),
+      'House-only approx uses black slash');
 
     recorded.fills.length = 0;
     recorded.strokeStyles.length = 0;
@@ -143,6 +144,8 @@ test('mpb approx sprite: class color with a single light-gray slash', () => {
     assert.deepEqual(recorded.texts, ['7']);
     assert.equal(recorded.fills[0], '#0f766e');
     assert.equal(recorded.moveTos, 1);
+    assert.ok(recorded.strokeStyles.some(style => String(style).includes('203, 213, 225')),
+      'NEP-only approx keeps light-gray slash');
   } finally {
     globalThis.document = original;
   }

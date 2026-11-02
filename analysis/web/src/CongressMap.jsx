@@ -447,7 +447,7 @@ const LAYER_HINTS = {
   fmr: 'FMR segments at accepted (corrected) geometry',
   fmr_repairs: 'Dashed links from incorrect original GPS to accepted position',
   mpb: 'Multi-purpose building title coordinates',
-  mpb_approx: 'PSGC-centroid approx. markers (class color + light gray slash; not printed GPS — rows also counted on the without-coordinates badges)',
+  mpb_approx: 'PSGC-centroid approx. markers (class color + slash — black for House only, light gray otherwise; not printed GPS — rows also counted on the without-coordinates badges)',
   mpb_unmapped: 'Per-district badges counting all rows with no title-printed GPS (incl. PSGC-approx rows) — click to list the records',
 };
 
