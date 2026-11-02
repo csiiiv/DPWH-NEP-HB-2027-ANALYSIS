@@ -54,23 +54,41 @@ const MPB_LINE_HALO = 'congress-map-mpb-line-halo';
 const MPB_LINE = 'congress-map-mpb-line';
 const MPB_POINTS = 'congress-map-mpb-points';
 const MPB_POINT = 'congress-map-mpb-point';
+const MPB_POINT_HOUSE = 'congress-map-mpb-point-house';
 const MPB_APPROX = 'congress-map-mpb-approx';
 const MPB_APPROX_POINT = 'congress-map-mpb-approx-point';
+const MPB_APPROX_POINT_HOUSE = 'congress-map-mpb-approx-point-house';
+const FMR_POINT_HOUSE = 'congress-map-fmr-point-house';
 const MPB_UNMAPPED = 'congress-map-mpb-unmapped';
 const MPB_BADGE = 'congress-map-mpb-badge';
 const MPB_UNMAPPED_TOTAL = 'congress-map-mpb-unmapped-total';
 const MPB_BADGE_TOTAL = 'congress-map-mpb-badge-total';
 
-const MARKER_LAYERS = [FMR_LINE, FMR_POINT, FMR_LINK, FMR_ORIGINAL_POINT, MPB_LINE, MPB_POINT];
+const HOUSE_ONLY = 'house_only';
+const HOUSE_ONLY_FILTER = ['==', ['get', 'category'], HOUSE_ONLY];
+const NOT_HOUSE_ONLY_FILTER = ['!=', ['get', 'category'], HOUSE_ONLY];
+
+// Click targets: house-only point layers sit above their non-house twins so
+// queryRenderedFeatures prefers them when markers overlap.
+const MARKER_LAYERS = [FMR_LINE, FMR_POINT, FMR_POINT_HOUSE, FMR_LINK, FMR_ORIGINAL_POINT,
+  MPB_LINE, MPB_POINT, MPB_POINT_HOUSE];
+const APPROX_LAYERS = [MPB_APPROX_POINT, MPB_APPROX_POINT_HOUSE];
 const OBJECT_LAYERS = {
   districts: [DISTRICTS_FILL, DISTRICTS_LINE],
-  fmr: [FMR_HALO, FMR_LINE, FMR_POINT],
+  fmr: [FMR_HALO, FMR_LINE, FMR_POINT, FMR_POINT_HOUSE],
   fmr_repairs: [FMR_LINK, FMR_ORIGINAL_POINT],
-  mpb: [MPB_LINE_HALO, MPB_LINE, MPB_POINT],
-  mpb_approx: [MPB_APPROX_POINT],
+  mpb: [MPB_LINE_HALO, MPB_LINE, MPB_POINT, MPB_POINT_HOUSE],
+  mpb_approx: [MPB_APPROX_POINT, MPB_APPROX_POINT_HOUSE],
   mpb_unmapped: [MPB_BADGE, MPB_BADGE_TOTAL],
 };
 const emptyFc = () => ({type: 'FeatureCollection', features: []});
+
+function andFilters(...filters) {
+  const live = filters.filter(Boolean);
+  if (!live.length) return null;
+  if (live.length === 1) return live[0];
+  return ['all', ...live];
+}
 
 function applyLayerFilters(instance, objects, types) {
   if (!instance?.getStyle()) return;
@@ -86,22 +104,49 @@ function applyLayerFilters(instance, objects, types) {
   for (const layerId of OBJECT_LAYERS.districts) setVisible(layerId, objects.districts);
 
   const fmrOn = Boolean(objects.fmr);
-  const fmrFilter = congressMapCategoryFilter(enabledCongressMapCategories(types, 'fmr'));
-  for (const layerId of OBJECT_LAYERS.fmr) {
-    setVisible(layerId, fmrOn);
-    if (fmrOn) setFilter(layerId, fmrFilter);
+  const fmrCats = enabledCongressMapCategories(types, 'fmr');
+  const fmrHouseOn = fmrOn && fmrCats.includes(HOUSE_ONLY);
+  const fmrFilter = congressMapCategoryFilter(fmrCats);
+  // Lines stay mixed; point layers are split so House-only endpoints always
+  // paint above every other FMR / MPB / approx marker.
+  setVisible(FMR_HALO, fmrOn);
+  setVisible(FMR_LINE, fmrOn);
+  if (fmrOn) {
+    setFilter(FMR_HALO, fmrFilter);
+    setFilter(FMR_LINE, fmrFilter);
   }
+  setVisible(FMR_POINT, fmrOn);
+  setVisible(FMR_POINT_HOUSE, fmrHouseOn);
+  if (fmrOn) setFilter(FMR_POINT, andFilters(fmrFilter, NOT_HOUSE_ONLY_FILTER));
+  if (fmrHouseOn) setFilter(FMR_POINT_HOUSE, HOUSE_ONLY_FILTER);
 
   setVisible(FMR_LINK, objects.fmr_repairs && types?.fmr_repairs?.link);
   setVisible(FMR_ORIGINAL_POINT, objects.fmr_repairs && types?.fmr_repairs?.point);
 
   const mpbOn = Boolean(objects.mpb);
-  const mpbFilter = congressMapCategoryFilter(enabledCongressMapCategories(types, 'mpb'));
-  for (const layerId of OBJECT_LAYERS.mpb) {
-    setVisible(layerId, mpbOn);
-    if (mpbOn) setFilter(layerId, mpbFilter);
+  const mpbCats = enabledCongressMapCategories(types, 'mpb');
+  const mpbHouseOn = mpbOn && mpbCats.includes(HOUSE_ONLY);
+  const mpbFilter = congressMapCategoryFilter(mpbCats);
+  setVisible(MPB_LINE_HALO, mpbOn);
+  setVisible(MPB_LINE, mpbOn);
+  if (mpbOn) {
+    setFilter(MPB_LINE_HALO, mpbFilter);
+    setFilter(MPB_LINE, mpbFilter);
   }
-  setVisible(MPB_APPROX_POINT, Boolean(objects.mpb_approx));
+  setVisible(MPB_POINT, mpbOn);
+  setVisible(MPB_POINT_HOUSE, mpbHouseOn);
+  if (mpbOn) setFilter(MPB_POINT, andFilters(mpbFilter, NOT_HOUSE_ONLY_FILTER));
+  if (mpbHouseOn) setFilter(MPB_POINT_HOUSE, HOUSE_ONLY_FILTER);
+
+  const approxOn = Boolean(objects.mpb_approx);
+  const approxCats = enabledCongressMapCategories(types, 'mpb_approx');
+  const approxHouseOn = approxOn && approxCats.includes(HOUSE_ONLY);
+  const approxFilter = congressMapCategoryFilter(approxCats);
+  setVisible(MPB_APPROX_POINT, approxOn);
+  setVisible(MPB_APPROX_POINT_HOUSE, approxHouseOn);
+  if (approxOn) setFilter(MPB_APPROX_POINT, andFilters(approxFilter, NOT_HOUSE_ONLY_FILTER));
+  if (approxHouseOn) setFilter(MPB_APPROX_POINT_HOUSE, HOUSE_ONLY_FILTER);
+
   const unmappedOn = Boolean(objects.mpb_unmapped);
   const unmappedTypes = types?.mpb_unmapped ?? {};
   const stackOn = unmappedOn && (unmappedTypes.house_only || unmappedTypes.nep_only
@@ -325,15 +370,19 @@ function syncLayers(instance, districts, fmrOverlay, mpbOverlay, fillAlpha = DEF
       },
       layout: {'line-cap': 'round', 'line-join': 'round'},
     });
+    const fmrPointPaint = {
+      'circle-color': ['get', 'color'],
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 2.5, 10, 4.5, 14, 6.5],
+      'circle-stroke-color': '#ffffff',
+      'circle-stroke-width': 1.2,
+      'circle-opacity': 0.95,
+    };
+    // Non-house FMR endpoints first; House-only twin is added after all other
+    // marker classes so orange House markers always sit on top.
     instance.addLayer({
       id: FMR_POINT, type: 'circle', source: FMR_POINTS,
-      paint: {
-        'circle-color': ['get', 'color'],
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 2.5, 10, 4.5, 14, 6.5],
-        'circle-stroke-color': '#ffffff',
-        'circle-stroke-width': 1.2,
-        'circle-opacity': 0.95,
-      },
+      filter: NOT_HOUSE_ONLY_FILTER,
+      paint: fmrPointPaint,
     });
     instance.addLayer({
       id: FMR_LINK, type: 'line', source: FMR_LINKS,
@@ -374,32 +423,53 @@ function syncLayers(instance, districts, fmrOverlay, mpbOverlay, fillAlpha = DEF
       },
       layout: {'line-cap': 'butt', 'line-join': 'round'},
     });
+    const mpbPointLayout = {
+      'icon-image': MPB_BOX_ICON_IMAGE,
+      // Match FMR circle diameters (radius 2.5/4.5/6.5 → ~5/9/13 px on a 64px sprite).
+      'icon-size': ['interpolate', ['linear'], ['zoom'], 5, 0.09, 10, 0.15, 14, 0.22],
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+    };
     instance.addLayer({
       id: MPB_POINT, type: 'symbol', source: MPB_POINTS,
-      layout: {
-        'icon-image': MPB_BOX_ICON_IMAGE,
-        // Match FMR circle diameters (radius 2.5/4.5/6.5 → ~5/9/13 px on a 64px sprite).
-        'icon-size': ['interpolate', ['linear'], ['zoom'], 5, 0.09, 10, 0.15, 14, 0.22],
-        'icon-allow-overlap': true,
-        'icon-ignore-placement': true,
-      },
-      paint: {
-        'icon-opacity': 1,
-      },
+      filter: NOT_HOUSE_ONLY_FILTER,
+      layout: mpbPointLayout,
+      paint: {'icon-opacity': 1},
     });
+    const approxPointLayout = {
+      'icon-image': ['concat', 'mpb-approx-marker-', ['get', 'category'], '-', ['get', 'count']],
+      // Singles (64px): match solid title-GPS boxes. Counted chips (96px):
+      // clearly smaller than district unmapped badges.
+      'icon-size': ['interpolate', ['linear'], ['zoom'],
+        5, ['case', ['==', ['get', 'count'], 1], 0.09, 0.22],
+        10, ['case', ['==', ['get', 'count'], 1], 0.15, 0.4],
+        14, ['case', ['==', ['get', 'count'], 1], 0.22, 0.65]],
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+    };
     instance.addLayer({
       id: MPB_APPROX_POINT, type: 'symbol', source: MPB_APPROX,
-      layout: {
-        'icon-image': ['concat', 'mpb-approx-marker-', ['get', 'category'], '-', ['get', 'count']],
-        // Singles (64px): match solid title-GPS boxes. Counted chips (96px):
-        // clearly smaller than district unmapped badges.
-        'icon-size': ['interpolate', ['linear'], ['zoom'],
-          5, ['case', ['==', ['get', 'count'], 1], 0.09, 0.22],
-          10, ['case', ['==', ['get', 'count'], 1], 0.15, 0.4],
-          14, ['case', ['==', ['get', 'count'], 1], 0.22, 0.65]],
-        'icon-allow-overlap': true,
-        'icon-ignore-placement': true,
-      },
+      filter: NOT_HOUSE_ONLY_FILTER,
+      layout: approxPointLayout,
+      paint: {'icon-opacity': 0.95},
+    });
+    // House-only marker stack — drawn after every other marker class so orange
+    // House FMR / MPB / approx points always win overlaps.
+    instance.addLayer({
+      id: FMR_POINT_HOUSE, type: 'circle', source: FMR_POINTS,
+      filter: HOUSE_ONLY_FILTER,
+      paint: fmrPointPaint,
+    });
+    instance.addLayer({
+      id: MPB_POINT_HOUSE, type: 'symbol', source: MPB_POINTS,
+      filter: HOUSE_ONLY_FILTER,
+      layout: mpbPointLayout,
+      paint: {'icon-opacity': 1},
+    });
+    instance.addLayer({
+      id: MPB_APPROX_POINT_HOUSE, type: 'symbol', source: MPB_APPROX,
+      filter: HOUSE_ONLY_FILTER,
+      layout: approxPointLayout,
       paint: {'icon-opacity': 0.95},
     });
     instance.addLayer({
@@ -701,7 +771,7 @@ function useCongressMapInstance(containerRef, error, syncRef, handlers) {
         return;
       }
       // PSGC-approx marker: open the cluster list modal (one or many rows).
-      const approx = instance.queryRenderedFeatures(e.point, {layers: [MPB_APPROX_POINT]});
+      const approx = instance.queryRenderedFeatures(e.point, {layers: APPROX_LAYERS});
       if (approx.length) {
         const props = approx[0].properties ?? {};
         const text = value => {
@@ -769,7 +839,7 @@ function useCongressMapInstance(containerRef, error, syncRef, handlers) {
       instance.on('mouseenter', layer, () => setCursor('pointer'));
       instance.on('mouseleave', layer, () => setCursor(''));
     }
-    for (const layer of [MPB_APPROX_POINT, MPB_BADGE, MPB_BADGE_TOTAL]) {
+    for (const layer of [...APPROX_LAYERS, MPB_BADGE, MPB_BADGE_TOTAL]) {
       instance.on('mouseenter', layer, () => setCursor('pointer'));
       instance.on('mouseleave', layer, () => setCursor(''));
     }
