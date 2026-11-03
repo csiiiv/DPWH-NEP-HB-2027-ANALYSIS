@@ -949,6 +949,7 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
   const provenance = params.provenance ?? '';
   const query = params.q ?? '';
   const openId = params.record ?? '';
+  const tableView = params.tableView === 'full' ? 'full' : 'simple';
   const [gated, setGated] = useState(null);
   const [pdfSource, setPdfSource] = useState(null);
   const [mapRecord, setMapRecord] = useState(null);
@@ -1044,6 +1045,9 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
     return districtLensCounts(fmrIndex, mpbIndex, card.districts[0].id);
   }, [lens, card, fmrIndex, mpbIndex]);
   const columns = EXPLORER_COLUMNS
+    // Full retains the current lens-specific columns; Simple keeps core fields.
+    .filter(column => tableView === 'full' ||
+      !['psgc_location', 'assignment', 'chainage'].includes(column.key))
     .filter(column => lens !== 'deo' || column.key !== 'assignment')
     .filter(column => lens === 'fmr' || lens === 'mpb' || column.key !== 'map')
     // Provenance column appears only where the dataset actually carries
@@ -1345,6 +1349,14 @@ export function District({index, detail, detailError = '', route, lens = 'deo', 
             ? 'Ties out exactly to the published card figures.'
             : 'Does not tie out — do not publish.'}</td></tr></tfoot>
       </table>
+
+      <div className="fmr-filters congress-table-view" role="group" aria-label="Project table view">
+        <span>Table view</span>
+        <button type="button" aria-pressed={tableView === 'simple'}
+          onClick={() => setFilter({tableView: null})}>Simple</button>
+        <button type="button" aria-pressed={tableView === 'full'}
+          onClick={() => setFilter({tableView: 'full'})}>Full</button>
+      </div>
 
       {!prepared
         ? detailError
