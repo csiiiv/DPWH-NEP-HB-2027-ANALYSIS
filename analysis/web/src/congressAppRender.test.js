@@ -213,7 +213,15 @@ test("the location explorer shows the evidence that assigned each project", skip
   assert.ok(card, "Nangcaon location card is missing");
 
   const html = await render("District", {index, locationIndex, detail, lens: "location",
+    route: route("district", `district=${encodeURIComponent(card.id)}&lens=location&tableView=full`)});
+  const simple = await render("District", {index, locationIndex, detail, lens: "location",
     route: route("district", `district=${encodeURIComponent(card.id)}&lens=location`)});
+  assert.match(simple, /aria-pressed="true">Simple<\/button>/);
+  assert.ok(!simple.includes('>Assignment basis</span>'));
+  assert.ok(!simple.includes('>Title PSGC location</span>'));
+  assert.ok(!simple.includes('>Chainage</span>'));
+  assert.ok(simple.includes('Source page'));
+  assert.match(html, /aria-pressed="true">Full<\/button>/);
   assert.ok(html.includes("Assignment basis"));
   assert.ok(html.includes("Title location + printed DEO"));
   assert.ok(html.includes("Misamis Oriental 2nd District Engineering Office"));
@@ -286,7 +294,7 @@ test("the FMR legislative grid and explorer expose assignment evidence", skipFmr
     entry.row_ids.increased.length + entry.row_ids.reduced.length + entry.row_ids.unchanged.length > 5);
   assert.ok(card, 'no paired-only FMR district card is available for the source-link render test');
   const html = await render("District", {index, fmrIndex, detail, lens: "fmr",
-    route: route("district", `district=${encodeURIComponent(card.id)}&lens=fmr`)});
+    route: route("district", `district=${encodeURIComponent(card.id)}&lens=fmr&tableView=full`)});
   assert.ok(html.includes("Assignment basis"));
   assert.ok(html.includes("candidate stages"));
   assert.ok(html.includes("default source-analysis screens"));
@@ -586,7 +594,7 @@ test("the MPB explorer maps La Union 1st's buildings and discloses scope", skipM
   assert.ok(card, "La Union 1st MPB card is missing");
 
   const html = await render("District", {index, mpbIndex, detail, lens: "mpb",
-    route: route("district", `district=${encodeURIComponent(card.id)}&lens=mpb`)});
+    route: route("district", `district=${encodeURIComponent(card.id)}&lens=mpb&tableView=full`)});
   // Bucket labels follow the MPB vocabulary.
   assert.ok(html.includes("House only"));
   assert.ok(html.includes("NEP only"));

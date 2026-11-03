@@ -280,3 +280,8 @@
 .congress-lens-toggle a.active { background:#245fa8; color:#fff; font-weight:600; }
 .congress-tier.location-tier { background:#eaf3ec; color:#2c6e49; }
 .congress-catchall-line { font-size:13px; color:#516780; margin:0; }
+.congress-table-view button[aria-pressed="true"] {
+  background: #245fa8;
+  border-color: #245fa8;
+  color: #fff;
+}
