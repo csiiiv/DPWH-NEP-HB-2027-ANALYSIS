@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildFmrRedFlags, redFlagOptions, RED_FLAG_DEFAULTS} from './fmrRedFlags.js';
+import {buildFmrRedFlags, collapseIdenticalFmrReviews, redFlagOptions, RED_FLAG_DEFAULTS} from './fmrRedFlags.js';
 const segment = (km=1, coordinates=[[120,14],[120.01,14]]) => ({coordinates,straight_line_distance_km:km});
 const project = (id, overrides={}) => ({id,region_key:'I',amount_php:100000,status:'normalized',review_flags:[],segments:[segment()],segment_count:1,...overrides});
 const data = (nep,house=[],comparison=[]) => ({stages:{nep:{projects:nep},house:{projects:house}},comparison});
@@ -80,4 +80,26 @@ test('unavailable printed repair reading remains missing rather than borrowing a
  const row=buildFmrRedFlags(data([],[p]),'house').rows[0];
  assert.equal(row.meters,null);assert.ok(flags(row).includes('missing_geometry'));
  assert.equal(row.originalProject.points[1].longitude,null);
+});
+
+test('only unique identical cross-source candidates collapse, retaining both evidence objects',()=>{
+ const n=project('n',{title:'Exact title',source:{source_pdf:'NEP.pdf',pdf_page:1}});
+ const h={...n,id:'h',source:{source_pdf:'House.pdf',pdf_page:99}};
+ const pair=[{status:'paired',nep_id:'n',house_id:'h'}];
+ const rows=buildFmrRedFlags(data([n],[h],pair),'all').rows,before=JSON.stringify(rows);
+ const groups=collapseIdenticalFmrReviews(rows,pair);
+ assert.equal(groups.length,1);assert.equal(groups[0].members.length,2);
+ assert.equal(groups[0].budgetSourceLabel,'NEP+HGAB');
+ assert.deepEqual(collapseIdenticalFmrReviews(rows,[]).map(r=>r.budgetSourceLabel),['NEP ONLY','HGAB ONLY']);
+ assert.equal(groups[0].members[1].project.source.pdf_page,99);
+ assert.equal(JSON.stringify(rows),before);
+ for(const patch of [{title:'Exact title '},{amount_php:100001},
+   {segments:[segment(1.001)]},{coordinates:[[[120,14],[120.02,14]]]},
+   {segments:[segment(1,[[120,14],[120.02,14]])]}, {coordinates_raw:'different source text'},
+   {normalization_rules:['different_rule']}]) {
+   const changed=buildFmrRedFlags(data([n],[{...h,...patch}],pair),'all').rows;
+   assert.equal(collapseIdenticalFmrReviews(changed,pair).length,2,JSON.stringify(patch));
+ }
+ assert.equal(collapseIdenticalFmrReviews(rows,[]).length,2);
+ assert.equal(collapseIdenticalFmrReviews(rows,[...pair,...pair]).length,2);
 });
