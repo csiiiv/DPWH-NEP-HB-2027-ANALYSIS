@@ -1,4 +1,5 @@
 import React, {lazy, Suspense, useEffect, useMemo, useRef, useState} from 'react';
+import {CoordinateProvenance} from './FmrProvenance.jsx';
 import SortableTable from './SortableTable.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {routeHref} from './routes.js';
@@ -25,6 +26,31 @@ function Evidence({row, stage, onClose, onPdf, onMap}) {
       <dt>Allocation per endpoint meter</dt><dd>{row.proxyPhpPerMeter == null ? 'Unavailable: incomplete, repeated, zero-length or unresolved geometry' : `${money(row.proxyPhpPerMeter)} / m`}</dd>
       <dt>Peer baseline</dt><dd>{row.benchmark ? `${row.benchmark.scope} · ${row.benchmark.count} eligible projects · median ${money(row.benchmark.median)} / m` : 'Fewer than 20 eligible projects: no rate-outlier flag assigned'}</dd>
     </dl>
+    <section aria-label="Coordinates used for review" className="fmr-provenance">
+      <h3>Coordinates used for review</h3>
+      <p className="fmr-muted">All retained section coordinates below are the values used by the red-flag calculation. Longitude and latitude are labelled explicitly; values are shown without display rounding.</p>
+      {(row.project.segments || []).length > 0 ? <div style={{overflowX:'auto'}}>
+        <table className="fmr-provenance-table">
+          <caption>Section coordinates and endpoint spans</caption>
+          <thead><tr><th scope="col">Section</th><th scope="col">Point</th><th scope="col">Longitude</th><th scope="col">Latitude</th><th scope="col">Endpoint span (m)</th></tr></thead>
+          <tbody>{row.project.segments.flatMap((segment,index) => {
+            const coordinates = segment.coordinates || [];
+            const label = segment.section_label || `Section ${segment.segment_index ?? index+1}`;
+            const distance = Number.isFinite(segment.straight_line_distance_km) ? format(segment.straight_line_distance_km*1000) : 'Unavailable';
+            return coordinates.length ? coordinates.map((point,i) => <tr key={`${segment.id || index}:${i}`}>
+              <th scope="row">{label}</th>
+              <td>{coordinates.length === 1 ? 'Only point' : i === 0 ? 'Start' : i === coordinates.length-1 ? 'End' : `Point ${i+1}`}</td>
+              <td><code>{point?.[0] == null ? 'Unavailable' : String(point[0])}</code></td>
+              <td><code>{point?.[1] == null ? 'Unavailable' : String(point[1])}</code></td>
+              <td>{distance}</td>
+            </tr>) : [<tr key={segment.id || index}><th scope="row">{label}</th><td colSpan={3}>No complete coordinate pair retained</td><td>{distance}</td></tr>];
+          })}</tbody>
+        </table>
+      </div> : <p>No section coordinates are available. Retained individual points, where present, are listed below.</p>}
+    </section>
+    <div style={{overflowX:'auto',overflowWrap:'anywhere'}}>
+      <CoordinateProvenance project={row.project}/>
+    </div>
     <ul className="fmr-redflag-findings">{row.flags.map(flag => <li key={flag.id}>
       <strong>{ruleLabels[flag.id]}</strong><p>{flag.detail}</p>
       {flag.peerIds && <div className="fmr-redflag-links">{flag.peerIds.map(id => <a key={id} href={routeHref(stage.key,{node:id})}>{id} → source</a>)}</div>}
