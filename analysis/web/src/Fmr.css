@@ -248,3 +248,17 @@ dialog.fmr-dialog { width:min(1100px,calc(100vw - 32px)); max-height:90vh; borde
 @media (max-width:700px) { .fmr-redflag-metrics { grid-template-columns:1fr; gap:4px; } .fmr-redflag-metrics dd { margin-bottom:10px; } }
 
 .fmr-redflag-links .fmr-redflag-pdf { white-space:normal; overflow-wrap:anywhere; text-align:left; max-width:100%; min-width:0; }
+
+/* Project map modal opened from red-flag evidence, including nested reviews. */
+.fmr-redflags .congress-fmr-map-dialog { width:min(1080px,95vw); max-width:none; }
+.fmr-redflags .congress-fmr-map-legend { display:flex; flex-wrap:wrap; gap:8px 18px; margin:10px 0; font-size:13px; }
+.fmr-redflags .congress-fmr-map-legend span { display:flex; align-items:center; gap:4px; }
+.fmr-redflags .congress-fmr-map-legend i { display:inline-block; width:22px; height:4px; border-radius:2px; }
+.fmr-redflags .congress-fmr-map-shell { position:relative; border:1px solid #d5dee9; border-radius:8px; overflow:hidden; }
+.fmr-redflags .congress-fmr-map-canvas { width:100%; height: min(460px,60vh); min-height:240px; }
+.fmr-redflags .fmr-map-warning { position:absolute; top:10px; left:10px; right:10px; background:white; padding:10px; }
+.fmr-redflags .congress-repair-panel { margin:12px 0; padding:12px; border:1px solid #f0c4c4; border-radius:8px; overflow-x:auto; }
+.fmr-redflags .congress-record-table { width:100%; border-collapse:collapse; font-size:12px; }
+.fmr-redflags .congress-record-table th,.fmr-redflags .congress-record-table td { padding:7px; border-bottom:1px solid #d9e2ed; text-align:left; }
+.fmr-redflags .congress-repair-controls,.fmr-redflags .fmr-dialog-actions { display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin-top:12px; }
+.fmr-redflags .congress-repair-controls label { display:flex; align-items:center; gap:6px; }
