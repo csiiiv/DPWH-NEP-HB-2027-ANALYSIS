@@ -1,3 +1,4 @@
+import {ORIGINAL_REPAIR_POINTS} from './fmrOriginalCoordinates.js';
 import {medianNumber} from './fmrModel.js';
 
 export const RED_FLAG_DEFAULTS = {shortMeters: 100, longKm: 10, costMultiple: 3, increasePercent: 25};
@@ -61,9 +62,9 @@ function benchmark(rows, scope, costMultiple) {
 const number = value => value.toLocaleString('en-PH', {maximumFractionDigits:2});
 
 /** Derived review annotations only: retained projects, amounts and coordinates stay unchanged. */
-export function buildFmrRedFlags(data, stageKey, options = {}) {
+function calculateFlags(data, stageKey, options = {}) {
   if (stageKey === 'all') {
-    const sources = ['nep', 'house'].map(key => buildFmrRedFlags(data, key, options));
+    const sources = ['nep', 'house'].map(key => calculateFlags(data, key, options));
     return {...sources[0], rows:sources.flatMap(source => source.rows),
       eligibleRates:sources.reduce((sum, source) => sum + source.eligibleRates, 0)};
   }
@@ -110,4 +111,56 @@ export function buildFmrRedFlags(data, stageKey, options = {}) {
   }
   return {config, rows, eligibleRates:rows.filter(r => r.proxyPhpPerMeter != null).length,
     rules:RED_FLAG_RULES, measurementNote:RED_FLAG_MEASUREMENT_NOTE};
+}
+
+function distanceKm(a,b) {
+  const rad = value => value*Math.PI/180;
+  const dLat=rad(b[1]-a[1]),dLon=rad(b[0]-a[0]);
+  const h=Math.sin(dLat/2)**2+Math.cos(rad(a[1]))*Math.cos(rad(b[1]))*Math.sin(dLon/2)**2;
+  return 6371.0088*2*Math.atan2(Math.sqrt(h),Math.sqrt(Math.max(0,1-h)));
+}
+export function originalCoordinateProject(project) {
+  const repairs=(project.points || []).filter(p => Object.hasOwn(ORIGINAL_REPAIR_POINTS,p.id));
+  if (!repairs.length) return project;
+  const byId=new Map((project.points || []).map(p => [p.id,p]));
+  const originalPoint = id => Object.hasOwn(ORIGINAL_REPAIR_POINTS,id) ? ORIGINAL_REPAIR_POINTS[id]
+    : byId.has(id) ? [byId.get(id).longitude,byId.get(id).latitude] : null;
+  const segments=(project.segments || []).map(segment => {
+    if (!(segment.point_ids || []).some(id => Object.hasOwn(ORIGINAL_REPAIR_POINTS,id))) return segment;
+    const coords=segment.point_ids.map(originalPoint);
+    const complete=coords.length>=2 && coords.every(validPair);
+    return {...segment,coordinates:complete ? coords : [],
+      straight_line_distance_km:complete ? distanceKm(coords[0],coords.at(-1)) : null};
+  });
+  return {...project,segments,coordinates:segments.map(s=>s.coordinates),
+    points:(project.points || []).map(p => {
+      const pair=originalPoint(p.id);return {...p,longitude:pair?.[0] ?? null,latitude:pair?.[1] ?? null};
+    }),
+    // Accepted PSGC verdicts cannot be attributed to a different printed point.
+    psgc:(project.psgc || []).filter(p => !Object.hasOwn(ORIGINAL_REPAIR_POINTS,p.point_id)),
+    location_agreement:null};
+}
+/** Source screening uses retained printed readings; accepted results stay separate. */
+export function buildFmrRedFlags(data,stageKey,options={}) {
+  const originalData={...data,stages:Object.fromEntries(Object.entries(data.stages)
+    .map(([key,stage])=>[key,{...stage,projects:stage.projects.map(originalCoordinateProject)}]))};
+  const original=calculateFlags(originalData,stageKey,options);
+  const accepted=calculateFlags(data,stageKey,options);
+  const acceptedRows=new Map(accepted.rows.map(row=>[row.id,row]));
+  const rows=original.rows.map(row=>{
+    const corrected=acceptedRows.get(row.id);
+    const repaired=row.project!==corrected.project;
+    const rules=[...new Set([...(corrected.project.normalization_rules || []),
+      ...(corrected.project.points || []).flatMap(p=>p.rules || [])])].filter(r=>r.endsWith('repair_accepted'));
+    const flags=row.flags.map(flag=>({...flag,basis:'original',
+      resolution:repaired && !corrected.flags.some(f=>f.id===flag.id) ? 'Resolved by accepted correction' : 'Open'}));
+    const resolvedFlags=flags.filter(f=>f.resolution!=='Open');
+    return {...row,project:corrected.project,originalProject:row.project,corrected,
+      flags,flagCount:flags.length,hasCorrection:repaired || rules.length>0,
+      correction:{rules,clearedFlags:resolvedFlags.map(f=>f.id),textCorrected:false},
+      resolvedFlags,openFlags:corrected.flags,
+      reviewStatus:resolvedFlags.length ? (corrected.flagCount ? 'Source findings · some resolved' : 'Source findings · resolved by correction')
+        : (repaired || rules.length) ? (corrected.flagCount ? 'Open findings + correction history' : 'Corrected · reference') : 'Source findings'};
+  });
+  return {...original,rows,coordinateBasis:'Original retained source readings; accepted corrections assessed separately'};
 }
