@@ -41,6 +41,7 @@ import {
 import './Fmr.css';
 import './Congress.css';
 import ExportModal from './ExportModal.jsx';
+import {downloadSummary} from './summaryExport.js';
 
 const PdfPreview = lazy(() => import('./PdfPreview.jsx'));
 const CongressMap = lazy(() => import('./CongressMap.jsx'));
@@ -313,9 +314,10 @@ function DistrictCard({card, onOpen, rowFlags = null}) {
  * come straight from the card summaries and `summaryTotals()`, so the table
  * cannot disagree with the grid it summarizes. Undivided ranges and
  * multi-district DEOs stay whole on their row, never split. */
-export function SearchSummary({cards, query = '', lensLabel, onClose}) {
+export function SearchSummary({cards, query = '', tier = '', lensLabel, onClose}) {
   const totals = summaryTotals(cards);
   const [sort, setSort] = useState(null);
+  const [exportOpen, setExportOpen] = useState(false);
   const rows = cards.map(card => {
     const seats = districtSeats(card);
     return {
@@ -360,6 +362,23 @@ export function SearchSummary({cards, query = '', lensLabel, onClose}) {
       {' '}<strong>{totals.rows.toLocaleString('en-PH')}</strong> ledger records, one row per card in
       the grid’s order until a column is sorted. Undivided ranges and multi-district offices stay whole on their row, never
       split. Increase = HGAB3 − NEP; a negative value means the amended reading is below the NEP.</p>
+    <div className="fmr-dialog-actions">
+      <button type="button" onClick={() => setExportOpen(true)}>Export summary</button>
+    </div>
+    {exportOpen && <ExportModal rows={rows}
+      meta={{lens: lensLabel, filters: {q: query || null, tier: tier || null}, sort, totals}}
+      dialogLabel="Export allocation summary"
+      intro={<p className="fmr-muted">Downloads the {rows.length.toLocaleString('en-PH')} cards
+        in this summary, in the current table order, with totals. Amounts are exact Philippine pesos.</p>}
+      scopeOptions={[
+        ['simple', 'Simple', 'District / city, representative, NEP and HGAB3 record counts and amounts, increase, and totals.'],
+        ['full', 'Full', 'Everything Simple has plus card ID, mapping tier, region, implementing offices, and ledger row count.'],
+      ]}
+      formatOptions={[
+        ['csv', 'CSV', 'Spreadsheet with a totals row. Opens in Excel.'],
+        ['json', 'JSON', 'Structured rows, totals, filter and sort metadata.'],
+      ]}
+      onDownload={downloadSummary} onClose={() => setExportOpen(false)} />}
     <table className="congress-record-table congress-summary-table">
       <caption>Per-card allocations with totals</caption>
       <thead><tr>{columns.map(([key, label]) =>
@@ -676,7 +695,7 @@ export function Districts({index, route, lens = 'deo', locationIndex = null, fmr
     {!visible.length && <p className="congress-empty">No card matches those filters.
       {' '}<button type="button" onClick={() => setFilter({q: null, tier: null})}>Clear filters</button></p>}
 
-    {showSummary && <SearchSummary cards={visible} query={query}
+    {showSummary && <SearchSummary cards={visible} query={query} tier={tier}
       lensLabel={isMpb ? 'MPB legislative lens' : isFmr ? 'FMR legislative lens' : isLocation ? 'Legislative lens' : 'DEO lens'}
       onClose={() => setFilter({summary: null})} />}
 
