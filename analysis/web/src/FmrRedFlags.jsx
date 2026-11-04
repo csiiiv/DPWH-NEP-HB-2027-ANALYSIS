@@ -1,16 +1,18 @@
-import React, {useEffect, useMemo, useRef} from 'react';
+import React, {lazy, Suspense, useEffect, useMemo, useRef, useState} from 'react';
 import SortableTable from './SortableTable.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {routeHref} from './routes.js';
 import {money} from './fmrModel.js';
 import {buildFmrRedFlags, RED_FLAG_RULES, RED_FLAG_MEASUREMENT_NOTE} from './fmrRedFlags.js';
 
+const FmrSegmentModal = lazy(() => import('./FmrSegmentModal.jsx'));
+
 const format = value => value == null ? '—' : value.toLocaleString('en-PH', {maximumFractionDigits:2});
 const fields = [['rf_short_m','shortMeters','Short section below (m)',1],['rf_long_km','longKm','Long section above (km)',1],
   ['rf_cost_multiple','costMultiple','Minimum peer-median multiple',1],['rf_increase_pct','increasePercent','Candidate increase at least (%)',0]];
 const ruleLabels = Object.fromEntries(RED_FLAG_RULES.map(rule => [rule.id, rule.label]));
 
-function Evidence({row, stage, onClose, onPdf, mapParams}) {
+function Evidence({row, stage, onClose, onPdf, onMap}) {
   const ref = useRef(null);
   useEffect(() => openModalDialog(ref.current), []);
   return <dialog ref={ref} className="fmr-dialog fmr-redflag-dialog" aria-label="Red-flag evidence" onCancel={e => {e.preventDefault(); onClose();}}>
@@ -28,7 +30,7 @@ function Evidence({row, stage, onClose, onPdf, mapParams}) {
       {flag.peerIds && <div className="fmr-redflag-links">{flag.peerIds.map(id => <a key={id} href={routeHref(stage.key,{node:id})}>{id} → source</a>)}</div>}
       {flag.pairId && <a href={routeHref('compare',{view:'projects',pair:flag.pairId})}>Inspect both candidate sources →</a>}
     </li>)}</ul>
-    <div className="fmr-redflag-links"><a href={routeHref('map',{...mapParams,stage:row.stageKey,project:row.id,focus:'red_flag'})}>View on map</a><a href={routeHref(stage.key,{node:row.id})}>Open source tree →</a>
+    <div className="fmr-redflag-links"><button type="button" onClick={() => onMap(row)}>View on map</button><a href={routeHref(stage.key,{node:row.id})}>Open source tree →</a>
       <button onClick={() => onPdf(row.project.source)} className="fmr-redflag-pdf">Open {row.project.source.source_pdf} · p. {row.project.source.pdf_page}</button></div>
   </dialog>;
 }
@@ -38,7 +40,10 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
   const analysis = useMemo(() => buildFmrRedFlags(data, stage.key, {
     shortMeters:params.rf_short_m,longKm:params.rf_long_km,costMultiple:params.rf_cost_multiple,increasePercent:params.rf_increase_pct,
   }), [data,stage.key,params.rf_short_m,params.rf_long_km,params.rf_cost_multiple,params.rf_increase_pct]);
-  const mapParams = Object.fromEntries(fields.map(([param,key]) => [param,analysis.config[key]]));
+  const [mapRow, setMapRow] = useState(null);
+  const onMap = row => setMapRow(row);
+  const mapRecord = mapRow && {id:mapRow.id,title:mapRow.project.title,
+    status:`${mapRow.stageKey}_only`,fmrProjects:{[mapRow.stageKey]:mapRow.project}};
   const visibleIds = new Set(projects.map(p => p.id));
   const assessed = analysis.rows.filter(row => visibleIds.has(row.id));
   const flagged = assessed.filter(row => row.flagCount > 0);
@@ -90,9 +95,12 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
         {key:'meters',label:'Summed endpoint spans (m)',align:'num',render:row => <>{format(row.meters)}<small>Min {format(row.shortestMeters)} · max {format(row.longestMeters)} m</small></>},
         {key:'proxyPhpPerMeter',label:'Allocation / endpoint m (proxy)',align:'num',render:row => row.proxyPhpPerMeter == null ? '—' : money(row.proxyPhpPerMeter)},
         {key:'peerMultiple',label:'Peer-median multiple',align:'num',render:row => row.peerMultiple == null ? '—' : <>{format(row.peerMultiple)}×<small>{row.benchmark.scope} · n={row.benchmark.count}</small></>},
-        {key:'evidence',label:'Evidence',sortable:false,render:row => <div className="fmr-redflag-links"><a href={routeHref('map',{...mapParams,stage:row.stageKey,project:row.id,focus:'red_flag'})}>View on map</a><button onClick={() => onChange({rf_project:row.id})}>Review details</button><button onClick={() => onPdf(row.project.source)} className="fmr-redflag-pdf">{row.project.source.source_pdf} · p. {row.project.source.pdf_page}</button></div>},
+        {key:'evidence',label:'Evidence',sortable:false,render:row => <div className="fmr-redflag-links"><button type="button" onClick={() => onMap(row)}>View on map</button><button onClick={() => onChange({rf_project:row.id})}>Review details</button><button onClick={() => onPdf(row.project.source)} className="fmr-redflag-pdf">{row.project.source.source_pdf} · p. {row.project.source.pdf_page}</button></div>},
       ]}/>
-    {selected && <Evidence mapParams={mapParams} row={selected} stage={data.stages[selected.stageKey]} onClose={() => onChange({rf_project:null})} onPdf={onPdf}/>}
+    {selected && <Evidence onMap={onMap} row={selected} stage={data.stages[selected.stageKey]} onClose={() => onChange({rf_project:null})} onPdf={onPdf}/>}
+    {mapRecord && <Suspense fallback={<p role="status">Loading project map…</p>}>
+      <FmrSegmentModal key={mapRecord.id} record={mapRecord} onClose={() => setMapRow(null)}/>
+    </Suspense>}
     {params.rf_project && !selected && <p role="alert">This review record is unavailable in the selected source. <button onClick={() => onChange({rf_project:null})}>Clear review selection</button></p>}
   </section>;
 }
