@@ -29,7 +29,7 @@ function Evidence({row, stage, onClose, onPdf, mapParams}) {
       {flag.pairId && <a href={routeHref('compare',{view:'projects',pair:flag.pairId})}>Inspect both candidate sources →</a>}
     </li>)}</ul>
     <div className="fmr-redflag-links"><a href={routeHref('map',{...mapParams,project:row.id,focus:'red_flag'})}>View on map</a><a href={routeHref(stage.key,{node:row.id})}>Open source tree →</a>
-      <button onClick={() => onPdf(row.project.source)}>Open source PDF p. {row.project.source.pdf_page}</button></div>
+      <button onClick={() => onPdf(row.project.source)} className="fmr-redflag-pdf">Open {row.project.source.source_pdf} · p. {row.project.source.pdf_page}</button></div>
   </dialog>;
 }
 
@@ -89,7 +89,7 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
         {key:'meters',label:'Summed endpoint spans (m)',align:'num',render:row => <>{format(row.meters)}<small>Min {format(row.shortestMeters)} · max {format(row.longestMeters)} m</small></>},
         {key:'proxyPhpPerMeter',label:'Allocation / endpoint m (proxy)',align:'num',render:row => row.proxyPhpPerMeter == null ? '—' : money(row.proxyPhpPerMeter)},
         {key:'peerMultiple',label:'Peer-median multiple',align:'num',render:row => row.peerMultiple == null ? '—' : <>{format(row.peerMultiple)}×<small>{row.benchmark.scope} · n={row.benchmark.count}</small></>},
-        {key:'evidence',label:'Evidence',sortable:false,render:row => <div className="fmr-redflag-links"><a href={routeHref('map',{...mapParams,project:row.id,focus:'red_flag'})}>View on map</a><button onClick={() => onChange({rf_project:row.id})}>Review details</button><button onClick={() => onPdf(row.project.source)}>PDF p. {row.project.source.pdf_page}</button></div>},
+        {key:'evidence',label:'Evidence',sortable:false,render:row => <div className="fmr-redflag-links"><a href={routeHref('map',{...mapParams,project:row.id,focus:'red_flag'})}>View on map</a><button onClick={() => onChange({rf_project:row.id})}>Review details</button><button onClick={() => onPdf(row.project.source)} className="fmr-redflag-pdf">{row.project.source.source_pdf} · p. {row.project.source.pdf_page}</button></div>},
       ]}/>
     {selected && <Evidence mapParams={mapParams} row={selected} stage={stage} onClose={() => onChange({rf_project:null})} onPdf={onPdf}/>}
     {params.rf_project && !selected && <p role="alert">This review record is unavailable in the selected source. <button onClick={() => onChange({rf_project:null})}>Clear review selection</button></p>}
