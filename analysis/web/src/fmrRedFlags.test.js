@@ -93,13 +93,26 @@ test('only unique identical cross-source candidates collapse, retaining both evi
  assert.deepEqual(collapseIdenticalFmrReviews(rows,[]).map(r=>r.budgetSourceLabel),['NEP ONLY','HGAB ONLY']);
  assert.equal(groups[0].members[1].project.source.pdf_page,99);
  assert.equal(JSON.stringify(rows),before);
- for(const patch of [{title:'Exact title '},{amount_php:100001},
+ for(const patch of [{title:'Different title'},{amount_php:100001},
    {segments:[segment(1.001)]},{coordinates:[[[120,14],[120.02,14]]]},
-   {segments:[segment(1,[[120,14],[120.02,14]])]}, {coordinates_raw:'different source text'},
-   {normalization_rules:['different_rule']}]) {
+   {segments:[segment(1,[[120,14],[120.02,14]])]}]) {
    const changed=buildFmrRedFlags(data([n],[{...h,...patch}],pair),'all').rows;
    assert.equal(collapseIdenticalFmrReviews(changed,pair).length,2,JSON.stringify(patch));
  }
  assert.equal(collapseIdenticalFmrReviews(rows,[]).length,2);
  assert.equal(collapseIdenticalFmrReviews(rows,[...pair,...pair]).length,2);
+});
+
+test('OCR text and processing history do not split otherwise identical matched projects',()=>{
+ const n=project('n',{title:'Construction of Brgy. Tagumpay FMR',coordinates_raw:'S51: 14.6, 121.5',
+   normalization_rules:['image_reviewed_ocr_transcription'],coordinate_text_basis:'image_reviewed_ocr_transcription'});
+ const h=project('h',{title:'Construction of Barangay Tagumpay FMR.',coordinates_raw:'S1:14.6 121.5',
+   normalization_rules:[],coordinate_text_basis:'original_ocr'});
+ const comparison=[{status:'paired',nep_id:'n',house_id:'h'}];
+ const rows=buildFmrRedFlags(data([n],[h],comparison),'all').rows;
+ const groups=collapseIdenticalFmrReviews(rows,comparison);
+ assert.equal(groups.length,1);
+ assert.equal(groups[0].budgetSourceLabel,'NEP+HGAB');
+ assert.equal(groups[0].members[0].project.coordinates_raw,n.coordinates_raw);
+ assert.equal(groups[0].members[1].project.coordinates_raw,h.coordinates_raw);
 });
