@@ -176,7 +176,7 @@
 /* --- search summary modal ------------------------------------------------ */
 /* Reuses .congress-record-table rows; sized narrower than the record drawer
    because it holds one table, not a full per-record dossier. */
-.congress-summary { width:min(880px,calc(100vw - 32px)); }
+.congress-summary { width:min(1100px,calc(100vw - 32px)); }
 .congress-summary > p:first-of-type { margin:14px 0 0; }
 .congress-summary-table { margin:14px 0 0; }
 .congress-summary-table caption { text-align:left; font-size:12.5px; color:#516780; padding-bottom:8px; }

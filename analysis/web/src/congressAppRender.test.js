@@ -390,7 +390,7 @@ test("the summary modal lists one row per card with NEP, amended and increase, t
   assert.ok(html.includes("congress-summary"));
   assert.ok(html.includes("\u201Cmanila 3rd\u201D"));
   // Allocation-table headers, sample-format vocabulary.
-  for (const header of ["District / City", "Representative", "NEP", "Amended (HGAB3)", "Increase"]) {
+  for (const header of ["District / City", "Representative", "NEP records", "NEP", "HGAB3 records", "Amended (HGAB3)", "Increase"]) {
     assert.ok(html.includes(header), `header missing: ${header}`);
   }
   // One row per surviving card — its district line prints.
@@ -405,6 +405,26 @@ test("the summary modal lists one row per card with NEP, amended and increase, t
       : card.card_label ?? card.id;
     assert.ok(html.includes(name), `row missing for ${card.id}`);
   }
+  // Each stage's count belongs to its own column, including the totals row.
+  const table = html.match(/<table class="congress-record-table congress-summary-table">([\s\S]*?)<\/table>/)[1];
+  const body = table.match(/<tbody>([\s\S]*?)<\/tbody>/)[1];
+  const rows = [...body.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)];
+  assert.equal(rows.length, cards.length);
+  const expectedCounts = cards.map(card => [
+    card.summary.sources.nep.count.toLocaleString('en-PH'),
+    card.summary.sources.house.count.toLocaleString('en-PH'),
+  ]).sort();
+  const actualCounts = rows.map(([, row]) => {
+    const cells = [...row.matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/g)].map(match => match[1]);
+    assert.equal(cells.length, 7);
+    return [cells[2], cells[4]];
+  }).sort();
+  assert.deepEqual(actualCounts, expectedCounts);
+  const footer = table.match(/<tfoot>([\s\S]*?)<\/tfoot>/)[1];
+  const totalCells = [...footer.matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/g)].map(match => match[1]);
+  assert.equal(totalCells.length, 7);
+  assert.equal(totalCells[2], cards.reduce((sum, card) => sum + card.summary.sources.nep.count, 0).toLocaleString('en-PH'));
+  assert.equal(totalCells[4], cards.reduce((sum, card) => sum + card.summary.sources.house.count, 0).toLocaleString('en-PH'));
   // The TOTAL row and the three tiles from the sample format.
   assert.ok(html.includes(`Total · ${cards.length} cards`));
   for (const tile of ["Original NEP", "Amended (HGAB3)", "Net increase"]) {
