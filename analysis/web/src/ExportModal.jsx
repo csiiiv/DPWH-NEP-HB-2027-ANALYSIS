@@ -25,16 +25,17 @@ function Dialog({label, onClose, className = '', children}) {
  */
 export default function ExportModal({
   rows, meta, onClose, intro = null, dialogLabel = 'Export these projects',
+  scopeOptions = null, formatOptions = null, onDownload = downloadExplorer,
 }) {
   const [scope, setScope] = useState('simple');
   const [format, setFormat] = useState('csv');
-  const scopes = [
+  const scopes = scopeOptions ?? [
     ['simple', 'Simple', 'Title, bucket, match status, flags, region, program, both offices, both amounts, delta, and each side’s source page.'],
     ['full', 'Full', meta?.lens === 'mpb'
       ? 'Everything Simple has plus MPB scope rule, assignment basis, PAP, source record ids, PDF pages and links, reading status, match basis, trace, chainage and coordinates.'
       : 'Everything Simple has plus assignment basis, PAP, source record ids, PDF pages and links, reading status, match basis, trace, chainage and coordinates.'],
   ];
-  const formats = [['csv', 'CSV', 'Spreadsheet. Opens in Excel with the same headings as the table.'],
+  const formats = formatOptions ?? [['csv', 'CSV', 'Spreadsheet. Opens in Excel with the same headings as the table.'],
     ['json', 'JSON', 'Structured. Keeps provenance, filters and nested source citations.']];
   const choose = (options, value, setValue, name) => <div className="congress-export-choice">
     {options.map(([key, label, hint]) => <label key={key}
@@ -55,7 +56,7 @@ export default function ExportModal({
     <div className="fmr-dialog-actions">
       <button type="button" className="secondary" onClick={onClose}>Cancel</button>
       <button type="button" className="primary" onClick={() => {
-        downloadExplorer(rows, {...meta, scope}, format);
+        onDownload(rows, {...meta, scope}, format);
         onClose();
       }}>Download {scope === 'simple' ? 'Simple' : 'Full'} {format.toUpperCase()}</button>
     </div>
