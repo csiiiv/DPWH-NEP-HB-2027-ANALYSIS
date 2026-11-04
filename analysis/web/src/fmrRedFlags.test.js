@@ -5,6 +5,19 @@ const segment = (km=1, coordinates=[[120,14],[120.01,14]]) => ({coordinates,stra
 const project = (id, overrides={}) => ({id,region_key:'I',amount_php:100000,status:'normalized',review_flags:[],segments:[segment()],segment_count:1,...overrides});
 const data = (nep,house=[],comparison=[]) => ({stages:{nep:{projects:nep},house:{projects:house}},comparison});
 const flags = row => row.flags.map(f=>f.id);
+test('combined review retains source attribution without mixing peer baselines or shared geometry',()=>{
+ const nep=Array.from({length:20},(_,i)=>project(`n${i}`));
+ const house=Array.from({length:20},(_,i)=>project(`h${i}`,{amount_php:1000000}));
+ const input=data(nep,house), before=JSON.stringify(input);
+ const combined=buildFmrRedFlags(input,'all');
+ assert.deepEqual(combined.rows,[...buildFmrRedFlags(input,'nep').rows,...buildFmrRedFlags(input,'house').rows]);
+ assert.equal(combined.eligibleRates,40);
+ assert.equal(combined.rows[0].stageKey,'nep');
+ assert.equal(combined.rows[20].stageKey,'house');
+ assert.equal(combined.rows[20].benchmark.median,10*combined.rows[0].benchmark.median);
+ assert.ok(combined.rows[0].flags.find(f=>f.id==='shared_geometry').peerIds.every(id=>id.startsWith('n')));
+ assert.equal(JSON.stringify(input),before);
+});
 test('strict short threshold and project allocation counted once across sections',()=>{
  const rows=buildFmrRedFlags(data([project('boundary',{segments:[segment(.1)]}),project('short',{segments:[segment(.099)]}),project('multi',{segments:[segment(1),segment(2,[[121,14],[121.01,14]])],segment_count:2})]),'nep').rows;
  assert.ok(!flags(rows[0]).includes('short_span'));assert.ok(flags(rows[1]).includes('short_span'));
