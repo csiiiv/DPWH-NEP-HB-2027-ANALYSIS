@@ -3,7 +3,7 @@ import {CoordinateProvenance} from './FmrProvenance.jsx';
 import SortableTable from './SortableTable.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {routeHref} from './routes.js';
-import {money} from './fmrModel.js';
+import {money, flagLabel} from './fmrModel.js';
 import {buildFmrRedFlags, RED_FLAG_RULES, RED_FLAG_MEASUREMENT_NOTE} from './fmrRedFlags.js';
 
 const FmrSegmentModal = lazy(() => import('./FmrSegmentModal.jsx'));
@@ -18,7 +18,7 @@ function Evidence({row, stage, onClose, onPdf, onMap}) {
   useEffect(() => openModalDialog(ref.current), []);
   return <dialog ref={ref} className="fmr-dialog fmr-redflag-dialog" aria-label="Red-flag evidence" onCancel={e => {e.preventDefault(); onClose();}}>
     <div className="fmr-dialog-heading"><h2>{row.project.title}</h2><button onClick={onClose}>Close review</button></div>
-    <p>{stage.label} · {row.id} · {money(row.project.amount_php)}</p>
+    <p>{stage.label} · {row.id} · {money(row.project.amount_php)} · <strong>{row.reviewStatus}</strong></p>
     <p className="fmr-muted">{RED_FLAG_MEASUREMENT_NOTE}</p>
     <dl className="fmr-redflag-metrics">
       <dt>Summed endpoint spans</dt><dd>{format(row.meters)} m</dd>
@@ -26,6 +26,13 @@ function Evidence({row, stage, onClose, onPdf, onMap}) {
       <dt>Allocation per endpoint meter</dt><dd>{row.proxyPhpPerMeter == null ? 'Unavailable: incomplete, repeated, zero-length or unresolved geometry' : `${money(row.proxyPhpPerMeter)} / m`}</dd>
       <dt>Peer baseline</dt><dd>{row.benchmark ? `${row.benchmark.scope} · ${row.benchmark.count} eligible projects · median ${money(row.benchmark.median)} / m` : 'Fewer than 20 eligible projects: no rate-outlier flag assigned'}</dd>
     </dl>
+    {row.hasCorrection && <section className="fmr-provenance" aria-label="Correction history">
+      <h3>Corrected coordinates · retained for reference</h3>
+      <p>Accepted corrections are retained below alongside the original source text. Current analytical flags are listed separately.</p>
+      {row.correction.rules.length > 0 && <p>Accepted corrections: {row.correction.rules.map(flagLabel).join('; ')}</p>}
+      {row.correction.clearedFlags.length > 0 && <p>Earlier findings: {row.correction.clearedFlags.map(flagLabel).join('; ')}</p>}
+      {row.correction.textCorrected && <p>The reviewed transcription differs from the original extraction.</p>}
+    </section>}
     <section aria-label="Coordinates used for review" className="fmr-provenance">
       <h3>Coordinates used for review</h3>
       <p className="fmr-muted">All retained section coordinates below are the values used by the red-flag calculation. Longitude and latitude are labelled explicitly; values are shown without display rounding.</p>
@@ -73,7 +80,10 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
   const visibleIds = new Set(projects.map(p => p.id));
   const assessed = analysis.rows.filter(row => visibleIds.has(row.id));
   const flagged = assessed.filter(row => row.flagCount > 0);
-  const rows = flagged.filter(row => !params.rf_rule || row.flags.some(flag => flag.id === params.rf_rule));
+  const corrected = assessed.filter(row => row.hasCorrection);
+  const reviewRows = assessed.filter(row => row.flagCount > 0 || row.hasCorrection);
+  const rows = reviewRows.filter(row => !params.rf_rule || (params.rf_rule === 'corrected'
+    ? row.hasCorrection : row.flags.some(flag => flag.id === params.rf_rule)));
   const selected = analysis.rows.find(row => row.id === params.rf_project);
   const change = patch => onChange({...patch,page:null,rf_project:null});
   const page = Math.max(1, Number(params.page) || 1);
@@ -82,7 +92,7 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
   const csvRows = rows.map(row => [row.stageKey,row.id,row.project.title,row.project.region,row.project.amount_php,row.meters,
     row.shortestMeters,row.longestMeters,row.proxyPhpPerMeter,row.benchmark?.scope,row.benchmark?.count,row.benchmark?.median,
     row.benchmark?.threshold,row.peerMultiple,row.flags.map(f => f.id).join(';'),row.flags.map(f => f.detail).join(' | '),
-    row.project.source.source_pdf,row.project.source.pdf_page,row.project.source.printed_page]);
+    row.project.source.source_pdf,row.project.source.pdf_page,row.project.source.printed_page,row.reviewStatus,row.correction.rules.join(';'),row.correction.clearedFlags.join(';'),row.correction.textCorrected]);
   return <section className="fmr-redflags" aria-label="FMR red-flag review">
     <p className="fmr-notice">{RED_FLAG_MEASUREMENT_NOTE} Review endpoint geometry before interpreting an unusually high proxy. Scope, width, terrain, bridges and measured road length need separate evidence.</p>
     <div className="fmr-filters fmr-redflag-controls">
@@ -102,12 +112,13 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
       <div className="fmr-stat"><span>Eligible proxy denominators</span><strong>{assessed.filter(r => r.proxyPhpPerMeter != null).length.toLocaleString()}</strong><small>Complete, positive, resolved geometry</small></div>
       <div className="fmr-stat"><span>Excluded proxy denominators</span><strong>{assessed.filter(r => r.proxyPhpPerMeter == null).length.toLocaleString()}</strong><small>No partial or invented lengths</small></div>
     </div>
+    <p className="fmr-notice">{corrected.length.toLocaleString()} source records have correction history and remain available here for reference. Corrected-only records are excluded from the open-flag counts and flagged allocation above.</p>
     <div className="fmr-filters"><label>Review flag<select aria-label="Review flag" value={params.rf_rule || ''} onChange={e => change({rf_rule:e.target.value})}>
-      <option value="">All review flags · {flagged.length}</option>{RED_FLAG_RULES.map(rule => <option key={rule.id} value={rule.id}>{rule.label} · {flagged.filter(r => r.flags.some(f => f.id === rule.id)).length}</option>)}
+      <option value="">Open findings and corrected records · {reviewRows.length}</option><option value="corrected">Corrected records · {corrected.length}</option>{RED_FLAG_RULES.map(rule => <option key={rule.id} value={rule.id}>{rule.label} · {flagged.filter(r => r.flags.some(f => f.id === rule.id)).length}</option>)}
     </select></label></div>
     <div className="fmr-result-bar"><span>{rows.length.toLocaleString()} review source records · {stage.label}</span>
       <button onClick={() => onExportCSV('fmr-red-flags-filtered.csv', ['stage','source_id','title','region','allocation_php','summed_endpoint_m','shortest_section_m','longest_section_m',
-        'allocation_per_endpoint_m_proxy','peer_scope','peer_count','peer_median_proxy','peer_threshold_proxy','peer_multiple','flag_ids','flag_explanations','source_pdf','pdf_page','printed_page'],csvRows)}>Export review CSV</button>
+        'allocation_per_endpoint_m_proxy','peer_scope','peer_count','peer_median_proxy','peer_threshold_proxy','peer_multiple','flag_ids','flag_explanations','source_pdf','pdf_page','printed_page','review_status','accepted_corrections','earlier_findings','transcription_corrected'],csvRows)}>Export review CSV</button>
       <button onClick={() => onExportJSON('fmr-red-flags-filtered.json',{stage:stage.key,document:stage.label,measurement_note:analysis.measurementNote,
         config:analysis.config,benchmark_population:'Full selected source, independent of display filters',rows})}>Export review JSON</button>
     </div>
@@ -116,6 +127,7 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
       empty="No projects match these review flags and filters." columns={[
         {key:'source',label:'Budget source',sortable:false,render:row => data.stages[row.stageKey].label},
         {key:'title',label:'Project',sortable:false,render:row => <button className="fmr-text-button" onClick={() => onChange({rf_project:row.id})}>{row.project.title}<small>{row.project.region} · {row.id}</small></button>},
+        {key:'reviewStatus',label:'Review status',sortable:false,render:row => <span className={`fmr-badge ${row.flagCount ? 'review' : 'balanced'}`}>{row.reviewStatus}</span>},
         {key:'flagCount',label:'Review flags',value:row => row.flagCount,render:row => <div className="fmr-redflag-tags">{row.flags.map(flag => <span key={flag.id} title={flag.detail}>{ruleLabels[flag.id]}</span>)}</div>},
         {key:'amount_php',label:'Allocation (PHP)',align:'num',value:row => row.project.amount_php,render:row => money(row.project.amount_php)},
         {key:'meters',label:'Summed endpoint spans (m)',align:'num',render:row => <>{format(row.meters)}<small>Min {format(row.shortestMeters)} · max {format(row.longestMeters)} m</small></>},
