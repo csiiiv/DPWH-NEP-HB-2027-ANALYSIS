@@ -315,6 +315,41 @@ function DistrictCard({card, onOpen, rowFlags = null}) {
  * multi-district DEOs stay whole on their row, never split. */
 export function SearchSummary({cards, query = '', lensLabel, onClose}) {
   const totals = summaryTotals(cards);
+  const [sort, setSort] = useState(null);
+  const rows = cards.map(card => {
+    const seats = districtSeats(card);
+    return {
+      card,
+      name: card.location_tier === 'deo' && card.card_label ? card.card_label
+        : card.location_tier === 'region' ? regionName(card.card_label)
+        : seats.length ? seats.map(seat => seat.districtName).join(' · ')
+        : card.card_label ?? card.id,
+      representative: seats.length ? representativeLabel(card).text : '—',
+      nepCount: card.summary.sources.nep.count,
+      nepAmount: card.summary.sources.nep.amount_php,
+      houseCount: card.summary.sources.house.count,
+      houseAmount: card.summary.sources.house.amount_php,
+      delta: card.summary.delta_php,
+    };
+  });
+  if (sort) rows.sort((a, b) => {
+    const x = a[sort.key], y = b[sort.key];
+    const comparison = typeof x === 'number' ? x - y
+      : String(x).localeCompare(String(y), 'en', {numeric: true, sensitivity: 'base'});
+    return comparison * (sort.direction === 'asc' ? 1 : -1);
+  });
+  const columns = [
+    ['name', 'District / City'], ['representative', 'Representative'],
+    ['nepCount', 'NEP records'], ['nepAmount', 'NEP'],
+    ['houseCount', 'HGAB3 records'], ['houseAmount', 'Amended (HGAB3)'],
+    ['delta', 'Increase'],
+  ];
+  const toggleSort = key => setSort(current => {
+    const initial = key === 'name' || key === 'representative' ? 'asc' : 'desc';
+    if (current?.key !== key) return {key, direction: initial};
+    return current.direction === initial
+      ? {key, direction: initial === 'asc' ? 'desc' : 'asc'} : null;
+  });
   const deltaClass = value => value > 0 ? 'up' : value < 0 ? 'down' : '';
   const netShare = totals.nep.amount_php ? totals.delta_php / totals.nep.amount_php : null;
   return <Dialog label={`FY 2027 allocations · ${lensLabel}`} className="congress-summary"
@@ -323,25 +358,23 @@ export function SearchSummary({cards, query = '', lensLabel, onClose}) {
       {query.trim() ? <>Matching <strong>“{query.trim()}”</strong> · </> : null}
       <strong>{totals.cards.toLocaleString('en-PH')}</strong> cards holding
       {' '}<strong>{totals.rows.toLocaleString('en-PH')}</strong> ledger records, one row per card in
-      the grid’s order. Undivided ranges and multi-district offices stay whole on their row, never
+      the grid’s order until a column is sorted. Undivided ranges and multi-district offices stay whole on their row, never
       split. Increase = HGAB3 − NEP; a negative value means the amended reading is below the NEP.</p>
     <table className="congress-record-table congress-summary-table">
       <caption>Per-card allocations with totals</caption>
-      <thead><tr>
-        <th scope="col">District / City</th><th scope="col">Representative</th>
-        <th scope="col">NEP records</th><th scope="col">NEP</th>
-        <th scope="col">HGAB3 records</th><th scope="col">Amended (HGAB3)</th>
-        <th scope="col">Increase</th></tr></thead>
-      <tbody>{cards.map(card => {
-        const seats = districtSeats(card);
-        const name = card.location_tier === 'deo' && card.card_label
-          ? card.card_label
-          : card.location_tier === 'region' ? regionName(card.card_label)
-          : seats.length ? seats.map(seat => seat.districtName).join(' · ')
-          : card.card_label ?? card.id;
+      <thead><tr>{columns.map(([key, label]) =>
+        <th key={key} scope="col"
+          aria-sort={sort?.key === key ? (sort.direction === 'asc' ? 'ascending' : 'descending') : 'none'}>
+          <button type="button" className="th-sort" onClick={() => toggleSort(key)}
+            title={`Sort by ${label}`}>
+            <span>{label}</span>
+            <span aria-hidden="true">{sort?.key === key ? (sort.direction === 'asc' ? ' ▲' : ' ▼') : ''}</span>
+          </button>
+        </th>)}</tr></thead>
+      <tbody>{rows.map(({card, name, representative}) => {
         return <tr key={card.id}>
           <th scope="row">{name}</th>
-          <td>{seats.length ? representativeLabel(card).text : '—'}</td>
+          <td>{representative}</td>
           <td className="num">{card.summary.sources.nep.count.toLocaleString('en-PH')}</td>
           <td className="num">{moneyCompact(card.summary.sources.nep.amount_php)}</td>
           <td className="num">{card.summary.sources.house.count.toLocaleString('en-PH')}</td>
