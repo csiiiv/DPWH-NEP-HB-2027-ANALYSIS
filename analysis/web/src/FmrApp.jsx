@@ -1,4 +1,4 @@
-import React, {lazy, Suspense, useEffect, useMemo, useRef, useState} from 'react';
+import React, {createContext, lazy, Suspense, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import WorkbenchHeader from './WorkbenchHeader.jsx';
 import SortableTable from './SortableTable.jsx';
 import ShareLink from './ShareLink.jsx';
@@ -16,6 +16,12 @@ import {fmrFundingGroups, fmrHighlights} from './fmrHighlights.js';
 import {HighlightAction, HighlightSummary} from './AnnexHighlightEvidence.jsx';
 import './Fmr.css';
 const PdfPreview = lazy(() => import('./PdfPreview.jsx'));
+const FmrSegmentModal = lazy(() => import('./FmrSegmentModal.jsx'));
+const MapModalContext = createContext(null);
+function ViewOnMap({project, pair}) {
+  const open = useContext(MapModalContext);
+  return <button type="button" className="fmr-text-button" onClick={() => open({project,pair})}>View on map</button>;
+}
 const FmrMap = lazy(() => import('./FmrMap.jsx'));
 
 const routeParams = params => Object.fromEntries(params);
@@ -175,7 +181,7 @@ function ProjectTable({projects, onSelect, onPdf, exact = false, label = 'FMR pr
     {key:'region', label:'Region'},
     {key:'amount_php', label:'Allocation (PHP)', align:'num', render:p => <Amount value={p.amount_php} exact={exact}/>},
     {key:'status', label:'Coordinates', render:p => <CoordinateBadge project={p}/>},
-    {key:'map', label:'Map', sortable:false, render:p => <a href={routeHref('map',{project:p.id})}>View on map</a>},
+    {key:'map', label:'Map', sortable:false, render:p => <ViewOnMap project={p}/>},
     {key:'source', label:'Source', value:p => p.source.pdf_page, render:p => <SourceButton source={p.source} onPdf={onPdf}/>},
   ];
   return <SortableTable tableId={tableId} rows={projects} columns={columns} initialSort={{key:'title',direction:'asc'}} ariaLabel={label} pageSize={25}/>;
@@ -196,7 +202,7 @@ function Evidence({stage, node, project, onPdf}) {
     {arithmetic && <dl className="fmr-arithmetic"><dt>Retained amount</dt><dd>{money(arithmetic.printed)}</dd><dt>Immediate child sum</dt><dd>{money(arithmetic.child_sum)}</dd><dt>Terminal project sum</dt><dd>{money(arithmetic.leaf_sum)}</dd><dt>Printed − child sum</dt><dd>{money(arithmetic.difference)}</dd><dt>Terminal projects</dt><dd>{arithmetic.leaf_count}</dd><dt>Arithmetic</dt><dd>{arithmetic.difference == null ? 'Project leaf' : arithmetic.difference === 0 ? 'Balanced' : 'Needs review'}</dd></dl>}
     <p><SourceButton source={node.source} onPdf={onPdf} label="Open source page"/></p>
     {project ? <>
-      <a href={routeHref('map',{project:project.id})}>View on map</a>
+      <ViewOnMap project={project}/>
       <CoordinateBadge project={project}/>
       <p>{project.segment_count} segment(s) · {project.point_count} point(s). The allocation belongs to this project once.</p>
       {project.review_flags.length > 0 && <div className="fmr-notice"><strong>Coordinate review remains open</strong><FlagList flags={project.review_flags} empty=""/></div>}
@@ -342,7 +348,7 @@ function ComparisonResults({rows, route, onPdf, tableId, defaultSortKey = 'delta
     <div className="fmr-mobile-sort"><label>Sort by<select aria-label="Sort by" value={sort?.key || 'none'} onChange={e => setSort(e.target.value === 'none' ? null : {key:e.target.value,direction:sort?.direction || 'desc'})}><option value="none">Source order</option>{COMPARISON_COLUMNS.map(([k,l]) => <option key={k} value={k}>{l}</option>)}</select></label><button onClick={() => setSort({key:sort?.key || 'delta_php',direction:sort?.direction === 'asc' ? 'desc' : 'asc'})}>{sort?.direction === 'asc' ? 'Ascending ↑' : 'Descending ↓'}</button></div>
     <div className="fmr-mobile-table" tabIndex={-1}><div className="fmr-table-desktop"><SortableTable tableId={tableId} rows={rows} sort={sort} onSortChange={setSort} page={page} onPageChange={setPage} pageSize={size} ariaLabel="FMR project candidates" columns={[
       {key:'title',label:'Project',render:r => <button className="fmr-text-button" onClick={() => navigate(route,{pair:r.id})}>{r.title}<small>{r.nep_id || 'No NEP counterpart'} · {r.house_id || 'No House counterpart'}</small></button>},
-      {key:'map',label:'Map',sortable:false,render:r => <a href={routeHref('map',{pair:r.id})}>View on map</a>},
+      {key:'map',label:'Map',sortable:false,render:r => <ViewOnMap pair={r}/>},
       {key:'region_key',label:'Region'}, {key:'status',label:'Status / method',render:r => <>{statusLabels[r.status]}<small>{methodLabels[r.method] || (r.ambiguous_title ? 'Repeated title; no unique counterpart' : 'No unique counterpart')}</small></>},
       {key:'nep_php',label:'NEP (PHP)',align:'num',render:r => amount(r,'nep')},
       {key:'house_php',label:'House (PHP)',align:'num',render:r => amount(r,'house')},
@@ -351,7 +357,7 @@ function ComparisonResults({rows, route, onPdf, tableId, defaultSortKey = 'delta
     ]}/></div>
     <div className="fmr-cards">{paged.map(r => <article key={r.id} className="fmr-card"><div className="fmr-card-head"><button className="fmr-text-button" onClick={() => navigate(route,{pair:r.id})}>{r.title}</button><span className="fmr-badge">{statusLabels[r.status]}</span></div>
       <p>{r.region_key} · {methodLabels[r.method] || 'No unique counterpart'}</p><dl><dt>NEP allocation</dt><dd><Amount value={r.nep_php}/></dd><dt>House allocation</dt><dd><Amount value={r.house_php}/></dd><dt>Paired difference</dt><dd><Amount value={r.delta_php} signed/></dd><dt>Paired % change</dt><dd>{signedPct(pctChange(r.house_php,r.nep_php))}</dd></dl>
-      <div className="fmr-card-actions">{['nep','house'].map(stage => r[stage] && <React.Fragment key={stage}><SourceButton source={r[stage].source} onPdf={onPdf} label={`${stage === 'house' ? 'House' : 'NEP'} source`}/><a href={routeHref(stage,{node:r[stage].id})}>{stage === 'house' ? 'House' : 'NEP'} tree</a></React.Fragment>)}<a href={routeHref('map',{pair:r.id})}>View on map</a><button onClick={() => navigate(route,{pair:r.id})}>Open pair evidence</button></div>
+      <div className="fmr-card-actions">{['nep','house'].map(stage => r[stage] && <React.Fragment key={stage}><SourceButton source={r[stage].source} onPdf={onPdf} label={`${stage === 'house' ? 'House' : 'NEP'} source`}/><a href={routeHref(stage,{node:r[stage].id})}>{stage === 'house' ? 'House' : 'NEP'} tree</a></React.Fragment>)}<ViewOnMap pair={r}/><button onClick={() => navigate(route,{pair:r.id})}>Open pair evidence</button></div>
     </article>)}{!paged.length && <p>No candidate rows match these filters.</p>}<Pagination page={page} count={count} total={rows.length} onPage={setPage} label="FMR project candidates"/></div></div>
   </>;
 }
@@ -402,7 +408,7 @@ function PairEvidence({data, route, onPdf}) {
   const rows=useMemo(() => comparisonRows(data),[data]), id=route.params.get('pair'), selected=rows.find(r => r.id === id);
   if(!id) return null;
   if(!selected) return <p role="alert">Candidate ID not found. <button onClick={() => navigate(route,{pair:null})}>Clear selection</button></p>;
-  return <Dialog label="Candidate pair evidence" onClose={() => navigate(route,{pair:null})}><div className="fmr-dialog-heading"><h2>{statusLabels[selected.status]}</h2><button onClick={() => navigate(route,{pair:null})}>Close candidate</button></div><p>{methodLabels[selected.method] || 'No unique counterpart established'} · Provisional project identity</p><p><a href={routeHref('map',{pair:selected.id})}>View on map</a></p><div className="fmr-pair-evidence">{['nep','house'].map(key => <div key={key}><h3>{data.stages[key].label}</h3>{selected[key] ? <><a href={routeHref(key,{node:selected[key].id})}>Open in source tree</a><Evidence stage={data.stages[key]} node={sourceNode(data.stages[key],selected[key].id)} project={selected[key]} onPdf={onPdf}/></> : <p>No unique source counterpart established.</p>}</div>)}</div></Dialog>;
+  return <Dialog label="Candidate pair evidence" onClose={() => navigate(route,{pair:null})}><div className="fmr-dialog-heading"><h2>{statusLabels[selected.status]}</h2><button onClick={() => navigate(route,{pair:null})}>Close candidate</button></div><p>{methodLabels[selected.method] || 'No unique counterpart established'} · Provisional project identity</p><p><ViewOnMap pair={selected}/></p><div className="fmr-pair-evidence">{['nep','house'].map(key => <div key={key}><h3>{data.stages[key].label}</h3>{selected[key] ? <><a href={routeHref(key,{node:selected[key].id})}>Open in source tree</a><Evidence stage={data.stages[key]} node={sourceNode(data.stages[key],selected[key].id)} project={selected[key]} onPdf={onPdf}/></> : <p>No unique source counterpart established.</p>}</div>)}</div></Dialog>;
 }
 function Home({data}) {
   const n=data.stages.nep,h=data.stages.house,agg=candidateAggregates(comparisonRows(data));
@@ -593,7 +599,7 @@ function Analysis({data, route, onPdf}) {
         <p className="fmr-notice">Coordinates yield straight-line endpoint distances, not road chainage or constructed road length. No construction cost/km is calculated. Flagged coordinate interpretations are excluded from the distance diagnostics; point-only or missing endpoint pairs remain unavailable. The source does not state a datum.</p>
         <section className="fmr-section"><h3>Endpoint distance diagnostics</h3><p>{measured.length} normalized projects have measurable endpoint pairs; {projects.length-measured.length} projects are excluded. Multiple segments are summed per project solely for this diagnostic.</p><SortableTable tableId="coordinates-distances" rows={measured} ariaLabel="Endpoint distance diagnostics" pageSize={25} initialSort={{key:'distance',direction:'desc'}} columns={[
           {key:'title',label:'Project',render:p => <a href={routeHref(key,{node:p.id})}>{p.title}</a>},{key:'distance',label:'Summed endpoint distance',align:'num',render:p => formatKm(p.distance)},{key:'segment_count',label:'Segments',align:'num'},
-          {key:'amount_php',label:'Project allocation (PHP)',align:'num',render:p => <Amount value={p.amount_php}/>},{key:'map',label:'Map',sortable:false,render:p => <a href={routeHref('map',{project:p.id})}>View on map</a>},{key:'source',label:'Source',value:p => p.source.pdf_page,render:p => <SourceButton source={p.source} onPdf={onPdf}/>},
+          {key:'amount_php',label:'Project allocation (PHP)',align:'num',render:p => <Amount value={p.amount_php}/>},{key:'map',label:'Map',sortable:false,render:p => <ViewOnMap project={p}/>},{key:'source',label:'Source',value:p => p.source.pdf_page,render:p => <SourceButton source={p.source} onPdf={onPdf}/>},
         ]}/></section>
       </> : view === 'projects' ? <ProjectTable tableId={`${view}-records`} projects={projects} onSelect={id => {window.location.hash=routeHref(key,{node:id});}} onPdf={onPdf}/> : <p>Unknown view. <a href={routeHref('analysis')}>Open Overview</a>.</p>}
     </>}
@@ -616,12 +622,23 @@ export default function FmrApp({initialData = null} = {}) {
   useEffect(() => {const update = () => setRoute(readRoute()); window.addEventListener('hashchange',update); return () => window.removeEventListener('hashchange',update);}, []);
   useEffect(() => {if(initialData) return; const controller = new AbortController(); fetch(siteUrl('other-analysis/data/fmr_workbench.json'),{signal:controller.signal}).then(r => {if(!r.ok) throw Error(`Data request failed (${r.status})`); return r.json();}).then(d => {if(d.schema_version !== 1) throw Error('Unsupported FMR dataset'); setData(d);}).catch(e => {if(e.name !== 'AbortError') setError(e.message);}); return () => controller.abort();}, []);
   useEffect(() => {document.title = `${fmrTabs.find(t => t[0] === route.key)?.[1] || 'Unknown page'} · DA FMR FY2027`;}, [route.key]);
+  const [mapRecord, setMapRecord] = useState(null);
+  useEffect(() => {setMapRecord(null);}, [route.key, route.params.toString()]);
+  const openMap = ({project,pair}) => {
+    if (pair) {
+      setMapRecord({id:pair.id,title:pair.house?.title || pair.nep?.title || 'FMR comparison',
+        status:pair.status,fmrProjects:{nep:pair.nep,house:pair.house}});
+    } else {
+      const key = Object.keys(data.stages).find(key => data.stages[key].projects.some(p => p.id === project.id));
+      if (key) setMapRecord({id:project.id,title:project.title,status:`${key}_only`,fmrProjects:{[key]:project}});
+    }
+  };
   const onPdf = source => navigate(route,{pdf:source.source_pdf,pdfPage:source.pdf_page});
   const pdfPath = route.params.get('pdf'), pageNumber = Number(route.params.get('pdfPage'));
   const pdfStage = data && Object.values(data.stages).find(s => [s.metadata.source_pdf,s.metadata.cross_volume_source_pdf].includes(pdfPath));
   const source = pdfStage && Number.isInteger(pageNumber) && pageNumber > 0 ? {url:siteUrl(pdfPath),document:pdfPath,title:`${pdfStage.label}${pdfStage.key === 'house' ? ' · supplied copy' : ''}`,page:pageNumber} : null;
   const inlineSource = source && !route.params.get('pair') && ['house','nep','compare'].includes(route.key) ? source : null;
-  return <><a className="fmr-skip" href="#fmr-content" onClick={e => {e.preventDefault();document.getElementById('fmr-content')?.focus();}}>Skip to content</a><WorkbenchHeader route={route.key} workspace="fmr"/><main id="fmr-content" tabIndex={-1} className="shell fmr-main">
+  return <MapModalContext.Provider value={openMap}><a className="fmr-skip" href="#fmr-content" onClick={e => {e.preventDefault();document.getElementById('fmr-content')?.focus();}}>Skip to content</a><WorkbenchHeader route={route.key} workspace="fmr"/><main id="fmr-content" tabIndex={-1} className="shell fmr-main">
     {error ? <div role="alert"><h1>FMR data could not load</h1><p>{error}</p><p>Build the FMR dataset, then reload this page.</p><button onClick={() => window.location.reload()}>Reload</button></div> : !data ? <p role="status">Loading FMR sources…</p> :
       route.key === 'house' || route.key === 'nep' ? <SourceWorkspace key={route.key} data={data} route={route} onPdf={onPdf} inlineSource={inlineSource}/> :
       route.key === 'compare' ? <Compare data={data} route={route} onPdf={onPdf} inlineSource={inlineSource}/> :
@@ -632,6 +649,9 @@ export default function FmrApp({initialData = null} = {}) {
       <><h1>Page not found</h1><a href={routeHref('home')}>Open FMR Home</a></>}
     {data && route.key !== 'map' && <PairEvidence data={data} route={route} onPdf={onPdf}/> }
     {source && !inlineSource && <Dialog label="FMR PDF source" className="fmr-pdf-dialog" onClose={() => navigate(route,{pdf:null,pdfPage:null})}><Suspense fallback={<p role="status">Loading PDF viewer…</p>}><PdfPreview source={source} onClose={() => navigate(route,{pdf:null,pdfPage:null})} closeLabel="Close PDF" downloadOriginal/></Suspense></Dialog>}
+    {mapRecord && <Suspense fallback={<p role="status">Loading project map…</p>}>
+      <FmrSegmentModal key={mapRecord.id} record={mapRecord} onClose={() => setMapRecord(null)}/>
+    </Suspense>}
     {pdfPath && data && !source && <p role="alert">Unknown PDF source or invalid page. <button onClick={() => navigate(route,{pdf:null,pdfPage:null})}>Clear PDF selection</button></p>}
-  </main><footer className="shell fmr-footer"><span>FY2027 FMR · DA locally funded annex</span><a href={siteUrl('other-analysis/README.md')}>Source documentation</a><a href={siteUrl('other-analysis/NEP_FMR_COORDINATE_REVIEW_FLAGS.md')}>NEP coordinate review</a><a href={siteUrl('other-analysis/FMR_COORDINATE_REVIEW_FLAGS.md')}>House coordinate review</a></footer></>;
+  </main><footer className="shell fmr-footer"><span>FY2027 FMR · DA locally funded annex</span><a href={siteUrl('other-analysis/README.md')}>Source documentation</a><a href={siteUrl('other-analysis/NEP_FMR_COORDINATE_REVIEW_FLAGS.md')}>NEP coordinate review</a><a href={siteUrl('other-analysis/FMR_COORDINATE_REVIEW_FLAGS.md')}>House coordinate review</a></footer></MapModalContext.Provider>;
 }
