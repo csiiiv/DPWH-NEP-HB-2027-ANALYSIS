@@ -246,3 +246,5 @@ dialog.fmr-dialog { width:min(1100px,calc(100vw - 32px)); max-height:90vh; borde
 .fmr-redflag-findings { display:grid; gap:16px; padding-left:20px; }
 .fmr-redflag-findings p { margin:6px 0; }
 @media (max-width:700px) { .fmr-redflag-metrics { grid-template-columns:1fr; gap:4px; } .fmr-redflag-metrics dd { margin-bottom:10px; } }
+
+.fmr-redflag-links .fmr-redflag-pdf { white-space:normal; overflow-wrap:anywhere; text-align:left; max-width:100%; min-width:0; }
