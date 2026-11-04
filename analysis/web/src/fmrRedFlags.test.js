@@ -53,3 +53,31 @@ test('invalid threshold settings use defaults',()=>{
  assert.deepEqual(redFlagOptions({shortMeters:'',longKm:-1,costMultiple:0,increasePercent:'bad'}),RED_FLAG_DEFAULTS);
  assert.equal(redFlagOptions({increasePercent:0}).increasePercent,0);
 });
+
+test('Tampac I printed longitude triggers a resolved long-span flag in both sources',()=>{
+ for (const [stage,id] of [['nep','nep_fmr:p18:r15'],['house','ib:p685:r5']]) {
+   const p=project(id,{points:[
+     {id:id+':point1',longitude:120.7972783,latitude:15.6352648},
+     {id:id+':point2',longitude:120.8030109,latitude:15.6377206}],
+     segments:[{...segment(.67,[[120.7972783,15.6352648],[120.8030109,15.6377206]]),
+       point_ids:[id+':point1',id+':point2']}],
+     normalization_rules:['off_by_one_digit_repair_accepted']});
+   const input=data(stage==='nep'?[p]:[],stage==='house'?[p]:[]);
+   const before=JSON.stringify(input),row=buildFmrRedFlags(input,stage).rows[0];
+   assert.ok(row.meters>900000);
+   assert.equal(row.originalProject.segments[0].coordinates[1][0],129.8030109);
+   assert.equal(row.project.segments[0].coordinates[1][0],120.8030109);
+   assert.ok(row.corrected.meters<1000);
+   assert.equal(row.flags.find(f=>f.id==='long_span').resolution,'Resolved by accepted correction');
+   assert.ok(!row.openFlags.some(f=>f.id==='long_span'));
+   assert.equal(JSON.stringify(input),before);
+ }
+});
+test('unavailable printed repair reading remains missing rather than borrowing accepted geometry',()=>{
+ const id='ib:p670:r4',p=project(id,{points:[{id:id+':point1',longitude:120.5,latitude:18.1},
+ {id:id+':point2',longitude:120.53601,latitude:18.153581}],
+ segments:[{...segment(),point_ids:[id+':point1',id+':point2']}]});
+ const row=buildFmrRedFlags(data([],[p]),'house').rows[0];
+ assert.equal(row.meters,null);assert.ok(flags(row).includes('missing_geometry'));
+ assert.equal(row.originalProject.points[1].longitude,null);
+});
