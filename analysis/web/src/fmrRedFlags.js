@@ -166,13 +166,19 @@ export function buildFmrRedFlags(data,stageKey,options={}) {
 }
 
 // Source identifiers, pagination and hierarchy labels are provenance, not project content.
-const PROVENANCE_KEYS = new Set(['id','stage','source','source_pdf','project_id','point_id','point_ids','row_id','path_labels','region','image_review']);
+const PROVENANCE_KEYS = new Set(['id','stage','source','source_pdf','project_id','point_id','point_ids','row_id','path_labels','region','image_review',
+  'coordinates_raw','coordinates_interpreted','coordinate_text_basis','source_fragment_raw','source_fragment_interpreted',
+  'normalization_rules','original_review_flags','review_flags','rules','issues','status','pairing_basis']);
+// Same normalization as build_fmr_workbench.py canonical_title; no fuzzy matching.
+export function canonicalFmrTitle(title) {
+  return (String(title || '').normalize('NFKD').toLowerCase().replace(/ß/g,'ss').replace(/ς/g,'σ')
+    .replace(/\bbrgy\b/g,'barangay').match(/[a-z0-9]+/g) || []).join(' ');
+}
 function comparableRecord(value) {
   if (Array.isArray(value)) return value.map(comparableRecord);
   if (value && typeof value === 'object') {
     value={...value};
-    if ('source_fragment_raw' in value) value.source_fragment_interpreted=value.source_fragment_interpreted ?? value.source_fragment_raw;
-    if ('coordinates_raw' in value) value.coordinates_interpreted=value.coordinates_interpreted ?? value.coordinates_raw;
+    if ('title' in value) value.title=canonicalFmrTitle(value.title);
     return Object.fromEntries(Object.keys(value).sort()
     .filter(key=>!PROVENANCE_KEYS.has(key)).map(key=>[key,comparableRecord(value[key])]));
   }
