@@ -208,3 +208,24 @@ export function collapseIdenticalFmrReviews(rows,comparison=[]) {
   }
   return result;
 }
+
+/** Original-basis evidence for exact shared sections within the selected source. */
+export function sharedCoordinateEvidence(data,row) {
+  const flag=row.flags.find(flag=>flag.id==='shared_geometry');
+  if(!flag) return [];
+  const projects=new Map(data.stages[row.stageKey].projects.map(project=>[project.id,project]));
+  const current=originalCoordinateProject(row.project);
+  const currentKeys=new Set((current.segments || []).map(sectionKey).filter(Boolean));
+  const peerKeys=new Set((flag.peerIds || []).flatMap(id=>{
+    const project=projects.get(id);
+    return project ? (originalCoordinateProject(project).segments || []).map(sectionKey).filter(Boolean) : [];
+  }));
+  return [row.id,...(flag.peerIds || [])].flatMap(id=>{
+    const retained=projects.get(id);
+    if(!retained) return [];
+    const project=originalCoordinateProject(retained);
+    return [{project:retained,current:id===row.id,segments:(project.segments || []).map(segment=>({
+      ...segment,shared:Boolean(sectionKey(segment) && (id===row.id ? peerKeys : currentKeys).has(sectionKey(segment))),
+    }))}];
+  });
+}

@@ -4,7 +4,7 @@ import SortableTable from './SortableTable.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {routeHref} from './routes.js';
 import {money, flagLabel} from './fmrModel.js';
-import {buildFmrRedFlags, collapseIdenticalFmrReviews, RED_FLAG_RULES, RED_FLAG_MEASUREMENT_NOTE} from './fmrRedFlags.js';
+import {buildFmrRedFlags, collapseIdenticalFmrReviews, sharedCoordinateEvidence, RED_FLAG_RULES, RED_FLAG_MEASUREMENT_NOTE} from './fmrRedFlags.js';
 
 const FmrSegmentModal = lazy(() => import('./FmrSegmentModal.jsx'));
 
@@ -12,6 +12,30 @@ const format = value => value == null ? '—' : value.toLocaleString('en-PH', {m
 const fields = [['rf_short_m','shortMeters','Short section below (m)',1],['rf_long_km','longKm','Long section above (km)',1],
   ['rf_cost_multiple','costMultiple','Minimum peer-median multiple',1],['rf_increase_pct','increasePercent','Candidate increase at least (%)',0]];
 const ruleLabels = Object.fromEntries(RED_FLAG_RULES.map(rule => [rule.id, rule.label]));
+
+
+function SharedCoordinatesTable({data,row,onPdf}) {
+  const records=sharedCoordinateEvidence(data,row);
+  return <div style={{overflowX:'auto'}}>
+    <p className="fmr-muted">Original coordinates in {data.stages[row.stageKey].label}. Matching sections are labelled Shared; reversed endpoint order also matches. Coordinates are [longitude, latitude], without rounding.</p>
+    <table className="fmr-provenance-table">
+      <caption>Current project and projects sharing section coordinates</caption>
+      <thead><tr><th scope="col">Record</th><th scope="col">Project title</th><th scope="col">Section coordinates [lon, lat]</th><th scope="col">PDF evidence</th></tr></thead>
+      <tbody>{records.map(({project,current,segments})=><tr key={project.id}>
+        <th scope="row">{current ? 'Current project' : 'Shared-coordinate project'}<br/><code>{project.id}</code></th>
+        <td>{project.title}<br/>{money(project.amount_php)}</td>
+        <td>{segments.map((segment,index)=><div key={segment.id || index} style={{marginBottom:8}}>
+          <strong>{segment.section_label || `Section ${index+1}`}{segment.shared ? ' · Shared' : ' · Other section'}</strong>
+          {(segment.coordinates || []).map((pair,i)=><div key={i}><code>{i===0 ? 'Start' : i===segment.coordinates.length-1 ? 'End' : `Point ${i+1}`}: [{pair.map(value=>value == null ? 'Unavailable' : String(value)).join(', ')}]</code></div>)}
+          {!segment.coordinates?.length && <span>Coordinates unavailable</span>}
+        </div>)}</td>
+        <td><button type="button" className="fmr-redflag-pdf" onClick={()=>onPdf(project.source)}>{project.source.source_pdf} · PDF p. {project.source.pdf_page}</button>
+          <small>Printed page: {project.source.printed_page ?? 'Unavailable'}</small>
+          <a href={routeHref(row.stageKey,{node:project.id})}>Source record →</a></td>
+      </tr>)}</tbody>
+    </table>
+  </div>;
+}
 
 function Evidence({row:entry, data, onClose, onPdf, onMap}) {
   const [sourceId,setSourceId] = useState(entry.id);
@@ -73,7 +97,8 @@ function Evidence({row:entry, data, onClose, onPdf, onMap}) {
     </div>
     <ul className="fmr-redflag-findings">{row.flags.map(flag => <li key={flag.id}>
       <strong>{ruleLabels[flag.id]}</strong> <span className={`fmr-badge ${flag.resolution === 'Open' ? 'review' : 'balanced'}`}>{flag.resolution}</span><p>{flag.detail}</p>
-      {flag.peerIds && <div className="fmr-redflag-links">{flag.peerIds.map(id => <a key={id} href={routeHref(stage.key,{node:id})}>{id} → source</a>)}</div>}
+      {flag.id === 'shared_geometry' && <SharedCoordinatesTable data={data} row={row} onPdf={onPdf}/>}
+      {flag.peerIds && flag.id !== 'shared_geometry' && <div className="fmr-redflag-links">{flag.peerIds.map(id => <a key={id} href={routeHref(stage.key,{node:id})}>{id} → source</a>)}</div>}
       {flag.pairId && <a href={routeHref('compare',{view:'projects',pair:flag.pairId})}>Inspect both candidate sources →</a>}
     </li>)}</ul>
     <div className="fmr-redflag-links"><button type="button" onClick={() => onMap(row)}>View on map</button><a href={routeHref(stage.key,{node:row.id})}>Open source tree →</a>

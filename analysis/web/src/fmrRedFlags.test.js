@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildFmrRedFlags, collapseIdenticalFmrReviews, redFlagOptions, RED_FLAG_DEFAULTS} from './fmrRedFlags.js';
+import {buildFmrRedFlags, collapseIdenticalFmrReviews, sharedCoordinateEvidence, redFlagOptions, RED_FLAG_DEFAULTS} from './fmrRedFlags.js';
 const segment = (km=1, coordinates=[[120,14],[120.01,14]]) => ({coordinates,straight_line_distance_km:km});
 const project = (id, overrides={}) => ({id,region_key:'I',amount_php:100000,status:'normalized',review_flags:[],segments:[segment()],segment_count:1,...overrides});
 const data = (nep,house=[],comparison=[]) => ({stages:{nep:{projects:nep},house:{projects:house}},comparison});
@@ -115,4 +115,17 @@ test('OCR text and processing history do not split otherwise identical matched p
  assert.equal(groups[0].budgetSourceLabel,'NEP+HGAB');
  assert.equal(groups[0].members[0].project.coordinates_raw,n.coordinates_raw);
  assert.equal(groups[0].members[1].project.coordinates_raw,h.coordinates_raw);
+});
+
+test('shared-coordinate evidence includes current and peers from the same source with matching sections marked',()=>{
+ const n=project('n',{title:'Current',source:{source_pdf:'NEP.pdf',pdf_page:1}});
+ const peer=project('peer',{title:'Other title',source:{source_pdf:'NEP.pdf',pdf_page:2},segments:[segment(1,[[120.01,14],[120,14]]),segment(1,[[121,14],[121.01,14]])],segment_count:2});
+ const input=data([n,peer],[project('house')]),before=JSON.stringify(input);
+ const row=buildFmrRedFlags(input,'nep').rows.find(row=>row.id==='n');
+ const evidence=sharedCoordinateEvidence(input,row);
+ assert.deepEqual(evidence.map(r=>r.project.id),['n','peer']);
+ assert.equal(evidence[0].current,true);assert.equal(evidence[1].current,false);
+ assert.deepEqual(evidence[1].segments.map(s=>s.shared),[true,false]);
+ assert.equal(evidence[1].project.source.pdf_page,2);
+ assert.equal(JSON.stringify(input),before);
 });
