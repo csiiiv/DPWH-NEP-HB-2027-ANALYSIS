@@ -164,3 +164,41 @@ export function buildFmrRedFlags(data,stageKey,options={}) {
   });
   return {...original,rows,coordinateBasis:'Original retained source readings; accepted corrections assessed separately'};
 }
+
+// Source identifiers, pagination and hierarchy labels are provenance, not project content.
+const PROVENANCE_KEYS = new Set(['id','stage','source','source_pdf','project_id','point_id','point_ids','row_id','path_labels','region','image_review']);
+function comparableRecord(value) {
+  if (Array.isArray(value)) return value.map(comparableRecord);
+  if (value && typeof value === 'object') {
+    value={...value};
+    if ('source_fragment_raw' in value) value.source_fragment_interpreted=value.source_fragment_interpreted ?? value.source_fragment_raw;
+    if ('coordinates_raw' in value) value.coordinates_interpreted=value.coordinates_interpreted ?? value.coordinates_raw;
+    return Object.fromEntries(Object.keys(value).sort()
+    .filter(key=>!PROVENANCE_KEYS.has(key)).map(key=>[key,comparableRecord(value[key])]));
+  }
+  return value;
+}
+/** Only unique matched counterparts with identical original AND accepted content collapse. */
+export function collapseIdenticalFmrReviews(rows,comparison=[]) {
+  const byId=new Map(rows.map(row=>[row.id,row])), partners=new Map();
+  for(const pair of comparison.filter(p=>p.status==='paired')) {
+    if(!partners.has(pair.nep_id)) partners.set(pair.nep_id,[]);
+    if(!partners.has(pair.house_id)) partners.set(pair.house_id,[]);
+    partners.get(pair.nep_id).push(pair.house_id);partners.get(pair.house_id).push(pair.nep_id);
+  }
+  const fingerprint=row=>JSON.stringify(comparableRecord({accepted:row.project,original:row.originalProject}));
+  const used=new Set(),result=[];
+  for(const row of rows) {
+    if(used.has(row.id)) continue;
+    const ids=partners.get(row.id) || [],other=ids.length===1 ? byId.get(ids[0]) : null;
+    const match=other && !used.has(other.id) && other.stageKey!==row.stageKey
+      && partners.get(other.id)?.length===1 && fingerprint(row)===fingerprint(other);
+    const members=match ? [row,other] : [row];
+    members.forEach(member=>used.add(member.id));
+    const flags=[...new Map(members.flatMap(member=>member.flags).map(flag=>[flag.id,flag])).values()];
+    result.push({...row,members,flags,flagCount:flags.length,
+      budgetSource:members.length>1 ? 'both' : row.stageKey,
+      budgetSourceLabel:members.length>1 ? 'NEP+HGAB' : row.stageKey==='nep' ? 'NEP ONLY' : 'HGAB ONLY'});
+  }
+  return result;
+}
