@@ -329,7 +329,8 @@ export function SearchSummary({cards, query = '', lensLabel, onClose}) {
       <caption>Per-card allocations with totals</caption>
       <thead><tr>
         <th scope="col">District / City</th><th scope="col">Representative</th>
-        <th scope="col">NEP</th><th scope="col">Amended (HGAB3)</th>
+        <th scope="col">NEP records</th><th scope="col">NEP</th>
+        <th scope="col">HGAB3 records</th><th scope="col">Amended (HGAB3)</th>
         <th scope="col">Increase</th></tr></thead>
       <tbody>{cards.map(card => {
         const seats = districtSeats(card);
@@ -341,7 +342,9 @@ export function SearchSummary({cards, query = '', lensLabel, onClose}) {
         return <tr key={card.id}>
           <th scope="row">{name}</th>
           <td>{seats.length ? representativeLabel(card).text : '—'}</td>
+          <td className="num">{card.summary.sources.nep.count.toLocaleString('en-PH')}</td>
           <td className="num">{moneyCompact(card.summary.sources.nep.amount_php)}</td>
+          <td className="num">{card.summary.sources.house.count.toLocaleString('en-PH')}</td>
           <td className="num">{moneyCompact(card.summary.sources.house.amount_php)}</td>
           <td className={`num ${deltaClass(card.summary.delta_php)}`}>
             {signedMoney(card.summary.delta_php)}</td>
@@ -350,7 +353,9 @@ export function SearchSummary({cards, query = '', lensLabel, onClose}) {
       <tfoot><tr>
         <th scope="row">Total · {totals.cards.toLocaleString('en-PH')} cards</th>
         <td>{totals.rows.toLocaleString('en-PH')} records</td>
+        <td className="num">{totals.nep.count.toLocaleString('en-PH')}</td>
         <td className="num">{moneyCompact(totals.nep.amount_php)}</td>
+        <td className="num">{totals.house.count.toLocaleString('en-PH')}</td>
         <td className="num">{moneyCompact(totals.house.amount_php)}</td>
         <td className={`num ${deltaClass(totals.delta_php)}`}>{signedMoney(totals.delta_php)}</td>
       </tr></tfoot>
