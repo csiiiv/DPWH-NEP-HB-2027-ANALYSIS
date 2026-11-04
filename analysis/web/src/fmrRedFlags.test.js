@@ -53,3 +53,22 @@ test('invalid threshold settings use defaults',()=>{
  assert.deepEqual(redFlagOptions({shortMeters:'',longKm:-1,costMultiple:0,increasePercent:'bad'}),RED_FLAG_DEFAULTS);
  assert.equal(redFlagOptions({increasePercent:0}).increasePercent,0);
 });
+
+test('accepted repairs remain reference records without creating open flags',()=>{
+ const repaired=project('corrected',{normalization_rules:['off_by_one_digit_repair_accepted'],
+   original_review_flags:['outside_philippines_orientation_bounds']});
+ const input=data([repaired,project('plain',{segments:[segment(1,[[121,14],[121.01,14]])]})]);
+ const before=JSON.stringify(input), rows=buildFmrRedFlags(input,'nep').rows;
+ assert.equal(rows[0].hasCorrection,true);
+ assert.equal(rows[0].reviewStatus,'Corrected · reference');
+ assert.equal(rows[0].flagCount,0);
+ assert.deepEqual(rows[0].correction.clearedFlags,['outside_philippines_orientation_bounds']);
+ assert.equal(rows[1].hasCorrection,false);
+ assert.equal(JSON.stringify(input),before);
+});
+test('correction history and unresolved analytical flags can coexist',()=>{
+ const p=project('mixed',{normalization_rules:['source_numeric_repair_accepted'],status:'needs_review',review_flags:['unresolved']});
+ const row=buildFmrRedFlags(data([p]),'nep').rows[0];
+ assert.equal(row.hasCorrection,true);assert.ok(flags(row).includes('coordinate_review'));
+ assert.equal(row.reviewStatus,'Open findings + correction history');
+});
