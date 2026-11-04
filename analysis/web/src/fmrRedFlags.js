@@ -62,8 +62,13 @@ const number = value => value.toLocaleString('en-PH', {maximumFractionDigits:2})
 
 /** Derived review annotations only: retained projects, amounts and coordinates stay unchanged. */
 export function buildFmrRedFlags(data, stageKey, options = {}) {
+  if (stageKey === 'all') {
+    const sources = ['nep', 'house'].map(key => buildFmrRedFlags(data, key, options));
+    return {...sources[0], rows:sources.flatMap(source => source.rows),
+      eligibleRates:sources.reduce((sum, source) => sum + source.eligibleRates, 0)};
+  }
   const config = redFlagOptions(options), projects = data.stages[stageKey].projects;
-  const rows = projects.map(project => ({id:project.id, project, ...geometryMetrics(project), flags:[]}));
+  const rows = projects.map(project => ({id:project.id, stageKey, project, ...geometryMetrics(project), flags:[]}));
   const regional = new Map();
   for (const row of rows) {
     if (!regional.has(row.project.region_key)) regional.set(row.project.region_key, []);

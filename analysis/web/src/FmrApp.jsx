@@ -505,7 +505,9 @@ const analysisQuestions={overview:'How are FMR allocations distributed across re
 function Analysis({data, route, onPdf}) {
   const params=routeParams(route.params), aliases={house_candidates:'insertions',nep_candidates:'deletions',statistics:'stats',chainage:'coordinates'};
   const view=aliases[params.view] || params.view || 'overview';
-  const key=view === 'insertions' ? 'house' : view === 'deletions' ? 'nep' : params.stage === 'house' ? 'house' : 'nep', stage=data.stages[key];
+  const key=view === 'insertions' ? 'house' : view === 'deletions' ? 'nep' : params.stage === 'house' ? 'house' : view === 'red_flags' && params.stage !== 'nep' ? 'all' : 'nep';
+  const stage=useMemo(() => key === 'all' ? {key:'all',label:'DBM NEP + House GAB',
+    projects:[...data.stages.nep.projects,...data.stages.house.projects],regions:data.stages.nep.regions} : data.stages[key], [data,key]);
   const projects=useMemo(() => filterProjects(stage.projects,params),
     [stage,params.q,params.region,params.status,params.category,params.extraction,params.rule,params.review_flag,params.text_basis,params.amount,params.minAmount,params.maxAmount]);
   const stats=allocationStats(projects), regional=regionAllocationRows(projects,stage.regions);
@@ -544,7 +546,7 @@ function Analysis({data, route, onPdf}) {
   return <>
     <Hero title="Analysis" actions={candidateView
       ? <span className="hero-source">{view === 'insertions' ? 'House GAB · unmatched source rows' : view === 'deletions' ? 'DBM NEP · unmatched source rows' : 'House GAB ↔ DBM NEP'}</span>
-      : <label className="hero-source">Budget source<select value={key} onChange={e => navigate(route,{stage:e.target.value,records:null,category:null,page:null,rf_project:null})}><option value="nep">DBM NEP</option><option value="house">House GAB</option></select></label>}><p>Choose an analytical question, inspect its population, and follow aggregates into source records.</p></Hero>
+      : <label className="hero-source">Budget source<select value={key} onChange={e => navigate(route,{stage:e.target.value,records:null,category:null,page:null,rf_project:null})}>{view === 'red_flags' && <option value="all">Both NEP and House GAB</option>}<option value="nep">DBM NEP</option><option value="house">House GAB</option></select></label>}><p>Choose an analytical question, inspect its population, and follow aggregates into source records.</p></Hero>
     <ViewTabs route={route} selectedView={view} defaultView="overview" views={analysisViews}/><h2 className="fmr-question">{analysisQuestions[view] || 'Source records'}</h2>
     <Filters route={route} regions={candidateView ? data.regions : stage.regions} coordinate={!candidateView} comparison={candidateView} fixedStatus={candidateView ? candidateStatus : undefined} provenance={provenance}/>
     {candidateView ? <><p className="fmr-muted">{candidateStatus === 'changed' ? 'Changed candidate pairs; source amounts and paired differences remain distinct.' : `Unmatched ${stage.label} source rows are candidates, not certified ${key === 'house' ? 'unsupported insertions' : 'deletions'}.`}</p>
