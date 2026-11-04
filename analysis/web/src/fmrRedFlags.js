@@ -106,7 +106,17 @@ export function buildFmrRedFlags(data, stageKey, options = {}) {
       if (n.complete && h.complete && JSON.stringify([...n.keys].sort()) === JSON.stringify([...h.keys].sort()) && percent >= config.increasePercent)
         add('allocation_increase', `The candidate House allocation is ${number(percent)}% above NEP on an identical coordinate footprint. The pairing method is ${pair.method}; project identity and changes in scope still require review.`, {pairId:pair.id});
     }
+    const rules = [...new Set([...(p.normalization_rules || []), ...(p.points || []).flatMap(point => point.rules || [])])];
+    const repairRules = rules.filter(rule => rule.endsWith('repair_accepted'));
+    const clearedFlags = [...new Set([...(p.original_review_flags || []), ...(p.image_review?.initial_review_flags || [])])]
+      .filter(flag => !(p.review_flags || []).includes(flag));
+    const textCorrected = Boolean(p.coordinates_interpreted && p.coordinates_raw
+      && p.coordinates_interpreted !== p.coordinates_raw);
+    row.correction = {rules:repairRules, clearedFlags, textCorrected};
+    row.hasCorrection = repairRules.length > 0 || textCorrected || (clearedFlags.length > 0 && rules.length > 0);
     row.flagCount = row.flags.length;
+    row.reviewStatus = row.flagCount ? (row.hasCorrection ? 'Open findings + correction history' : 'Open findings')
+      : row.hasCorrection ? 'Corrected · reference' : 'No findings';
   }
   return {config, rows, eligibleRates:rows.filter(r => r.proxyPhpPerMeter != null).length,
     rules:RED_FLAG_RULES, measurementNote:RED_FLAG_MEASUREMENT_NOTE};
