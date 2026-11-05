@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedDate": "2026-10-25",
+  "purpose": "Independent BetterGov congressional-district source inventory and conflict audit. Review-only; not a verified electoral district map.",
+  "sourcePage": "https://visualizations.bettergov.ph/sources",
+  "repository": "bettergovph/open-data-visualization",
+  "upstreamCommit": "7d8700fe9627d496794aba38478e4ea0649af51f",
+  "pinnedFiles": [
+    {
+      "path": "static/data/districts.json",
+      "gitBlobSha1": "d3efd8ea21f3c6e274046c12fe9eaeac4efafc3d",
+      "url": "https://github.com/bettergovph/open-data-visualization/blob/7d8700fe9627d496794aba38478e4ea0649af51f/static/data/districts.json"
+    },
+    {
+      "path": "static/data/districts_generated.json",
+      "gitBlobSha1": "ebaf4f220e13e57b399a5fa9efa7c7e05f16307e",
+      "url": "https://github.com/bettergovph/open-data-visualization/blob/7d8700fe9627d496794aba38478e4ea0649af51f/static/data/districts_generated.json"
+    },
+    {
+      "path": "city_barangays_mapping.json",
+      "gitBlobSha1": "e136dea4a89005a69bdff9020da48fdcf48a979d",
+      "url": "https://github.com/bettergovph/open-data-visualization/blob/7d8700fe9627d496794aba38478e4ea0649af51f/city_barangays_mapping.json"
+    },
+    {
+      "path": "static/data/20th_congress_representatives.json",
+      "gitBlobSha1": "4d8b4f642772caaad69d4e68de03c6d47a757e3f",
+      "url": "https://github.com/bettergovph/open-data-visualization/blob/7d8700fe9627d496794aba38478e4ea0649af51f/static/data/20th_congress_representatives.json"
+    }
+  ],
+  "upstreamCatalogClaims": {
+    "geographicDistricts": 256,
+    "provincialGroupings": 85,
+    "cityCount": 22,
+    "barangayRecords": 7418,
+    "nonPartylistMembersClaimed": 417
+  },
+  "officialControl": {
+    "geographicLegislativeDistricts": 254,
+    "asOfElection": "2025-05-12",
+    "publisher": "Philippine Statistics Authority",
+    "url": "https://psa.gov.ph/system/files/phcd/Press%20Release%20on%20Legislative%20District%20%282024%20POPCEN%29.pdf"
+  },
+  "knownLegalCase": {
+    "jurisdiction": "Agusan del Norte / Butuan",
+    "case": "RA 11714 reapportions Butuan separately from the province for 2025 election; both cannot be represented by one provincial lone district.",
+    "url": "https://lawphil.net/statutes/repacts/ra2022/ra_11714_2022.html"
+  },
+  "existingIntegration": {
+    "draftPr": "https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/pull/2",
+    "note": "This audit PR is independent of draft PSGC2LEG implementation PR; do not promote any BetterGov mapping without a verified electoral-geography join."
+  }
+}

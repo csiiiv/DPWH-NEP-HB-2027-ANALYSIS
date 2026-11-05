@@ -1,0 +1,2867 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "source_artifact_inventory_not_production_crosswalk",
+  "measurements": {
+    "sourceMetadataDate": "2025-11-06",
+    "sourceClaimsTotalDistricts": 162,
+    "primaryJurisdictionKeys": 103,
+    "primaryMunicipalityLabelRows": 1654,
+    "primaryCityBarangayLabelRows": 1818,
+    "generatedTopLevelKeys": 86,
+    "generatedLocalityRows": 1627,
+    "generatedMixedCityEntries": 12,
+    "generatedMixedCityBarangayRows": 1774,
+    "hierarchyProvinceGroupings": 55,
+    "hierarchyCityKeys": 136,
+    "hierarchyBarangayNameRows": 7418,
+    "representativeRows": 318,
+    "conflictingPrimaryCityBarangayKeys": 253,
+    "conflictsWithElectionDerivedCandidate": 224
+  },
+  "discrepancies": {
+    "catalogClaimedDistricts": 256,
+    "psaOfficialHouseDistricts": 254,
+    "catalogClaimed85Provinces": "source page says 85 provincial groupings; file hierarchy has separate counts and cannot be equated to provinces",
+    "rawCityHierarchyNotHouseDistricts": true,
+    "generatedButuanUnderAgusanDelNorte": "Lone District",
+    "generatedButuanNeedsReview": true,
+    "examplesOfNotAutomaticallyResolved": [
+      "Butuan's separate legislative seat (2025), under Agusan Del Norte in election-generated tree.",
+      "Conflicting named barangays in Cebu City, Quezon City, Zamboanga City, and other cities."
+    ]
+  },
+  "byJurisdiction": {
+    "Caloocan": 1,
+    "Cebu City": 62,
+    "Davao City": 10,
+    "Makati": 1,
+    "Parañaque": 1,
+    "Quezon City": 118,
+    "Zamboanga City": 60
+  },
+  "conflicts": [
+    {
+      "jurisdiction": "Caloocan",
+      "barangay": "barangays",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Adlaon",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Agsungot",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Apas",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Babag",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Bacayan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Banilad",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Binaliw",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Budlaan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Busay",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Cambinocot",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Capitol Site",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Carreta",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Central",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Cogon Ramos",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Day-as",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Ermita",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Guba",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Hipodromo",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Kalubihan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Kamagayan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Kamputhaw",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Kasambagan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Kinasang-an",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Labangon",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Lahug",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Lorega",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Lusaran",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Luz",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Mabini",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Mabolo",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Malubog",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Pahina Central",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Pahina San Nicolas",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Pari-an",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Parian",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Pasil",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Pit-os",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Poblacion Pardo",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Pulangbato",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Pung-ol Sibugay",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "San Antonio",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "San Jose",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "San Nicolas Proper",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "San Roque",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Santo Niño",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Sapangdaku",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Sawang Calero",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Sinsin",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Sirao",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Subangdaku",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Sudlon I",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Sudlon II",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "T. Padilla",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Tabunan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Tagba-o",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Talamban",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Taptap",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Tejero",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Tinago",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Tisa",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "To-ong Pardo",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Cebu City",
+      "barangay": "Zapatera",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Davao City",
+      "barangay": "Bago Aplaya",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Davao City",
+      "barangay": "Bago Gallera",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Davao City",
+      "barangay": "Baliok",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Davao City",
+      "barangay": "Catalunan Grande",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Davao City",
+      "barangay": "Catalunan Pequeño",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Davao City",
+      "barangay": "Ma-a",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Davao City",
+      "barangay": "Matina Crossing",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Davao City",
+      "barangay": "Matina Pangi",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Davao City",
+      "barangay": "Paquibato",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Davao City",
+      "barangay": "Wangan",
+      "sourceDistrictLabels": [
+        "2nd District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Makati",
+      "barangay": "barangays",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Parañaque",
+      "barangay": "barangays",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Alicia",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Amihan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Apolonio Samson",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "6th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Baesa",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "6th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Bagbag",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "5th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Bagong Silangan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District",
+        "3rd District",
+        "4th District",
+        "5th District",
+        "6th District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Bahay Toro",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Balingasa",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Balong Bato",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "6th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Batas Hills",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Batasan Hills",
+      "sourceDistrictLabels": [
+        "2nd District",
+        "4th District",
+        "5th District",
+        "6th District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Bayanihan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Bungad",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Capri",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "5th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Commonwealth",
+      "sourceDistrictLabels": [
+        "2nd District",
+        "4th District",
+        "5th District",
+        "6th District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Damar",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Damayan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Del Monte",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Dioquino Zobel",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Don Manuel",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Doña Aurora",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Doña Faustina",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Doña Imelda",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Doña Josefa",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "E. Rodriguez",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Escopa I",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Escopa II",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Escopa III",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Escopa IV",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Fairview",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "5th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Gulod",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "5th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Holy Spirit",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District",
+        "3rd District",
+        "4th District",
+        "5th District",
+        "6th District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Kalusugan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Kamuning",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Katipunan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Kaunlaran",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Kristong Hari",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Krus na Ligas",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Laging Handa",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Malaya",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Mariblo",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Marilag",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Masagana",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Matandang Balara",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Milagrosa",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "N.S. Amoranto",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Nagkaisang Nayon",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "5th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Nayon Kaunlaran",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "New Era",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "6th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Novaliches Proper",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "5th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Obrero",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Old Capitol Site",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Paang Bundok",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Pag-ibig sa Nayon",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Paligsahan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Paltok",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Pansol",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Paraiso",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Pasong Putik",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Pasong Tamo",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "6th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Payatas",
+      "sourceDistrictLabels": [
+        "2nd District",
+        "4th District",
+        "5th District",
+        "6th District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Phil-Am",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Pinyahan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Project 1",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Project 2",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Project 3",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Project 4",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Project 5",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Project 6",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Project 7",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Project 8",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Quirino 2-A",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Quirino 2-B",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Quirino 2-C",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Quirino 3-A",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Quirino 3-B",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Ramon Magsaysay",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Roxas",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Sacred Heart",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Saint Peter",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Salvacion",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "San Agustin",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "5th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "San Antonio",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "San Bartolome",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "5th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "San Isidro",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "San Isidro Galas",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "San Jose",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "San Martin de Porres",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "San Roque",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "San Vicente",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Sangandaan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "6th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Santa Cruz",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Santa Lucia",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "5th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Santa Monica",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "5th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Santa Teresita",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Santo Cristo",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Santo Domingo",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Sikatuna Village",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Silangan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Socorro",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "South Triangle",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "St. Ignatius",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "St. Peter",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Tagumpay",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Talayan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Talipapa",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "6th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Tandang Sora",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "6th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Tatalon",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Teachers Village East",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Teachers Village West",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Ugong Norte",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Unang Sigaw",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "6th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Valencia",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "4th District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Veterans Village",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "Villa Maria Clara",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "West Kamias",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "West Triangle",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "1st District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Quezon City",
+      "barangay": "White Plains",
+      "sourceDistrictLabels": [
+        "1st District",
+        "3rd District"
+      ],
+      "electionDerivedLabel": "3rd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Arena Blanco",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Boalan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Buenavista",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Bunguiao",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Busay",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Cabaluay",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Cacao",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Calabasa",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Culianan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Curuan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Dita",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Divisoria",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Dulian",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Guisao",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Guiwan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Kasanyangan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Lamisahan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Landang Gua",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Landang Laum",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Lanzones",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Lapakan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Latuan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Licomo",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Limaong",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Lubigan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Lumayang",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Lumbangan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Lunzuran",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Mampang",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Manalipa",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Mangusu",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Manicahan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Mercedes",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Muti",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Pangapuyan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Panubigan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Pasilmanta",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Pasobolong",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Putik",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Quiniput",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Salaan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Sangali",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Santa Catalina",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Sibulao",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Tagasilay",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Taguiti",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Talabaan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Talon-Talon",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Taluksangay",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Tetuan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Tictabon",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Tictapul",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Tigbalabag",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Tolosa",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Tugbungan",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Tumalutap",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": null,
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Tumitus",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Victoria",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Vitali",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    },
+    {
+      "jurisdiction": "Zamboanga City",
+      "barangay": "Zambowood",
+      "sourceDistrictLabels": [
+        "1st District",
+        "2nd District"
+      ],
+      "electionDerivedLabel": "2nd District",
+      "provisionalOnly": true,
+      "status": "needs_official_congressional_district_verification"
+    }
+  ],
+  "requirements": [
+    "Use latest PSA PSGC for administrative identities and parent relationships.",
+    "Use COMELEC direct congressional district geography and dated reapportionment laws for verified constituency links.",
+    "Treat generated House election contest labels as candidates, not authoritative boundaries until complete and reviewed.",
+    "Never interpret councilor district as a House district.",
+    "Never use DEO associations to infer House project attribution.",
+    "Never count location coverage as congressional seat coverage."
+  ],
+  "upstream": {
+    "repository": "bettergovph/open-data-visualization",
+    "commit": "7d8700fe9627d496794aba38478e4ea0649af51f",
+    "sourcePage": "https://visualizations.bettergov.ph/sources",
+    "sourceHashes": {
+      "static/data/districts.json": "d3efd8ea21f3c6e274046c12fe9eaeac4efafc3d",
+      "static/data/districts_generated.json": "ebaf4f220e13e57b399a5fa9efa7c7e05f16307e",
+      "city_barangays_mapping.json": "e136dea4a89005a69bdff9020da48fdcf48a979d",
+      "static/data/20th_congress_representatives.json": "4d8b4f642772caaad69d4e68de03c6d47a757e3f"
+    }
+  },
+  "officialControl": {
+    "geographicLegislativeDistricts": 254,
+    "asOfElection": "2025-05-12",
+    "publisher": "Philippine Statistics Authority",
+    "url": "https://psa.gov.ph/system/files/phcd/Press%20Release%20on%20Legislative%20District%20%282024%20POPCEN%29.pdf"
+  }
+}
