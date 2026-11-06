@@ -229,3 +229,14 @@ export function sharedCoordinateEvidence(data,row) {
     }))}];
   });
 }
+
+/** Count identical cross-stage versions once; never merge differing versions. */
+export function summarizeFmrReviews(groups) {
+  const flagged=groups.filter(group=>group.flagCount>0);
+  return {entries:groups.length,sourceRecords:groups.reduce((sum,g)=>sum+g.members.length,0),
+    flaggedEntries:flagged.length,flaggedAllocation:flagged.reduce((sum,g)=>sum+g.project.amount_php,0),
+    findings:flagged.reduce((sum,g)=>sum+new Set(g.flags.map(f=>f.id)).size,0),
+    correctedEntries:groups.filter(g=>g.members.some(r=>r.hasCorrection)).length,
+    resolvedEntries:groups.filter(g=>g.members.some(r=>r.resolvedFlags.length)).length,
+    openEntries:groups.filter(g=>g.members.some(r=>r.openFlags.length)).length};
+}
