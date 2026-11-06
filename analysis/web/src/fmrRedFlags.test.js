@@ -142,3 +142,14 @@ test('headline counts and allocation remove identical matched-source overlap onl
  assert.equal(summarizeFmrReviews(differing).flaggedAllocation,35000000);
  assert.equal(summarizeFmrReviews(groups.filter(g=>g.budgetSource==='nep')).entries,0);
 });
+
+test('flag multiplicity partitions entries without counting a multi-flag entry twice',()=>{
+ const make=(ids)=>({flagCount:ids.length,flags:ids.map(id=>({id})),project:{amount_php:100},
+   members:[{hasCorrection:false,resolvedFlags:[],openFlags:[]}]});
+ const s=summarizeFmrReviews([make(['a']),make(['a','b']),make(['a','b','c'])]);
+ assert.equal(s.flaggedEntries,3);assert.equal(s.findings,6);
+ assert.deepEqual(s.flagMultiplicity,{'1':1,'2':1,'3plus':1});
+ assert.equal(Object.values(s.flagMultiplicity).reduce((a,b)=>a+b,0),s.flaggedEntries);
+ const duplicate=summarizeFmrReviews([make(['a','a'])]);
+ assert.equal(duplicate.findings,1);assert.equal(duplicate.flagMultiplicity['1'],1);
+});
