@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildFmrRedFlags, collapseIdenticalFmrReviews, sharedCoordinateEvidence, redFlagOptions, RED_FLAG_DEFAULTS} from './fmrRedFlags.js';
+import {buildFmrRedFlags, collapseIdenticalFmrReviews, sharedCoordinateEvidence, summarizeFmrReviews, redFlagOptions, RED_FLAG_DEFAULTS} from './fmrRedFlags.js';
 const segment = (km=1, coordinates=[[120,14],[120.01,14]]) => ({coordinates,straight_line_distance_km:km});
 const project = (id, overrides={}) => ({id,region_key:'I',amount_php:100000,status:'normalized',review_flags:[],segments:[segment()],segment_count:1,...overrides});
 const data = (nep,house=[],comparison=[]) => ({stages:{nep:{projects:nep},house:{projects:house}},comparison});
@@ -128,4 +128,28 @@ test('shared-coordinate evidence includes current and peers from the same source
  assert.deepEqual(evidence[1].segments.map(s=>s.shared),[true,false]);
  assert.equal(evidence[1].project.source.pdf_page,2);
  assert.equal(JSON.stringify(input),before);
+});
+
+test('headline counts and allocation remove identical matched-source overlap only',()=>{
+ const n=project('n',{title:'Same project',amount_php:15000000,segments:[segment(.05)]});
+ const h={...n,id:'h'},pair=[{status:'paired',nep_id:'n',house_id:'h'}];
+ const groups=collapseIdenticalFmrReviews(buildFmrRedFlags(data([n],[h],pair),'all').rows,pair);
+ const summary=summarizeFmrReviews(groups);
+ assert.equal(summary.flaggedEntries,1);assert.equal(summary.sourceRecords,2);
+ assert.equal(summary.flaggedAllocation,15000000);assert.equal(summary.findings,1);
+ const differing=collapseIdenticalFmrReviews(buildFmrRedFlags(data([n],[{...h,amount_php:20000000}],pair),'all').rows,pair);
+ assert.equal(summarizeFmrReviews(differing).flaggedEntries,2);
+ assert.equal(summarizeFmrReviews(differing).flaggedAllocation,35000000);
+ assert.equal(summarizeFmrReviews(groups.filter(g=>g.budgetSource==='nep')).entries,0);
+});
+
+test('flag multiplicity partitions entries without counting a multi-flag entry twice',()=>{
+ const make=(ids)=>({flagCount:ids.length,flags:ids.map(id=>({id})),project:{amount_php:100},
+   members:[{hasCorrection:false,resolvedFlags:[],openFlags:[]}]});
+ const s=summarizeFmrReviews([make(['a']),make(['a','b']),make(['a','b','c'])]);
+ assert.equal(s.flaggedEntries,3);assert.equal(s.findings,6);
+ assert.deepEqual(s.flagMultiplicity,{'1':1,'2':1,'3plus':1});
+ assert.equal(Object.values(s.flagMultiplicity).reduce((a,b)=>a+b,0),s.flaggedEntries);
+ const duplicate=summarizeFmrReviews([make(['a','a'])]);
+ assert.equal(duplicate.findings,1);assert.equal(duplicate.flagMultiplicity['1'],1);
 });
