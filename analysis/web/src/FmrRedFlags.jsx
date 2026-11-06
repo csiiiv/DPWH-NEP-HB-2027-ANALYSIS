@@ -122,8 +122,11 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
   const reviewRows = assessed.filter(group=>group.flagCount>0 || group.members.some(r=>r.hasCorrection));
   const groupedRows = allGroups.filter(group=>group.members.some(member=>visibleIds.has(member.id))
     && (group.flagCount>0 || group.members.some(r=>r.hasCorrection)));
-  const displayRows = reviewRows.filter(group=>!params.rf_rule || (params.rf_rule==='corrected'
+  const ruleRows = reviewRows.filter(group=>!params.rf_rule || (params.rf_rule==='corrected'
     ? group.members.some(r=>r.hasCorrection) : group.flags.some(flag=>flag.id===params.rf_rule)));
+  const overlapSummary = summarizeFmrReviews(ruleRows);
+  const displayRows = ruleRows.filter(group=>!params.rf_count || (params.rf_count==='3plus'
+    ? group.flagCount>=3 : group.flagCount===Number(params.rf_count)));
   const summary = summarizeFmrReviews(displayRows);
   const exportRows = displayRows.flatMap(group=>group.members.map((row,index)=>({
     ...row,entryId:group.id,countedAllocation:index===0 && group.flagCount>0 ? group.project.amount_php : 0})));
@@ -155,6 +158,22 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
       <div className="fmr-stat"><span>Eligible proxy denominators</span><strong>{assessed.filter(g => g.members.every(r=>r.proxyPhpPerMeter != null)).length.toLocaleString()}</strong><small>Complete, positive, resolved geometry</small></div>
       <div className="fmr-stat"><span>Excluded proxy denominators</span><strong>{assessed.filter(g => g.members.some(r=>r.proxyPhpPerMeter == null)).length.toLocaleString()}</strong><small>No partial or invented lengths</small></div>
     </div>
+    <section className="fmr-provenance" aria-label="Flag overlap">
+      <h3>Flag overlap: entries versus findings</h3>
+      <p>Each matched, identical entry is counted once. Multiple flags describe that same entry and are not additional projects. A higher flag count does not establish greater severity.</p>
+      <p><strong>{overlapSummary.flaggedEntries.toLocaleString()} flagged entries</strong> carry <strong>{overlapSummary.findings.toLocaleString()} distinct findings</strong> in the selected source coverage and review category.</p>
+      <div style={{overflowX:'auto'}}><table className="fmr-provenance-table">
+        <caption>Entries grouped by number of distinct flag categories</caption>
+        <thead><tr><th scope="col">Flags per entry</th><th scope="col">Entries</th><th scope="col">Share of flagged entries</th><th scope="col">Inspect</th></tr></thead>
+        <tbody>{[['1','One flag'],['2','Two flags'],['3plus','Three or more flags']].map(([key,label])=><tr key={key}>
+          <th scope="row">{label}</th><td>{overlapSummary.flagMultiplicity[key].toLocaleString()}</td>
+          <td>{overlapSummary.flaggedEntries ? format(overlapSummary.flagMultiplicity[key]/overlapSummary.flaggedEntries*100) : '0'}%</td>
+          <td><button type="button" aria-pressed={params.rf_count===key} onClick={()=>change({rf_count:params.rf_count===key ? null : key})}>Show entries</button></td>
+        </tr>)}</tbody>
+      </table></div>
+      {params.rf_count && <p role="status">Showing {params.rf_count==='3plus' ? 'three or more' : params.rf_count} flags per entry. <button type="button" onClick={()=>change({rf_count:null})}>Show all flag counts</button></p>}
+      <p className="fmr-muted">Category totals overlap and should not be added as a project count. NEP and HGAB source evidence remains available within each entry.</p>
+    </section>
     <p className="fmr-notice">{summary.correctedEntries.toLocaleString()} entries have correction history and remain available here for reference. Original source findings remain counted after correction. {summary.resolvedEntries} entries have findings resolved by correction; {summary.openEntries} have analytical findings on accepted coordinates.</p>
     <div className="fmr-filters"><label>Budget source coverage<select aria-label="Budget source coverage" value={params.rf_source || ''} onChange={e=>change({rf_source:e.target.value})}>
       <option value="">All source coverage</option>
