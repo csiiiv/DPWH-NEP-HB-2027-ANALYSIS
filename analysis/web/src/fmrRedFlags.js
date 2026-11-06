@@ -236,6 +236,8 @@ export function summarizeFmrReviews(groups) {
   return {entries:groups.length,sourceRecords:groups.reduce((sum,g)=>sum+g.members.length,0),
     flaggedEntries:flagged.length,flaggedAllocation:flagged.reduce((sum,g)=>sum+g.project.amount_php,0),
     findings:flagged.reduce((sum,g)=>sum+new Set(g.flags.map(f=>f.id)).size,0),
+    flagMultiplicity:flagged.reduce((counts,g)=>{const count=new Set(g.flags.map(f=>f.id)).size;
+      const key=count>=3 ? '3plus' : String(count);counts[key]++;return counts;},{'1':0,'2':0,'3plus':0}),
     correctedEntries:groups.filter(g=>g.members.some(r=>r.hasCorrection)).length,
     resolvedEntries:groups.filter(g=>g.members.some(r=>r.resolvedFlags.length)).length,
     openEntries:groups.filter(g=>g.members.some(r=>r.openFlags.length)).length};
