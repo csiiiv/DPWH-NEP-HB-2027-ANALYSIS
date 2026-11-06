@@ -322,9 +322,9 @@ test("the FMR legislative grid and explorer expose assignment evidence", skipFmr
     onPdf: () => {}, onMap: () => {}, onClose: () => {},
   });
   assert.ok(reviewDrawer.includes("FMR source-analysis evidence"));
-  assert.ok(reviewDrawer.includes("Long endpoint span"));
+  assert.ok(!reviewDrawer.includes("Long endpoint span"), "14.87 km must not trigger the default >20 km screen");
   assert.ok(reviewDrawer.includes("Coordinate/title province disagreement"));
-  assert.ok(reviewDrawer.includes("Longest section: 14.87 km"));
+  assert.ok(!reviewDrawer.includes("Longest section: 14.87 km"));
   assert.ok(reviewDrawer.includes("#fmr/analysis?view=red_flags"));
   assert.ok(reviewDrawer.includes(">Show project map</button>"));
   assert.ok(!reviewDrawer.includes("openstreetmap.org"));
