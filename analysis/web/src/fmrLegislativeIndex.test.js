@@ -134,10 +134,10 @@ test(skip, 'legislative explorer reuses source-analysis flags without changing a
   const view = fmrExplorerRow(row, resolution, analysis);
 
   assert.deepEqual(view.assignmentFlags, resolution.flags);
-  assert.ok(view.analysisFlags.includes('long_span'));
+  assert.ok(!view.analysisFlags.includes('long_span'), '14.87 km is below the default 20 km threshold');
   assert.ok(view.analysisFlags.includes('locality_disagreement'));
   assert.ok(view.flags.includes('title_coordinate_conflict'));
-  assert.equal(view.analysisFindings.filter(finding => finding.id === 'long_span').length, 2);
+  assert.equal(view.analysisFindings.filter(finding => finding.id === 'long_span').length, 0);
   assert.deepEqual(new Set(view.analysisFindings.map(finding => finding.stage)),
     new Set(['house', 'nep']));
   assert.ok(view.analysisMeasurementNote.includes('straight-line distances'));
