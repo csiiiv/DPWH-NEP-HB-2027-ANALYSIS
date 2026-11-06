@@ -1,7 +1,7 @@
 import {ORIGINAL_REPAIR_POINTS} from './fmrOriginalCoordinates.js';
 import {medianNumber} from './fmrModel.js';
 
-export const RED_FLAG_DEFAULTS = {shortMeters: 100, longKm: 10, costMultiple: 3, increasePercent: 25};
+export const RED_FLAG_DEFAULTS = {shortMeters: 100, longKm: 20, costMultiple: 3, increasePercent: 25};
 export const RED_FLAG_RULES = [
   {id:'short_span',label:'Short endpoint span',description:'A positive section span falls below the selected meter threshold.'},
   {id:'zero_span',label:'Collapsed endpoints',description:'A section has zero endpoint separation.'},

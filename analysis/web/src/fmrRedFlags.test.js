@@ -153,3 +153,13 @@ test('flag multiplicity partitions entries without counting a multi-flag entry t
  const duplicate=summarizeFmrReviews([make(['a','a'])]);
  assert.equal(duplicate.findings,1);assert.equal(duplicate.flagMultiplicity['1'],1);
 });
+
+test('default long-span threshold is strictly greater than twenty kilometers',()=>{
+ const projects=[project('below',{segments:[segment(19.999)]}),
+ project('boundary',{segments:[segment(20)]}),project('above',{segments:[segment(20.001)]})];
+ const rows=buildFmrRedFlags(data(projects),'nep').rows;
+ assert.equal(RED_FLAG_DEFAULTS.longKm,20);
+ assert.ok(!flags(rows[0]).includes('long_span'));
+ assert.ok(!flags(rows[1]).includes('long_span'));
+ assert.ok(flags(rows[2]).includes('long_span'));
+});
