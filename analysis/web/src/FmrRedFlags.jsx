@@ -4,7 +4,7 @@ import SortableTable from './SortableTable.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {routeHref} from './routes.js';
 import {money, flagLabel} from './fmrModel.js';
-import {buildFmrRedFlags, collapseIdenticalFmrReviews, sharedCoordinateEvidence, RED_FLAG_RULES, RED_FLAG_MEASUREMENT_NOTE} from './fmrRedFlags.js';
+import {buildFmrRedFlags, collapseIdenticalFmrReviews, sharedCoordinateEvidence, summarizeFmrReviews, RED_FLAG_RULES, RED_FLAG_MEASUREMENT_NOTE} from './fmrRedFlags.js';
 
 const FmrSegmentModal = lazy(() => import('./FmrSegmentModal.jsx'));
 
@@ -116,20 +116,18 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
   const mapRecord = mapRow && {id:mapRow.id,title:mapRow.project.title,
     status:`${mapRow.stageKey}_only`,fmrProjects:Object.fromEntries((mapRow.members || [mapRow]).map(member=>[member.stageKey,member.project]))};
   const visibleIds = new Set(projects.map(p => p.id));
-  const assessed = analysis.rows.filter(row => visibleIds.has(row.id));
-  const flagged = assessed.filter(row => row.flagCount > 0);
-  const corrected = assessed.filter(row => row.hasCorrection);
-  const resolved = assessed.filter(row => row.resolvedFlags.length > 0);
-  const open = assessed.filter(row => row.openFlags.length > 0);
-  const reviewRows = assessed.filter(row => row.flagCount > 0 || row.hasCorrection);
-  const rows = reviewRows.filter(row => !params.rf_rule || (params.rf_rule === 'corrected'
-    ? row.hasCorrection : row.flags.some(flag => flag.id === params.rf_rule)));
-  const visibleReviewIds = new Set(rows.map(row=>row.id));
-  const groupedRows = collapseIdenticalFmrReviews(analysis.rows,data.comparison)
-    .filter(row=>row.members.some(member=>visibleReviewIds.has(member.id)));
-  const displayRows = groupedRows.filter(row=>!params.rf_source || row.budgetSource===params.rf_source);
-  const exportRows = displayRows.flatMap(row=>row.members);
-  const selected = collapseIdenticalFmrReviews(analysis.rows,data.comparison).find(row => row.members.some(member=>member.id===params.rf_project));
+  const allGroups = collapseIdenticalFmrReviews(analysis.rows,data.comparison);
+  const assessed = allGroups.filter(group=>group.members.some(member=>visibleIds.has(member.id))
+    && (!params.rf_source || group.budgetSource===params.rf_source));
+  const reviewRows = assessed.filter(group=>group.flagCount>0 || group.members.some(r=>r.hasCorrection));
+  const groupedRows = allGroups.filter(group=>group.members.some(member=>visibleIds.has(member.id))
+    && (group.flagCount>0 || group.members.some(r=>r.hasCorrection)));
+  const displayRows = reviewRows.filter(group=>!params.rf_rule || (params.rf_rule==='corrected'
+    ? group.members.some(r=>r.hasCorrection) : group.flags.some(flag=>flag.id===params.rf_rule)));
+  const summary = summarizeFmrReviews(displayRows);
+  const exportRows = displayRows.flatMap(group=>group.members.map((row,index)=>({
+    ...row,entryId:group.id,countedAllocation:index===0 && group.flagCount>0 ? group.project.amount_php : 0})));
+  const selected = allGroups.find(group=>group.members.some(member=>member.id===params.rf_project));
   const change = patch => onChange({...patch,page:null,rf_project:null});
   const page = Math.max(1, Number(params.page) || 1);
   const sortKey = ['flagCount','amount_php','meters','proxyPhpPerMeter','peerMultiple'].includes(params.rf_sort) ? params.rf_sort : 'flagCount';
@@ -137,7 +135,7 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
   const csvRows = exportRows.map(row => [row.stageKey,row.id,row.project.title,row.project.region,row.project.amount_php,row.meters,
     row.shortestMeters,row.longestMeters,row.proxyPhpPerMeter,row.benchmark?.scope,row.benchmark?.count,row.benchmark?.median,
     row.benchmark?.threshold,row.peerMultiple,row.flags.map(f => f.id).join(';'),row.flags.map(f => f.detail).join(' | '),
-    row.project.source.source_pdf,row.project.source.pdf_page,row.project.source.printed_page,row.reviewStatus,row.correction.rules.join(';'),row.correction.clearedFlags.join(';'),row.correction.textCorrected,row.corrected.meters,row.corrected.proxyPhpPerMeter,row.resolvedFlags.map(f=>f.id).join(';'),row.openFlags.map(f=>f.id).join(';')]);
+    row.project.source.source_pdf,row.project.source.pdf_page,row.project.source.printed_page,row.reviewStatus,row.correction.rules.join(';'),row.correction.clearedFlags.join(';'),row.correction.textCorrected,row.corrected.meters,row.corrected.proxyPhpPerMeter,row.resolvedFlags.map(f=>f.id).join(';'),row.openFlags.map(f=>f.id).join(';'),row.entryId,row.countedAllocation]);
   return <section className="fmr-redflags" aria-label="FMR red-flag review">
     <p className="fmr-notice">{RED_FLAG_MEASUREMENT_NOTE} Review endpoint geometry before interpreting an unusually high proxy. Scope, width, terrain, bridges and measured road length need separate evidence.</p>
     <div className="fmr-filters fmr-redflag-controls">
@@ -152,27 +150,27 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
       <ul>{RED_FLAG_RULES.map(rule => <li key={rule.id}><strong>{rule.label}:</strong> {rule.description}</li>)}</ul>
     </details>
     <div className="fmr-stats">
-      <div className="fmr-stat"><span>Records with original source flags</span><strong>{flagged.length.toLocaleString()}</strong><small>of {assessed.length.toLocaleString()} matching source records</small></div>
-      <div className="fmr-stat"><span>Allocation on flagged projects</span><strong>{money(flagged.reduce((sum,row) => sum+row.project.amount_php,0))}</strong><small>Original source flags; each source record counted once; budget versions remain separate</small></div>
-      <div className="fmr-stat"><span>Eligible proxy denominators</span><strong>{assessed.filter(r => r.proxyPhpPerMeter != null).length.toLocaleString()}</strong><small>Complete, positive, resolved geometry</small></div>
-      <div className="fmr-stat"><span>Excluded proxy denominators</span><strong>{assessed.filter(r => r.proxyPhpPerMeter == null).length.toLocaleString()}</strong><small>No partial or invented lengths</small></div>
+      <div className="fmr-stat"><span>Flagged entries (overlap removed)</span><strong>{summary.flaggedEntries.toLocaleString()}</strong><small>of {assessed.length.toLocaleString()} matching distinct record versions</small></div>
+      <div className="fmr-stat"><span>Allocation on flagged projects</span><strong>{money(summary.flaggedAllocation)}</strong><small>Identical NEP+HGAB entries counted once; differing versions remain separate</small></div>
+      <div className="fmr-stat"><span>Eligible proxy denominators</span><strong>{assessed.filter(g => g.members.every(r=>r.proxyPhpPerMeter != null)).length.toLocaleString()}</strong><small>Complete, positive, resolved geometry</small></div>
+      <div className="fmr-stat"><span>Excluded proxy denominators</span><strong>{assessed.filter(g => g.members.some(r=>r.proxyPhpPerMeter == null)).length.toLocaleString()}</strong><small>No partial or invented lengths</small></div>
     </div>
-    <p className="fmr-notice">{corrected.length.toLocaleString()} source records have correction history and remain available here for reference. Original source findings remain counted after correction. {resolved.length} records have findings resolved by correction; {open.length} have analytical findings on accepted coordinates.</p>
+    <p className="fmr-notice">{summary.correctedEntries.toLocaleString()} entries have correction history and remain available here for reference. Original source findings remain counted after correction. {summary.resolvedEntries} entries have findings resolved by correction; {summary.openEntries} have analytical findings on accepted coordinates.</p>
     <div className="fmr-filters"><label>Budget source coverage<select aria-label="Budget source coverage" value={params.rf_source || ''} onChange={e=>change({rf_source:e.target.value})}>
       <option value="">All source coverage</option>
       <option value="nep">NEP ONLY · {groupedRows.filter(row=>row.budgetSource==='nep').length}</option>
       <option value="house">HGAB ONLY · {groupedRows.filter(row=>row.budgetSource==='house').length}</option>
       <option value="both">NEP+HGAB · {groupedRows.filter(row=>row.budgetSource==='both').length}</option>
     </select></label></div>
-    <p className="fmr-muted">Source coverage describes this exact record version. NEP ONLY or HGAB ONLY can have a counterpart with different content. Summary cards count source records; the table collapses identical versions.</p>
+    <p className="fmr-muted">Source coverage describes this exact record version. NEP ONLY or HGAB ONLY can have a counterpart with different content. Headline counts and amounts count identical matched versions once. Different versions remain separate; the combined amount is a review exposure measure, not a single-stage budget total.</p>
     <div className="fmr-filters"><label>Review flag<select aria-label="Review flag" value={params.rf_rule || ''} onChange={e => change({rf_rule:e.target.value})}>
-      <option value="">Source findings and correction history · {reviewRows.length}</option><option value="corrected">Corrected records · {corrected.length}</option>{RED_FLAG_RULES.map(rule => <option key={rule.id} value={rule.id}>{rule.label} · {flagged.filter(r => r.flags.some(f => f.id === rule.id)).length}</option>)}
+      <option value="">Source findings and correction history · {reviewRows.length}</option><option value="corrected">Corrected records · {reviewRows.filter(g=>g.members.some(r=>r.hasCorrection)).length}</option>{RED_FLAG_RULES.map(rule => <option key={rule.id} value={rule.id}>{rule.label} · {reviewRows.filter(r => r.flags.some(f => f.id === rule.id)).length}</option>)}
     </select></label></div>
-    <div className="fmr-result-bar"><span>{displayRows.length.toLocaleString()} entries · {exportRows.length.toLocaleString()} source records · {stage.label}</span>
+    <div className="fmr-result-bar"><span>{summary.entries.toLocaleString()} entries · {summary.sourceRecords.toLocaleString()} underlying source records · {summary.findings.toLocaleString()} distinct findings · {stage.label}</span>
       <button onClick={() => onExportCSV('fmr-red-flags-filtered.csv', ['stage','source_id','title','region','allocation_php','summed_endpoint_m','shortest_section_m','longest_section_m',
-        'allocation_per_endpoint_m_proxy','peer_scope','peer_count','peer_median_proxy','peer_threshold_proxy','peer_multiple','flag_ids','flag_explanations','source_pdf','pdf_page','printed_page','review_status','accepted_corrections','earlier_findings','transcription_corrected','corrected_endpoint_m','corrected_allocation_per_endpoint_m','resolved_source_flag_ids','accepted_open_flag_ids'],csvRows)}>Export review CSV</button>
+        'allocation_per_endpoint_m_proxy','peer_scope','peer_count','peer_median_proxy','peer_threshold_proxy','peer_multiple','flag_ids','flag_explanations','source_pdf','pdf_page','printed_page','review_status','accepted_corrections','earlier_findings','transcription_corrected','corrected_endpoint_m','corrected_allocation_per_endpoint_m','resolved_source_flag_ids','accepted_open_flag_ids','entry_id','counted_flagged_allocation_php'],csvRows)}>Export review CSV</button>
       <button onClick={() => onExportJSON('fmr-red-flags-filtered.json',{stage:stage.key,document:stage.label,measurement_note:analysis.measurementNote,
-        config:analysis.config,coordinate_basis:analysis.coordinateBasis,benchmark_population:'Original full selected source; corrected baselines assessed separately',rows:displayRows})}>Export review JSON</button>
+        summary,counting_basis:'Identical matched NEP/HGAB record versions counted once; differing versions remain separate',config:analysis.config,coordinate_basis:analysis.coordinateBasis,benchmark_population:'Original full selected source; corrected baselines assessed separately',rows:displayRows})}>Export review JSON</button>
     </div>
     <SortableTable tableId="red-flags-records" rows={displayRows} ariaLabel="FMR red-flag projects" pageSize={25} page={page} onPageChange={page => onChange({page})}
       sort={sort} onSortChange={next => {const updated=typeof next === 'function' ? next(sort) : next;change({rf_sort:updated.key,rf_dir:updated.direction});}}
