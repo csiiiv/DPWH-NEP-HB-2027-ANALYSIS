@@ -11,7 +11,7 @@ import tempfile
 import threading
 import xml.etree.ElementTree as ET
 from playwright.sync_api import expect, sync_playwright
-from serve_pages import RangeHandler
+from serve_pages import RangeHandler, prime_disclaimer_for_checks
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -35,6 +35,7 @@ def main():
                 for width in (390, 1440):
                     context = browser.new_context(viewport={'width': width, 'height': 1000}, accept_downloads=True)
                     page = context.new_page()
+                    prime_disclaimer_for_checks(page)
                     page.on('pageerror', lambda e: errors.append(str(e)))
                     page.on('response', lambda r: bad.append((r.url, r.status)) if r.status >= 400 else None)
                     requests = []
