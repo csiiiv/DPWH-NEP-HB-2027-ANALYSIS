@@ -122,6 +122,35 @@ dialog.fmr-dialog { width:min(1100px,calc(100vw - 32px)); max-height:90vh; borde
 .fmr-up { color:#0b6b3a; }
 .fmr-down { color:#a12020; }
 
+/* DA review drilldown: actions remain discoverable in desktop cells and
+   mobile cards; the dialog never changes the underlying audit annotations. */
+.fmr-audit-trigger { align-self:flex-end; text-align:left; color:#9d2440; font-size:12px; font-weight:650; cursor:pointer; border:1px solid #e8b8c6; background:#fff4f6; border-radius:6px; padding:5px 9px; white-space:normal; }
+.fmr-audit-trigger:hover,.fmr-audit-trigger:focus-visible { background:#fce2e8; border-color:#b4546e; }
+.fmr-da-audit-dialog { width:min(1000px,calc(100vw - 24px)); }
+.fmr-audit-context { padding:14px; margin:16px 0; background:#f3f6fa; border-radius:9px; }
+.fmr-audit-context h3 { margin:0 0 5px; font-size:18px; overflow-wrap:anywhere; }
+.fmr-audit-context p { margin:0 0 12px; }
+.fmr-audit-context dl { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin:0; }
+.fmr-audit-context dt,.fmr-audit-finding dt { font-size:11px; color:#526780; font-weight:650; }
+.fmr-audit-context dd,.fmr-audit-finding dd { margin:4px 0 0; font-weight:600; white-space:pre-wrap; overflow-wrap:anywhere; }
+.fmr-audit-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; align-items:center; }
+.fmr-audit-actions>span { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.fmr-audit-actions button { font-size:12px; }
+.fmr-audit-findings-title { margin:20px 0 12px; }
+.fmr-audit-findings { display:grid; gap:12px; }
+.fmr-audit-finding { border:1px solid #d9e2ed; border-radius:9px; padding:14px; min-width:0; }
+.fmr-audit-origin { color:#526780; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; margin:0 0 5px; }
+.fmr-audit-finding h4 { margin:0 0 8px; font-size:16px; }
+.fmr-audit-finding>p:not(.fmr-audit-origin) { margin:0 0 12px; }
+.fmr-audit-finding dl { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin:0 0 12px; }
+.fmr-audit-finding dl>div { background:#f7f9fc; padding:10px; border-radius:6px; min-width:0; }
+.fmr-audit-finding code { white-space:normal; overflow-wrap:anywhere; }
+@media(max-width:600px) {
+  .fmr-audit-context dl,.fmr-audit-finding dl { grid-template-columns:minmax(0,1fr); }
+  .fmr-audit-actions,.fmr-audit-actions>span { align-items:stretch; flex-direction:column; }
+  .fmr-audit-trigger { align-self:flex-start; }
+}
+
 /* Analysis sub-tab headlines reuse the workbench stat cards. */
 .fmr-analysis .fmr-stats strong { overflow-wrap:anywhere; }
 
