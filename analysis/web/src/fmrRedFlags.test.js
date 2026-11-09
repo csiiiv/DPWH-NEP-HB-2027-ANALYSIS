@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildFmrRedFlags, collapseIdenticalFmrReviews, sharedCoordinateEvidence, summarizeFmrReviews, redFlagOptions, RED_FLAG_DEFAULTS} from './fmrRedFlags.js';
+import fs from 'node:fs';
+import {buildFmrRedFlags, buildHouseDaRedFlagDelta, collapseIdenticalFmrReviews, sharedCoordinateEvidence, summarizeFmrReviews, redFlagOptions, RED_FLAG_DEFAULTS} from './fmrRedFlags.js';
 const segment = (km=1, coordinates=[[120,14],[120.01,14]]) => ({coordinates,straight_line_distance_km:km});
 const project = (id, overrides={}) => ({id,region_key:'I',amount_php:100000,status:'normalized',review_flags:[],segments:[segment()],segment_count:1,...overrides});
 const data = (nep,house=[],comparison=[]) => ({stages:{nep:{projects:nep},house:{projects:house}},comparison});
@@ -162,4 +163,28 @@ test('default long-span threshold is strictly greater than twenty kilometers',()
  assert.ok(!flags(rows[0]).includes('long_span'));
  assert.ok(!flags(rows[1]).includes('long_span'));
  assert.ok(flags(rows[2]).includes('long_span'));
+});
+const workbench = JSON.parse(fs.readFileSync(new URL('../../../other-analysis/data/fmr_workbench.json', import.meta.url), 'utf8'));
+
+test('DA stage supports the same red-flag engine', () => {
+  const analysis = buildFmrRedFlags(workbench, 'da');
+  assert.equal(analysis.rows.length, workbench.stages.da.projects.length);
+  assert.ok(analysis.rows.some(row => row.openFlags.length > 0 || row.flagCount > 0));
+  assert.ok(analysis.rows.some(row => row.proxyPhpPerMeter != null));
+});
+
+test('House→DA red-flag delta classifies linked and unmatched rows', () => {
+  const delta = buildHouseDaRedFlagDelta(workbench);
+  assert.ok(delta.rows.length > 0);
+  assert.equal(
+    (delta.counts.cleared || 0) + (delta.counts.persisted || 0)
+    + (delta.counts.new || 0) + (delta.counts.dropped || 0)
+    + (delta.counts.unmatched_house || 0) + (delta.counts.unmatched_da || 0),
+    delta.rows.length);
+  for (const row of delta.rows) {
+    assert.ok(row.status in delta.statusLabels);
+    if (row.status === 'cleared') assert.ok(row.house_flag_count > 0 && row.da_flag_count === 0);
+    if (row.status === 'new' && row.house_id && row.da_id) assert.ok(row.da_flag_count > 0 && row.house_flag_count === 0);
+    if (row.status === 'dropped') assert.equal(row.da_id, null);
+  }
 });

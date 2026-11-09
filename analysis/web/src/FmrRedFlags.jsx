@@ -4,7 +4,7 @@ import SortableTable from './SortableTable.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {routeHref} from './routes.js';
 import {money, flagLabel} from './fmrModel.js';
-import {buildFmrRedFlags, collapseIdenticalFmrReviews, sharedCoordinateEvidence, summarizeFmrReviews, RED_FLAG_RULES, RED_FLAG_MEASUREMENT_NOTE} from './fmrRedFlags.js';
+import {buildFmrRedFlags, buildHouseDaRedFlagDelta, collapseIdenticalFmrReviews, sharedCoordinateEvidence, summarizeFmrReviews, RED_FLAG_RULES, RED_FLAG_DELTA_STATUSES, RED_FLAG_MEASUREMENT_NOTE} from './fmrRedFlags.js';
 
 const FmrSegmentModal = lazy(() => import('./FmrSegmentModal.jsx'));
 
@@ -12,6 +12,66 @@ const format = value => value == null ? '—' : value.toLocaleString('en-PH', {m
 const fields = [['rf_short_m','shortMeters','Short section below (m)',1],['rf_long_km','longKm','Long section above (km)',1],
   ['rf_cost_multiple','costMultiple','Minimum peer-median multiple',1],['rf_increase_pct','increasePercent','Candidate increase at least (%)',0]];
 const ruleLabels = Object.fromEntries(RED_FLAG_RULES.map(rule => [rule.id, rule.label]));
+
+function HouseDaDelta({data, route, onChange, onExportCSV, onExportJSON}) {
+  const params = Object.fromEntries(route.params);
+  const delta = useMemo(() => buildHouseDaRedFlagDelta(data, {
+    shortMeters:params.rf_short_m,longKm:params.rf_long_km,costMultiple:params.rf_cost_multiple,increasePercent:params.rf_increase_pct,
+  }), [data,params.rf_short_m,params.rf_long_km,params.rf_cost_multiple,params.rf_increase_pct]);
+  const change = patch => onChange({...patch,page:null,rf_project:null});
+  const status = params.rf_delta_status || '';
+  const rule = params.rf_rule || '';
+  let rows = delta.rows;
+  if (status) rows = rows.filter(row => row.status === status);
+  if (rule) rows = rows.filter(row =>
+    row.house_flags.includes(rule) || row.da_flags.includes(rule)
+    || row.cleared_flags.includes(rule) || row.new_flags.includes(rule));
+  const page = Math.max(1, Number(params.page) || 1);
+  const sortKey = ['house_flag_count','da_flag_count','house_php','da_php','title'].includes(params.rf_sort) ? params.rf_sort : 'house_flag_count';
+  const sort = {key:sortKey,direction:params.rf_dir === 'asc' ? 'asc' : 'desc'};
+  const tag = (ids, tone='') => !ids.length ? <span className="fmr-muted">—</span>
+    : <div className={`fmr-redflag-tags ${tone}`}>{ids.map(id => <span key={id} title={ruleLabels[id]}>{ruleLabels[id] || id}</span>)}</div>;
+  return <>
+    <p className="fmr-notice">House GAB remains the printed source of truth. This view reapplies the same red-flag screens to the DA Nov 5 working draft and diffs linked rows. Thresholds stay interactive and match the single-source Red flags view.</p>
+    <div className="fmr-stats">
+      {Object.entries(RED_FLAG_DELTA_STATUSES).map(([key, label]) => (
+        <button key={key} className={`fmr-stat fmr-text-button ${status === key ? 'active' : ''}`} onClick={() => change({rf_delta_status: status === key ? null : key})}>
+          <span>{label}</span><strong>{(delta.counts[key] || 0).toLocaleString()}</strong>
+          <small>{status === key ? 'Clear filter' : 'Filter this bucket'}</small>
+        </button>
+      ))}
+    </div>
+    <div className="fmr-filters"><label>Review flag<select aria-label="Review flag" value={rule} onChange={e => change({rf_rule:e.target.value})}>
+      <option value="">All review flags · {delta.rows.length}</option>
+      {RED_FLAG_RULES.map(item => <option key={item.id} value={item.id}>{item.label} · {delta.rows.filter(r => r.house_flags.includes(item.id) || r.da_flags.includes(item.id)).length}</option>)}
+    </select></label></div>
+    <div className="fmr-result-bar"><span>{rows.length.toLocaleString()} House→DA red-flag rows</span>
+      <button onClick={() => onExportCSV('fmr-house-da-red-flag-delta.csv',
+        ['status','comparison_or_row_id','region','title','house_id','da_id','da_control_no','da_excel_rows','house_php','da_php','house_flags','da_flags','cleared_flags','persisted_flags','new_flags','da_disposition'],
+        rows.map(r => [r.status,r.id,r.region_key,r.title,r.house_id,r.da_id,r.control_no,(r.excel_rows||[]).join(';'),r.house_php,r.da_php,
+          r.house_flags.join(';'),r.da_flags.join(';'),r.cleared_flags.join(';'),r.persisted_flags.join(';'),r.new_flags.join(';'),r.disposition]))}>Export delta CSV</button>
+      <button onClick={() => onExportJSON('fmr-house-da-red-flag-delta.json',{measurement_note:delta.measurementNote,config:delta.config,counts:delta.counts,rows})}>Export delta JSON</button>
+    </div>
+    <SortableTable tableId="red-flags-house-da-delta" rows={rows} ariaLabel="House to DA red-flag changes" pageSize={25} page={page} onPageChange={page => onChange({page})}
+      sort={sort} onSortChange={next => {const updated=typeof next === 'function' ? next(sort) : next;change({rf_sort:updated.key,rf_dir:updated.direction});}}
+      empty="No House→DA red-flag changes match these filters." columns={[
+        {key:'title',label:'Project',sortable:true,render:row => <div>{row.title}<small>{row.region_key} · {RED_FLAG_DELTA_STATUSES[row.status]}{row.control_no ? ` · ${row.control_no}` : ''}{row.excel_rows?.length ? ` · Excel r.${row.excel_rows.join(', r.')}` : ''}</small></div>},
+        {key:'status',label:'Change',render:row => RED_FLAG_DELTA_STATUSES[row.status]},
+        {key:'house_flag_count',label:'House flags',align:'num',render:row => <>{row.house_flag_count}{tag(row.house_flags)}</>},
+        {key:'da_flag_count',label:'DA flags',align:'num',render:row => <>{row.da_flag_count}{tag(row.da_flags)}</>},
+        {key:'cleared',label:'Cleared',sortable:false,render:row => tag(row.cleared_flags, 'fmr-up')},
+        {key:'new',label:'New on DA',sortable:false,render:row => tag(row.new_flags, 'fmr-down')},
+        {key:'house_php',label:'House (PHP)',align:'num',render:row => money(row.house_php)},
+        {key:'da_php',label:'DA (PHP)',align:'num',render:row => money(row.da_php)},
+        {key:'links',label:'Links',sortable:false,render:row => <div className="fmr-redflag-links">
+          {row.house_id && <a href={routeHref('house',{node:row.house_id})}>House tree</a>}
+          {row.id.startsWith('pair:') || row.id.startsWith('house_only:') || row.id.startsWith('nep_only:')
+            ? <a href={routeHref('compare',{view:'projects',pair:row.id})}>Compare row</a>
+            : row.da_id && <a href={routeHref('compare',{view:'projects',da:'flagged',q:row.control_no || row.da_id})}>Compare / DA</a>}
+        </div>},
+      ]}/>
+  </>;
+}
 
 
 function SharedCoordinatesTable({data,row,onPdf}) {
@@ -101,16 +161,23 @@ function Evidence({row:entry, data, onClose, onPdf, onMap}) {
       {flag.peerIds && flag.id !== 'shared_geometry' && <div className="fmr-redflag-links">{flag.peerIds.map(id => <a key={id} href={routeHref(stage.key,{node:id})}>{id} → source</a>)}</div>}
       {flag.pairId && <a href={routeHref('compare',{view:'projects',pair:flag.pairId})}>Inspect both candidate sources →</a>}
     </li>)}</ul>
-    <div className="fmr-redflag-links"><button type="button" onClick={() => onMap(row)}>View on map</button><a href={routeHref(stage.key,{node:row.id})}>Open source tree →</a>
-      <button onClick={() => onPdf(row.project.source)} className="fmr-redflag-pdf">Open {row.project.source.source_pdf} · p. {row.project.source.pdf_page}</button></div>
+    <div className="fmr-redflag-links"><button type="button" onClick={() => onMap(row)}>View on map</button>
+      {stage.key === 'da'
+        ? <a href={routeHref('compare',{view:'projects',da:'flagged',q:row.project.control_no || row.id})}>Open in Compare →</a>
+        : <a href={routeHref(stage.key,{node:row.id})}>Open source tree →</a>}
+      {row.project.source?.source_pdf && <button onClick={() => onPdf(row.project.source)} className="fmr-redflag-pdf">Open {row.project.source.source_pdf} · p. {row.project.source.pdf_page}</button>}
+      {stage.key === 'da' && row.project.source?.excel_row != null && <span className="fmr-muted">Excel row {row.project.source.excel_row}</span>}
+    </div>
   </dialog>;
 }
 
 export default function FmrRedFlags({data, stage, projects, route, onChange, onPdf, onExportCSV, onExportJSON}) {
   const params = Object.fromEntries(route.params);
-  const analysis = useMemo(() => buildFmrRedFlags(data, 'all', {
+  const mode = params.rf_mode === 'house_da_delta' && data.stages.da ? 'house_da_delta' : 'stage';
+  const analysisKey = stage.key === 'da' ? 'da' : 'all';
+  const analysis = useMemo(() => buildFmrRedFlags(data, analysisKey, {
     shortMeters:params.rf_short_m,longKm:params.rf_long_km,costMultiple:params.rf_cost_multiple,increasePercent:params.rf_increase_pct,
-  }), [data,stage.key,params.rf_short_m,params.rf_long_km,params.rf_cost_multiple,params.rf_increase_pct]);
+  }), [data,analysisKey,params.rf_short_m,params.rf_long_km,params.rf_cost_multiple,params.rf_increase_pct]);
   const [mapRow, setMapRow] = useState(null);
   const onMap = row => setMapRow(row);
   const mapRecord = mapRow && {id:mapRow.id,title:mapRow.project.title,
@@ -144,8 +211,13 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
     <div className="fmr-filters fmr-redflag-controls">
       {fields.map(([param,key,label,min]) => <label key={param}>{label}<input type="number" min={min} step="any"
         aria-label={label} value={params[param] ?? analysis.config[key]} onChange={e => change({[param]:e.target.value})}/></label>)}
-      <button onClick={() => change(Object.fromEntries(fields.map(([param]) => [param,null])))}>Reset review thresholds</button>
+      <button onClick={() => change(Object.fromEntries([...fields.map(([param]) => [param,null]), ['rf_delta_status',null]]))}>Reset review thresholds</button>
     </div>
+    {data.stages.da && <div className="fmr-filters" role="group" aria-label="Red-flag assessment mode">
+      <button className={mode === 'stage' ? 'active' : ''} aria-pressed={mode === 'stage'} onClick={() => change({rf_mode:null,rf_delta_status:null})}>Single source · {stage.label}</button>
+      <button className={mode === 'house_da_delta' ? 'active' : ''} aria-pressed={mode === 'house_da_delta'} onClick={() => change({rf_mode:'house_da_delta',stage:'da'})}>House → DA changes</button>
+    </div>}
+    {mode === 'house_da_delta' ? <HouseDaDelta data={data} route={route} onChange={onChange} onExportCSV={onExportCSV} onExportJSON={onExportJSON}/> : <>
     <details className="fmr-method"><summary>How these review flags are calculated</summary>
       <p>Short and long screens inspect individual sections; the proxy divides the project allocation once by the sum of all complete section spans. Missing, zero-length, repeated or unresolved geometry is excluded from rate calculations.</p>
       <p>Rate baselines are calculated separately for each full budget source, independent of search and region filters. A regional cohort needs at least 20 eligible projects; otherwise the whole source is used, also with a minimum of 20. High proxies must exceed both {analysis.config.costMultiple}× the median and Q3 + 3×IQR. These are peer outliers, not engineering price limits.</p>
@@ -209,5 +281,6 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
       <FmrSegmentModal key={mapRecord.id} record={mapRecord} onClose={() => setMapRow(null)}/>
     </Suspense>}
     {params.rf_project && !selected && <p role="alert">This review record is unavailable in the selected source. <button onClick={() => onChange({rf_project:null})}>Clear review selection</button></p>}
+    </>}
   </section>;
 }

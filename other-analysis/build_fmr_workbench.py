@@ -7,6 +7,7 @@ import argparse
 from collections import Counter, defaultdict
 import hashlib
 import json
+import math
 from pathlib import Path
 import re
 import unicodedata
@@ -213,6 +214,99 @@ def da_project_brief(project, side='effective'):
         'coordinates_raw': coordinates_raw,
         'remarks': project.get('remarks') or '',
         'is_retain': project.get('is_retain', False),
+    }
+
+
+def _haversine_km(start_lonlat, end_lonlat):
+    if not start_lonlat or not end_lonlat or any(v is None for v in (*start_lonlat, *end_lonlat)):
+        return None
+    start_lon, start_lat = start_lonlat
+    end_lon, end_lat = end_lonlat
+    if not (-180 <= start_lon <= 180 and -180 <= end_lon <= 180 and -90 <= start_lat <= 90 and -90 <= end_lat <= 90):
+        return None
+    lat1, lat2 = math.radians(start_lat), math.radians(end_lat)
+    dlat, dlon = lat2 - lat1, math.radians(end_lon - start_lon)
+    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+    return round(6371.0088 * 2 * math.asin(min(1, math.sqrt(a))), 6)
+
+
+def enrich_da_project_geometry(brief):
+    """Attach NEP/House-shaped segments so the red-flag engine can assess DA rows."""
+    project_id = brief['id']
+    coordinates = brief.get('coordinates') or []
+    review_flags = []
+    points, segments = [], []
+    if not coordinates or not isinstance(coordinates, list) or not coordinates[0]:
+        review_flags.append('missing_or_ambiguous_segment_endpoint')
+    else:
+        for segment_index, segment_coords in enumerate(coordinates, start=1):
+            if not isinstance(segment_coords, list) or len(segment_coords) < 2:
+                review_flags.append('missing_or_ambiguous_segment_endpoint')
+                continue
+            start, end = segment_coords[0], segment_coords[-1]
+            if (not isinstance(start, (list, tuple)) or not isinstance(end, (list, tuple))
+                    or len(start) != 2 or len(end) != 2
+                    or any(not isinstance(v, (int, float)) for v in (*start, *end))):
+                review_flags.append('invalid_coordinate_pair')
+                continue
+            start_lon, start_lat = float(start[0]), float(start[1])
+            end_lon, end_lat = float(end[0]), float(end[1])
+            point_ids = []
+            for role, lon, lat, index in (
+                ('start', start_lon, start_lat, 1),
+                ('end', end_lon, end_lat, 2),
+            ):
+                point_id = f'{project_id}:segment{segment_index}:point{index}'
+                point_ids.append(point_id)
+                points.append({
+                    'id': point_id,
+                    'role': role,
+                    'longitude': lon,
+                    'latitude': lat,
+                    'rules': [],
+                    'issues': [],
+                    'source_fragment_raw': None,
+                    'source_fragment_interpreted': None,
+                    'station_raw': None,
+                    'trailing_annotation_raw': None,
+                    'coordinates': [lon, lat],
+                })
+            distance = _haversine_km([start_lon, start_lat], [end_lon, end_lat])
+            segment_flags = []
+            if distance is None:
+                segment_flags.append('invalid_coordinate_pair')
+            elif distance > 100:
+                segment_flags.append('endpoint_distance_over_100_km')
+            segments.append({
+                'id': f'{project_id}:segment{segment_index}',
+                'project_id': project_id,
+                'segment_index': segment_index,
+                'section_label': f'ordinal:{segment_index}',
+                'point_ids': point_ids,
+                'pairing_basis': 'da_start_end',
+                'start_longitude': start_lon,
+                'start_latitude': start_lat,
+                'end_longitude': end_lon,
+                'end_latitude': end_lat,
+                'straight_line_distance_km': distance,
+                'normalization_rules': ['da_workbook_start_end'],
+                'coordinates': [[start_lon, start_lat], [end_lon, end_lat]],
+                'review_flags': segment_flags,
+                'status': 'needs_review' if segment_flags else 'normalized',
+            })
+            review_flags.extend(segment_flags)
+    status = 'needs_review' if review_flags or not segments else 'normalized'
+    return {
+        **brief,
+        'coordinates': [segment['coordinates'] for segment in segments],
+        'segment_count': len(segments),
+        'point_count': len(points),
+        'status': status,
+        'review_flags': sorted(set(review_flags)),
+        'normalization_rules': ['da_workbook_start_end'] if segments else [],
+        'original_review_flags': [],
+        'segments': segments,
+        'points': points,
     }
 
 
@@ -486,27 +580,23 @@ def build():
     da_regions = {r['region_key']: r for r in da_draft['regions']}
 
     # Lightweight DA stage for compare/home stats (no PDF tree / legislative lens).
-    da_proposed_projects = [
-        {
-            **da_project_brief(p, side='effective'),
+    da_proposed_projects = []
+    for p in da_draft['projects']:
+        if (p.get('effective_amount_php') or 0) <= 0:
+            continue
+        brief = da_project_brief(p, side='effective')
+        geometry = enrich_da_project_geometry(brief)
+        da_proposed_projects.append({
+            **geometry,
             'stage': 'da',
             'region': p['region'],
-            'status': 'da_draft',
-            'review_flags': [],
-            'normalization_rules': [],
-            'original_review_flags': [],
-            'segment_count': 1 if p.get('effective_coordinates') else 0,
-            'point_count': 2 if p.get('effective_coordinates') else 0,
             'source': {
                 'source_xlsx': da_draft['metadata']['source_xlsx'],
                 'excel_row': p['excel_row'],
                 'control_no': p['control_no'],
                 'sheet': da_draft['metadata']['source_sheet'],
             },
-        }
-        for p in da_draft['projects']
-        if (p.get('effective_amount_php') or 0) > 0
-    ]
+        })
     stages['da'] = {
         'key': 'da',
         'label': da_draft['label'],
@@ -537,7 +627,19 @@ def build():
             for r in da_draft['regions']
         ],
         'projects': da_proposed_projects,
-        'summary': da_draft['summary'],
+        'summary': {
+            **da_draft['summary'],
+            'projects_needing_review': sum(
+                p['status'] == 'needs_review' for p in da_proposed_projects
+            ),
+            'multi_segment_projects': sum(
+                p['segment_count'] > 1 for p in da_proposed_projects
+            ),
+            'project_total_php': sum(p['amount_php'] or 0 for p in da_proposed_projects),
+        },
+        # Printed annex audits do not apply; keep empty placeholders for shared UI.
+        'audit_summary': {'internal_control_checks': 0},
+        'control_checks': [],
         'provenance': {
             str(DA_DRAFT.relative_to(ROOT)): sha256(DA_DRAFT),
             da_draft['metadata']['source_xlsx']: da_draft['metadata']['source_xlsx_sha256'],

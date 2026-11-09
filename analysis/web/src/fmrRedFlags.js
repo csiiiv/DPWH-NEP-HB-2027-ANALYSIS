@@ -14,7 +14,22 @@ export const RED_FLAG_RULES = [
   {id:'repeated_sections',label:'Repeated sections within a project',description:'The same section footprint occurs more than once in a project.'},
   {id:'allocation_increase',label:'Increase on unchanged candidate geometry',description:'A candidate pair has identical coordinate footprints and an allocation increase above the selected threshold.'},
 ];
+export const RED_FLAG_DELTA_STATUSES = {
+  cleared: 'Cleared under DA draft',
+  persisted: 'Still flagged under DA',
+  new: 'New under DA draft',
+  dropped: 'House project dropped in DA',
+  unmatched_house: 'House-only (no DA match)',
+  unmatched_da: 'DA-only (no House match)',
+};
 export const RED_FLAG_MEASUREMENT_NOTE = 'Endpoint spans are straight-line distances, not measured road lengths. Allocation per endpoint meter is a screening proxy, not a construction unit cost.';
+
+function linkedDaProjectId(row) {
+  if (!row?.da) return null;
+  if (row.da.proposed?.id) return row.da.proposed.id;
+  if (row.da.from && row.da.from.disposition !== 'dropped') return row.da.from.id;
+  return null;
+}
 
 export function redFlagOptions(options = {}) {
   return Object.fromEntries(Object.entries(RED_FLAG_DEFAULTS).map(([key, fallback]) => {
@@ -68,7 +83,9 @@ function calculateFlags(data, stageKey, options = {}) {
     return {...sources[0], rows:sources.flatMap(source => source.rows),
       eligibleRates:sources.reduce((sum, source) => sum + source.eligibleRates, 0)};
   }
-  const config = redFlagOptions(options), projects = data.stages[stageKey].projects;
+  const stage = data.stages[stageKey];
+  if (!stage) return {config:redFlagOptions(options), rows:[], eligibleRates:0, rules:RED_FLAG_RULES, measurementNote:RED_FLAG_MEASUREMENT_NOTE};
+  const config = redFlagOptions(options), projects = stage.projects;
   const rows = projects.map(project => ({id:project.id, stageKey, project, ...geometryMetrics(project), flags:[]}));
   const regional = new Map();
   for (const row of rows) {
@@ -82,8 +99,16 @@ function calculateFlags(data, stageKey, options = {}) {
     if (!shared.has(key)) shared.set(key, new Set());
     shared.get(key).add(row.id);
   }
-  const byId = new Map(Object.values(data.stages).flatMap(stage => stage.projects).map(project => [project.id, project]));
-  const pairs = new Map((data.comparison || []).filter(r => r.status === 'paired').map(r => [stageKey === 'house' ? r.house_id : r.nep_id, r]));
+  const byId = new Map(Object.values(data.stages).flatMap(s => (s.projects || []).map(project => [project.id, project])));
+  const pairs = new Map();
+  for (const row of data.comparison || []) {
+    if (stageKey === 'da') {
+      const daId = linkedDaProjectId(row);
+      if (daId && row.house_id) pairs.set(daId, row);
+    } else if (row.status === 'paired') {
+      pairs.set(stageKey === 'house' ? row.house_id : row.nep_id, row);
+    }
+  }
   for (const row of rows) {
     const p = row.project, add = (id, detail, evidence = {}) => row.flags.push({id, detail, ...evidence});
     if (row.spans.some(m => m > 0 && m < config.shortMeters)) add('short_span', `Shortest section: ${number(Math.min(...row.spans.filter(m => m > 0)))} m; review threshold: below ${number(config.shortMeters)} m.`);
@@ -101,7 +126,12 @@ function calculateFlags(data, stageKey, options = {}) {
     if (row.proxyPhpPerMeter != null && row.benchmark && row.proxyPhpPerMeter > row.benchmark.threshold)
       add('high_proxy', `₱${number(row.proxyPhpPerMeter)} per endpoint meter is ${number(row.peerMultiple)}× the ${row.benchmark.scope.toLowerCase()} median. Threshold: above ₱${number(row.benchmark.threshold)}/m; ${row.benchmark.count} eligible source projects.`);
     const pair = pairs.get(p.id), nep = pair && byId.get(pair.nep_id), house = pair && byId.get(pair.house_id);
-    if (nep && house && nep.amount_php > 0 && house.amount_php > nep.amount_php) {
+    if (stageKey === 'da' && house && p.amount_php > 0 && house.amount_php > 0) {
+      const h = geometryMetrics(house), d = geometryMetrics(p);
+      const percent = (p.amount_php - house.amount_php) / house.amount_php * 100;
+      if (h.complete && d.complete && JSON.stringify([...h.keys].sort()) === JSON.stringify([...d.keys].sort()) && percent >= config.increasePercent)
+        add('allocation_increase', `The DA draft allocation is ${number(percent)}% above House on an identical coordinate footprint. Project identity and changes in scope still require review.`, {pairId:pair.id});
+    } else if (nep && house && nep.amount_php > 0 && house.amount_php > nep.amount_php) {
       const n = geometryMetrics(nep), h = geometryMetrics(house);
       const percent = (house.amount_php - nep.amount_php) / nep.amount_php * 100;
       if (n.complete && h.complete && JSON.stringify([...n.keys].sort()) === JSON.stringify([...h.keys].sort()) && percent >= config.increasePercent)
@@ -204,7 +234,10 @@ export function collapseIdenticalFmrReviews(rows,comparison=[]) {
     const flags=[...new Map(members.flatMap(member=>member.flags).map(flag=>[flag.id,flag])).values()];
     result.push({...row,members,flags,flagCount:flags.length,
       budgetSource:members.length>1 ? 'both' : row.stageKey,
-      budgetSourceLabel:members.length>1 ? 'NEP+HGAB' : row.stageKey==='nep' ? 'NEP ONLY' : 'HGAB ONLY'});
+      budgetSourceLabel:members.length>1 ? 'NEP+HGAB'
+        : row.stageKey==='nep' ? 'NEP ONLY'
+        : row.stageKey==='da' ? 'DA ONLY'
+        : 'HGAB ONLY'});
   }
   return result;
 }
@@ -241,4 +274,123 @@ export function summarizeFmrReviews(groups) {
     correctedEntries:groups.filter(g=>g.members.some(r=>r.hasCorrection)).length,
     resolvedEntries:groups.filter(g=>g.members.some(r=>r.resolvedFlags.length)).length,
     openEntries:groups.filter(g=>g.members.some(r=>r.openFlags.length)).length};
+}
+
+function analyticalFlagIds(row) {
+  return (row.openFlags || row.flags || []).map(flag => flag.id);
+}
+
+/** Compare House GAB red flags to the DA working-draft assessment for linked rows. */
+export function buildHouseDaRedFlagDelta(data, options = {}) {
+  const houseAnalysis = buildFmrRedFlags(data, 'house', options);
+  const daAnalysis = buildFmrRedFlags(data, 'da', options);
+  const houseById = new Map(houseAnalysis.rows.map(row => [row.id, row]));
+  const daById = new Map(daAnalysis.rows.map(row => [row.id, row]));
+  const linkedHouse = new Set();
+  const linkedDa = new Set();
+  const rows = [];
+
+  for (const comparison of data.comparison || []) {
+    if (!comparison.house_id || !comparison.da) continue;
+    const houseRow = houseById.get(comparison.house_id);
+    if (!houseRow) continue;
+    linkedHouse.add(comparison.house_id);
+    const daId = linkedDaProjectId(comparison);
+    const daRow = daId ? daById.get(daId) : null;
+    if (daId) linkedDa.add(daId);
+    const houseFlags = new Set(analyticalFlagIds(houseRow));
+    const daFlags = new Set(daRow ? analyticalFlagIds(daRow) : []);
+    const cleared = [...houseFlags].filter(id => !daFlags.has(id)).sort();
+    const persisted = [...houseFlags].filter(id => daFlags.has(id)).sort();
+    const added = [...daFlags].filter(id => !houseFlags.has(id)).sort();
+    if (!houseFlags.size && !daFlags.size) continue;
+    let status;
+    if (!daRow) status = 'dropped';
+    else if (!houseFlags.size && daFlags.size) status = 'new';
+    else if (houseFlags.size && !daFlags.size) status = 'cleared';
+    else status = 'persisted';
+    rows.push({
+      id: comparison.id,
+      status,
+      region_key: comparison.region_key,
+      house_id: comparison.house_id,
+      da_id: daId,
+      excel_rows: comparison.da.excel_rows || [],
+      control_no: comparison.da.proposed?.control_no || comparison.da.from?.control_no || null,
+      title: daRow?.project?.title || houseRow.project.title,
+      house_php: houseRow.project.amount_php,
+      da_php: daRow?.project?.amount_php ?? null,
+      house_flags: [...houseFlags].sort(),
+      da_flags: [...daFlags].sort(),
+      cleared_flags: cleared,
+      persisted_flags: persisted,
+      new_flags: added,
+      house_flag_count: houseFlags.size,
+      da_flag_count: daFlags.size,
+      disposition: comparison.da.from?.disposition || null,
+    });
+  }
+
+  for (const houseRow of houseAnalysis.rows) {
+    const openCount = analyticalFlagIds(houseRow).length;
+    if (linkedHouse.has(houseRow.id) || !openCount) continue;
+    rows.push({
+      id: `unmatched_house:${houseRow.id}`,
+      status: 'unmatched_house',
+      region_key: houseRow.project.region_key,
+      house_id: houseRow.id,
+      da_id: null,
+      excel_rows: [],
+      control_no: null,
+      title: houseRow.project.title,
+      house_php: houseRow.project.amount_php,
+      da_php: null,
+      house_flags: analyticalFlagIds(houseRow).sort(),
+      da_flags: [],
+      cleared_flags: [],
+      persisted_flags: [],
+      new_flags: [],
+      house_flag_count: openCount,
+      da_flag_count: 0,
+      disposition: null,
+    });
+  }
+
+  for (const daRow of daAnalysis.rows) {
+    const openCount = analyticalFlagIds(daRow).length;
+    if (linkedDa.has(daRow.id) || !openCount) continue;
+    rows.push({
+      id: `unmatched_da:${daRow.id}`,
+      status: 'unmatched_da',
+      region_key: daRow.project.region_key,
+      house_id: null,
+      da_id: daRow.id,
+      excel_rows: daRow.project.source?.excel_row != null ? [daRow.project.source.excel_row] : [],
+      control_no: daRow.project.control_no || daRow.project.source?.control_no || null,
+      title: daRow.project.title,
+      house_php: null,
+      da_php: daRow.project.amount_php,
+      house_flags: [],
+      da_flags: analyticalFlagIds(daRow).sort(),
+      cleared_flags: [],
+      persisted_flags: [],
+      new_flags: analyticalFlagIds(daRow).sort(),
+      house_flag_count: 0,
+      da_flag_count: openCount,
+      disposition: daRow.project.disposition || null,
+    });
+  }
+
+  const counts = Object.fromEntries(Object.keys(RED_FLAG_DELTA_STATUSES).map(key => [key, 0]));
+  for (const row of rows) counts[row.status] = (counts[row.status] || 0) + 1;
+  return {
+    config: houseAnalysis.config,
+    measurementNote: RED_FLAG_MEASUREMENT_NOTE,
+    rules: RED_FLAG_RULES,
+    statusLabels: RED_FLAG_DELTA_STATUSES,
+    counts,
+    rows: rows.sort((a, b) => a.id.localeCompare(b.id)),
+    house: houseAnalysis,
+    da: daAnalysis,
+  };
 }

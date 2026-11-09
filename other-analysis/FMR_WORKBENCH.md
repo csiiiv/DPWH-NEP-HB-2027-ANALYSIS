@@ -34,6 +34,10 @@ an overlay (`stages.da`, per-row `da` with `excel_row` citations). NEP and House
 remain the printed source-of-truth ledgers; DA is compared against them. No
 legislative-lens packaging is derived from the DA draft yet.
 
+DA proposed rows carry START/END segment geometry so Analysis → Red flags can
+run on the draft, and the **House → DA changes** mode diffs the same screens
+(cleared / persisted / new / dropped / unmatched) for linked comparison rows.
+
 `build_fmr_workbench.py` checks the retained source PDF hashes, normalization
 lineage, project coverage, additive controls, independent control evidence, and
 normalization summaries before generating `data/fmr_workbench.json`. That

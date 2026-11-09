@@ -69,6 +69,17 @@ class FmrWorkbenchTests(unittest.TestCase):
             self.assertIn('da_excel_row', region)
         self.assertGreater(data['comparison_summary']['da_matched_rows'], 0)
 
+    def test_da_projects_carry_segment_geometry_for_red_flags(self):
+        data = builder.build()
+        projects = data['stages']['da']['projects']
+        with_segments = [p for p in projects if p.get('segments')]
+        self.assertGreaterEqual(len(with_segments), 700)
+        sample = with_segments[0]
+        self.assertIn(sample['status'], {'normalized', 'needs_review'})
+        segment = sample['segments'][0]
+        self.assertEqual(len(segment['coordinates']), 2)
+        self.assertIsInstance(segment['straight_line_distance_km'], float)
+
     def test_coordinate_provenance_survives_workbench_packaging(self):
         data = builder.build()
         nep = {p['id']: p for p in data['stages']['nep']['projects']}
