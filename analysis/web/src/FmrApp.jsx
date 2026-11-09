@@ -9,7 +9,8 @@ import {allocationStats, bandRows, compactMoney, comparisonRows, comparisonExpor
   filterComparisons, filterProjects, fmrTabs, methodLabels, money, overviewRegionRows, pctChange, projectLengthKm,
   readingNote, roundingLadder, signedMoney, signedPct, sortRows, statusLabels, repeatedAmounts, AMOUNT_BANDS,
   candidateAggregates, formatKm, regionAllocationRows, sourcePath, sourceNode, sourceArithmetic, coordinateCategories,
-  flagLabel, hadCoordinateInterpretation, provenanceOptionLists} from './fmrModel.js';
+  flagLabel, hadCoordinateInterpretation, provenanceOptionLists, daFilterLabels, daExcelRef, daAuditLabel,
+  daDisposition} from './fmrModel.js';
 import {CoordinateBadge, CoordinateProvenance, FlagList} from './FmrProvenance.jsx';
 import FmrRedFlags from './FmrRedFlags.jsx';
 import {fmrFundingGroups, fmrHighlights} from './fmrHighlights.js';
@@ -87,12 +88,12 @@ function Dialog({label, onClose, children, className = ''}) {
 function SourceButton({source, onPdf, label}) {
   return <button className="fmr-source-button" onClick={() => onPdf(source)}>{label || `PDF p. ${source.pdf_page}`}{source.printed_page != null && <small>Printed p. {source.printed_page}</small>}</button>;
 }
-const FILTER_KEYS = ['q','region','status','direction','method','coordinate','coord_side','extraction','rule','review_flag','text_basis','category','amount','minAmount','maxAmount'];
+const FILTER_KEYS = ['q','region','status','direction','method','coordinate','coord_side','extraction','rule','review_flag','text_basis','category','amount','minAmount','maxAmount','da'];
 // Chips and selects share one label source so a filter always reads the same way.
 const FILTER_LABELS = {q:'Search', region:'Region', status:'Status', direction:'Amount direction', method:'Match method',
   coordinate:'Coordinate status', coord_side:'Source side', extraction:'Extraction flag', rule:'Interpretation rule',
   review_flag:'Remaining review flag', text_basis:'Coordinate text basis', category:'Category', amount:'Amount',
-  minAmount:'Min total', maxAmount:'Max total'};
+  minAmount:'Min total', maxAmount:'Max total', da:'DA draft'};
 const COORDINATE_OPTIONS = [['normalized','Normalized'],['needs_review','Needs review'],['interpreted','Interpreted / flagged'],['multi','Multiple segments']];
 const COORD_SIDE_OPTIONS = [['nep','NEP side'],['house','House side'],['both','Both sides']];
 function changeFilters(route, patch) {navigate(route,{...patch,page:null});}
@@ -108,15 +109,17 @@ function Filters({route, regions, coordinate = false, comparison = false, review
     method:methodLabels,
     coordinate:Object.fromEntries(COORDINATE_OPTIONS),
     coord_side:Object.fromEntries(COORD_SIDE_OPTIONS),
+    da:daFilterLabels,
     extraction:Object.fromEntries(provenance?.extraction || []),
     rule:Object.fromEntries(provenance?.rules || []),
     review_flag:Object.fromEntries(provenance?.review || []),
     text_basis:Object.fromEntries(provenance?.text_basis || []),
   };
   return <><div className="fmr-filters">
-    <label>Search<input data-fmr-search type="search" placeholder="Title, place, source ID or flag" value={params.q || ''} onChange={e => changeFilters(route,{q:e.target.value})}/></label>
+    <label>Search<input data-fmr-search type="search" placeholder="Title, place, source ID, Excel row or flag" value={params.q || ''} onChange={e => changeFilters(route,{q:e.target.value})}/></label>
     {select('region','Region',regions.map(r => [r.key || r.id,r.label]))}
     {comparison && !fixedStatus ? select('status','Candidate status',Object.entries(comparisonFilterLabels).filter(([k]) => !['increased','decreased','unchanged'].includes(k))) : coordinate && !review && select('status','Coordinates',COORDINATE_OPTIONS)}
+    {comparison && select('da','DA draft',Object.entries(daFilterLabels))}
     {comparison && select('coordinate','Coordinate status',COORDINATE_OPTIONS)}
     <button onClick={clear}>Clear filters</button>
   </div>
@@ -313,19 +316,33 @@ function SourceWorkspace({data, route, onPdf, inlineSource}) {
 }
 
 const COMPARISON_COLUMNS = [
-  ['title','Project'],['region_key','Region'],['status','Candidate status'],['nep_php','NEP amount'],['house_php','House amount'],['delta_php','Paired difference'],['percent','Paired % change'],
+  ['title','Project'],['region_key','Region'],['status','Candidate status'],
+  ['nep_php','NEP amount'],['house_php','House amount'],['da_php','DA draft amount'],
+  ['delta_php','House − NEP'],['percent','House % vs NEP'],
 ];
 function comparisonValue(row,key) {return key === 'percent' ? pctChange(row.house_php,row.nep_php) : row[key];}
 function routeSort(route,keys,defaultKey='delta_php') {
   const requested=route.params.get('sort');
   return requested === 'none' ? null : {key:keys.includes(requested) ? requested : defaultKey,direction:route.params.get('dir') === 'asc' ? 'asc' : 'desc'};
 }
+function DaCell({row}) {
+  if (!row.da) return <span className="fmr-muted">—</span>;
+  const proposed = row.da.proposed, from = row.da.from;
+  const disposition = row.da_disposition || daDisposition(row.da);
+  return <div className="fmr-amount-stack">
+    <Amount value={row.da_php}/>
+    <small>{row.da_control_no} · {disposition} · {daExcelRef(row.da)}</small>
+    {proposed && from && proposed.id !== from.id && <small title={from.title}>Replaces FROM r.{from.excel_row}</small>}
+    {row.da.audit_flags?.length > 0 && <small className="fmr-down">{row.da.audit_flags.length} audit flag{row.da.audit_flags.length === 1 ? '' : 's'}</small>}
+  </div>;
+}
 function exportComparison(rows,format) {
-  if(format === 'json') return jsonDownload('fmr-comparison-filtered.json',{scope:'Provisional project candidates; missing counterparts are null',rows:comparisonExportRows(rows)});
+  if(format === 'json') return jsonDownload('fmr-comparison-filtered.json',{scope:'Provisional project candidates; missing counterparts are null; DA is a working-draft overlay',rows:comparisonExportRows(rows)});
   download('fmr-comparison-filtered.csv',[
     'candidate_id','candidate_status','method','region',
     'nep_id','nep_title','nep_php','nep_coordinate_status','nep_original_review_flags','nep_normalization_rules','nep_review_flags','nep_text_basis','nep_source_pdf','nep_pdf_page','nep_printed_page',
     'house_id','house_title','house_php','house_coordinate_status','house_original_review_flags','house_normalization_rules','house_review_flags','house_text_basis','house_source_pdf','house_pdf_page','house_printed_page',
+    'da_match_side','da_match_method','da_disposition','da_control_no','da_excel_rows','da_from_title','da_proposed_title','da_php','da_audit_flags',
     'paired_delta_php','paired_percent_change'],
     rows.map(r => [
       r.id,r.status,r.method,r.region_key,
@@ -333,6 +350,9 @@ function exportComparison(rows,format) {
       r.nep?.source.source_pdf,r.nep?.source.pdf_page,r.nep?.source.printed_page,
       r.house_id,r.house?.title,r.house_php,r.house?.status,(r.house?.original_review_flags || []).join(';'),(r.house?.normalization_rules || []).join(';'),(r.house?.review_flags || []).join(';'),r.house?.coordinate_text_basis || '',
       r.house?.source.source_pdf,r.house?.source.pdf_page,r.house?.source.printed_page,
+      r.da?.match_side || '', r.da?.match_method || '', r.da_disposition || '', r.da_control_no || '',
+      (r.da_excel_rows || []).join(';'), r.da?.from?.title || '', r.da?.proposed?.title || '', r.da_php,
+      (r.da?.audit_flags || []).join(';'),
       r.delta_php,pctChange(r.house_php,r.nep_php)]));
 }
 function ComparisonResults({rows, route, onPdf, tableId, defaultSortKey = 'delta_php'}) {
@@ -347,41 +367,49 @@ function ComparisonResults({rows, route, onPdf, tableId, defaultSortKey = 'delta
     <div className="fmr-result-bar"><span>{rows.length.toLocaleString()} candidate / source-only rows</span><button onClick={() => exportComparison(rows,'csv')}>Export filtered CSV</button><button onClick={() => exportComparison(rows,'json')}>Export filtered JSON</button></div>
     <div className="fmr-mobile-sort"><label>Sort by<select aria-label="Sort by" value={sort?.key || 'none'} onChange={e => setSort(e.target.value === 'none' ? null : {key:e.target.value,direction:sort?.direction || 'desc'})}><option value="none">Source order</option>{COMPARISON_COLUMNS.map(([k,l]) => <option key={k} value={k}>{l}</option>)}</select></label><button onClick={() => setSort({key:sort?.key || 'delta_php',direction:sort?.direction === 'asc' ? 'desc' : 'asc'})}>{sort?.direction === 'asc' ? 'Ascending ↑' : 'Descending ↓'}</button></div>
     <div className="fmr-mobile-table" tabIndex={-1}><div className="fmr-table-desktop"><SortableTable tableId={tableId} rows={rows} sort={sort} onSortChange={setSort} page={page} onPageChange={setPage} pageSize={size} ariaLabel="FMR project candidates" columns={[
-      {key:'title',label:'Project',render:r => <button className="fmr-text-button" onClick={() => navigate(route,{pair:r.id})}>{r.title}<small>{r.nep_id || 'No NEP counterpart'} · {r.house_id || 'No House counterpart'}</small></button>},
+      {key:'title',label:'Project',render:r => <button className="fmr-text-button" onClick={() => navigate(route,{pair:r.id})}>{r.title}<small>{r.nep_id || 'No NEP'} · {r.house_id || 'No House'}{r.da_control_no ? ` · ${r.da_control_no}` : ''}{r.da ? ` · ${daExcelRef(r.da)}` : ''}</small></button>},
       {key:'map',label:'Map',sortable:false,render:r => <ViewOnMap pair={r}/>},
       {key:'region_key',label:'Region'}, {key:'status',label:'Status / method',render:r => <>{statusLabels[r.status]}<small>{methodLabels[r.method] || (r.ambiguous_title ? 'Repeated title; no unique counterpart' : 'No unique counterpart')}</small></>},
       {key:'nep_php',label:'NEP (PHP)',align:'num',render:r => amount(r,'nep')},
       {key:'house_php',label:'House (PHP)',align:'num',render:r => amount(r,'house')},
-      {key:'delta_php',label:'Paired difference',align:'num',render:r => <Amount value={r.delta_php} signed/>},
-      {key:'percent',label:'Paired % change',align:'num',value:r => pctChange(r.house_php,r.nep_php),render:r => signedPct(pctChange(r.house_php,r.nep_php))},
+      {key:'da_php',label:'DA draft (PHP)',align:'num',render:r => <DaCell row={r}/>},
+      {key:'delta_php',label:'House − NEP',align:'num',render:r => <Amount value={r.delta_php} signed/>},
+      {key:'percent',label:'House % vs NEP',align:'num',value:r => pctChange(r.house_php,r.nep_php),render:r => signedPct(pctChange(r.house_php,r.nep_php))},
     ]}/></div>
     <div className="fmr-cards">{paged.map(r => <article key={r.id} className="fmr-card"><div className="fmr-card-head"><button className="fmr-text-button" onClick={() => navigate(route,{pair:r.id})}>{r.title}</button><span className="fmr-badge">{statusLabels[r.status]}</span></div>
-      <p>{r.region_key} · {methodLabels[r.method] || 'No unique counterpart'}</p><dl><dt>NEP allocation</dt><dd><Amount value={r.nep_php}/></dd><dt>House allocation</dt><dd><Amount value={r.house_php}/></dd><dt>Paired difference</dt><dd><Amount value={r.delta_php} signed/></dd><dt>Paired % change</dt><dd>{signedPct(pctChange(r.house_php,r.nep_php))}</dd></dl>
+      <p>{r.region_key} · {methodLabels[r.method] || 'No unique counterpart'}{r.da ? ` · DA ${r.da_disposition} · ${daExcelRef(r.da)}` : ''}</p>
+      <dl><dt>NEP allocation</dt><dd><Amount value={r.nep_php}/></dd><dt>House allocation</dt><dd><Amount value={r.house_php}/></dd><dt>DA draft</dt><dd><DaCell row={r}/></dd><dt>House − NEP</dt><dd><Amount value={r.delta_php} signed/></dd><dt>House % vs NEP</dt><dd>{signedPct(pctChange(r.house_php,r.nep_php))}</dd></dl>
       <div className="fmr-card-actions">{['nep','house'].map(stage => r[stage] && <React.Fragment key={stage}><SourceButton source={r[stage].source} onPdf={onPdf} label={`${stage === 'house' ? 'House' : 'NEP'} source`}/><a href={routeHref(stage,{node:r[stage].id})}>{stage === 'house' ? 'House' : 'NEP'} tree</a></React.Fragment>)}<ViewOnMap pair={r}/><button onClick={() => navigate(route,{pair:r.id})}>Open pair evidence</button></div>
     </article>)}{!paged.length && <p>No candidate rows match these filters.</p>}<Pagination page={page} count={count} total={rows.length} onPage={setPage} label="FMR project candidates"/></div></div>
   </>;
 }
 function RegionalTable({regions, onPdf, route, tableId, onOpenGroup}) {
-  const rows=overviewRegionRows(regions), sort=route ? routeSort(route,['label','nep_php','house_php','delta_php','pct_alloc','nep_count','house_count','delta_projects','pct_records']) : undefined;
+  const rows=overviewRegionRows(regions), sort=route ? routeSort(route,['label','nep_php','house_php','da_php','delta_php','da_vs_nep_php','pct_alloc','nep_count','house_count','da_count','delta_projects','pct_records']) : undefined;
   return <SortableTable tableId={tableId} rows={rows} sort={sort} onSortChange={route ? update => {const next=typeof update === 'function' ? update(sort) : update;navigate(route,{sort:next?.key || 'none',dir:next?.direction || null,page:null});} : undefined} ariaLabel="FMR regional stage comparison" initialSort={{key:'delta_php',direction:'desc'}} columns={[
     {key:'label',label:'Region',scope:'row',render:r => onOpenGroup ? <button className="group-open" onClick={() => onOpenGroup(r.id)}>{r.label}</button> : <a href={routeHref('compare',{view:'projects',region:r.id})}>{r.label}</a>},
     {key:'nep_count',label:'NEP records',band:'records',bandLabel:'Records',align:'num'},
     {key:'house_count',label:'House records',band:'records',align:'num'},
-    {key:'delta_projects',label:'Δ records',band:'records',align:'num',render:r => <AnalysisValue value={r.delta_projects} signed/>},
+    {key:'da_count',label:'DA records',band:'records',align:'num',render:r => r.da_count ?? '—'},
+    {key:'delta_projects',label:'Δ House−NEP',band:'records',align:'num',render:r => <AnalysisValue value={r.delta_projects} signed/>},
     {key:'pct_records',label:'% records',band:'records',align:'num',render:r => <AnalysisValue value={r.pct_records} percent/>},
     {key:'nep_php',label:'NEP (PHP)',divider:true,band:'allocations',bandLabel:'Allocations',align:'num',render:r => <div className="fmr-amount-stack"><AnalysisValue value={r.nep_php}/><SourceButton source={r.nep_source} onPdf={onPdf}/></div>},
     {key:'house_php',label:'House (PHP)',band:'allocations',bandLabel:'Allocations',align:'num',render:r => <div className="fmr-amount-stack"><AnalysisValue value={r.house_php}/><SourceButton source={r.house_source} onPdf={onPdf}/></div>},
-    {key:'delta_php',label:'Δ allocation (PHP)',band:'allocations',bandLabel:'Allocations',align:'num',render:r => <AnalysisValue value={r.delta_php} signed/>},
-    {key:'pct_alloc',label:'% change',band:'allocations',bandLabel:'Allocations',align:'num',render:r => <AnalysisValue value={r.pct_alloc} percent/>},
+    {key:'da_php',label:'DA draft (PHP)',band:'allocations',bandLabel:'Allocations',align:'num',render:r => <div className="fmr-amount-stack"><AnalysisValue value={r.da_php}/><small>{r.da_excel_row != null ? `Excel r.${r.da_excel_row}` : ''}</small></div>},
+    {key:'delta_php',label:'House − NEP',band:'allocations',bandLabel:'Allocations',align:'num',render:r => <AnalysisValue value={r.delta_php} signed/>},
+    {key:'da_vs_nep_php',label:'DA − NEP',band:'allocations',bandLabel:'Allocations',align:'num',render:r => <AnalysisValue value={r.da_vs_nep_php} signed/>},
+    {key:'pct_alloc',label:'% House vs NEP',band:'allocations',bandLabel:'Allocations',align:'num',render:r => <AnalysisValue value={r.pct_alloc} percent/>},
   ]}/>;
 }
 function FilteredAnalytics({rows}) {
   const a=candidateAggregates(rows), nep=rows.reduce((s,r) => s+(r.nep_php || 0),0), house=rows.reduce((s,r) => s+(r.house_php || 0),0);
+  const daMatched=rows.filter(r => r.da), daFlagged=daMatched.filter(r => r.da.audit_flags?.length);
+  const daPhp=daMatched.reduce((s,r) => s+(r.da_php || 0),0);
   return <details className="fmr-method"><summary>Show analytics · all {rows.length.toLocaleString()} filtered rows</summary>
-    <div className="fmr-stats"><Stat label="NEP filtered allocation" value={<Amount value={nep}/>} detail={`${rows.filter(r => r.nep).length} source projects`}/><Stat label="House filtered allocation" value={<Amount value={house}/>} detail={`${rows.filter(r => r.house).length} source projects`}/><Stat label="Increased / decreased pairs" value={`${a.increased.count} / ${a.decreased.count}`} detail={`${compactMoney(a.increased.amount)} gains · ${compactMoney(a.decreased.amount)} reductions`}/><Stat label="Unchanged pairs" value={a.unchanged} detail={`${a.counts.house_only} House only · ${a.counts.nep_only} NEP only`}/></div>
+    <div className="fmr-stats"><Stat label="NEP filtered allocation" value={<Amount value={nep}/>} detail={`${rows.filter(r => r.nep).length} source projects`}/><Stat label="House filtered allocation" value={<Amount value={house}/>} detail={`${rows.filter(r => r.house).length} source projects`}/><Stat label="DA-matched allocation" value={<Amount value={daPhp}/>} detail={`${daMatched.length} rows · ${daFlagged.length} with audit flags`}/><Stat label="Increased / decreased pairs" value={`${a.increased.count} / ${a.decreased.count}`} detail={`${compactMoney(a.increased.amount)} gains · ${compactMoney(a.decreased.amount)} reductions`}/></div>
     <p>Funding bridge: paired changes <Amount value={a.paired_delta_php} signed/> + House-only <Amount value={a.house_only_php}/> − NEP-only <Amount value={a.nep_only_php}/> = <Amount value={a.net_delta_php} signed/>.</p>
     <p>{rows.filter(r => [r.nep,r.house].some(p => p?.status === 'needs_review')).length} rows contain open coordinate review findings.
-      {' '}{rows.filter(r => [r.nep,r.house].some(hadCoordinateInterpretation)).length} rows have extraction flags or interpretation rules on at least one side.</p>
+      {' '}{rows.filter(r => [r.nep,r.house].some(hadCoordinateInterpretation)).length} rows have extraction flags or interpretation rules on at least one side.
+      {' '}{daFlagged.length} DA-matched rows carry printed-vs-DA audit flags.</p>
   </details>;
 }
 function Compare({data, route, onPdf, inlineSource}) {
@@ -391,35 +419,52 @@ function Compare({data, route, onPdf, inlineSource}) {
   const allRows=useMemo(() => comparisonRows(data),[data]);
   const provenance=useMemo(() => provenanceOptionLists(allRows.flatMap(r => [r.nep, r.house].filter(Boolean))),[allRows]);
   const rows=useMemo(() => filterComparisons(allRows,filters),
-    [allRows,filters.q,filters.region,filters.status,filters.direction,filters.method,filters.coordinate,filters.coord_side,filters.extraction,filters.rule,filters.review_flag,filters.text_basis]);
+    [allRows,filters.q,filters.region,filters.status,filters.direction,filters.method,filters.coordinate,filters.coord_side,filters.extraction,filters.rule,filters.review_flag,filters.text_basis,filters.da]);
   const regions=data.regions.filter(r => (!filters.region || r.id === filters.region) && (!filters.q || `${r.label} ${r.id}`.toLowerCase().includes(filters.q.toLowerCase())));
+  const daSummary=data.da_summary;
   return <>
-    <Hero title="Compare stages" compact><p>NEP → House GAB. Compare printed regional controls or investigate provisional project pairings.</p></Hero>
-    <details className="fmr-method"><summary>Source scope, controls and downloads</summary><p>{data.matching_note}</p><ReadingNote/><p>Parent controls and project amounts represent the same money. Missing counterparts stay unavailable rather than zero.</p><div className="fmr-stats"><Stat label="Allocation difference" value={<Amount value={data.comparison_summary.delta_php} signed/>}/><Stat label="Candidate pairs" value={data.comparison_summary.counts.paired}/><Stat label="House only" value={data.comparison_summary.counts.house_only}/><Stat label="NEP only" value={data.comparison_summary.counts.nep_only}/></div></details>
+    <Hero title="Compare stages" compact><p>NEP → House GAB → DA working draft. Printed NEP/House remain source of truth; DA attaches as a third column with Excel row citations.</p></Hero>
+    <details className="fmr-method"><summary>Source scope, controls and downloads</summary><p>{data.matching_note}</p><ReadingNote/><p>Parent controls and project amounts represent the same money. Missing counterparts stay unavailable rather than zero.</p><div className="fmr-stats"><Stat label="House − NEP" value={<Amount value={data.comparison_summary.delta_php} signed/>}/><Stat label="Candidate pairs" value={data.comparison_summary.counts.paired}/><Stat label="DA-matched rows" value={data.comparison_summary.da_matched_rows ?? '—'}/><Stat label="DA audit-flagged" value={data.comparison_summary.da_flagged_rows ?? '—'}/></div>
+      {daSummary && <p className="fmr-muted">{daSummary.source_label}: {daSummary.matches.via_nep} via NEP · {daSummary.matches.via_house_residual} residual House · Excel rows cite {daSummary.metadata.source_xlsx}.</p>}
+    </details>
     <ViewTabs route={route} defaultView="regions" views={[["regions","Regional controls"],["projects","Project candidates"]]}/>
     <Filters route={route} regions={data.regions} comparison={view === 'projects'} provenance={view === 'projects' ? provenance : null}/>
     {inlineSource && <div className="fmr-mobile-panels"><button aria-pressed={panel === 'results'} onClick={() => setPanel('results')}>Results</button><button aria-pressed={panel === 'pdf'} onClick={() => setPanel('pdf')}>Source PDF</button></div>}
     <div className={`${inlineSource ? 'fmr-workspace-grid ' : ''}fmr-comparison-workspace panel-${panel}`}><div className="fmr-comparison-results">
-      {view === 'regions' ? <><div className="fmr-result-bar"><span>{regions.length} regional controls</span><button onClick={() => download('fmr-regional-controls.csv',['region','nep_projects','house_projects','nep_php','house_php','delta_php'],regions.map(r => [r.label,r.nep_count,r.house_count,r.nep_php,r.house_php,r.delta_php]))}>Export filtered CSV</button><button onClick={() => jsonDownload('fmr-regional-controls.json',regions)}>Export filtered JSON</button></div><RegionalTable regions={regions} onPdf={onPdf} route={route}/></> : view === 'projects' ? <><FilteredAnalytics rows={rows}/><ComparisonResults rows={rows} route={route} onPdf={onPdf}/></> : <p>Unknown comparison view. <a href={routeHref('compare')}>Open regional controls</a>.</p>}
+      {view === 'regions' ? <><div className="fmr-result-bar"><span>{regions.length} regional controls</span><button onClick={() => download('fmr-regional-controls.csv',['region','nep_projects','house_projects','da_projects','nep_php','house_php','da_php','delta_php','da_vs_nep_php','da_excel_row'],regions.map(r => [r.label,r.nep_count,r.house_count,r.da_count,r.nep_php,r.house_php,r.da_php,r.delta_php,r.da_vs_nep_php,r.da_excel_row]))}>Export filtered CSV</button><button onClick={() => jsonDownload('fmr-regional-controls.json',regions)}>Export filtered JSON</button></div><RegionalTable regions={regions} onPdf={onPdf} route={route}/></> : view === 'projects' ? <><FilteredAnalytics rows={rows}/><ComparisonResults rows={rows} route={route} onPdf={onPdf}/></> : <p>Unknown comparison view. <a href={routeHref('compare')}>Open regional controls</a>.</p>}
     </div>{inlineSource && <PdfPane source={inlineSource} onClose={() => navigate(route,{pdf:null,pdfPage:null})}/>}</div>
+  </>;
+}
+function DaEvidence({da}) {
+  if (!da) return <p>No DA working-draft counterpart matched to this printed row.</p>;
+  const from = da.from, proposed = da.proposed;
+  return <>
+    <p>{da.match_side === 'nep' ? 'Matched via NEP' : 'Matched via House'} · {methodLabels[da.match_method] || da.match_method} · {daExcelRef(da)}</p>
+    {from && <div className="fmr-panel"><h4>DA FROM · {from.control_no}</h4><p>{from.title || '—'}</p><p><Amount value={from.amount_php}/> · {from.disposition} · Excel r.{from.excel_row}</p>{from.coordinates_raw && <pre className="fmr-coords">{from.coordinates_raw}</pre>}</div>}
+    {proposed && <div className="fmr-panel"><h4>DA proposed · {proposed.control_no}</h4><p>{proposed.title || '—'}</p><p><Amount value={proposed.amount_php}/> · Excel r.{proposed.excel_row}</p>{proposed.coordinates_raw && <pre className="fmr-coords">{proposed.coordinates_raw}</pre>}{proposed.remarks && <p className="fmr-muted">{proposed.remarks}</p>}</div>}
+    {da.audit_flags?.length > 0 && <div className="fmr-chips" aria-label="DA audit flags">{da.audit_flags.map(flag => <span className="fmr-chip" key={flag}>{daAuditLabel(flag)}</span>)}</div>}
   </>;
 }
 function PairEvidence({data, route, onPdf}) {
   const rows=useMemo(() => comparisonRows(data),[data]), id=route.params.get('pair'), selected=rows.find(r => r.id === id);
   if(!id) return null;
   if(!selected) return <p role="alert">Candidate ID not found. <button onClick={() => navigate(route,{pair:null})}>Clear selection</button></p>;
-  return <Dialog label="Candidate pair evidence" onClose={() => navigate(route,{pair:null})}><div className="fmr-dialog-heading"><h2>{statusLabels[selected.status]}</h2><button onClick={() => navigate(route,{pair:null})}>Close candidate</button></div><p>{methodLabels[selected.method] || 'No unique counterpart established'} · Provisional project identity</p><p><ViewOnMap pair={selected}/></p><div className="fmr-pair-evidence">{['nep','house'].map(key => <div key={key}><h3>{data.stages[key].label}</h3>{selected[key] ? <><a href={routeHref(key,{node:selected[key].id})}>Open in source tree</a><Evidence stage={data.stages[key]} node={sourceNode(data.stages[key],selected[key].id)} project={selected[key]} onPdf={onPdf}/></> : <p>No unique source counterpart established.</p>}</div>)}</div></Dialog>;
+  return <Dialog label="Candidate pair evidence" onClose={() => navigate(route,{pair:null})}><div className="fmr-dialog-heading"><h2>{statusLabels[selected.status]}</h2><button onClick={() => navigate(route,{pair:null})}>Close candidate</button></div><p>{methodLabels[selected.method] || 'No unique counterpart established'} · Provisional project identity · NEP/House remain source of truth</p><p><ViewOnMap pair={selected}/></p><div className="fmr-pair-evidence">{['nep','house'].map(key => <div key={key}><h3>{data.stages[key].label}</h3>{selected[key] ? <><a href={routeHref(key,{node:selected[key].id})}>Open in source tree</a><Evidence stage={data.stages[key]} node={sourceNode(data.stages[key],selected[key].id)} project={selected[key]} onPdf={onPdf}/></> : <p>No unique source counterpart established.</p>}</div>)}<div><h3>{data.stages.da?.label || 'DA working draft'}</h3><DaEvidence da={selected.da}/></div></div></Dialog>;
 }
 function Home({data}) {
-  const n=data.stages.nep,h=data.stages.house,agg=candidateAggregates(comparisonRows(data));
+  const n=data.stages.nep,h=data.stages.house,da=data.stages.da,agg=candidateAggregates(comparisonRows(data));
   const buckets=[['increased','Increased pairs',agg.increased.count,agg.increased.amount,'Candidate allocation gains'],['decreased','Decreased pairs',agg.decreased.count,agg.decreased.amount,'Candidate allocation reductions'],['house_only','House-only candidates',agg.counts.house_only,agg.house_only_php,'Unmatched House allocations'],['nep_only','NEP-only candidates',agg.counts.nep_only,agg.nep_only_php,'Unmatched NEP allocations']];
   return <>
-    <Hero title="Follow the FMR budget" actions={<><a className="primary" href={routeHref('compare',{view:'projects'})}>Compare project candidates</a><a className="secondary" href={routeHref('analysis')}>Explore analysis</a><a className="secondary" href="#home">Open the DPWH workspace</a></>}><p>Follow FY2027 farm-to-market road allocations from the NEP proposal to the House FMR annex, with source trees and printed evidence for each project.</p></Hero>
-    <div className="fmr-stats"><Stat label="DBM NEP" value={<Amount value={n.root.printed_amount_php}/>} detail={`${n.projects.length} source projects · ${n.regions.length} regions`}/><Stat label="House GAB" value={<Amount value={h.root.printed_amount_php}/>} detail={`${h.projects.length} source projects · ${h.regions.length} regions`}/><Stat label="Allocation difference" value={<Amount value={agg.net_delta_php} signed/>} detail={`${signedPct(pctChange(h.root.printed_amount_php,n.root.printed_amount_php))} over NEP`}/><Stat label="Project count difference" value={`+${h.projects.length-n.projects.length}`} detail="Source row count; candidate additions remain provisional"/></div>
-    <h2>Choose a candidate population</h2><div className="fmr-stats candidate-cards">{buckets.map(([status,label,count,value,detail]) => <a key={status} className="fmr-candidate" href={routeHref('compare',{view:'projects',status})}><Stat label={label} value={`${count} ${count === 1 ? 'row' : 'rows'}`} detail={detail}/><strong><Amount value={value}/></strong><span>Inspect filtered records →</span></a>)}</div>
-    <h2>Workbench directory</h2><ul className="home-directory">{[['house','House GAB','Review the printed program, region and project hierarchy.'],['nep','DBM NEP','Inspect the executive proposal and remaining coordinate findings.'],['compare','Compare stages','Compare controls and investigate project counterpart candidates.'],['map','Map','See every normalized segment on a national map.'],['highlights','Highlights','Read findings and open their supporting records.'],['analysis','Analysis','Explore regional allocations, adjustments and descriptive statistics.']].map(([key,title,body]) => <li key={key}><a href={routeHref(key)}><strong>{title} →</strong><span>{body}</span></a></li>)}</ul>
-    <h2>Source verification</h2><div className="fmr-source-audits">{[n,h].map(stage => <section className="fmr-panel" key={stage.key}><h3>{stage.label}</h3><p>{stage.audit_summary.internal_control_checks} balanced annex controls · {stage.control_checks.length} independent checks pass.</p><p><strong>{stage.summary.projects_needing_review} remaining coordinate findings</strong> · {stage.summary.multi_segment_projects} multi-segment projects.</p><a href={routeHref(stage.key,{view:'review'})}>Review flagged source projects →</a></section>)}</div><ReadingNote/>
-    <p className="fmr-notice">Coverage: DA locally funded FMR annex only. Each project allocation is counted once. Parent controls, office echoes and coordinate segments add no further funding.</p>
+    <Hero title="Follow the FMR budget" actions={<><a className="primary" href={routeHref('compare',{view:'projects'})}>Compare project candidates</a><a className="secondary" href={routeHref('compare',{view:'projects',da:'flagged'})}>DA audit flags</a><a className="secondary" href={routeHref('analysis')}>Explore analysis</a><a className="secondary" href="#home">Open the DPWH workspace</a></>}><p>Follow FY2027 farm-to-market road allocations from the NEP proposal to the House FMR annex, with the DA Nov 5 working draft attached for comparison. Printed NEP/House remain source of truth.</p></Hero>
+    <div className="fmr-stats"><Stat label="DBM NEP" value={<Amount value={n.root.printed_amount_php}/>} detail={`${n.projects.length} source projects · ${n.regions.length} regions`}/><Stat label="House GAB" value={<Amount value={h.root.printed_amount_php}/>} detail={`${h.projects.length} source projects · ${h.regions.length} regions`}/>{da && <Stat label="DA working draft" value={<Amount value={da.root.printed_amount_php}/>} detail={`${da.projects.length} proposed · ${data.comparison_summary.da_matched_rows} matched rows`}/>}<Stat label="House − NEP" value={<Amount value={agg.net_delta_php} signed/>} detail={`${signedPct(pctChange(h.root.printed_amount_php,n.root.printed_amount_php))} over NEP`}/></div>
+    <h2>Choose a candidate population</h2><div className="fmr-stats candidate-cards">{buckets.map(([status,label,count,value,detail]) => <a key={status} className="fmr-candidate" href={routeHref('compare',{view:'projects',status})}><Stat label={label} value={`${count} ${count === 1 ? 'row' : 'rows'}`} detail={detail}/><strong><Amount value={value}/></strong><span>Inspect filtered records →</span></a>)}
+      <a className="fmr-candidate" href={routeHref('compare',{view:'projects',da:'flagged'})}><Stat label="DA audit-flagged" value={`${data.comparison_summary.da_flagged_rows || 0} rows`} detail="Printed vs DA title/coords/amount/PSGC"/><strong>{data.comparison_summary.da_matched_rows || 0} DA-matched</strong><span>Inspect filtered records →</span></a>
+    </div>
+    <h2>Workbench directory</h2><ul className="home-directory">{[['house','House GAB','Review the printed program, region and project hierarchy.'],['nep','DBM NEP','Inspect the executive proposal and remaining coordinate findings.'],['compare','Compare stages','NEP → House → DA draft with Excel row citations.'],['map','Map','See every normalized segment on a national map.'],['highlights','Highlights','Read findings and open their supporting records.'],['analysis','Analysis','Explore regional allocations, adjustments and descriptive statistics.']].map(([key,title,body]) => <li key={key}><a href={routeHref(key)}><strong>{title} →</strong><span>{body}</span></a></li>)}</ul>
+    <h2>Source verification</h2><div className="fmr-source-audits">{[n,h].map(stage => <section className="fmr-panel" key={stage.key}><h3>{stage.label}</h3><p>{stage.audit_summary.internal_control_checks} balanced annex controls · {stage.control_checks.length} independent checks pass.</p><p><strong>{stage.summary.projects_needing_review} remaining coordinate findings</strong> · {stage.summary.multi_segment_projects} multi-segment projects.</p><a href={routeHref(stage.key,{view:'review'})}>Review flagged source projects →</a></section>)}
+      {da && <section className="fmr-panel"><h3>{da.label}</h3><p>Working draft overlay · {da.summary.proposed_project_rows} proposed rows · Excel sheet {da.metadata.source_sheet}.</p><p><strong>{data.comparison_summary.da_flagged_rows} audit-flagged</strong> of {data.comparison_summary.da_matched_rows} matched comparison rows.</p><a href={routeHref('compare',{view:'projects',da:'flagged'})}>Open DA audit flags →</a></section>}
+    </div><ReadingNote/>
+    <p className="fmr-notice">Coverage: DA locally funded FMR annex only. Each project allocation is counted once. Parent controls, office echoes and coordinate segments add no further funding. NEP and House printed annexes remain the source-of-truth ledgers; the DA Nov 5 workbook is compared against them.</p>
   </>;
 }
 
@@ -620,7 +665,7 @@ function Analysis({data, route, onPdf}) {
 export default function FmrApp({initialData = null} = {}) {
   const [route,setRoute] = useState(() => readRoute()), [data,setData] = useState(initialData), [error,setError] = useState('');
   useEffect(() => {const update = () => setRoute(readRoute()); window.addEventListener('hashchange',update); return () => window.removeEventListener('hashchange',update);}, []);
-  useEffect(() => {if(initialData) return; const controller = new AbortController(); fetch(siteUrl('other-analysis/data/fmr_workbench.json'),{signal:controller.signal}).then(r => {if(!r.ok) throw Error(`Data request failed (${r.status})`); return r.json();}).then(d => {if(d.schema_version !== 1) throw Error('Unsupported FMR dataset'); setData(d);}).catch(e => {if(e.name !== 'AbortError') setError(e.message);}); return () => controller.abort();}, []);
+  useEffect(() => {if(initialData) return; const controller = new AbortController(); fetch(siteUrl('other-analysis/data/fmr_workbench.json'),{signal:controller.signal}).then(r => {if(!r.ok) throw Error(`Data request failed (${r.status})`); return r.json();}).then(d => {if(![1, 2].includes(d.schema_version)) throw Error('Unsupported FMR dataset'); setData(d);}).catch(e => {if(e.name !== 'AbortError') setError(e.message);}); return () => controller.abort();}, []);
   useEffect(() => {document.title = `${fmrTabs.find(t => t[0] === route.key)?.[1] || 'Unknown page'} · DA FMR FY2027`;}, [route.key]);
   const [mapRecord, setMapRecord] = useState(null);
   useEffect(() => {setMapRecord(null);}, [route.key, route.params.toString()]);
@@ -635,7 +680,7 @@ export default function FmrApp({initialData = null} = {}) {
   };
   const onPdf = source => navigate(route,{pdf:source.source_pdf,pdfPage:source.pdf_page});
   const pdfPath = route.params.get('pdf'), pageNumber = Number(route.params.get('pdfPage'));
-  const pdfStage = data && Object.values(data.stages).find(s => [s.metadata.source_pdf,s.metadata.cross_volume_source_pdf].includes(pdfPath));
+  const pdfStage = data && Object.values(data.stages).find(s => s?.metadata && [s.metadata.source_pdf,s.metadata.cross_volume_source_pdf].includes(pdfPath));
   const source = pdfStage && Number.isInteger(pageNumber) && pageNumber > 0 ? {url:siteUrl(pdfPath),document:pdfPath,title:`${pdfStage.label}${pdfStage.key === 'house' ? ' · supplied copy' : ''}`,page:pageNumber} : null;
   const inlineSource = source && !route.params.get('pair') && ['house','nep','compare'].includes(route.key) ? source : null;
   return <MapModalContext.Provider value={openMap}><a className="fmr-skip" href="#fmr-content" onClick={e => {e.preventDefault();document.getElementById('fmr-content')?.focus();}}>Skip to content</a><WorkbenchHeader route={route.key} workspace="fmr"/><main id="fmr-content" tabIndex={-1} className="shell fmr-main">

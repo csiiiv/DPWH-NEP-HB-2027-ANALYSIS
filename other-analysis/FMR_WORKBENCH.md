@@ -28,6 +28,12 @@ added together as a single budget. Each printed hierarchy is program → region 
 project; parents describe the same money as their children. Multi-segment
 coordinates never multiply the project allocation.
 
+A third observation — the **DA working draft (Nov 5)** Excel in `DA_FMR_DATA/` —
+is extracted by `extract_da_fmr.py` and attached onto the NEP↔House comparison as
+an overlay (`stages.da`, per-row `da` with `excel_row` citations). NEP and House
+remain the printed source-of-truth ledgers; DA is compared against them. No
+legislative-lens packaging is derived from the DA draft yet.
+
 `build_fmr_workbench.py` checks the retained source PDF hashes, normalization
 lineage, project coverage, additive controls, independent control evidence, and
 normalization summaries before generating `data/fmr_workbench.json`. That

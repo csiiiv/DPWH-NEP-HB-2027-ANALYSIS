@@ -50,6 +50,25 @@ class FmrWorkbenchTests(unittest.TestCase):
             self.assertEqual(len(ids),len(set(ids)))
             self.assertEqual(set(ids),{p['id'] for p in projects})
 
+    def test_da_draft_attaches_with_excel_rows(self):
+        data = builder.build()
+        self.assertEqual(data['schema_version'], 2)
+        da = data['stages']['da']
+        self.assertEqual(da['root']['printed_amount_php'], 16_000_000_000)
+        self.assertEqual(len(da['projects']), 775)
+        matched = [row for row in data['comparison'] if row.get('da')]
+        self.assertGreaterEqual(len(matched), 690)
+        sample = matched[0]['da']
+        self.assertTrue(sample['excel_rows'])
+        self.assertIn('excel_row', sample['from'])
+        self.assertEqual(sample['from']['excel_row'], sample['excel_rows'][0]
+                         if len(sample['excel_rows']) == 1
+                         else sample['from']['excel_row'])
+        for region in data['regions']:
+            self.assertIn('da_php', region)
+            self.assertIn('da_excel_row', region)
+        self.assertGreater(data['comparison_summary']['da_matched_rows'], 0)
+
     def test_coordinate_provenance_survives_workbench_packaging(self):
         data = builder.build()
         nep = {p['id']: p for p in data['stages']['nep']['projects']}

@@ -80,6 +80,9 @@ DERIVED = {
         'analysis/data/mpb_legislative_index_2027.json',
         'python3 analysis/web/buildMpbLegislativeLens.py', ''),
     # annex workbenches + FMR finals consumed by the SPA and packaging
+    'da_fmr_draft.json': (
+        'other-analysis/data/da_fmr_draft.json',
+        'python3 other-analysis/extract_da_fmr.py', ''),
     'fmr_workbench.json': (
         'other-analysis/data/fmr_workbench.json',
         'python3 other-analysis/build_fmr_workbench.py', ''),

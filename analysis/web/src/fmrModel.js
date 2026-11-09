@@ -14,10 +14,65 @@ export const fmrTabs = [
 // readings; every tab cites this same check.
 export const readingNote = 'No FMR changes between the 2nd and 3rd House readings: the annex (Volume I-B, PDF pages 667–726) is text-identical in both printings, verified 12 October 2026. The supplied House copy is the 2nd-reading file and represents both readings.';
 export const statusLabels = {paired: 'Candidate pair', house_only: 'House only', nep_only: 'NEP only'};
-export const methodLabels = {title_and_coordinates: 'Title + exact coordinates', title: 'Title', coordinates: 'Exact coordinates'};
+export const methodLabels = {
+  title_and_coordinates: 'Title + exact coordinates',
+  title_and_amount: 'Title + amount',
+  title: 'Title',
+  coordinates: 'Exact coordinates',
+};
 // Chips and selects share one label source so a filter always reads the same way.
 export const comparisonFilterLabels = {...statusLabels, changed: 'Pairs with an amount change', increased: 'Paired · increased',
   decreased: 'Paired · decreased', unchanged: 'Paired · unchanged', ambiguous: 'Unmatched repeated titles'};
+export const daFilterLabels = {
+  matched: 'DA matched',
+  unmatched: 'No DA match',
+  retain: 'DA retain',
+  dropped: 'DA dropped',
+  replaced: 'DA replaced',
+  modified: 'DA modified',
+  flagged: 'DA audit flags',
+  amount_diff: 'Amount differs vs DA',
+  coord_diff: 'Coordinates differ vs DA',
+  title_diff: 'Title differs vs DA',
+  psgc_conflict: 'PSGC conflict on printed side',
+  needs_review: 'Printed needs_review',
+};
+export function daExcelRef(da) {
+  if (!da) return null;
+  const rows = da.excel_rows?.length ? da.excel_rows : [
+    da.from?.excel_row, da.proposed?.excel_row,
+  ].filter((value, index, all) => value != null && all.indexOf(value) === index);
+  if (!rows?.length) return null;
+  return rows.length === 1 ? `Excel r.${rows[0]}` : `Excel r.${rows.join(', r.')}`;
+}
+export function daDisposition(da) {
+  if (!da?.from) return null;
+  if (da.proposed && da.from.id !== da.proposed.id) return 'replaced';
+  return da.from.disposition || null;
+}
+export function daAuditLabel(flag) {
+  return String(flag || '').replaceAll('_', ' ').replaceAll(':', ' · ');
+}
+export function rowMatchesDaFilter(row, daFilter) {
+  if (!daFilter) return true;
+  const da = row.da;
+  if (daFilter === 'matched') return Boolean(da);
+  if (daFilter === 'unmatched') return !da;
+  if (!da) return false;
+  const disposition = daDisposition(da);
+  if (daFilter === 'retain' || daFilter === 'dropped' || daFilter === 'modified') {
+    return disposition === daFilter;
+  }
+  if (daFilter === 'replaced') return disposition === 'replaced';
+  if (daFilter === 'flagged') return Boolean(da.audit_flags?.length);
+  const flags = da.audit_flags || [];
+  if (daFilter === 'amount_diff') return flags.some(flag => flag.includes('amount_diff_vs_da'));
+  if (daFilter === 'coord_diff') return flags.some(flag => flag.includes('coord_diff_vs_da'));
+  if (daFilter === 'title_diff') return flags.some(flag => flag.includes('title_diff_vs_da'));
+  if (daFilter === 'psgc_conflict') return flags.some(flag => flag.includes('_psgc:'));
+  if (daFilter === 'needs_review') return flags.some(flag => flag.endsWith('_needs_review'));
+  return true;
+}
 export const money = value => value == null ? '—' : `₱${value.toLocaleString('en-PH')}`;
 export const compactMoney = value => value == null ? '—' : Math.abs(value) >= 1e9 ? `₱${(value / 1e9).toLocaleString('en-PH', {maximumFractionDigits: 4})}B` : Math.abs(value) >= 1e6 ? `₱${(value / 1e6).toLocaleString('en-PH', {maximumFractionDigits: 3})}M` : money(value);
 export const signedMoney = value => value == null ? '—' : `${value > 0 ? '+' : ''}${money(value)}`;
@@ -129,15 +184,34 @@ export function filterProjects(projects, {q = '', region = '', status = '', cate
     terms.every(t => `${p.title} ${p.region} ${p.id} ${(p.review_flags || []).join(' ')} ${(p.original_review_flags || []).join(' ')} ${(p.normalization_rules || []).join(' ')}`.toLocaleLowerCase().includes(t)));
 }
 export function comparisonRows(data) {
-  const indexes = Object.fromEntries(Object.entries(data.stages).map(([s, d]) => [s, new Map(d.projects.map(p => [p.id, p]))]));
+  const indexes = Object.fromEntries(
+    Object.entries(data.stages)
+      .filter(([key]) => key === 'nep' || key === 'house')
+      .map(([s, d]) => [s, new Map(d.projects.map(p => [p.id, p]))]),
+  );
   return data.comparison.map(row => {
     const nep = indexes.nep.get(row.nep_id), house = indexes.house.get(row.house_id);
-    return {...row, nep, house, title: house?.title || nep?.title, nep_php: nep?.amount_php ?? null, house_php: house?.amount_php ?? null};
+    const da = row.da || null;
+    const daTitle = da?.proposed?.title || da?.from?.title;
+    return {
+      ...row,
+      nep,
+      house,
+      da,
+      title: house?.title || nep?.title || daTitle,
+      nep_php: nep?.amount_php ?? null,
+      house_php: house?.amount_php ?? null,
+      da_php: da?.proposed?.amount_php ?? da?.from?.amount_php ?? null,
+      da_excel_rows: da?.excel_rows || [],
+      da_control_no: da?.proposed?.control_no || da?.from?.control_no || null,
+      da_disposition: daDisposition(da),
+    };
   });
 }
 export function filterComparisons(rows, {
   q = '', region = '', status = '', direction = '', method = '',
   coordinate = '', extraction = '', rule = '', review_flag = '', text_basis = '', coord_side = '',
+  da = '',
 } = {}) {
   const terms = q.toLocaleLowerCase().trim().split(/\s+/).filter(Boolean);
   const provenance = {extraction, rule, review_flag, text_basis};
@@ -150,10 +224,11 @@ export function filterComparisons(rows, {
       : status === 'decreased' ? r.status === 'paired' && r.delta_php < 0
       : status === 'unchanged' ? r.status === 'paired' && r.delta_php === 0
       : status === 'ambiguous' ? r.ambiguous_title : r.status === status)) &&
+    rowMatchesDaFilter(r, da) &&
     (!hasSideFilter || comparisonMatchesSide(r, coord_side, p =>
       (!coordinate || projectMatchesCoordinateStatus(p, coordinate))
       && projectMatchesProvenance(p, provenance))) &&
-    terms.every(t => `${r.nep?.title || ''} ${r.house?.title || ''} ${r.nep_id || ''} ${r.house_id || ''} ${(r.nep?.original_review_flags || []).join(' ')} ${(r.house?.original_review_flags || []).join(' ')} ${(r.nep?.normalization_rules || []).join(' ')} ${(r.house?.normalization_rules || []).join(' ')} ${(r.nep?.review_flags || []).join(' ')} ${(r.house?.review_flags || []).join(' ')}`.toLocaleLowerCase().includes(t)));
+    terms.every(t => `${r.nep?.title || ''} ${r.house?.title || ''} ${r.da?.from?.title || ''} ${r.da?.proposed?.title || ''} ${r.nep_id || ''} ${r.house_id || ''} ${r.da_control_no || ''} ${(r.da_excel_rows || []).join(' ')} ${(r.da?.audit_flags || []).join(' ')} ${(r.nep?.original_review_flags || []).join(' ')} ${(r.house?.original_review_flags || []).join(' ')} ${(r.nep?.normalization_rules || []).join(' ')} ${(r.house?.normalization_rules || []).join(' ')} ${(r.nep?.review_flags || []).join(' ')} ${(r.house?.review_flags || []).join(' ')}`.toLocaleLowerCase().includes(t)));
 }
 // Reconciles a filtered comparison ledger: counts, per-direction amount moves,
 // and the money identity paired Δ + house-only − nep-only = net Δ.
@@ -309,8 +384,22 @@ function exportProjectProvenance(project, amount) {
   };
 }
 export function comparisonExportRows(rows) {
-  return rows.map(r => ({candidate_id:r.id, status:r.status, method:r.method, region:r.region_key,
-    ambiguous_title:r.ambiguous_title, delta_php:r.delta_php, percent_change:pctChange(r.house_php,r.nep_php),
+  return rows.map(r => ({
+    candidate_id: r.id, status: r.status, method: r.method, region: r.region_key,
+    ambiguous_title: r.ambiguous_title, delta_php: r.delta_php,
+    percent_change: pctChange(r.house_php, r.nep_php),
     nep: exportProjectProvenance(r.nep, r.nep_php),
-    house: exportProjectProvenance(r.house, r.house_php)}));
+    house: exportProjectProvenance(r.house, r.house_php),
+    da: r.da ? {
+      match_side: r.da.match_side,
+      match_method: r.da.match_method,
+      disposition: r.da_disposition,
+      excel_rows: r.da.excel_rows,
+      control_no: r.da_control_no,
+      from: r.da.from,
+      proposed: r.da.proposed,
+      audit_flags: r.da.audit_flags || [],
+      amount_php: r.da_php,
+    } : null,
+  }));
 }

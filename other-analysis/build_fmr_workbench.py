@@ -13,9 +13,12 @@ import unicodedata
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / 'data/fmr_workbench.json'
+DA_DRAFT = ROOT / 'data/da_fmr_draft.json'
 
 
 def canonical_title(text):
+    if not text:
+        return ''
     text = unicodedata.normalize('NFKD', text).casefold()
     text = re.sub(r'\bbrgy\b', 'barangay', text)
     return ' '.join(re.findall(r'[a-z0-9]+', text))
@@ -33,15 +36,20 @@ def region_key(label):
     return match[1]
 
 
+def raw_coordinate_key(coordinates):
+    if not coordinates:
+        return None
+    points = [pair for segment in coordinates for pair in segment]
+    if not points or any(pair is None or any(v is None for v in pair) for pair in points):
+        return None
+    return json.dumps(coordinates, separators=(',', ':'))
+
+
 def coordinate_key(project):
     # No proximity matching or matching on flagged numeric repair candidates.
     if project['status'] != 'normalized' or project['review_flags']:
         return None
-    points = [pair for segment in project['coordinates'] for pair in segment]
-    if not points or any(pair is None or any(v is None for v in pair) for pair in points):
-        return None
-    # Preserve segment and endpoint order and the full retained precision.
-    return json.dumps(project['coordinates'], separators=(',', ':'))
+    return raw_coordinate_key(project['coordinates'])
 
 
 def match_projects(nep, house):
@@ -157,6 +165,306 @@ def load_stage(stage, prefix, psgc_points_by_project=None):
             'control_checks': audit['cross_volume_checks'], 'provenance': provenance}
 
 
+def load_da_draft():
+    if not DA_DRAFT.is_file():
+        raise ValueError('Missing DA FMR draft; run other-analysis/extract_da_fmr.py')
+    draft = json.loads(DA_DRAFT.read_text())
+    source = ROOT.parent / draft['metadata']['source_xlsx']
+    if not source.is_file():
+        raise ValueError(f'DA source workbook missing: {source}')
+    if sha256(source) != draft['metadata']['source_xlsx_sha256']:
+        raise ValueError('DA draft is stale against the workbook; rerun extract_da_fmr.py')
+    summary = draft['summary']
+    if summary['from_amount_php'] != 16_000_000_000 or summary['proposed_amount_php'] != 16_000_000_000:
+        raise ValueError('DA draft money controls failed')
+    if summary['original_rows'] != 704:
+        raise ValueError('DA draft original-row control failed')
+    return draft
+
+
+def sha256(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def da_project_brief(project, side='effective'):
+    """Compact DA row for the browser payload, always retaining excel_row."""
+    if not project:
+        return None
+    if side == 'from':
+        title = project.get('from_title')
+        coordinates = project.get('from_coordinates')
+        coordinates_raw = project.get('from_coordinates_raw')
+        amount = project.get('from_amount_php')
+    else:
+        title = project.get('effective_title')
+        coordinates = project.get('effective_coordinates')
+        coordinates_raw = project.get('effective_coordinates_raw')
+        amount = project.get('effective_amount_php')
+    return {
+        'id': project['id'],
+        'excel_row': project['excel_row'],
+        'control_no': project['control_no'],
+        'kind': project['kind'],
+        'disposition': project['disposition'],
+        'region_key': project['region_key'],
+        'title': title,
+        'amount_php': amount,
+        'coordinates': coordinates,
+        'coordinates_raw': coordinates_raw,
+        'remarks': project.get('remarks') or '',
+        'is_retain': project.get('is_retain', False),
+    }
+
+
+def link_da_replacements(da_projects):
+    """Pair dropped ORIGINAL rows with nearby NEW/L replacements in sheet order."""
+    replacements = {}
+    used = set()
+    for index, project in enumerate(da_projects):
+        if project['disposition'] != 'dropped':
+            continue
+        for nxt in da_projects[index + 1:index + 4]:
+            if nxt['region_key'] != project['region_key']:
+                break
+            if nxt['id'] in used:
+                continue
+            if nxt['kind'] in ('new', 'list_revision') and (nxt.get('effective_amount_php') or 0) > 0:
+                replacements[project['id']] = nxt
+                used.add(nxt['id'])
+                break
+    return replacements
+
+
+def match_da_to_printed(da_originals, printed_projects):
+    """One-to-one DA FROM → printed ledger matches within region.
+
+    Passes: title+amount, title, exact coordinates. Unique keys only.
+    """
+    pending_da = {p['id']: p for p in da_originals}
+    pending_printed = {p['id']: p for p in printed_projects}
+    rows = []
+
+    def da_title(project):
+        return canonical_title(project.get('from_title'))
+
+    def da_coords(project):
+        return raw_coordinate_key(project.get('from_coordinates'))
+
+    for method in ('title_and_amount', 'title', 'coordinates'):
+        da_index, printed_index = defaultdict(list), defaultdict(list)
+        for project in pending_da.values():
+            title, coords = da_title(project), da_coords(project)
+            if method == 'title_and_amount' and title and project.get('from_amount_php') is not None:
+                key = (project['region_key'], title, project['from_amount_php'])
+            elif method == 'title' and title:
+                key = (project['region_key'], title)
+            elif method == 'coordinates' and coords:
+                key = (project['region_key'], coords)
+            else:
+                continue
+            da_index[key].append(project)
+        for project in pending_printed.values():
+            title, coords = canonical_title(project['title']), coordinate_key(project)
+            # Amount/title passes may use printed rows even when coords are flagged.
+            if method == 'title_and_amount':
+                key = (project['region_key'], title, project['amount_php'])
+            elif method == 'title':
+                key = (project['region_key'], title)
+            elif method == 'coordinates':
+                if not coords:
+                    # Fall back to raw coordinates for flagged rows so DA can
+                    # still attach; audit flags will surface the review state.
+                    coords = raw_coordinate_key(project.get('coordinates'))
+                if not coords:
+                    continue
+                key = (project['region_key'], coords)
+            else:
+                continue
+            printed_index[key].append(project)
+        for key in da_index.keys() & printed_index.keys():
+            da_hits, printed_hits = da_index[key], printed_index[key]
+            if len(da_hits) == len(printed_hits) == 1:
+                da_row, printed = da_hits[0], printed_hits[0]
+                rows.append({'da_id': da_row['id'], 'printed_id': printed['id'], 'method': method})
+                del pending_da[da_row['id']]
+                del pending_printed[printed['id']]
+    return rows, pending_da, pending_printed
+
+
+def audit_flags_for_link(printed_projects, da_from, da_proposed):
+    """Flags on printed NEP/House evidence relative to the matched DA observation."""
+    flags = []
+    # When proposed exists use its title/coords/amount; else FROM.
+    if da_proposed:
+        compare_title = canonical_title(da_proposed.get('title'))
+        compare_coords = raw_coordinate_key(da_proposed.get('coordinates'))
+        compare_amount = da_proposed.get('amount_php')
+    elif da_from:
+        compare_title = canonical_title(da_from.get('title'))
+        compare_coords = raw_coordinate_key(da_from.get('coordinates'))
+        compare_amount = da_from.get('amount_php')
+    else:
+        compare_title = compare_coords = compare_amount = None
+
+    for project in printed_projects:
+        if not project:
+            continue
+        prefix = project['stage']
+        if project.get('status') == 'needs_review':
+            flags.append(f'{prefix}_needs_review')
+        for flag in project.get('review_flags') or []:
+            flags.append(f'{prefix}_review:{flag}')
+        agreement = project.get('location_agreement')
+        # MIXED / PARTIAL are common title↔point nuance; surface sharper conflicts.
+        if agreement in ('DISAGREE', 'NO_MATCH'):
+            flags.append(f'{prefix}_psgc:{agreement}')
+        if compare_amount is not None and project.get('amount_php') is not None:
+            if project['amount_php'] != compare_amount:
+                flags.append(f'{prefix}_amount_diff_vs_da')
+        if compare_title and canonical_title(project.get('title')) != compare_title:
+            flags.append(f'{prefix}_title_diff_vs_da')
+        printed_coords = raw_coordinate_key(project.get('coordinates'))
+        if compare_coords and printed_coords and compare_coords != printed_coords:
+            flags.append(f'{prefix}_coord_diff_vs_da')
+
+    remarks = ((da_proposed or da_from or {}).get('remarks') or '').lower()
+    if 'coordinate' in remarks:
+        flags.append('da_remark_coordinates')
+    if 'title' in remarks and 'coordinate' not in remarks:
+        flags.append('da_remark_title')
+    if 'title' in remarks and 'coordinate' in remarks:
+        flags.append('da_remark_title_and_coordinates')
+    if 'repriorit' in remarks:
+        flags.append('da_remark_reprioritized')
+    # Stable unique order for diffs / UI chips. Disposition (retain/drop/replace)
+    # stays on da.from / da.proposed — not mixed into audit flags.
+    return sorted(set(flags))
+
+
+def attach_da_to_comparison(rows, stages, da_draft):
+    """Annotate NEP↔House comparison rows with DA draft links and audit flags.
+
+    Printed NEP/House ledgers remain authoritative. DA is a third column:
+    matched through DA FROM originals onto NEP first, then residual House rows.
+    """
+    da_projects = da_draft['projects']
+    da_by_id = {p['id']: p for p in da_projects}
+    replacements = link_da_replacements(da_projects)
+    originals = [p for p in da_projects if p['kind'] == 'original' and p.get('from_title')]
+
+    nep_matches, unmatched_da_nep, _ = match_da_to_printed(originals, stages['nep']['projects'])
+    nep_linked_da = {m['da_id'] for m in nep_matches}
+    residual_originals = [p for p in originals if p['id'] not in nep_linked_da]
+    house_matches, unmatched_da_house, _ = match_da_to_printed(
+        residual_originals, stages['house']['projects'])
+
+    da_to_nep = {m['da_id']: m for m in nep_matches}
+    da_to_house = {m['da_id']: m for m in house_matches}
+    nep_to_da = {m['printed_id']: m for m in nep_matches}
+    house_to_da = {m['printed_id']: m for m in house_matches}
+
+    annotated = []
+    for row in rows:
+        da_match = None
+        match_side = None
+        if row.get('nep_id') and row['nep_id'] in nep_to_da:
+            da_match = nep_to_da[row['nep_id']]
+            match_side = 'nep'
+        elif row.get('house_id') and row['house_id'] in house_to_da:
+            da_match = house_to_da[row['house_id']]
+            match_side = 'house'
+
+        if not da_match:
+            annotated.append({**row, 'da': None})
+            continue
+
+        da_from_full = da_by_id[da_match['da_id']]
+        replacement = replacements.get(da_from_full['id'])
+        if replacement:
+            da_proposed_full = replacement
+        elif da_from_full['disposition'] == 'dropped':
+            da_proposed_full = None
+        else:
+            da_proposed_full = da_from_full
+
+        da_from = da_project_brief(da_from_full, side='from')
+        da_proposed = (
+            da_project_brief(da_proposed_full, side='effective')
+            if da_proposed_full else None
+        )
+        printed = []
+        if row.get('nep_id'):
+            printed.append(next(p for p in stages['nep']['projects'] if p['id'] == row['nep_id']))
+        if row.get('house_id'):
+            printed.append(next(p for p in stages['house']['projects'] if p['id'] == row['house_id']))
+        flags = audit_flags_for_link(printed, da_from, da_proposed)
+        excel_rows = sorted({
+            *( [da_from['excel_row']] if da_from else [] ),
+            *( [da_proposed['excel_row']] if da_proposed else [] ),
+        })
+        annotated.append({
+            **row,
+            'da': {
+                'matched': True,
+                'match_side': match_side,
+                'match_method': da_match['method'],
+                'from': da_from,
+                'proposed': da_proposed,
+                'excel_rows': excel_rows,
+                'audit_flags': flags,
+            },
+        })
+
+    # DA proposed rows never linked through an original FROM match.
+    linked_proposed_ids = set()
+    for row in annotated:
+        da = row.get('da') or {}
+        if da.get('proposed'):
+            linked_proposed_ids.add(da['proposed']['id'])
+        if da.get('from') and da['from']['disposition'] != 'dropped':
+            linked_proposed_ids.add(da['from']['id'])
+    for project in replacements.values():
+        linked_proposed_ids.add(project['id'])
+
+    da_only_proposed = []
+    for project in da_projects:
+        if (project.get('effective_amount_php') or 0) <= 0:
+            continue
+        if project['id'] in linked_proposed_ids:
+            continue
+        if project['kind'] == 'original' and (
+            project['id'] in da_to_nep or project['id'] in da_to_house
+        ):
+            continue
+        da_only_proposed.append(da_project_brief(project, side='effective'))
+
+    da_summary = {
+        'source_label': da_draft['label'],
+        'note': da_draft['note'],
+        'metadata': da_draft['metadata'],
+        'program': da_draft['program'],
+        'draft_summary': da_draft['summary'],
+        'matches': {
+            'via_nep': len(nep_matches),
+            'via_house_residual': len(house_matches),
+            'comparison_rows_with_da': sum(1 for r in annotated if r.get('da')),
+            'unmatched_da_originals': len(unmatched_da_house),
+            'da_only_proposed': len(da_only_proposed),
+            'methods': dict(Counter(
+                m['method'] for m in list(nep_matches) + list(house_matches)
+            )),
+        },
+        'audit_flag_counts': dict(Counter(
+            flag for row in annotated if row.get('da')
+            for flag in row['da']['audit_flags']
+        )),
+        'flagged_comparison_rows': sum(
+            1 for row in annotated if row.get('da') and row['da']['audit_flags']
+        ),
+    }
+    return annotated, da_only_proposed, da_summary, da_draft
+
+
 def build():
     psgc = load_psgc_evidence()
     stages = {s: load_stage(s, p, psgc['points_by_project']) for s, p in (('house', 'hgab'), ('nep', 'nep'))}
@@ -172,18 +480,123 @@ def build():
     nep_only = sum(lookup['nep'][r['nep_id']]['amount_php'] for r in rows if r['status'] == 'nep_only')
     if paired_delta + house_only - nep_only != delta:
         raise ValueError('Comparison money reconciliation failed')
+
+    da_draft = load_da_draft()
+    rows, da_only_proposed, da_summary, da_draft = attach_da_to_comparison(rows, stages, da_draft)
+    da_regions = {r['region_key']: r for r in da_draft['regions']}
+
+    # Lightweight DA stage for compare/home stats (no PDF tree / legislative lens).
+    da_proposed_projects = [
+        {
+            **da_project_brief(p, side='effective'),
+            'stage': 'da',
+            'region': p['region'],
+            'status': 'da_draft',
+            'review_flags': [],
+            'normalization_rules': [],
+            'original_review_flags': [],
+            'segment_count': 1 if p.get('effective_coordinates') else 0,
+            'point_count': 2 if p.get('effective_coordinates') else 0,
+            'source': {
+                'source_xlsx': da_draft['metadata']['source_xlsx'],
+                'excel_row': p['excel_row'],
+                'control_no': p['control_no'],
+                'sheet': da_draft['metadata']['source_sheet'],
+            },
+        }
+        for p in da_draft['projects']
+        if (p.get('effective_amount_php') or 0) > 0
+    ]
+    stages['da'] = {
+        'key': 'da',
+        'label': da_draft['label'],
+        'metadata': da_draft['metadata'],
+        'root': {
+            'id': 'da:root',
+            'label': da_draft['program']['label'],
+            'printed_amount_php': da_draft['summary']['proposed_amount_php'],
+            'excel_row': da_draft['program']['excel_row'],
+        },
+        'regions': [
+            {
+                'id': f"da:{r['region_key']}",
+                'key': r['region_key'],
+                'label': r['label'],
+                'amount_php': r['proposed_amount_php'],
+                'from_amount_php': r['from_amount_php'],
+                'excel_row': r['excel_row'],
+                'project_ids': [
+                    p['id'] for p in da_proposed_projects if p['region_key'] == r['region_key']
+                ],
+                'source': {
+                    'source_xlsx': da_draft['metadata']['source_xlsx'],
+                    'excel_row': r['excel_row'],
+                    'sheet': da_draft['metadata']['source_sheet'],
+                },
+            }
+            for r in da_draft['regions']
+        ],
+        'projects': da_proposed_projects,
+        'summary': da_draft['summary'],
+        'provenance': {
+            str(DA_DRAFT.relative_to(ROOT)): sha256(DA_DRAFT),
+            da_draft['metadata']['source_xlsx']: da_draft['metadata']['source_xlsx_sha256'],
+        },
+    }
+
     regions = []
     for n in stages['nep']['regions']:
         h = next(r for r in stages['house']['regions'] if r['key'] == n['key'])
-        regions.append({'id': n['key'], 'label': n['label'], 'nep_php': n['amount_php'], 'house_php': h['amount_php'],
-                        'delta_php': h['amount_php'] - n['amount_php'], 'nep_count': len(n['project_ids']), 'house_count': len(h['project_ids']),
-                        'nep_source': n['source'], 'house_source': h['source']})
-    return {'schema_version': 1, 'fiscal_year': 2027, 'stages': stages, 'comparison': rows, 'regions': regions,
-            'psgc_validation': psgc['metadata'] | {'summary': psgc['summary']},
-            'comparison_summary': {'counts': dict(Counter(r['status'] for r in rows)), 'methods': dict(Counter(r['method'] for r in rows if r['method'])),
-                                   'delta_php': delta, 'paired_delta_php': paired_delta, 'house_only_php': house_only, 'nep_only_php': nep_only,
-                                   'changed_pairs': sum(r['status'] == 'paired' and r['delta_php'] != 0 for r in rows)},
-            'matching_note': 'Unique, one-to-one candidates within the same region: canonical title + exact clean coordinates, then title, then exact clean coordinates. No fuzzy or distance matching. Source-only rows are unmatched observations, not certified insertions or deletions.'}
+        d = da_regions[n['key']]
+        regions.append({
+            'id': n['key'], 'label': n['label'],
+            'nep_php': n['amount_php'], 'house_php': h['amount_php'],
+            'da_php': d['proposed_amount_php'], 'da_from_php': d['from_amount_php'],
+            'delta_php': h['amount_php'] - n['amount_php'],
+            'da_vs_nep_php': d['proposed_amount_php'] - n['amount_php'],
+            'da_vs_house_php': d['proposed_amount_php'] - h['amount_php'],
+            'nep_count': len(n['project_ids']), 'house_count': len(h['project_ids']),
+            'da_count': sum(
+                1 for p in da_proposed_projects if p['region_key'] == n['key']
+            ),
+            'da_excel_row': d['excel_row'],
+            'nep_source': n['source'], 'house_source': h['source'],
+            'da_source': {
+                'source_xlsx': da_draft['metadata']['source_xlsx'],
+                'excel_row': d['excel_row'],
+                'sheet': da_draft['metadata']['source_sheet'],
+            },
+        })
+    return {
+        'schema_version': 2,
+        'fiscal_year': 2027,
+        'stages': stages,
+        'comparison': rows,
+        'da_only_proposed': da_only_proposed,
+        'da_summary': da_summary,
+        'regions': regions,
+        'psgc_validation': psgc['metadata'] | {'summary': psgc['summary']},
+        'comparison_summary': {
+            'counts': dict(Counter(r['status'] for r in rows)),
+            'methods': dict(Counter(r['method'] for r in rows if r['method'])),
+            'delta_php': delta,
+            'paired_delta_php': paired_delta,
+            'house_only_php': house_only,
+            'nep_only_php': nep_only,
+            'changed_pairs': sum(r['status'] == 'paired' and r['delta_php'] != 0 for r in rows),
+            'da_matched_rows': da_summary['matches']['comparison_rows_with_da'],
+            'da_flagged_rows': da_summary['flagged_comparison_rows'],
+        },
+        'matching_note': (
+            'Unique, one-to-one candidates within the same region: canonical title + '
+            'exact clean coordinates, then title, then exact clean coordinates. No fuzzy '
+            'or distance matching. Source-only rows are unmatched observations, not '
+            'certified insertions or deletions. DA working-draft rows attach to this '
+            'NEP↔House ledger via DA FROM originals (NEP first, residual House); Excel '
+            'row numbers cite DA_FMR_DATA/Working Draft as of Nov 5*.xlsx. NEP and House '
+            'printed annexes remain the source-of-truth ledgers.'
+        ),
+    }
 
 
 def _format_psgc_where(psgc):
@@ -285,7 +698,8 @@ def fmr_summary(data):
     The FMR workspace itself stays the authority for pairing and evidence.
     """
     counts = data['comparison_summary']['counts']
-    return {
+    da = data['stages'].get('da')
+    summary = {
         'schema_version': 1,
         'nep': {
             'records': len(data['stages']['nep']['projects']),
@@ -306,6 +720,15 @@ def fmr_summary(data):
         },
         'workspace_href': '#fmr',
     }
+    if da:
+        summary['da'] = {
+            'records': len(da['projects']),
+            'amount_php': da['root']['printed_amount_php'],
+            'note': 'DA working draft (Nov 5); compared against NEP/House, not a printed SoT',
+            'matched_comparison_rows': data['comparison_summary'].get('da_matched_rows'),
+            'flagged_comparison_rows': data['comparison_summary'].get('da_flagged_rows'),
+        }
+    return summary
 
 
 def main():

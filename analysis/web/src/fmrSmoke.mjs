@@ -9,7 +9,7 @@ globalThis.location=window.location;
 const server=await createServer({root:new URL('..',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});
 try {
   const {default:FmrApp}=await server.ssrLoadModule('/src/FmrApp.jsx');
-  const routes=['#fmr/home','#fmr/highlights','#fmr/compare','#fmr/compare?view=projects','#fmr/compare?view=projects&page=3&sort=title&dir=asc',
+  const routes=['#fmr/home','#fmr/highlights','#fmr/compare','#fmr/compare?view=projects','#fmr/compare?view=projects&da=flagged','#fmr/compare?view=projects&page=3&sort=title&dir=asc',
     ...['overview','house_candidates','nep_candidates','adjustments','coordinates','stats','insertions','deletions','chainage','statistics'].map(view => `#fmr/analysis?view=${view}`),
     '#fmr/analysis?view=stats&records=band:1','#fmr/highlights?story=amount-changes','#fmr/highlights?story=control-increase',
     '#fmr/house','#fmr/house?view=review','#fmr/nep','#fmr/nep?view=projects&node=nep_fmr:p1:r5','#fmr/nep?node=missing','#fmr/unknown'];
