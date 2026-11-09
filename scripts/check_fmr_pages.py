@@ -10,7 +10,7 @@ import re
 from pathlib import Path
 import tempfile
 import threading
-from urllib.parse import urlencode
+from urllib.parse import urlencode, parse_qs, urlsplit
 from playwright.sync_api import expect, sync_playwright
 from serve_pages import RangeHandler, check_widths
 from analysis_checks import check_analysis_links, check_banded_overview, check_candidate_group
@@ -227,6 +227,28 @@ def main():
                     results.get_by_role('button', name='House source' if width == 390 else 'House PDF', exact=False).first.click()
                     expect(page.get_by_role('complementary', name='Inline source PDF').locator('canvas')).to_be_visible(timeout=60000)
                     no_overflow()
+
+                    # DA working-draft audit tags are reviewable directly from
+                    # project results on both desktop table and mobile cards.
+                    goto('compare?view=projects&da=flagged')
+                    audit_trigger = results.get_by_role('button', name=re.compile(r'Review [0-9]+ DA audit flags? for ')).first
+                    expect(audit_trigger).to_be_visible()
+                    audit_trigger.click()
+                    assert 'audit=' in page.url
+                    audit_id = parse_qs(urlsplit(page.url).fragment.split('?', 1)[1])['audit'][0]
+                    audited = next(r for r in data['comparison'] if r['id'] == audit_id)
+                    audit = page.get_by_role('dialog', name='DA audit flag review')
+                    expect(audit).to_be_visible()
+                    expect(audit.locator('.fmr-audit-finding')).to_have_count(len(audited['da']['audit_flags']))
+                    expect(audit).to_contain_text('DA comparison basis')
+                    expect(audit).to_contain_text('Audit code:')
+                    expect(audit).to_contain_text('working draft')
+                    page.reload(wait_until='networkidle')
+                    expect(audit).to_be_visible()
+                    page.keyboard.press('Escape')
+                    expect(audit).to_have_count(0)
+                    assert 'audit=' not in page.url and 'da=flagged' in page.url
+                    assert page.evaluate('document.body.style.overflow') != 'hidden'
                     goto('highlights?story=amount-changes')
                     story = page.get_by_role('dialog', name='Highlight evidence: Candidate amount changes')
                     expect(story).to_be_visible()

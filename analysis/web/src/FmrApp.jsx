@@ -12,6 +12,7 @@ import {allocationStats, bandRows, compactMoney, comparisonRows, comparisonExpor
   flagLabel, hadCoordinateInterpretation, provenanceOptionLists, daFilterLabels, daExcelRef, daAuditLabel,
   daDisposition} from './fmrModel.js';
 import {CoordinateBadge, CoordinateProvenance, FlagList} from './FmrProvenance.jsx';
+import {describeDaAuditFlag} from './daAuditReview.js';
 import FmrRedFlags from './FmrRedFlags.jsx';
 import {fmrFundingGroups, fmrHighlights} from './fmrHighlights.js';
 import {HighlightAction, HighlightSummary} from './AnnexHighlightEvidence.jsx';
@@ -325,7 +326,7 @@ function routeSort(route,keys,defaultKey='delta_php') {
   const requested=route.params.get('sort');
   return requested === 'none' ? null : {key:keys.includes(requested) ? requested : defaultKey,direction:route.params.get('dir') === 'asc' ? 'asc' : 'desc'};
 }
-function DaCell({row}) {
+function DaCell({row, onAudit}) {
   if (!row.da) return <span className="fmr-muted">—</span>;
   const proposed = row.da.proposed, from = row.da.from;
   const disposition = row.da_disposition || daDisposition(row.da);
@@ -333,7 +334,7 @@ function DaCell({row}) {
     <Amount value={row.da_php}/>
     <small>{row.da_control_no} · {disposition} · {daExcelRef(row.da)}</small>
     {proposed && from && proposed.id !== from.id && <small title={from.title}>Replaces FROM r.{from.excel_row}</small>}
-    {row.da.audit_flags?.length > 0 && <small className="fmr-down">{row.da.audit_flags.length} audit flag{row.da.audit_flags.length === 1 ? '' : 's'}</small>}
+    {row.da.audit_flags?.length > 0 && <button type="button" className="fmr-audit-trigger" onClick={() => onAudit(row.id)} aria-label={'Review ' + row.da.audit_flags.length + ' DA audit flags for ' + (row.title || row.id)}>Review {row.da.audit_flags.length} audit flag{row.da.audit_flags.length === 1 ? '' : 's'}</button>}
   </div>;
 }
 function exportComparison(rows,format) {
@@ -362,6 +363,7 @@ function ComparisonResults({rows, route, onPdf, tableId, defaultSortKey = 'delta
   const paged=sorted.slice((page-1)*size,page*size);
   const setSort=update => {const next=typeof update === 'function' ? update(sort) : update;navigate(route,{sort:next?.key || 'none',dir:next?.direction || null,page:null});};
   const setPage=update => navigate(route,{page:typeof update === 'function' ? update(page) : update});
+  const openAudit=id => navigate(route,{audit:id,pair:null,pdf:null,pdfPage:null});
   const amount=(r,stage) => <div className="fmr-amount-stack"><Amount value={r[`${stage}_php`]}/>{r[stage] && <SourceButton source={r[stage].source} onPdf={onPdf} label={`${stage === 'house' ? 'House' : 'NEP'} PDF p. ${r[stage].source.pdf_page}`}/>}</div>;
   return <>
     <div className="fmr-result-bar"><span>{rows.length.toLocaleString()} candidate / source-only rows</span><button onClick={() => exportComparison(rows,'csv')}>Export filtered CSV</button><button onClick={() => exportComparison(rows,'json')}>Export filtered JSON</button></div>
@@ -372,13 +374,13 @@ function ComparisonResults({rows, route, onPdf, tableId, defaultSortKey = 'delta
       {key:'region_key',label:'Region'}, {key:'status',label:'Status / method',render:r => <>{statusLabels[r.status]}<small>{methodLabels[r.method] || (r.ambiguous_title ? 'Repeated title; no unique counterpart' : 'No unique counterpart')}</small></>},
       {key:'nep_php',label:'NEP (PHP)',align:'num',render:r => amount(r,'nep')},
       {key:'house_php',label:'House (PHP)',align:'num',render:r => amount(r,'house')},
-      {key:'da_php',label:'DA draft (PHP)',align:'num',render:r => <DaCell row={r}/>},
+      {key:'da_php',label:'DA draft (PHP)',align:'num',render:r => <DaCell row={r} onAudit={openAudit}/>},
       {key:'delta_php',label:'House − NEP',align:'num',render:r => <Amount value={r.delta_php} signed/>},
       {key:'percent',label:'House % vs NEP',align:'num',value:r => pctChange(r.house_php,r.nep_php),render:r => signedPct(pctChange(r.house_php,r.nep_php))},
     ]}/></div>
     <div className="fmr-cards">{paged.map(r => <article key={r.id} className="fmr-card"><div className="fmr-card-head"><button className="fmr-text-button" onClick={() => navigate(route,{pair:r.id})}>{r.title}</button><span className="fmr-badge">{statusLabels[r.status]}</span></div>
       <p>{r.region_key} · {methodLabels[r.method] || 'No unique counterpart'}{r.da ? ` · DA ${r.da_disposition} · ${daExcelRef(r.da)}` : ''}</p>
-      <dl><dt>NEP allocation</dt><dd><Amount value={r.nep_php}/></dd><dt>House allocation</dt><dd><Amount value={r.house_php}/></dd><dt>DA draft</dt><dd><DaCell row={r}/></dd><dt>House − NEP</dt><dd><Amount value={r.delta_php} signed/></dd><dt>House % vs NEP</dt><dd>{signedPct(pctChange(r.house_php,r.nep_php))}</dd></dl>
+      <dl><dt>NEP allocation</dt><dd><Amount value={r.nep_php}/></dd><dt>House allocation</dt><dd><Amount value={r.house_php}/></dd><dt>DA draft</dt><dd><DaCell row={r} onAudit={openAudit}/></dd><dt>House − NEP</dt><dd><Amount value={r.delta_php} signed/></dd><dt>House % vs NEP</dt><dd>{signedPct(pctChange(r.house_php,r.nep_php))}</dd></dl>
       <div className="fmr-card-actions">{['nep','house'].map(stage => r[stage] && <React.Fragment key={stage}><SourceButton source={r[stage].source} onPdf={onPdf} label={`${stage === 'house' ? 'House' : 'NEP'} source`}/><a href={routeHref(stage,{node:r[stage].id})}>{stage === 'house' ? 'House' : 'NEP'} tree</a></React.Fragment>)}<ViewOnMap pair={r}/><button onClick={() => navigate(route,{pair:r.id})}>Open pair evidence</button></div>
     </article>)}{!paged.length && <p>No candidate rows match these filters.</p>}<Pagination page={page} count={count} total={rows.length} onPage={setPage} label="FMR project candidates"/></div></div>
   </>;
@@ -412,6 +414,49 @@ function FilteredAnalytics({rows}) {
       {' '}{daFlagged.length} DA-matched rows carry printed-vs-DA audit flags.</p>
   </details>;
 }
+
+function DaAuditReviewDialog({row, route}) {
+  const close=() => navigate(route,{audit:null});
+  if (!row?.da?.audit_flags?.length) return <Dialog label="DA audit flag review" onClose={close}>
+    <div className="fmr-dialog-heading"><h2>DA audit review unavailable</h2><button onClick={close}>Close audit review</button></div>
+    <p role="alert">No audit-flagged comparison record matches this link.</p>
+  </Dialog>;
+  const da=row.da, flags=da.audit_flags.map(code => describeDaAuditFlag(row,code));
+  const comparisonBasis=da.proposed ? 'DA effective proposal' : 'DA FROM (no proposed row)';
+  const sources=[['nep','NEP'],['house','House GAB']].filter(([side]) => row[side]);
+  return <Dialog label="DA audit flag review" className="fmr-da-audit-dialog" onClose={close}>
+    <div className="fmr-dialog-heading"><h2>DA audit flag review</h2><button onClick={close}>Close audit review</button></div>
+    <p className="fmr-muted">Review signals, not certified errors or evidence of misconduct. Printed NEP/House records and the DA working draft are separate sources. Some tags describe printed-coordinate issues or DA remarks, not DA-versus-printed differences.</p>
+    <div className="fmr-audit-context">
+      <h3>{row.title || 'Untitled project'}</h3>
+      <p>{row.region_key} · {statusLabels[row.status] || row.status} · {flags.length} audit flag{flags.length === 1 ? '' : 's'}</p>
+      <dl>
+        <div><dt>DA source</dt><dd>{daExcelRef(da) || 'Excel row not recorded'} · {row.da_control_no || 'Control not recorded'}</dd></div>
+        <div><dt>Matching method</dt><dd>{da.match_side === 'nep' ? 'Matched to NEP' : da.match_side === 'house' ? 'Matched to House' : 'Match side not recorded'} · {methodLabels[da.match_method] || da.match_method || 'Not recorded'}</dd></div>
+        <div><dt>DA comparison basis</dt><dd>{comparisonBasis}</dd></div>
+      </dl>
+      <div className="fmr-audit-actions">
+        <button onClick={() => navigate(route,{audit:null,pair:row.id,pdf:null,pdfPage:null})}>Open full candidate evidence</button>
+        {sources.map(([side,name]) => <span key={side}>
+          <a href={routeHref(side,{node:row[side].id})}>Open {name} source tree</a>
+          {row[side].source?.source_pdf && <button onClick={() => navigate(route,{audit:null,pdf:row[side].source.source_pdf,pdfPage:row[side].source.pdf_page,pair:null})}>View {name} PDF p. {row[side].source.pdf_page}</button>}
+        </span>)}
+      </div>
+    </div>
+    <h3 className="fmr-audit-findings-title">Flagged values and explanations</h3>
+    <div className="fmr-audit-findings">
+      {flags.map(info => <section key={info.code} className="fmr-audit-finding" data-flag-code={info.code}>
+        <p className="fmr-audit-origin">{info.origin}</p>
+        <h4>{info.label}</h4>
+        <p>{info.explanation}</p>
+        <dl>{info.fields.map(item => <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>)}</dl>
+        <small className="fmr-muted">Audit code: <code>{info.code}</code></small>
+      </section>)}
+    </div>
+    <p className="fmr-muted">The count is the number of audit tags on this candidate, not the number of distinct projects. For source verification, use the Excel row reference, printed source PDF and full candidate evidence above.</p>
+  </Dialog>;
+}
+
 function Compare({data, route, onPdf, inlineSource}) {
   const view=route.params.get('view') || 'regions', filters=routeParams(route.params);
   const [panel,setPanel]=useState('results');
@@ -433,6 +478,7 @@ function Compare({data, route, onPdf, inlineSource}) {
     <div className={`${inlineSource ? 'fmr-workspace-grid ' : ''}fmr-comparison-workspace panel-${panel}`}><div className="fmr-comparison-results">
       {view === 'regions' ? <><div className="fmr-result-bar"><span>{regions.length} regional controls</span><button onClick={() => download('fmr-regional-controls.csv',['region','nep_projects','house_projects','da_projects','nep_php','house_php','da_php','delta_php','da_vs_nep_php','da_excel_row'],regions.map(r => [r.label,r.nep_count,r.house_count,r.da_count,r.nep_php,r.house_php,r.da_php,r.delta_php,r.da_vs_nep_php,r.da_excel_row]))}>Export filtered CSV</button><button onClick={() => jsonDownload('fmr-regional-controls.json',regions)}>Export filtered JSON</button></div><RegionalTable regions={regions} onPdf={onPdf} route={route}/></> : view === 'projects' ? <><FilteredAnalytics rows={rows}/><ComparisonResults rows={rows} route={route} onPdf={onPdf}/></> : <p>Unknown comparison view. <a href={routeHref('compare')}>Open regional controls</a>.</p>}
     </div>{inlineSource && <PdfPane source={inlineSource} onClose={() => navigate(route,{pdf:null,pdfPage:null})}/>}</div>
+    {route.params.get('audit') && <DaAuditReviewDialog key={route.params.get('audit')} row={allRows.find(row => row.id === route.params.get('audit'))} route={route}/>}
   </>;
 }
 function DaEvidence({da}) {
