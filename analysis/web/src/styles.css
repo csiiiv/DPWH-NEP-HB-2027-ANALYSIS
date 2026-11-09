@@ -1133,11 +1133,11 @@ th:hover .table-link,td:hover .table-link,.table-link:focus-visible{opacity:.85}
 
 .fmr-mobile-table:has(.table-target) .fmr-cards{outline:2px solid #1f4d7a;outline-offset:2px;border-radius:6px}
 
-/* Shared first-visit notice. This is an acknowledgement of limitations,
-   not an agreement to terms or a claim of official verification. */
+/* Shared first-visit notice. This acknowledges analytical limitations,
+   not a Terms of Service agreement or official verification. */
 dialog.first-visit-disclaimer {
-  width: min(640px, calc(100vw - 28px));
-  max-height: min(90dvh, 780px);
+  width: min(780px, calc(100vw - 28px));
+  max-height: min(92dvh, 860px);
   margin: auto;
   padding: 0;
   color: #1f2937;
@@ -1145,27 +1145,39 @@ dialog.first-visit-disclaimer {
   border: 1px solid #cbd5e1;
   border-radius: 14px;
   box-shadow: 0 24px 80px #0f172a44;
-  overflow-y: auto;
+  overflow: hidden;
   overflow-wrap: anywhere;
 }
+dialog.first-visit-disclaimer[open] { display: flex; flex-direction: column; }
 dialog.first-visit-disclaimer::backdrop { background: #0f172aa6; backdrop-filter: blur(3px); }
-.first-visit-disclaimer-body { padding: 25px 28px 6px; }
+.first-visit-disclaimer-body {
+  padding: 25px 28px 22px;
+  overflow-y: auto;
+  min-height: 0;
+  flex: 1 1 auto;
+  overscroll-behavior: contain;
+}
 .first-visit-disclaimer-eyebrow { margin: 0 0 8px; font-size: .78rem; font-weight: 700; color: #335f97; text-transform: uppercase; letter-spacing: .06em; }
 .first-visit-disclaimer h2 { font-size: clamp(1.3rem, 2.3vw, 1.65rem); line-height: 1.23; margin: 0 0 15px; }
 .first-visit-disclaimer-body > p:not(.first-visit-disclaimer-eyebrow) { margin: 10px 0; line-height: 1.55; }
-.first-visit-disclaimer ul { margin: 15px 0; padding-left: 22px; }
-.first-visit-disclaimer li { padding: 8px 0; line-height: 1.52; }
-.first-visit-disclaimer li + li { border-top: 1px solid #e2e8f0; }
-.first-visit-disclaimer li strong { color: #172b4d; }
-.first-visit-disclaimer-note { color: #475569; font-size: .92rem; }
-.first-visit-disclaimer-actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; padding: 18px 28px 10px; border-top: 1px solid #e2e8f0; background: #f8fafc; }
-.first-visit-disclaimer-continue { background: #1756c4; color: white; border: 1px solid #1756c4; border-radius: 7px; padding: 11px 16px; font-size: .95rem; font-weight: 700; cursor: pointer; }
+.first-visit-disclaimer-points { margin: 18px 0 20px; padding-left: 24px; }
+.first-visit-disclaimer-points li { padding: 12px 0; line-height: 1.5; }
+.first-visit-disclaimer-points li + li { border-top: 1px solid #e2e8f0; }
+.first-visit-disclaimer-points li::marker { font-weight: 700; color: #335f97; }
+.first-visit-disclaimer-points li strong { color: #172b4d; display: block; }
+.first-visit-disclaimer-points li p { margin: 4px 0 0; }
+.first-visit-disclaimer-review { padding: 15px 18px; border-left: 3px solid #1756c4; background: #eef4ff; border-radius: 0 8px 8px 0; }
+.first-visit-disclaimer-review h3 { font-size: 1rem; margin: 0 0 8px; }
+.first-visit-disclaimer-review p { margin: 0 0 9px; line-height: 1.5; }
+.first-visit-disclaimer-links { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: .9rem; font-weight: 650; }
+.first-visit-disclaimer-links a { overflow-wrap: anywhere; }
+.first-visit-disclaimer-actions { flex: 0 0 auto; display: flex; align-items: center; padding: 14px 28px 8px; border-top: 1px solid #e2e8f0; background: #f8fafc; }
+.first-visit-disclaimer-continue { background: #1756c4; color: white; border: 1px solid #1756c4; border-radius: 7px; padding: 11px 24px; font-size: .95rem; font-weight: 700; cursor: pointer; }
 .first-visit-disclaimer-continue:hover, .first-visit-disclaimer-continue:focus-visible { background: #10459e; }
-.first-visit-disclaimer-actions a { font-size: .88rem; font-weight: 650; }
-.first-visit-disclaimer-storage { margin: 0; padding: 0 28px 20px; background: #f8fafc; color: #64748b; font-size: .76rem; line-height: 1.5; }
+.first-visit-disclaimer-storage { flex: 0 0 auto; margin: 0; padding: 0 28px 16px; background: #f8fafc; color: #64748b; font-size: .76rem; line-height: 1.5; }
 @media (max-width: 600px) {
-  .first-visit-disclaimer-body { padding: 18px 18px 6px; }
-  .first-visit-disclaimer-actions { padding: 14px 18px 10px; flex-direction: column; align-items: stretch; }
-  .first-visit-disclaimer-actions a { text-align: center; }
-  .first-visit-disclaimer-storage { padding: 0 18px 16px; }
+  .first-visit-disclaimer-body { padding: 18px 18px 16px; }
+  .first-visit-disclaimer-actions { padding: 12px 18px 8px; }
+  .first-visit-disclaimer-continue { width: 100%; }
+  .first-visit-disclaimer-storage { padding: 0 18px 14px; }
 }

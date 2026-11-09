@@ -1,6 +1,6 @@
 // A versioned, browser-only acknowledgement. Increment the version when
 // materially changing the notice so previous visitors are shown the new one.
-export const DISCLAIMER_ACK_KEY = 'fy2027-budget-workbenches:disclaimer:v1';
+export const DISCLAIMER_ACK_KEY = 'fy2027-budget-workbenches:disclaimer:v2';
 export const DISCLAIMER_ACK_VALUE = 'acknowledged';
 
 export function disclaimerAcknowledged(storage) {
