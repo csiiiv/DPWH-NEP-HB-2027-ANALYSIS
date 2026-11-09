@@ -6,6 +6,7 @@
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { readWorkspace } from "./routes.js";
 import DisclaimerFooter from "./DisclaimerNotice.jsx";
+import FirstVisitDisclaimer from "./FirstVisitDisclaimer.jsx";
 
 const FmrApp = lazy(() => import("./FmrApp.jsx"));
 const DpwhApp = lazy(() => import("./DpwhApp.jsx"));
@@ -39,6 +40,7 @@ export default function Workbench() {
         </Suspense>
       </div>
       <DisclaimerFooter />
+      <FirstVisitDisclaimer active={workspace !== "disclaimer"} />
     </div>
   );
 }

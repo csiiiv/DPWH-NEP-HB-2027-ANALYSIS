@@ -11,7 +11,7 @@ from playwright.sync_api import expect, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from serve_pages import RangeHandler, check_widths
+from serve_pages import RangeHandler, check_widths, prime_disclaimer_for_checks
 
 
 class Quiet(RangeHandler):
@@ -42,6 +42,7 @@ with sync_playwright() as p:
     )
     for width in check_widths():
         page = browser.new_page(viewport={"width": width, "height": 1000})
+        prime_disclaimer_for_checks(page)
         page.on("pageerror", lambda e: errors.append(str(e)))
         page.on(
             "response",

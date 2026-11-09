@@ -246,12 +246,14 @@ jobs:
         if: needs.changes.outputs.level == 'fast'
         run: |
           export SKIP_MOBILE_CHECKS=1
+          python3 scripts/check_first_visit_disclaimer.py
           python3 scripts/check_react_pages.py
           node --test analysis/tests/test_static_navigation.cjs
       - name: Full browser checks (all workspaces, real PDF ranges)
         if: needs.changes.outputs.level != 'fast'
         run: |
           export SKIP_MOBILE_CHECKS=1
+          python3 scripts/check_first_visit_disclaimer.py
           python3 scripts/check_react_pages.py
           python3 scripts/check_overview_pages.py
           python3 scripts/check_comparison_workspace.py

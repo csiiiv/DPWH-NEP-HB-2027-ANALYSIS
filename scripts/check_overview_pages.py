@@ -12,7 +12,7 @@ import tempfile
 import threading
 
 from playwright.sync_api import expect, sync_playwright
-from serve_pages import RangeHandler, check_widths, workspace_labels
+from serve_pages import RangeHandler, check_widths, workspace_labels, prime_disclaimer_for_checks
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -40,6 +40,7 @@ def main():
                     context = browser.new_context(viewport={'width': width, 'height': 1000}, accept_downloads=True,
                         permissions=['clipboard-read', 'clipboard-write'])
                     page = context.new_page()
+                    prime_disclaimer_for_checks(page)
                     requests = []
                     page.on('pageerror', lambda e: errors.append(str(e)))
                     page.on('response', lambda r: bad.append((r.url,r.status)) if r.status >= 400 else None)
