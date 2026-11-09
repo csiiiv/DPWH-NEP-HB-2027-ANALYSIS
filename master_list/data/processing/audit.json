@@ -1,7 +1,7 @@
 {
   "builder_sha256": {
     "build_master_list.py": "2d3891e5ea7796d2ab7852e39d987f19bf081d042f5d60b83da4da1dee1feeb9",
-    "build_processing_dataset.py": "15eb5ddcc390aee77740759b768ca4859587e6031c182480a173c46ee9950cb4",
+    "build_processing_dataset.py": "0a810e22d159135893be6ea012b2ea976fce5d4f24f6df47c8741c09f7a19fa3",
     "readable_titles.py": "745b3ed99d74ff8f742fdeb76b5d3ef48acf6f5f5ac027d1048f0205cdfcc14a"
   },
   "compared_observations": 59601,
@@ -164,7 +164,7 @@
     },
     "other-analysis/data/fmr_workbench.json": {
       "role": "primary_comparison",
-      "sha256": "dc8b8a2c644198d4af90c05c05014804545c7c11e3dc093ba8ee83b794056fd9"
+      "sha256": "0c5403350cf571493fc373d0fb0e51e70aa26a8aa71ca91d163edd64990a97ed"
     },
     "other-analysis/data/hfep_workbench.json": {
       "role": "primary_comparison",
@@ -191,13 +191,13 @@
   },
   "matching_notes": {
     "dpwh": "Partitions retain both House readings; source scope is operations. See per-reading presence and upstream review status.",
-    "fmr": "Unique, one-to-one candidates within the same region: canonical title + exact clean coordinates, then title, then exact clean coordinates. No fuzzy or distance matching. Source-only rows are unmatched observations, not certified insertions or deletions.",
+    "fmr": "Unique, one-to-one candidates within the same region: canonical title + exact clean coordinates, then title, then exact clean coordinates. No fuzzy or distance matching. Source-only rows are unmatched observations, not certified insertions or deletions. DA working-draft rows attach to this NEP↔House ledger via DA FROM originals (NEP first, residual House); Excel row numbers cite DA_FMR_DATA/Working Draft as of Nov 5*.xlsx. NEP and House printed annexes remain the source-of-truth ledgers.",
     "hfep": "Pairs are title-similarity suggestions for review, not asserted identities. Similarity is computed on normalized titles within the same (region, province) block; every pair carries its score and both source row ids. Rows may be the same facility with OCR label variants, and House rows without an NEP counterpart typically reflect the two annexes recording different grains, not omissions.",
     "nia": "Two labeled methods share one ledger. strict: unique one-to-one candidates within the same sub-program by canonical title, no fuzzy matching. ai_corrected: additionally normalizes AI-monitoring matching keys only (verified NEP OCR readings Al/AL/AT→AI; Monitoring/Monitoring System equivalence); stored titles are never rewritten. Every row carries status (corrected) and strict_status. Unmatched rows carry deterministic variant marks (repeated_title, location_variant, exact_variant, spelling_variant, no_counterpart) — equal-amount review pointers that never create pairs or certify identity. Source-only rows are observations, not certified insertions or deletions."
   },
   "not_compared_observations": 5044,
   "output_sha256": {
-    "comparison_groups.jsonl.gz": "74fb5aba979ca65476a355764ea7b6f6ebb0b3a48e9a8d43ba3b50d21b6e44d3",
+    "comparison_groups.jsonl.gz": "c0f25445497b84d12e93e5a38fa06a29aee8855df91c211794b15341baa02dcc",
     "observations.jsonl.gz": "d93edd40b998e919a8f2f50256fc76a4aaf236bc33cf7847b2d4f32f14c6b26c",
     "outside_comparison.jsonl.gz": "2b39a358248b675ba24c2d6bd6ac392cb64e428b0799563ee49e186946776a3f"
   },

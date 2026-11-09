@@ -221,7 +221,9 @@ def build(directory):
     for domain, path in PRIMARY.items():
         require((ROOT / path).is_file(), f'Missing {path}; generate the existing comparison/workbench inputs first')
         payloads[domain] = read(path)
-        require(payloads[domain].get('schema_version') == 1, f'Unsupported {domain} workbench schema')
+        allowed = {1, 2} if domain == 'fmr' else {1}
+        require(payloads[domain].get('schema_version') in allowed, f'Unsupported {domain} workbench schema')
+
         inputs[path] = {'sha256': sha(ROOT / path), 'role': 'primary_comparison'}
     # Validate the compact payload's direct generation inputs as well as its
     # members against the independent source ledgers below.
