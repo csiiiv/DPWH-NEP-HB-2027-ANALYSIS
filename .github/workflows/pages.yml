@@ -191,7 +191,7 @@ jobs:
       - name: Check FMR final datasets (non-mutating)
         if: needs.changes.outputs.level == 'comprehensive'
         run: |
-          python3 -m pip install geopandas==1.1.1 shapely==2.1.2 pandas==2.2.3 pyogrio==0.12.1
+          python3 -m pip install geopandas==1.1.1 shapely==2.1.2 pandas==2.2.3 pyogrio==0.12.1 openpyxl==3.1.5
           python3 other-analysis/build_fmr_final_dataset.py --check
           python3 other-analysis/build_fmr_workbench.py --check
       - name: Check FMR extraction, normalization and matching

@@ -148,8 +148,16 @@ def main():
                         assert exported_csv[0]['pdf_page'] and exported_csv[0]['source_pdf'] == s['metadata']['source_pdf']
 
                         goto(stage + '?view=review')
-                        expect(page.get_by_role('region', name='FMR projects').locator('tbody button.fmr-text-button')).to_have_count(s['summary']['projects_needing_review'])
-                        if not s['summary']['projects_needing_review']:
+                        # A project row has multiple buttons (title and map), so
+                        # count actual rows rather than elements with the shared class.
+                        # The table is paginated; the review queue covers all rows.
+                        review_count = s['summary']['projects_needing_review']
+                        projects_table = page.get_by_role('region', name='FMR projects')
+                        # Ignore SortableTable's empty-state placeholder row.
+                        expect(projects_table.locator('tbody tr:has(button.fmr-text-button)')).to_have_count(min(review_count, 25))
+                        if review_count:
+                            expect(page.locator('.fmr-queue-bar')).to_contain_text(f'{review_count} flagged projects')
+                        if not review_count:
                             expect(page.get_by_role('button', name='Next finding', exact=True)).to_be_disabled()
                             expect(page.locator('.fmr-queue-bar')).to_contain_text('No findings in this scope')
                         page.get_by_label('Region', exact=True).select_option(s['regions'][0]['key'])
