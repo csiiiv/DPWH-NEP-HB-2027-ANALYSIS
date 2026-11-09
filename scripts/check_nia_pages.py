@@ -47,7 +47,10 @@ def main():
 
                     def goto(route):
                         page.goto(base + '#nia/' + route, wait_until='networkidle')
-                        expect(page.locator('h1')).to_be_visible()
+                        # The Map tab leads with an h2 (map + distribution); all
+                        # other pages render a hero h1.
+                        heading = page.locator('h1') if route.split('?')[0] != 'map' else page.locator('h2').first
+                        expect(heading).to_be_visible()
                         assert not page.evaluate('document.documentElement.scrollWidth > innerWidth'), page.url
 
                     def pdf_page(expected_page):
@@ -304,8 +307,27 @@ def main():
                     expect(page.get_by_role('navigation', name='NIA project candidates pages')).to_contain_text('222 rows')
                     goto('home')
                     assert page.get_by_role('navigation', name='Workbench pages').locator('a').all_text_contents() == [
-                        'Home', 'Highlights', 'Compare stages', 'Analysis', 'House GAB', 'DBM NEP']
+                        'Home', 'Highlights', 'Compare stages', 'Analysis', 'Map', 'House GAB', 'DBM NEP']
                     page.screenshot(path=str(captures / f'home-{width}.png'))
+
+                    # Geolocation Map tab: point map over the AI-assisted
+                    # location layer plus province/municipality/district
+                    # distribution tables.
+                    goto('map')
+                    expect(page.get_by_role('region', name='NIA project location map')).to_be_visible()
+                    expect(page.locator('.nia-map-controls')).to_contain_text('located')
+                    distribution = page.get_by_role('region', name='NIA province distribution', exact=True)
+                    expected_provinces = len(
+                        {r['province'] for r in data['geolocation']['records']
+                         if r['located'] and r['province']})
+                    expect(distribution.locator('tbody tr')).to_have_count(expected_provinces)
+                    expect(distribution).to_contain_text('Ilocos Norte')
+                    page.get_by_role('tab', name='Municipalities').click()
+                    expect(page.get_by_role('region', name='NIA municipality distribution', exact=True)).to_be_visible()
+                    page.get_by_role('tab', name='Legislative districts').click()
+                    expect(page.get_by_role('region', name='NIA district distribution', exact=True)).to_be_visible()
+                    expect(page.locator('.nia-map-legend')).to_contain_text('Candidate pair')
+                    page.screenshot(path=str(captures / f'map-{width}.png'))
 
                     # Rebuilt Highlights: coverage tables, findings grid, story
                     # dialogs with filters/exports, and recovery states.

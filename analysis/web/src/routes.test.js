@@ -125,7 +125,7 @@ test('NIA deep links and analogous workspace switches preserve source selections
   assert.equal(readRoute('#nia').key, 'home');
   assert.equal(routeHref('compare', {view: 'projects'}, 'nia'), '#nia/compare?view=projects');
   assert.equal(workspaceHref('nia', readRoute('#fmr/house?node=x')), '#nia/house');
-  assert.equal(workspaceHref('nia', readRoute('#fmr/map')), '#nia/home');
+  assert.equal(workspaceHref('nia', readRoute('#fmr/map')), '#nia/map');
 });
 
 test('geo workspace routes stay prefixed and deep-link the map', () => {
@@ -138,7 +138,8 @@ test('geo workspace routes stay prefixed and deep-link the map', () => {
   assert.equal(routeHref('map', {dataset: 'hgab_fmr'}, 'geo'), '#geo/map?dataset=hgab_fmr');
   // Geolocation has only Home/Map: other tabs fall back to home.
   assert.equal(workspaceHref('geo', readRoute('#nia/analysis')), '#geo/home');
-  assert.equal(workspaceHref('nia', readRoute('#geo/map')), '#nia/home');
+  // NIA carries its own map tab now, so switching from the geo map keeps it.
+  assert.equal(workspaceHref('nia', readRoute('#geo/map')), '#nia/map');
 });
 
 

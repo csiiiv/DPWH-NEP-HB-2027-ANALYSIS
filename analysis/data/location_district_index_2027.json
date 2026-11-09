@@ -1,5 +1,5 @@
 {
- "built_at": "2026-11-01T17:44:44+08:00",
+ "built_at": "2026-11-10T07:50:52+08:00",
  "cards": [
   {
    "districts": [
@@ -73323,7 +73323,7 @@
   },
   "deo_index": {
    "path": "analysis/data/congress_district_index_2027.json",
-   "sha256": "4cd919ce0258782c296ddb2284c52d5290504977943116878569ab614b55d965"
+   "sha256": "54b91103febffcf5a7411c3e5b74ac260d8455696980c248375c301c5ef7dc11"
   },
   "districts": {
    "path": "PSGC2LEG/data/legislative_districts.json",

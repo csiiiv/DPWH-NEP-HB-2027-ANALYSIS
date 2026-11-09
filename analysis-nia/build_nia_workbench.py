@@ -38,6 +38,7 @@ import unicodedata
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / 'analysis-nia/data'
 OUTPUT = DATA / 'nia_workbench.json'
+GEOLOCATION = DATA / 'nia_geolocation_map.json'
 
 # HGAB prints full sub-program labels; NEP prints short ones. The dataset's
 # own controls are the authority on which rows belong together.
@@ -740,11 +741,38 @@ def build(write_output=True):
                        'printed_page': c['source']['printed_page']},
         })
 
+    # Attach the AI-assisted geolocation layer (extract_nia_geolocation.py →
+    # build_nia_geolocation_map.py). One location record per comparison row,
+    # joined by comparison id; the layer is a review aid, never a ledger.
+    geolocation_layer = None
+    if GEOLOCATION.is_file():
+        geo = json.loads(GEOLOCATION.read_text())
+        geo_by_id = {r['id']: r for r in geo['records']}
+        if set(geo_by_id) != {r['id'] for r in rows}:
+            raise ValueError('Geolocation layer ids do not match the comparison ledger')
+        located = sum(1 for r in geo['records'] if r['located'])
+        with_coords = sum(1 for r in geo['records'] if r['coordinates'])
+        geolocation_layer = {
+            'schema_version': 1,
+            'summary': {
+                'records': len(geo['records']),
+                'located': located,
+                'located_pct': round(located / len(geo['records']) * 100, 2),
+                'unlocated': len(geo['records']) - located,
+                'with_coordinates': with_coords,
+                'barangay_anchor': geo['summary']['barangay_anchor'],
+                'municipality_anchor': geo['summary']['municipality_anchor'],
+            },
+            'metadata': geo['metadata'],
+            'records': geo['records'],
+        }
+
     data = {
         'schema_version': 1,
         'fiscal_year': 2027,
         'stages': {'house': house, 'nep': nep},
         'comparison': rows,
+        'geolocation': geolocation_layer,
         'subprogram_controls': subprogram_controls,
         'agency_controls': agency_controls,
         'comparison_summary': corrected_summary,

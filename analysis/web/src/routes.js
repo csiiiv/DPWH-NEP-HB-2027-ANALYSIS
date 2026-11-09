@@ -78,6 +78,7 @@ export const workspaces = {
       ["highlights", "Highlights"],
       ["compare", "Compare stages"],
       ["analysis", "Analysis"],
+      ["map", "Map"],
       ["house", "House GAB"],
       ["nep", "DBM NEP"],
     ],

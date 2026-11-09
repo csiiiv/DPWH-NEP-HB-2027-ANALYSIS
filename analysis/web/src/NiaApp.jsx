@@ -16,6 +16,7 @@ import './Fmr.css';
 import './Nia.css';
 
 const PdfPreview = lazy(() => import('./PdfPreview.jsx'));
+const NiaMap = lazy(() => import('./NiaMap.jsx'));
 const href = (key, params = {}) => routeHref(key, params, 'nia');
 const paramsOf = route => Object.fromEntries(route.params);
 function navigate(route, patch) {
@@ -143,6 +144,7 @@ function Home({data, route, onPdf}) {
       <Stat label="Annex difference" value={signedMoney(data.comparison_summary.delta_php)} detail="House minus NEP"/>
       <Stat label="Sub-programs" value={data.subprogram_controls.length} detail="Every printed control reconciles"/></div>
     <div className="fmr-result-bar"><a className="primary" href={href('compare')}>Compare stages →</a>
+      <a href={href('map')}>Project map →</a>
       <a href={href('house')}>Explore House source →</a><a href={href('nep')}>Explore NEP source →</a></div>
     <ScopeNote/><section className="fmr-section"><h2>Sub-program controls</h2><Controls data={data} route={route} onPdf={onPdf}/></section>
   </>;
@@ -823,6 +825,7 @@ export default function NiaApp() {
         : route.key === 'highlights' ? <Highlights data={data} route={route} rows={rows} onPdf={onPdf}/>
         : route.key === 'compare' ? <Compare data={data} route={route} rows={rows} onPdf={onPdf} inlineSource={inlineSource} clearPdf={clearPdf}/>
         : route.key === 'analysis' ? <Analysis data={data} route={route} rows={rows} onPdf={onPdf}/>
+        : route.key === 'map' ? <Suspense fallback={<p role="status">Loading map…</p>}><NiaMap data={data} route={route}/></Suspense>
         : <><h1>Page not found</h1><a href={href('home')}>Open NIA Home</a></>}
       {data && <CandidateEvidence rows={rows} route={route} onPdf={onPdf}/>}
       {validPdf && !inlineSource && <Dialog label="NIA PDF source" onClose={clearPdf}><Suspense fallback={<p role="status">Loading PDF viewer…</p>}>
