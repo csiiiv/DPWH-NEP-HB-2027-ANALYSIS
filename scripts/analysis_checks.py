@@ -26,13 +26,13 @@ def check_analysis_links(page, goto, view, table_id, *, tabs='Workspace views'):
     expect(nav.get_by_role('link', name='Overview', exact=True)).to_have_attribute('aria-current', 'page')
 
 
-def check_banded_overview(page, goto, table_id):
+def check_banded_overview(page, goto, table_id, records_span=4, allocations_span=4):
     goto('analysis?view=overview')
     table = page.locator(f'#table-{table_id}')
-    expect(table.locator('.band-row .band-records')).to_have_attribute('colspan', '4')
-    expect(table.locator('.band-row .band-allocations')).to_have_attribute('colspan', '4')
-    expect(table.locator('tbody tr').first.locator('.band-records')).to_have_count(4)
-    expect(table.locator('tbody tr').first.locator('.band-allocations')).to_have_count(4)
+    expect(table.locator('.band-row .band-records')).to_have_attribute('colspan', str(records_span))
+    expect(table.locator('.band-row .band-allocations')).to_have_attribute('colspan', str(allocations_span))
+    expect(table.locator('tbody tr').first.locator('.band-records')).to_have_count(records_span)
+    expect(table.locator('tbody tr').first.locator('.band-allocations')).to_have_count(allocations_span)
     table.get_by_role('button', name='NEP records', exact=True).click()
     assert 'sort=nep_count' in page.url
     page.reload(wait_until='networkidle')

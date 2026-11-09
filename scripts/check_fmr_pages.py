@@ -62,7 +62,7 @@ def main():
                         page.goto(base.replace('/app/', '/') + '?preview=fmr#fmr/nep', wait_until='networkidle')
                         assert '/app/?preview=fmr#fmr/nep' in page.url
                     check_analysis_links(page, goto, 'insertions', 'insertions-by-region', tabs='Workspace views')
-                    check_banded_overview(page, goto, 'overview-comparison')
+                    check_banded_overview(page, goto, 'overview-comparison', records_span=5, allocations_span=6)
                     for view in ('insertions', 'deletions', 'adjustments'):
                         check_candidate_group(page, goto, view, f'{view}-by-region', 'Source records / changed pairs', 'Analysis source records', 'Export filtered CSV')
                     check_candidate_group(page, goto, 'insertions', 'insertions-by-region', 'Source records / changed pairs', 'Analysis source records', 'Export filtered CSV', query='road')
