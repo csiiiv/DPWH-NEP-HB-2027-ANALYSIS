@@ -11,7 +11,9 @@ export function buildMainOverview() {
   for (const [key, path] of Object.entries(paths)) {
     const raw = readFileSync(new URL(path, import.meta.url));
     data[key] = JSON.parse(raw);
-    if (data[key].schema_version !== 1) throw new Error(`Unsupported ${key} schema`);
+    const allowed = key === 'fmr' ? [1, 2] : [1];
+    if (!allowed.includes(data[key].schema_version)) throw new Error(`Unsupported ${key} schema`);
+
     provenance[key] = {path: path.startsWith('../../') ? path.slice(6) : 'analysis/' + path.slice(3), sha256: createHash('sha256').update(raw).digest('hex')};
   }
   const summary = {...overviewSummary(data, new Date().toISOString()), input_provenance: provenance};
