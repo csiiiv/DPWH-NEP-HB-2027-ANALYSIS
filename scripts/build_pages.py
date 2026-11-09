@@ -163,13 +163,15 @@ def package_fmr():
     spec.loader.exec_module(builder)
     dataset_path = ROOT / 'other-analysis/data/fmr_workbench.json'
     data = json.loads(dataset_path.read_text())
-    if data.get('schema_version') != 1:
+    if data.get('schema_version') not in (1, 2):
         raise ValueError('Unsupported FMR dataset schema')
     fmr_root = OUTPUT / 'fmr'
     fmr_root.mkdir()
     # Preserve original document paths so source evidence and PDF ranges agree.
+    # The DA stage is Excel-sourced; it contributes no PDFs.
     pdfs = {p for s in data['stages'].values()
-            for p in (s['metadata']['source_pdf'], s['metadata']['cross_volume_source_pdf'])}
+            for p in (s['metadata'].get('source_pdf'), s['metadata'].get('cross_volume_source_pdf'))
+            if p}
     for path in sorted(pdfs):
         destination = OUTPUT / path
         if destination.is_file():
