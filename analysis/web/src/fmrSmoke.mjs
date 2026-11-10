@@ -11,7 +11,7 @@ try {
   const {default:FmrApp}=await server.ssrLoadModule('/src/FmrApp.jsx');
   const routes=['#fmr/home','#fmr/highlights','#fmr/compare','#fmr/compare?view=projects','#fmr/compare?view=projects&da=flagged','#fmr/compare?view=projects&page=3&sort=title&dir=asc',
     ...['overview','house_candidates','nep_candidates','adjustments','coordinates','stats','insertions','deletions','chainage','statistics'].map(view => `#fmr/analysis?view=${view}`),
-    '#fmr/analysis?view=red_flags&stage=house','#fmr/analysis?view=red_flags&stage=da',
+    '#fmr/analysis?view=red_flags&stage=house','#fmr/analysis?view=red_flags&stage=house&rf_tiers=on','#fmr/analysis?view=red_flags&stage=da',
     '#fmr/analysis?view=red_flags&stage=da&rf_mode=house_da_delta',
     '#fmr/analysis?view=stats&records=band:1','#fmr/highlights?story=amount-changes','#fmr/highlights?story=control-increase',
     '#fmr/house','#fmr/house?view=review','#fmr/nep','#fmr/nep?view=projects&node=nep_fmr:p1:r5','#fmr/nep?node=missing','#fmr/unknown'];
@@ -20,6 +20,7 @@ try {
     const html=renderToString(React.createElement(FmrApp,{initialData:data}));
     if(!html.includes('<h1>') || html.includes('Loading FMR sources')) throw new Error(`View did not render: ${hash}`);
     if(hash === '#compare' && !html.includes(data.regions[0].label)) throw new Error('Unpaginated regional rows missing');
+    if(hash.includes('rf_tiers=on') && (!html.includes('FMR evidence tiers') || !html.includes('Within-document') || !html.includes('Cross-reference') || !html.includes('Statistical screen'))) throw new Error('Tier legend missing in SSR');
     console.log(`OK ${hash}`);
   }
 } finally {await server.close();}

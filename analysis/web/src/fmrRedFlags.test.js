@@ -188,3 +188,44 @@ test('House→DA red-flag delta classifies linked and unmatched rows', () => {
     if (row.status === 'dropped') assert.equal(row.da_id, null);
   }
 });
+
+
+test('red-flag tiers cover ten rules uniquely and preserve source counts', async () => {
+  const {RED_FLAG_RULES, RED_FLAG_TIERS, RED_FLAG_EXPLAINERS, RED_FLAG_DELTA_STATUS_EXPLAINERS,
+    flagTier, flagExplainer, sortFlagsByTier, tierCounts, tierDeltaCounts} = await import('./fmrRedFlags.js');
+  assert.equal(RED_FLAG_RULES.length,10);
+  assert.equal(Object.keys(RED_FLAG_EXPLAINERS).length,10);
+  assert.equal(new Set(RED_FLAG_RULES.map(rule => rule.id)).size,10);
+  assert.equal(Object.keys(RED_FLAG_DELTA_STATUS_EXPLAINERS).length,6);
+  for (const rule of RED_FLAG_RULES) {
+    const info = flagExplainer(rule.id, {longKm:35, shortMeters:120, costMultiple:4, increasePercent:30});
+    assert.ok(RED_FLAG_TIERS[info.tier]);
+    for (const key of ['whatItIs','howFlagged','whyItMatters','whatItDoesNotMean','nextSteps','interplay'])
+      assert.ok(info[key]?.length > 12, rule.id+':'+key);
+  }
+  assert.match(flagExplainer('long_span',{longKm:35}).howFlagged,/35 km/);
+  assert.match(flagExplainer('high_proxy',{costMultiple:4}).howFlagged,/4×/);
+  assert.deepEqual(sortFlagsByTier(['high_proxy','shared_geometry','long_span']),
+    ['long_span','shared_geometry','high_proxy']);
+  assert.equal(flagTier('locality_disagreement'),'cross');
+  assert.throws(()=>flagTier('invalid'),/Unknown/);
+  const input=[{flags:[{id:'long_span'},{id:'shared_geometry'},{id:'long_span'}]},
+    {flags:[{id:'short_span'},{id:'high_proxy'}]}, {flags:[]}];
+  assert.deepEqual(tierCounts(input),{
+    document:{entries:2,findings:2},cross:{entries:1,findings:1},screen:{entries:1,findings:1},
+  });
+  const diff=tierDeltaCounts([{cleared_flags:['short_span'],persisted_flags:['shared_geometry'],new_flags:['high_proxy']},
+    {cleared_flags:['short_span'],persisted_flags:[],new_flags:[]}]);
+  assert.equal(diff.cleared.document.entries,2);
+  assert.equal(diff.persisted.cross.findings,1);
+  assert.equal(diff.new.screen.findings,1);
+});
+test('tier metadata does not alter flag IDs, counts or comparison exports', async () => {
+  const {tierCounts, RED_FLAG_RULES} = await import('./fmrRedFlags.js');
+  const before = buildHouseDaRedFlagDelta(workbench);
+  tierCounts(before.rows.map(row => ({flags: row.house_flags})));
+  const after = buildHouseDaRedFlagDelta(workbench);
+  assert.deepEqual(before.counts,after.counts);
+  assert.deepEqual(before.rows,after.rows);
+  assert.equal(RED_FLAG_RULES.length,10);
+});

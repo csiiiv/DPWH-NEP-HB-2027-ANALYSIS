@@ -579,3 +579,31 @@ remain accessible through the evidence dialog. Direct PDF buttons verify the
 printed allocation without navigating away. Missing denominators are explained;
 no-flags messaging does not certify value or completion. These budget annexes do
 not establish actual spending, contractor, delivered road scope or beneficiaries.
+
+---
+
+### FMR red-flag evidence tiers and explainer dialogs (coherence layer, phase 1)
+
+The ten existing `RED_FLAG_RULES` in `fmrRedFlags.js` retain their IDs, thresholds,
+flag generation, matching, and CSV/JSON export format. The UI's optional `rf_tiers=on`
+route parameter adds three **evidence classes**, not severity scores:
+
+- **Within-document**: short/zero/long spans, missing geometry, coordinate review,
+  and repeated sections within a record.
+- **Cross-reference**: PSGC locality disagreement, shared coordinates between
+  records within one source, and candidate allocation increases on unchanged geometry.
+- **Statistical screen**: unusually high allocation-per-straight-line endpoint meter
+  relative to an eligible peer cohort.
+
+Each of the ten rules has a guide-mode explanation covering its trigger, current
+thresholds, why it matters, limits, suggested checks, and overlapping signals.
+Clickable table tags and evidence-modal tags open contextual explainers carrying
+the source row, observed values where present, and citation links. House→DA
+delta-status explainers remain separate from the underlying source flags.
+
+Tier counts count each **distinct record version once per tier**, and count
+distinct rule IDs separately. These are overlapping classifications and must
+never be summed as distinct projects. No tier is more severe than another.
+The `rf_tiers` toggle is off by default and stored in the URL; it changes
+presentation only. Test coverage includes metadata completeness, counts,
+threshold explanations, SSR, and Playwright dialog/toggle behavior.

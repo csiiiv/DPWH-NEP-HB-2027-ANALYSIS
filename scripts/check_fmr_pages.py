@@ -90,6 +90,38 @@ def main():
                             page.screenshot(path=str(captures / f'{route.replace("?", "-").replace("=", "-")}-{width}.png'))
                     print(f'{width}px: all main and analysis views render without overflow', flush=True)
 
+                    # Evidence tiers are opt-in, URL-backed, and reviewable
+                    # without altering source flags or exports.
+                    goto('analysis?view=red_flags&stage=house')
+                    page.get_by_role('button', name='Show flag tiers').click()
+                    assert 'rf_tiers=on' in page.url
+                    legend = page.get_by_role('group', name='FMR evidence tiers')
+                    expect(legend).to_contain_text('Within-document')
+                    expect(legend).to_contain_text('Cross-reference')
+                    expect(legend).to_contain_text('Statistical screen')
+                    page.get_by_text('How these review flags are calculated').click()
+                    page.get_by_role('button', name='Long endpoint span', exact=True).click()
+                    explainer = page.get_by_role('dialog', name='Red flag explanation')
+                    expect(explainer).to_contain_text('strictly above 20 km')
+                    expect(explainer).to_contain_text('What it does not mean')
+                    page.keyboard.press('Escape')
+                    expect(explainer).to_have_count(0)
+                    page.locator('.fmr-redflag-tags button.fmr-redflag-tag').first.click()
+                    expect(explainer).to_be_visible()
+                    expect(explainer.get_by_role('region', name='Flag context')).to_be_visible()
+                    page.keyboard.press('Escape')
+                    page.reload(wait_until='networkidle')
+                    expect(legend).to_be_visible()
+                    page.screenshot(path=str(captures / f'red-flag-tiers-{width}.png'))
+                    goto('analysis?view=red_flags&stage=da&rf_mode=house_da_delta&rf_tiers=on')
+                    expect(page.get_by_label('House to DA tier changes')).to_be_visible()
+                    page.get_by_role('button', name='Explain: Cleared under DA draft').click()
+                    expect(explainer).to_contain_text('not independent confirmation')
+                    page.keyboard.press('Escape')
+                    expect(explainer).to_have_count(0)
+                    page.screenshot(path=str(captures / f'da-delta-tiers-{width}.png'))
+                    print(f'{width}px: FMR tier toggle, contextual explainer and delta status help pass', flush=True)
+
                     for stage in ['house', 'nep']:
                         s = data['stages'][stage]
                         goto(stage)

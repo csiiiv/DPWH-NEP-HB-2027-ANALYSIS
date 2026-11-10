@@ -24,6 +24,124 @@ export const RED_FLAG_DELTA_STATUSES = {
 };
 export const RED_FLAG_MEASUREMENT_NOTE = 'Endpoint spans are straight-line distances, not measured road lengths. Allocation per endpoint meter is a screening proxy, not a construction unit cost.';
 
+/** Evidence classes, not severity ranks. Each source flag belongs to one class. */
+export const RED_FLAG_TIERS = Object.freeze({
+  document:{label:'Within-document', short:'Measurements and transcription from one source'},
+  cross:{label:'Cross-reference', short:'Comparison with another record or geographic reference'},
+  screen:{label:'Statistical screen', short:'Outlier relative to a valid peer population'},
+});
+const explain = (tier,whatItIs,whyItMatters,whatItDoesNotMean,nextSteps,interplay) =>
+  ({tier,whatItIs,whyItMatters,whatItDoesNotMean,nextSteps,interplay});
+export const RED_FLAG_EXPLAINERS = Object.freeze({
+  short_span:explain('document','A positive endpoint span is shorter than the configured meter limit.',
+    'The listed section may be unusually short or the coordinates may need checking.',
+    'It does not measure constructed road length or establish an incorrect project.',
+    'Check the source PDF, section endpoints and intended scope.','May overlap with repeated or incomplete geometry.'),
+  zero_span:explain('document','A complete endpoint pair has zero straight-line separation.',
+    'There is no positive distance for a meaningful per-meter proxy.',
+    'It is not proof that no road work exists.','Inspect whether the source describes a point or repeated endpoint.',
+    'Excluded from allocation-per-meter screening.'),
+  long_span:explain('document','A section exceeds the configured kilometer limit.',
+    'Long spans can reveal transcribed digits, endpoint ambiguity or unusually broad coverage.',
+    'It is not road length or definitive evidence of a location error.',
+    'Compare original PDF coordinates with the mapped endpoints and project title.',
+    'May coexist with location disagreements or coordinate repair history.'),
+  high_proxy:explain('screen','The allocation divided by complete endpoint distance exceeds both a peer-median multiple and an outer IQR fence.',
+    'Identifies source-relative ratios worth checking for scope or geometry omissions.',
+    'It is not an engineering construction cost estimate or a fixed overpricing threshold.',
+    'Review the allocation scope, road width, terrain, bridges and complete measured length.',
+    'Only complete positive, non-repeated, normalized geometry enters peer populations.'),
+  missing_geometry:explain('document','One or more sections cannot provide complete numeric endpoint evidence.',
+    'Incomplete source geometry prevents reliable distance-based comparisons.',
+    'The project is not automatically invalid or absent.',
+    'Inspect source page and any unparsed or ambiguous coordinate text.',
+    'Partial spans cannot be used as the cost-proxy denominator.'),
+  coordinate_review:explain('document','The source record retains unresolved coordinate-normalization review flags.',
+    'Source extraction or coordinate formatting may need independent checking.',
+    'It does not mean the printed document is necessarily wrong.',
+    'Review original OCR, repairs, unresolved fields and PDF source page.',
+    'The proxy excludes unresolved geometries.'),
+  locality_disagreement:explain('cross','A parsed title province disagrees with a PSGC-referenced point location.',
+    'The title, coordinate interpretation or location description may need examination.',
+    'It does not prove that the road crosses provinces or that fraud occurred.',
+    'Check all coordinates, title locality and PSGC reference boundaries.',
+    'MIXED/PARTIAL results are not automatically classified as disagreement.'),
+  shared_geometry:explain('cross','An exact section footprint appears in another project in the same source document.',
+    'May indicate overlapping road sections that deserve project-scope verification.',
+    'Shared endpoints do not prove duplicate funding.',
+    'Inspect related project titles, section coordinates, allocation descriptions and source pages.',
+    'Expected repetitions between NEP and House are excluded.'),
+  repeated_sections:explain('document','The same footprint appears twice within one project, including reverse order.',
+    'Double-entered geometry can distort total distance calculations.',
+    'It is not itself proof of duplicate allocation.',
+    'Check the original section list and record intended section roles.',
+    'Repeated geometry is excluded from proxy denominators.'),
+  allocation_increase:explain('cross','A candidate linked project has the same complete coordinate footprints and an allocation increase above the configured percentage.',
+    'Flags a change that warrants confirming project identity and scope.',
+    'A larger allocation does not by itself establish insertion, wrongdoing or overpricing.',
+    'Review both stage records, amounts, project descriptions and pairing method.',
+    'Requires matched candidate identity; an unchanged footprint is not proof of unchanged scope.'),
+});
+export const RED_FLAG_DELTA_STATUS_EXPLAINERS = Object.freeze({
+  cleared:'A House flag is no longer present in the linked DA draft observation. This reflects the assessed values, not independent confirmation of a correction.',
+  persisted:'At least one House flag remains on the linked DA draft observation; other flags may also be cleared or new.',
+  new:'A linked DA draft observation has analytical flags where the corresponding House row did not.',
+  dropped:'The linked House record has no active DA proposed observation. Check the DA disposition and source row.',
+  unmatched_house:'A flagged House project has no matching DA comparison record in the retained matching layer.',
+  unmatched_da:'A flagged DA project has no linked House comparison record in the retained matching layer.',
+});
+export function flagTier(id) {
+  const tier = RED_FLAG_EXPLAINERS[id]?.tier;
+  if (!tier) throw new Error('Unknown FMR red flag: ' + id);
+  return tier;
+}
+const tierOrder = ['document','cross','screen'];
+export function sortFlagsByTier(flags) {
+  return [...flags].sort((a,b) => tierOrder.indexOf(flagTier(typeof a === 'string' ? a : a.id))
+    - tierOrder.indexOf(flagTier(typeof b === 'string' ? b : b.id)));
+}
+export function tierCounts(groups) {
+  const result = Object.fromEntries(tierOrder.map(t => [t,{entries:0, findings:0}]));
+  for (const group of groups) {
+    const flags = new Set((group.flags || []).map(f => typeof f === 'string' ? f : f.id));
+    const seen = new Set();
+    for (const flag of flags) {
+      const tier = flagTier(flag);
+      result[tier].findings++;
+      seen.add(tier);
+    }
+    for (const tier of seen) result[tier].entries++;
+  }
+  return result;
+}
+export function tierDeltaCounts(rows) {
+  return Object.fromEntries(['cleared','persisted','new'].map(kind => [kind,
+    tierCounts(rows.map(row => ({flags:(row[kind+'_flags'] || [])}))) ]));
+}
+export function flagExplainer(id, config = {}) {
+  const meta = RED_FLAG_EXPLAINERS[id];
+  if (!meta) throw new Error('Unknown FMR red flag: ' + id);
+  const c = redFlagOptions(config);
+  const howFlagged = {
+    short_span:`Any positive section span below ${c.shortMeters} m.`,
+    zero_span:'Any complete numeric endpoint pair with 0 m separation.',
+    long_span:`Any section span strictly above ${c.longKm} km.`,
+    high_proxy:`More than ${c.costMultiple}× the eligible peer median AND above Q3 + 3×IQR (minimum 20 eligible projects).`,
+    missing_geometry:'At least one missing or invalid numeric endpoint section.',
+    coordinate_review:'Remaining source review flags or a needs_review record status.',
+    locality_disagreement:'PSGC point agreement is DISAGREE against the title province.',
+    shared_geometry:'Exact section coordinates match a different project within the same source, including reversed endpoint order.',
+    repeated_sections:'Two sections within one project have identical geometry, including reversed endpoint order.',
+    allocation_increase:`Identical complete candidate geometry and an allocation increase of at least ${c.increasePercent}%.`,
+  }[id];
+  return {id,label:RED_FLAG_RULES.find(rule=>rule.id===id)?.label || id, ...meta,
+    tierLabel:RED_FLAG_TIERS[meta.tier].label,howFlagged};
+}
+if (RED_FLAG_RULES.length !== 10 ||
+    new Set(RED_FLAG_RULES.map(r=>r.id)).size !== 10 ||
+    RED_FLAG_RULES.some(r => !RED_FLAG_TIERS[RED_FLAG_EXPLAINERS[r.id]?.tier]))
+  throw new Error('FMR red-flag tier metadata must cover exactly ten unique rules');
+
 function linkedDaProjectId(row) {
   if (!row?.da) return null;
   if (row.da.proposed?.id) return row.da.proposed.id;
