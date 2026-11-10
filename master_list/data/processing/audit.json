@@ -124,7 +124,7 @@
     },
     "analysis-nia/data/nia_workbench.json": {
       "role": "primary_comparison",
-      "sha256": "69a7eda465baf266b4e52a22114bf1c4d4569c08bf2019c38b6431650f83603a"
+      "sha256": "ed171aead2a6d70518e069785332ed5e686b69aea334c8381fa0e129423dd6eb"
     },
     "analysis/data/chainage_units_2027.json": {
       "role": "dpwh_comparison_dependency",
