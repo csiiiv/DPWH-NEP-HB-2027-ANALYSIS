@@ -44,7 +44,7 @@ def check_widths(default=(390, 1440)):
 # All existing UI regression suites start with an acknowledged notice.
 # The first-visit interaction itself is tested separately in
 # scripts/check_first_visit_disclaimer.py.
-DISCLAIMER_ACK_STORAGE_KEY = "fy2027-budget-workbenches:disclaimer:v1"
+DISCLAIMER_ACK_STORAGE_KEY = "fy2027-budget-workbenches:disclaimer:v2"
 
 def prime_disclaimer_for_checks(page):
     page.add_init_script(

@@ -35,19 +35,27 @@ def main():
                 context = browser.new_context(viewport={'width': 390, 'height': 844})
                 page = context.new_page()
                 page.on('pageerror', lambda e: errors.append(str(e)))
-                dialog = page.get_by_role('dialog', name='Important notes about this budget analysis')
+                dialog = page.get_by_role('dialog', name='An independent reading of the national budget')
 
                 page.goto(base + '#overview', wait_until='networkidle')
                 expect(dialog).to_be_visible()
-                expect(dialog).to_contain_text('independent, unofficial analysis')
-                expect(dialog).to_contain_text('Budgeted does not mean spent')
+                expect(dialog).to_contain_text('independent, open-source analysis')
+                expect(dialog.locator('.first-visit-disclaimer-points li')).to_have_count(6)
+                for section in ('Independent, not official', 'Check the original sources',
+                                'Flags are questions, not conclusions',
+                                'Location does not establish responsibility',
+                                'Budgets are not expenditures', 'Share responsibly'):
+                    expect(dialog).to_contain_text(section)
+                expect(dialog.get_by_role('button', name='I understand — continue')).to_be_visible()
+                expect(dialog.get_by_role('link', name='Report an issue')).to_have_attribute(
+                    'href', 'https://github.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/issues')
                 assert page.evaluate('(key) => localStorage.getItem(key)', DISCLAIMER_ACK_STORAGE_KEY) is None
                 # A first-time reader cannot silently dismiss the warning.
                 page.keyboard.press('Escape')
                 expect(dialog).to_be_visible()
 
                 # Full documentation is readable before acknowledgement.
-                dialog.get_by_role('link', name='Read full disclaimer and methods').click()
+                dialog.get_by_role('link', name='Read the full disclaimer').click()
                 expect(dialog).to_have_count(0)
                 expect(page.get_by_role('heading', name='Full disclaimer', exact=True)).to_be_visible()
                 assert page.evaluate('(key) => localStorage.getItem(key)', DISCLAIMER_ACK_STORAGE_KEY) is None
@@ -66,19 +74,21 @@ def main():
                 expect(dialog).to_have_count(0)
                 second_tab = context.new_page()
                 second_tab.goto(base + '#overview', wait_until='networkidle')
-                expect(second_tab.get_by_role('dialog', name='Important notes about this budget analysis')).to_have_count(0)
+                expect(second_tab.get_by_role('dialog', name='An independent reading of the national budget')).to_have_count(0)
                 second_tab.close()
 
                 # A new isolated browser context still sees the notice.
                 fresh = browser.new_context(viewport={'width': 1440, 'height': 900})
                 fresh_page = fresh.new_page()
+                fresh_page.add_init_script("localStorage.setItem('fy2027-budget-workbenches:disclaimer:v1', 'acknowledged')")
                 fresh_page.goto(base + '#overview', wait_until='networkidle')
-                expect(fresh_page.get_by_role('dialog', name='Important notes about this budget analysis')).to_be_visible()
+                # Previous acknowledgement must not suppress an expanded disclaimer.
+                expect(fresh_page.get_by_role('dialog', name='An independent reading of the national budget')).to_be_visible()
                 fresh.close()
                 context.close()
                 browser.close()
             assert not errors, errors
-            print('First-visit disclaimer: initial notice, ESC blocking, full text, acknowledgement, reload and cross-workspace persistence passed')
+            print('Expanded first-visit disclaimer: all six sections, links, ESC blocking, previous-version refresh, acknowledgement and persistence passed')
         finally:
             server.shutdown()
             server.server_close()

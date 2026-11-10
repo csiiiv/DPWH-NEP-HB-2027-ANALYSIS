@@ -13,7 +13,7 @@ test('a first visit requires acknowledgement; reloading after acknowledgement do
 });
 
 test('old values and other workbenches do not suppress a versioned disclaimer', () => {
-  const values = new Map([[DISCLAIMER_ACK_KEY, 'old'], ['other-project:disclaimer:v1', DISCLAIMER_ACK_VALUE]]);
+  const values = new Map([[DISCLAIMER_ACK_KEY, 'old'], ['fy2027-budget-workbenches:disclaimer:v1', DISCLAIMER_ACK_VALUE], ['other-project:disclaimer:v1', DISCLAIMER_ACK_VALUE]]);
   const storage = {getItem: key => values.get(key)};
   assert.equal(disclaimerAcknowledged(storage), false);
 });
