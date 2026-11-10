@@ -38,7 +38,7 @@ test('remarks and NEP exact candidate produce bounded, non-accusatory labels',()
   const rows=[newer('claimed',1,900,{remarks:'Reprioritized due to agricultural needs'}),
     newer('fix',2,200,{remarks:'Title and coordinate correction',effective_title:'Canal Road'}),
     newer('blank',3,300),
-    original('retained',4,400,{disposition:'retain',effective_amount_php:400,effective_title:'Retained road'})];
+    original('retained',4,400,{disposition:'retain',effective_amount_php:400,effective_title:'retained'})];
   const nep={stages:{nep:{projects:[{id:'n',title:'Canal Road',region_key:'I',amount_php:200}]}}};
   const log=buildDaDraftChangeLog({projects:rows},nep);
   assert.deepEqual(log.rows.map(row=>row.changeType),
@@ -60,6 +60,13 @@ test('DA context is additive to the existing flagged delta; status and flags are
   assert.equal(Object.values(counts).reduce((a,b)=>a+b,0),rows.length);
   assert.equal(originalDelta.counts.unmatched_da,originalDelta.rows.filter(r=>r.status==='unmatched_da').length);
 });
+test('ambiguous or zero-allocation draft rows never become retained or unexplained additions',()=>{
+  const rows=[original('ambiguous',1,100,{disposition:'other',effective_title:'another road',effective_amount_php:100}),
+    newer('inactive-new',2,0),original('changed-kept',3,200,{disposition:'kept',effective_title:'different road',effective_amount_php:250})];
+  const log=buildDaDraftChangeLog({projects:rows});
+  assert.ok(log.rows.every(row=>row.changeType==='other'));
+});
+
 test('standalone House-only rows are not called DA deletions',()=>{
   const [row]=annotateDaDeltaRows([{id:'unmatched_house:test',house_id:'test',da_id:null,region_key:'I',
     house_flags:['long_span'],da_flags:[],house_php:100,da_php:null}],{comparison:[],stages:{da:{projects:[]}}});

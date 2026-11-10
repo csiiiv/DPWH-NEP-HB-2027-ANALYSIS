@@ -62,6 +62,7 @@ function classification(original, proposal, remark, nepMatch) {
     return remark ? 'other' : 'unexplained_drop';
   }
   if (!original && isNew(proposal)) {
+    if (!hasAmount(proposal)) return 'other';
     if (hasReprioritization(remark)) return 'claimed_move';
     if (hasCorrection(remark) && nepMatch) return 'correction';
     return !remark && !nepMatch ? 'unexplained_addition' : 'other';
@@ -69,7 +70,14 @@ function classification(original, proposal, remark, nepMatch) {
   if (original && original.disposition === 'modified') {
     return hasCorrection(remark) ? 'correction' : 'other';
   }
-  return original?.kind === 'original' ? 'retained' : 'other';
+  if (original && ['retain','kept'].includes(original.disposition)) {
+    const sameTitle = !original.from_title || !original.effective_title ||
+      canonicalFmrTitle(original.from_title) === canonicalFmrTitle(original.effective_title);
+    const sameAmount = original.from_amount_php == null || original.effective_amount_php == null ||
+      original.from_amount_php === original.effective_amount_php;
+    return sameTitle && sameAmount ? 'retained' : 'other';
+  }
+  return 'other';
 }
 function makeEvent(original, proposed, nepMatch) {
   const source = proposed || original;
