@@ -607,3 +607,34 @@ never be summed as distinct projects. No tier is more severe than another.
 The `rf_tiers` toggle is off by default and stored in the URL; it changes
 presentation only. Test coverage includes metadata completeness, counts,
 threshold explanations, SSR, and Playwright dialog/toggle behavior.
+
+
+### FMR DA working-draft change narrative (coherence layer, phase 2)
+
+`fmrDaCoherence.js` reads the **existing** `da_fmr_draft.json` and
+`fmr_workbench.json` to present a source → DA disposition → DA remark →
+audit-screen context. It does not create new source flags or budget totals.
+
+The existing Python builder's nearby replacement rule is mirrored in a
+separate *presentation-only* register: first eligible unused NEW/L project
+within the next three project rows and same region, starting from a
+dropped original. **This is an inferred within-sheet pairing** and is
+not a verified project move. An equal amount distinguishes `paired_move`
+from `clean_replacement` (a different amount); neither implies a known
+intention or legality. DA remarks are explicitly marked as **self-reported**.
+An unpaired DA correction label requires the remark and a unique exact
+NEP title-and-amount candidate. Missing remarks are described as
+documentation gaps, not improper insertions.
+
+The source register partitions all DA draft project rows into events:
+each original is counted once, a paired NEW/L shares its source event,
+and standalone NEW/L rows are counted separately. It includes `retained`
+and `other` fallback classes beyond the brief's seven proposed change
+types, because ordinary retained originals and ambiguous remarks cannot
+honestly be forced into an accusation-like bucket.
+
+The House→DA red-flag delta remains a **flagged subset**, with its
+original six flag-lifecycle statuses, rule IDs, CSV headers, filters and
+export money columns unchanged. Its story count is a separate population
+from the full DA source-register event count. The draft register is read
+from the already-packaged JSON; no new extraction or data release is made.

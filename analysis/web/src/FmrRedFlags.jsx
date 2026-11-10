@@ -4,6 +4,9 @@ import SortableTable from './SortableTable.jsx';
 import {FlagTag, FlagExplainerDialog} from './FmrRedFlagExplainer.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {routeHref} from './routes.js';
+import {siteUrl} from './data.js';
+import DaChangeExplanationDialog from './DaChangeExplanationDialog.jsx';
+import {DA_CHANGE_TYPES, DA_CHANGE_CAVEAT, buildDaDraftChangeLog, annotateDaDeltaRows, summarizeDaDeltaChanges} from './fmrDaCoherence.js';
 import {money, flagLabel} from './fmrModel.js';
 import {buildFmrRedFlags, buildHouseDaRedFlagDelta, collapseIdenticalFmrReviews, sharedCoordinateEvidence, summarizeFmrReviews, RED_FLAG_RULES, RED_FLAG_DELTA_STATUSES, RED_FLAG_MEASUREMENT_NOTE, RED_FLAG_TIERS, sortFlagsByTier, tierCounts, tierDeltaCounts} from './fmrRedFlags.js';
 
@@ -19,11 +22,27 @@ function HouseDaDelta({data, route, onChange, onExportCSV, onExportJSON, onExpla
   const delta = useMemo(() => buildHouseDaRedFlagDelta(data, {
     shortMeters:params.rf_short_m,longKm:params.rf_long_km,costMultiple:params.rf_cost_multiple,increasePercent:params.rf_increase_pct,
   }), [data,params.rf_short_m,params.rf_long_km,params.rf_cost_multiple,params.rf_increase_pct]);
+  const [draft,setDraft] = useState(null);
+  const [draftError,setDraftError] = useState('');
+  const [selectedStory,setSelectedStory] = useState(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(siteUrl('other-analysis/data/da_fmr_draft.json'),{signal:controller.signal})
+      .then(r=>{if(!r.ok) throw Error('DA working draft unavailable ('+r.status+')');return r.json();})
+      .then(value=>setDraft(value))
+      .catch(err=>{if(err.name !== 'AbortError') setDraftError(err.message);});
+    return ()=>controller.abort();
+  },[]);
+  const draftLog = useMemo(() => draft ? buildDaDraftChangeLog(draft,data) : null, [draft,data]);
+  const annotated = useMemo(() => annotateDaDeltaRows(delta.rows,data,draftLog),[delta.rows,data,draftLog]);
+  const changeCounts = summarizeDaDeltaChanges(annotated);
+  const changeTypeFilter = params.rf_change_type || '';
   const change = patch => onChange({...patch,page:null,rf_project:null});
   const status = params.rf_delta_status || '';
   const rule = params.rf_rule || '';
-  let rows = delta.rows;
+  let rows = annotated;
   if (status) rows = rows.filter(row => row.status === status);
+  if (changeTypeFilter) rows = rows.filter(row => row.changeType === changeTypeFilter);
   if (rule) rows = rows.filter(row =>
     row.house_flags.includes(rule) || row.da_flags.includes(rule)
     || row.cleared_flags.includes(rule) || row.new_flags.includes(rule));
@@ -35,6 +54,32 @@ function HouseDaDelta({data, route, onChange, onExportCSV, onExportJSON, onExpla
   const tierChanges = tierMode ? tierDeltaCounts(rows) : null;
   return <>
     <p className="fmr-notice">House GAB remains the printed source of truth. This view reapplies the same red-flag screens to the DA Nov 5 working draft and diffs linked rows. Thresholds stay interactive and match the single-source Red flags view.</p>
+    <p className="fmr-notice">{DA_CHANGE_CAVEAT} The change-type summary below describes only the <strong>flagged House→DA delta subset</strong>, not all 704 DA original rows. Legacy flag-lifecycle statuses remain available separately.</p>
+    <div className="fmr-redflag-change-bar" role="group" aria-label="DA change types in flagged delta">
+      {Object.entries(DA_CHANGE_TYPES).map(([id,meta]) => <button key={id} type="button" className={changeTypeFilter===id ? 'active' : ''}
+        aria-pressed={changeTypeFilter===id} onClick={() => change({rf_change_type:changeTypeFilter===id ? null : id})}>
+        <strong>{(changeCounts[id] || 0).toLocaleString()}</strong><span>{meta.label}</span>
+      </button>)}
+    </div>
+    {changeTypeFilter && <p role="status">Showing {DA_CHANGE_TYPES[changeTypeFilter]?.label || changeTypeFilter} in flagged records.
+      <button type="button" onClick={()=>change({rf_change_type:null})}>Clear DA change filter</button></p>}
+    {draftError && <p role="alert">Full DA working-draft change context is unavailable: {draftError}. Existing source comparisons and flags remain accessible.</p>}
+    {!draftLog && !draftError && <p role="status">Loading DA working-draft change context…</p>}
+    {draftLog && <details className="fmr-method fmr-da-source-log">
+      <summary>Full DA working-draft register: {draftLog.totalEvents.toLocaleString()} change/retention events from {draftLog.sourceRows.toLocaleString()} source rows ({draftLog.originalCount.toLocaleString()} originals)</summary>
+      <p>Separate population: the complete retained DA working draft, not just the flagged House→DA subset. Adjacent replacements are provisional in-sheet pairings; events include retained originals. No amount is summed across budget stages.</p>
+      <div className="fmr-redflag-change-bar" aria-label="Full DA draft change types">{Object.entries(DA_CHANGE_TYPES).map(([id,meta]) =>
+        <div key={id}><strong>{(draftLog.counts[id]||0).toLocaleString()}</strong><span>{meta.label}</span></div>)}</div>
+      <SortableTable tableId="da-source-change-register" ariaLabel="DA working draft change register" rows={draftLog.rows} pageSize={25}
+        columns={[
+          {key:'control_no',label:'DA control',render:row=><button type="button" className="fmr-text-button" onClick={()=>setSelectedStory(row)}>{row.control_no}<small>Excel r.{row.excel_rows.join(', ')}</small></button>},
+          {key:'title',label:'Source project / proposed title'},
+          {key:'changeTypeLabel',label:'Change description'},
+          {key:'daRemarkSnippet',label:'DA remark',render:row=>row.daRemarkSnippet || 'No local remark'},
+          {key:'inspect',label:'Review',sortable:false,render:row=><button type="button" onClick={()=>setSelectedStory(row)}>View DA explanation</button>},
+        ]}/>
+    </details>}
+    <details className="fmr-method"><summary>Flag lifecycle buckets (existing comparison statuses)</summary>
     <div className="fmr-stats">
       {Object.entries(RED_FLAG_DELTA_STATUSES).map(([key, label]) => (
         <button key={key} className={`fmr-stat fmr-text-button ${status === key ? 'active' : ''}`} onClick={() => change({rf_delta_status: status === key ? null : key})}>
@@ -42,7 +87,7 @@ function HouseDaDelta({data, route, onChange, onExportCSV, onExportJSON, onExpla
           <small>{status === key ? 'Clear filter' : 'Filter this bucket'}</small>
         </button>
       ))}
-    </div>
+    </div></details>
     <div className="fmr-redflag-status-help" role="group" aria-label="Delta status explanations">
       {Object.entries(RED_FLAG_DELTA_STATUSES).map(([id,label]) => <button type="button" key={id} aria-haspopup="dialog" onClick={() => onExplain({statusId:id})}>Explain: {label}</button>)}
     </div>
@@ -64,7 +109,13 @@ function HouseDaDelta({data, route, onChange, onExportCSV, onExportJSON, onExpla
       sort={sort} onSortChange={next => {const updated=typeof next === 'function' ? next(sort) : next;change({rf_sort:updated.key,rf_dir:updated.direction});}}
       empty="No House→DA red-flag changes match these filters." columns={[
         {key:'title',label:'Project',sortable:true,render:row => <div>{row.title}<small>{row.region_key} · {RED_FLAG_DELTA_STATUSES[row.status]}{row.control_no ? ` · ${row.control_no}` : ''}{row.excel_rows?.length ? ` · Excel r.${row.excel_rows.join(', r.')}` : ''}</small></div>},
-        {key:'status',label:'Change',render:row => RED_FLAG_DELTA_STATUSES[row.status]},
+        {key:'status',label:'DA change story',render:row => <div className="fmr-da-story-cell">
+          <strong>{row.changeTypeLabel}</strong>
+          <small>{row.narrative}</small>
+          {row.daRemarkSnippet && <small>DA remark: {row.daRemarkSnippet}</small>}
+          <small>Flag lifecycle: {RED_FLAG_DELTA_STATUSES[row.status]}</small>
+          <button type="button" onClick={()=>setSelectedStory(row)}>View DA explanation</button>
+        </div>},
         {key:'house_flag_count',label:'House flags',align:'num',render:row => <>{row.house_flag_count}{tag(row.house_flags, '', row)}</>},
         {key:'da_flag_count',label:'DA flags',align:'num',render:row => <>{row.da_flag_count}{tag(row.da_flags, '', row)}</>},
         {key:'cleared',label:'Cleared',sortable:false,render:row => tag(row.cleared_flags, 'fmr-up', row)},
@@ -78,6 +129,7 @@ function HouseDaDelta({data, route, onChange, onExportCSV, onExportJSON, onExpla
             : row.da_id && <a href={routeHref('compare',{view:'projects',da:'flagged',q:row.control_no || row.da_id})}>Compare / DA</a>}
         </div>},
       ]}/>
+    {selectedStory && <DaChangeExplanationDialog row={selectedStory} onClose={()=>setSelectedStory(null)}/>}
   </>;
 }
 
