@@ -122,6 +122,36 @@ def main():
                     page.screenshot(path=str(captures / f'da-delta-tiers-{width}.png'))
                     print(f'{width}px: FMR tier toggle, contextual explainer and delta status help pass', flush=True)
 
+                    # DA change narrative is separate from the six flag
+                    # lifecycle statuses, with a full source-row register.
+                    goto('analysis?view=red_flags&stage=da&rf_mode=house_da_delta')
+                    changes = page.get_by_role('group', name='DA change types in flagged delta')
+                    expect(changes.locator('button')).to_have_count(9)
+                    row_change = page.locator('.fmr-da-story-cell button').first
+                    expect(row_change).to_be_visible(timeout=60000)
+                    row_change.click()
+                    da_story = page.get_by_role('dialog', name='DA change explanation')
+                    expect(da_story).to_contain_text("DA's own remark, not independently verified.")
+                    expect(da_story).to_contain_text('DA Excel row(s)')
+                    page.keyboard.press('Escape')
+                    expect(da_story).to_have_count(0)
+                    source_log = page.locator('.fmr-da-source-log')
+                    expect(source_log.locator('summary')).to_contain_text('704 originals', timeout=60000)
+                    source_log.locator('summary').click()
+                    register = page.get_by_role('region', name='DA working draft change register')
+                    expect(register).to_be_visible()
+                    expect(register.locator('tbody tr').first).to_be_visible()
+                    with page.expect_download() as download:
+                        page.get_by_role('button', name='Export delta CSV', exact=True).click()
+                    headers = list(csv.DictReader(StringIO(Path(download.value.path()).read_text(encoding='utf-8-sig'))))[0].keys()
+                    assert list(headers) == ['status','comparison_or_row_id','region','title','house_id','da_id','da_control_no','da_excel_rows','house_php','da_php','house_flags','da_flags','cleared_flags','persisted_flags','new_flags','da_disposition']
+                    changes.locator('button').first.click()
+                    assert 'rf_change_type=' in page.url
+                    page.get_by_role('button', name='Clear DA change filter').click()
+                    assert 'rf_change_type=' not in page.url
+                    page.screenshot(path=str(captures / f'da-change-story-{width}.png'))
+                    print(f'{width}px: DA change type, full source register, evidence dialog and legacy export passed', flush=True)
+
                     for stage in ['house', 'nep']:
                         s = data['stages'][stage]
                         goto(stage)

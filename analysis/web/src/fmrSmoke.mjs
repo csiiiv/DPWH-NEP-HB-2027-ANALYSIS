@@ -21,6 +21,7 @@ try {
     if(!html.includes('<h1>') || html.includes('Loading FMR sources')) throw new Error(`View did not render: ${hash}`);
     if(hash === '#compare' && !html.includes(data.regions[0].label)) throw new Error('Unpaginated regional rows missing');
     if(hash.includes('rf_tiers=on') && (!html.includes('FMR evidence tiers') || !html.includes('Within-document') || !html.includes('Cross-reference') || !html.includes('Statistical screen'))) throw new Error('Tier legend missing in SSR');
+    if(hash.includes('rf_mode=house_da_delta') && (!html.includes('DA change story') || !html.includes('DA change types in flagged delta'))) throw new Error('House-DA change narrative missing in SSR');
     console.log(`OK ${hash}`);
   }
 } finally {await server.close();}

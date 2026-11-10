@@ -664,3 +664,20 @@ what was observed where source values are available, what cannot be concluded,
 and a next step for source verification. Overlap counts MUST distinguish
 records from findings. For DA-linked rows, the DA working draft and its remarks
 remain attributed to DA and are not independent verification of correctness.
+
+
+### FMR DA draft change-story context (no new flags)
+
+The FMR House→DA flagged-delta tab MAY show separate source-backed
+change narratives. It MUST distinguish (a) the complete DA draft event
+register, including retained rows, from (b) the filtered House→DA red-flag
+delta. Counts from these two populations MUST NOT be combined or described
+as authoritative allocation changes. DA working-draft remarks are
+self-reporting and MUST include provenance and a verification caveat.
+
+A nearby row pairing is an inference, not a certified project transfer.
+An unmatched House row is not automatically a DA deletion; an unexplained
+NEW/L row is not a proven unlawful insertion. Source version, Excel row,
+control number, source/pair linkage, and the original six analytical-flag
+status codes MUST remain available. CSV exports MUST preserve legacy
+column ordering, with any new narrative fields additive only.
