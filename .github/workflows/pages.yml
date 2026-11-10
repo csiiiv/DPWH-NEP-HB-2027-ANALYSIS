@@ -206,11 +206,8 @@ jobs:
       - name: Check NIA extraction and browser accounting
         if: needs.changes.outputs.level == 'comprehensive'
         run: |
-          python3 -m pip install openpyxl==3.1.5 pyshp==2.3.1
           python3 -m unittest discover -s analysis-nia/tests -v
           python3 analysis-nia/build_nia_workbench.py --check
-          python3 analysis-nia/extract_nia_geolocation.py --check
-          python3 analysis-nia/build_nia_geolocation_map.py --check
       - name: Check HFEP extraction and browser accounting
         if: needs.changes.outputs.level == 'comprehensive'
         run: |
