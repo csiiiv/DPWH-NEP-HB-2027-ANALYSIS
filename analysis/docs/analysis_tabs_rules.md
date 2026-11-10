@@ -648,3 +648,19 @@ reload/Back/Forward/Esc/Close, unknown groups and retained-tree PDF modals.
 HFEP's complete deletion export includes all 203 records beyond the ranked
 150-record display. Unit checks conserve source counts/pesos across Overview
 groups and dialogs and preserve grouped PDF pages/missing counterparts.
+
+---
+
+### FMR red-flag evidence classification (workspace-specific extension)
+
+The FMR Analysis red-flag tab MAY expose optional evidence tiers using
+`rf_tiers=on`. These classify the **basis of a review lead** (within-document,
+cross-reference, or statistical screen); they MUST NOT be described as severity,
+confirmed irregularity, or a DA validation. The same ten rule IDs, input
+dataset, source flags, and original export columns MUST remain unchanged.
+
+Each rule SHOULD have an accessible explainer with the actual active threshold,
+what was observed where source values are available, what cannot be concluded,
+and a next step for source verification. Overlap counts MUST distinguish
+records from findings. For DA-linked rows, the DA working draft and its remarks
+remain attributed to DA and are not independent verification of correctness.
