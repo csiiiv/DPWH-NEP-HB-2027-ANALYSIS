@@ -267,6 +267,15 @@ jobs:
           python3 scripts/check_hierarchy_pages.py
           node --test analysis/tests/test_static_navigation.cjs
 
+      - name: Upload FMR coherence review screenshots
+        if: always() && github.event_name == 'pull_request' && needs.changes.outputs.level != 'fast'
+        uses: actions/upload-artifact@v4
+        with:
+          name: fmr-coherence-screenshots-${{ github.run_number }}
+          path: /tmp/fmr-ui-verification/*.png
+          if-no-files-found: warn
+          retention-days: 7
+
       # ---------- Timing summary ----------
       - name: Write timing summary
         if: always()
