@@ -28,7 +28,26 @@ COORD_RE = re.compile(
     r'START\s*:\s*([-\d.]+)\s*,\s*([-\d.]+)\s*END\s*:\s*([-\d.]+)\s*,\s*([-\d.]+)',
     re.I | re.S,
 )
-TITLE_SPLIT = re.compile(r'\n\s*START\s*:', re.I)
+# Numbered multi-segment lists, e.g.
+#   START: (1) 16.75, 121.85, (2) 16.75, 121.85
+#   END:   (1) 16.76, 121.86, (2) 16.75, 121.86
+NUMBERED_POINT_RE = re.compile(r'\((\d+)\)\s*([-\d.]+)\s*,\s*([-\d.]+)')
+# Section modifiers (same idea as numbered lists):
+#   START: S1-13.78, 121.36 S2-13.70, 121.35
+#   END:   S1-13.78, 121.35 S2-13.78, 121.35
+#   START: Section 1: 120.60, 18.18, Section 2: ...
+SECTION_POINT_RES = (
+    re.compile(r'\bS(\d+)\s*[-–]\s*([-\d.]+)\s*[, ]+\s*([-\d.]+)', re.I),
+    re.compile(r'\bSection\s+(\d+)\s*:\s*([-\d.]+)\s*,\s*([-\d.]+)', re.I),
+)
+# Interleaved per-section blocks:
+#   START (SEC 1): lat, lon  END (SEC 1): lat, lon  START (SEC 2): ...
+INTERLEAVED_SEC_RE = re.compile(
+    r'\b(?P<role>START|END)\s*\(\s*SEC(?:TION)?\s*(?P<n>\d+)\s*\)\s*:\s*'
+    r'(?P<a>[-\d.]+)\s*,\s*(?P<b>[-\d.]+)',
+    re.I,
+)
+TITLE_SPLIT = re.compile(r'\n\s*START\b', re.I)
 REGION_HINT = re.compile(
     r'^(?:REGION\s+[IVX]+[AB]?\b|CORDILLERA ADMINISTRATIVE REGION|NEGROS ISLAND REGION)',
     re.I,
@@ -60,13 +79,88 @@ def money(value):
         return None
 
 
+def collapse_ocr_digit_gaps(text: str) -> str:
+    """Collapse spaces inside decimals / digit runs (e.g. '14. 233296' → '14.233296')."""
+    return re.sub(r'(?<=[\d.])\s+(?=\d)', '', text)
+
+
 def safe_float(token):
     try:
-        if str(token).count('.') > 1:
+        text = collapse_ocr_digit_gaps(str(token))
+        if text.count('.') > 1:
             return None
-        return float(token)
+        return float(text)
     except (TypeError, ValueError):
         return None
+
+
+def _lonlat_pair(lat, lon):
+    """Excel FMR cells print lat,lon; workbench geometry stores [lon, lat]."""
+    if lat is None or lon is None:
+        return None
+    # Guard obvious axis swaps: Philippine lon is ~117–127, lat ~4–21.
+    if 117 <= lat <= 127 and 4 <= lon <= 21:
+        lat, lon = lon, lat
+    if not (117 <= lon <= 127 and 4 <= lat <= 21):
+        return None
+    return [lon, lat]
+
+
+def _pair_labeled_points(start_block, end_block, patterns):
+    """Collect labeled points from START/END blocks and pair by shared index."""
+    def collect(block):
+        points = {}
+        for pattern in patterns:
+            for number, a, b in pattern.findall(block):
+                pair = _lonlat_pair(safe_float(a), safe_float(b))
+                if pair:
+                    points[int(number)] = pair
+        return points
+
+    starts, ends = collect(start_block), collect(end_block)
+    shared = sorted(set(starts) & set(ends))
+    if not shared:
+        return None
+    return [[starts[n], ends[n]] for n in shared]
+
+
+def _parse_numbered_segments(text):
+    """Pair numbered START/END lists into segments by index."""
+    start_m = re.search(r'\bSTART\s*:', text, re.I)
+    end_m = re.search(r'\bEND\s*:', text, re.I)
+    if not start_m or not end_m or end_m.start() <= start_m.start():
+        return None, None
+    coordinates = _pair_labeled_points(
+        text[start_m.end():end_m.start()], text[end_m.end():], (NUMBERED_POINT_RE,))
+    raw = text[start_m.start():].strip()
+    return coordinates, raw
+
+
+def _parse_section_modifier_segments(text):
+    """Pair S1-/Section-N modifiers inside START:/END: blocks."""
+    start_m = re.search(r'\bSTART\s*:', text, re.I)
+    end_m = re.search(r'\bEND\s*:', text, re.I)
+    if not start_m or not end_m or end_m.start() <= start_m.start():
+        return None, None
+    coordinates = _pair_labeled_points(
+        text[start_m.end():end_m.start()], text[end_m.end():], SECTION_POINT_RES)
+    raw = text[start_m.start():].strip()
+    return coordinates, raw
+
+
+def _parse_interleaved_sec_segments(text):
+    """Pair interleaved START (SEC n)/END (SEC n) endpoint blocks."""
+    starts, ends = {}, {}
+    for match in INTERLEAVED_SEC_RE.finditer(text):
+        pair = _lonlat_pair(safe_float(match.group('a')), safe_float(match.group('b')))
+        if not pair:
+            continue
+        bucket = starts if match.group('role').upper() == 'START' else ends
+        bucket[int(match.group('n'))] = pair
+    shared = sorted(set(starts) & set(ends))
+    if not shared:
+        return None, None
+    return [[starts[n], ends[n]] for n in shared], text[INTERLEAVED_SEC_RE.search(text).start():].strip()
 
 
 def parse_title_coords(text):
@@ -81,20 +175,33 @@ def parse_title_coords(text):
     if stripped.upper() == 'RETAIN':
         return 'RETAIN', None, None, True
 
-    match = COORD_RE.search(text)
+    # Pre-normalize OCR digit gaps before the simple START/END matcher.
+    normalized = collapse_ocr_digit_gaps(text)
+    match = COORD_RE.search(normalized)
     coordinates = None
     coordinates_raw = None
     if match:
         values = [safe_float(part) for part in match.groups()]
         if all(v is not None for v in values):
             start_lat, start_lon, end_lat, end_lon = values
-            # Workbench / normalized FMR coords are [longitude, latitude].
-            coordinates = [[[start_lon, start_lat], [end_lon, end_lat]]]
-            coordinates_raw = (
-                f'START: {start_lat}, {start_lon}\nEND: {end_lat}, {end_lon}'
-            )
+            start = _lonlat_pair(start_lat, start_lon)
+            end = _lonlat_pair(end_lat, end_lon)
+            if start and end:
+                # Workbench / normalized FMR coords are [longitude, latitude].
+                coordinates = [[start, end]]
+                coordinates_raw = (
+                    f'START: {start_lat}, {start_lon}\nEND: {end_lat}, {end_lon}'
+                )
+            else:
+                coordinates_raw = match.group(0)
         else:
             coordinates_raw = match.group(0)
+    if coordinates is None and NUMBERED_POINT_RE.search(text):
+        coordinates, coordinates_raw = _parse_numbered_segments(text)
+    if coordinates is None and any(p.search(text) for p in SECTION_POINT_RES):
+        coordinates, coordinates_raw = _parse_section_modifier_segments(text)
+    if coordinates is None and INTERLEAVED_SEC_RE.search(text):
+        coordinates, coordinates_raw = _parse_interleaved_sec_segments(text)
 
     title = re.sub(r'\s+', ' ', TITLE_SPLIT.split(text)[0].strip())
     return title, coordinates, coordinates_raw, False

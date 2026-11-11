@@ -3708,12 +3708,12 @@
       "from_coordinates": [
         [
           [
-            18.20349,
-            120.58051
+            120.58051,
+            18.20349
           ],
           [
-            18.20462,
-            120.58199
+            120.58199,
+            18.20462
           ]
         ]
       ],
@@ -3722,12 +3722,12 @@
       "to_coordinates": [
         [
           [
-            18.20349,
-            120.58051
+            120.58051,
+            18.20349
           ],
           [
-            18.20462,
-            120.58199
+            120.58199,
+            18.20462
           ]
         ]
       ],
@@ -3802,12 +3802,12 @@
       "from_coordinates": [
         [
           [
-            18.191183,
-            120.603758
+            120.603758,
+            18.191183
           ],
           [
-            18.189186,
-            120.602979
+            120.602979,
+            18.189186
           ]
         ]
       ],
@@ -3816,12 +3816,12 @@
       "to_coordinates": [
         [
           [
-            18.191183,
-            120.603758
+            120.603758,
+            18.191183
           ],
           [
-            18.189186,
-            120.602979
+            120.602979,
+            18.189186
           ]
         ]
       ],
@@ -3893,11 +3893,53 @@
       "region_key": "I",
       "region": "REGION I - ILOCOS",
       "from_title": "Construction of Brgy. 27 FMR, Laoag City, Ilocos Norte",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            120.605466,
+            18.187746
+          ],
+          [
+            120.605367,
+            18.186354
+          ]
+        ],
+        [
+          [
+            120.607603,
+            18.195734
+          ],
+          [
+            120.609355,
+            18.194385
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: Section 1: 120.605466, 18.187746, Section 2: 120.607603, 18.195734\nEND: Section 1: 120.605367, 18.186354, Section 2: 120.609355, 18.194385",
       "to_title": "Construction of Brgy. 27 FMR, Laoag City, Ilocos Norte",
-      "to_coordinates": null,
-      "to_coordinates_raw": null,
+      "to_coordinates": [
+        [
+          [
+            120.605466,
+            18.187746
+          ],
+          [
+            120.605367,
+            18.186354
+          ]
+        ],
+        [
+          [
+            120.607603,
+            18.195734
+          ],
+          [
+            120.609355,
+            18.194385
+          ]
+        ]
+      ],
+      "to_coordinates_raw": "START: Section 1: 120.605466, 18.187746, Section 2: 120.607603, 18.195734\nEND: Section 1: 120.605367, 18.186354, Section 2: 120.609355, 18.194385",
       "is_retain": false,
       "from_amount_php": 10000000,
       "proposed_increase_php": null,
@@ -3921,8 +3963,29 @@
       "from_coordinates": null,
       "from_coordinates_raw": null,
       "to_title": "Construction of Brgy. 27 FMR, Laoag City, Ilocos Norte",
-      "to_coordinates": null,
-      "to_coordinates_raw": null,
+      "to_coordinates": [
+        [
+          [
+            120.605466,
+            18.187746
+          ],
+          [
+            120.605367,
+            18.186354
+          ]
+        ],
+        [
+          [
+            120.607603,
+            18.195734
+          ],
+          [
+            120.609355,
+            18.194385
+          ]
+        ]
+      ],
+      "to_coordinates_raw": "START: Section 1: 18.187746, 120.605466 Section 2: 18.195734, 120.607603\nEND: Section 1: 18.186354, 120.605367 Section 2: 18.194385, 120.609355",
       "is_retain": false,
       "from_amount_php": null,
       "proposed_increase_php": 10000000,
@@ -3931,8 +3994,29 @@
       "remarks": "Correction of project coordinates per DA evaluation/ GPS survey",
       "disposition": "new",
       "effective_title": "Construction of Brgy. 27 FMR, Laoag City, Ilocos Norte",
-      "effective_coordinates": null,
-      "effective_coordinates_raw": null,
+      "effective_coordinates": [
+        [
+          [
+            120.605466,
+            18.187746
+          ],
+          [
+            120.605367,
+            18.186354
+          ]
+        ],
+        [
+          [
+            120.607603,
+            18.195734
+          ],
+          [
+            120.609355,
+            18.194385
+          ]
+        ]
+      ],
+      "effective_coordinates_raw": "START: Section 1: 18.187746, 120.605466 Section 2: 18.195734, 120.607603\nEND: Section 1: 18.186354, 120.605367 Section 2: 18.194385, 120.609355",
       "effective_amount_php": 10000000
     },
     {
@@ -3946,12 +4030,12 @@
       "from_coordinates": [
         [
           [
-            18.169507,
-            120.573241
+            120.573241,
+            18.169507
           ],
           [
-            18.17286,
-            120.56871
+            120.56871,
+            18.17286
           ]
         ]
       ],
@@ -3960,12 +4044,12 @@
       "to_coordinates": [
         [
           [
-            18.169507,
-            120.573241
+            120.573241,
+            18.169507
           ],
           [
-            18.17286,
-            120.56871
+            120.56871,
+            18.17286
           ]
         ]
       ],
@@ -4037,32 +4121,10 @@
       "region_key": "I",
       "region": "REGION I - ILOCOS",
       "from_title": "Construction of Brgy. 41 Balacad FMR, Laoag City, Ilocos Norte",
-      "from_coordinates": [
-        [
-          [
-            18.152453,
-            120.540087
-          ],
-          [
-            120.53601,
-            120.153581
-          ]
-        ]
-      ],
+      "from_coordinates": null,
       "from_coordinates_raw": "START: 120.540087, 18.152453\nEND: 120.153581, 120.53601",
       "to_title": "Construction of Brgy. 41 Balacad FMR, Laoag City, Ilocos Norte",
-      "to_coordinates": [
-        [
-          [
-            18.152453,
-            120.540087
-          ],
-          [
-            120.53601,
-            120.153581
-          ]
-        ]
-      ],
+      "to_coordinates": null,
       "to_coordinates_raw": "START: 120.540087, 18.152453\nEND: 120.153581, 120.53601",
       "is_retain": false,
       "from_amount_php": 10000000,
@@ -4228,12 +4290,12 @@
       "from_coordinates": [
         [
           [
-            18.209478,
-            120.573425
+            120.573425,
+            18.209478
           ],
           [
-            18.20855,
-            120.57029
+            120.57029,
+            18.20855
           ]
         ]
       ],
@@ -4242,12 +4304,12 @@
       "to_coordinates": [
         [
           [
-            18.209478,
-            120.573425
+            120.573425,
+            18.209478
           ],
           [
-            18.20855,
-            120.57029
+            120.57029,
+            18.20855
           ]
         ]
       ],
@@ -4980,12 +5042,12 @@
       "from_coordinates": [
         [
           [
-            18.176329,
-            120.582357
+            120.582357,
+            18.176329
           ],
           [
-            18.177,
-            120.57644
+            120.57644,
+            18.177
           ]
         ]
       ],
@@ -4994,12 +5056,12 @@
       "to_coordinates": [
         [
           [
-            18.176329,
-            120.582357
+            120.582357,
+            18.176329
           ],
           [
-            18.177,
-            120.57644
+            120.57644,
+            18.177
           ]
         ]
       ],
@@ -5440,12 +5502,12 @@
             18.558651
           ],
           [
-            120.0,
+            120.921724,
             18.559633
           ]
         ]
       ],
-      "from_coordinates_raw": "START: 18.558651, 120.927491\nEND: 18.559633, 120.0",
+      "from_coordinates_raw": "START: 18.558651, 120.927491\nEND: 18.559633, 120.921724",
       "to_title": null,
       "to_coordinates": null,
       "to_coordinates_raw": null,
@@ -5464,12 +5526,12 @@
             18.558651
           ],
           [
-            120.0,
+            120.921724,
             18.559633
           ]
         ]
       ],
-      "effective_coordinates_raw": "START: 18.558651, 120.927491\nEND: 18.559633, 120.0",
+      "effective_coordinates_raw": "START: 18.558651, 120.927491\nEND: 18.559633, 120.921724",
       "effective_amount_php": 10000000
     },
     {
@@ -5480,8 +5542,19 @@
       "region_key": "I",
       "region": "REGION I - ILOCOS",
       "from_title": "Construction of Caparispisan FMR, Brgy. Caparispisan, Pagudpud, Ilocos Norte",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            120.802812,
+            18.607422
+          ],
+          [
+            120.806378,
+            18.604668
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: 18.607422, 120.802812\nEND: 18.604668, 120.806378",
       "to_title": "Construction of Brgy. Caparispisan FMR, Brgy. Caparispisan, Pagudpud, Ilocos Norte",
       "to_coordinates": [
         [
@@ -11658,8 +11731,29 @@
       "region_key": "II",
       "region": "REGION II - CAGAYAN VALLEY",
       "from_title": "Construction of Brgy. Villa Teresita FMR, Brgy. Villa Teresita, San Guillermo, Isabela",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            121.8570901,
+            16.7598517
+          ],
+          [
+            121.8674364,
+            16.7603738
+          ]
+        ],
+        [
+          [
+            121.859558,
+            16.7548787
+          ],
+          [
+            121.8661148,
+            16.7509336
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: (1) 16.7598517, 121.8570901, (2) 16.7548787, 121.8595580\nEND: (1) 16.7603738, 121.8674364, (2) 16.7509336, 121.8661148",
       "to_title": null,
       "to_coordinates": null,
       "to_coordinates_raw": null,
@@ -11671,8 +11765,29 @@
       "remarks": "",
       "disposition": "retain",
       "effective_title": "Construction of Brgy. Villa Teresita FMR, Brgy. Villa Teresita, San Guillermo, Isabela",
-      "effective_coordinates": null,
-      "effective_coordinates_raw": null,
+      "effective_coordinates": [
+        [
+          [
+            121.8570901,
+            16.7598517
+          ],
+          [
+            121.8674364,
+            16.7603738
+          ]
+        ],
+        [
+          [
+            121.859558,
+            16.7548787
+          ],
+          [
+            121.8661148,
+            16.7509336
+          ]
+        ]
+      ],
+      "effective_coordinates_raw": "START: (1) 16.7598517, 121.8570901, (2) 16.7548787, 121.8595580\nEND: (1) 16.7603738, 121.8674364, (2) 16.7509336, 121.8661148",
       "effective_amount_php": 30000000
     },
     {
@@ -11835,8 +11950,29 @@
       "region_key": "II",
       "region": "REGION II - CAGAYAN VALLEY",
       "from_title": "Construction of Brgy. Gappal FMR 3, Brgy. Gappal, Cauayan City, Isabela",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            121.819837,
+            16.838767
+          ],
+          [
+            121.815839,
+            16.839646
+          ]
+        ],
+        [
+          [
+            121.818317,
+            16.839367
+          ],
+          [
+            121.818599,
+            16.844298
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: (1) 16.838767, 121.819837, (2) 16.839367, 121.818317\nEND: (1) 16.839646, 121.815839, (2) 16.844298, 121.818599",
       "to_title": null,
       "to_coordinates": null,
       "to_coordinates_raw": null,
@@ -11848,8 +11984,29 @@
       "remarks": "",
       "disposition": "retain",
       "effective_title": "Construction of Brgy. Gappal FMR 3, Brgy. Gappal, Cauayan City, Isabela",
-      "effective_coordinates": null,
-      "effective_coordinates_raw": null,
+      "effective_coordinates": [
+        [
+          [
+            121.819837,
+            16.838767
+          ],
+          [
+            121.815839,
+            16.839646
+          ]
+        ],
+        [
+          [
+            121.818317,
+            16.839367
+          ],
+          [
+            121.818599,
+            16.844298
+          ]
+        ]
+      ],
+      "effective_coordinates_raw": "START: (1) 16.838767, 121.819837, (2) 16.839367, 121.818317\nEND: (1) 16.839646, 121.815839, (2) 16.844298, 121.818599",
       "effective_amount_php": 15000000
     },
     {
@@ -11965,8 +12122,29 @@
       "region_key": "II",
       "region": "REGION II - CAGAYAN VALLEY",
       "from_title": "Construction of Brgy. Manaoag FMR 2, Brgy. Manaoag, Cauayan City, Isabela",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            121.835449,
+            16.820358
+          ],
+          [
+            121.839421,
+            16.816004
+          ]
+        ],
+        [
+          [
+            121.839956,
+            16.819428
+          ],
+          [
+            121.842496,
+            16.819006
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: (1) 16.820358, 121.835449, (2) 16.819428, 121.839956\nEND: (1) 16.816004, 121.839421, (2) 16.819006, 121.842496",
       "to_title": null,
       "to_coordinates": null,
       "to_coordinates_raw": null,
@@ -11978,8 +12156,29 @@
       "remarks": "",
       "disposition": "retain",
       "effective_title": "Construction of Brgy. Manaoag FMR 2, Brgy. Manaoag, Cauayan City, Isabela",
-      "effective_coordinates": null,
-      "effective_coordinates_raw": null,
+      "effective_coordinates": [
+        [
+          [
+            121.835449,
+            16.820358
+          ],
+          [
+            121.839421,
+            16.816004
+          ]
+        ],
+        [
+          [
+            121.839956,
+            16.819428
+          ],
+          [
+            121.842496,
+            16.819006
+          ]
+        ]
+      ],
+      "effective_coordinates_raw": "START: (1) 16.820358, 121.835449, (2) 16.819428, 121.839956\nEND: (1) 16.816004, 121.839421, (2) 16.819006, 121.842496",
       "effective_amount_php": 18000000
     },
     {
@@ -11990,11 +12189,53 @@
       "region_key": "II",
       "region": "REGION II - CAGAYAN VALLEY",
       "from_title": "Construction of Brgy. Nagrumbuan FMR 1, Brgy. Nagrumbuan, Cauayan City, Isabela",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            121.703517,
+            16.898689
+          ],
+          [
+            121.691734,
+            16.895275
+          ]
+        ],
+        [
+          [
+            121.703649,
+            16.898692
+          ],
+          [
+            121.706454,
+            16.902095
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: (1) 16.898689, 121.703517, (2) 16.898692, 121.703649\nEND: (1) 16.895275, 121.691734, (2) 16.902095, 121.706454",
       "to_title": "Construction of Brgy. Nagrumbuan FMR 1, Brgy. Nagrumbuan, Cauayan City, Isabela",
-      "to_coordinates": null,
-      "to_coordinates_raw": null,
+      "to_coordinates": [
+        [
+          [
+            121.703517,
+            16.898689
+          ],
+          [
+            121.691734,
+            16.895275
+          ]
+        ],
+        [
+          [
+            121.703649,
+            16.898692
+          ],
+          [
+            121.706454,
+            16.902095
+          ]
+        ]
+      ],
+      "to_coordinates_raw": "START: (1) 16.898689, 121.703517, (2) 16.898692, 121.703649\nEND: (1) 16.895275, 121.691734, (2) 16.902095, 121.706454",
       "is_retain": false,
       "from_amount_php": 27000000,
       "proposed_increase_php": null,
@@ -12062,11 +12303,53 @@
       "region_key": "II",
       "region": "REGION II - CAGAYAN VALLEY",
       "from_title": "Construction of Brgy. Sta. Maria to Villa Concepcion FMR, Brgy. Sta. Maria, Cauayan City, Isabela",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            121.910944,
+            16.850671
+          ],
+          [
+            121.917758,
+            16.851051
+          ]
+        ],
+        [
+          [
+            121.928037,
+            16.847303
+          ],
+          [
+            121.930214,
+            16.842231
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: (1) 16.850671, 121.910944, (2) 16.847303, 121.928037\nEND: (1) 16.851051, 121.917758, (2) 16.842231, 121.930214",
       "to_title": "Construction of Brgy. Sta. Maria to Brgy. Villa Concepcion FMR, Brgy. Sta. Maria and Brgy. Villa Concepcion, Cauayan City, Isabela",
-      "to_coordinates": null,
-      "to_coordinates_raw": null,
+      "to_coordinates": [
+        [
+          [
+            121.910944,
+            16.850671
+          ],
+          [
+            121.917758,
+            16.851051
+          ]
+        ],
+        [
+          [
+            121.928037,
+            16.847303
+          ],
+          [
+            121.930214,
+            16.842231
+          ]
+        ]
+      ],
+      "to_coordinates_raw": "START: (1) 16.850671, 121.910944, (2) 16.847303, 121.928037\nEND: (1) 16.851051, 121.917758, (2) 16.842231, 121.930214",
       "is_retain": false,
       "from_amount_php": 22500000,
       "proposed_increase_php": null,
@@ -12075,8 +12358,29 @@
       "remarks": "Correction of project title per DA evaluation",
       "disposition": "modified",
       "effective_title": "Construction of Brgy. Sta. Maria to Brgy. Villa Concepcion FMR, Brgy. Sta. Maria and Brgy. Villa Concepcion, Cauayan City, Isabela",
-      "effective_coordinates": null,
-      "effective_coordinates_raw": null,
+      "effective_coordinates": [
+        [
+          [
+            121.910944,
+            16.850671
+          ],
+          [
+            121.917758,
+            16.851051
+          ]
+        ],
+        [
+          [
+            121.928037,
+            16.847303
+          ],
+          [
+            121.930214,
+            16.842231
+          ]
+        ]
+      ],
+      "effective_coordinates_raw": "START: (1) 16.850671, 121.910944, (2) 16.847303, 121.928037\nEND: (1) 16.851051, 121.917758, (2) 16.842231, 121.930214",
       "effective_amount_php": 22500000
     },
     {
@@ -12390,9 +12694,30 @@
       "kind": "original",
       "region_key": "II",
       "region": "REGION II - CAGAYAN VALLEY",
-      "from_title": "Construction of Nursery, P7, Brgy. Sto. Niño FMR, Brgy. Sto. Niño, San Agustin, Isabela START (SEC 1): 16.464822, 121.783702 END (SEC 1): 16.466869, 121.805868 START (SEC 2): 16.467103, 121.809653 END (SEC 2): 16.468489, 121.810549",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_title": "Construction of Nursery, P7, Brgy. Sto. Niño FMR, Brgy. Sto. Niño, San Agustin, Isabela",
+      "from_coordinates": [
+        [
+          [
+            121.783702,
+            16.464822
+          ],
+          [
+            121.805868,
+            16.466869
+          ]
+        ],
+        [
+          [
+            121.809653,
+            16.467103
+          ],
+          [
+            121.810549,
+            16.468489
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START (SEC 1): 16.464822, 121.783702\nEND (SEC 1): 16.466869, 121.805868\nSTART (SEC 2): 16.467103, 121.809653\nEND (SEC 2): 16.468489, 121.810549",
       "to_title": null,
       "to_coordinates": null,
       "to_coordinates_raw": null,
@@ -12403,9 +12728,30 @@
       "proposed_amount_php": 39000000,
       "remarks": "",
       "disposition": "retain",
-      "effective_title": "Construction of Nursery, P7, Brgy. Sto. Niño FMR, Brgy. Sto. Niño, San Agustin, Isabela START (SEC 1): 16.464822, 121.783702 END (SEC 1): 16.466869, 121.805868 START (SEC 2): 16.467103, 121.809653 END (SEC 2): 16.468489, 121.810549",
-      "effective_coordinates": null,
-      "effective_coordinates_raw": null,
+      "effective_title": "Construction of Nursery, P7, Brgy. Sto. Niño FMR, Brgy. Sto. Niño, San Agustin, Isabela",
+      "effective_coordinates": [
+        [
+          [
+            121.783702,
+            16.464822
+          ],
+          [
+            121.805868,
+            16.466869
+          ]
+        ],
+        [
+          [
+            121.809653,
+            16.467103
+          ],
+          [
+            121.810549,
+            16.468489
+          ]
+        ]
+      ],
+      "effective_coordinates_raw": "START (SEC 1): 16.464822, 121.783702\nEND (SEC 1): 16.466869, 121.805868\nSTART (SEC 2): 16.467103, 121.809653\nEND (SEC 2): 16.468489, 121.810549",
       "effective_amount_php": 39000000
     },
     {
@@ -12568,11 +12914,93 @@
       "region_key": "II",
       "region": "REGION II - CAGAYAN VALLEY",
       "from_title": "Construction of Purok 5 to 7, Brgy. Palacian FMR, San Agustin, Isabela",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            121.750278,
+            16.418111
+          ],
+          [
+            121.749579,
+            16.416668
+          ]
+        ],
+        [
+          [
+            121.746356,
+            16.416781
+          ],
+          [
+            121.752497,
+            16.416847
+          ]
+        ],
+        [
+          [
+            121.746222,
+            16.415851
+          ],
+          [
+            121.740345,
+            16.417524
+          ]
+        ],
+        [
+          [
+            121.74348,
+            16.416308
+          ],
+          [
+            121.745073,
+            16.413261
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: (1) 16.418111, 121.750278, (2) 16.416781, 121.746356, (3) 16.415851, 121.746222,\n (4) 16.416308, 121.74348\nEND: (1) 16.416668, 121.749579, (2) 16.416847, 121.752497, (3) 16.417524, 121.740345,\n (4) 16.413261, 121.745073",
       "to_title": "Construction of Purok 5 to 7, Brgy. Palacian FMR, Brgy. Palacian, San Agustin, Isabela",
-      "to_coordinates": null,
-      "to_coordinates_raw": null,
+      "to_coordinates": [
+        [
+          [
+            121.750278,
+            16.418111
+          ],
+          [
+            121.749579,
+            16.416668
+          ]
+        ],
+        [
+          [
+            121.746356,
+            16.416781
+          ],
+          [
+            121.752497,
+            16.416847
+          ]
+        ],
+        [
+          [
+            121.746222,
+            16.415851
+          ],
+          [
+            121.740345,
+            16.417524
+          ]
+        ],
+        [
+          [
+            121.74348,
+            16.416308
+          ],
+          [
+            121.745073,
+            16.413261
+          ]
+        ]
+      ],
+      "to_coordinates_raw": "START: (1) 16.418111, 121.750278, (2) 16.416781, 121.746356, (3) 16.415851, 121.746222, (4) 16.416308, 121.74348\nEND: (1) 16.416668, 121.749579, (2) 16.416847, 121.752497, (3) 16.417524, 121.740345, (4) 16.413261, 121.745073",
       "is_retain": false,
       "from_amount_php": 29200000,
       "proposed_increase_php": null,
@@ -12581,8 +13009,49 @@
       "remarks": "Correction of project title per DA evaluation",
       "disposition": "modified",
       "effective_title": "Construction of Purok 5 to 7, Brgy. Palacian FMR, Brgy. Palacian, San Agustin, Isabela",
-      "effective_coordinates": null,
-      "effective_coordinates_raw": null,
+      "effective_coordinates": [
+        [
+          [
+            121.750278,
+            16.418111
+          ],
+          [
+            121.749579,
+            16.416668
+          ]
+        ],
+        [
+          [
+            121.746356,
+            16.416781
+          ],
+          [
+            121.752497,
+            16.416847
+          ]
+        ],
+        [
+          [
+            121.746222,
+            16.415851
+          ],
+          [
+            121.740345,
+            16.417524
+          ]
+        ],
+        [
+          [
+            121.74348,
+            16.416308
+          ],
+          [
+            121.745073,
+            16.413261
+          ]
+        ]
+      ],
+      "effective_coordinates_raw": "START: (1) 16.418111, 121.750278, (2) 16.416781, 121.746356, (3) 16.415851, 121.746222, (4) 16.416308, 121.74348\nEND: (1) 16.416668, 121.749579, (2) 16.416847, 121.752497, (3) 16.417524, 121.740345, (4) 16.413261, 121.745073",
       "effective_amount_php": 29200000
     },
     {
@@ -18838,32 +19307,10 @@
       "region_key": "III",
       "region": "REGION III - CENTAL LUZON",
       "from_title": "Construction of Brgy. Tampac I FMR, Brgy. Tampac I, Guimba, Nueva Ecija",
-      "from_coordinates": [
-        [
-          [
-            120.7972783,
-            15.6352648
-          ],
-          [
-            129.8030109,
-            15.6377206
-          ]
-        ]
-      ],
+      "from_coordinates": null,
       "from_coordinates_raw": "START: 15.6352648, 120.7972783\nEND: 15.6377206, 129.8030109",
       "to_title": "Construction of Brgy. Tampac I FMR, Brgy. Tampac I, Guimba, Nueva Ecija",
-      "to_coordinates": [
-        [
-          [
-            120.7972783,
-            15.6352648
-          ],
-          [
-            129.8030109,
-            15.6377206
-          ]
-        ]
-      ],
+      "to_coordinates": null,
       "to_coordinates_raw": "START: 15.6352648, 120.7972783\nEND: 15.6377206, 129.8030109",
       "is_retain": false,
       "from_amount_php": 23375000,
@@ -22891,8 +23338,19 @@
       "region_key": "IVA",
       "region": "REGION IVA - CALABARZON",
       "from_title": "Construction of Brgy. Santa Maria FMR, Brgy. Santa Maria, Laurel, Batangas",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            120.893223,
+            14.040303
+          ],
+          [
+            120.878766,
+            14.040481
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: 14.040303, 120.893223\nEND: 14.040481, 120.878766",
       "to_title": "Construction of Brgy. Santa Maria FMR, Brgy. Santa Maria, Laurel, Batangas",
       "to_coordinates": [
         [
@@ -24320,8 +24778,19 @@
       "region_key": "IVA",
       "region": "REGION IVA - CALABARZON",
       "from_title": "Construction of Brgy. Cansuso FMR, Brgy. Cansuso, Cavinti, Laguna",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            121.611718,
+            14.239481
+          ],
+          [
+            121.601841,
+            14.233296
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: 14.239481, 121.611718\nEND: 14.233296, 121.601841",
       "to_title": null,
       "to_coordinates": null,
       "to_coordinates_raw": null,
@@ -24333,8 +24802,19 @@
       "remarks": "",
       "disposition": "retain",
       "effective_title": "Construction of Brgy. Cansuso FMR, Brgy. Cansuso, Cavinti, Laguna",
-      "effective_coordinates": null,
-      "effective_coordinates_raw": null,
+      "effective_coordinates": [
+        [
+          [
+            121.611718,
+            14.239481
+          ],
+          [
+            121.601841,
+            14.233296
+          ]
+        ]
+      ],
+      "effective_coordinates_raw": "START: 14.239481, 121.611718\nEND: 14.233296, 121.601841",
       "effective_amount_php": 15000000
     },
     {
@@ -25238,8 +25718,29 @@
       "region_key": "IVA",
       "region": "REGION IVA - CALABARZON",
       "from_title": "Construction of Brgy. Sapangan FMR, Brgy. Sapangan, San Juan, Batangas",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            121.3636771,
+            13.7861519
+          ],
+          [
+            121.3582386,
+            13.78862752
+          ]
+        ],
+        [
+          [
+            121.3570456,
+            13.7059722
+          ],
+          [
+            121.3552979,
+            13.7868393
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: S1-13.7861519, 121.3636771 S2-13.7059722, 121.3570456\nEND: S1-13.78862752, 121.3582386 S2-13.7868393, 121.3552979",
       "to_title": null,
       "to_coordinates": null,
       "to_coordinates_raw": null,
@@ -25251,8 +25752,29 @@
       "remarks": "",
       "disposition": "retain",
       "effective_title": "Construction of Brgy. Sapangan FMR, Brgy. Sapangan, San Juan, Batangas",
-      "effective_coordinates": null,
-      "effective_coordinates_raw": null,
+      "effective_coordinates": [
+        [
+          [
+            121.3636771,
+            13.7861519
+          ],
+          [
+            121.3582386,
+            13.78862752
+          ]
+        ],
+        [
+          [
+            121.3570456,
+            13.7059722
+          ],
+          [
+            121.3552979,
+            13.7868393
+          ]
+        ]
+      ],
+      "effective_coordinates_raw": "START: S1-13.7861519, 121.3636771 S2-13.7059722, 121.3570456\nEND: S1-13.78862752, 121.3582386 S2-13.7868393, 121.3552979",
       "effective_amount_php": 35000000
     },
     {
@@ -25498,11 +26020,53 @@
       "region_key": "IVA",
       "region": "REGION IVA - CALABARZON",
       "from_title": "Construction of Brgy. Tagumpay FMR, Brgy. Tagumpay, Real, Quezon",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            121.587138,
+            14.606378
+          ],
+          [
+            121.583835,
+            4.606694
+          ]
+        ],
+        [
+          [
+            121.583412,
+            4.606488
+          ],
+          [
+            121.579656,
+            14.606957
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: S1-14.606378 121.587138, S2-4.606488 121.583412\nEND: S1- 4.606694 121.583835, S2-14.606957 121.579656",
       "to_title": "Construction of Brgy. Tagumpay FMR, Brgy. Tagumpay, Real, Quezon",
-      "to_coordinates": null,
-      "to_coordinates_raw": null,
+      "to_coordinates": [
+        [
+          [
+            121.587138,
+            14.606378
+          ],
+          [
+            121.583835,
+            4.606694
+          ]
+        ],
+        [
+          [
+            121.583412,
+            4.606488
+          ],
+          [
+            121.579656,
+            14.606957
+          ]
+        ]
+      ],
+      "to_coordinates_raw": "START: S1-14.606378 121.587138, S2-4.606488 121.583412\nEND: S1- 4.606694 121.583835, S2-14.606957 121.579656",
       "is_retain": false,
       "from_amount_php": 55000000,
       "proposed_increase_php": null,
@@ -25526,8 +26090,29 @@
       "from_coordinates": null,
       "from_coordinates_raw": null,
       "to_title": "Construction of Brgy. Tagumpay FMR, Brgy. Tagumpay, Real, Quezon",
-      "to_coordinates": null,
-      "to_coordinates_raw": null,
+      "to_coordinates": [
+        [
+          [
+            121.584033,
+            14.606733
+          ],
+          [
+            121.567767,
+            14.613133
+          ]
+        ],
+        [
+          [
+            121.583412,
+            14.606488
+          ],
+          [
+            121.579656,
+            14.606957
+          ]
+        ]
+      ],
+      "to_coordinates_raw": "START: S1-14.606733, 121.584033, S2-14.606488, 121.583412\nEND: S1- 14.613133, 121.567767, S2-14.606957, 121.579656",
       "is_retain": false,
       "from_amount_php": null,
       "proposed_increase_php": 55000000,
@@ -25536,8 +26121,29 @@
       "remarks": "Correction of project coordinates per DA evaluation/ GPS survey",
       "disposition": "new",
       "effective_title": "Construction of Brgy. Tagumpay FMR, Brgy. Tagumpay, Real, Quezon",
-      "effective_coordinates": null,
-      "effective_coordinates_raw": null,
+      "effective_coordinates": [
+        [
+          [
+            121.584033,
+            14.606733
+          ],
+          [
+            121.567767,
+            14.613133
+          ]
+        ],
+        [
+          [
+            121.583412,
+            14.606488
+          ],
+          [
+            121.579656,
+            14.606957
+          ]
+        ]
+      ],
+      "effective_coordinates_raw": "START: S1-14.606733, 121.584033, S2-14.606488, 121.583412\nEND: S1- 14.613133, 121.567767, S2-14.606957, 121.579656",
       "effective_amount_php": 55000000
     },
     {
@@ -26754,10 +27360,10 @@
       "region": "REGION IVA - CALABARZON",
       "from_title": "Construction of Brgy. Silangan Calutan FMR, Agdangan, Quezon",
       "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates_raw": "START: S1 - 13 51 '39.52\", 121 54'20.64\"\n S2- 13 51'16.99\", 121 54'33.51\"\nEND: S1 - 13 51 '29.05\", 121 54'15.37\"\n S2 - 13 51'18.22\", 121 55'8.36\"",
       "to_title": "Construction of Brgy. Silangan Calutan FMR, Agdangan, Quezon",
       "to_coordinates": null,
-      "to_coordinates_raw": null,
+      "to_coordinates_raw": "START: S1 - 13 51 '39.52\", 121 54'20.64\"\n S2- 13 51'16.99\", 121 54'33.51\"\nEND: S1 - 13 51 '29.05\", 121 54'15.37\"\n S2 - 13 51'18.22\", 121 55'8.36\"",
       "is_retain": false,
       "from_amount_php": 15000000,
       "proposed_increase_php": null,
@@ -27375,11 +27981,93 @@
       "region_key": "IVA",
       "region": "REGION IVA - CALABARZON",
       "from_title": "Construction of Brgy. San Roque to Anahawan FMR, Brgy. San Roque, Calauag, Quezon",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            122.367383,
+            13.946009
+          ],
+          [
+            122.368003,
+            13.945921
+          ]
+        ],
+        [
+          [
+            122.369088,
+            13.946203
+          ],
+          [
+            122.370123,
+            13.944964
+          ]
+        ],
+        [
+          [
+            122.370713,
+            13.94405
+          ],
+          [
+            122.370893,
+            13.943257
+          ]
+        ],
+        [
+          [
+            122.370908,
+            13.94289
+          ],
+          [
+            122.372138,
+            13.93606
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: (1) 13.946009, 122.367383, \n            (2) 13.946203, 122.369088, \n            (3) 13.944050, 122.370713, \n            (4) 13.942890, 122.370908\nEND: (1) 13.945921, 122.368003, \n         (2) 13.944964, 122.370123, \n         (3) 13.943257, 122.370893, \n         (4) 13.936060, 122.372138",
       "to_title": "Construction of Brgy. San Roque to Anahawan FMR, Brgy. San Roque, Calauag, Quezon",
-      "to_coordinates": null,
-      "to_coordinates_raw": null,
+      "to_coordinates": [
+        [
+          [
+            122.367383,
+            13.946009
+          ],
+          [
+            122.368003,
+            13.945921
+          ]
+        ],
+        [
+          [
+            122.369088,
+            13.946203
+          ],
+          [
+            122.370123,
+            13.944964
+          ]
+        ],
+        [
+          [
+            122.370713,
+            13.94405
+          ],
+          [
+            122.370893,
+            13.943257
+          ]
+        ],
+        [
+          [
+            122.370908,
+            13.94289
+          ],
+          [
+            122.372138,
+            13.93606
+          ]
+        ]
+      ],
+      "to_coordinates_raw": "START: (1) 13.946009, 122.367383, \n            (2) 13.946203, 122.369088, \n            (3) 13.944050, 122.370713, \n            (4) 13.942890, 122.370908\nEND: (1) 13.945921, 122.368003, \n         (2) 13.944964, 122.370123, \n         (3) 13.943257, 122.370893, \n         (4) 13.936060, 122.372138",
       "is_retain": false,
       "from_amount_php": 19500000,
       "proposed_increase_php": null,
@@ -27403,8 +28091,49 @@
       "from_coordinates": null,
       "from_coordinates_raw": null,
       "to_title": "Construction of Brgy. San Roque Ilaya to Brgy. Anahawan FMR, Brgy. San Roque Ilaya and Brgy. Anahawan, Calauag, Quezon",
-      "to_coordinates": null,
-      "to_coordinates_raw": null,
+      "to_coordinates": [
+        [
+          [
+            122.367383,
+            13.946009
+          ],
+          [
+            122.368003,
+            13.945921
+          ]
+        ],
+        [
+          [
+            122.369088,
+            13.946203
+          ],
+          [
+            122.370123,
+            13.944964
+          ]
+        ],
+        [
+          [
+            122.370713,
+            13.94405
+          ],
+          [
+            122.370893,
+            13.943257
+          ]
+        ],
+        [
+          [
+            122.370908,
+            13.94289
+          ],
+          [
+            122.372138,
+            13.93606
+          ]
+        ]
+      ],
+      "to_coordinates_raw": "START: (1) 13.946009, 122.367383, (2) 13.946203, 122.369088, (3) 13.944050, 122.370713, (4) 13.942890, 122.370908\nEND: (1) 13.945921, 122.368003, (2) 13.944964, 122.370123, (3) 13.943257, 122.370893, (4) 13.936060, 122.372138",
       "is_retain": false,
       "from_amount_php": null,
       "proposed_increase_php": 19500000,
@@ -27413,8 +28142,49 @@
       "remarks": "Correction of project title per DA evaluation",
       "disposition": "list_revision",
       "effective_title": "Construction of Brgy. San Roque Ilaya to Brgy. Anahawan FMR, Brgy. San Roque Ilaya and Brgy. Anahawan, Calauag, Quezon",
-      "effective_coordinates": null,
-      "effective_coordinates_raw": null,
+      "effective_coordinates": [
+        [
+          [
+            122.367383,
+            13.946009
+          ],
+          [
+            122.368003,
+            13.945921
+          ]
+        ],
+        [
+          [
+            122.369088,
+            13.946203
+          ],
+          [
+            122.370123,
+            13.944964
+          ]
+        ],
+        [
+          [
+            122.370713,
+            13.94405
+          ],
+          [
+            122.370893,
+            13.943257
+          ]
+        ],
+        [
+          [
+            122.370908,
+            13.94289
+          ],
+          [
+            122.372138,
+            13.93606
+          ]
+        ]
+      ],
+      "effective_coordinates_raw": "START: (1) 13.946009, 122.367383, (2) 13.946203, 122.369088, (3) 13.944050, 122.370713, (4) 13.942890, 122.370908\nEND: (1) 13.945921, 122.368003, (2) 13.944964, 122.370123, (3) 13.943257, 122.370893, (4) 13.936060, 122.372138",
       "effective_amount_php": 19500000
     },
     {
@@ -27425,8 +28195,39 @@
       "region_key": "IVA",
       "region": "REGION IVA - CALABARZON",
       "from_title": "Construction of Brgy. Yaganak FMR, Brgy. Yaganak, Calauag, Quezon",
-      "from_coordinates": null,
-      "from_coordinates_raw": null,
+      "from_coordinates": [
+        [
+          [
+            122.359869,
+            13.929963
+          ],
+          [
+            122.358579,
+            13.93251
+          ]
+        ],
+        [
+          [
+            122.35805,
+            13.93269
+          ],
+          [
+            122.356408,
+            13.934675
+          ]
+        ],
+        [
+          [
+            122.360121,
+            13.923706
+          ],
+          [
+            122.362273,
+            13.921606
+          ]
+        ]
+      ],
+      "from_coordinates_raw": "START: (1) 13.929963, 122.359869, (2) 13.932690, 122.358050, (3) 13.923706, 122.360121\nEND: (1) 13.932510, 122.358579, (2) 13.934675, 122.356408, (3)13.921606, 122.362273",
       "to_title": null,
       "to_coordinates": null,
       "to_coordinates_raw": null,
@@ -27438,8 +28239,39 @@
       "remarks": "",
       "disposition": "retain",
       "effective_title": "Construction of Brgy. Yaganak FMR, Brgy. Yaganak, Calauag, Quezon",
-      "effective_coordinates": null,
-      "effective_coordinates_raw": null,
+      "effective_coordinates": [
+        [
+          [
+            122.359869,
+            13.929963
+          ],
+          [
+            122.358579,
+            13.93251
+          ]
+        ],
+        [
+          [
+            122.35805,
+            13.93269
+          ],
+          [
+            122.356408,
+            13.934675
+          ]
+        ],
+        [
+          [
+            122.360121,
+            13.923706
+          ],
+          [
+            122.362273,
+            13.921606
+          ]
+        ]
+      ],
+      "effective_coordinates_raw": "START: (1) 13.929963, 122.359869, (2) 13.932690, 122.358050, (3) 13.923706, 122.360121\nEND: (1) 13.932510, 122.358579, (2) 13.934675, 122.356408, (3)13.921606, 122.362273",
       "effective_amount_php": 15000000
     },
     {
