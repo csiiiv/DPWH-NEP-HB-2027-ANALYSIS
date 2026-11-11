@@ -175,3 +175,51 @@ export function summarizeDaDeltaChanges(rows) {
   }
   return counts;
 }
+
+function tallyFlags(rows, field) {
+  const counts = {};
+  for (const row of rows) for (const id of row[field] || []) counts[id] = (counts[id] || 0) + 1;
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([id, count]) => ({id, count}));
+}
+
+function statusTally(rows) {
+  const counts = {};
+  for (const row of rows) counts[row.status] = (counts[row.status] || 0) + 1;
+  return counts;
+}
+
+/** Briefing of flag lifecycle + DA change stories for the current House→DA delta subset. */
+export function summarizeHouseDaFindings(rows) {
+  const changeCounts = summarizeDaDeltaChanges(rows);
+  const corrections = rows.filter(row => row.changeType === 'correction');
+  const cleared = rows.filter(row => row.status === 'cleared');
+  const persisted = rows.filter(row => row.status === 'persisted');
+  return {
+    rowCount: rows.length,
+    statusCounts: statusTally(rows),
+    changeCounts,
+    housePhp: rows.reduce((sum, row) => sum + (Number.isFinite(row.house_php) ? row.house_php : 0), 0),
+    daPhp: rows.reduce((sum, row) => sum + (Number.isFinite(row.da_php) ? row.da_php : 0), 0),
+    clearedFlags: tallyFlags(rows, 'cleared_flags'),
+    persistedFlags: tallyFlags(rows, 'persisted_flags'),
+    newFlags: tallyFlags(rows, 'new_flags'),
+    corrections: {
+      count: corrections.length,
+      statusCounts: statusTally(corrections),
+      withRemark: corrections.filter(row => row.daRemark).length,
+      clearedFlags: tallyFlags(corrections, 'cleared_flags'),
+      persistedFlags: tallyFlags(corrections, 'persisted_flags'),
+      newFlags: tallyFlags(corrections, 'new_flags'),
+      housePhp: corrections.reduce((sum, row) => sum + (Number.isFinite(row.house_php) ? row.house_php : 0), 0),
+      daPhp: corrections.reduce((sum, row) => sum + (Number.isFinite(row.da_php) ? row.da_php : 0), 0),
+    },
+    lifecycle: {
+      cleared: cleared.length,
+      persisted: persisted.length,
+      new: rows.filter(row => row.status === 'new').length,
+    },
+    caveat: DA_CHANGE_CAVEAT,
+  };
+}

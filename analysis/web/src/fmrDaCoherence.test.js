@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {buildDaDraftChangeLog, annotateDaDeltaRows, summarizeDaDeltaChanges, linkDaNearbyReplacements, DA_CHANGE_TYPES, DA_CHANGE_CAVEAT} from './fmrDaCoherence.js';
+import {buildDaDraftChangeLog, annotateDaDeltaRows, summarizeDaDeltaChanges, summarizeHouseDaFindings, linkDaNearbyReplacements, DA_CHANGE_TYPES, DA_CHANGE_CAVEAT} from './fmrDaCoherence.js';
 import {buildHouseDaRedFlagDelta} from './fmrRedFlags.js';
 
 const draft=JSON.parse(fs.readFileSync(new URL('../../../other-analysis/data/da_fmr_draft.json', import.meta.url),'utf8'));
@@ -72,4 +72,23 @@ test('standalone House-only rows are not called DA deletions',()=>{
     house_flags:['long_span'],da_flags:[],house_php:100,da_php:null}],{comparison:[],stages:{da:{projects:[]}}});
   assert.equal(row.changeType,'house_only');
   assert.match(row.narrative,/No DA match/);
+});
+
+test('House→DA findings summary tallies lifecycle, corrections and flag moves',()=>{
+  const summary=summarizeHouseDaFindings([
+    {status:'cleared',changeType:'correction',house_php:100,da_php:100,cleared_flags:['long_span'],persisted_flags:[],new_flags:[],daRemark:'Coordinate correction'},
+    {status:'persisted',changeType:'correction',house_php:200,da_php:200,cleared_flags:[],persisted_flags:['shared_geometry','long_span'],new_flags:[],daRemark:'Title correction'},
+    {status:'new',changeType:'unexplained_addition',house_php:null,da_php:50,cleared_flags:[],persisted_flags:[],new_flags:['short_span']},
+  ]);
+  assert.equal(summary.rowCount,3);
+  assert.equal(summary.lifecycle.cleared,1);
+  assert.equal(summary.lifecycle.persisted,1);
+  assert.equal(summary.lifecycle.new,1);
+  assert.equal(summary.changeCounts.correction,2);
+  assert.equal(summary.corrections.count,2);
+  assert.equal(summary.corrections.withRemark,2);
+  assert.deepEqual(summary.clearedFlags,[{id:'long_span',count:1}]);
+  assert.deepEqual(summary.persistedFlags,[{id:'long_span',count:1},{id:'shared_geometry',count:1}]);
+  assert.equal(summary.corrections.persistedFlags.find(f=>f.id==='shared_geometry').count,1);
+  assert.match(summary.caveat,/not independently verified/);
 });

@@ -6,7 +6,7 @@ import {DA_CHANGE_TYPES, DA_CHANGE_CAVEAT} from './fmrDaCoherence.js';
 
 const printable = value => value == null || value === '' ? 'Not recorded' : String(value);
 
-export default function DaChangeExplanationDialog({row,onClose}) {
+export default function DaChangeExplanationDialog({row,onClose,onMap}) {
   const ref = useRef(null);
   useEffect(() => openModalDialog(ref.current), []);
   const type = DA_CHANGE_TYPES[row.changeType] || DA_CHANGE_TYPES.other;
@@ -40,6 +40,7 @@ export default function DaChangeExplanationDialog({row,onClose}) {
       <small>DA's own remark, not independently verified.</small>
     </section>
     <div className="fmr-redflag-links">
+      {onMap && <button type="button" onClick={() => onMap(row)}>View on map</button>}
       {row.house_id && <a href={routeHref('house',{node:row.house_id})}>House printed source</a>}
       {row.nepCandidate?.id && <a href={routeHref('nep',{node:row.nepCandidate.id})}>Exact NEP title/amount candidate</a>}
       {row.id?.startsWith('pair:') && <a href={routeHref('compare',{view:'projects',pair:row.id})}>Open matching evidence</a>}

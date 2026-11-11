@@ -6,7 +6,8 @@ import {openModalDialog} from './modalLifecycle.js';
 import {routeHref} from './routes.js';
 import {siteUrl} from './data.js';
 import DaChangeExplanationDialog from './DaChangeExplanationDialog.jsx';
-import {DA_CHANGE_TYPES, DA_CHANGE_CAVEAT, buildDaDraftChangeLog, annotateDaDeltaRows, summarizeDaDeltaChanges} from './fmrDaCoherence.js';
+import DaFindingsSummaryDialog from './DaFindingsSummaryDialog.jsx';
+import {DA_CHANGE_TYPES, DA_CHANGE_CAVEAT, buildDaDraftChangeLog, annotateDaDeltaRows, summarizeDaDeltaChanges, summarizeHouseDaFindings} from './fmrDaCoherence.js';
 import {money, flagLabel} from './fmrModel.js';
 import {buildFmrRedFlags, buildHouseDaRedFlagDelta, collapseIdenticalFmrReviews, sharedCoordinateEvidence, summarizeFmrReviews, RED_FLAG_RULES, RED_FLAG_DELTA_STATUSES, RED_FLAG_MEASUREMENT_NOTE, RED_FLAG_TIERS, sortFlagsByTier, tierCounts, tierDeltaCounts} from './fmrRedFlags.js';
 
@@ -17,7 +18,22 @@ const fields = [['rf_short_m','shortMeters','Short section below (m)',1],['rf_lo
   ['rf_cost_multiple','costMultiple','Minimum peer-median multiple',1],['rf_increase_pct','increasePercent','Candidate increase at least (%)',0]];
 const ruleLabels = Object.fromEntries(RED_FLAG_RULES.map(rule => [rule.id, rule.label]));
 
-function HouseDaDelta({data, route, onChange, onExportCSV, onExportJSON, onExplain, tierMode}) {
+/** Build the same FmrSegmentModal record shape used by single-source red flags. */
+function deltaMapRecord(row, data) {
+  const fmrProjects = {};
+  const house = row.house_id && data.stages.house?.projects.find(project => project.id === row.house_id);
+  const da = row.da_id && data.stages.da?.projects.find(project => project.id === row.da_id);
+  const pair = (data.comparison || []).find(entry => entry.id === row.id);
+  const nep = pair?.nep_id && data.stages.nep?.projects.find(project => project.id === pair.nep_id);
+  if (house) fmrProjects.house = house;
+  if (da) fmrProjects.da = da;
+  if (nep) fmrProjects.nep = nep;
+  if (!Object.keys(fmrProjects).length) return null;
+  const status = house && (da || nep) ? 'paired' : `${da ? 'da' : house ? 'house' : 'nep'}_only`;
+  return {id:row.id, title:row.title || house?.title || da?.title || nep?.title || 'FMR project', status, fmrProjects};
+}
+
+function HouseDaDelta({data, route, onChange, onExportCSV, onExportJSON, onExplain, onMap, tierMode}) {
   const params = Object.fromEntries(route.params);
   const delta = useMemo(() => buildHouseDaRedFlagDelta(data, {
     shortMeters:params.rf_short_m,longKm:params.rf_long_km,costMultiple:params.rf_cost_multiple,increasePercent:params.rf_increase_pct,
@@ -25,6 +41,7 @@ function HouseDaDelta({data, route, onChange, onExportCSV, onExportJSON, onExpla
   const [draft,setDraft] = useState(null);
   const [draftError,setDraftError] = useState('');
   const [selectedStory,setSelectedStory] = useState(null);
+  const [showSummary,setShowSummary] = useState(false);
   useEffect(() => {
     const controller = new AbortController();
     fetch(siteUrl('other-analysis/data/da_fmr_draft.json'),{signal:controller.signal})
@@ -52,6 +69,10 @@ function HouseDaDelta({data, route, onChange, onExportCSV, onExportJSON, onExpla
   const tag = (ids, tone='', context=null) => !ids.length ? <span className="fmr-muted">—</span>
     : <div className={`fmr-redflag-tags ${tone}`}>{(tierMode ? sortFlagsByTier(ids) : ids).map(id => <FlagTag key={id} id={id} label={ruleLabels[id]} tierMode={tierMode} onExplain={() => onExplain({id,row:context})}/>)}</div>;
   const tierChanges = tierMode ? tierDeltaCounts(rows) : null;
+  const findingsSummary = useMemo(() => summarizeHouseDaFindings(rows), [rows]);
+  const summaryFilterNote = (status || changeTypeFilter || rule)
+    ? `Summary matches the current filters (${rows.length.toLocaleString()} of ${annotated.length.toLocaleString()} flagged House→DA rows).`
+    : null;
   return <>
     <p className="fmr-notice">House GAB remains the printed source of truth. This view reapplies the same red-flag screens to the DA Nov 5 working draft and diffs linked rows. Thresholds stay interactive and match the single-source Red flags view.</p>
     <p className="fmr-notice">{DA_CHANGE_CAVEAT} The change-type summary below describes only the <strong>flagged House→DA delta subset</strong>, not all 704 DA original rows. Legacy flag-lifecycle statuses remain available separately.</p>
@@ -99,6 +120,7 @@ function HouseDaDelta({data, route, onChange, onExportCSV, onExportJSON, onExpla
       {RED_FLAG_RULES.map(item => <option key={item.id} value={item.id}>{item.label} · {delta.rows.filter(r => r.house_flags.includes(item.id) || r.da_flags.includes(item.id)).length}</option>)}
     </select></label></div>
     <div className="fmr-result-bar"><span>{rows.length.toLocaleString()} House→DA red-flag rows</span>
+      <button type="button" aria-haspopup="dialog" onClick={() => setShowSummary(true)}>View findings summary</button>
       <button onClick={() => onExportCSV('fmr-house-da-red-flag-delta.csv',
         ['status','comparison_or_row_id','region','title','house_id','da_id','da_control_no','da_excel_rows','house_php','da_php','house_flags','da_flags','cleared_flags','persisted_flags','new_flags','da_disposition'],
         rows.map(r => [r.status,r.id,r.region_key,r.title,r.house_id,r.da_id,r.control_no,(r.excel_rows||[]).join(';'),r.house_php,r.da_php,
@@ -123,13 +145,15 @@ function HouseDaDelta({data, route, onChange, onExportCSV, onExportJSON, onExpla
         {key:'house_php',label:'House (PHP)',align:'num',render:row => money(row.house_php)},
         {key:'da_php',label:'DA (PHP)',align:'num',render:row => money(row.da_php)},
         {key:'links',label:'Links',sortable:false,render:row => <div className="fmr-redflag-links">
+          {onMap && (row.house_id || row.da_id) && <button type="button" onClick={() => onMap(row)}>View on map</button>}
           {row.house_id && <a href={routeHref('house',{node:row.house_id})}>House tree</a>}
           {row.id.startsWith('pair:') || row.id.startsWith('house_only:') || row.id.startsWith('nep_only:')
             ? <a href={routeHref('compare',{view:'projects',pair:row.id})}>Compare row</a>
             : row.da_id && <a href={routeHref('compare',{view:'projects',da:'flagged',q:row.control_no || row.da_id})}>Compare / DA</a>}
         </div>},
       ]}/>
-    {selectedStory && <DaChangeExplanationDialog row={selectedStory} onClose={()=>setSelectedStory(null)}/>}
+    {selectedStory && <DaChangeExplanationDialog row={selectedStory} onClose={()=>setSelectedStory(null)} onMap={onMap}/>}
+    {showSummary && <DaFindingsSummaryDialog summary={findingsSummary} filteredNote={summaryFilterNote} onClose={()=>setShowSummary(false)}/>}
   </>;
 }
 
@@ -238,12 +262,17 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
   const analysis = useMemo(() => buildFmrRedFlags(data, analysisKey, {
     shortMeters:params.rf_short_m,longKm:params.rf_long_km,costMultiple:params.rf_cost_multiple,increasePercent:params.rf_increase_pct,
   }), [data,analysisKey,params.rf_short_m,params.rf_long_km,params.rf_cost_multiple,params.rf_increase_pct]);
-  const [mapRow, setMapRow] = useState(null);
+  const [mapRecord, setMapRecord] = useState(null);
   const [explainSelection, setExplainSelection] = useState(null);
   const tierMode = params.rf_tiers === 'on';
-  const onMap = row => setMapRow(row);
-  const mapRecord = mapRow && {id:mapRow.id,title:mapRow.project.title,
-    status:`${mapRow.stageKey}_only`,fmrProjects:Object.fromEntries((mapRow.members || [mapRow]).map(member=>[member.stageKey,member.project]))};
+  const onMap = row => {
+    if (row?.project) {
+      setMapRecord({id:row.id,title:row.project.title,
+        status:`${row.stageKey}_only`,fmrProjects:Object.fromEntries((row.members || [row]).map(member=>[member.stageKey,member.project]))});
+      return;
+    }
+    setMapRecord(deltaMapRecord(row, data));
+  };
   const visibleIds = new Set(projects.map(p => p.id));
   const allGroups = collapseIdenticalFmrReviews(analysis.rows,data.comparison);
   const assessed = allGroups.filter(group=>group.members.some(member=>visibleIds.has(member.id))
@@ -284,7 +313,7 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
       <button className={mode === 'stage' ? 'active' : ''} aria-pressed={mode === 'stage'} onClick={() => change({rf_mode:null,rf_delta_status:null})}>Single source · {stage.label}</button>
       <button className={mode === 'house_da_delta' ? 'active' : ''} aria-pressed={mode === 'house_da_delta'} onClick={() => change({rf_mode:'house_da_delta',stage:'da'})}>House → DA changes</button>
     </div>}
-    {mode === 'house_da_delta' ? <HouseDaDelta data={data} route={route} onChange={onChange} onExportCSV={onExportCSV} onExportJSON={onExportJSON} onExplain={setExplainSelection} tierMode={tierMode}/> : <>
+    {mode === 'house_da_delta' ? <HouseDaDelta data={data} route={route} onChange={onChange} onExportCSV={onExportCSV} onExportJSON={onExportJSON} onExplain={setExplainSelection} onMap={onMap} tierMode={tierMode}/> : <>
     <details className="fmr-method"><summary>How these review flags are calculated</summary>
       <p>Short and long screens inspect individual sections; the proxy divides the project allocation once by the sum of all complete section spans. Missing, zero-length, repeated or unresolved geometry is excluded from rate calculations.</p>
       <p>Rate baselines are calculated separately for each full budget source, independent of search and region filters. A regional cohort needs at least 20 eligible projects; otherwise the whole source is used, also with a minimum of 20. High proxies must exceed both {analysis.config.costMultiple}× the median and Q3 + 3×IQR. These are peer outliers, not engineering price limits.</p>
@@ -346,11 +375,11 @@ export default function FmrRedFlags({data, stage, projects, route, onChange, onP
         {key:'evidence',label:'Evidence',sortable:false,render:row => <div className="fmr-redflag-links"><button type="button" onClick={() => onMap(row)}>View on map</button><button onClick={() => onChange({rf_project:row.id})}>Review details</button>{row.members.map(member=><button key={member.id} onClick={() => onPdf(member.project.source)} className="fmr-redflag-pdf">{data.stages[member.stageKey].label} · {member.project.source.source_pdf} · p. {member.project.source.pdf_page}</button>)}</div>},
       ]}/>
     {selected && <Evidence key={selected.id} onMap={onMap} row={selected} data={data} onClose={() => onChange({rf_project:null})} onPdf={onPdf} onExplain={setExplainSelection} tierMode={tierMode}/>}
-    {mapRecord && <Suspense fallback={<p role="status">Loading project map…</p>}>
-      <FmrSegmentModal key={mapRecord.id} record={mapRecord} onClose={() => setMapRow(null)}/>
-    </Suspense>}
     {params.rf_project && !selected && <p role="alert">This review record is unavailable in the selected source. <button onClick={() => onChange({rf_project:null})}>Clear review selection</button></p>}
     </>}
+    {mapRecord && <Suspense fallback={<p role="status">Loading project map…</p>}>
+      <FmrSegmentModal key={mapRecord.id} record={mapRecord} onClose={() => setMapRecord(null)}/>
+    </Suspense>}
     {explainSelection && <FlagExplainerDialog selection={explainSelection} config={analysis.config} onClose={() => setExplainSelection(null)}/>}
   </section>;
 }

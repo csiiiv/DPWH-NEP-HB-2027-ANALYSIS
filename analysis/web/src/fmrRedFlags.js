@@ -13,6 +13,7 @@ export const RED_FLAG_RULES = [
   {id:'shared_geometry',label:'Shared coordinates within this source',description:'An exact section footprint also appears on another project in the same document.'},
   {id:'repeated_sections',label:'Repeated sections within a project',description:'The same section footprint occurs more than once in a project.'},
   {id:'allocation_increase',label:'Increase on unchanged candidate geometry',description:'A candidate pair has identical coordinate footprints and an allocation increase above the selected threshold.'},
+  {id:'same_nep_different_house',label:'Same NEP allocation, different HGAB',description:'The DA draft keeps the NEP amount while the linked House GAB amount differs. Preserves NEP context when reviewing DA.'},
 ];
 export const RED_FLAG_DELTA_STATUSES = {
   cleared: 'Cleared under DA draft',
@@ -80,7 +81,12 @@ export const RED_FLAG_EXPLAINERS = Object.freeze({
     'Flags a change that warrants confirming project identity and scope.',
     'A larger allocation does not by itself establish insertion, wrongdoing or overpricing.',
     'Review both stage records, amounts, project descriptions and pairing method.',
-    'Requires matched candidate identity; an unchanged footprint is not proof of unchanged scope.'),
+    'Requires matched candidate identity; an unchanged footprint is not proof of unchanged scope. Used for NEP→House; DA uses same_nep_different_house when NEP context matters.'),
+  same_nep_different_house:explain('cross','The DA draft amount equals the linked NEP amount and differs from the linked House GAB amount.',
+    'Keeps the NEP baseline visible when DA appears to restore or retain the executive allocation against HGAB.',
+    'It does not prove that DA corrected House, or that House was wrong.',
+    'Compare NEP, House and DA amounts, dispositions (retain/modified/new) and coordinate footprints.',
+    'Replaces DA-vs-House allocation_increase so NEP context is not dropped from the DA review.'),
 });
 export const RED_FLAG_DELTA_STATUS_EXPLAINERS = Object.freeze({
   cleared:'A House flag is no longer present in the linked DA draft observation. This reflects the assessed values, not independent confirmation of a correction.',
@@ -132,15 +138,16 @@ export function flagExplainer(id, config = {}) {
     locality_disagreement:'PSGC point agreement is DISAGREE against the title province.',
     shared_geometry:'Exact section coordinates match a different project within the same source, including reversed endpoint order.',
     repeated_sections:'Two sections within one project have identical geometry, including reversed endpoint order.',
-    allocation_increase:`Identical complete candidate geometry and an allocation increase of at least ${c.increasePercent}%.`,
+    allocation_increase:`Identical complete candidate geometry and an allocation increase of at least ${c.increasePercent}% (NEP→House).`,
+    same_nep_different_house:'Linked DA amount equals NEP and differs from House GAB (DA review keeps the NEP baseline).',
   }[id];
   return {id,label:RED_FLAG_RULES.find(rule=>rule.id===id)?.label || id, ...meta,
     tierLabel:RED_FLAG_TIERS[meta.tier].label,howFlagged};
 }
-if (RED_FLAG_RULES.length !== 10 ||
-    new Set(RED_FLAG_RULES.map(r=>r.id)).size !== 10 ||
+if (RED_FLAG_RULES.length !== 11 ||
+    new Set(RED_FLAG_RULES.map(r=>r.id)).size !== 11 ||
     RED_FLAG_RULES.some(r => !RED_FLAG_TIERS[RED_FLAG_EXPLAINERS[r.id]?.tier]))
-  throw new Error('FMR red-flag tier metadata must cover exactly ten unique rules');
+  throw new Error('FMR red-flag tier metadata must cover exactly eleven unique rules');
 
 function linkedDaProjectId(row) {
   if (!row?.da) return null;
@@ -244,12 +251,19 @@ function calculateFlags(data, stageKey, options = {}) {
     if (row.proxyPhpPerMeter != null && row.benchmark && row.proxyPhpPerMeter > row.benchmark.threshold)
       add('high_proxy', `₱${number(row.proxyPhpPerMeter)} per endpoint meter is ${number(row.peerMultiple)}× the ${row.benchmark.scope.toLowerCase()} median. Threshold: above ₱${number(row.benchmark.threshold)}/m; ${row.benchmark.count} eligible source projects.`);
     const pair = pairs.get(p.id), nep = pair && byId.get(pair.nep_id), house = pair && byId.get(pair.house_id);
-    if (stageKey === 'da' && house && p.amount_php > 0 && house.amount_php > 0) {
-      const h = geometryMetrics(house), d = geometryMetrics(p);
-      const percent = (p.amount_php - house.amount_php) / house.amount_php * 100;
-      if (h.complete && d.complete && JSON.stringify([...h.keys].sort()) === JSON.stringify([...d.keys].sort()) && percent >= config.increasePercent)
-        add('allocation_increase', `The DA draft allocation is ${number(percent)}% above House on an identical coordinate footprint. Project identity and changes in scope still require review.`, {pairId:pair.id});
-    } else if (nep && house && nep.amount_php > 0 && house.amount_php > nep.amount_php) {
+    // DA reviews need the full NEP→House→DA amount story. Do not reduce that to
+    // DA-vs-House allocation_increase (that drops the NEP baseline).
+    if (stageKey === 'da' && house && nep
+        && p.amount_php > 0 && house.amount_php > 0 && nep.amount_php > 0
+        && p.amount_php === nep.amount_php && p.amount_php !== house.amount_php) {
+      const houseVsNep = house.amount_php - nep.amount_php;
+      const direction = houseVsNep > 0 ? 'above' : 'below';
+      const percent = Math.abs(houseVsNep) / nep.amount_php * 100;
+      add('same_nep_different_house',
+        `DA keeps the NEP allocation (₱${number(nep.amount_php)}) while House is ${number(percent)}% ${direction} NEP (₱${number(house.amount_php)}). `
+        + 'This preserves the NEP baseline when reviewing the DA draft against HGAB.',
+        {pairId: pair.id});
+    } else if (stageKey !== 'da' && nep && house && nep.amount_php > 0 && house.amount_php > nep.amount_php) {
       const n = geometryMetrics(nep), h = geometryMetrics(house);
       const percent = (house.amount_php - nep.amount_php) / nep.amount_php * 100;
       if (n.complete && h.complete && JSON.stringify([...n.keys].sort()) === JSON.stringify([...h.keys].sort()) && percent >= config.increasePercent)

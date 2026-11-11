@@ -4,7 +4,10 @@ import fs from 'node:fs';
 import {buildFmrRedFlags, buildHouseDaRedFlagDelta, collapseIdenticalFmrReviews, sharedCoordinateEvidence, summarizeFmrReviews, redFlagOptions, RED_FLAG_DEFAULTS} from './fmrRedFlags.js';
 const segment = (km=1, coordinates=[[120,14],[120.01,14]]) => ({coordinates,straight_line_distance_km:km});
 const project = (id, overrides={}) => ({id,region_key:'I',amount_php:100000,status:'normalized',review_flags:[],segments:[segment()],segment_count:1,...overrides});
-const data = (nep,house=[],comparison=[]) => ({stages:{nep:{projects:nep},house:{projects:house}},comparison});
+const data = (nep,house=[],comparison=[],da=[]) => ({
+  stages:{nep:{projects:nep},house:{projects:house},...(da.length ? {da:{projects:da}} : {})},
+  comparison,
+});
 const flags = row => row.flags.map(f=>f.id);
 test('combined review retains source attribution without mixing peer baselines or shared geometry',()=>{
  const nep=Array.from({length:20},(_,i)=>project(`n${i}`));
@@ -49,6 +52,32 @@ test('candidate increase requires exact complete geometry and preserves source d
  const input=data([project('n')],[project('h',{amount_php:150000})],[{id:'pair',status:'paired',nep_id:'n',house_id:'h',method:'coordinates'}]);
  const before=JSON.stringify(input);assert.ok(flags(buildFmrRedFlags(input,'house').rows[0]).includes('allocation_increase'));assert.equal(JSON.stringify(input),before);
  input.stages.house.projects[0].segments=[segment(1,[[121,14],[121.01,14]])];assert.ok(!flags(buildFmrRedFlags(input,'house').rows[0]).includes('allocation_increase'));
+});
+test('DA keeps NEP context when amount matches NEP but differs from House',()=>{
+  const comparison=[{id:'pair',status:'paired',nep_id:'n',house_id:'h',method:'title',
+    da:{from:{id:'d',disposition:'retain'},proposed:{id:'d',control_no:'R2-0036'}}}];
+  const input=data(
+    [project('n',{amount_php:25000000})],
+    [project('h',{amount_php:20000000})],
+    comparison,
+    [project('d',{amount_php:25000000})],
+  );
+  const daRow=buildFmrRedFlags(input,'da').rows[0];
+  assert.ok(flags(daRow).includes('same_nep_different_house'));
+  assert.ok(!flags(daRow).includes('allocation_increase'));
+  // House stage still uses NEP→House allocation_increase only.
+  assert.ok(!flags(buildFmrRedFlags(input,'house').rows[0]).includes('same_nep_different_house'));
+});
+test('DA does not emit same_nep_different_house when all three amounts agree',()=>{
+  const comparison=[{id:'pair',status:'paired',nep_id:'n',house_id:'h',method:'title',
+    da:{from:{id:'d',disposition:'retain'},proposed:{id:'d'}}}];
+  const input=data(
+    [project('n',{amount_php:15000000})],
+    [project('h',{amount_php:15000000})],
+    comparison,
+    [project('d',{amount_php:15000000})],
+  );
+  assert.ok(!flags(buildFmrRedFlags(input,'da').rows[0]).includes('same_nep_different_house'));
 });
 test('invalid threshold settings use defaults',()=>{
  assert.deepEqual(redFlagOptions({shortMeters:'',longKm:-1,costMultiple:0,increasePercent:'bad'}),RED_FLAG_DEFAULTS);
@@ -190,12 +219,12 @@ test('House→DA red-flag delta classifies linked and unmatched rows', () => {
 });
 
 
-test('red-flag tiers cover ten rules uniquely and preserve source counts', async () => {
+test('red-flag tiers cover eleven rules uniquely and preserve source counts', async () => {
   const {RED_FLAG_RULES, RED_FLAG_TIERS, RED_FLAG_EXPLAINERS, RED_FLAG_DELTA_STATUS_EXPLAINERS,
     flagTier, flagExplainer, sortFlagsByTier, tierCounts, tierDeltaCounts} = await import('./fmrRedFlags.js');
-  assert.equal(RED_FLAG_RULES.length,10);
-  assert.equal(Object.keys(RED_FLAG_EXPLAINERS).length,10);
-  assert.equal(new Set(RED_FLAG_RULES.map(rule => rule.id)).size,10);
+  assert.equal(RED_FLAG_RULES.length,11);
+  assert.equal(Object.keys(RED_FLAG_EXPLAINERS).length,11);
+  assert.equal(new Set(RED_FLAG_RULES.map(rule => rule.id)).size,11);
   assert.equal(Object.keys(RED_FLAG_DELTA_STATUS_EXPLAINERS).length,6);
   for (const rule of RED_FLAG_RULES) {
     const info = flagExplainer(rule.id, {longKm:35, shortMeters:120, costMultiple:4, increasePercent:30});
@@ -227,5 +256,5 @@ test('tier metadata does not alter flag IDs, counts or comparison exports', asyn
   const after = buildHouseDaRedFlagDelta(workbench);
   assert.deepEqual(before.counts,after.counts);
   assert.deepEqual(before.rows,after.rows);
-  assert.equal(RED_FLAG_RULES.length,10);
+  assert.equal(RED_FLAG_RULES.length,11);
 });
