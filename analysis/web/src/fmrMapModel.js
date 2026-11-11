@@ -3,7 +3,7 @@
 import {comparisonRows, filterComparisons} from './fmrModel.js';
 import {buildFmrRedFlags} from './fmrRedFlags.js';
 
-export const STAGE_COLORS = {nep: '#0f766e', house: '#2563eb'};
+export const STAGE_COLORS = {nep: '#0f766e', house: '#2563eb', da: '#b45309'};
 export const PAIRED_COLOR = '#7c3aed';
 export const HUB_COLOR = '#b45309';
 export const INCREASE_COLOR = '#15803d';

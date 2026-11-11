@@ -57,12 +57,41 @@ const tampacRecord = () => ({
   },
 });
 
+test('House→DA delta map overlay draws both House and DA stages', () => {
+  const record = {
+    id: 'pair:example',
+    title: 'DA-described correction example',
+    status: 'paired',
+    fmrProjects: {
+      house: {
+        id: 'ib:example', amount_php: 10000000, segment_count: 1,
+        segments: [{id: 'ib:example:segment1', segment_index: 1, section_label: '',
+          coordinates: [[121.0, 14.0], [121.01, 14.01]],
+          straight_line_distance_km: 1.5}],
+        points: [],
+      },
+      da: {
+        id: 'da_fmr:r1', amount_php: 10000000, segment_count: 1,
+        segments: [{id: 'da_fmr:r1:segment1', segment_index: 1, section_label: '',
+          coordinates: [[121.0, 14.0], [121.02, 14.02]],
+          straight_line_distance_km: 2.9}],
+        points: [],
+      },
+    },
+  };
+  const overlay = fmrRecordMapOverlay(record);
+  assert.deepEqual(overlay.stages.map(stage => stage.key), ['house', 'da']);
+  assert.equal(overlay.lines.features.length, 2);
+  assert.equal(overlay.lines.features.find(f => f.properties.stage === 'da').properties.stageLabel,
+    'DA working draft');
+});
+
 test('repair overlay draws the printed twin and a connector on both stages', () => {
   const record = tampacRecord();
   const repair = fmrRecordRepairOverlay(record);
   assert.equal(repair.hasRepairs, true);
-  assert.equal(repair.repairedPoints, 2);
   assert.deepEqual(repair.stages.map(stage => stage.key), ['house', 'nep']);
+  assert.equal(repair.repairedPoints, 2);
   // Printed twin keeps the accepted START and the pre-repair END.
   assert.equal(repair.lines.features.length, 2);
   for (const feature of repair.lines.features) {

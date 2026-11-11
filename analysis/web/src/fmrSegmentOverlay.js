@@ -31,6 +31,7 @@ function shiftKm(before, after) {
 export function fmrStageProjects(record) {
   return [
     {key: 'house', label: 'House FMR annex', project: record.fmrProjects?.house, color: STAGE_COLORS.house},
+    {key: 'da', label: 'DA working draft', project: record.fmrProjects?.da, color: STAGE_COLORS.da},
     {key: 'nep', label: 'NEP FMR schedule', project: record.fmrProjects?.nep, color: STAGE_COLORS.nep},
   ].filter(entry => entry.project);
 }
