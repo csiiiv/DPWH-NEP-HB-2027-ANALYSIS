@@ -11,7 +11,10 @@ import {allocationStats, analysisCandidateRows, bandRows, candidateAggregates, c
   csvText, filterComparisons, filterProjects, flagLabels, money, signedMoney, signedPct, pctChange, niaTabs,
   repeatedAmounts, roundingLadder, rowsForMethod, sourceArithmetic, sourceNode, sourcePath,
   stageLabels, statusLabels, subprogramAllocationRows, overviewComparisonRows, overviewGroupRows,
-  matchingMethodLabels, normalizeMatchingMethod, variantMarkLabels, REVIEW_CATEGORIES} from './niaModel.js';
+  matchingMethodLabels, normalizeMatchingMethod, variantMarkLabels, REVIEW_CATEGORIES,
+  senateStatusLabels, senateProjects, filterSenateProjects, senateStats, senateComparisonIndex,
+  SENATE_DIMENSIONS, RECONCILIATION_CLASSES, categoryReconciliationRows,
+  groupLabel as dimensionGroupLabel} from './niaModel.js';
 import './Fmr.css';
 import './Nia.css';
 
@@ -470,7 +473,7 @@ function Highlights({data, route, rows, onPdf}) {
 }
 function CandidateAnalysis({data, route, rows, onPdf, view}) {
   const p = paramsOf(route), filtered = analysisCandidateRows(rows, {...p, view});
-  const dim = ['overall', 'subprogram', 'program'].includes(p.dim) ? p.dim : 'subprogram';
+  const dim = ['overall', 'subprogram', 'program', 'category', 'region'].includes(p.dim) ? p.dim : 'subprogram';
   const groups = candidateGroupRows(filtered, view, dim, data.stages.house.subprograms);
   const adjustment = view === 'adjustments', side = view === 'deletions' ? 'nep' : 'house';
   const resolutionCardLabel = 'Validated / unresolved rows';
@@ -496,7 +499,7 @@ function CandidateAnalysis({data, route, rows, onPdf, view}) {
       <option value="validated">Validated · no counterpart found</option><option value="unresolved">Plausible counterpart · unresolved</option>
       <option value="unambiguous">Without repeated-title ambiguity</option><option value="ambiguous">Repeated-title ambiguity</option>
     </select></label>}</div>
-    <div className="dimension-chips" role="group" aria-label="Break down by">{[['overall', 'Overall'], ['subprogram', 'Sub-program'], ['program', 'Program']].map(([key, label]) =>
+    <div className="dimension-chips" role="group" aria-label="Break down by">{[['overall', 'Overall'], ['subprogram', 'Sub-program'], ['category', 'Category'], ['region', 'Region'], ['program', 'Program']].map(([key, label]) =>
       <button key={key} className={dim === key ? 'active' : ''} aria-pressed={dim === key} onClick={() => navigate(route, {dim: key, group: null, page: null})}>{label}</button>)}</div>
     <Filters route={route} subprograms={data.stages.house.subprograms} status={false}/>
     <div className="cards analysis-headlines"><article><h3>{adjustment ? 'Changed candidate pairs' : 'Candidate source rows'}</h3><strong>{filtered.length.toLocaleString()}</strong>
@@ -665,16 +668,16 @@ function AiMonitoringAnalysis({data, stage, rows, route, onPdf}) {
   </section></>;
 }
 function OverviewComparison({data, route, rows, onPdf, stage, projects}) {
-  const p=paramsOf(route), dim=['overall','subprogram','program'].includes(p.dim) ? p.dim : 'subprogram';
+  const p=paramsOf(route), dim=['overall','subprogram','program','category','region'].includes(p.dim) ? p.dim : 'subprogram';
   const groups=overviewComparisonRows(rows,p,data.stages.house.subprograms,dim);
   const comparisonGroup=p.group?.startsWith('overview:') ? groups.find(g => g.id === p.group.slice(9)) : null;
   const sourceKey=p.records?.startsWith('overview-source:') ? p.records.slice(16) : null;
   const sourceGroup=sourceKey && stage.subprograms.find(s => s.key === sourceKey);
   const sourceRows=sourceGroup ? projects.filter(r => r.subprogram_key === sourceKey) : [];
   const close=() => navigate(route,{group:null,records:null,table:null});
-  return <><section className="fmr-section"><h2>NEP → House by {dim === 'program' ? 'program group' : dim === 'overall' ? 'all records' : 'sub-program'}</h2>
-    <div className="dimension-chips" role="group" aria-label="Break down by">{[['overall','Overall'],['subprogram','Sub-program'],['program','Program']].map(([id,label]) => <button key={id} className={dim===id?'active':''} aria-pressed={dim===id} onClick={() => navigate(route,{dim:id,group:null,records:null,page:null,sort:null,dir:null,table:null})}>{label}</button>)}</div>
-    <p className="fmr-notice">This distribution uses project records from the comparison ledger, with the same source filters on both stages. Each side counts under its own printed group. Proposed title matches do not certify identity; allocation patterns do not establish implementation or misconduct.</p>
+  return <><section className="fmr-section"><h2>NEP → House by {dim === 'program' ? 'program group' : dim === 'overall' ? 'all records' : dim === 'category' ? 'hierarchy category' : dim === 'region' ? 'region' : 'sub-program'}</h2>
+    <div className="dimension-chips" role="group" aria-label="Break down by">{[['overall','Overall'],['subprogram','Sub-program'],['category','Category'],['region','Region'],['program','Program']].map(([id,label]) => <button key={id} className={dim===id?'active':''} aria-pressed={dim===id} onClick={() => navigate(route,{dim:id,group:null,records:null,page:null,sort:null,dir:null,table:null})}>{label}</button>)}</div>
+    <p className="fmr-notice">{(dim === 'category' || dim === 'region') && 'Category and region levels come from NIA\u2019s Senate hearing workbook, which joins one-to-one to every ledger row; both annex PDFs lack this level. '}This distribution uses project records from the comparison ledger, with the same source filters on both stages. Each side counts under its own printed group. Proposed title matches do not certify identity; allocation patterns do not establish implementation or misconduct.</p>
     <Table tableId={`overview-comparison-${dim}`} route={route} rows={groups} label="NIA stage allocation distribution" initialSort={{key:'delta_php',direction:'desc'}} columns={[
       {key:'label',label:'Group',scope:'row',render:g => <button className="group-open" onClick={() => navigate(route,{group:`overview:${g.id}`,records:null,page:null,table:null})}>{g.label}</button>},
       {key:'nep_count',label:'NEP records',band:'records',bandLabel:'Records',align:'num'},
@@ -701,20 +704,21 @@ function Analysis({data, route, rows, onPdf}) {
   const subprograms = subprogramAllocationRows(projects, stage.subprograms);
   const max = Math.max(1, ...subprograms.map(s => s.total));
   const views = [['overview', 'Overview'], ['insertions', 'Unsupported insertions'], ['deletions', 'Deletions'], ['adjustments', 'Adjustments'],
-    ['stats', 'Statistics'], ['ai_monitoring', 'AI monitoring'], ['candidates', 'Candidates'], ['controls', 'Agency controls']];
+    ['stats', 'Statistics'], ['ai_monitoring', 'AI monitoring'], ['senate', 'Senate workbook'], ['candidates', 'Candidates'], ['controls', 'Agency controls']];
   return <div className="headline-analysis nia-analysis"><section className="hero"><p className="eyebrow">NIA · FY2027</p><h1>NIA allocation analysis</h1>
     <p>Recorded allocations, candidate unsupported insertions and deletions, and paired amount adjustments.</p>
     <div className="hero-actions">    {['overview', 'stats', 'ai_monitoring'].includes(view) ? <label className="hero-source">Budget source<select aria-label="Analysis budget source" value={stageKey}
       onChange={e => navigate(route, {stage: e.target.value, page: null})}>{Object.entries(stageLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
-      : <span className="nia-analysis-basis">{view === 'insertions' ? 'House GAB · unmatched source rows' : view === 'deletions' ? 'DBM NEP · unmatched source rows' : view === 'controls' ? 'House agency table' : 'House GAB ↔ DBM NEP'}</span>}<ShareLink/></div></section>
+      : <span className="nia-analysis-basis">{view === 'insertions' ? 'House GAB · unmatched source rows' : view === 'deletions' ? 'DBM NEP · unmatched source rows' : view === 'senate' ? 'NIA Senate workbook · October 10' : view === 'controls' ? 'House agency table' : 'House GAB ↔ DBM NEP'}</span>}<ShareLink/></div></section>
     <Tabs route={route} defaultKey="overview" items={views} ariaLabel="Analysis views"
-      reset={{status: null, direction: null, ranking: null, aiBasis: null, sort: null, dir: null, group: null, pair: null, dim: null, table: null, pdf: null, pdfPage: null, match: null, records: null}}/>
+      reset={{status: null, direction: null, ranking: null, aiBasis: null, senateView: null, sort: null, dir: null, group: null, pair: null, dim: null, table: null, pdf: null, pdfPage: null, match: null, records: null}}/>
     <h2 className="fmr-question">{{overview:'How are recorded NIA allocations distributed across sub-programs?',
       insertions:'Which House project records have no unique NEP counterpart?',
       deletions:'Which NEP project records have no unique House counterpart?',
       adjustments:'Which provisional pairs have different House and NEP allocations?',
       stats:'Which descriptive allocation patterns appear in this source?',
       ai_monitoring:'Which project records explicitly fund AI monitoring?',
+      senate:'How does NIA’s own Senate workbook reconcile the NEP with the House GAB?',
       candidates:'How does provisional pairing explain the annex funding difference?',
       controls:'How does the House annex reconcile with agency controls?'}[view] || 'Source records'}</h2>
     {['overview', 'stats'].includes(view) ? <><Filters route={route} subprograms={stage.subprograms}/>
@@ -755,6 +759,7 @@ function Analysis({data, route, rows, onPdf}) {
       <section className="fmr-section"><h2>Supporting source records</h2><button onClick={() => exportProjects(projects, stageKey)}>Export filtered CSV</button>
         <ProjectTable projects={projects} route={route} stage={stageKey} onPdf={onPdf}/></section>
     </> : view === 'ai_monitoring' ? <AiMonitoringAnalysis data={data} stage={stage} rows={rows} route={route} onPdf={onPdf}/>
+      : view === 'senate' ? <SenateAnalysis data={data} route={route} rows={rows}/>
       : ['insertions', 'deletions', 'adjustments'].includes(view) ? <CandidateAnalysis data={data} route={route} rows={rows} onPdf={onPdf} view={view}/>
       : view === 'candidates' ? <><Filters route={route} subprograms={stage.subprograms} comparison/>
       <p>{data.matching_note}</p><FundingAnalysis data={data} rows={filterComparisons(rows, p)} route={route}/>
@@ -770,6 +775,122 @@ function Analysis({data, route, rows, onPdf}) {
     <ScopeNote/>
   </div>;
 }
+function SenateAnalysis({data, route, rows}) {
+  const p = paramsOf(route);
+  const projects = senateProjects(data);
+  const filtered = filterSenateProjects(projects, p);
+  const stats = senateStats(filtered);
+  const view = p.senateView || 'insertions';  const full = senateStats(projects);
+  const comparisonIndex = useMemo(() => senateComparisonIndex(data), [data]);
+  const ledger = data.stages.nep.projects.reduce((m, x) => (m.set(x.id, x), m), new Map());
+  const houseLedger = data.stages.house.projects.reduce((m, x) => (m.set(x.id, x), m), new Map());
+  // Where does the official workbook corroborate our candidate matching?
+  const insertionIds = new Set(projects.filter(x => x.status === 'house_insertion').map(x => x.house_join?.id).filter(Boolean));
+  const ourHouseOnly = data.comparison.filter(r => r.status === 'house_only').map(r => r.house_id);
+  const corroborated = ourHouseOnly.filter(id => insertionIds.has(id));
+  const statusSelect = <label>Workbook status<select aria-label="Senate workbook status" value={p.status || ''}
+    onChange={e => filterChange(route, {status: e.target.value})}>
+    <option value="">All rows</option>
+    {Object.entries(senateStatusLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+  </select></label>;
+  const exportCsv = () => download('nia-senate-workbook-filtered.csv', csvText(
+    ['id', 'row', 'subprogram', 'program_group', 'category', 'region', 'province', 'label', 'status',
+     'nep_amount', 'hgab_amount', 'submission_label', 'submission_amount', 'edited', 'justification',
+     'nep_join_id', 'house_join_id', 'nep_join_similarity', 'house_join_similarity'],
+    filtered.map(x => [x.id, x.row, x.subprogram_key, x.program_group, x.category || '', x.region || '',
+      x.province || '', x.label, x.status, x.nep_amount ?? '', x.hgab_amount ?? '',
+      x.submission_label || '', x.submission_amount ?? '', x.submission_edited || '',
+      x.justification || '', x.nep_join?.id || '', x.house_join?.id || '',
+      x.nep_join?.similarity ?? '', x.house_join?.similarity ?? ''])));
+  const viewRows = view === 'insertions' ? filtered.filter(x => x.status === 'house_insertion')
+    : view === 'zeroed' ? filtered.filter(x => x.status === 'house_zeroed')
+    : view === 'edits' ? filtered.filter(x => x.submission_edited)
+    : filtered;
+  return <><section className="analysis-section"><h2>NIA Senate workbook reconciliation</h2>
+    <p>NIA's own hearing workbook (October 10) prints the published NEP detail beside the House GAB amounts and NIA's
+      original submission. Rows with House money but no NEP line are NIA-acknowledged House insertions; rows with NEP
+      money the House zeroed are print-level removals. Every workbook row joins one-to-one to both retained ledgers.</p>
+    <div className="fmr-stats"><Stat label="Workbook rows" value={full.rows.toLocaleString()} detail="project-level detail rows"/>
+      <Stat label="House insertions" value={full.insertions} detail={`${money(full.insertions_php)} with no NEP line`}/>
+      <Stat label="NEP items zeroed" value={full.zeroed} detail={`${money(full.zeroed_php)} removed by the House`}/>
+      <Stat label="NIA edits acknowledged" value={full.edited} detail={`${full.justified} rows carry a written justification`}/></div>
+    <p className="nia-method-note">Corroboration: {corroborated.length} of {ourHouseOnly.length} unmatched House candidates in our
+      title matching are official workbook insertion rows; the remainder are reworded or split/merged counterparts.</p>
+  </section>
+  <section className="fmr-section"><h2>Workbook rows</h2>
+    <div className="analysis-controls"><Filters route={route} subprograms={data.senate.subprograms} status={false}/>
+      {statusSelect}
+      <label>View<select aria-label="Senate workbook view" value={view} onChange={e => filterChange(route, {senateView: e.target.value})}>
+        <option value="insertions">House insertions</option>
+        <option value="zeroed">NEP items zeroed</option>
+        <option value="edits">NIA-acknowledged edits</option>
+        <option value="all">All rows</option>
+      </select></label>
+      <button onClick={exportCsv}>Export filtered CSV</button></div>
+    <div className="fmr-result-bar"><span>{viewRows.length} rows shown</span></div>
+    <Table route={route} rows={viewRows} label="NIA Senate workbook rows" paginate initialSort={{key: 'hgab_amount', direction: 'desc'}} columns={[
+      {key: 'label', label: 'Project (NEP print)', scope: 'row', render: x => <span className="nia-senate-label">
+        {x.label}<small>{[x.category, x.region, x.province].filter(Boolean).join(' · ')}</small>
+        {x.justification && <small className="nia-justification">“{x.justification.slice(0, 140)}{x.justification.length > 140 ? '…' : ''}”</small>}</span>},
+      {key: 'status', label: 'Workbook status', render: x => <span className={`fmr-badge nia-senate-${x.status}`}>{senateStatusLabels[x.status]}</span>},
+      {key: 'nep_amount', label: 'NEP (PHP)', align: 'num', render: x => x.nep_amount == null ? '—' : money(x.nep_amount)},
+      {key: 'hgab_amount', label: 'House (PHP)', align: 'num', render: x => x.hgab_amount == null ? '—' : money(x.hgab_amount)},
+      {key: 'submission', label: 'NIA submission', sortable: false, render: x => x.submission_label ? <span className="nia-senate-label">{x.submission_label}
+        {x.submission_amount != null && x.nep_amount != null && x.submission_amount !== x.nep_amount && <small>Submission amount {money(x.submission_amount)} differs from NEP</small>}</span> : '—'},
+      {key: 'join', label: 'Ledger join', sortable: false, value: x => x.nep_join?.similarity ?? 0, render: x => <span className="nia-senate-join">
+        {x.nep_join ? <a href={href('nep', {node: x.nep_join.id})}>NEP ↗</a> : 'NEP —'}
+        {' '}{x.house_join ? <a href={href('house', {node: x.house_join.id})}>House ↗</a> : 'House —'}
+        {x.nep_join && x.nep_join.similarity < 1 && <small title="Title similarity of the workbook label to the retained ledger title">sim {(x.nep_join.similarity * 100).toFixed(0)}%</small>}</span>},
+    ]}/>
+  </section>
+  <section className="fmr-section"><h2>Reconciliation by hierarchy category</h2>
+    <p>Each comparison class against the workbook-only category level. Amounts follow the side that carries the
+      money — House for insertions and adjustments, NEP for deletions — so <em>House ledger</em> is the checksum
+      column: insertions + unchanged + increased + decreased must reproduce it per category. Categories come from
+      NIA's Senate workbook and are absent from both annex PDFs.</p>
+    <Table route={route} rows={categoryReconciliationRows(rows)} label="NIA reconciliation by hierarchy category" tableId="senate-category-reconciliation"
+      initialSort={{key: 'house_php', direction: 'desc'}} columns={[
+      {key: 'label', label: 'Category', scope: 'row'},
+      ...RECONCILIATION_CLASSES.map(([key, label, note, side]) => ({
+        key, label, title: note, align: 'num',
+        render: r => <span className="nia-recon-cell"><small>{r[`${key}_count`].toLocaleString()}</small> · {money(r[`${key}_php`])}</span>,
+        value: r => r[`${key}_php`],
+      })),
+      {key: 'house_ledger', label: 'House ledger (PHP)', align: 'num', divider: true,
+        title: 'Checksum: all House-side money in this category',
+        value: r => r.house_php, render: r => money(r.house_php)},
+    ]}/>
+    <p className="fmr-notice">Reading guide: <strong>Unsupported insertions</strong> — House only records (no NEP line).
+      <strong> Deletions</strong> — NEP only records. <strong>Unchanged</strong> — same NEP–HGAB titles, no adjustments.
+      <strong> Increased</strong> — same titles, increased budget. <strong> Decreased</strong> — same titles, decreased budget.
+      The House ledger column equals insertions + unchanged + increased + decreased; deletions carry NEP money.
+      Counts are ledger rows, not distinct projects; repeated titles stay per-row.</p>
+  </section>
+  <section className="fmr-section"><h2>Hierarchy categories (workbook-only dimension)</h2>
+    <p>The workbook prints a category level absent from both annex PDFs. Totals over the current filters.</p>
+    <Table route={route} rows={senateCategoryRows(filtered)} label="NIA Senate workbook categories" columns={[
+      {key: 'label', label: 'Category', scope: 'row'},
+      {key: 'count', label: 'Rows', align: 'num'},
+      {key: 'nep_php', label: 'NEP (PHP)', align: 'num', render: r => money(r.nep_php)},
+      {key: 'house_php', 'label': 'House (PHP)', align: 'num', render: r => money(r.house_php)},
+      {key: 'insertions', label: 'Insertions', align: 'num'},
+    ]}/>
+  </section>
+  <ScopeNote/></>;
+}
+
+function senateCategoryRows(rows) {
+  const groups = new Map();
+  for (const r of rows) {
+    const key = r.category || '(none)';
+    const g = groups.get(key) || {label: key, count: 0, nep_php: 0, house_php: 0, insertions: 0};
+    g.count++; g.nep_php += r.nep_amount || 0; g.house_php += r.hgab_amount || 0;
+    if (r.status === 'house_insertion') g.insertions++;
+    groups.set(key, g);
+  }
+  return [...groups.values()].sort((a, b) => b.house_php - a.house_php);
+}
+
 function Dialog({label, title = label, closeLabel = 'Close', className = '', onClose, children}) {
   const ref = useRef(null);
   useEffect(() => openModalDialog(ref.current), []);

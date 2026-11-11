@@ -16,6 +16,7 @@ datasets contain 828 House rows (₱17,999,305,000) and 791 NEP rows
 | `#nia/analysis?view=overview` | Filtered allocation distribution, allocation shares, and supporting rows |
 | `#nia/analysis?view=stats` | Bands, rounding, repeated amounts, top-ten concentration, supporting rows |
 | `#nia/analysis?view=ai_monitoring` | AI monitoring related project allocations, title-basis filters, stage totals, source records and CSV |
+| `#nia/analysis?view=senate` | NIA's Senate workbook: official insertions, zeroed NEP items, acknowledged edits with justifications, and the workbook-only category hierarchy |
 | `#nia/analysis?view=insertions` | House-only insertion candidates, ranked allocations, group drilldowns |
 | `#nia/analysis?view=deletions` | NEP-only deletion candidates, ranked allocations, group drilldowns |
 | `#nia/analysis?view=adjustments` | Paired House/NEP amount changes, direction filters, group drilldowns |
@@ -196,6 +197,30 @@ context, outside the detailed annex project ledger.
 
 ## Matching and accounting
 
+**Senate workbook layer.** `extract_nia_senate_workbook.py` retains NIA's own
+Senate hearing workbook (`NIA_DATA/…OCTOBER 10….xlsx`, sheet *DETAILS 2027*)
+as `data/senate_nia_dataset.json`: 937 project rows carrying the published
+NEP label/amount, the House GAB amount, NIA's original submission
+label/amount, the edit acknowledgement ("OK") and the free-text
+justification, plus the workbook-only hierarchy levels (category, region,
+province; MARIIS/UPRIIS print as region nodes, region casing is
+canonicalized for grouping only). Invariants asserted by the extractor and
+tests: 791 NEP-funded rows sum to ₱17,598,181,000 with all six sub-program
+controls equal to the printed NEP controls; 828 House-funded rows sum to
+₱17,999,305,000; 145 official insertion rows (House money, no NEP line,
+₱5,742,500,000) and 108 House-zeroed NEP rows; 782 edit acknowledgements and
+94 written justifications. Every funded row joins one-to-one to both
+retained ledgers — exact (sub-program, canonical label, amount) first, then
+maximum-similarity matching inside exactly balanced (sub-program, amount)
+buckets, with method and title similarity retained per row; labels and
+amounts are never rewritten. The workbench attaches the layer as `senate`
+and stamps each comparison row with the referencing `senate_ids`; the
+Analysis → Senate workbook view reports where the official insertion rows
+corroborate the title-matching insertion candidates (132 of the 145 official
+insertions' House rows are `house_only` candidates; the rest are reworded or
+split/merged counterparts). Official workbook status describes print-level
+presence, not a certified insertion or deletion.
+
 Two labeled matching methods share one comparison ledger. **strict** requires
 a canonical title that occurs exactly once on each side within the same
 sub-program: canonicalization case-folds Unicode-normalized text and joins
@@ -234,6 +259,7 @@ tokens, flags, source paths, page references, and evidence-crop names.
 From the repository root:
 
 ```sh
+python analysis-nia/extract_nia_senate_workbook.py
 python analysis-nia/build_nia_workbench.py
 python analysis-nia/build_nia_workbench.py --check
 python -m unittest discover -s analysis-nia/tests -v

@@ -4,6 +4,7 @@ import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {allocationStats, analysisCandidateRows, candidateGroupRows, bandRows, roundingLadder, filterProjects, filterComparisons,
   sourceNode, sourcePath, sourceArithmetic, comparisonRows, candidateAggregates, overviewComparisonRows, overviewGroupRows,
+  comparisonClass, categoryReconciliationRows,
   rowsForMethod, normalizeMatchingMethod, variantMarkLabels, unresolvedMarkKinds, candidateResolution} from './niaModel.js';
 import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringProjects, aiMonitoringReconciliation, concentration, concentrationRows, fundingGroups, fundingSummary, highlightsCards} from './niaAnalysis.js';
 
@@ -274,7 +275,7 @@ test('ambiguity groups partition source-only rows and filters retain analysis po
 test('analysis group rankings conserve row counts and source amounts for both dimensions', () => {
   for (const view of ['insertions', 'deletions', 'adjustments']) {
     const population = analysisCandidateRows(rows, {view});
-    for (const dim of ['subprogram', 'program']) {
+    for (const dim of ['subprogram', 'program', 'category', 'region']) {
       const groups = candidateGroupRows(population, view, dim, data.stages.house.subprograms);
       assert.equal(groups.reduce((s, g) => s + g.count, 0), population.length);
       for (const side of ['nep', 'house']) assert.equal(groups.reduce((s, g) => s + g[`${side}_php`], 0), population.reduce((s, r) => s + (r[`${side}_php`] || 0), 0));
@@ -284,7 +285,7 @@ test('analysis group rankings conserve row counts and source amounts for both di
 });
 test('Overview bands and their record drills conserve filtered source counts and pesos on each side', () => {
   for (const params of [{}, {q:'pump'}, {subprogram:'Other Irrigation System'}]) {
-    for (const dim of ['subprogram','program','overall']) {
+    for (const dim of ['subprogram','program','overall','category','region']) {
       const groups=overviewComparisonRows(rows,params,data.stages.house.subprograms,dim);
       for (const side of ['nep','house']) {
         const projects=filterProjects(data.stages[side].projects,params);
@@ -307,6 +308,27 @@ test('Overview bands and their record drills conserve filtered source counts and
   assert.equal(overviewGroupRows(fixture,{},'subprogram','old')[0].title,'old');
   assert.equal(overviewGroupRows(fixture,{},'subprogram','old')[0].house_id,null);
   assert.equal(overviewGroupRows(fixture,{},'subprogram','new')[0].nep_php,null);
+});
+test('category reconciliation crosstab conserves both ledgers and matches the five comparison classes', () => {
+  // Every comparison row classifies into exactly one of the five classes.
+  const classes = new Set(['insertions','deletions','unchanged','increased','decreased']);
+  for (const r of rows) assert.ok(classes.has(comparisonClass(r)), r.id);
+  const groups = categoryReconciliationRows(rows);
+  assert.ok(groups.length > 1);
+  // Row conservation: per-class counts sum to the class populations.
+  const expected = {insertions: 0, deletions: 0, unchanged: 0, increased: 0, decreased: 0};
+  for (const r of rows) expected[comparisonClass(r)]++;
+  for (const cls of Object.keys(expected))
+    assert.equal(groups.reduce((s, g) => s + g[`${cls}_count`], 0), expected[cls]);
+  // Checksum: House ledger per category equals the four House-side classes.
+  for (const g of groups)
+    assert.equal(g.house_php, g.insertions_php + g.unchanged_php + g.increased_php + g.decreased_php);
+  assert.equal(groups.reduce((s, g) => s + g.house_php, 0),
+    rows.reduce((s, r) => s + (r.house_php || 0), 0));
+  // Stamped workbook hierarchy reaches every ledger row on both stages.
+  for (const side of ['nep', 'house'])
+    assert.equal(data.stages[side].projects.filter(p => p.category).length,
+      data.stages[side].projects.length);
 });
 test('adjustment aggregates retain opposing changes and Compare preserves program and ambiguity scope', () => {
   const population=analysisCandidateRows(rows,{view:'adjustments'});

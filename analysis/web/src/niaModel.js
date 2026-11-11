@@ -137,7 +137,7 @@ export function filterProjects(projects, {q = '', subprogram = '', status = '', 
       : false)) &&
     (minAmount === '' || p.amount_php >= Number(minAmount)) &&
     (maxAmount === '' || p.amount_php < Number(maxAmount)) &&
-    terms.every(t => `${p.title} ${p.subprogram_label} ${p.program_group} ${p.id} ${(p.extraction_flags || []).join(' ')}`.toLocaleLowerCase().includes(t)));
+    terms.every(t => `${p.title} ${p.subprogram_label} ${p.program_group} ${p.category || ''} ${p.region || ''} ${p.province || ''} ${p.id} ${(p.extraction_flags || []).join(' ')}`.toLocaleLowerCase().includes(t)));
 }
 export function comparisonRows(data) {
   const indexes = Object.fromEntries(Object.entries(data.stages).map(([s, d]) => [s, new Map(d.projects.map(p => [p.id, p]))]));
@@ -201,8 +201,8 @@ export function candidateGroupRows(rows, view, dim = 'subprogram', subprograms =
   const labels = new Map(subprograms.map(s => [s.key, s.label]));
   const groups = new Map();
   for (const r of rows) {
-    const key = dim === 'program' ? (r.house || r.nep).program_group : r.subprogram_key;
-    const group = groups.get(key) || {id: key, label: dim === 'program' ? key : labels.get(key) || key,
+    const key = projectGroupId(r.house || r.nep, dim);
+    const group = groups.get(key) || {id: key, label: groupLabel(key, dim, labels),
       count: 0, amount_php: 0, nep_php: 0, house_php: 0, increased_php: 0, decreased_php: 0};
     group.count++;
     group.nep_php += r.nep_php || 0;
@@ -226,8 +226,8 @@ export function overviewComparisonRows(rows, params = {}, subprograms = [], dim 
   for (const side of ['nep', 'house']) {
     const projects = filterProjects(rows.map(r => r[side]).filter(Boolean), params);
     for (const project of projects) {
-      const id = dim === 'overall' ? 'overall' : dim === 'program' ? project.program_group : project.subprogram_key;
-      const group = groups.get(id) || {id, label: dim === 'overall' ? 'All filtered records' : dim === 'program' ? id : labels.get(id) || id,
+      const id = projectGroupId(project, dim);
+      const group = groups.get(id) || {id, label: groupLabel(id, dim, labels),
         nep_count: 0, house_count: 0, nep_php: 0, house_php: 0};
       group[`${side}_count`]++;
       group[`${side}_php`] += project.amount_php;
@@ -238,10 +238,24 @@ export function overviewComparisonRows(rows, params = {}, subprograms = [], dim 
     pct_records: pctChange(g.house_count, g.nep_count), delta_php: g.house_php - g.nep_php,
     pct_alloc: pctChange(g.house_php, g.nep_php)}));
 }
+// Shared id/label resolution for the analysis dimensions. Category and
+// region come from the Senate workbook hierarchy stamped onto ledger rows.
+export function projectGroupId(project, dim) {
+  if (dim === 'overall') return 'overall';
+  if (dim === 'program') return project.program_group;
+  if (dim === 'category') return project.category || '(no category)';
+  if (dim === 'region') return project.region || '(no region)';
+  return project.subprogram_key;
+}
+export function groupLabel(id, dim, subprogramLabels = new Map()) {
+  if (dim === 'overall') return 'All filtered records';
+  if (dim === 'program' || dim === 'category' || dim === 'region') return id;
+  return subprogramLabels.get(id) || id;
+}
 export function overviewGroupRows(rows, params, dim, groupId) {
   const ids = Object.fromEntries(['nep', 'house'].map(side => [side, new Set(
     filterProjects(rows.map(r => r[side]).filter(Boolean), params).filter(p =>
-      dim === 'overall' || (dim === 'program' ? p.program_group : p.subprogram_key) === groupId).map(p => p.id))]));
+      dim === 'overall' || projectGroupId(p, dim) === groupId).map(p => p.id))]));
   return rows.map(row => {
     const nep = ids.nep.has(row.nep?.id) ? row.nep : undefined;
     const house = ids.house.has(row.house?.id) ? row.house : undefined;
@@ -319,4 +333,128 @@ export function provenanceOptionLists(projects) {
   };
   const list = Array.isArray(projects) ? projects.filter(Boolean) : [];
   return {flags: tally(list.flatMap(p => p.extraction_flags || []))};
+}
+
+// ---- Senate workbook layer -------------------------------------------------
+// NIA's own Senate-hearing reconciliation workbook joins one-to-one to both
+// retained ledgers and adds hierarchy, NIA submission titles, edit
+// acknowledgements, justifications, and the official insertion rows. The
+// workbook-only hierarchy levels (category, region, province) are stamped
+// onto every joined ledger row by the builder, so they work as analysis
+// dimensions on both stages like sub-program does.
+export const SENATE_DIMENSIONS = [
+  ['subprogram', 'Sub-program'],
+  ['category', 'Category'],
+  ['region', 'Region'],
+  ['program', 'Program'],
+  ['overall', 'Overall'],
+];
+// Reconciliation classes for the hierarchy-category crosstab: each class
+// pairs the workbench term with the plain ledger evidence behind it.
+export const RECONCILIATION_CLASSES = [
+  ['insertions', 'Unsupported insertions', 'House only records', 'house'],
+  ['deletions', 'Deletions', 'NEP only records', 'nep'],
+  ['unchanged', 'Unchanged', 'Same NEP–HGAB titles, no adjustments', 'house'],
+  ['increased', 'Increased', 'Same titles, increased budget', 'house'],
+  ['decreased', 'Decreased', 'Same titles, decreased budget', 'house'],
+];
+// Classify one comparison row into a reconciliation class.
+export function comparisonClass(row) {
+  if (row.status === 'house_only') return 'insertions';
+  if (row.status === 'nep_only') return 'deletions';
+  if (row.status === 'paired') return row.delta_php === 0 ? 'unchanged' : row.delta_php > 0 ? 'increased' : 'decreased';
+  return null;
+}
+// Crosstab of the five reconciliation classes against the workbook-only
+// hierarchy category. Amounts follow the side that carries the money
+// (House for everything except deletions, which are NEP-only), so the
+// House ledger column equals the sum of the four House-side classes.
+export function categoryReconciliationRows(rows) {
+  const groups = new Map();
+  for (const r of rows) {
+    const cls = comparisonClass(r);
+    if (!cls) continue;
+    const project = r.house || r.nep;
+    const key = project?.category || '(no category)';
+    const g = groups.get(key) || {id: key, label: key, total_count: 0, house_php: 0,
+      insertions_count: 0, insertions_php: 0, deletions_count: 0, deletions_php: 0,
+      unchanged_count: 0, unchanged_php: 0, increased_count: 0, increased_php: 0,
+      decreased_count: 0, decreased_php: 0};
+    g.total_count++;
+    g[`${cls}_count`]++;
+    g[`${cls}_php`] += cls === 'deletions' ? (r.nep_php || 0) : (r.house_php || 0);
+    g.house_php += r.house_php || 0;
+    groups.set(key, g);
+  }
+  return [...groups.values()].sort((a, b) => b.house_php - a.house_php || a.label.localeCompare(b.label));
+}
+// Resolve a dimension key to the printed group label of one project.
+export function projectGroupLabel(project, dim) {
+  if (dim === 'overall') return 'All filtered records';
+  if (dim === 'program') return project.program_group;
+  if (dim === 'category') return project.category || '(no category)';
+  if (dim === 'region') return project.region || '(no region)';
+  return project.subprogram_label;
+}
+// Distinct category and region values across a project population, in
+// descending allocation order — the option lists for the new selectors.
+export function categoryOptions(projects) {
+  return distinctGroupOptions(projects, 'category');
+}
+export function regionOptions(projects) {
+  return distinctGroupOptions(projects, 'region');
+}
+function distinctGroupOptions(projects, field) {
+  const groups = new Map();
+  for (const p of projects) {
+    const key = p[field];
+    if (!key) continue;
+    const entry = groups.get(key) || {key, total: 0};
+    entry.total += p.amount_php;
+    groups.set(key, entry);
+  }
+  return [...groups.values()].sort((a, b) => b.total - a.total || a.key.localeCompare(b.key));
+}
+export const senateStatusLabels = {
+  both_funded: 'NEP and House funded',
+  house_insertion: 'House insertion (no NEP line)',
+  house_zeroed: 'NEP item zeroed by the House',
+  unfunded: 'Printed without funding',
+};
+export function senateProjects(data) {
+  return data.senate?.projects || [];
+}
+// Filter workbook rows by status, sub-program, search and amount range. The
+// NEP amount drives the amount filters; insertion rows keep their House
+// amount visible in the table.
+export function filterSenateProjects(projects, {q = '', subprogram = '', status = '', minAmount = '', maxAmount = ''} = {}) {
+  const terms = q.toLocaleLowerCase().trim().split(/\s+/).filter(Boolean);
+  return projects.filter(p =>
+    (!subprogram || p.subprogram_key === subprogram) &&
+    (!status || p.status === status) &&
+    (minAmount === '' || (p.nep_amount ?? 0) >= Number(minAmount)) &&
+    (maxAmount === '' || (p.nep_amount ?? 0) < Number(maxAmount)) &&
+    terms.every(t => `${p.label} ${p.subprogram_label} ${p.program_group} ${p.category || ''} ${p.region || ''} ${p.province || ''} ${p.submission_label || ''} ${p.justification || ''}`.toLocaleLowerCase().includes(t)));
+}
+export function senateStats(projects) {
+  const of = status => projects.filter(p => p.status === status);
+  const insertions = of('house_insertion'), zeroed = of('house_zeroed');
+  return {
+    rows: projects.length,
+    insertions: insertions.length,
+    insertions_php: insertions.reduce((s, p) => s + (p.hgab_amount || 0), 0),
+    zeroed: zeroed.length,
+    zeroed_php: zeroed.reduce((s, p) => s + (p.nep_amount || 0), 0),
+    edited: projects.filter(p => p.submission_edited).length,
+    justified: projects.filter(p => p.justification).length,
+  };
+}
+// Index the comparison ledger by (nep_id, house_id) so workbook rows joined
+// to both stages can show where the provisional title matching agrees.
+export function senateComparisonIndex(data) {
+  const map = new Map();
+  for (const row of data.comparison || []) {
+    if (row.nep_id && row.house_id) map.set(`${row.nep_id}\u0000${row.house_id}`, row);
+  }
+  return map;
 }

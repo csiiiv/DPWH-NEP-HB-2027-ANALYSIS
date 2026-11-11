@@ -414,6 +414,64 @@ def load_nep():
     }
 
 
+def load_senate():
+    """Load the retained Senate reconciliation workbook layer.
+
+    extract_nia_senate_workbook.py joins every workbook row one-to-one to both
+    retained ledgers; this loader re-validates that join and returns the stage
+    plus a join index for attaching senate context to comparison rows.
+    """
+    dataset = read(DATA / 'senate_nia_dataset.json')
+    meta = dataset['meta']
+    if not meta.get('all_controls_reconciled'):
+        raise ValueError('Senate workbook dataset reports unreconciled controls')
+    counts = meta['counts']
+    if counts['nep_joined'] != counts['nep_funded'] or counts['house_joined'] != counts['house_funded']:
+        raise ValueError('Senate workbook join is incomplete; rerun extract_nia_senate_workbook.py')
+    projects = dataset['projects']
+    if len({p['id'] for p in projects}) != len(projects):
+        raise ValueError('Senate dataset has duplicate row ids')
+    # One-to-one: each ledger id may be referenced by at most one row.
+    for side in ('nep', 'house'):
+        ids = [p[f'{side}_join']['id'] for p in projects if p.get(f'{side}_join')]
+        if len(ids) != len(set(ids)):
+            raise ValueError(f'Senate {side} join is not one-to-one')
+    subprograms = []
+    for control in dataset['subprogram_controls']:
+        subprograms.append({
+            'id': f"sen:{control['key']}", 'key': control['key'],
+            'label': control['label'], 'amount_php': control['nep_amount'],
+            'project_count': control['count_nep'],
+            'program_group': control['program_group'],
+            'source': {'source_xlsx': meta['source_workbook'], 'sheet': meta['sheet'],
+                       'row': control['row']},
+        })
+    return {
+        'key': 'senate', 'label': 'NIA Senate workbook',
+        'description': 'NIA Senate hearing reconciliation workbook · six-level '
+                       'hierarchy with NIA submission titles, edit acknowledgements '
+                       'and justifications',
+        'root': {'id': 'sen:root', 'label': 'FY 2027 Irrigation Program (Senate workbook)'},
+        'subprograms': subprograms,
+        'projects': projects,
+        'audit_summary': {
+            'rows': counts['rows'],
+            'nep_funded': counts['nep_funded'],
+            'house_funded': counts['house_funded'],
+            'house_insertions': counts['house_insertions'],
+            'house_zeroed': counts['house_zeroed'],
+            'submission_edited': counts['submission_edited'],
+            'justified': counts['justified'],
+            'nep_joined': counts['nep_joined'],
+            'house_joined': counts['house_joined'],
+            'all_controls_reconciled': True,
+        },
+        'metadata': meta,
+        'provenance': {'analysis-nia/data/senate_nia_dataset.json':
+                       hashlib.sha256((DATA / 'senate_nia_dataset.json').read_bytes()).hexdigest()},
+    }
+
+
 def mark_review_metadata(stage):
     """Flag exact repeated titles and numeric title tokens per stage.
 
@@ -741,6 +799,43 @@ def build(write_output=True):
                        'printed_page': c['source']['printed_page']},
         })
 
+    # Attach the Senate workbook layer (extract_nia_senate_workbook.py). The
+    # workbook is NIA's own reconciliation for the Senate hearings; its rows
+    # join one-to-one to both ledgers and add hierarchy, submission titles,
+    # edit acknowledgements, justifications, and official insertion rows.
+    senate = load_senate()
+    senate_by_ledger_id = {}
+    for p in senate['projects']:
+        for side in ('nep', 'house'):
+            join = p.get(f'{side}_join')
+            if join:
+                senate_by_ledger_id[join['id']] = p
+    for row in rows:
+        attached = []
+        for side in ('nep', 'house'):
+            ref = senate_by_ledger_id.get(row.get(f'{side}_id'))
+            if ref:
+                attached.append(ref['id'])
+        if attached:
+            row['senate_ids'] = attached
+    # Stamp the workbook-only hierarchy levels onto every ledger row it joins,
+    # so Category/Region/Province become analysis dimensions on both stages.
+    # Labels stay per-row provenance; only the joined workbook supplies them.
+    for stage_key, side in (('house', 'house'), ('nep', 'nep')):
+        stage = house if stage_key == 'house' else nep
+        stamped = 0
+        for project in stage['projects']:
+            wb_row = senate_by_ledger_id.get(project['id'])
+            if not wb_row:
+                continue
+            project['category'] = wb_row['category']
+            project['region'] = wb_row['region_canonical']
+            project['province'] = wb_row['province']
+            stamped += 1
+        if stamped != len(stage['projects']):
+            raise ValueError(f'{stage_key}: only {stamped} of {len(stage["projects"])} rows '
+                             'carry workbook hierarchy; rerun extract_nia_senate_workbook.py')
+
     # Attach the AI-assisted geolocation layer (extract_nia_geolocation.py →
     # build_nia_geolocation_map.py). One location record per comparison row,
     # joined by comparison id; the layer is a review aid, never a ledger.
@@ -771,6 +866,7 @@ def build(write_output=True):
         'schema_version': 1,
         'fiscal_year': 2027,
         'stages': {'house': house, 'nep': nep},
+        'senate': senate,
         'comparison': rows,
         'geolocation': geolocation_layer,
         'subprogram_controls': subprogram_controls,
@@ -808,6 +904,12 @@ def build(write_output=True):
                 'label': 'DBM NEP · standalone NIA annex',
                 'pages': '30 pages, scanned',
                 'page_count': 30,
+            },
+            'senate': {
+                'path': 'NIA_DATA/NIA%20FY%202027%20NEP%20OCTOBER%2010%201043PM.xlsx',
+                'label': 'NIA · Senate hearing workbook (October 10)',
+                'pages': 'sheet "DETAILS 2027" · 2,714 rows',
+                'page_count': None,
             },
         },
     }

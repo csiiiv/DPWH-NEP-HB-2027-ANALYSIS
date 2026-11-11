@@ -106,7 +106,7 @@ def main():
                     expect(overview_records).to_have_count(0)
                     goto('analysis')
                     assert page.get_by_role('navigation', name='Analysis views').locator('a').all_text_contents() == [
-                        'Overview', 'Unsupported insertions', 'Deletions', 'Adjustments', 'Statistics', 'AI monitoring', 'Candidates', 'Agency controls']
+                        'Overview', 'Unsupported insertions', 'Deletions', 'Adjustments', 'Statistics', 'AI monitoring', 'Senate workbook', 'Candidates', 'Agency controls']
                     expect(page.get_by_label('Analysis budget source', exact=True)).to_have_value('nep')
                     expect(page.get_by_role('region', name='NIA allocation overview', exact=True)).to_contain_text('Allocation share')
                     page.get_by_label('Analysis budget source', exact=True).select_option('house')
@@ -228,6 +228,75 @@ def main():
                     expect(ai_pages).to_contain_text('268 rows')
                     page.get_by_role('navigation', name='Analysis views').get_by_role('link', name='Overview', exact=True).click()
                     assert 'aiBasis=' not in page.url
+
+                    goto('analysis?view=senate')
+                    expect(page.get_by_role('link', name='Senate workbook', exact=True)).to_have_attribute('aria-current', 'page')
+                    expect(page.locator('main')).to_contain_text("NIA's own hearing workbook")
+                    senate_stats = page.locator('.fmr-stats').first
+                    expect(senate_stats).to_contain_text('937')
+                    expect(senate_stats).to_contain_text('145')
+                    expect(senate_stats).to_contain_text('₱5,742,500,000')
+                    expect(senate_stats).to_contain_text('108')
+                    expect(senate_stats).to_contain_text('94 rows carry a written justification')
+                    # The default view lists the official insertion rows.
+                    expect(page.locator('.fmr-result-bar span').first).to_contain_text('145 rows shown')
+                    first_senate = page.locator('.sortable-table tbody tr').first
+                    expect(first_senate).to_contain_text('House insertion (no NEP line)')
+                    # View selector: all rows, then filter by workbook status.
+                    page.get_by_label('Senate workbook view', exact=True).select_option('all')
+                    expect(page.locator('.fmr-result-bar span').first).to_contain_text('937 rows shown')
+                    page.get_by_label('Senate workbook status', exact=True).select_option('house_zeroed')
+                    expect(page.locator('.fmr-result-bar span').first).to_contain_text('108 rows shown')
+                    with page.expect_download() as result:
+                        page.get_by_role('button', name='Export filtered CSV', exact=True).click()
+                    exported = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
+                    assert len(exported) == 108
+                    assert all(x['status'] == 'house_zeroed' and int(x['nep_amount']) > 0 for x in exported)
+                    assert sum(int(x['nep_amount']) for x in exported) == 4311376000
+                    page.get_by_role('button', name='Clear filters', exact=True).click()
+                    # Clear filters resets search/sub-program/status but keeps
+                    # the workbook view selector (all); wait for it to land.
+                    expect(page.locator('.fmr-result-bar span').first).to_contain_text('937 rows shown', timeout=60000)
+                    # Search reaches justification text.
+                    page.get_by_label('Search', exact=True).fill('latest site validation')
+                    expect(page.locator('.fmr-result-bar span').first).to_contain_text(' rows shown', timeout=60000)
+                    page.get_by_role('button', name='Clear filters', exact=True).click()
+                    expect(page.get_by_label('Search', exact=True)).to_have_value('', timeout=60000)
+                    expect(page.locator('.fmr-result-bar span').first).to_contain_text('937 rows shown', timeout=60000)
+                    # Back to the default insertion view via the selector.
+                    page.get_by_label('Senate workbook view', exact=True).select_option('insertions')
+                    expect(page.locator('.fmr-result-bar span').first).to_contain_text('145 rows shown')
+                    # The category table is a workbook-only dimension.
+                    expect(page.get_by_role('region', name='NIA Senate workbook categories', exact=True)).to_contain_text('Repair of National Irrigation Systems')
+                    # Reconciliation crosstab: five comparison classes against the
+                    # workbook-only category level, with the House ledger checksum.
+                    recon = page.get_by_role('region', name='NIA reconciliation by hierarchy category', exact=True)
+                    expect(recon.locator('tbody tr')).to_have_count(15)
+                    expect(recon).to_contain_text('Establishment of Pump Irrigation Projects')
+                    # Per-category cells: count · peso for each class.
+                    expect(recon).to_contain_text('78 · ₱2,181,000,000')
+                    expect(recon).to_contain_text('54 · ₱1,230,000,000')
+                    expect(recon).to_contain_text('274 · ₱5,985,950,000')
+                    # Pump repair swapped sides: NEP ₱2.75B removed, House ₱460M total.
+                    expect(recon).to_contain_text('11 · ₱2,750,000,000')
+                    # Malinao Dam is NEP-only: deletions carry its full amount.
+                    expect(recon).to_contain_text('1 · ₱490,676,000')
+                    expect(recon).to_contain_text('₱8,466,950,000')
+                    # Checksum identity holds per category row.
+                    rows_data = page.evaluate("""() => {
+                      const cells = document.querySelectorAll('#table-senate-category-reconciliation tbody tr');
+                      return [...cells].map(tr => {
+                        const money = s => Number((s.match(/₱([\d,]+)/)?.[1] || '0').replace(/,/g, ''));
+                        const grab = label => [...tr.querySelectorAll('td[data-label]')].find(td => td.dataset.label === label)?.textContent || '';
+                        return {insertions: money(grab('Unsupported insertions')), deletions: money(grab('Deletions')),
+                          unchanged: money(grab('Unchanged')), increased: money(grab('Increased')),
+                          decreased: money(grab('Decreased')), house: money(grab('House ledger (PHP)'))};
+                      });
+                    }""")
+                    for row in rows_data:
+                        assert row['house'] == row['insertions'] + row['unchanged'] + row['increased'] + row['decreased'], row
+                    assert sum(r['house'] for r in rows_data) == 17999305000
+                    page.screenshot(path=str(captures / f'analysis-senate-{width}.png'))
 
                     goto('analysis?view=candidates')
                     funding = page.get_by_role('region', name='NIA funding reconciliation', exact=True)

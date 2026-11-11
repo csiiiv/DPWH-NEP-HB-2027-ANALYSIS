@@ -68,3 +68,18 @@
   .nia-distribution-row .fmr-bar-track { grid-column:1/-1; grid-row:2; }
   .nia-distribution-row small { grid-column:1/-1; }
 }
+
+/* Senate workbook view */
+.nia-senate-label { display:flex; flex-direction:column; gap:2px; max-width:360px; }
+.nia-senate-label small { color:var(--muted, #6b7280); font-weight:400; }
+.nia-senate-label .nia-justification { font-style:italic; }
+.nia-senate-join { display:inline-flex; align-items:center; gap:6px; }
+.nia-senate-join small { color:var(--muted, #6b7280); }
+/* Reconciliation crosstab cells: "count · money" on one line, numeric. */
+.nia-recon-cell { display:inline-flex; align-items:baseline; gap:6px; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.nia-recon-cell small { color:var(--muted, #6b7280); min-width:3.5ch; text-align:right; }
+.nia-senate-house_insertion { background:#fee2e2; color:#991b1b; }
+.nia-senate-house_zeroed { background:#fef3c7; color:#92400e; }
+.nia-senate-both_funded { background:#f3f4f6; color:#374151; }
+.nia-senate-unfunded { background:#f3f4f6; color:#6b7280; }
+.nia-method-note { font-size:14px; color:var(--muted, #6b7280); }
