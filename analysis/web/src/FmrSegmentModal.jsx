@@ -5,6 +5,7 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import {openModalDialog} from './modalLifecycle.js';
 import {routeHref} from './routes.js';
 import {STAGE_COLORS} from './fmrMapModel.js';
+import {geoagriForProject, geoagriLineFeatures, loadGeoagriBundle} from './geoagriGeometry.js';
 import {
   REPAIR_COLOR, fmrRecordMapOverlay, fmrRecordRepairOverlay, overlayFrameCoordinates,
 } from './fmrSegmentOverlay.js';
@@ -16,12 +17,17 @@ const LINES = 'congress-fmr-record-lines';
 const POINTS = 'congress-fmr-record-points';
 const HALO = 'congress-fmr-record-halo';
 const HOUSE = 'congress-fmr-record-house';
+const DA = 'congress-fmr-record-da';
 const NEP = 'congress-fmr-record-nep';
 const DOTS = 'congress-fmr-record-dots';
 const REPAIR_LINES = 'congress-fmr-record-repair-lines';
 const REPAIR_LINKS = 'congress-fmr-record-repair-links';
 const REPAIR_DOTS = 'congress-fmr-record-repair-dots';
 const REPAIR_LAYERS = [REPAIR_LINES, REPAIR_LINKS, REPAIR_DOTS];
+// GEOAGRI surveyed alignment (green) under the source geometry.
+const GEOAGRI_SRC = 'congress-fmr-record-geoagri';
+const GEOAGRI_LINE = 'congress-fmr-record-geoagri-line';
+export const GEOAGRI_COLOR = '#15803d';
 const km = value => Number.isFinite(value)
   ? `${value.toLocaleString('en-PH', {maximumFractionDigits: 2})} km` : '—';
 const money = value => Number.isFinite(value)
@@ -48,6 +54,15 @@ function addOverlay(instance, overlay, repair) {
     id: HOUSE, type: 'line', source: LINES,
     filter: ['==', ['get', 'stage'], 'house'],
     paint: {'line-color': STAGE_COLORS.house, 'line-width': 6, 'line-opacity': 0.9},
+    layout: {'line-cap': 'round', 'line-join': 'round'},
+  });
+  // Amber dashed DA draft sits over House so a House→DA coordinate correction
+  // stays readable when the endpoints move, and still peeks through when they match.
+  if (!instance.getLayer(DA)) instance.addLayer({
+    id: DA, type: 'line', source: LINES,
+    filter: ['==', ['get', 'stage'], 'da'],
+    paint: {'line-color': STAGE_COLORS.da, 'line-width': 4,
+      'line-dasharray': [1.2, 1.2], 'line-opacity': 0.95},
     layout: {'line-cap': 'round', 'line-join': 'round'},
   });
   // A narrower dashed NEP line keeps both stages visible when exact candidate
@@ -107,6 +122,46 @@ function setFrame(instance, coordinates) {
   instance.fitBounds(bounds, {padding: 55, maxZoom: 15, duration: 0});
 }
 
+/** Draw the GEOAGRI surveyed alignment(s) beneath the source geometry. */
+function addGeoagriOverlay(instance, entries, visible) {
+  const features = entries.flatMap(({stage, entry}) => {
+    const fc = geoagriLineFeatures(entry);
+    return fc ? fc.features.map(f => ({
+      ...f,
+      properties: {...f.properties, stage, source: 'geoagri'},
+    })) : [];
+  });
+  if (!features.length) {
+    if (instance.getLayer(GEOAGRI_LINE)) instance.setLayoutProperty(GEOAGRI_LINE, 'visibility', 'none');
+    return;
+  }
+  const data = {type: 'FeatureCollection', features};
+  if (!instance.getSource(GEOAGRI_SRC)) {
+    instance.addSource(GEOAGRI_SRC, {type: 'geojson', data});
+  } else {
+    instance.getSource(GEOAGRI_SRC).setData(data);
+  }
+  if (!instance.getLayer(GEOAGRI_LINE)) {
+    // Green solid surveyed path under everything else.
+    instance.addLayer({
+      id: GEOAGRI_LINE,
+      type: 'line',
+      source: GEOAGRI_SRC,
+      // Insert below the white halo so source stages stay dominant.
+      beforeId: HALO,
+      paint: {
+        'line-color': ['case',
+          ['==', ['get', 'tier'], 'strong'], GEOAGRI_COLOR,
+          '#65a30d'],
+        'line-width': 4,
+        'line-opacity': 0.9,
+      },
+      layout: {'line-cap': 'round', 'line-join': 'round'},
+    });
+  }
+  instance.setLayoutProperty(GEOAGRI_LINE, 'visibility', visible ? 'visible' : 'none');
+}
+
 export default function FmrSegmentModal({record, onClose}) {
   const dialog = useRef(null);
   const container = useRef(null);
@@ -117,6 +172,15 @@ export default function FmrSegmentModal({record, onClose}) {
   const [includePrintedInFrame, setIncludePrintedInFrame] = useState(false);
   const overlay = useMemo(() => fmrRecordMapOverlay(record), [record]);
   const repair = useMemo(() => fmrRecordRepairOverlay(record), [record]);
+  // GEOAGRI surveyed alignments for every stage present in this record.
+  const [geoagriBundle, setGeoagriBundle] = useState(null);
+  const [showGeoagri, setShowGeoagri] = useState(true);
+  const geoagriEntries = useMemo(() => {
+    if (!geoagriBundle) return [];
+    return overlay.stages
+      .map(({key, project}) => ({stage: key, entry: geoagriForProject(geoagriBundle, key, project)}))
+      .filter(({entry}) => entry && geoagriLineFeatures(entry));
+  }, [geoagriBundle, overlay.stages]);
   const drawable = overlay.lines.features.length || overlay.points.features.length;
   const fullMapParams = record.status === 'paired'
     ? {pair: record.id}
@@ -128,6 +192,15 @@ export default function FmrSegmentModal({record, onClose}) {
     {includePrinted: includePrintedInFrame}), [overlay, repair, includePrintedInFrame]);
 
   useEffect(() => openModalDialog(dialog.current), []);
+  // Load the GEOAGRI bundle lazily (only when a modal opens); failures simply
+  // leave the surveyed-alignment overlay off.
+  useEffect(() => {
+    const controller = new AbortController();
+    loadGeoagriBundle(controller.signal)
+      .then(setGeoagriBundle)
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
   useEffect(() => {
     if (!container.current || !drawable) return undefined;
     let loaded = false;
@@ -143,6 +216,7 @@ export default function FmrSegmentModal({record, onClose}) {
     instance.on('load', () => {
       loaded = true;
       addOverlay(instance, overlay, repair);
+      addGeoagriOverlay(instance, geoagriEntries, showGeoagri);
       setFrame(instance, frame);
       instance.resize();
       setReady(true);
@@ -164,6 +238,20 @@ export default function FmrSegmentModal({record, onClose}) {
       }
     }
   }, [showPrinted, ready]);
+
+  // Add/update the GEOAGRI surveyed-alignment layer once the bundle resolves
+  // (it may arrive after the map finished loading).
+  useEffect(() => {
+    const instance = map.current;
+    if (!instance || !ready || !geoagriEntries.length) return;
+    addGeoagriOverlay(instance, geoagriEntries, showGeoagri);
+  }, [geoagriEntries, ready]);
+
+  useEffect(() => {
+    const instance = map.current;
+    if (!instance || !ready || !instance.getLayer(GEOAGRI_LINE)) return;
+    instance.setLayoutProperty(GEOAGRI_LINE, 'visibility', showGeoagri ? 'visible' : 'none');
+  }, [showGeoagri, ready]);
 
   const refit = useCallback(() => {
     if (map.current && ready) setFrame(map.current, frame);
@@ -191,6 +279,16 @@ export default function FmrSegmentModal({record, onClose}) {
       {repair.hasRepairs && showPrinted && <span>
         <i style={{background: REPAIR_COLOR}} />
         <strong>Printed before repair</strong> · dashed, linked to the accepted position
+      </span>}
+      {geoagriEntries.length > 0 && <span>
+        <i style={{background: GEOAGRI_COLOR}} />
+        <strong>GEOAGRI surveyed alignment</strong>
+        {' '}· {geoagriEntries.map(({entry}) => `${entry.proposal.fmrcode} (${entry.tier})`).join(', ')}
+        {' '}· <label style={{display: 'inline-flex', gap: 4, alignItems: 'center'}}>
+          <input type="checkbox" checked={showGeoagri}
+            onChange={event => setShowGeoagri(event.target.checked)} />
+          show
+        </label>
       </span>}
     </div>
     {drawable ? <div className="congress-fmr-map-shell">
@@ -238,10 +336,13 @@ export default function FmrSegmentModal({record, onClose}) {
         whole printed section. Both are straight-line distances, not road lengths.</p>
     </section>}
 
-    <p className="fmr-muted">Solid blue shows House geometry; dashed teal shows NEP geometry.
+    <p className="fmr-muted">Solid blue shows House geometry; dashed amber shows DA working-draft geometry; dashed teal shows NEP geometry.
       Dots are retained reviewed source points.
       {repair.hasRepairs && <> Red dashed geometry is the printed pre-repair reading, linked to
         the accepted position by a dashed connector.</>}
+      {geoagriEntries.length > 0 && <> Green solid lines are the GEOAGRI-surveyed alignment for
+        the matched proposal ({geoagriEntries.map(({entry}) => entry.proposal.fmrcode).join(', ')}),
+        fetched from the BAFE GEOAGRI API; darker green is a strong match, olive is possible.</>}
       {' '}Segment lines show straight endpoint connections, not surveyed road alignment.</p>
     <div className="fmr-dialog-actions">
       <a className="secondary" href={routeHref('map', fullMapParams, 'fmr')}>Open in the full FMR map →</a>

@@ -1,5 +1,5 @@
 import React, {lazy, Suspense, useEffect, useMemo, useRef, useState} from 'react';
-import {Map as MapLibreMap, NavigationControl, ScaleControl, LngLatBounds, setWorkerUrl} from 'maplibre-gl';
+import {Map as MapLibreMap, Popup as MapLibrePopup, NavigationControl, ScaleControl, LngLatBounds, setWorkerUrl} from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import {openModalDialog} from './modalLifecycle.js';
@@ -19,12 +19,17 @@ import {
   MAP_OBJECT_OPTIONS, DEFAULT_MAP_OBJECTS,
   buildMapOverlay, filterOverlayByObjects, stackForFeature, drawableSegments, pointCoordinates,
 } from './fmrMapModel.js';
+import {geoagriForProject, geoagriLineFeatures, loadGeoagriBundle} from './geoagriGeometry.js';
 import './FmrMap.css';
 import './Fmr.css';
 
 const PdfPreview = lazy(() => import('./PdfPreview.jsx'));
 
 setWorkerUrl(workerUrl);
+
+export const GEOAGRI_COLOR = '#15803d';
+const GEOAGRI_SOURCE_ID = 'fmr-geoagri-source';
+const GEOAGRI_LINE_ID = 'fmr-geoagri-line';
 
 const STYLES = {
   light: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
@@ -163,6 +168,25 @@ function syncLayers(instance, overlay) {
   ensure(DEC_ID, {type: 'geojson', data: decreases, generateId: false});
   ensure(MULTI_ID, {type: 'geojson', data: multis || {type: 'FeatureCollection', features: []}, generateId: false});
   ensure(FLAGS_ID, {type: 'geojson', data: flags || {type: 'FeatureCollection', features: []}, generateId: false});
+  ensure(GEOAGRI_SOURCE_ID, {type: 'geojson', data: overlay.geoagri || {type: 'FeatureCollection', features: []}, generateId: false});
+  if (!instance.getLayer(GEOAGRI_LINE_ID)) {
+    instance.addLayer({
+      id: GEOAGRI_LINE_ID, type: 'line', source: GEOAGRI_SOURCE_ID,
+      // Surveyed alignment under the printed chords: dark green strong match,
+      // olive possible match.
+      paint: {
+        'line-color': ['case', ['==', ['get', 'tier'], 'strong'], GEOAGRI_COLOR, '#65a30d'],
+        'line-width': ['interpolate', ['linear'], ['zoom'], 4, 1.2, 8, 2.4, 12, 4.5],
+        'line-opacity': 0.85,
+      },
+      layout: {'line-cap': 'round', 'line-join': 'round'},
+    }, HALO_ID);
+  }
+  if (overlay.geoagriVisible === false && instance.getLayer(GEOAGRI_LINE_ID)) {
+    instance.setLayoutProperty(GEOAGRI_LINE_ID, 'visibility', 'none');
+  } else if (instance.getLayer(GEOAGRI_LINE_ID)) {
+    instance.setLayoutProperty(GEOAGRI_LINE_ID, 'visibility', 'visible');
+  }
   if (!instance.getLayer(HALO_ID)) {
     instance.addLayer({
       id: HALO_ID, type: 'line', source: SOURCE_ID,
@@ -436,6 +460,42 @@ export default function FmrMap({data, route}) {
   );
   const provenance = useMemo(() => provenanceOptionLists(allProjects), [allProjects]);
   const overlay = useMemo(() => filterOverlayByObjects(buildMapOverlay(data, filters), objects), [data, filters, objects]);
+
+  // GEOAGRI surveyed alignments: loaded lazily from the published bundle and
+  // attached to the same filtered project scope as the printed chords.
+  const [geoagriBundle, setGeoagriBundle] = useState(null);
+  const [showGeoagri, setShowGeoagri] = useState(true);
+  useEffect(() => {
+    const controller = new AbortController();
+    loadGeoagriBundle(controller.signal).then(setGeoagriBundle).catch(() => {});
+    return () => controller.abort();
+  }, []);
+  const geoagriOverlay = useMemo(() => {
+    if (!geoagriBundle || !showGeoagri) return {features: [], byKey: new Map()};
+    const rows = comparisonRows(data);
+    const features = [];
+    const byKey = new Map();
+    const seen = new Set();
+    for (const row of rows) {
+      for (const [stage, project] of [['nep', row.nep], ['house', row.house]]) {
+        if (!project) continue;
+        const entry = geoagriForProject(geoagriBundle, stage, project);
+        if (!entry || seen.has(entry.proposal.id)) continue;
+        seen.add(entry.proposal.id);
+        const fc = geoagriLineFeatures(entry);
+        if (!fc) continue;
+        for (const feature of fc.features) {
+          features.push(feature);
+          byKey.set(feature.id, {entry, project, stage});
+        }
+      }
+    }
+    return {features, byKey};
+  }, [geoagriBundle, showGeoagri, data, filters]);
+  overlay.geoagri = geoagriOverlay.features.length
+    ? {type: 'FeatureCollection', features: geoagriOverlay.features}
+    : null;
+  overlay.geoagriVisible = showGeoagri;
   overlayRef.current = overlay;
   const stack = selected ? stackForFeature(['red_flag','coordinate_review'].includes(selected.properties.objectKind) ? overlay.flags : overlay.selectionLines, selected) : [];
   const active = stack[stackIndex] || selected;
@@ -499,6 +559,24 @@ export default function FmrMap({data, route}) {
       instance.on('mouseenter', id, () => {instance.getCanvas().style.cursor = 'pointer';});
       instance.on('mouseleave', id, () => {instance.getCanvas().style.cursor = '';});
     }
+
+    // GEOAGRI surveyed alignments: hover tooltip only (selection model is
+    // built around workbench segments; the surveyed path is context).
+    instance.on('mouseenter', GEOAGRI_LINE_ID, e => {
+      instance.getCanvas().style.cursor = 'help';
+      const f = e.features?.[0];
+      if (!f) return;
+      const lines = f.properties.lines ?? null;
+      new MapLibrePopup({closeButton: false, offset: 6})
+        .setLngLat(e.lngLat)
+        .setHTML(`<strong>GEOAGRI surveyed alignment</strong><br>${f.properties.fmrcode || ''} · ${f.properties.tier} match<br>${f.properties.roadName || ''}`)
+        .addTo(instance);
+    });
+    instance.on('mouseleave', GEOAGRI_LINE_ID, () => {
+      instance.getCanvas().style.cursor = '';
+      const popups = document.querySelectorAll('.maplibregl-popup');
+      popups.forEach(p => p.remove());
+    });
     map.current = instance;
     return () => {instance.remove(); map.current = null; setReady(false);};
   }, []);
@@ -594,6 +672,11 @@ export default function FmrMap({data, route}) {
     {(filters.project || filters.pair) && <p className="fmr-notice">Showing map records for {filters.project || filters.pair}. <button onClick={clearFilters}>Show all projects</button>{!overlay.lines.features.length && !overlay.flags.features.length && ' No mappable coordinates are available for this record.'}</p>}
     <div className="fmr-result-bar"><span>{overlay.summary.drawn.toLocaleString()} overlays · {overlay.summary.visible_markers.toLocaleString()} markers · {overlay.summary.paired.toLocaleString()} paired · {overlay.summary.offset.toLocaleString()} offset · {(overlay.summary.visible_hubs ?? overlay.summary.hubs).toLocaleString()} shared · {(overlay.summary.visible_increases ?? overlay.summary.increases).toLocaleString()} ↑ · {(overlay.summary.visible_decreases ?? overlay.summary.decreases).toLocaleString()} ↓ · {(overlay.summary.visible_multis ?? overlay.summary.multis).toLocaleString()} multi · {(overlay.summary.visible_flags ?? overlay.summary.flags).toLocaleString()} red flags · {(overlay.summary.visible_reviews ?? overlay.summary.reviews).toLocaleString()} unresolved reviews · {overlay.summary.candidates.toLocaleString()} candidates · {filters.coordBasis === 'normalized' ? 'normalized' : 'reviewed'}</span>
       <span className="fmr-map-controls"><label>Basemap<select aria-label="Basemap style" value={style} onChange={e => setStyle(e.target.value)}><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      <label className="fmr-map-legend" title="GEOAGRI surveyed road alignments matched to these projects">
+        <input type="checkbox" checked={showGeoagri} onChange={e => setShowGeoagri(e.target.checked)}/>
+        <span style={{display:'inline-block',width:18,height:3,background:GEOAGRI_COLOR,borderRadius:2,marginRight:4,verticalAlign:'middle'}}/>
+        GEOAGRI surveyed{geoagriOverlay.features.length ? ` (${new Set(geoagriOverlay.features.map(f => f.properties.geoagriId)).size})` : ''}
+      </label>
       {[['nep','NEP only'],['house','House-only unsupported insertion candidates'],['paired','Candidate pair'],['shared','Shared location'],
         ['increase','Increase'],['decrease','Decrease'],['multi','Segment count'],['flag','Analytical red flags'],['review','Unresolved review']].map(([kind,label]) =>
         <span key={kind} className="fmr-map-legend"><MarkerIcon kind={kind}/>{label}</span>)}
@@ -611,7 +694,8 @@ export default function FmrMap({data, route}) {
         onProvenance={setProvenanceProject}
       />}
     </div>
-    <p className="fmr-muted">Purple lines are exact-coordinate candidate pairs drawn once. Unmatched overlaps offset ~45&nbsp;m with a shared pair marker on the true midpoint. Reviewed is the accepted geometry (including PSGC-supported off-by-one digit repairs). Normalized undoes those repairs so you can compare the pre-review printed pairs. Numbered badges show the project’s segment count. Red flags show analytical review leads using the Analysis thresholds. Magnifying glasses identify unresolved coordinate reviews, including single-point records. Endpoint spans and allocation-per-meter proxies are screening measures, not measured road lengths or construction unit costs.</p>
+    <p className="fmr-muted">Purple lines are exact-coordinate candidate pairs drawn once. Unmatched overlaps offset ~45&nbsp;m with a shared pair marker on the true midpoint. Reviewed is the accepted geometry (including PSGC-supported off-by-one digit repairs). Normalized undoes those repairs so you can compare the pre-review printed pairs. Numbered badges show the project’s segment count. Red flags show analytical review leads using the Analysis thresholds. Magnifying glasses identify unresolved coordinate reviews, including single-point records. Endpoint spans and allocation-per-meter proxies are screening measures, not measured road lengths or construction unit costs.
+      {geoagriOverlay.features.length > 0 && ' Green solid lines are surveyed road alignments from the DA BAFE GEOAGRI proposals API, matched to the budget records by title and locality (dark green = strong match, olive = possible); hover a green line for its FMR code.'}</p>
     {overlay.summary.unmapped_flags > 0 && <p className="fmr-muted">{overlay.summary.unmapped_flags} flagged projects have no mappable coordinates; inspect their records in Analysis or the source review queue.</p>}
 
     {pdfSource && <Dialog label="FMR PDF source" className="fmr-pdf-dialog" onClose={() => setPdfSource(null)}>
