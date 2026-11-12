@@ -118,11 +118,12 @@ test('Flow graphs conserve both ledgers and expose linked populations', () => {
 });
 test('DPWH expands grouped members and includes foreign-assisted paired reductions outside Transparency', () => {
   const w = data.workspaces[0];
-  assert.equal(w.insertions.count,6196); assert.equal(w.insertions.comparison_rows,6193);
-  assert.equal(w.sources.house.count,16275); assert.equal(w.adjustments.count,382);
+  assert.equal(w.insertions.count,6195); assert.equal(w.insertions.comparison_rows,6192);
+  assert.equal(w.sources.house.count,16275); assert.equal(w.adjustments.count,383);
   // 22 October honesty fix: 37 same-road pairs with non-overlapping segments
   // (formerly 15 booked increases + 22 booked reductions) moved to scope_review.
-  assert.equal(w.adjustments.reduced_count,194); assert.equal(w.adjustments.reduced_php,87039358000);
+  // 12 November chainage parse fix (5897676) re-paired one more reduction.
+  assert.equal(w.adjustments.reduced_count,195); assert.equal(w.adjustments.reduced_php,87068358000);
   assert.equal(w.scope_review.count,37); assert.equal(w.scope_review.net_php,149434000);
   assert.equal(w.controls.house_php,654102015000);
   assert.notEqual(w.sources.house.amount_php,w.controls.house_php);
@@ -172,7 +173,7 @@ test('Summary exports retain exact PHP, basis and supporting links; topic findin
   assert.equal(csv.trimEnd().split('\r\n').length,5);
   assert.ok(csv.includes('printed_vs_ledger_delta_residual_php'));
   assert.ok(csv.includes('"unchanged_records","unchanged_php"'));
-  assert.ok(csv.includes('"6196","172149788000"'));
+  assert.ok(csv.includes('"6195","172064788000"'));
   assert.ok(csv.includes('"9660","347453119000"')); // DPWH unchanged count/allocation (22 Oct scope-review split)
   assert.ok(csv.includes('#nia/compare?view=projects&status=unchanged'));
   assert.ok(csv.includes('-140000'));
@@ -201,7 +202,7 @@ test('DPWH three-stage flow strata rebuild every ledger and tie to the Overview 
   const headlines = dpwh.overview.headlines;
   const flow = buildDpwhFlow(detail, headlines);
   assert.equal(flow.schema_version,1);
-  assert.equal(flow.totals.rows,17613);
+  assert.equal(flow.totals.rows,17612);
   // Strata partition the rows exactly.
   assert.equal(flow.strata.reduce((t,s) => t + s.rows,0),flow.totals.rows);
   const workspace = data.workspaces[0];
@@ -215,9 +216,9 @@ test('DPWH three-stage flow strata rebuild every ledger and tie to the Overview 
   assert.ok(flow.stages.third.rows <= workspace.sources.house.count);
   // Known membership shape: all-three, house-only(both readings), NEP-only, HGAB3-only.
   const byKey = Object.fromEntries(flow.strata.map(s => [s.key,s]));
-  assert.equal(byKey['true/true/true'].rows,10079);
-  assert.equal(byKey['false/true/true'].rows,6188);
-  assert.equal(byKey['true/false/false'].rows,1341);
+  assert.equal(byKey['true/true/true'].rows,10080);
+  assert.equal(byKey['false/true/true'].rows,6187);
+  assert.equal(byKey['true/false/false'].rows,1340);
   assert.equal(byKey['false/false/true'].rows,5);
   // The HGAB2→HGAB3 delta is the five-row ₱134M verified annex change.
   assert.equal(flow.stages.third.amount_php - flow.stages.second.amount_php,134000000);

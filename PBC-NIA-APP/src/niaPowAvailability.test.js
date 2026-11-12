@@ -5,7 +5,7 @@ import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
 import {filterPowCoverage, filterPowPackages, powMatchLabels, powSupportLabels, powSupportScale} from './niaPowAvailability.js';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '../../..');
+const root = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const pow = JSON.parse(readFileSync(
   join(root, 'analysis-nia/data/program_of_works/pow_availability.json'), 'utf8'));
 

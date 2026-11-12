@@ -282,12 +282,12 @@ test(skip, 'barangay selections locate through their ancestry chain (the Licab r
 });
 
 test(skip, 'the five bases conserve the whole ledger', () => {
-  const share = index.counts.located_rows / 17613;
+  const share = index.counts.located_rows / 17612;
   assert.ok(share > 0.7,
     `located share collapsed to ${(share * 100).toFixed(1)}% — ancestry rollup broken?`);
   const total = index.counts.title_psgc_rows + index.counts.deo_to_leg_rows +
     index.counts.deo_rows + index.counts.region_rows + index.counts.unassigned_rows;
-  assert.equal(total, 17613);
+  assert.equal(total, 17612);
 });
 
 test(skip, 'Nangcaon resolves to Opol → Misamis Oriental 2nd and keeps changed-office evidence', () => {

@@ -148,8 +148,8 @@ test('every real category has its own revision cells and exact supporting row po
   assert.ok(layout.stubs.filter(s => s.revision === 'scope_review').length > 0,
     'scope-review surplus stubs must exist for the withheld deltas');
   // Reduction sinks plus scope-review deficit sinks (unbooked scope loss):
-  // 87,039,358,000 booked reductions + 17,640,000 unbooked scope deficit.
-  assert.equal(layout.sinks.reduce((s, sink) => s + sink.value, 0), 87056998000);
+  // 87,068,358,000 booked reductions + 17,640,000 unbooked scope deficit.
+  assert.equal(layout.sinks.reduce((s, sink) => s + sink.value, 0), 87085998000);
   assert.ok(!layout.rows.find(g => g.id === 'fap').cells.some(c => ['increased','deletion'].includes(c.key)));
 
   const allGroupRows = model.groups.flatMap(g => selectRows(payload.projects, comparisonState(new URLSearchParams(categoryRecordHref(null,g.id).split('?')[1]))));

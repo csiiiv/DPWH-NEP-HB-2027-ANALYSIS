@@ -11,7 +11,7 @@ test('analytics of all rows preserves source ledgers, additions and House delta'
  const rows=unifiedComparison(stages,readings).projects,stats=projectAnalytics(rows);
  // Row count drops as soft/location/scope/chainage-proximity attaches consume
  // previously NEP-unmatched rows.
- assert.equal(stats.count,17613);assert.equal(stats.changes.third_only,5);assert.equal(stats.readingDelta,134000000);
+ assert.equal(stats.count,17612);assert.equal(stats.changes.third_only,5);assert.equal(stats.readingDelta,134000000);
  for(const side of ['second','third'])assert.equal(stats.totals[side].amount,readings.summary[side].operations_including_projects);
  for(const side of ['api','nep'])assert.equal(stats.totals[side].amount,stages.projects.reduce((s,r)=>s+(r[side]?.amount_php || 0),0));
  const regions=compareDistribution(rows,'region');

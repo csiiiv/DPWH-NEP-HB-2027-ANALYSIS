@@ -9,7 +9,7 @@ test('combined columns conserve both House ledgers, NEP/API amounts and PAP cont
  const combined=unifiedComparison(stages,readings);
  // Row count drops as soft/location/scope/chainage-proximity attaches consume
  // previously NEP-unmatched rows.
- assert.equal(combined.projects.length,17613);
+ assert.equal(combined.projects.length,17612);
  assert.equal(combined.paps.length,46);
  const additions=selectRows(combined.projects,{readingStatus:'third_only'});
  assert.equal(additions.length,5);

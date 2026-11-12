@@ -910,7 +910,7 @@ test(skip, 'the lens panel carries the limits and provenance a reader needs', ()
   for (const entry of Object.values(lens.provenance)) {
     assert.match(entry.sha256, /^[0-9a-f]{64}$/, 'every input must be pinned by hash');
   }
-  assert.equal(lens.reconciliation.row_counts.total, 17613);
+  assert.equal(lens.reconciliation.row_counts.total, 17612);
   assert.equal(lens.counts.cards, index.cards.length);
   assert.equal(lens.counts.districts, Object.keys(index.districts).length);
 });
