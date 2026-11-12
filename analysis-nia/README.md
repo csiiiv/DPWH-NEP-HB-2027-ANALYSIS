@@ -30,16 +30,30 @@ annex total; every funded row joins one-to-one to both retained ledgers
 (`extract_nia_senate_workbook.py` → `data/senate_nia_dataset.json`). The
 workbook marks 145 official House insertions (₱5,742,500,000 with no NEP
 line) and 108 NEP items the House zeroed; 94 rows carry written
-justifications. The workbench attaches the layer as `senate` with per-row
-cross-references, and `#nia/analysis?view=senate` surfaces the
-reconciliation, including where the official insertion rows corroborate the
-title-matching insertion candidates. Because every ledger row joins 1:1 to a
+justifications. Title-embedded coordinates and chainage are parsed from the
+column-V fixed title when present (else the NEP-print label) using the shared
+gps-analysis / chainage builders and shown on Workbook rows; titles are never
+rewritten. `build_nia_consolidated.py` then publishes a shareable
+**one-row-per-workbook-line** dataset (`nia_consolidated.json` + CSVs) that
+attaches title GPS and PSGC centroids as complementary location sources on
+the same id — amounts stay on the project (never multiplied by site points);
+the 77 matching-split lines are flagged, not duplicated. The workbench
+attaches the Senate layer as `senate` with per-row cross-references, and
+`#nia/analysis?view=senate` surfaces the reconciliation, including where the
+official insertion rows corroborate the title-matching insertion candidates. Because every ledger row joins 1:1 to a
 workbook row, the builder stamps the workbook-only hierarchy (`category`,
 `region`, `province`) onto all 828 House and 791 NEP projects: Category and
 Region work as breakdown dimensions in Overview/Candidates, search reaches
 them, and the Senate tab adds a reconciliation crosstab of the five
 comparison classes (insertions, deletions, unchanged, increased, decreased)
-per category with the House ledger as checksum column.
+per category with the House ledger as checksum column. The same tab bridges
+the two dataset row counts — 1,013 title-matching observations against 937
+workbook lines — by decomposing both into shared pieces and listing the 77
+both-funded workbook rows whose NEP and House halves the matching splits into
+a house_only plus a nep_only observation (the exact difference between 222
+unmatched House candidates and 145 official insertions, and between 185
+NEP-only rows and 108 zeroed items), with both ledger titles, amounts,
+variant marks, and CSV export.
 
 The extraction recovers **828 printed project line items** under **six sub-program controls** and one printed program heading, totalling **₱17,999,305,000**. Every sub-program project sum reconciles. All six sub-program amounts and both program-level totals also agree with the independently read NIA agency table on Volume I-B printed 559–564 (PDF 567–572), including the agency-only CARP-linked row of **₱698,067,000** that the annex does not print.
 
@@ -47,6 +61,7 @@ The extraction recovers **828 printed project line items** under **six sub-progr
 
 | Artifact | Purpose |
 |---|---|
+| [Consolidated projects](data/nia_consolidated.json) | Shareable unit: one record per Senate workbook line (937), with title GPS + PSGC centroids, matching-split flags, and money/location notes. Builder: `build_nia_consolidated.py`. Companion CSVs: `nia_consolidated_projects.csv`, `nia_consolidated_title_gps_points.csv` (geometry only — do not sum amounts). |
 | [Project CSV](data/hgab_nia_projects.csv) | One row per printed project, integer PHP, printed sub-program, joined title, full path, and PDF/printed page references. This is the disjoint allocation ledger; sum only its `amount_php` column for the annex total. |
 | [Sub-program CSV](data/hgab_nia_subprograms.csv) | Project counts, printed controls, project sums, and differences per sub-program. |
 | [Source hierarchy](data/hgab_nia_tree.json) | Flat nodes with `parent_id` and `child_ids`: annex title → (sub-program ∣ Development heading → sub-program) → named project. Includes raw labels, source geometry, and artifact-local IDs. |

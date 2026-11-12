@@ -151,10 +151,13 @@ INLINE_PH_PAIR = re.compile(
     r"\b((?:[4-9]|1[0-9]|2[0-2])\.\d{3,}\s*,\s*1[12]\d\.\d{3,}"
     r"|1[12]\d\.\d{3,}\s*,\s*(?:[4-9]|1[0-9]|2[0-2])\.\d{3,})\b"
 )
+# Seconds marks may be doubled/quadrupled (Excel CSV escaping: 15°56'56.69""""N)
+# or use prime/double-prime. Quotes may also appear as the lat/lon separator
+# (…N ""121°…). Allow any run of quotes so NIA Site-labelled DMS lists match.
 DMS_SPAN = re.compile(
-    r"\d{1,3}\s*°\s*\d{1,2}\s*['′]?\s*\d+(?:\.\d+)?\s*[\"″]?\s*[NSEW]?"
-    r"\s*[,;\s]+\s*"
-    r"\d{1,3}\s*°\s*\d{1,2}\s*['′]?\s*\d+(?:\.\d+)?\s*[\"″]?\s*[NSEW]?",
+    r"\d{1,3}\s*°\s*\d{1,2}\s*['′]?\s*\d+(?:\.\d+)?\s*[\"″]*\s*[NSEW]?"
+    r"\s*[,;\"″\s]+\s*"
+    r"\d{1,3}\s*°\s*\d{1,2}\s*['′]?\s*\d+(?:\.\d+)?\s*[\"″]*\s*[NSEW]?",
     re.I,
 )
 
@@ -338,10 +341,35 @@ def analyze_text(text: str, *, dedicated_field: bool = False) -> dict | None:
     }
 
 
+def _point_key(point: dict) -> tuple | None:
+    lat, lon = point.get("latitude"), point.get("longitude")
+    if lat is None or lon is None:
+        return None
+    return (round(float(lat), 6), round(float(lon), 6))
+
+
+def _role_rank(role) -> int:
+    # Prefer explicit endpoint roles over unspecified/None when collapsing
+    # overlapping endpoint_span + degree_pair extractions of the same point.
+    if role in ("start", "end"):
+        return 2
+    if role and role != "unspecified":
+        return 1
+    return 0
+
+
 def compress_points(points: list[dict]) -> list[dict]:
+    """Compact point dicts and drop duplicate lat/lon from overlapping fragments.
+
+    Titles that mix START:/END: labels with bare degree pairs (common in NIA
+    multi-site canals) yield the same coordinates twice — once role-tagged via
+    endpoint_observations, once as an unspecified degree_pair. Keep one row per
+    rounded coordinate, preferring the more specific role.
+    """
     out = []
+    by_key: dict[tuple, int] = {}
     for p in points:
-        out.append({
+        compact = {
             "longitude": p.get("longitude"),
             "latitude": p.get("latitude"),
             "role": p.get("role"),
@@ -349,8 +377,30 @@ def compress_points(points: list[dict]) -> list[dict]:
             "rules": p.get("rules") or [],
             "issues": p.get("issues") or [],
             "source_fragment": snippet(p.get("source_fragment_raw") or p.get("raw") or "", 160),
-        })
-    return out
+        }
+        key = _point_key(compact)
+        if key is None:
+            out.append(compact)
+            continue
+        existing = by_key.get(key)
+        if existing is None:
+            by_key[key] = len(out)
+            out.append(compact)
+            continue
+        prior = out[existing]
+        if _role_rank(compact.get("role")) > _role_rank(prior.get("role")):
+            # Preserve issues/rules union so audit trails survive the collapse.
+            compact["rules"] = sorted(set((prior.get("rules") or []) + (compact.get("rules") or [])))
+            compact["issues"] = sorted(set((prior.get("issues") or []) + (compact.get("issues") or [])))
+            out[existing] = compact
+        else:
+            prior["rules"] = sorted(set((prior.get("rules") or []) + (compact.get("rules") or [])))
+            prior["issues"] = sorted(set((prior.get("issues") or []) + (compact.get("issues") or [])))
+    # When overlapping fragments yield both a usable point and a failed parse
+    # (common when END: … bleeds into "Canal (1) Start:"), drop the nulls.
+    usable = [p for p in out
+              if p.get("latitude") is not None and p.get("longitude") is not None]
+    return usable or out
 
 
 def load_json(rel: str):

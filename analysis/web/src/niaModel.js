@@ -369,6 +369,8 @@ export function comparisonClass(row) {
 // hierarchy category. Amounts follow the side that carries the money
 // (House for everything except deletions, which are NEP-only), so the
 // House ledger column equals the sum of the four House-side classes.
+// Net change from NEP is House − NEP money in the category. A pinned
+// totals row closes the table.
 export function categoryReconciliationRows(rows) {
   const groups = new Map();
   for (const r of rows) {
@@ -376,7 +378,8 @@ export function categoryReconciliationRows(rows) {
     if (!cls) continue;
     const project = r.house || r.nep;
     const key = project?.category || '(no category)';
-    const g = groups.get(key) || {id: key, label: key, total_count: 0, house_php: 0,
+    const g = groups.get(key) || {id: key, label: key, total_count: 0, house_count: 0,
+      house_php: 0, nep_php: 0, net_delta_php: 0,
       insertions_count: 0, insertions_php: 0, deletions_count: 0, deletions_php: 0,
       unchanged_count: 0, unchanged_php: 0, increased_count: 0, increased_php: 0,
       decreased_count: 0, decreased_php: 0};
@@ -384,9 +387,24 @@ export function categoryReconciliationRows(rows) {
     g[`${cls}_count`]++;
     g[`${cls}_php`] += cls === 'deletions' ? (r.nep_php || 0) : (r.house_php || 0);
     g.house_php += r.house_php || 0;
+    g.nep_php += r.nep_php || 0;
+    if (cls !== 'deletions') g.house_count++;
     groups.set(key, g);
   }
-  return [...groups.values()].sort((a, b) => b.house_php - a.house_php || a.label.localeCompare(b.label));
+  const list = [...groups.values()].map(g => ({...g, net_delta_php: g.house_php - g.nep_php}))
+    .sort((a, b) => b.house_php - a.house_php || a.label.localeCompare(b.label));
+  const totals = {id: 'totals', label: 'Total', total_count: 0, house_count: 0,
+    house_php: 0, nep_php: 0, net_delta_php: 0,
+    insertions_count: 0, insertions_php: 0, deletions_count: 0, deletions_php: 0,
+    unchanged_count: 0, unchanged_php: 0, increased_count: 0, increased_php: 0,
+    decreased_count: 0, decreased_php: 0};
+  for (const g of list) {
+    for (const key of Object.keys(totals)) {
+      if (key === 'id' || key === 'label') continue;
+      totals[key] += g[key] || 0;
+    }
+  }
+  return [...list, totals];
 }
 // Resolve a dimension key to the printed group label of one project.
 export function projectGroupLabel(project, dim) {
@@ -434,7 +452,40 @@ export function filterSenateProjects(projects, {q = '', subprogram = '', status 
     (!status || p.status === status) &&
     (minAmount === '' || (p.nep_amount ?? 0) >= Number(minAmount)) &&
     (maxAmount === '' || (p.nep_amount ?? 0) < Number(maxAmount)) &&
-    terms.every(t => `${p.label} ${p.subprogram_label} ${p.program_group} ${p.category || ''} ${p.region || ''} ${p.province || ''} ${p.submission_label || ''} ${p.justification || ''}`.toLocaleLowerCase().includes(t)));
+    terms.every(t => `${p.label} ${p.subprogram_label} ${p.program_group} ${p.category || ''} ${p.region || ''} ${p.province || ''} ${p.submission_label || ''} ${p.justification || ''} ${formatSenateCoordinates(p)} ${formatSenateChainage(p)}`.toLocaleLowerCase().includes(t)));
+}
+// Title-parse helpers for the Senate workbook table. Coordinates and
+// chainage are annotated by the extractor from the column-V fixed title
+// when present (else the NEP-print label); titles are never rewritten.
+export function senateTitlePoints(project) {
+  return project?.title_parse?.coordinates?.points || [];
+}
+export function senateTitleChainages(project) {
+  return project?.title_parse?.chainage?.spans || [];
+}
+export function formatSenateCoordinates(project) {
+  const points = senateTitlePoints(project);
+  if (!points.length) return '';
+  return points.map(pt => {
+    const lat = Number(pt.latitude), lon = Number(pt.longitude);
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return '';
+    const body = `${Math.abs(lat).toFixed(6)}°${lat < 0 ? 'S' : 'N'}, ${Math.abs(lon).toFixed(6)}°${lon < 0 ? 'W' : 'E'}`;
+    return pt.role ? `${pt.role}: ${body}` : body;
+  }).filter(Boolean).join(' · ');
+}
+export function formatSenateChainage(project) {
+  const spans = senateTitleChainages(project);
+  if (!spans.length) return '';
+  return spans.map(c => {
+    const from = c?.from || '', to = c?.to || '';
+    if (c?.point || (from && to && from === to)) return from || to;
+    if (from && to) return `${from} – ${to}`;
+    return from || to || '';
+  }).filter(Boolean).join(', ');
+}
+export function senateChainageLengthM(project) {
+  const length = project?.title_parse?.chainage?.length_m;
+  return Number.isFinite(length) ? length : null;
 }
 export function senateStats(projects) {
   const of = status => projects.filter(p => p.status === status);
@@ -457,4 +508,105 @@ export function senateComparisonIndex(data) {
     if (row.nep_id && row.house_id) map.set(`${row.nep_id}\u0000${row.house_id}`, row);
   }
   return map;
+}
+// ---- Dataset row-count reconciliation (comparison ledger vs workbook) ------
+// The comparison ledger counts observations: one row per unmatched source
+// line and one per title-matched pair. The Senate workbook counts NIA's own
+// reconciliation lines: a both-funded workbook row aligns one NEP line with
+// one House line even when our title matching cannot pair them. These
+// helpers make the two row counts mutually legible. Counts here are rows,
+// never certified projects; joins carry provenance, not identity.
+export const gapReasonLabels = {
+  reworded_printing: 'Titles differ between annex printings',
+  repeated_title: 'Same title repeated in the sub-program',
+};
+// Workbook both-funded rows whose two joined ledger records sit on two
+// different comparison rows (house_only + nep_only) instead of one pair.
+// The workbook aligns them; provisional title matching cannot.
+export function senateGapRows(data) {
+  const projects = senateProjects(data);
+  const ledger = side => new Map((data.stages?.[side]?.projects || [])
+    .map(p => [p.id, p]));
+  const nepLedger = ledger('nep'), houseLedger = ledger('house');
+  const bySide = side => {
+    const map = new Map();
+    for (const row of data.comparison || []) {
+      const id = side === 'house' ? row.house_id : row.nep_id;
+      if (id) map.set(id, row);
+    }
+    return map;
+  };
+  const houseRows = bySide('house'), nepRows = bySide('nep');
+  const canonical = text => (text || '').toLocaleLowerCase().normalize('NFKD')
+    .match(/[a-z0-9]+/g)?.join(' ') || '';
+  const gaps = [];
+  for (const p of projects) {
+    if (p.status !== 'both_funded') continue;
+    const nepJoin = p.nep_join?.id, houseJoin = p.house_join?.id;
+    if (!nepJoin || !houseJoin) continue;
+    const houseSide = houseRows.get(houseJoin), nepSide = nepRows.get(nepJoin);
+    if (!houseSide || !nepSide || houseSide.id === nepSide.id) continue;
+    const nepTitle = nepLedger.get(nepJoin)?.title, houseTitle = houseLedger.get(houseJoin)?.title;
+    const reason = canonical(nepTitle) === canonical(houseTitle)
+      ? 'repeated_title' : 'reworded_printing';
+    gaps.push({
+      id: p.id, row: p.row, label: p.label, subprogram_key: p.subprogram_key,
+      category: p.category || null, region: p.region || null, province: p.province || null,
+      nep_id: nepJoin, house_id: houseJoin,
+      nep_title: nepTitle || null, house_title: houseTitle || null,
+      nep_php: nepLedger.get(nepJoin)?.amount_php ?? null,
+      house_php: houseLedger.get(houseJoin)?.amount_php ?? null,
+      delta_php: (p.hgab_amount || 0) - (p.nep_amount || 0),
+      variant_mark_kind: houseSide.variant_mark_kind || null,
+      // Workbook right-block title (column V), edit acknowledgement
+      // ("OK" / "CHECK"), and free-text remark — NIA's own corrected /
+      // submission wording beside the titles our matching could not pair.
+      submission_label: p.submission_label || null,
+      submission_edited: p.submission_edited || null,
+      justification: p.justification || null,
+      reason,
+    });
+  }
+  return gaps;
+}
+// The row-count bridge between the two datasets: how the comparison
+// observations and the workbook rows decompose into shared pieces. Every
+// figure is recomputed from the ledgers — none is restated.
+export function senateReconciliationRows(data) {
+  const summary = data.comparison_summary?.counts
+    || {paired: 0, house_only: 0, nep_only: 0};
+  const gaps = senateGapRows(data);
+  const gapsWithMark = gaps.filter(g => g.variant_mark_kind && g.variant_mark_kind !== 'no_counterpart').length;
+  const projects = senateProjects(data);
+  const unchanged = data.comparison.filter(r => r.status === 'paired' && r.delta_php === 0).length;
+  const changed = summary.paired - unchanged;
+  const officialInsertions = projects.filter(p => p.status === 'house_insertion').length;
+  const officialZeroed = projects.filter(p => p.status === 'house_zeroed').length;
+  const bothFunded = projects.filter(p => p.status === 'both_funded').length;
+  const unfunded = projects.filter(p => p.status === 'unfunded').length;
+  const houseCount = data.stages?.house?.projects?.length || 0;
+  const nepCount = data.stages?.nep?.projects?.length || 0;
+  return [
+    {id: 'paired-unchanged', label: 'Paired · unchanged amounts', comparison_rows: unchanged, workbook_rows: unchanged,
+     note: 'Title-matched pairs with identical amounts, one workbook line each'},
+    {id: 'paired-changed', label: 'Paired · changed amounts', comparison_rows: changed, workbook_rows: changed,
+     note: `Title-matched pairs with an amount change (${changed === 1 ? 'a House decrease' : 'all House decreases'}` +
+       ` in this dataset); the workbook prints both amounts on one line`},
+    {id: 'gap', label: 'NIA-aligned rows our matching splits in two', comparison_rows: gaps.length * 2, workbook_rows: gaps.length,
+     note: `${gaps.length} both-funded workbook rows whose NEP and House halves sit on two comparison rows ` +
+       `(house_only + nep_only); ${gapsWithMark} House halves carry a near-miss variant mark, the rest are reworded printings`},
+    {id: 'official-insertions', label: 'Official workbook insertions', comparison_rows: officialInsertions, workbook_rows: officialInsertions,
+     note: 'House money, no NEP line — each maps to one house_only observation'},
+    {id: 'official-zeroed', label: 'NEP items the House zeroed', comparison_rows: officialZeroed, workbook_rows: officialZeroed,
+     note: 'NEP money, House amount 0 — each maps to one nep_only observation'},
+    {id: 'unfunded', label: 'Workbook rows without annex money', comparison_rows: 0, workbook_rows: unfunded,
+     note: 'Zero in both annex ledgers; present for the submission/justification record only'},
+    {id: 'totals', label: 'Dataset totals', comparison_rows: data.comparison.length, workbook_rows: projects.length,
+     note: `Comparison: ${houseCount} House + ${nepCount} NEP ledger rows − ${summary.paired} pairs = ` +
+       `${houseCount + nepCount - summary.paired} observations · Workbook: ${houseCount} + ${nepCount} − ${bothFunded} NIA-aligned + ${unfunded} unfunded = ${projects.length} lines`},
+  ];
+}
+// Workbook rows printed without any annex money at all.
+export function senateUnfundedRows(data) {
+  return senateProjects(data).filter(p => p.status === 'unfunded');
 }

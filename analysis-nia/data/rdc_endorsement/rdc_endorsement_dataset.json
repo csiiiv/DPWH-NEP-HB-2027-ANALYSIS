@@ -1,0 +1,2194 @@
+{
+ "schema_version": 1,
+ "generated_by": "extract_rdc_endorsements.py",
+ "source_root": "/media/temp/3dbc81e7-b4e7-4209-a85b-3f0afb0a5253/Downloads/NIA- PBC_Data/PEOPLE_S BUDGET COALITION REQUIREMENTS/RDC ENDORSEMENT",
+ "notes": [
+  "All 32 resolution PDFs are scanned images without a text layer; text was recovered by tesseract 4.1.0 OCR at 200 DPI (psm 4).",
+  "Resolution numbers, titles, tier totals and attachment project rows are heuristic OCR parses flagged for review, not row-verified readings.",
+  "03 REGION II and 04 MARIIS are byte-identical files (same sha1); region attribution covers both NIA RO2 and NIA-MARIIS proposals.",
+  "RDC XII xlsx lists carry native values (no OCR).",
+  "verified_totals are page-anchored manual readings from the OCR text; each entry cites its resolution and reading basis."
+ ],
+ "verified_totals": {
+  "CAR": {
+   "resolution": "RDC-CAR Resolution No. 31, s. 2026",
+   "total": 15531791000,
+   "tier2_total": 13220971000,
+   "reading": "NOW THEREFORE clause: \"Fifteen Billion ... (Php 15,531,791,000.00)\"; Tier 2 programs \"(P13,220,971,000.00)\""
+  },
+  "Region 1": {
+   "resolution": "RDC-1 Full Council Resolution No. 29, s. 2026",
+   "total": 22225583770,
+   "tier1_total": 9217125000,
+   "tier2_total": 13008458770,
+   "reading": "resolving clause: \"amounting PhP 22,225,583,770.00\"; Tier 1/Tier 2 lines"
+  },
+  "Region 2": {
+   "resolution": "RDC2 Resolution No. 02-56, s. 2026",
+   "total": 27079955000,
+   "tier1_total": 20883855000,
+   "tier2_total": 6196100000,
+   "reading": "tier table: Tier 1 total 20,883,855,000; Tier 2 6,196,100,000"
+  },
+  "MARIIS": {
+   "resolution": "RDC2 Resolution No. 02-57, s. 2026",
+   "total": 10633228082,
+   "tier1_total": 1363833122,
+   "tier2_total": 9269394960,
+   "reading": "tier table: Tier 1 1,363,833,122 (PS 417,454,373 + MOOE 536,378,749 + CO 410,000,000); Tier 2 9,269,394,960 (OCR shows 9,269,304,960 mid-row and 9,269,394,960 total; column sum gives 9,679,394,960 - 410,000,000 = 9,269,394,960, so the total-row reading is used)"
+  },
+  "Region 3": {
+   "resolution": "RDC III Resolution No. 03-39, s. 2026",
+   "total": 26560481000,
+   "tier1_total": 4235740000,
+   "tier2_total": 22324741000,
+   "reading": "table in PHP'000: Tier 1 4,235,740.00; Tier 2 22,324,741.00; Total 26,560,481.00 (x1000); percent shares 15.95/84.05"
+  },
+  "UPRIIS": {
+   "resolution": "RDC II Resolution No. 03-40, s. 2026",
+   "total": 5341860310,
+   "reading": "attachment final row: \"TOTAL UPRIIS 2027 5,341,860,310.00\" (sum of the 80 attachment project rows parsed here: verify)"
+  },
+  "Region 4A": {
+   "resolution": "RDC IV-A Resolution No. IV-A-05U-2026",
+   "total": 5802245838,
+   "reading": "TIER AMOUNT table: Tier (1) 5,802,245,838.00; Tier 2 0.00; OCR misreads the tier-1 label glyph as \"4\"; total matches"
+  },
+  "Region 4B": {
+   "resolution": "RDC IV-B Resolution No. 2026-092",
+   "tier1_total": 5640000000,
+   "tier2_total": 1080000000,
+   "total": 6720000000,
+   "reading": "narrative: 218 Tier 1 PAPs \"Php5.64 billion\" + 70 Tier 2 projects \"Php1.08 billion\"; total derived (sum), not printed"
+  },
+  "Region 5": {
+   "resolution": "RDC V Resolution No. 1-06G, s. 2026",
+   "total": 8568777826,
+   "reading": "comparison table FY 2027 Budgetary Requirement total 8,568,777,826.00 (GASS 4,161,477,701 + STO 165,420,000 + Operations 4,241,880,125)"
+  },
+  "Region 6": {
+   "resolution": "RDC VI Resolution No. 03-34, s. 2026",
+   "total": 15571169000,
+   "reading": "resolving clause: \"PhP 15,571.169 million\""
+  },
+  "Region 7": {
+   "resolution": "RDC VII Resolution No. 38-A, s. 2026",
+   "total": 9365028450,
+   "reading": "Budgetary Requirements (in PHP million): 6,547.42045 + 2,817.608 = 9,365.02845 million"
+  },
+  "Region 8": {
+   "resolution": "RDC VIII Resolution No. 06-H, s. 2026",
+   "total": 9542821841,
+   "reading": "WHEREAS: 19 Tier 1+2 PPAs \"amounting to PHP9,542,821,841.00\"; annex grand total 8,968,076,841.00 covers the 15 endorsed Tier 1 PPAs (difference 574,745,000 = Tier 2 not endorsed)"
+  },
+  "Region 9": {
+   "resolution": "RDC IX Joint AdCom/ExCom Resolution No. 012, s. 2026",
+   "total": 10226000000,
+   "reading": "resolving clause: \"in the amount of PHP10.226 billion\""
+  },
+  "Region 10": {
+   "resolution": "RDC X Resolution No. 14-09, s. 2026",
+   "total": 5114425000,
+   "tier1_total": 1999965000,
+   "tier2_total": 4984425000,
+   "lfp_total": 130000000,
+   "reading": "Table 1 (in thousand pesos): Total 5,114,425 = Tier1 1,999,965 + Tier2 4,984,425 - overlap + LFP 130,000; narrative \"PHP 5.11 billion\"; Reso 36 s.2026 separately endorses BARMM-Lanao del Sur PAPs"
+  },
+  "Region 11": {
+   "resolution": "RDC XI Resolution No. 26, s. 2026",
+   "total": 7700874330,
+   "reading": "email subject + resolution title: \"PhP 7,700,874,330.00\"; variant .2 file shows Annex A.1/A.2 total 19,857,835,832.00 including big-ticket SRIPs (Cogon Bacaca 350M, Asbang 500M, MIDP Cateel IIS 300M, MIDP Kipaliku 360M, Caraga River-San Pedro IP 300M, Padada RIS rehab 150M)"
+  },
+  "Region 12": {
+   "resolution": "RDC XII Resolution No. 187, s. 2026 (Top 30) / 188 (Top 3 FS)",
+   "reading": "no single budget total; Reso 130 s.2026 requests prioritization of 4 big-ticket projects (MRISIP, LIRIP, Tulunan SRIP, K2MIPP); see rdc_xii_lists for structured amounts"
+  }
+ },
+ "documents": [
+  {
+   "source_file": "01 CAR/RDC-CAR RESO NO 31 S 2026.pdf",
+   "region": "CAR",
+   "pages": 14,
+   "sha1": "bc61547870b4900a970897fc001e5a2b064afbaa",
+   "resolutions": [
+    {
+     "resolution_no": "31",
+     "series_year": "2026",
+     "char_offset": 80
+    },
+    {
+     "resolution_no": "31",
+     "series_year": "2026",
+     "char_offset": 12149
+    }
+   ],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "02 REGION I/RDC1 RESO NO. 29 S 2026.pdf",
+   "region": "Region 1",
+   "pages": 3,
+   "sha1": "4c797741850b7603fce503adf64e0cc00735e100",
+   "resolutions": [
+    {
+     "resolution_no": "29",
+     "series_year": "2026",
+     "char_offset": 384
+    }
+   ],
+   "endorsing_titles": [],
+   "tier_tables": [
+    {
+     "tier1_total": 9217125000.0,
+     "tier2_total": 13008458770.0,
+     "raw": "Tier 1 PhP — 9,217,125,000.00 || Tier 2 13,008,458,770.00",
+     "line_index": 144,
+     "char_offset": 6241
+    }
+   ],
+   "project_rows": [],
+   "headline_amounts": [
+    22225583770.0
+   ]
+  },
+  {
+   "source_file": "03 REGION II/RDC2 RESO NO. 02-57 S 2026 -R2& MARIIS.pdf",
+   "region": "Region 2",
+   "pages": 29,
+   "sha1": "230e1f8d829a5c97e351939caaf211e5fafa0fc3",
+   "resolutions": [
+    {
+     "resolution_no": "02-57",
+     "series_year": "2026",
+     "char_offset": 1972
+    },
+    {
+     "resolution_no": "02-56",
+     "series_year": "2026",
+     "char_offset": 2054
+    },
+    {
+     "resolution_no": "02-57",
+     "series_year": "2026",
+     "char_offset": 9853
+    },
+    {
+     "resolution_no": "02-56",
+     "series_year": "2026",
+     "char_offset": 10944
+    },
+    {
+     "resolution_no": "02-56",
+     "series_year": "2026",
+     "char_offset": 12276
+    },
+    {
+     "resolution_no": "02-57",
+     "series_year": "2026",
+     "char_offset": 12444
+    },
+    {
+     "resolution_no": "02-11",
+     "series_year": "2026",
+     "char_offset": 17083
+    },
+    {
+     "resolution_no": "02-14",
+     "series_year": "2026",
+     "char_offset": 17175
+    },
+    {
+     "resolution_no": "02-11",
+     "series_year": "2026",
+     "char_offset": 27350
+    },
+    {
+     "resolution_no": "02-14",
+     "series_year": "2026",
+     "char_offset": 28323
+    },
+    {
+     "resolution_no": "02-11",
+     "series_year": "2026",
+     "char_offset": 29843
+    },
+    {
+     "resolution_no": "02-14",
+     "series_year": "2026",
+     "char_offset": 29998
+    },
+    {
+     "resolution_no": "02-57",
+     "series_year": "2026",
+     "char_offset": 34219
+    },
+    {
+     "resolution_no": "02-56",
+     "series_year": "2026",
+     "char_offset": 34303
+    },
+    {
+     "resolution_no": "02-56",
+     "series_year": "2026",
+     "char_offset": 35172
+    },
+    {
+     "resolution_no": "02-57",
+     "series_year": "2026",
+     "char_offset": 35340
+    },
+    {
+     "resolution_no": "02-56",
+     "series_year": "2026",
+     "char_offset": 36492
+    },
+    {
+     "resolution_no": "02-57",
+     "series_year": "2026",
+     "char_offset": 37574
+    }
+   ],
+   "endorsing_titles": [
+    {
+     "title": "ENDORSING THE FISCAL YEAR 2027 BUDGET PROPOSAL OF THE NATIONAL IRRIGATION ADMINISTRATION- MAGAT RIVER INTEGRATED IRRIGATION SYSTEM AMOUNTING TO PHP 10,633,228,082",
+     "char_offset": 2411
+    },
+    {
+     "title": "ENDORSING THE FISCAL YEAR 2027 BUDGET PROPOSAL OF THE NATIONAL IRRIGATION ADMINISTRATION AMOUNTING TO PHP 27,079,955,000",
+     "char_offset": 6148
+    },
+    {
+     "title": "ADOPTING THE CAGAYAN VALLEY INTEGRATED STRATEGIC INFRASTRUCTURE PLAN AS A REGIONAL INFRASTRUCTURE FRAMEWORK",
+     "char_offset": 17752
+    },
+    {
+     "title": "ENDORSING THE SIERRA MADRE SUPERHIGHWAY AND DAM SYSTEMS DEVELOPMENT PROGRAM TO CONCERNED NATIONAL AND LOCAL GOVERNMENT AGENCIES FOR TECHNICAL ASSISTANCE IN THE PREPARATION OF MASTER PLAN, FEASIBILITY STUDIES, AND FUNDING SUPPORT",
+     "char_offset": 23073
+    },
+    {
+     "title": "ENDORSING THE FISCAL YEAR 2027 BUDGET PROPOSAL OF THE NATIONAL IRRIGATION ADMINISTRATION AMOUNTING TO. PHP 27,079,955,000",
+     "char_offset": 38947
+    },
+    {
+     "title": "ENDORSING THE FISCAL YEAR 2027 BUDGET PROPOSAL OF THE NATIONAL IRRIGATION ADMINISTRATION- MAGAT RIVER INTEGRATED IRRIGATION SYSTEM AMOUNTING TO PHP 10,633,228,082",
+     "char_offset": 42527
+    }
+   ],
+   "tier_tables": [
+    {
+     "tier1_total": 1363833122.0,
+     "tier2_total": 9269394960.0,
+     "raw": "[Tier 1 | 417,454,373 | 536,378,749 410,000,000 1,363,833,122 || ‘Tier 2 | to | 9,269,304,960 9,269,394,960",
+     "line_index": 139,
+     "char_offset": 4879
+    },
+    {
+     "tier1_total": 20883855000.0,
+     "tier2_total": 6196100000.0,
+     "raw": "Tier 1 610,462,000 554,417,000| 19,718,976,000 20,883,855,000 || Tier 2 6,196,100,000 6,196,100,000",
+     "line_index": 1509,
+     "char_offset": 41268
+    }
+   ],
+   "project_rows": [],
+   "headline_amounts": [
+    27079955000.0,
+    10633228082.0
+   ]
+  },
+  {
+   "source_file": "04 MARIIS/RDC2 RESO NO. 02-57 S 2026 -R2& MARIIS.pdf",
+   "region": "MARIIS",
+   "pages": 29,
+   "sha1": "230e1f8d829a5c97e351939caaf211e5fafa0fc3",
+   "resolutions": [
+    {
+     "resolution_no": "02-57",
+     "series_year": "2026",
+     "char_offset": 1972
+    },
+    {
+     "resolution_no": "02-56",
+     "series_year": "2026",
+     "char_offset": 2054
+    },
+    {
+     "resolution_no": "02-57",
+     "series_year": "2026",
+     "char_offset": 9853
+    },
+    {
+     "resolution_no": "02-56",
+     "series_year": "2026",
+     "char_offset": 10944
+    },
+    {
+     "resolution_no": "02-56",
+     "series_year": "2026",
+     "char_offset": 12276
+    },
+    {
+     "resolution_no": "02-57",
+     "series_year": "2026",
+     "char_offset": 12444
+    },
+    {
+     "resolution_no": "02-11",
+     "series_year": "2026",
+     "char_offset": 17083
+    },
+    {
+     "resolution_no": "02-14",
+     "series_year": "2026",
+     "char_offset": 17175
+    },
+    {
+     "resolution_no": "02-11",
+     "series_year": "2026",
+     "char_offset": 27350
+    },
+    {
+     "resolution_no": "02-14",
+     "series_year": "2026",
+     "char_offset": 28323
+    },
+    {
+     "resolution_no": "02-11",
+     "series_year": "2026",
+     "char_offset": 29843
+    },
+    {
+     "resolution_no": "02-14",
+     "series_year": "2026",
+     "char_offset": 29998
+    },
+    {
+     "resolution_no": "02-57",
+     "series_year": "2026",
+     "char_offset": 34219
+    },
+    {
+     "resolution_no": "02-56",
+     "series_year": "2026",
+     "char_offset": 34303
+    },
+    {
+     "resolution_no": "02-56",
+     "series_year": "2026",
+     "char_offset": 35172
+    },
+    {
+     "resolution_no": "02-57",
+     "series_year": "2026",
+     "char_offset": 35340
+    },
+    {
+     "resolution_no": "02-56",
+     "series_year": "2026",
+     "char_offset": 36492
+    },
+    {
+     "resolution_no": "02-57",
+     "series_year": "2026",
+     "char_offset": 37574
+    }
+   ],
+   "endorsing_titles": [
+    {
+     "title": "ENDORSING THE FISCAL YEAR 2027 BUDGET PROPOSAL OF THE NATIONAL IRRIGATION ADMINISTRATION- MAGAT RIVER INTEGRATED IRRIGATION SYSTEM AMOUNTING TO PHP 10,633,228,082",
+     "char_offset": 2411
+    },
+    {
+     "title": "ENDORSING THE FISCAL YEAR 2027 BUDGET PROPOSAL OF THE NATIONAL IRRIGATION ADMINISTRATION AMOUNTING TO PHP 27,079,955,000",
+     "char_offset": 6148
+    },
+    {
+     "title": "ADOPTING THE CAGAYAN VALLEY INTEGRATED STRATEGIC INFRASTRUCTURE PLAN AS A REGIONAL INFRASTRUCTURE FRAMEWORK",
+     "char_offset": 17752
+    },
+    {
+     "title": "ENDORSING THE SIERRA MADRE SUPERHIGHWAY AND DAM SYSTEMS DEVELOPMENT PROGRAM TO CONCERNED NATIONAL AND LOCAL GOVERNMENT AGENCIES FOR TECHNICAL ASSISTANCE IN THE PREPARATION OF MASTER PLAN, FEASIBILITY STUDIES, AND FUNDING SUPPORT",
+     "char_offset": 23073
+    },
+    {
+     "title": "ENDORSING THE FISCAL YEAR 2027 BUDGET PROPOSAL OF THE NATIONAL IRRIGATION ADMINISTRATION AMOUNTING TO. PHP 27,079,955,000",
+     "char_offset": 38947
+    },
+    {
+     "title": "ENDORSING THE FISCAL YEAR 2027 BUDGET PROPOSAL OF THE NATIONAL IRRIGATION ADMINISTRATION- MAGAT RIVER INTEGRATED IRRIGATION SYSTEM AMOUNTING TO PHP 10,633,228,082",
+     "char_offset": 42527
+    }
+   ],
+   "tier_tables": [
+    {
+     "tier1_total": 1363833122.0,
+     "tier2_total": 9269394960.0,
+     "raw": "[Tier 1 | 417,454,373 | 536,378,749 410,000,000 1,363,833,122 || ‘Tier 2 | to | 9,269,304,960 9,269,394,960",
+     "line_index": 139,
+     "char_offset": 4879
+    },
+    {
+     "tier1_total": 20883855000.0,
+     "tier2_total": 6196100000.0,
+     "raw": "Tier 1 610,462,000 554,417,000| 19,718,976,000 20,883,855,000 || Tier 2 6,196,100,000 6,196,100,000",
+     "line_index": 1509,
+     "char_offset": 41268
+    }
+   ],
+   "project_rows": [],
+   "headline_amounts": [
+    27079955000.0,
+    10633228082.0
+   ]
+  },
+  {
+   "source_file": "05 REGION III/RDC 3 RESO NO. 03-39-2026.pdf",
+   "region": "Region 3",
+   "pages": 11,
+   "sha1": "294e7b9e5c1ada77a76a88947368c9792b3c76c3",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "06 UPRIIS/UPRIIS RDC II Resolution No. 03-40-2026.pdf",
+   "region": "UPRIIS",
+   "pages": 25,
+   "sha1": "b8936eae4508a8f59f0d072f46091475ebf54688",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ECIJA 1st District | National REPAIR-NIS TRIS Lower TRIS Lower at Sta. 15+260.50-16+400",
+     "municipality_ocr": "Talavera",
+     "amount": 50000000.0,
+     "raw": "2027 UPRIIS ECIJA 1st District | National REPAIR-NIS TRIS Lower TRIS Lower at Sta. 15+260.50-16+400 Talavera 50,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "HCA’ _| 28tDistrict | National | REPAIRNIS | TRISLower [joni soa at sta,0¢000.00-1125600__|",
+     "municipality_ocr": "Santo Domingo",
+     "amount": 23500000.0,
+     "raw": "2027 UPRIIS HCA’ _| 28tDistrict | National | REPAIRNIS | TRISLower [joni soa at sta,0¢000.00-1125600__| Santo Domingo 23,500,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ECHA. |2NdDistrict] National | REPAIR-NIS | TRISLower Lateral D5, TRIS Lower at Sta. 0+960.12 -",
+     "municipality_ocr": "Llanera",
+     "amount": 10000000.0,
+     "raw": "2027 UPRIIS ECHA. |2NdDistrict] National | REPAIR-NIS | TRISLower Lateral D5, TRIS Lower at Sta. 0+960.12 - Llanera 10,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "cia, |284District] National | REPAIR-NIS | TRISLower |P164 wert Sta, 04800,00 -11107.00",
+     "municipality_ocr": "San Jose City",
+     "amount": 5000000.0,
+     "raw": "2027 UPRIIS cia, |284District] National | REPAIR-NIS | TRISLower |P164 wert Sta, 04800,00 -11107.00 San Jose City 5,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "Eclja | 1tDistrict | National | REPAIRNIS | TRISLower (eee eos ct sta 3+354.50-Se069.50 |",
+     "municipality_ocr": "Santo Domingo",
+     "amount": 15000000.0,
+     "raw": "2027 UPRIIS Eclja | 1tDistrict | National | REPAIRNIS | TRISLower (eee eos ct sta 3+354.50-Se069.50 | Santo Domingo 15,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "CHA. _| 1stDistrict | National | REPAIR-NIS | TRISLower [12 eh at sta. 74368.40-31471.50",
+     "municipality_ocr": "Quezon",
+     "amount": 10000000.0,
+     "raw": "2027 UPRIIS CHA. _| 1stDistrict | National | REPAIR-NIS | TRISLower [12 eh at sta. 74368.40-31471.50 Quezon 10,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ECH|A._| 1tDistrict | National | REPAIR-NIS | TRISLower [ris tower at Sa, 1+208,59 3451855",
+     "municipality_ocr": "Talavera",
+     "amount": 30000000.0,
+     "raw": "2027 UPRIIS ECH|A._| 1tDistrict | National | REPAIR-NIS | TRISLower [ris tower at Sa, 1+208,59 3451855 Talavera 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "CHA | 18tDistrict | National | REPAIR-NIS | TRISLower [oe Son at sta G181801-7+800.0",
+     "municipality_ocr": "Licab",
+     "amount": 15000000.0,
+     "raw": "2027 UPRIIS CHA | 18tDistrict | National | REPAIR-NIS | TRISLower [oe Son at sta G181801-7+800.0 Licab 15,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ECHA_|27@District] National | REPAIR-NIS | TRISLower [ro Moros cea 34000,00. 4834.00",
+     "municipality_ocr": "Maho",
+     "amount": 30000000.0,
+     "raw": "2027 UPRIIS ECHA_|27@District] National | REPAIR-NIS | TRISLower [ro Moros cea 34000,00. 4834.00 Maho 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "T:cHA._| 18tDistrict | National | REPAIR-NIS | TRISLower [enn sta 0100.00. 2423800",
+     "municipality_ocr": "Santo Domingo",
+     "amount": 20000000.0,
+     "raw": "2027 UPRIIS T:cHA._| 18tDistrict | National | REPAIR-NIS | TRISLower [enn sta 0100.00. 2423800 Santo Domingo 20,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "CHA | 18tDistrict | National | REPAIR-NIS | TRISLower [ene Sea q1210.00-24294.50",
+     "municipality_ocr": "Santo Domingo",
+     "amount": 30000000.0,
+     "raw": "2027 UPRIIS CHA | 18tDistrict | National | REPAIR-NIS | TRISLower [ene Sea q1210.00-24294.50 Santo Domingo 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ECA. _| 2tDistrict } National | REPAIR-NIS | TRISLower | ris rower at Sta.0+040.00.1+760.00",
+     "municipality_ocr": "Talavera",
+     "amount": 15000000.0,
+     "raw": "2027 UPRIIS ECA. _| 2tDistrict } National | REPAIR-NIS | TRISLower | ris rower at Sta.0+040.00.1+760.00 Talavera 15,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "CHA. _| 1stDistrict | National | REPAIR-NIS | TRISLower [ye 3 sta.04984.31 - 2368.40",
+     "municipality_ocr": "Licab",
+     "amount": 15000000.0,
+     "raw": "2027 UPRIIS CHA. _| 1stDistrict | National | REPAIR-NIS | TRISLower [ye 3 sta.04984.31 - 2368.40 Licab 15,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "Nee Ast District | National | REPAIR-NIS | TRISLower |Repair of Diversion Canal-1",
+     "municipality_ocr": "Llanera",
+     "amount": 30000000.0,
+     "raw": "2027 UPRIIS Nee Ast District | National | REPAIR-NIS | TRISLower |Repair of Diversion Canal-1 Llanera 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "BCA _{2dDistrict| National | REPAIR-NIS | \"Rtoris [sew 1247700147110",
+     "municipality_ocr": "Rizal",
+     "amount": 10000000.0,
+     "raw": "2027 UPRIIS BCA _{2dDistrict| National | REPAIR-NIS | \"Rtoris [sew 1247700147110 Rizal 10,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ECA. |284District] National | REPAIR-NIS | Pee |e on.80-34739.00",
+     "municipality_ocr": "Rizal",
+     "amount": 20000000.0,
+     "raw": "2027 UPRIIS ECA. |284District] National | REPAIR-NIS | Pee |e on.80-34739.00 Rizal 20,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ECA. _|2ndDistrict| National | REPAIR-NIS | \"Riveris |sta5s366,00. 5441600",
+     "municipality_ocr": "Rizal",
+     "amount": 3500000.0,
+     "raw": "2027 UPRIIS ECA. _|2ndDistrict| National | REPAIR-NIS | \"Riveris |sta5s366,00. 5441600 Rizal 3,500,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "cya. | 2n¢District| National | REPAIR-NIS Rene ie Sta, 5+900.00 - 5+931.60, Sta. 5+947.07 -",
+     "municipality_ocr": "Rizal",
+     "amount": 50000000.0,
+     "raw": "2027 UPRIIS cya. | 2n¢District| National | REPAIR-NIS Rene ie Sta, 5+900.00 - 5+931.60, Sta. 5+947.07 - Rizal 50,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "Eclya | 28@District] National | REPAIR-NIS | TRE” leer ty732-70.24050,64",
+     "municipality_ocr": "Rizal",
+     "amount": 30000000.0,
+     "raw": "2027 UPRIIS Eclya | 28@District] National | REPAIR-NIS | TRE” leer ty732-70.24050,64 Rizal 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "cia |2R¢District] National | REPAIR-NIS | \"Rivorig._ |sta,01437.00.21080.00",
+     "municipality_ocr": "Rizal",
+     "amount": 23000000.0,
+     "raw": "2027 UPRIIS cia |2R¢District] National | REPAIR-NIS | \"Rivorig._ |sta,01437.00.21080.00 Rizal 23,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ECIJA 2nd District} National REPAIR-NIS River IS Sta, 14027,95 -2+858.64",
+     "municipality_ocr": "Rizal",
+     "amount": 33000000.0,
+     "raw": "2027 UPRIIS ECIJA 2nd District} National REPAIR-NIS River IS Sta, 14027,95 -2+858.64 Rizal 33,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "cha |284District| National | REPAIR-NIS | \"Ritrig— |sta-04000.00. 47040.00",
+     "municipality_ocr": "Rizal",
+     "amount": 48000000.0,
+     "raw": "2027 UPRIIS cha |284District| National | REPAIR-NIS | \"Ritrig— |sta-04000.00. 47040.00 Rizal 48,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "3rd District} National | REPAIR-NIS mpanBa | s+a,0+040.00-04536.7 & Sta. 1+000.00- Gen,",
+     "municipality_ocr": "Natividad",
+     "amount": 30000000.0,
+     "raw": "2027 UPRIIS 3rd District} National | REPAIR-NIS mpanBa | s+a,0+040.00-04536.7 & Sta. 1+000.00- Gen, Natividad 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ECIJA 3rd District} National REPAIR-NIS River IS Mamerto Natividad, Nueva Ecija Gen,",
+     "municipality_ocr": "Natividad",
+     "amount": 27000000.0,
+     "raw": "2027 UPRIIS ECIJA 3rd District} National REPAIR-NIS River IS Mamerto Natividad, Nueva Ecija Gen, Natividad 27,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "EVA | 3rd District| National | REPAIR-NIS mpanga | pampanga River, Brgy. Bravo Gen. Mamerto |",
+     "municipality_ocr": "Gen. Natividad",
+     "amount": 20000000.0,
+     "raw": "2027 UPRIIS EVA | 3rd District| National | REPAIR-NIS mpanga | pampanga River, Brgy. Bravo Gen. Mamerto | Gen. Natividad 20,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "3rd District] National | REPAIR-NIS \" 4b, Sta. 0+000.00-14216,00 at Poblacion, |",
+     "municipality_ocr": "Gen. Natividad",
+     "amount": 20000000.0,
+     "raw": "2027 UPRIIS 3rd District] National | REPAIR-NIS \" 4b, Sta. 0+000.00-14216,00 at Poblacion, | Gen. Natividad 20,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "3rd District | National | REPAIR-NIS mpanga |¢ sta, 0+000.00-1+842.00 at Talabutab Sur,|",
+     "municipality_ocr": "Gen. Natividad",
+     "amount": 25000000.0,
+     "raw": "2027 UPRIIS 3rd District | National | REPAIR-NIS mpanga |¢ sta, 0+000.00-1+842.00 at Talabutab Sur,| Gen. Natividad 25,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "3rd District | National | REPAIR-NIS \" Feeder Canal , Sta, 0+105.97 - 1+700.00 Gen,",
+     "municipality_ocr": "Natividad",
+     "amount": 20000000.0,
+     "raw": "2027 UPRIIS 3rd District | National | REPAIR-NIS \" Feeder Canal , Sta, 0+105.97 - 1+700.00 Gen, Natividad 20,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ECIJA 4th District | National REPAIR-NIS Bongabon RIS | Various Irrigation",
+     "municipality_ocr": "Facilities San Leonardo",
+     "amount": 20000000.0,
+     "raw": "2027 UPRIIS ECIJA 4th District | National REPAIR-NIS Bongabon RIS | Various Irrigation Facilities San Leonardo 20,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "aie 3rd District | National | REPAIR-NIS | Cinco Irrigation]13+153.00- Sta 13+453 and",
+     "municipality_ocr": "Various Cabanatuan City",
+     "amount": 9000000.0,
+     "raw": " 2027 UPRIIS aie 3rd District | National | REPAIR-NIS | Cinco Irrigation]13+153.00- Sta 13+453 and Various Cabanatuan City 9,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "‘Nc, 3rd District] National | REPAIR-NIS | Irrigation |Sta. 7+071 - 7+771 (B/S) and",
+     "municipality_ocr": "Various General Mamerto",
+     "amount": 15000000.0,
+     "raw": "2027 UPRIIS ‘Nc, 3rd District] National | REPAIR-NIS | Irrigation |Sta. 7+071 - 7+771 (B/S) and Various General Mamerto 15,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "iiclja_ | 1stDistrict | National | REPAIR-NIS | Bongabon RIS |Lateral A-9 Sta,0+000-0+300 &",
+     "municipality_ocr": "Various Zaragoza",
+     "amount": 10000000.0,
+     "raw": "2027 UPRIIS iiclja_ | 1stDistrict | National | REPAIR-NIS | Bongabon RIS |Lateral A-9 Sta,0+000-0+300 & Various Zaragoza 10,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "NUEVA | 3-4 pistrict | National | REPAIR-NIS } Bongabon RIS |RePait of Lateral A Sta. 1+520-3+120 &",
+     "municipality_ocr": "Sta Rosa",
+     "amount": 30000000.0,
+     "raw": "2027 UPRIIS NUEVA | 3-4 pistrict | National | REPAIR-NIS } Bongabon RIS |RePait of Lateral A Sta. 1+520-3+120 & Sta Rosa 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "4th District | National | REPAIR-NIS | Bongabon RIS |1 Sta.6+699- 7+677& Lateral D Sta. 0+620-",
+     "municipality_ocr": "Jaen",
+     "amount": 20000000.0,
+     "raw": "2027 UPRIIS 4th District | National | REPAIR-NIS | Bongabon RIS |1 Sta.6+699- 7+677& Lateral D Sta. 0+620- Jaen 20,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "NUEVA | 3:4 District] National | REPAIR-NIS | Irrigation [and Slope Protection) at Gen",
+     "municipality_ocr": "Mamerto General Mamerto",
+     "amount": 100000000.0,
+     "raw": "2027 UPRIIS NUEVA | 3:4 District] National | REPAIR-NIS | Irrigation [and Slope Protection) at Gen Mamerto General Mamerto 100,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "EcH]A. | 3*4District] National | REPAIR-NIS |Cinco Irrigation] 76). Samon Cabanatuan City, Nueva |",
+     "municipality_ocr": "Sabanatuan City",
+     "amount": 24500000.0,
+     "raw": "2027 UPRIIS EcH]A. | 3*4District] National | REPAIR-NIS |Cinco Irrigation] 76). Samon Cabanatuan City, Nueva | Sabanatuan City 24,500,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "3rd District} National | REPAIR-NIS Irrigation | 10+930-11+878 at",
+     "municipality_ocr": "Burol General Mamerto",
+     "amount": 22000000.0,
+     "raw": "2027 UPRIIS 3rd District} National | REPAIR-NIS Irrigation | 10+930-11+878 at Burol General Mamerto 22,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "| BULACAN | 3rd District National | REPAIR-NIS | Penaranda RIS cepa ot (ater Se Sta. 0+000-0+800,",
+     "municipality_ocr": "San Miguel",
+     "amount": 21420000.0,
+     "raw": "2027 UPRIIS | BULACAN | 3rd District National | REPAIR-NIS | Penaranda RIS cepa ot (ater Se Sta. 0+000-0+800, San Miguel 21,420,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "‘ce, 1st District National REPAIR-NIS PRIS oe (CONSTRUCTION OF",
+     "municipality_ocr": "CONCRETE LINING AT Cuyapo",
+     "amount": 7000000.0,
+     "raw": "2027 UPRIIS ‘ce, 1st District National REPAIR-NIS PRIS oe (CONSTRUCTION OF CONCRETE LINING AT Cuyapo 7,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ae 2nd District} National | REPAIR-NIS PRIS oe (CONSTRUCTION OF CONCRETE",
+     "municipality_ocr": "LINING AT Talugtug",
+     "amount": 10000000.0,
+     "raw": "2027 UPRIIS ae 2nd District} National | REPAIR-NIS PRIS oe (CONSTRUCTION OF CONCRETE LINING AT Talugtug 10,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "aie 2nd District} National | REPAIR-NIS PRIS oon (CONSTRUCTION OF CONCRETE",
+     "municipality_ocr": "LINING AT Talugtug",
+     "amount": 4000000.0,
+     "raw": "2027 UPRIIS aie 2nd District} National | REPAIR-NIS PRIS oon (CONSTRUCTION OF CONCRETE LINING AT Talugtug 4,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ae 2nd District] National REPAIR-NIS PRIS pers (CONSTRUCTION OF CONCRETE",
+     "municipality_ocr": "LINING AT Talugtug",
+     "amount": 4000000.0,
+     "raw": "2027 UPRIIS ae 2nd District] National REPAIR-NIS PRIS pers (CONSTRUCTION OF CONCRETE LINING AT Talugtug 4,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "REPAIR-NIS",
+     "detail": "ECA 1st District | National | REPAIR-NIS 2) STA.1+320,00, STA. 2+200.00 -STA.",
+     "municipality_ocr": "Cuyapo",
+     "amount": 27000000.0,
+     "raw": "2027 UPRIIS ECA 1st District | National | REPAIR-NIS 2) STA.1+320,00, STA. 2+200.00 -STA. Cuyapo 27,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "vce 2nd National Climareehens PRIS | management system, alarm system, ten(10)",
+     "municipality_ocr": "Rizal",
+     "amount": 178049310.0,
+     "raw": "2027 UPRIIS vce 2nd National Climareehens PRIS | management system, alarm system, ten(10) Rizal 178,049,310.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "we 3rd District | National Climareenens AULOIS — |rerforestation of Aulo Watershed ,",
+     "municipality_ocr": "Palayan City",
+     "amount": 50000000.0,
+     "raw": "2027 UPRIIS we 3rd District | National Climareenens AULOIS — |rerforestation of Aulo Watershed , Palayan City 50,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "Aurora District National Change- NIS DRD Canili and",
+     "municipality_ocr": "Diayo Dams Aurora",
+     "amount": 5000000.0,
+     "raw": "2027 UPRIIS Aurora District National Change- NIS DRD Canili and Diayo Dams Aurora 5,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "2nd District} National © DRD _| Maintenance Of 200 has",
+     "municipality_ocr": "Agroforest Pantabangan",
+     "amount": 20000000.0,
+     "raw": "2027 UPRIIS 2nd District} National © DRD _| Maintenance Of 200 has Agroforest Pantabangan 20,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "NUEVA | ist District | National E-cpis | Lower Talavera) urtenant Structures at Talavera,",
+     "municipality_ocr": "Nueva Talavera",
+     "amount": 90000000.0,
+     "raw": "2027 UPRIIS NUEVA | ist District | National E-cpis | Lower Talavera) urtenant Structures at Talavera, Nueva Talavera 90,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "ae 1st District | National E-GPIS Marcon Creek | purtenant Structures at Aliaga ,",
+     "municipality_ocr": "Nueva Aliaga",
+     "amount": 150000000.0,
+     "raw": "2027 UPRIIS ae 1st District | National E-GPIS Marcon Creek | purtenant Structures at Aliaga , Nueva Aliaga 150,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "‘cis. 2nd District} National E-GPIS Rizal Munic |Appurtenant Structures at Llanera,",
+     "municipality_ocr": "Nueva Llanera",
+     "amount": 75000000.0,
+     "raw": "2027 UPRIIS ‘cis. 2nd District} National E-GPIS Rizal Munic |Appurtenant Structures at Llanera, Nueva Llanera 75,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "3rd District| National | E-GPIS mpanga | appurtenant Structures at Gen. Natividad, |",
+     "municipality_ocr": "Gen. Natividad",
+     "amount": 150000000.0,
+     "raw": "2027 UPRIIS 3rd District| National | E-GPIS mpanga | appurtenant Structures at Gen. Natividad, | Gen. Natividad 150,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "ie 3rd District | National | E-GPIS Platero IS _|Solar Powered System and",
+     "municipality_ocr": "Various General Memento",
+     "amount": 30000000.0,
+     "raw": "2027 UPRIIS ie 3rd District | National | E-GPIS Platero IS _|Solar Powered System and Various General Memento 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "‘one 4th District | National E-GPIS __| Along Along IS |Solar Powered System in",
+     "municipality_ocr": "Panabingan San San Antonio",
+     "amount": 30000000.0,
+     "raw": " 2027 UPRIIS ‘one 4th District | National E-GPIS __| Along Along IS |Solar Powered System in Panabingan San San Antonio 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "Ecya. | Ath District | National E-GPIS | Along Along IS |Solar Powered System in",
+     "municipality_ocr": "SUBAAN PUMP San Antonio",
+     "amount": 30000000.0,
+     "raw": "2027 UPRIIS Ecya. | Ath District | National E-GPIS | Along Along IS |Solar Powered System in SUBAAN PUMP San Antonio 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "cya | ‘th District | National E-GPIS _ | Along Along IS |Solar Powered System in",
+     "municipality_ocr": "AGUMANG San Antonio",
+     "amount": 30000000.0,
+     "raw": "2027 UPRIIS cya | ‘th District | National E-GPIS _ | Along Along IS |Solar Powered System in AGUMANG San Antonio 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "4th District | National E-GPIS Along Along IS |Solar Powered System in NAMAPA IA (RIO",
+     "municipality_ocr": "San Antonio",
+     "amount": 30000000.0,
+     "raw": "2027 UPRIIS 4th District | National E-GPIS Along Along IS |Solar Powered System in NAMAPA IA (RIO San Antonio 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "ATH District] National E-GPIS Bongabon RIS |Solar Powered System in",
+     "municipality_ocr": "Sta. Cruz-Sto San Antonio",
+     "amount": 30000000.0,
+     "raw": "2027 UPRIIS ATH District] National E-GPIS Bongabon RIS |Solar Powered System in Sta. Cruz-Sto San Antonio 30,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "cya. [47H District] National E-GPIS | Bongabon RIS |Solar Powered System in",
+     "municipality_ocr": "PINAGBUKLOD IA jaen",
+     "amount": 20000000.0,
+     "raw": "2027 UPRIIS cya. [47H District] National E-GPIS | Bongabon RIS |Solar Powered System in PINAGBUKLOD IA jaen 20,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": "EGPIP",
+     "detail": "| BULACAN | 3rd District} National | EGPIP-SOLAR| Penaranda RIS eon folar Power Pump @",
+     "municipality_ocr": "San Miguel",
+     "amount": 21050000.0,
+     "raw": "2027 UPRIIS | BULACAN | 3rd District} National | EGPIP-SOLAR| Penaranda RIS eon folar Power Pump @ San Miguel 21,050,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "Ecija | 3%@District | National ws Rea ee eo3 00. 15:158.00",
+     "municipality_ocr": "Gen. Natividad",
+     "amount": 6000000.0,
+     "raw": "2027 UPRIIS Ecija | 3%@District | National ws Rea ee eo3 00. 15:158.00 Gen. Natividad 6,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "CHA, _| 34 District] National oe Seg oe ten 08 3s449.95 Gen,",
+     "municipality_ocr": "Natividad",
+     "amount": 17000000.0,
+     "raw": "2027 UPRIIS CHA, _| 34 District] National oe Seg oe ten 08 3s449.95 Gen, Natividad 17,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "ECA | 2st District | National Nis See O0 1.20696",
+     "municipality_ocr": "Talavera",
+     "amount": 15700000.0,
+     "raw": "2027 UPRIIS ECA | 2st District | National Nis See O0 1.20696 Talavera 15,700,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "cia __| 28tDistrict | National ws s oon eea 00",
+     "municipality_ocr": "Aliaga",
+     "amount": 13400000.0,
+     "raw": "2027 UPRIIS cia __| 28tDistrict | National ws s oon eea 00 Aliaga 13,400,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "cha. _| 15*District | National wis {ea9ao8",
+     "municipality_ocr": "Talavera",
+     "amount": 16500000.0,
+     "raw": "2027 UPRIIS cha. _| 15*District | National wis {ea9ao8 Talavera 16,500,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "Tciia, | 1st District | National Nis Vaca Creek is [COSA",
+     "municipality_ocr": "Talavera",
+     "amount": 21500000.0,
+     "raw": "2027 UPRIIS Tciia, | 1st District | National Nis Vaca Creek is [COSA Talavera 21,500,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "cia |2R¢ District] National Nis ‘aren. \\os014.30 . 0680.00",
+     "municipality_ocr": "Lanera",
+     "amount": 7000000.0,
+     "raw": "2027 UPRIIS cia |2R¢ District] National Nis ‘aren. \\os014.30 . 0680.00 Lanera 7,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "CHA {284 District] National ws Reis. (seagto0-se838.22",
+     "municipality_ocr": "Rizal",
+     "amount": 39000000.0,
+     "raw": "2027 UPRIIS CHA {284 District] National ws Reis. (seagto0-se838.22 Rizal 39,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "ECIJA 3rd District | National NIS Bongabon RIS |Road @ PBRIS MC Sta, 3+591 - 5+991",
+     "municipality_ocr": "Cabanatuan City",
+     "amount": 22100000.0,
+     "raw": "2027 UPRIIS ECIJA 3rd District | National NIS Bongabon RIS |Road @ PBRIS MC Sta, 3+591 - 5+991 Cabanatuan City 22,100,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "cya | 2%¢ District] National IS. [Cinco Irrigation ay to TalipaparCabanstuan Ciity, Nueva] C@banatuan",
+     "municipality_ocr": "City",
+     "amount": 45000000.0,
+     "raw": "2027 UPRIIS cya | 2%¢ District] National IS. [Cinco Irrigation ay to TalipaparCabanstuan Ciity, Nueva] C@banatuan City 45,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "WcijA, | 34 District] National Nis. | Bonmion is (Sex 0000-34160 at Cabenatuan",
+     "municipality_ocr": "City Cabanatuan City",
+     "amount": 21500000.0,
+     "raw": "2027 UPRIIS WcijA, | 34 District] National Nis. | Bonmion is (Sex 0000-34160 at Cabenatuan City Cabanatuan City 21,500,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "rela | 3a District | National on Bonpuvon Ris {2 (te1340m) at Sia, Rose,",
+     "municipality_ocr": "Nueva Ecija Sta. Rosa",
+     "amount": 11300000.0,
+     "raw": "2027 UPRIIS rela | 3a District | National on Bonpuvon Ris {2 (te1340m) at Sia, Rose, Nueva Ecija Sta. Rosa 11,300,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "‘cya, 3rd District | National Servicehonds- Bongabon RIS |Sta. 0+000-1+500 at Polilio, Cabanatuan |",
+     "municipality_ocr": "Cabanatuan City",
+     "amount": 15000000.0,
+     "raw": "2027 UPRIIS ‘cya, 3rd District | National Servicehonds- Bongabon RIS |Sta. 0+000-1+500 at Polilio, Cabanatuan | Cabanatuan City 15,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "NUEVA | sr istrict | National |5e¥iceRoads- Sees Improvement of Canal Roadway at Lateral A) co) anatuan",
+     "municipality_ocr": "Cit",
+     "amount": 10000000.0,
+     "raw": "2027 UPRIIS NUEVA | sr istrict | National |5e¥iceRoads- Sees Improvement of Canal Roadway at Lateral A) co) anatuan Cit 10,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "cya | 2a District} National wis Bongabon RIS |r oyg.24790",
+     "municipality_ocr": "Sta. Rosa",
+     "amount": 45000000.0,
+     "raw": "2027 UPRIIS cya | 2a District} National wis Bongabon RIS |r oyg.24790 Sta. Rosa 45,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "Nae. 3rd District | National ServiceRoads- Cinco Irrigation|Road @DC-2, Sta. 17+178.00 - Sta,",
+     "municipality_ocr": "Cabanatuan City",
+     "amount": 5000000.0,
+     "raw": "2027 UPRIIS Nae. 3rd District | National ServiceRoads- Cinco Irrigation|Road @DC-2, Sta. 17+178.00 - Sta, Cabanatuan City 5,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "Teva | 4th Disrict | National NS | Pemaranda RIS | ote 119916-140048' Sta, 172091. | Isidro,",
+     "municipality_ocr": "Cabiao",
+     "amount": 99488000.0,
+     "raw": "2027 UPRIIS Teva | 4th Disrict | National NS | Pemaranda RIS | ote 119916-140048' Sta, 172091. | Isidro, Cabiao 99,488,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "Becyja, [20d Distreit} National Nis PRIS-SDC__|ROADWAYS (Science City of Mufioz AREA)",
+     "municipality_ocr": "Mana",
+     "amount": 50000000.0,
+     "raw": "2027 UPRIIS Becyja, [20d Distreit} National Nis PRIS-SDC__|ROADWAYS (Science City of Mufioz AREA) Mana 50,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "ECA. | 18tDistrict | National Nis | PRIS-SDC PH2 |CONCRETE PAVEMENT (PCCP)",
+     "municipality_ocr": "AT SUB- Guimba",
+     "amount": 5000000.0,
+     "raw": "2027 UPRIIS ECA. | 18tDistrict | National Nis | PRIS-SDC PH2 |CONCRETE PAVEMENT (PCCP) AT SUB- Guimba 5,000,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "Hcy. | 28tDistrict | National Ie | PRIS-SDC PH2 |CONCRETE PAVEMENT (PCCP)",
+     "municipality_ocr": "AT Guimba",
+     "amount": 1650000.0,
+     "raw": "2027 UPRIIS Hcy. | 28tDistrict | National Ie | PRIS-SDC PH2 |CONCRETE PAVEMENT (PCCP) AT Guimba 1,650,000.00 "
+    },
+    {
+     "year": "2027",
+     "region": "UPRIIS",
+     "fund_source": null,
+     "detail": "cija | 1stDistrict | National NS | PRIS-SDCPH2 [rate aL Net (STA. 0+000- STA. 11020,",
+     "municipality_ocr": "Cuyape",
+     "amount": 11175000.0,
+     "raw": "2027 UPRIIS cija | 1stDistrict | National NS | PRIS-SDCPH2 [rate aL Net (STA. 0+000- STA. 11020, Cuyape 11,175,000.00 "
+    }
+   ],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "07 REGION IV-A/RDC RESO NO IV-A-05U-2026.3.pdf",
+   "region": "Region 4A",
+   "pages": 6,
+   "sha1": "9c4e20ffb4aeff5013e36facb5d59183971a8229",
+   "resolutions": [],
+   "endorsing_titles": [
+    {
+     "title": "ENDORSING THE FISCAL YEAR 2027 BUDGET PROPOSAL OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGION IV-A TO THE CENTRAL OFFICES OF NIA AND THE DEPARTMENT OF BUDGET AND MANAGEMENT",
+     "char_offset": 2869
+    }
+   ],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "08 REGION IV-B/RDC IV-B RESO NO 2026-092-1436.pdf",
+   "region": "Region 4B",
+   "pages": 15,
+   "sha1": "ad29da096a4d26a61ef11212a7e993928660b194",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "09 REGION V/RDC V RESO NO 1-06G S 2026.2.pdf",
+   "region": "Region 5",
+   "pages": 21,
+   "sha1": "9067ee1b05ce7eff4ca6ee74ac3290a91fb9631b",
+   "resolutions": [
+    {
+     "resolution_no": "1-06G",
+     "series_year": "2026",
+     "char_offset": 972
+    },
+    {
+     "resolution_no": "1-06G",
+     "series_year": "2026",
+     "char_offset": 1242
+    },
+    {
+     "resolution_no": "1-13",
+     "series_year": "2026",
+     "char_offset": 4053
+    },
+    {
+     "resolution_no": "1-06H",
+     "series_year": "2026",
+     "char_offset": 5206
+    }
+   ],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "09 REGION V/RDC V RESO NO 1-06G S 2026.3.pdf",
+   "region": "Region 5",
+   "pages": 21,
+   "sha1": "eba9b6cba83ba1840c85dafe767f45495c672006",
+   "resolutions": [
+    {
+     "resolution_no": "1-06G",
+     "series_year": "2026",
+     "char_offset": 1375
+    },
+    {
+     "resolution_no": "1-06H",
+     "series_year": "2026",
+     "char_offset": 2197
+    },
+    {
+     "resolution_no": "1-06G",
+     "series_year": "2026",
+     "char_offset": 3742
+    },
+    {
+     "resolution_no": "1-13",
+     "series_year": "2026",
+     "char_offset": 6736
+    }
+   ],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "09 REGION V/RDC V RESO NO 1-06G S 2026.pdf",
+   "region": "Region 5",
+   "pages": 5,
+   "sha1": "446de3e144a05056c37bb0583fb7b82056017691",
+   "resolutions": [
+    {
+     "resolution_no": "1-066",
+     "series_year": "2026",
+     "char_offset": 1241
+    },
+    {
+     "resolution_no": "1-06H",
+     "series_year": "2026",
+     "char_offset": 2187
+    },
+    {
+     "resolution_no": "1-06G",
+     "series_year": "2026",
+     "char_offset": 3686
+    },
+    {
+     "resolution_no": "1-13",
+     "series_year": "2026",
+     "char_offset": 6629
+    }
+   ],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "10 REGION VI/RDC VI RESO 03-34 S 2026.2.pdf",
+   "region": "Region 6",
+   "pages": 20,
+   "sha1": "1567276f7e7b704dd93c00e9970627320aecccb4",
+   "resolutions": [
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 1568
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 3468
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 4200
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 7130
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 8605
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 9409
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 11408
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 12134
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 12198
+    }
+   ],
+   "endorsing_titles": [
+    {
+     "title": "ENDORSING THE PROPOSED FY 2027 BUDGET OF THE NATIONAL IRRIGATION EMAIL SUBJECT: | ADMINISTRATION (NIA) REGIONAL OFFICE VI FOR INCLUSION IN NIA CENTRAL OFFICE’S FY 2027 BUDGET PROPOSAL",
+     "char_offset": 1606
+    },
+    {
+     "title": "ENDORSING THE PROPOSED FY 2027 BUDGET OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE VI FOR INCLUSION IN NIA CENTRAL OFFICE’S FY 2027 BUDGET PROPOSAL",
+     "char_offset": 2061
+    },
+    {
+     "title": "ENDORSING THE PROPOSED FY 2027 BUDGET OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE VI FOR INCLUSION IN NIA CENTRAL OFFICE’S FY 2027 BUDGET PROPOSAL",
+     "char_offset": 3617
+    },
+    {
+     "title": "ENDORSING THE PROPOSED FY 2027 BUDGET OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE VI FOR INCLUSION IN NIA CENTRAL OFFICE’S FY 2027 BUDGET PROPOSAL",
+     "char_offset": 8643
+    }
+   ],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "10 REGION VI/RDC VI RESO 03-34 S 2026.3.pdf",
+   "region": "Region 6",
+   "pages": 19,
+   "sha1": "5f8bf79887bcc94ae7c1030933d4d0745b5454e1",
+   "resolutions": [
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 94
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 2674
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 4374
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 4997
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 8944
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 10130
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 10820
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 12220
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 13003
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 13508
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 13885
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 14366
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 14827
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 15615
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 16274
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 17027
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 18577
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 19160
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 20023
+    }
+   ],
+   "endorsing_titles": [
+    {
+     "title": "ENDORSING THE PROPOSED FY 2027 BUDGET OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE VI FOR INCLUSION IN NIA CENTRAL OFFICE’S FY 2027 BUDGET PROPOSAL",
+     "char_offset": 132
+    },
+    {
+     "title": "ENDORSING THE PROPOSED FY 2027 BUDGET OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE VI FOR INCLUSION IN NIA CENTRAL OFFICE’S FY 2027 BUDGET PROPOSAL",
+     "char_offset": 2712
+    },
+    {
+     "title": "ENDORSING THE PROPOSED FY 2027 BUDGET OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE VI FOR INCLUSION IN NIA CENTRAL OFFICE’S FY 2027 BUDGET PROPOSAL",
+     "char_offset": 4412
+    },
+    {
+     "title": "ENDORSING THE PROPOSED FY 2027 BUDGET OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE VI FOR INCLUSION IN NIA CENTRAL OFFICE’S FY 2027 BUDGET PROPOSAL",
+     "char_offset": 20061
+    }
+   ],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "10 REGION VI/RDC VI RESO 03-34 S 2026.pdf",
+   "region": "Region 6",
+   "pages": 20,
+   "sha1": "19fd0bcf9343aab329d15f925d8599bbbbddc5a2",
+   "resolutions": [
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 81
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 5681
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 5968
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 6045
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 7061
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 7682
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 8222
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 13225
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 14773
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 15745
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 17494
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 18831
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 19490
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 19951
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 20702
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 21206
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 21990
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 22951
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 23839
+    },
+    {
+     "resolution_no": "03-34",
+     "series_year": "2026",
+     "char_offset": 25550
+    }
+   ],
+   "endorsing_titles": [
+    {
+     "title": "ENDORSING THE PROPOSED FY 2027 BUDGET OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE VI FOR INCLUSION IN NIA CENTRAL OFFICE’S FY 2027 BUDGET PROPOSAL",
+     "char_offset": 119
+    },
+    {
+     "title": "ENDORSING THE PROPOSED FY 2027 BUDGET OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE VI FOR INCLUSION IN NIA CENTRAL OFFICE’S FY 2027 BUDGET PROPOSAL",
+     "char_offset": 5719
+    },
+    {
+     "title": "ENDORSING THE PROPOSED FY 2027 BUDGET OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE VI FOR INCLUSION IN NIA CENTRAL OFFICE’S FY 2027 BUDGET PROPOSAL",
+     "char_offset": 7099
+    },
+    {
+     "title": "ENDORSING THE PROPOSED FY 2027 BUDGET OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE VI FOR INCLUSION IN NIA CENTRAL OFFICE’S FY 2027 BUDGET PROPOSAL",
+     "char_offset": 8260
+    }
+   ],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "10 REGION VI/RDC VI RESO NO 139 S 2025.pdf",
+   "region": "Region 6",
+   "pages": 9,
+   "sha1": "d124e7db8a85253828f3488f8c98fd01c5b34654",
+   "resolutions": [
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 115
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 228
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 2131
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 4541
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 5882
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 6120
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 7659
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 7712
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 7778
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 8050
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 8159
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 8784
+    },
+    {
+     "resolution_no": "124",
+     "series_year": "2025",
+     "char_offset": 10038
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 11255
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 13116
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 14940
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 16706
+    },
+    {
+     "resolution_no": "139",
+     "series_year": "2025",
+     "char_offset": 17537
+    }
+   ],
+   "endorsing_titles": [
+    {
+     "title": "APPROVING THE 2... G OV al i Administrator's Office <adminoffice@nia.gov.ph> Fw: RDC VI Resolution No. 139, s. 2025, “APPROVING THE 2025 MIDTERM UPDATE OF THE WESTERN VISAYAS REGIONAL DEVELOPMENT INVESTMENT PROGRAM (RDIP) 2023-2028",
+     "char_offset": 144
+    },
+    {
+     "title": "APPROVING THE 2025 MIDTERM UPDATE OF THE WESTERN VISAYAS REGIONAL DEVELOPMENT INVESTMENT PROGRAM (RDIP) 2023-2028",
+     "char_offset": 2167
+    },
+    {
+     "title": "APPROVING THE 2025 MIDTERM UPDATE OF THE WESTERN VISAYAS REGIONAL DEVELOPMENT INVESTMENT PROGRAM (RDIP) 2023-2028",
+     "char_offset": 5918
+    },
+    {
+     "title": "APPROVING THE 2025 MIDTERM UPDATE OF THE WESTERN VISAYAS REGIONAL DEVELOPMENT INVESTMENT PROGRAM (RDIP) 2023-2028",
+     "char_offset": 6156
+    },
+    {
+     "title": "APPROVING THE 2025 MIDTERM UPDATE OF THE WESTERN VISAYAS REGIONAL DEVELOPMENT INVESTMENT PROGRAM (RDIP) 2023-2028",
+     "char_offset": 8195
+    },
+    {
+     "title": "APPROVING THE 2025 MIDTERM UPDATE OF THE WESTERN VISAYAS REGIONAL DEVELOPMENT INVESTMENT PROGRAM (RDIP) 2023-2028",
+     "char_offset": 17572
+    }
+   ],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "10 REGION VI/RDC VI RESO NO 140 S 2025.pdf",
+   "region": "Region 6",
+   "pages": 7,
+   "sha1": "600daf6a98e5e19f7b26d50759194b8ed118beae",
+   "resolutions": [
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 106
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 242
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 2020
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 4687
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 6505
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 6749
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 8292
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 8407
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 8675
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 8784
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 9415
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 11550
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 13493
+    },
+    {
+     "resolution_no": "140",
+     "series_year": "2025",
+     "char_offset": 14120
+    }
+   ],
+   "endorsing_titles": [
+    {
+     "title": "ENDORSING THE ... - G OV al | Administrator's Office <adminoffice@nia.gov.ph> Poverty Senge Fw: RDC VI Resolution No. 140, s. 2025, “ENDORSING THE WESTERN VISAYAS FY 2027 ANNUAL INVESTMENT PROGRAM AMOUNTING TO P236.392 BILLION TO AGENCY CENTRAL OFFICES",
+     "char_offset": 142
+    },
+    {
+     "title": "ENDORSING THE WESTERN VISAYAS FY 2027 ANNUAL INVESTMENT PROGRAM AMOUNTING TO P236.392 BILLION TO AGENCY CENTRAL OFFICES",
+     "char_offset": 2056
+    },
+    {
+     "title": "ENDORSING THE WESTERN VISAYAS FY 2027 ANNUAL INVESTMENT PROGRAM AMOUNTING TO P236.392 BILLION TO AGENCY CENTRAL OFFICES",
+     "char_offset": 6541
+    },
+    {
+     "title": "ENDORSING THE WESTERN VISAYAS FY 2027 ANNUAL INVESTMENT PROGRAM AMOUNTING TO P236.392 BILLION TO AGENCY CENTRAL OFFICES",
+     "char_offset": 6785
+    },
+    {
+     "title": "ENDORSING THE WESTERN VISAYAS FY 2027 ANNUAL INVESTMENT PROGRAM AMOUNTING TO P236.392 BILLION TO AGENCY CENTRAL OFFICES",
+     "char_offset": 8820
+    },
+    {
+     "title": "ENDORSING THE WESTERN VISAYAS FY 2027 ANNUAL INVESTMENT PROGRAM AMOUNTING TO P236.392 BILLION TO AGENCY CENTRAL OFFICES",
+     "char_offset": 14155
+    }
+   ],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "11 REGION VII/RDC VII RESO NO 38-A S 2026.pdf",
+   "region": "Region 7",
+   "pages": 5,
+   "sha1": "1c53390125d33ff9392d2cecd1b0106d4483c381",
+   "resolutions": [],
+   "endorsing_titles": [
+    {
+     "title": "ENDORSING THE FY 2027 BUDGET PROPOSAL OF THE NATIONAL IRRIGATION ADMINISTRATION REGIONAL OFFICE 7 (NIA 7) TO THE NIA CENTRAL OFFICE FOR INCLUSION IN THE FY 2027 BUDGET PROPOSAL OF THE AGENCY",
+     "char_offset": 1795
+    }
+   ],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "12 REGION VIII/RDC VIII RESO NO 06-H S 2026.2.pdf",
+   "region": "Region 8",
+   "pages": 7,
+   "sha1": "54016088c860180a994a160c98d40423738aa786",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": [
+    9542821841.0,
+    8968076841.0
+   ]
+  },
+  {
+   "source_file": "12 REGION VIII/RDC VIII RESO NO 06-H S 2026.pdf",
+   "region": "Region 8",
+   "pages": 8,
+   "sha1": "ea337653129ef60862ea4d9af8a0d3a2d0079ade",
+   "resolutions": [
+    {
+     "resolution_no": "06-H",
+     "series_year": "2026",
+     "char_offset": 4086
+    },
+    {
+     "resolution_no": "06-H",
+     "series_year": "2026",
+     "char_offset": 4181
+    }
+   ],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": [
+    9542821841.0,
+    8968076841.0
+   ]
+  },
+  {
+   "source_file": "12 REGION VIII/RDC VIII RESO NO 16 S 2026.pdf",
+   "region": "Region 8",
+   "pages": 8,
+   "sha1": "2807f9aa252e3623ca4d8f8737711931c155feb3",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "12 REGION VIII/RDC VIII RESO NO 9 S 2026.pdf",
+   "region": "Region 8",
+   "pages": 9,
+   "sha1": "2ae2a83f20e52a214d7edfaa26db1f91d0985655",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "13 REGION IX/RDC IX RESO NO 012 S 2026.pdf",
+   "region": "Region 9",
+   "pages": 8,
+   "sha1": "7c65b087bc192e448262dd8cc38929321ddad532",
+   "resolutions": [],
+   "endorsing_titles": [
+    {
+     "title": "ENDORSING THE FISCAL YEAR 2027 BUDGET PROPOSAL OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE IX IN THE AMOUNT OF PHP10.226 BILLION TO THE NIA CENTRAL OFFICE AND THE DEPARTMENT OF BUDGET AND MANAGEMENT.",
+     "char_offset": 822
+    },
+    {
+     "title": "ENDORSING THE FISCAL YEAR 2027 BUDGET PROPOSAL OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA) REGIONAL OFFICE IX IN THE AMOUNT OF PHP10.226 BILLION TO THE NIA CENTRAL OFFICE AND THE DEPARTMENT OF BUDGET AND MANAGEMENT.",
+     "char_offset": 3224
+    }
+   ],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "13 REGION IX/RDC IX RESO NO 117-D.4 S 2025.pdf",
+   "region": "Region 9",
+   "pages": 17,
+   "sha1": "93bdd4fc1a8d65c447dbfc3cc87e3a39152c2aa3",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "14 REGION X/RDC X RESO NO 14-09 S 2026.pdf",
+   "region": "Region 10",
+   "pages": 7,
+   "sha1": "53ed1313d68f3a22ede87582f846ce502036f45a",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "14 REGION X/RDC X RESO NO 36 S 2026.pdf",
+   "region": "Region 10",
+   "pages": 16,
+   "sha1": "02011cf39a0549b56d7540aee12c5029904aa029",
+   "resolutions": [
+    {
+     "resolution_no": "36",
+     "series_year": "2026",
+     "char_offset": 3871
+    }
+   ],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "15 REGION XI/RDC XI RESO NO 26 S 2026.2.pdf",
+   "region": "Region 11",
+   "pages": 13,
+   "sha1": "e23d1183e67bb8dec838797150495de4038e0946",
+   "resolutions": [],
+   "endorsing_titles": [
+    {
+     "title": "ENDORSING TO THE ADMINISTRATOR OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA), THE SECRETARY OF THE DEPARTMENT OF BUDGET AND MANAGEMENT (DBM), AND THE CONGRESSIONAL REPRESENTATIVES OF DAVAO REGION, THE COMMITTEE ON APPROPRIATIONS OF THE HOUSE OF REPRESENTATIVES, AND THE COMMITTEE ON FINANCE OF THE SENATE OF THE PHILIPPINES, THE FY 2027 BUDGET PROPOSAL OF THE NIA XI IN THE AMOUNT OF PHP 7,700,874,",
+     "char_offset": 1943
+    },
+    {
+     "title": "ENDORSING TO THE ADMINISTRATOR OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA), THE SECRETARY OF THE DEPARTMENT OF BUDGET AND MANAGEMENT (DBM), AND THE CONGRESSIONAL REPRESENTATIVES OF DAVAO REGION, THE COMMITTEE ON APPROPRIATIONS OF THE HOUSE OF REPRESENTATIVES, AND THE COMMITTEE ON FINANCE OF THE SENATE OF THE PHILIPPINES, THE FY 2027 BUDGET PROPOSAL OF THE NIA XI IN THE AMOUNT OF PHP 7,700,874,",
+     "char_offset": 3861
+    }
+   ],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": [
+    7700874330.0
+   ]
+  },
+  {
+   "source_file": "15 REGION XI/RDC XI RESO NO 26 S 2026.pdf",
+   "region": "Region 11",
+   "pages": 11,
+   "sha1": "433a645f7a3d6f7051334d08108427bbf58061ef",
+   "resolutions": [],
+   "endorsing_titles": [
+    {
+     "title": "ENDORSING TO THE ADMINISTRATOR OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA), THE SECRETARY OF THE DEPARTMENT OF BUDGET AND MANAGEMENT (DBM), AND THE CONGRESSIONAL REPRESENTATIVES OF DAVAO REGION, THE COMMITTEE ON APPROPRIATIONS OF THE HOUSE OF REPRESENTATIVES, AND THE COMMITTEE ON FINANCE OF THE SENATE OF THE PHILIPPINES, THE FY 2027 BUDGET PROPOSAL OF THE NIA XI IN THE AMOUNT OF PHP 7,700,874,",
+     "char_offset": 938
+    },
+    {
+     "title": "ENDORSING TO THE ADMINISTRATOR OF THE NATIONAL IRRIGATION ADMINISTRATION (NIA), THE SECRETARY OF THE DEPARTMENT OF BUDGET AND MANAGEMENT (DBM), AND THE CONGRESSIONAL REPRESENTATIVES OF DAVAO REGION, THE COMMITTEE ON APPROPRIATIONS OF THE HOUSE OF REPRESENTATIVES, AND THE COMMITTEE ON FINANCE OF THE SENATE OF THE PHILIPPINES, THE FY 2027 BUDGET PROPOSAL OF THE NIA XI IN THE AMOUNT OF PHP 7,700,874,",
+     "char_offset": 3998
+    }
+   ],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "15 REGION XI/RDC XI RESO NO 50-D S 2025.pdf",
+   "region": "Region 11",
+   "pages": 4,
+   "sha1": "a5cb57057f120590ef859fc2fb6b3c3b2b64b2fd",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "16 REGION XII/RDC XII RESO 187 & 188 S OF 2026.pdf",
+   "region": "Region 12",
+   "pages": 2,
+   "sha1": "122ce259429ac6bd776ffe63a844cee88e654ca8",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "16 REGION XII/RDC XII RESO NO 130 S 2026.pdf",
+   "region": "Region 12",
+   "pages": 4,
+   "sha1": "1f8cdf11b0840ee50004a855ee8be4946700a815",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "16 REGION XII/RDC XII Reso 187 s2026.pdf",
+   "region": "Region 12",
+   "pages": 2,
+   "sha1": "f067a9e525e998b822b14d093a16f535124eaf81",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  },
+  {
+   "source_file": "16 REGION XII/RDC XII Reso 188 s2026.pdf",
+   "region": "Region 12",
+   "pages": 2,
+   "sha1": "e8ba0724aa9b4936c9bba2e730cb7151a22344e3",
+   "resolutions": [],
+   "endorsing_titles": [],
+   "tier_tables": [],
+   "project_rows": [],
+   "headline_amounts": []
+  }
+ ],
+ "rdc_xii_lists": {
+  "top30_nia_projects": [
+   {
+    "excel_row": 32,
+    "rank": 27,
+    "title": "Kabulnan-2 Multipurpose Irrigation & Power Project",
+    "agency": "NIA XII",
+    "status_of_proposal": "Project in the PIP",
+    "implementation_period": "2028 - Continuing Years",
+    "readiness_level": null,
+    "total_investment": 350000000,
+    "y2027": null,
+    "y2028": 350000000,
+    "y2029": null,
+    "dro_remarks": "Included in the RDC XII ExCom-endorsed CY 2028 AIP The construction of the Kabulnan-2 Multipurpose Irrigation and Power Project (K2MIPP) was suspended due to unfavorable geotechnical conditions identified during the site investigation. Geotechnical studies for both Dam Sites No. 1 and No. 2 revealed",
+    "aco_decision": "Accepted"
+   },
+   {
+    "excel_row": 33,
+    "rank": 28,
+    "title": "Lower Malitubog Water Resource Management Project (formerly Lower Malitubog Irrigation Project)",
+    "agency": "NIA XII",
+    "status_of_proposal": "Reconfirmed Project",
+    "implementation_period": "2028-2029",
+    "readiness_level": "Level 1",
+    "total_investment": 4552280000,
+    "y2027": null,
+    "y2028": 2000000000,
+    "y2029": 1400000000,
+    "dro_remarks": "Included in the RDC XII ExCom-endorsed CY 2028 AIP. Project has already been presented and approved by NIA Board with its updated project name \"Lower Malitubog Water Resource Management Project (LMWRMP)\"",
+    "aco_decision": "Accepted"
+   },
+   {
+    "excel_row": 34,
+    "rank": 29,
+    "title": "Lebak Integrated Irrigation Project",
+    "agency": "NIA XII",
+    "status_of_proposal": "Reconfirmed Project",
+    "implementation_period": "2019 - 2028",
+    "readiness_level": "Level 2",
+    "total_investment": 2135175000,
+    "y2027": null,
+    "y2028": 975175000,
+    "y2029": null,
+    "dro_remarks": "Included in the RDC XII ExCom-endorsed CY 2028 AIP As of September 30, 2025, the project recorded an overall accomplishment of 74.29 percent.",
+    "aco_decision": "Accepted"
+   },
+   {
+    "excel_row": 35,
+    "rank": 30,
+    "title": "Sepaka Reservoir Irrigation Project",
+    "agency": "NIA XII",
+    "status_of_proposal": "Reconfirmed Project",
+    "implementation_period": "2028 - Continuing Years",
+    "readiness_level": null,
+    "total_investment": 5650000000,
+    "y2027": null,
+    "y2028": 650000000,
+    "y2029": 5000000000,
+    "dro_remarks": "Included in the RDC XII ExCom-endorsed CY 2028 AIP Conduct of Detailed Engineering Design in 2026 and proposed conduct of pre-construction activities and construction of irrigation facilities in 2027. Total overall project cost shall be determined after the completion of the Feasibility Study and De",
+    "aco_decision": "Accepted"
+   }
+  ],
+  "top3_fs_nia_proposals": [
+   {
+    "excel_row": 5,
+    "title": "Minapan Multi-purpose Irrigation and Power Project",
+    "agency": "NIA XII",
+    "fs_cost_2028": 65000000,
+    "fs_cost_2029": null,
+    "fs_cost_2030": null,
+    "fs_total": 65000000,
+    "justification": "The Minapan Multipurpose Irrigation and Power Project, located in Brgy. Maybula, Tulunan, North Cotabato, involves the construction of an embankment-type diversion system at coordinates 6°47’9.89” N, 124°59’3.39” E. With a drainage area of 22.59 square kilometers, the project will draw water primarily from Minapan Creek (locally known as Kongkling River), supplemented by Kipot Creek. The project i"
+   },
+   {
+    "excel_row": 6,
+    "title": "Lumabat River Small Reservoir Irrigation Project",
+    "agency": "NIA XII",
+    "fs_cost_2028": 12500000,
+    "fs_cost_2029": null,
+    "fs_cost_2030": null,
+    "fs_total": 12500000,
+    "justification": "The Lumabat River SRIP is located in the mountainous terrain of Brgy. Lutay, Malungon, Province of Sarangani with a drainage area of 94.77 sq.km. This aims to provide a storage type dam/reservoir to generate 3,748 hectares of agricultural land. One of the struggles of upland farmers is the availability of irrigation water considering that the terrain are challenging and coveyance structures and ir"
+   }
+  ]
+ }
+}

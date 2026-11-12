@@ -19,7 +19,8 @@ EVENT = re.compile(
 )
 DMS = (
     r"(?P<degrees>\d{1,3})\s*(?P<degree_sep>°|\.(?=\d{1,2}\s*')|\s+)\s*"
-    r"(?P<minutes>\d{1,2})\s*'\s*(?P<seconds>\d+(?:\.\d+)?)(?P<seconds_quote>\s*\")?"
+    # Minutes mark is usually '; OCR sometimes spaces it (14° 49' 47.96).
+    r"(?P<minutes>\d{1,2})\s*'\s*(?P<seconds>\d+(?:\.\d+)?)(?P<seconds_quote>\s*\"*)?"
 )
 ANGLE = re.compile(
     r"(?P<prefix>[NSEW])?\s*(?:" + DMS + r"|(?P<decimal>[+-]?\d+(?:[.:]\s*\d+)*))\s*"
@@ -29,9 +30,12 @@ ANGLE = re.compile(
 
 
 def ascii_text(text: str) -> str:
-    return text.translate(str.maketrans({
+    text = text.translate(str.maketrans({
         "’": "'", "‘": "'", "′": "'", "”": '"', "“": '"', "″": '"', "º": "°", "−": "-",
     }))
+    # Excel / OCR often doubles the seconds mark (15°56'56.69""N). Collapse
+    # before ANGLE matching so a second quote is not left as residue.
+    return re.sub(r'"{2,}', '"', text)
 
 
 def parse_angle(match) -> dict:

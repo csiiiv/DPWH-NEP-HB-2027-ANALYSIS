@@ -1,0 +1,226 @@
+[
+ {
+  "file": "01 CAR/RDC-CAR RESO NO 31 S 2026.pdf",
+  "pages": 14,
+  "ocr_chars": 25022,
+  "txt": "ocr_text/01 CAR__RDC-CAR RESO NO 31 S 2026.txt",
+  "sha1": "bc61547870b4900a970897fc001e5a2b064afbaa"
+ },
+ {
+  "file": "02 REGION I/RDC1 RESO NO. 29 S 2026.pdf",
+  "pages": 3,
+  "ocr_chars": 7616,
+  "txt": "ocr_text/02 REGION I__RDC1 RESO NO. 29 S 2026.txt",
+  "sha1": "4c797741850b7603fce503adf64e0cc00735e100"
+ },
+ {
+  "file": "03 REGION II/RDC2 RESO NO. 02-57 S 2026 -R2& MARIIS.pdf",
+  "pages": 29,
+  "ocr_chars": 46024,
+  "txt": "ocr_text/03 REGION II__RDC2 RESO NO. 02-57 S 2026 -R2& MARIIS.txt",
+  "sha1": "230e1f8d829a5c97e351939caaf211e5fafa0fc3"
+ },
+ {
+  "file": "04 MARIIS/RDC2 RESO NO. 02-57 S 2026 -R2& MARIIS.pdf",
+  "pages": 29,
+  "ocr_chars": 46024,
+  "txt": "ocr_text/04 MARIIS__RDC2 RESO NO. 02-57 S 2026 -R2& MARIIS.txt",
+  "sha1": "230e1f8d829a5c97e351939caaf211e5fafa0fc3"
+ },
+ {
+  "file": "05 REGION III/RDC 3 RESO NO. 03-39-2026.pdf",
+  "pages": 11,
+  "ocr_chars": 17174,
+  "txt": "ocr_text/05 REGION III__RDC 3 RESO NO. 03-39-2026.txt",
+  "sha1": "294e7b9e5c1ada77a76a88947368c9792b3c76c3"
+ },
+ {
+  "file": "06 UPRIIS/UPRIIS RDC II Resolution No. 03-40-2026.pdf",
+  "pages": 25,
+  "ocr_chars": 52367,
+  "txt": "ocr_text/06 UPRIIS__UPRIIS RDC II Resolution No. 03-40-2026.txt",
+  "sha1": "b8936eae4508a8f59f0d072f46091475ebf54688"
+ },
+ {
+  "file": "07 REGION IV-A/RDC RESO NO IV-A-05U-2026.3.pdf",
+  "pages": 6,
+  "ocr_chars": 11582,
+  "txt": "ocr_text/07 REGION IV-A__RDC RESO NO IV-A-05U-2026.3.txt",
+  "sha1": "9c4e20ffb4aeff5013e36facb5d59183971a8229"
+ },
+ {
+  "file": "08 REGION IV-B/RDC IV-B RESO NO 2026-092-1436.pdf",
+  "pages": 15,
+  "ocr_chars": 29465,
+  "txt": "ocr_text/08 REGION IV-B__RDC IV-B RESO NO 2026-092-1436.txt",
+  "sha1": "ad29da096a4d26a61ef11212a7e993928660b194"
+ },
+ {
+  "file": "09 REGION V/RDC V RESO NO 1-06G S 2026.2.pdf",
+  "pages": 21,
+  "ocr_chars": 35457,
+  "txt": "ocr_text/09 REGION V__RDC V RESO NO 1-06G S 2026.2.txt",
+  "sha1": "9067ee1b05ce7eff4ca6ee74ac3290a91fb9631b"
+ },
+ {
+  "file": "09 REGION V/RDC V RESO NO 1-06G S 2026.3.pdf",
+  "pages": 21,
+  "ocr_chars": 39093,
+  "txt": "ocr_text/09 REGION V__RDC V RESO NO 1-06G S 2026.3.txt",
+  "sha1": "eba9b6cba83ba1840c85dafe767f45495c672006"
+ },
+ {
+  "file": "09 REGION V/RDC V RESO NO 1-06G S 2026.pdf",
+  "pages": 5,
+  "ocr_chars": 7456,
+  "txt": "ocr_text/09 REGION V__RDC V RESO NO 1-06G S 2026.txt",
+  "sha1": "446de3e144a05056c37bb0583fb7b82056017691"
+ },
+ {
+  "file": "10 REGION VI/RDC VI RESO 03-34 S 2026.2.pdf",
+  "pages": 20,
+  "ocr_chars": 13684,
+  "txt": "ocr_text/10 REGION VI__RDC VI RESO 03-34 S 2026.2.txt",
+  "sha1": "1567276f7e7b704dd93c00e9970627320aecccb4"
+ },
+ {
+  "file": "10 REGION VI/RDC VI RESO 03-34 S 2026.3.pdf",
+  "pages": 19,
+  "ocr_chars": 20783,
+  "txt": "ocr_text/10 REGION VI__RDC VI RESO 03-34 S 2026.3.txt",
+  "sha1": "5f8bf79887bcc94ae7c1030933d4d0745b5454e1"
+ },
+ {
+  "file": "10 REGION VI/RDC VI RESO 03-34 S 2026.pdf",
+  "pages": 20,
+  "ocr_chars": 26761,
+  "txt": "ocr_text/10 REGION VI__RDC VI RESO 03-34 S 2026.txt",
+  "sha1": "19fd0bcf9343aab329d15f925d8599bbbbddc5a2"
+ },
+ {
+  "file": "10 REGION VI/RDC VI RESO NO 139 S 2025.pdf",
+  "pages": 9,
+  "ocr_chars": 18302,
+  "txt": "ocr_text/10 REGION VI__RDC VI RESO NO 139 S 2025.txt",
+  "sha1": "d124e7db8a85253828f3488f8c98fd01c5b34654"
+ },
+ {
+  "file": "10 REGION VI/RDC VI RESO NO 140 S 2025.pdf",
+  "pages": 7,
+  "ocr_chars": 14891,
+  "txt": "ocr_text/10 REGION VI__RDC VI RESO NO 140 S 2025.txt",
+  "sha1": "600daf6a98e5e19f7b26d50759194b8ed118beae"
+ },
+ {
+  "file": "11 REGION VII/RDC VII RESO NO 38-A S 2026.pdf",
+  "pages": 5,
+  "ocr_chars": 8129,
+  "txt": "ocr_text/11 REGION VII__RDC VII RESO NO 38-A S 2026.txt",
+  "sha1": "1c53390125d33ff9392d2cecd1b0106d4483c381"
+ },
+ {
+  "file": "12 REGION VIII/RDC VIII RESO NO 06-H S 2026.2.pdf",
+  "pages": 7,
+  "ocr_chars": 15054,
+  "txt": "ocr_text/12 REGION VIII__RDC VIII RESO NO 06-H S 2026.2.txt",
+  "sha1": "54016088c860180a994a160c98d40423738aa786"
+ },
+ {
+  "file": "12 REGION VIII/RDC VIII RESO NO 06-H S 2026.pdf",
+  "pages": 8,
+  "ocr_chars": 19083,
+  "txt": "ocr_text/12 REGION VIII__RDC VIII RESO NO 06-H S 2026.txt",
+  "sha1": "ea337653129ef60862ea4d9af8a0d3a2d0079ade"
+ },
+ {
+  "file": "12 REGION VIII/RDC VIII RESO NO 16 S 2026.pdf",
+  "pages": 8,
+  "ocr_chars": 15779,
+  "txt": "ocr_text/12 REGION VIII__RDC VIII RESO NO 16 S 2026.txt",
+  "sha1": "2807f9aa252e3623ca4d8f8737711931c155feb3"
+ },
+ {
+  "file": "12 REGION VIII/RDC VIII RESO NO 9 S 2026.pdf",
+  "pages": 9,
+  "ocr_chars": 27090,
+  "txt": "ocr_text/12 REGION VIII__RDC VIII RESO NO 9 S 2026.txt",
+  "sha1": "2ae2a83f20e52a214d7edfaa26db1f91d0985655"
+ },
+ {
+  "file": "13 REGION IX/RDC IX RESO NO 012 S 2026.pdf",
+  "pages": 8,
+  "ocr_chars": 14398,
+  "txt": "ocr_text/13 REGION IX__RDC IX RESO NO 012 S 2026.txt",
+  "sha1": "7c65b087bc192e448262dd8cc38929321ddad532"
+ },
+ {
+  "file": "13 REGION IX/RDC IX RESO NO 117-D.4 S 2025.pdf",
+  "pages": 17,
+  "ocr_chars": 27259,
+  "txt": "ocr_text/13 REGION IX__RDC IX RESO NO 117-D.4 S 2025.txt",
+  "sha1": "93bdd4fc1a8d65c447dbfc3cc87e3a39152c2aa3"
+ },
+ {
+  "file": "14 REGION X/RDC X RESO NO 14-09 S 2026.pdf",
+  "pages": 7,
+  "ocr_chars": 13090,
+  "txt": "ocr_text/14 REGION X__RDC X RESO NO 14-09 S 2026.txt",
+  "sha1": "53ed1313d68f3a22ede87582f846ce502036f45a"
+ },
+ {
+  "file": "14 REGION X/RDC X RESO NO 36 S 2026.pdf",
+  "pages": 16,
+  "ocr_chars": 15407,
+  "txt": "ocr_text/14 REGION X__RDC X RESO NO 36 S 2026.txt",
+  "sha1": "02011cf39a0549b56d7540aee12c5029904aa029"
+ },
+ {
+  "file": "15 REGION XI/RDC XI RESO NO 26 S 2026.2.pdf",
+  "pages": 13,
+  "ocr_chars": 25511,
+  "txt": "ocr_text/15 REGION XI__RDC XI RESO NO 26 S 2026.2.txt",
+  "sha1": "e23d1183e67bb8dec838797150495de4038e0946"
+ },
+ {
+  "file": "15 REGION XI/RDC XI RESO NO 26 S 2026.pdf",
+  "pages": 11,
+  "ocr_chars": 22988,
+  "txt": "ocr_text/15 REGION XI__RDC XI RESO NO 26 S 2026.txt",
+  "sha1": "433a645f7a3d6f7051334d08108427bbf58061ef"
+ },
+ {
+  "file": "15 REGION XI/RDC XI RESO NO 50-D S 2025.pdf",
+  "pages": 4,
+  "ocr_chars": 1971,
+  "txt": "ocr_text/15 REGION XI__RDC XI RESO NO 50-D S 2025.txt",
+  "sha1": "a5cb57057f120590ef859fc2fb6b3c3b2b64b2fd"
+ },
+ {
+  "file": "16 REGION XII/RDC XII RESO 187 & 188 S OF 2026.pdf",
+  "pages": 2,
+  "ocr_chars": 4816,
+  "txt": "ocr_text/16 REGION XII__RDC XII RESO 187 & 188 S OF 2026.txt",
+  "sha1": "122ce259429ac6bd776ffe63a844cee88e654ca8"
+ },
+ {
+  "file": "16 REGION XII/RDC XII RESO NO 130 S 2026.pdf",
+  "pages": 4,
+  "ocr_chars": 9760,
+  "txt": "ocr_text/16 REGION XII__RDC XII RESO NO 130 S 2026.txt",
+  "sha1": "1f8cdf11b0840ee50004a855ee8be4946700a815"
+ },
+ {
+  "file": "16 REGION XII/RDC XII Reso 187 s2026.pdf",
+  "pages": 2,
+  "ocr_chars": 6020,
+  "txt": "ocr_text/16 REGION XII__RDC XII Reso 187 s2026.txt",
+  "sha1": "f067a9e525e998b822b14d093a16f535124eaf81"
+ },
+ {
+  "file": "16 REGION XII/RDC XII Reso 188 s2026.pdf",
+  "pages": 2,
+  "ocr_chars": 5243,
+  "txt": "ocr_text/16 REGION XII__RDC XII Reso 188 s2026.txt",
+  "sha1": "e8ba0724aa9b4936c9bba2e730cb7151a22344e3"
+ }
+]

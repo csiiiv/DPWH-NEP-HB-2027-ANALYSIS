@@ -61,7 +61,7 @@ def main():
                     page.goto(base.replace('/app/', '/nia/') + '?preview=nia#nep', wait_until='networkidle')
                     assert '/app/?preview=nia#nia/nep' in page.url
                     for route in ('home', 'highlights', 'compare', 'compare?view=projects', 'analysis',
-                                  'analysis?view=stats', 'analysis?view=ai_monitoring', 'analysis?stage=house', 'analysis?view=candidates', 'analysis?view=controls',
+                                  'analysis?view=stats', 'analysis?view=chainage', 'analysis?view=ai_monitoring', 'analysis?stage=house', 'analysis?view=candidates', 'analysis?view=controls',
                                   'analysis?view=insertions', 'analysis?view=deletions', 'analysis?view=adjustments'):
                         goto(route)
                     goto('compare')
@@ -238,13 +238,19 @@ def main():
                     expect(senate_stats).to_contain_text('₱5,742,500,000')
                     expect(senate_stats).to_contain_text('108')
                     expect(senate_stats).to_contain_text('94 rows carry a written justification')
-                    # The default view lists the official insertion rows.
+                    # Default view is all workbook rows.
+                    expect(page.locator('.fmr-result-bar span').first).to_contain_text('937 rows shown')
+                    # Title-parse columns: normalized coordinates and chainage
+                    # from the preferred title (col V when present).
+                    workbook_table = page.get_by_role('region', name='NIA Senate workbook rows', exact=True)
+                    expect(workbook_table).to_contain_text('Coordinates')
+                    expect(workbook_table).to_contain_text('Chainage')
+                    # View selector: insertions, then filter by workbook status.
+                    page.get_by_label('Senate workbook view', exact=True).select_option('insertions')
                     expect(page.locator('.fmr-result-bar span').first).to_contain_text('145 rows shown')
                     first_senate = page.locator('.sortable-table tbody tr').first
                     expect(first_senate).to_contain_text('House insertion (no NEP line)')
-                    # View selector: all rows, then filter by workbook status.
                     page.get_by_label('Senate workbook view', exact=True).select_option('all')
-                    expect(page.locator('.fmr-result-bar span').first).to_contain_text('937 rows shown')
                     page.get_by_label('Senate workbook status', exact=True).select_option('house_zeroed')
                     expect(page.locator('.fmr-result-bar span').first).to_contain_text('108 rows shown')
                     with page.expect_download() as result:
@@ -253,6 +259,8 @@ def main():
                     assert len(exported) == 108
                     assert all(x['status'] == 'house_zeroed' and int(x['nep_amount']) > 0 for x in exported)
                     assert sum(int(x['nep_amount']) for x in exported) == 4311376000
+                    assert 'coordinates' in exported[0] and 'chainage' in exported[0]
+                    assert any(x.get('coordinates') for x in exported) or any(x.get('chainage') for x in exported)
                     page.get_by_role('button', name='Clear filters', exact=True).click()
                     # Clear filters resets search/sub-program/status but keeps
                     # the workbook view selector (all); wait for it to land.
@@ -263,9 +271,11 @@ def main():
                     page.get_by_role('button', name='Clear filters', exact=True).click()
                     expect(page.get_by_label('Search', exact=True)).to_have_value('', timeout=60000)
                     expect(page.locator('.fmr-result-bar span').first).to_contain_text('937 rows shown', timeout=60000)
-                    # Back to the default insertion view via the selector.
+                    # Insertion subset via the view selector.
                     page.get_by_label('Senate workbook view', exact=True).select_option('insertions')
                     expect(page.locator('.fmr-result-bar span').first).to_contain_text('145 rows shown')
+                    page.get_by_label('Senate workbook view', exact=True).select_option('all')
+                    expect(page.locator('.fmr-result-bar span').first).to_contain_text('937 rows shown')
                     # The category table is a workbook-only dimension.
                     expect(page.get_by_role('region', name='NIA Senate workbook categories', exact=True)).to_contain_text('Repair of National Irrigation Systems')
                     # Reconciliation crosstab: five comparison classes against the
@@ -296,6 +306,35 @@ def main():
                     for row in rows_data:
                         assert row['house'] == row['insertions'] + row['unchanged'] + row['increased'] + row['decreased'], row
                     assert sum(r['house'] for r in rows_data) == 17999305000
+                    # Row-count reconciliation: comparison ledger (1,013) vs workbook (937).
+                    bridge = page.get_by_role('region', name='Comparison observations vs Senate workbook rows', exact=True)
+                    expect(bridge).to_contain_text('Dataset totals')
+                    expect(bridge).to_contain_text('1,013')
+                    expect(bridge).to_contain_text('937')
+                    expect(page.locator('main')).to_contain_text('CABTRIS')
+                    expect(page.locator('.fmr-result-bar span').nth(1)).to_contain_text('77 rows shown')
+                    page.get_by_label('Gap reason', exact=True).select_option('repeated_title')
+                    expect(page.locator('.fmr-result-bar span').nth(1)).to_contain_text('6 rows shown')
+                    page.get_by_label('Gap reason', exact=True).select_option('reworded_printing')
+                    expect(page.locator('.fmr-result-bar span').nth(1)).to_contain_text('71 rows shown')
+                    page.get_by_label('Gap reason', exact=True).select_option('')
+                    expect(page.locator('.fmr-result-bar span').nth(1)).to_contain_text('77 rows shown')
+                    with page.expect_download() as result:
+                        page.get_by_role('button', name='Export gap rows CSV', exact=True).click()
+                    gap_exported = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
+                    assert len(gap_exported) == 77
+                    assert sum(1 for x in gap_exported if x['reason'] == 'reworded_printing') == 71
+                    assert sum(1 for x in gap_exported if x['reason'] == 'repeated_title') == 6
+                    assert all(x['nep_id'] and x['house_id'] for x in gap_exported)
+                    assert sum(1 for x in gap_exported if x['submission_edited'] == 'OK') == 76
+                    assert sum(1 for x in gap_exported if x['submission_edited'] == 'CHECK') == 1
+                    assert sum(1 for x in gap_exported if x['justification']) == 14
+                    assert sum(1 for x in gap_exported if x['submission_label']) == 77
+                    expect(page.locator('#table-senate-gap-rows')).to_contain_text('Fixed title')
+                    expect(page.locator('#table-senate-gap-rows')).to_contain_text('NIA edit')
+                    expect(page.locator('#table-senate-gap-rows')).to_contain_text('Workbook remark')
+                    expect(page.locator('main')).to_contain_text('77 carry a fixed title in workbook column V')
+                    expect(page.locator('main')).to_contain_text('14 carry a written remark')
                     page.screenshot(path=str(captures / f'analysis-senate-{width}.png'))
 
                     goto('analysis?view=candidates')
@@ -320,7 +359,8 @@ def main():
                     for side in ('nep', 'house'):
                         stage = data['stages'][side]
                         subprogram = stage['subprograms'][0]['key']
-                        goto('analysis?' + urlencode({'view': 'stats', 'stage': side, 'subprogram': subprogram}))
+                        # Keep concentration check on sub-program dim (1 filtered row).
+                        goto('analysis?' + urlencode({'view': 'stats', 'stage': side, 'subprogram': subprogram, 'dim': 'subprogram'}))
                         concentration = page.get_by_role('region', name='NIA allocation concentration', exact=True)
                         expect(concentration.locator('tbody tr')).to_have_count(1)
                         concentration.get_by_role('button', name='Show 10 rows', exact=True).click()
@@ -341,7 +381,66 @@ def main():
                         page.get_by_label('Search', exact=True).fill(stage['projects'][0]['id'])
                         expect(concentration).to_contain_text('100.0%')
                         expect(concentration.get_by_role('button', name='Show 1 rows', exact=True)).to_be_visible()
+                    # Stats still has hierarchy dims; chainage ₱/m lives on its own tab.
+                    goto('analysis?view=stats')
+                    dims = page.get_by_role('group', name='Break down by')
+                    expect(dims.get_by_role('button', name='Category', exact=True)).to_have_attribute('aria-pressed', 'true')
+                    expect(page.get_by_role('region', name='NIA chainage cost per meter')).to_have_count(0)
                     page.screenshot(path=str(captures / f'analysis-stats-{width}.png'))
+                    goto('analysis?view=chainage')
+                    expect(page.get_by_role('link', name='Chainage', exact=True)).to_have_attribute('aria-current', 'page')
+                    dims = page.get_by_role('group', name='Break down by')
+                    expect(dims.get_by_role('button', name='Category', exact=True)).to_have_attribute('aria-pressed', 'true')
+                    chainage = page.get_by_role('region', name='NIA chainage cost per meter', exact=True)
+                    expect(chainage).to_be_visible()
+                    expect(chainage).to_contain_text('₱/m distribution')
+                    expect(page.locator('.nia-ppm-strip').first).to_be_visible()
+                    expect(chainage.locator('tbody tr')).to_have_count(
+                        len({p.get('category') for p in data['stages']['nep']['projects'] if p.get('category')}))
+                    dims.get_by_role('button', name='Sub-program', exact=True).click()
+                    assert 'dim=subprogram' in page.url
+                    expect(page.get_by_role('region', name='NIA chainage cost per meter', exact=True)
+                           .locator('tbody tr')).to_have_count(6)
+                    # Explore a hierarchy category: whole-category table + optional map.
+                    goto('analysis?view=chainage')
+                    chainage = page.get_by_role('region', name='NIA chainage cost per meter', exact=True)
+                    first_row = chainage.locator('tbody tr').first
+                    first_cat = first_row.locator('th').first.inner_text().strip()
+                    cat_n = sum(1 for p in data['stages']['nep']['projects'] if p.get('category') == first_cat)
+                    assert cat_n > 0, first_cat
+                    page.locator('.nia-chainage-toolbar').get_by_role('button', name='Export…', exact=True).click()
+                    export_dlg = page.get_by_role('dialog', name='Export chainage rates')
+                    expect(export_dlg).to_be_visible()
+                    with page.expect_download() as export_result:
+                        export_dlg.get_by_role('button', name='Download Simple CSV', exact=True).click()
+                    assert 'Median PHP per m' in Path(export_result.value.path()).read_text(encoding='utf-8-sig')
+                    first_row.get_by_role('button', name='Explore projects', exact=True).click()
+                    explore = page.get_by_role('dialog', name='NIA chainage category projects')
+                    expect(explore).to_be_visible()
+                    expect(explore.get_by_role('heading', level=2)).to_contain_text(first_cat)
+                    explore_rows = explore.get_by_role('region', name='NIA chainage explore projects', exact=True)
+                    expect(explore_rows.locator('tbody tr')).to_have_count(min(cat_n, 50), timeout=10000)
+                    # Wait for consolidated join so location buttons resolve.
+                    page.wait_for_timeout(800)
+                    explore.get_by_role('button', name='Export…', exact=True).click()
+                    proj_export = page.get_by_role('dialog', name='Export these projects')
+                    expect(proj_export).to_be_visible()
+                    page.keyboard.press('Escape')
+                    expect(proj_export).not_to_be_visible()
+                    map_btn = explore.get_by_role('button', name='View in map', exact=True)
+                    if map_btn.count():
+                        map_btn.first.click()
+                        loc = page.get_by_role('dialog', name='NIA project location')
+                        expect(loc).to_be_visible()
+                        expect(loc.locator('.nia-map-canvas')).to_be_visible(timeout=20000)
+                        expect(page.get_by_role('dialog', name='NIA project details')).to_have_count(0)
+                        assert 'view=chainage' in page.url
+                        page.keyboard.press('Escape')
+                        expect(loc).not_to_be_visible()
+                        expect(explore).to_be_visible()
+                    page.keyboard.press('Escape')
+                    expect(explore).not_to_be_visible()
+                    page.screenshot(path=str(captures / f'analysis-chainage-{width}.png'))
                     goto('analysis?view=insertions&pair=null&status=null')
                     expect(page.get_by_role('dialog',name='NIA candidate evidence')).to_have_count(0)
                     expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text('222 rows')
@@ -379,12 +478,137 @@ def main():
                         'Home', 'Highlights', 'Compare stages', 'Analysis', 'Map', 'House GAB', 'DBM NEP']
                     page.screenshot(path=str(captures / f'home-{width}.png'))
 
-                    # Geolocation Map tab: point map over the AI-assisted
-                    # location layer plus province/municipality/district
-                    # distribution tables.
+                    # Map tab: Congress-style layers panel (Title GPS + PSGC with
+                    # per-status subtype toggles) plus retained PSGC tables.
                     goto('map')
                     expect(page.get_by_role('region', name='NIA project location map')).to_be_visible()
-                    expect(page.locator('.nia-map-controls')).to_contain_text('located')
+                    expect(page.locator('main')).to_contain_text('Senate workbook lines')
+                    panel = page.locator('.nia-map-panel')
+                    expect(panel.get_by_role('button', name=re.compile(r'^Layers'))).to_be_visible()
+                    expect(panel).to_contain_text('2/2')
+                    # All-points mode is the default (no clustering): markers
+                    # are individually clickable. (Marker-mode controls are
+                    # hidden on the 390px pass.)
+                    if width != 390:
+                        expect(page.get_by_role('radio', name='All points')).to_be_checked()
+                        # Wait until MapLibre finished loading layers/tiles so
+                        # the projected marker click can't race the first render.
+                        page.wait_for_function(
+                            "() => {const m = document.querySelector('.nia-map-canvas')?._niaMap; return !!m && m.loaded();}",
+                            timeout=20000)
+                        # Clicking a marker opens the project details dialog.
+                        marker = page.evaluate("""() => {
+                          const el = document.querySelector('.nia-map-canvas');
+                          const map = el._niaMap;
+                          const pt = map.project([120.1778305556, 15.9490805556]);
+                          const rect = el.getBoundingClientRect();
+                          return {x: rect.left + pt.x, y: rect.top + pt.y};
+                        }""")
+                        page.mouse.click(marker['x'], marker['y'])
+                        expect(page.get_by_role('dialog', name='NIA project details')).to_be_visible()
+                        expect(page.get_by_role('dialog', name='NIA project details')).to_contain_text('Maniana SPIP')
+                        page.get_by_role('button', name='Close', exact=True).click()
+                        expect(page.get_by_role('dialog', name='NIA project details')).to_have_count(0)
+                    expect(page.get_by_role('checkbox', name='Title GPS', exact=True)).to_be_checked()
+                    expect(page.get_by_role('checkbox', name='PSGC centroid (fallback)', exact=True)).to_be_checked()
+                    expect(page.locator('.nia-map-controls')).to_contain_text('872 projects')
+                    expect(page.locator('.nia-map-controls')).to_contain_text('965 markers')
+                    expect(page.locator('.nia-map-legend')).to_contain_text('Pump Irrigation')
+                    panel.get_by_role('button', name='Workbook status', exact=True).click()
+                    expect(page.locator('.nia-map-legend')).to_contain_text('Both funded')
+                    expect(page.locator('.nia-map-legend')).to_contain_text('House insertion')
+                    # Isolate PSGC House insertions (title GPS almost never has them).
+                    # Prefer the label click: the 13px input is flaky under Playwright
+                    # at 1440px (click lands but the controlled React state races).
+                    page.locator('label.nia-layer-row', has_text='Title GPS').click()
+                    assert 'objects=psgc' in page.url
+                    expect(page.get_by_role('checkbox', name='Title GPS', exact=True)).not_to_be_checked()
+                    # PSGC-only view: 452 fallback rows on 367 square markers.
+                    expect(page.locator('.nia-map-controls')).to_contain_text('452 projects')
+                    expect(page.locator('.nia-map-controls')).to_contain_text('367 markers')
+                    # Stacked PSGC squares: click the 5-row Balingasag stack
+                    # (title GPS off keeps it rendered) and pick a member row.
+                    page.evaluate("""() => {
+                      document.querySelector('.nia-map-canvas')._niaMap
+                        .jumpTo({center: [124.767489, 8.739132], zoom: 11});
+                    }""")
+                    page.wait_for_timeout(1200)
+                    stack = page.evaluate("""() => {
+                      const el = document.querySelector('.nia-map-canvas');
+                      const map = el._niaMap;
+                      const pt = map.project([124.767489, 8.739132]);
+                      const rect = el.getBoundingClientRect();
+                      return {x: rect.left + pt.x, y: rect.top + pt.y};
+                    }""")
+                    page.mouse.click(stack['x'], stack['y'])
+                    picker = page.get_by_role('dialog', name='Projects at this location')
+                    expect(picker).to_be_visible()
+                    expect(picker).to_contain_text('5 projects share this centroid')
+                    expect(picker.locator('.nia-stack-table tbody tr')).to_have_count(5)
+                    expect(picker).to_contain_text('Sub-program')
+                    picker.get_by_role('button', name='Close', exact=True).click()
+                    expect(picker).to_have_count(0)
+                    # Back to the national view for the remaining checks.
+                    page.evaluate("""() => {
+                      document.querySelector('.nia-map-canvas')._niaMap
+                        .fitBounds([[117.5, 5.5], [126.5, 18.5]], {padding: 40, duration: 0});
+                    }""")
+                    page.wait_for_timeout(500)
+                    for status_label in ('Both funded', 'NEP zeroed', 'Unfunded'):
+                        page.locator(
+                            f'label.nia-layer-type:has(input[aria-label="PSGC centroid (fallback): {status_label}"])'
+                        ).click()
+                        expect(page.get_by_role(
+                            'checkbox', name=f'PSGC centroid (fallback): {status_label}', exact=True)
+                        ).not_to_be_checked()
+                    expect(page.get_by_role('checkbox', name='PSGC centroid (fallback): House insertion', exact=True)).to_be_checked()
+                    expect(page.locator('.nia-map-controls')).to_contain_text('126 projects')
+                    page.get_by_role('button', name='Show all', exact=True).click()
+                    expect(page.get_by_role('checkbox', name='Title GPS', exact=True)).to_be_checked()
+                    expect(page.get_by_role('checkbox', name='PSGC centroid (fallback): House insertion', exact=True)).to_be_checked()
+                    # Color mode swaps the subtype toggle dimension: status
+                    # toggles become sub-program toggles keyed to the palette.
+                    panel.get_by_role('button', name='Sub-program', exact=True).click()
+                    assert 'types=' not in page.url
+                    expect(page.get_by_role('checkbox', name='PSGC centroid (fallback): Pump Irrigation', exact=True)).to_be_checked()
+                    page.locator(
+                        'label.nia-layer-type:has(input[aria-label="PSGC centroid (fallback): Pump Irrigation"])'
+                    ).click()
+                    assert 'types=' in page.url
+                    # 872 projects minus the 72 PSGC-fallback pump rows.
+                    expect(page.locator('.nia-map-controls')).to_contain_text('800 projects')
+                    page.get_by_role('button', name='Workbook status', exact=True).click()
+                    expect(page.get_by_role('checkbox', name='PSGC centroid (fallback): Both funded', exact=True)).to_be_checked()
+                    assert 'types=' not in page.url
+                    panel.get_by_role('button', name='Sub-program', exact=True).click()
+                    # All-points is now the default; the Clusters hint only
+                    # appears after opting into clustering (desktop only).
+                    if width != 390:
+                        page.get_by_role('radio', name='Clusters').click()
+                        assert 'markers=clusters' in page.url
+                        page.get_by_role('radio', name='All points').click()
+                        assert 'markers=' not in page.url
+                    expect(page.locator('.nia-map-legend')).to_contain_text('markers grow as you zoom in')
+                    # Deep-linked project details dialog (marker click-through).
+                    goto('map?project=sen%3Ar1583')
+                    project_dialog = page.get_by_role('dialog', name='NIA project details')
+                    expect(project_dialog).to_be_visible()
+                    expect(project_dialog).to_contain_text('Maniana SPIP')
+                    expect(project_dialog).to_contain_text('NEP and House funded')
+                    expect(project_dialog.locator('.nia-project-sites li')).to_have_count(6)
+                    expect(project_dialog).to_contain_text('Multi-site title GPS')
+                    expect(project_dialog.get_by_role('link', name='Pair evidence →')).to_have_attribute('href', re.compile('#nia/compare'))
+                    project_dialog.get_by_role('button', name='Close', exact=True).click()
+                    expect(project_dialog).to_have_count(0)
+                    assert 'project=' not in page.url
+                    goto('map')
+                    page.get_by_role('button', name='Full window ⤢', exact=True).click()
+                    assert 'full=1' in page.url
+                    expect(page.get_by_role('dialog', name='NIA project map, full window')).to_be_visible()
+                    expect(page.get_by_role('button', name='Exit full window ✕', exact=True)).to_be_visible()
+                    page.get_by_role('button', name='Exit full window ✕', exact=True).click()
+                    assert 'full=' not in page.url
+                    expect(page.get_by_role('button', name='Full window ⤢', exact=True)).to_be_visible()
                     distribution = page.get_by_role('region', name='NIA province distribution', exact=True)
                     expected_provinces = len(
                         {r['province'] for r in data['geolocation']['records']
@@ -395,7 +619,6 @@ def main():
                     expect(page.get_by_role('region', name='NIA municipality distribution', exact=True)).to_be_visible()
                     page.get_by_role('tab', name='Legislative districts').click()
                     expect(page.get_by_role('region', name='NIA district distribution', exact=True)).to_be_visible()
-                    expect(page.locator('.nia-map-legend')).to_contain_text('Candidate pair')
                     page.screenshot(path=str(captures / f'map-{width}.png'))
 
                     # Rebuilt Highlights: coverage tables, findings grid, story

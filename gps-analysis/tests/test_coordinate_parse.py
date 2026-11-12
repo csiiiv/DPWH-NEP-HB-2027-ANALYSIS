@@ -26,6 +26,13 @@ class ParseCoreTests(unittest.TestCase):
         spaced = cp.parse_pairs("16. 259313, 120. 123456")[0]
         self.assertEqual(spaced["latitude"], 16.259313)
 
+    def test_doubled_seconds_quotes_normalize_to_decimal(self):
+        # Excel/OCR often prints 15°56'56.69""N — collapse and keep decimal degrees.
+        p = cp.parse_pairs("15°56'56.69\"\"N, 120°10'40.19\"\"E")[0]
+        self.assertAlmostEqual(p["latitude"], 15 + 56 / 60 + 56.69 / 3600, places=6)
+        self.assertAlmostEqual(p["longitude"], 120 + 10 / 60 + 40.19 / 3600, places=6)
+        self.assertFalse(p["issues"])
+
     def test_spaced_ocr_dms_is_one_pair_not_four_points(self):
         # NEP OCR prints degree/minute/second symbols with surrounding spaces.
         pts = cp.parse_pairs("11 ° 46 ' 32.00 \" N, 124 ° 53 ' 6.04 \" E")

@@ -1045,6 +1045,9 @@ th.num .th-sort{justify-content:flex-end}
 .sortable-table tbody tr{border-bottom:1px solid #e8eef4}
 .sortable-table tbody tr:nth-child(even){background:#f7fafc}
 .sortable-table tbody tr:hover{background:#eef5fc}
+.sortable-table tbody tr.table-totals{background:#eef3f8;border-top:2px solid #6f879c;font-weight:600}
+.sortable-table tbody tr.table-totals:hover{background:#e4ebf3}
+.sortable-table tbody tr.table-totals th,.sortable-table tbody tr.table-totals td{font-weight:600}
 .sortable-table td.num,.sortable-table th.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .sortable-table .cell-main{display:block;font-weight:600}
 .sortable-table .cell-main small{font-weight:400;color:#52657b;margin-top:.15rem}

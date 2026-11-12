@@ -16,7 +16,8 @@ datasets contain 828 House rows (₱17,999,305,000) and 791 NEP rows
 | `#nia/analysis?view=overview` | Filtered allocation distribution, allocation shares, and supporting rows |
 | `#nia/analysis?view=stats` | Bands, rounding, repeated amounts, top-ten concentration, supporting rows |
 | `#nia/analysis?view=ai_monitoring` | AI monitoring related project allocations, title-basis filters, stage totals, source records and CSV |
-| `#nia/analysis?view=senate` | NIA's Senate workbook: official insertions, zeroed NEP items, acknowledged edits with justifications, and the workbook-only category hierarchy |
+| `#nia/analysis?view=senate` | NIA's Senate workbook: official insertions, zeroed NEP items, acknowledged edits with justifications, the workbook-only category hierarchy, the row-count reconciliation between the comparison ledger and the workbook, and the identified rows whose halves our matching splits in two |
+| `#nia/map` | Consolidated workbook locations via a Congress-style layers panel: Title GPS + PSGC centroids (both on by default), per-status subtype toggles (`objects=` / `types=`), sub-program or workbook-status coloring, and distinct-project counts from `nia_consolidated.json` |
 | `#nia/analysis?view=insertions` | House-only insertion candidates, ranked allocations, group drilldowns |
 | `#nia/analysis?view=deletions` | NEP-only deletion candidates, ranked allocations, group drilldowns |
 | `#nia/analysis?view=adjustments` | Paired House/NEP amount changes, direction filters, group drilldowns |
@@ -213,13 +214,38 @@ controls equal to the printed NEP controls; 828 House-funded rows sum to
 retained ledgers — exact (sub-program, canonical label, amount) first, then
 maximum-similarity matching inside exactly balanced (sub-program, amount)
 buckets, with method and title similarity retained per row; labels and
-amounts are never rewritten. The workbench attaches the layer as `senate`
-and stamps each comparison row with the referencing `senate_ids`; the
-Analysis → Senate workbook view reports where the official insertion rows
-corroborate the title-matching insertion candidates (132 of the 145 official
-insertions' House rows are `house_only` candidates; the rest are reworded or
-split/merged counterparts). Official workbook status describes print-level
-presence, not a certified insertion or deletion.
+amounts are never rewritten. Title-embedded coordinates and chainage are
+parsed from the column-V fixed/submission title when present (else the
+NEP-print label) via the shared `gps-analysis` and `chainage` builders and
+surfaced on the Workbook rows table; titles themselves stay untouched.
+`build_nia_consolidated.py` publishes the shareable project unit
+(`data/nia_consolidated.json`, plus projects and title-GPS point CSVs): one
+record per workbook line, with title GPS and PSGC centroids as complementary
+`locations` on the same id, coverage / matching-split / multi-site flags, and
+an explicit money note that amounts must not be summed across geometry points.
+The workbench attaches the layer as `senate` and stamps each comparison row with
+the referencing `senate_ids`; the Analysis → Senate workbook view reports
+where the official insertion rows corroborate the title-matching insertion
+candidates (132 of the 145 official insertions' House rows are `house_only`
+candidates; the rest are reworded or split/merged counterparts). Official
+workbook status describes print-level presence, not a certified insertion or
+deletion.
+
+**Row-count reconciliation.** The Senate view also bridges the two dataset row
+counts. The comparison ledger counts observations (828 House + 791 NEP − 606
+pairs = 1,013); the workbook counts NIA's reconciliation lines (828 + 791 − 683
+NIA-aligned + 1 unfunded = 937). The bridge decomposes both totals into shared
+pieces — 602 unchanged pairs, 4 changed pairs, 145 official insertions, 108
+House-zeroed NEP rows, 1 unfunded row, and 77 both-funded workbook rows whose
+NEP and House halves sit on two comparison rows because the title matching
+cannot pair them (71 reworded printings, 6 repeated titles; 76 of 77 carry
+identical amounts). Each of those 77 inflates both unmatched counts by one,
+which is exactly why the ledger shows 222 House-only and 185 NEP-only
+observations against 145 official insertions and 108 zeroed items. The view
+lists all 77 rows with both ledger titles, amounts, variant marks,
+justifications, deep links to both source records, and a CSV export; the
+figures are recomputed by `senateGapRows`/`senateReconciliationRows` in
+`analysis/web/src/niaModel.js` and asserted in `niaModel.test.js`.
 
 Two labeled matching methods share one comparison ledger. **strict** requires
 a canonical title that occurs exactly once on each side within the same
@@ -262,6 +288,8 @@ From the repository root:
 python analysis-nia/extract_nia_senate_workbook.py
 python analysis-nia/build_nia_workbench.py
 python analysis-nia/build_nia_workbench.py --check
+python analysis-nia/build_nia_consolidated.py
+python analysis-nia/build_nia_consolidated.py --check
 python -m unittest discover -s analysis-nia/tests -v
 npm test --prefix analysis/web
 npm run build --prefix analysis/web

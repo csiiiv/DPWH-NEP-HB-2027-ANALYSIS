@@ -1,0 +1,188 @@
+/* NIA map + location analysis */
+.nia-map-controls {display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: center; margin: 0.75rem 0;}
+.nia-map-controls label {display: inline-flex; gap: 0.4rem; align-items: center; font-size: 0.9rem;}
+.nia-marker-modes {display: inline-flex; border: 1px solid #c5d0de; border-radius: 7px; overflow: hidden;}
+.nia-marker-modes button {
+  padding: 4px 9px; font-size: 12px; line-height: 1.4; cursor: pointer;
+  background: #ffffff; color: #526780; border: 0; border-right: 1px solid #d9e2ed;
+}
+.nia-marker-modes button:last-child {border-right: 0;}
+.nia-marker-modes button:hover {background: #eef4fc; color: #203147;}
+.nia-marker-modes button.on {background: #203147; color: #ffffff;}
+.nia-marker-modes button:focus-visible {outline: 2px solid #2563eb; outline-offset: -2px;}
+.nia-map-shell {position: relative; border-radius: 10px; overflow: hidden; border: 1px solid var(--border, #d8dee6); background: #eef2f7;}
+.nia-map-shell.is-full {border: 0; border-radius: 0;}
+.nia-map-canvas {width: 100%; height: 30rem;}
+.nia-map-shell.is-full .nia-map-canvas {height: 100%;}
+.nia-map-warning {position: absolute; inset: 0; display: grid; place-items: center; background: rgba(255, 255, 255, 0.7); z-index: 2;}
+.nia-map-legend {display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; margin-top: 0.6rem; font-size: 0.88rem; align-items: center;}
+.nia-map-legend i {display: inline-block; width: 0.72rem; height: 0.72rem; border-radius: 50%; margin-right: 0.35rem;}
+.nia-map-hover {position: absolute; right: 12px; top: 52px; max-width: 22rem; background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #d8dee6; border-radius: 8px; padding: 0.6rem 0.8rem; display: flex; flex-direction: column; gap: 0.25rem;
+  font-size: 0.85rem; pointer-events: none; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15); z-index: 3;}
+.nia-map-hover strong {font-size: 0.9rem;}
+/* Centered stacked-marker modal — same window pattern as the project dialog. */
+.nia-stack-dialog {width: min(880px, calc(100vw - 2rem));}
+.nia-stack-dialog .fmr-dialog-body {max-height: calc(90vh - 110px); overflow: auto;}
+.nia-stack-table {border-collapse: collapse; width: 100%; font-size: 0.86rem;}
+.nia-stack-table th {text-align: left; font-size: 0.7rem; text-transform: uppercase;
+  letter-spacing: 0.04em; color: #64748b; padding: 0.35rem 0.5rem; border-bottom: 1px solid #d8dee6;
+  position: sticky; top: 0; background: #fff;}
+.nia-stack-table td {padding: 0.45rem 0.5rem; border-bottom: 1px solid #eef2f7;
+  vertical-align: top; color: #334155;}
+.nia-stack-table tr:last-child td {border-bottom: none;}
+.nia-stack-table td.is-num, .nia-stack-table th.is-num {text-align: right; white-space: nowrap;
+  font-variant-numeric: tabular-nums;}
+.nia-stack-table button {all: unset; cursor: pointer; display: block; max-width: 26rem;
+  font-weight: 600; color: #1e3a5f; font-size: 0.86rem; text-align: left;}
+.nia-stack-table button:hover {text-decoration: underline; color: #0f4c81;}
+.nia-stack-row-id {display: block; color: #94a3b8; font-size: 0.72rem; font-weight: 400;
+  margin-top: 0.1rem;}
+.nia-map-expand {
+  position: absolute; top: 12px; right: 12px; z-index: 3;
+  border: 1px solid #cdd9e6; background: #fff; border-radius: 8px; padding: 6px 11px;
+  font: inherit; font-size: 12px; font-weight: 600; color: #2a4a78; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(24, 47, 75, 0.14);
+}
+.nia-map-expand:hover {background: #f3f6fa;}
+.nia-map-fullclose {
+  position: absolute; top: 12px; right: 12px; z-index: 5;
+  border: 1px solid #cdd9e6; background: rgba(255, 255, 255, 0.96); border-radius: 999px;
+  padding: 8px 14px; font: inherit; font-size: 12.5px; font-weight: 650; color: #24354d; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(24, 47, 75, 0.16);
+}
+.nia-map-fullclose:hover {background: #fff;}
+dialog.nia-map-fullscreen {
+  width: 100vw; height: 100dvh; max-width: none; max-height: none;
+  padding: 0; border: 0; margin: 0; background: #eef2f7; overflow: hidden;
+}
+.nia-map-fullscreen::backdrop {background: rgba(15, 26, 38, 0.55);}
+.nia-map-fullscreen .nia-map-shell.is-full {
+  position: absolute; inset: 0; min-height: 0;
+}
+.nia-map-full-placeholder {
+  margin: 0.5rem 0; padding: 1.25rem 1rem; border: 1px dashed #c5d0de;
+  border-radius: 10px; background: #f7f9fc; color: #5b6f86; font-size: 0.9rem;
+}
+.nia-map-full-return {
+  border: 0; background: transparent; color: #1f4d7a; font: inherit;
+  font-size: inherit; font-weight: 600; cursor: pointer; padding: 0;
+  text-decoration: underline;
+}
+
+/* Project details dialog (map marker click-through) */
+.nia-project-dialog {max-width: min(680px, calc(100vw - 2rem));}
+.nia-project-ids {margin: 0 0 0.8rem; color: #5b6f86; font-size: 0.88rem;}
+.nia-project-facts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem 1.25rem; margin: 0 0 1rem;
+}
+.nia-project-facts div {display: flex; flex-direction: column; gap: 0.15rem;}
+.nia-project-facts dt {font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b;}
+.nia-project-facts dd {margin: 0; font-size: 0.92rem; font-weight: 600; color: #203147;}
+.nia-project-dialog h3 {margin: 0.9rem 0 0.35rem; font-size: 0.95rem;}
+.nia-project-sites {list-style: none; margin: 0.35rem 0 0.6rem; padding: 0; display: flex; flex-direction: column; gap: 0.3rem;}
+.nia-project-sites li {
+  display: flex; justify-content: space-between; gap: 1rem; align-items: baseline;
+  padding: 0.35rem 0.6rem; background: #f7f9fc; border-radius: 8px; font-size: 0.88rem;
+}
+.nia-project-sites code {font-size: 0.82rem; color: #334155; font-variant-numeric: tabular-nums;}
+.nia-project-justification {margin: 0.35rem 0; font-size: 0.9rem; line-height: 1.5;}
+.nia-project-links {display: flex; flex-wrap: wrap; gap: 0.9rem; margin: 1rem 0 0.5rem;}
+.nia-project-links a {font-weight: 600; color: #1f4d7a;}
+.nia-project-title-full {margin-top: 0.8rem; font-size: 0.85rem; color: #475569; line-height: 1.5; word-break: break-word;}
+.nia-flag-note {color: #92400e;}
+.nia-location-flags {margin-top: 1rem;}
+.nia-location-flags ul {margin: 0.5rem 0 0 1.2rem; font-size: 0.88rem;}
+
+/* Congress-style layers panel */
+.nia-map-panel {
+  position: absolute; left: 12px; top: 12px; z-index: 3;
+  width: min(340px, calc(100% - 24px));
+  max-height: calc(100% - 24px); overflow: auto;
+  background: rgba(255, 255, 255, 0.96); border: 1px solid #d5dee9;
+  border-radius: 12px; box-shadow: 0 10px 28px rgba(24, 47, 75, 0.12);
+  backdrop-filter: blur(8px);
+}
+.nia-map-panel-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 8px 8px 8px 10px; border-bottom: 1px solid #e8eef5; flex-wrap: wrap;
+}
+.nia-map-panel-toggle {
+  display: inline-flex; align-items: center; gap: 8px; border: 0; background: transparent;
+  padding: 4px 6px; border-radius: 8px; cursor: pointer; font: inherit; color: #203147;
+}
+.nia-map-panel-toggle:hover {background: #f3f6fa;}
+.nia-map-panel-toggle strong {font-size: 13px; font-weight: 700;}
+.nia-map-panel-toggle span {
+  font-size: 11px; font-variant-numeric: tabular-nums; color: #5b6f86;
+  background: #eef3f9; border-radius: 999px; padding: 2px 7px;
+}
+.nia-map-panel-quick {display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap;}
+.nia-map-color-modes {
+  display: inline-flex; border: 1px solid #d5dee9; border-radius: 8px; overflow: hidden; background: #fff;
+}
+.nia-map-color-modes button {
+  border: 0; background: transparent; padding: 5px 9px; font: inherit; font-size: 12px;
+  color: #516780; cursor: pointer;
+}
+.nia-map-color-modes button + button {border-left: 1px solid #d5dee9;}
+.nia-map-color-modes button.is-active {background: #203147; color: #fff;}
+.nia-map-color-modes button:hover {background: #f3f6fa;}
+.nia-map-color-modes button.is-active:hover {background: #203147;}
+.nia-map-reset {
+  border: 1px solid #d5dee9; background: #fff; border-radius: 8px; padding: 5px 9px;
+  font: inherit; font-size: 12px; color: #516780; cursor: pointer;
+}
+.nia-map-reset:hover {background: #f3f6fa;}
+.nia-map-panel-body {padding: 8px;}
+.nia-layer-list {list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px;}
+.nia-layer-list > li {border: 1px solid transparent; border-radius: 10px; background: #f7f9fc;}
+.nia-layer-list > li.is-on {background: #fff; border-color: #dce5ef;}
+.nia-layer-list > li.is-off {opacity: 0.72;}
+.nia-layer-row {
+  display: grid; grid-template-columns: 18px 1fr auto; gap: 8px; align-items: start;
+  padding: 8px 10px; cursor: pointer;
+}
+.nia-layer-row input {margin: 2px 0 0; accent-color: #203147;}
+.nia-layer-copy {display: flex; flex-direction: column; gap: 2px; min-width: 0;}
+.nia-layer-copy strong {font-size: 13px; color: #203147;}
+.nia-layer-copy small {font-size: 11px; color: #5b6f86; line-height: 1.35;}
+.nia-layer-swatch {
+  width: 14px; height: 14px; margin-top: 2px; border: 1px solid rgba(15, 23, 42, 0.2); box-sizing: border-box;
+}
+.nia-layer-swatch-dot {border-radius: 50%;}
+.nia-layer-swatch-square {border-radius: 0; background: #1d4ed8; border: 1.5px solid #1e293b;}
+.nia-layer-key {list-style: none; margin: 0 8px 8px; padding: 0; display: flex; flex-direction: column; gap: 2px;}
+.nia-layer-key > li {border-radius: 8px;}
+.nia-layer-key > li.is-off {opacity: 0.55;}
+.nia-layer-type {
+  display: grid; grid-template-columns: 12px 1fr auto auto; gap: 8px; align-items: center;
+  padding: 5px 8px; border-radius: 8px; cursor: pointer; font-size: 12px; color: #203147;
+}
+.nia-layer-type:hover {background: #f3f6fa;}
+.nia-layer-type input {margin: 0; accent-color: #203147;}
+.nia-layer-key em {
+  font-style: normal; font-size: 11px; color: #5b6f86; font-variant-numeric: tabular-nums;
+}
+.nia-layer-key-note {
+  font-size: 11px; color: #5b6f86; line-height: 1.35; padding: 4px 8px 2px;
+}
+.nia-layer-key-dot {
+  width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+  border: 1px solid rgba(15, 23, 42, 0.15);
+}
+.nia-layer-key-dot.is-square {border-radius: 0; border-color: #1e293b;}
+.nia-layer-actions {
+  display: flex; gap: 10px; padding: 4px 4px 2px; border-top: 1px solid #e8eef5; margin-top: 6px;
+}
+.nia-layer-actions button {
+  border: 0; background: transparent; color: #1f4d7a; font: inherit; font-size: 12px;
+  font-weight: 600; cursor: pointer; padding: 4px 2px;
+}
+.nia-layer-actions button:hover {text-decoration: underline;}
+
+@media (max-width: 640px) {
+  .nia-map-panel {width: calc(100% - 16px); left: 8px; top: 8px; max-height: 45%;}
+  .nia-map-panel-quick .nia-marker-modes {display: none;}
+}

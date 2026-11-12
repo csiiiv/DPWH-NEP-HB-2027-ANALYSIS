@@ -73,6 +73,8 @@
 .nia-senate-label { display:flex; flex-direction:column; gap:2px; max-width:360px; }
 .nia-senate-label small { color:var(--muted, #6b7280); font-weight:400; }
 .nia-senate-label .nia-justification { font-style:italic; }
+.nia-senate-parse { display:flex; flex-direction:column; gap:2px; max-width:220px; font-size:.85rem; overflow-wrap:anywhere; }
+.nia-senate-parse small { color:var(--muted, #6b7280); font-weight:400; }
 .nia-senate-join { display:inline-flex; align-items:center; gap:6px; }
 .nia-senate-join small { color:var(--muted, #6b7280); }
 /* Reconciliation crosstab cells: "count · money" on one line, numeric. */
@@ -82,4 +84,96 @@
 .nia-senate-house_zeroed { background:#fef3c7; color:#92400e; }
 .nia-senate-both_funded { background:#f3f4f6; color:#374151; }
 .nia-senate-unfunded { background:#f3f4f6; color:#6b7280; }
+/* Gap-row reasons in the senate reconciliation subsection. */
+.nia-gap-reworded_printing { background:#e0e7ff; color:#3730a3; }
+.nia-gap-repeated_title { background:#ede9fe; color:#5b21b6; }
+.nia-edit-ok { background:#dcfce7; color:#166534; }
+.nia-edit-check { background:#fef3c7; color:#92400e; }
+.nia-gap-remark, .nia-gap-fixed { max-width:280px; white-space:normal; }
 .nia-method-note { font-size:14px; color:var(--muted, #6b7280); }
+
+/* Chainage ₱/m explore modal */
+.nia-chainage-explore-dialog {width:min(1100px, calc(100vw - 2rem)); max-width:none;}
+.nia-chainage-explore-dialog .sortable-table {max-height:min(60vh, 560px); overflow:auto;}
+.nia-chainage-explore-dialog .sortable-table table {min-width:860px;}
+.nia-chainage-toolbar {display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin:0 0 10px;}
+/* Box + jitter ₱/m strips (shared log scale across rows). */
+.nia-ppm-legend {display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin:0 0 6px; font-size:12px; color:#516780;}
+.nia-ppm-legend-item {display:inline-flex; gap:6px; align-items:center;}
+.nia-ppm-legend-axis {margin-left:auto;}
+.nia-ppm-swatch {display:inline-block; width:9px; height:9px; border-radius:50%; background:#3f9a5a;}
+.nia-ppm-swatch.is-outlier {background:#a67c52;}
+.nia-ppm-swatch.is-median {width:2px; height:12px; border-radius:1px; background:#c0392b;}
+.nia-ppm-swatch.is-box {width:14px; height:9px; border-radius:2px; background:#c5daf0; border:1px solid #3a6ea5;}
+.nia-ppm-note {margin:0 0 10px; font-size:12.5px;}
+.nia-ppm-axis {display:block; overflow:visible;}
+.nia-ppm-axis-line,.nia-ppm-axis-tick {stroke:#9aabbc; stroke-width:1;}
+.nia-ppm-axis-label {fill:#516780; font-size:10px; font-variant-numeric:tabular-nums;}
+.nia-ppm-strip-btn {display:inline-block; padding:0; margin:0; border:0; background:transparent; cursor:pointer; border-radius:4px; line-height:0;}
+.nia-ppm-strip-btn:hover .nia-ppm-box {fill:#b7d2ec;}
+.nia-ppm-strip-btn:focus-visible {outline:2px solid #2f5f8f; outline-offset:2px;}
+.nia-ppm-strip {display:block; vertical-align:middle; overflow:visible; pointer-events:none;}
+.nia-ppm-grid {stroke:#d7e0ea; stroke-width:1; stroke-dasharray:2 3;}
+.nia-ppm-empty {color:#9aabbc;}
+.nia-ppm-whisker {stroke:#2f4f73; stroke-width:1.5; stroke-linecap:square;}
+.nia-ppm-box {fill:#c5daf0; stroke:#3a6ea5; stroke-width:1.25;}
+.nia-ppm-median {stroke:#c0392b; stroke-width:2; stroke-linecap:round;}
+.nia-ppm-dot {fill:#3f9a5a; stroke:#ffffff; stroke-width:0.6; opacity:0.92;}
+.nia-ppm-dot.is-outlier {fill:#a67c52;}
+.nia-ppm-scatter-dot {cursor:pointer; pointer-events:auto;}
+.nia-ppm-scatter-dot.is-active,.nia-ppm-scatter-dot.is-selected {stroke:#1f3a56; stroke-width:1.6; opacity:1;}
+.nia-ppm-scatter-wrap {position:relative; width:100%; overflow-x:auto; margin:8px 0 12px;}
+.nia-ppm-scatter {display:block; max-width:100%; height:auto; overflow:visible;}
+.nia-ppm-scatter-tick {font-size:11px;}
+.nia-ppm-hover-card {position:absolute; z-index:5; width:min(270px, calc(100% - 16px)); padding:10px 12px; border:1px solid #c5d3e2; border-radius:8px; background:#fff; box-shadow:0 8px 24px rgba(20,40,70,.16); pointer-events:none;}
+.nia-ppm-hover-title {display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; font-size:13px; line-height:1.35; color:#1f3a56;}
+.nia-ppm-hover-dl {display:grid; gap:4px; margin:8px 0 6px; font-size:12.5px;}
+.nia-ppm-hover-dl > div {display:grid; grid-template-columns:76px 1fr; gap:8px;}
+.nia-ppm-hover-dl dt {color:#6a7f96; margin:0;}
+.nia-ppm-hover-dl dd {margin:0; font-variant-numeric:tabular-nums;}
+.nia-ppm-hover-hint {margin:0; font-size:11.5px; color:#6a7f96;}
+.nia-ppm-outlier-tag {display:inline-block; margin-left:6px; padding:1px 6px; border-radius:999px; background:#f0e2d4; color:#7a5230; font-size:10.5px;}
+.nia-ppm-outliers-heading {margin:1.4rem 0 6px; font-size:1.05rem; color:#1f3a56;}
+.nia-ppm-outlier-side {display:inline-block; padding:1px 8px; border-radius:999px; font-size:12px; font-weight:600;}
+.nia-ppm-outlier-side.is-high {background:#f0e2d4; color:#7a5230;}
+.nia-ppm-outlier-side.is-low {background:#e4eef8; color:#2f5f8f;}
+.nia-ppm-outlier-sev {display:inline-block; padding:1px 8px; border-radius:999px; font-size:12px; font-weight:600; text-transform:capitalize;}
+.nia-ppm-outlier-sev.is-mild {background:#e8f0e4; color:#3d6b32;}
+.nia-ppm-outlier-sev.is-moderate {background:#f5ecd8; color:#7a5a18;}
+.nia-ppm-outlier-sev.is-severe {background:#f5e0d4; color:#8a3f1c;}
+.nia-ppm-outlier-sev.is-extreme {background:#efd4d4; color:#8a1c1c;}
+.nia-ppm-scatter-dialog {width:min(960px, calc(100vw - 2rem)); max-width:none;}
+.nia-ppm-scatter-stats {margin:0 0 8px;}
+.nia-ppm-scatter-actions {display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;}
+.nia-ppm-project-dialog {width:min(640px, calc(100vw - 2rem)); max-width:none;}
+.nia-ppm-project-title {margin:0 0 12px; font-size:1.05rem; line-height:1.4; color:#1f3a56;}
+.nia-ppm-project-dl {display:grid; gap:8px; margin:0 0 14px;}
+.nia-ppm-project-dl > div {display:grid; grid-template-columns:minmax(120px, 36%) 1fr; gap:10px; align-items:start; font-size:13.5px;}
+.nia-ppm-project-dl dt {margin:0; color:#6a7f96;}
+.nia-ppm-project-dl dd {margin:0; font-variant-numeric:tabular-nums;}
+.nia-ppm-project-actions {display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:0 0 12px;}
+.nia-main [aria-label="NIA chainage cost per meter"] td:has(.nia-ppm-strip-btn),
+.nia-main [aria-label="NIA chainage cost per meter"] td:has(.nia-ppm-strip),
+.nia-main [aria-label="NIA chainage cost per meter"] th:has(.nia-ppm-strip) {min-width:340px;}
+/* Stats-page location peek (not full-window). */
+.nia-chainage-map-dialog {width:min(920px, calc(100vw - 2rem)); max-width:none;}
+.nia-map-preview .nia-map-canvas {height:22rem;}
+.nia-map-preview-caption {margin:0 0 0.6rem; font-size:0.9rem; line-height:1.45;}
+.nia-map-preview-link {margin:0.75rem 0 0;}
+.nia-map-preview-link a {font-weight:600; color:#1f4d7a;}
+/* Shared ExportModal chooser (same chrome as Congress explorer). */
+.nia-main .congress-export {width:min(560px,94vw);}
+.nia-main .congress-export h3 {margin:18px 0 8px; font-size:13px; text-transform:uppercase; letter-spacing:.04em; color:#516780;}
+.nia-main .congress-export > p:first-of-type {margin:12px 0 0;}
+.nia-main .congress-export-choice {display:flex; flex-direction:column; gap:8px;}
+.nia-main .congress-export-option {display:flex; gap:10px; align-items:flex-start; padding:11px 13px;
+  border:1px solid #d5deea; border-radius:8px; background:#fff; cursor:pointer;}
+.nia-main .congress-export-option:hover {border-color:#9fb6cf; background:#fbfcfe;}
+.nia-main .congress-export-option.selected {border-color:#245fa8; background:#f2f7fd; box-shadow:inset 0 0 0 1px #245fa8;}
+.nia-main .congress-export-option input {margin-top:3px; flex:none;}
+.nia-main .congress-export-option span {display:flex; flex-direction:column; gap:3px; min-width:0;}
+.nia-main .congress-export-option strong {font-size:13.5px;}
+.nia-main .congress-export-option small {font-size:12px; color:#516780; line-height:1.45;}
+.nia-main .fmr-dialog-actions {display:flex; gap:10px; justify-content:flex-end; margin-top:18px; flex-wrap:wrap;}
+.nia-main .fmr-dialog-actions .primary {background:#245fa8; color:#fff; border:1px solid #245fa8; padding:8px 14px; border-radius:7px; font:inherit; font-weight:650; cursor:pointer;}
+.nia-main .fmr-dialog-actions .secondary {background:#fff; color:#24354d; border:1px solid #c5d0de; padding:8px 14px; border-radius:7px; font:inherit; cursor:pointer;}

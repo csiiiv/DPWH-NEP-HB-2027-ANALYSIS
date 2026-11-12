@@ -831,6 +831,19 @@ def build(write_output=True):
             project['category'] = wb_row['category']
             project['region'] = wb_row['region_canonical']
             project['province'] = wb_row['province']
+            # Workbook join + column-V fixed/submission title (preferred wording
+            # for chainage analysis; falls back to the annex print title in UI).
+            project['senate_id'] = wb_row['id']
+            project['submission_label'] = wb_row.get('submission_label') or None
+            # Title-chainage length + stage allocation ₱/m (screening proxy).
+            chainage = (wb_row.get('title_parse') or {}).get('chainage') or {}
+            length = chainage.get('length_m')
+            project['chainage_length_m'] = length if isinstance(length, (int, float)) and length > 0 else None
+            amount = project.get('amount_php')
+            if project['chainage_length_m'] and isinstance(amount, (int, float)) and amount >= 0:
+                project['php_per_m'] = round(amount / project['chainage_length_m'], 2)
+            else:
+                project['php_per_m'] = None
             stamped += 1
         if stamped != len(stage['projects']):
             raise ValueError(f'{stage_key}: only {stamped} of {len(stage["projects"])} rows '

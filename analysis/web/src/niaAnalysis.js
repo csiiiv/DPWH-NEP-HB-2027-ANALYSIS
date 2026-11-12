@@ -1,4 +1,4 @@
-import {allocationStats, candidateAggregates, filterComparisons, filterProjects, normalizeMatchingMethod, rowsForMethod, signedMoney} from './niaModel.js';
+import {allocationStats, candidateAggregates, filterComparisons, filterProjects, groupLabel, medianNumber, normalizeMatchingMethod, projectGroupId, rowsForMethod, signedMoney} from './niaModel.js';
 
 export const share = (value, total) => total ? value / total : null;
 
@@ -109,10 +109,259 @@ export function concentration(projects) {
 
 // Concentration is calculated within the current filtered source population.
 // Controls and parent headings are excluded; ties use stable source IDs.
-export function concentrationRows(projects, subprograms) {
-  return subprograms.map(s => ({id: s.key, label: s.label,
-    ...concentration(projects.filter(p => p.subprogram_key === s.key))}))
-    .filter(s => s.count).sort((a, b) => b.total - a.total);
+// `groups` is [{key|id, label}] — usually stage.subprograms or dim options.
+export function concentrationRows(projects, groups, dim = 'subprogram') {
+  return groups.map(s => {
+    const id = s.id || s.key;
+    const scoped = projects.filter(p => projectGroupId(p, dim) === id);
+    return {id, label: s.label, ...concentration(scoped)};
+  }).filter(s => s.count).sort((a, b) => b.total - a.total);
+}
+
+/** Distinct groups present in `projects` for a stats/overview dimension. */
+export function dimensionGroups(projects, dim, subprogramLabels = new Map()) {
+  const groups = new Map();
+  for (const p of projects) {
+    const id = projectGroupId(p, dim);
+    if (!groups.has(id)) {
+      groups.set(id, {id, key: id, label: groupLabel(id, dim, subprogramLabels)});
+    }
+  }
+  return [...groups.values()].sort((a, b) => a.label.localeCompare(b.label));
+}
+
+/** Allocation rollup (count/total/median) for any analysis dimension. */
+export function allocationRowsByDim(projects, dim, subprogramLabels = new Map()) {
+  const buckets = new Map();
+  for (const p of projects) {
+    const id = projectGroupId(p, dim);
+    const entry = buckets.get(id) || {
+      id, key: id, label: groupLabel(id, dim, subprogramLabels), amounts: [],
+    };
+    entry.amounts.push(p.amount_php);
+    buckets.set(id, entry);
+  }
+  return [...buckets.values()]
+    .map(({amounts, ...rest}) => ({
+      ...rest,
+      ...allocationStats(amounts.map(amount_php => ({amount_php}))),
+    }))
+    .sort((a, b) => b.total - a.total || a.label.localeCompare(b.label));
+}
+
+function quantileSorted(sorted, fraction) {
+  if (!sorted.length) return null;
+  const index = (sorted.length - 1) * fraction;
+  const low = Math.floor(index), high = Math.ceil(index);
+  return sorted[low] + (sorted[high] - sorted[low]) * (index - low);
+}
+
+/** Descriptive stats over finite php_per_m values (title-chainage proxy). */
+export function phpPerMStats(projects) {
+  const rates = projects.map(p => p.php_per_m).filter(Number.isFinite).sort((a, b) => a - b);
+  return phpPerMDistribution(rates);
+}
+
+/**
+ * Box/whisker + scatter inputs for a sorted ₱/m series.
+ * Whiskers use Tukey fences (1.5 × IQR); points beyond are outliers.
+ */
+export function phpPerMDistribution(ratesInput) {
+  const rates = [...ratesInput].filter(Number.isFinite).sort((a, b) => a - b);
+  const n = rates.length;
+  if (!n) {
+    return {
+      count: 0, rates: [], median: null, mean: null, p25: null, p75: null,
+      min: null, max: null, whisker_low: null, whisker_high: null,
+    };
+  }
+  const total = rates.reduce((s, v) => s + v, 0);
+  const p25 = quantileSorted(rates, 0.25);
+  const p75 = quantileSorted(rates, 0.75);
+  const iqr = p75 - p25;
+  const fenceLow = p25 - 1.5 * iqr;
+  const fenceHigh = p75 + 1.5 * iqr;
+  let whiskerLow = rates[0], whiskerHigh = rates[n - 1];
+  for (const rate of rates) {
+    if (rate >= fenceLow) {whiskerLow = rate; break;}
+  }
+  for (let i = n - 1; i >= 0; i--) {
+    if (rates[i] <= fenceHigh) {whiskerHigh = rates[i]; break;}
+  }
+  return {
+    count: n,
+    rates,
+    median: medianNumber(rates),
+    mean: total / n,
+    p25, p75,
+    min: rates[0],
+    max: rates[n - 1],
+    whisker_low: whiskerLow,
+    whisker_high: whiskerHigh,
+  };
+}
+
+/** Shared log domain for comparable ₱/m strips across groups. */
+export function phpPerMStripDomain(rows, pad = 0.08) {
+  const rates = rows.flatMap(r => r.rates || []).filter(v => Number.isFinite(v) && v > 0);
+  if (!rates.length) return {min: 1_000, max: 1_000_000};
+  let lo = Math.min(...rates), hi = Math.max(...rates);
+  if (lo === hi) {
+    lo = lo / 2;
+    hi = hi * 2;
+  }
+  const logLo = Math.log10(lo), logHi = Math.log10(hi);
+  const span = Math.max(logHi - logLo, 0.5);
+  return {
+    min: 10 ** (logLo - span * pad),
+    max: 10 ** (logHi + span * pad),
+  };
+}
+
+/**
+ * Per-dimension chainage ₱/m table. `projects` is the filtered stage
+ * population; rows without a positive title-chainage length contribute to
+ * `projects` but not to the rate stats.
+ */
+export function phpPerMRowsByDim(projects, dim, subprogramLabels = new Map()) {
+  const buckets = new Map();
+  for (const p of projects) {
+    const id = projectGroupId(p, dim);
+    const entry = buckets.get(id) || {
+      id, label: groupLabel(id, dim, subprogramLabels), projects: [],
+    };
+    entry.projects.push(p);
+    buckets.set(id, entry);
+  }
+  return [...buckets.values()].map(g => {
+    const rates = phpPerMStats(g.projects);
+    return {
+      id: g.id,
+      label: g.label,
+      projects: g.projects.length,
+      with_chainage: rates.count,
+      chainage_share: g.projects.length ? rates.count / g.projects.length : null,
+      median: rates.median,
+      mean: rates.mean,
+      p25: rates.p25,
+      p75: rates.p75,
+      min: rates.min,
+      max: rates.max,
+      rates: rates.rates,
+      whisker_low: rates.whisker_low,
+      whisker_high: rates.whisker_high,
+    };
+  }).filter(r => r.projects)
+    .sort((a, b) => (b.with_chainage - a.with_chainage)
+      || ((b.median ?? -1) - (a.median ?? -1))
+      || a.label.localeCompare(b.label));
+}
+
+/**
+ * Preferred project wording for chainage views: Senate column-V fixed /
+ * submission title when stamped, else the annex print title.
+ */
+export function preferredChainageTitle(project) {
+  const fixed = project?.submission_label;
+  if (typeof fixed === 'string' && fixed.trim()) return fixed.trim();
+  const title = project?.title || project?.label;
+  return typeof title === 'string' ? title : '';
+}
+
+/**
+ * Tukey extremity in IQR units past the near quartile.
+ * Mild outliers start at 1.5; classic “extreme” Tukey cutoff is 3.0.
+ */
+export function phpPerMOutlierFenceScore(rate, stats, side) {
+  const iqr = stats.p75 - stats.p25;
+  if (!(iqr > 0) || !Number.isFinite(rate)) return null;
+  if (side === 'high') return (rate - stats.p75) / iqr;
+  if (side === 'low') return (stats.p25 - rate) / iqr;
+  return null;
+}
+
+/** How many times the group median the rate is (always ≥ 1 for outliers). */
+export function phpPerMOutlierMedianRatio(rate, median, side) {
+  if (!(median > 0) || !Number.isFinite(rate) || !(rate > 0)) return null;
+  return side === 'high' ? rate / median : median / rate;
+}
+
+/**
+ * Triage band from fence score (IQR units past P25/P75).
+ * mild < 3 · moderate < 5 · severe < 10 · extreme ≥ 10
+ */
+export function phpPerMOutlierSeverity(fenceScore) {
+  if (!(fenceScore >= 0)) return null;
+  if (fenceScore < 3) return 'mild';
+  if (fenceScore < 5) return 'moderate';
+  if (fenceScore < 10) return 'severe';
+  return 'extreme';
+}
+
+/**
+ * Title-chainage projects beyond their group's Tukey whiskers (same rule as
+ * the brown scatter dots). Each outlier is scored against its own dim bucket,
+ * not a global fence. `fence_score` = IQR units past P25/P75; `severity` is
+ * the triage band; `median_ratio` is × group median.
+ */
+export function phpPerMOutlierProjects(projects, dim, subprogramLabels = new Map()) {
+  const buckets = new Map();
+  for (const p of projects) {
+    const id = projectGroupId(p, dim);
+    const entry = buckets.get(id) || {
+      id, label: groupLabel(id, dim, subprogramLabels), projects: [],
+    };
+    entry.projects.push(p);
+    buckets.set(id, entry);
+  }
+  const outliers = [];
+  for (const g of buckets.values()) {
+    const stats = phpPerMStats(g.projects);
+    if (!stats.count || stats.whisker_low == null) continue;
+    const iqr = stats.p75 - stats.p25;
+    if (!(iqr > 0)) continue;
+    for (const p of g.projects) {
+      if (!Number.isFinite(p.php_per_m)) continue;
+      const high = p.php_per_m > stats.whisker_high;
+      const low = p.php_per_m < stats.whisker_low;
+      if (!high && !low) continue;
+      const side = high ? 'high' : 'low';
+      const fence_score = phpPerMOutlierFenceScore(p.php_per_m, stats, side);
+      const median_ratio = phpPerMOutlierMedianRatio(p.php_per_m, stats.median, side);
+      outliers.push({
+        id: p.id,
+        title: preferredChainageTitle(p),
+        ledger_title: p.title || null,
+        submission_label: p.submission_label || null,
+        senate_id: p.senate_id || null,
+        group_id: g.id,
+        group_label: g.label,
+        php_per_m: p.php_per_m,
+        amount_php: p.amount_php,
+        chainage_length_m: p.chainage_length_m,
+        side,
+        fence_score,
+        median_ratio,
+        severity: phpPerMOutlierSeverity(fence_score),
+        p25: stats.p25,
+        p75: stats.p75,
+        iqr,
+        whisker_low: stats.whisker_low,
+        whisker_high: stats.whisker_high,
+        median: stats.median,
+        source: p.source,
+        subprogram_key: p.subprogram_key,
+        subprogram_label: p.subprogram_label,
+        category: p.category,
+        region: p.region,
+        program_group: p.program_group,
+      });
+    }
+  }
+  return outliers.sort((a, b) => (b.fence_score - a.fence_score)
+    || (b.php_per_m - a.php_per_m)
+    || (b.amount_php - a.amount_php)
+    || a.title.localeCompare(b.title));
 }
 
 // Highlights findings, derived entirely from the retained ledgers. Pure data

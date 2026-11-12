@@ -14,6 +14,10 @@ export const locationFlagLabels = {
   deo_province_mismatch: 'DEO/province mismatch',
   weak_reference: 'Weak location reference',
   municipality_level_anchor: 'Municipality-level anchor',
+  matching_split: 'Matching split (workbook-aligned)',
+  psgc_divergent: 'Divergent PSGC anchors',
+  multi_site_title_gps: 'Multi-site title GPS',
+  unfunded: 'Unfunded workbook line',
 };
 
 function push(map, key, row) {

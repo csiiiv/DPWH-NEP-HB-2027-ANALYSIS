@@ -124,6 +124,28 @@ class ChainageParseTests(unittest.TestCase):
         self.assertEqual(ch['length_m'], 436)
         self.assertIsNone(ch['length_review'])
 
+    def test_prefix_glued_to_sta_keyword_still_parses_range(self):
+        # "L-5 STA. 0+000" compacts to "L-5STA." — the digitizer must not
+        # OCR "5S" and destroy the keyword.
+        parsed = parse_chainage(
+            'Sub-Lateral L-5 STA. 0+000 - STA. 0+200 at Brgy. Guiset')
+        self.assertEqual(len(parsed['chainages']), 1)
+        ch = parsed['chainages'][0]
+        self.assertFalse(ch['point'])
+        self.assertEqual(ch['from'], '0+000')
+        self.assertEqual(ch['to'], '0+200')
+        self.assertEqual(ch['length_m'], 200)
+
+    def test_bare_left_sta_range_parses(self):
+        # Prefix on the right side only, and on neither side.
+        for title in ('0+000 - STA. 0+200', '0+000 - 0+200'):
+            parsed = parse_chainage(title)
+            self.assertEqual(len(parsed['chainages']), 1, title)
+            ch = parsed['chainages'][0]
+            self.assertFalse(ch['point'], title)
+            self.assertEqual((ch['from'], ch['to']), ('0+000', '0+200'), title)
+            self.assertEqual(ch['length_m'], 200, title)
+
 
 if __name__ == '__main__':
     unittest.main()

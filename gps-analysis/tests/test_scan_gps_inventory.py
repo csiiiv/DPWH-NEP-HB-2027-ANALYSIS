@@ -164,6 +164,57 @@ class DegreePairTests(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertIsNone(scan.analyze_text(text))
 
+    def test_site_labelled_dms_with_doubled_seconds_quotes(self):
+        # NIA Senate fixed titles list multi-site SPIPs as Site N -DMS""N, DMS""E.
+        title = (
+            "Maniana SPIP: Establishment of 6-unit Solar-Powered Pump Irrigation "
+            "Project with AI Monitoring System at Brgy. Laguit Padilla, Bugallon, "
+            "Pangasinan (Augmentation) Site 1 -15°56'56.69\"\"N, 120°10'40.19\"\"E "
+            "Site 2-15°57'20.81\"\"N, 120°10'38.05\"\"E Site 3-15°57'24.27\"\"N, "
+            "120°10'34.24\"\"E Site 4-15°57'25.74\"\"N, 120°10'58.92\"\"E "
+            "Site 5-15°56'57.53\"\"N, 120°11'7.28\"\"E Site 6-15°56'51.03\"\"N, "
+            "120°11'6.17\"\"E"
+        )
+        hit = scan.analyze_text(title)
+        self.assertEqual(hit["status"], "parsed")
+        self.assertIn("dms_pair", hit["fragment_kinds"])
+        self.assertEqual(len(hit["points"]), 6)
+        self.assertAlmostEqual(hit["points"][0]["latitude"], 15 + 56 / 60 + 56.69 / 3600, places=5)
+        self.assertAlmostEqual(hit["points"][0]["longitude"], 120 + 10 / 60 + 40.19 / 3600, places=5)
+        # Stored values are decimal degrees (display layer formats °N/°E).
+        self.assertIsInstance(hit["points"][0]["latitude"], float)
+
+    def test_site_dms_without_comma_between_angles(self):
+        title = ("Narvacan SPIP Site 1: 18°30'4.50\"\"N 120°38'36.46\"\"E "
+                 "Site 2: 18°30'13.84\"\"N 120°38'43.16\"\"E")
+        hit = scan.analyze_text(title)
+        self.assertEqual(hit["status"], "parsed")
+        self.assertGreaterEqual(len(hit["points"]), 2)
+
+    def test_spaced_dms_with_quadrupled_quotes_and_quote_separator(self):
+        # Some Senate fixed titles space DMS parts and Excel-escape quotes so the
+        # seconds mark becomes """" and a "" appears before longitude.
+        title = ('SPIP at Barangay Kaypian 14° 49\' 47.96""""N ""121° 3\' 18.25""""E')
+        hit = scan.analyze_text(title)
+        self.assertEqual(hit["status"], "parsed")
+        self.assertEqual(len(hit["points"]), 1)
+        self.assertAlmostEqual(hit["points"][0]["latitude"], 14 + 49 / 60 + 47.96 / 3600, places=5)
+        self.assertAlmostEqual(hit["points"][0]["longitude"], 121 + 3 / 60 + 18.25 / 3600, places=5)
+
+    def test_endpoint_and_degree_pair_fragments_dedupe(self):
+        # Mixed START:/END: labels plus bare degree pairs must not double-count.
+        title = (
+            "Flood Road Dike Start: 6.973859°, 124.631006° "
+            "End: 7.01748563°, 124.56058429° "
+            "Canal (1) Start: 6.95235588°, 124.67184133° "
+            "End: 6.99511741°, 124.69824462°"
+        )
+        hit = scan.analyze_text(title)
+        self.assertIn(hit["status"], {"parsed", "parsed_with_issues"})
+        keys = {(round(p["latitude"], 6), round(p["longitude"], 6)) for p in hit["points"]}
+        self.assertEqual(len(keys), len(hit["points"]))
+        self.assertEqual(len(hit["points"]), 4)
+
 
 class ChangeTypeTests(unittest.TestCase):
     """Budget-change buckets derived from unified DPWH comparison traces."""

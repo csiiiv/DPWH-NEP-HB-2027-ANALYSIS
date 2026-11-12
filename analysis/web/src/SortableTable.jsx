@@ -30,16 +30,20 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,
   if(controlledSort===undefined)setInternalSort(initialSort||{key:columns.find(c=>c.sortable!==false)?.key,direction:'desc'});
  },[initialSort?.key,initialSort?.direction]);
  const sorted=useMemo(()=>{
-  if(!sort?.key)return rows;
+  // Keep an explicit totals row pinned under the sorted body.
+  const body=rows.filter(r=>r.id!=='totals');
+  const totals=rows.filter(r=>r.id==='totals');
+  if(!sort?.key)return [...body,...totals];
   const column=columns.find(c=>c.key===sort.key);
   const factor=sort.direction==='asc'?1:-1,value=column?.value||(row=>row[sort.key]);
-  return [...rows].sort((a,b)=>{
+  const ordered=[...body].sort((a,b)=>{
    const x=value(a),y=value(b);
    // Missing values always sink to the bottom regardless of direction.
    if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;
    if(typeof x==='number'&&typeof y==='number')return (x-y)*factor;
    return String(x).localeCompare(String(y),'en',{numeric:true,sensitivity:'base'})*factor;
   });
+  return [...ordered,...totals];
  },[rows,sort,columns]);
  function toggle(key){
   // Three-state cycle per column: initial direction → opposite → cleared.
@@ -109,11 +113,12 @@ export default function SortableTable({columns,rows,initialSort,ariaLabel,empty,
       </button>}
     </th>)}</tr>
    </thead>
-   <tbody>{visible.map((row,i)=><tr key={row.id??i}>{linked&&<td className="table-link-col"/>}{columns.map(column=>{
+   <tbody>{visible.map((row,i)=><tr key={row.id??i} className={row.id==='totals'?'table-totals':undefined}>{linked&&<td className="table-link-col"/>}{columns.map(column=>{
      const Tag=column.scope==='row'?'th':'td';
+     const scope=column.scope==='row'?{scope:'row'}:{};
      return column.render
-      ?<Tag key={column.key} data-label={column.label} className={cellClass(column)} style={cellStyle(column)}>{column.render(row,i)}</Tag>
-      :<Tag key={column.key} data-label={column.label} className={cellClass(column)} style={cellStyle(column)}>{formatCell(column.value?column.value(row):row[column.key])}</Tag>;
+      ?<Tag key={column.key} data-label={column.label} className={cellClass(column)} style={cellStyle(column)} {...scope}>{column.render(row,i)}</Tag>
+      :<Tag key={column.key} data-label={column.label} className={cellClass(column)} style={cellStyle(column)} {...scope}>{formatCell(column.value?column.value(row):row[column.key])}</Tag>;
    })}</tr>)}
     {!rows.length&&<tr><td colSpan={columns.length+(linked?1:0)}>{empty||'No rows.'}</td></tr>}
    </tbody>

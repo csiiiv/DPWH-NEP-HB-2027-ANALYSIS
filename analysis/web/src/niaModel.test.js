@@ -1,17 +1,36 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
+import {existsSync} from 'node:fs';
+import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {allocationStats, analysisCandidateRows, candidateGroupRows, bandRows, roundingLadder, filterProjects, filterComparisons,
   sourceNode, sourcePath, sourceArithmetic, comparisonRows, candidateAggregates, overviewComparisonRows, overviewGroupRows,
   comparisonClass, categoryReconciliationRows,
-  rowsForMethod, normalizeMatchingMethod, variantMarkLabels, unresolvedMarkKinds, candidateResolution} from './niaModel.js';
-import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringProjects, aiMonitoringReconciliation, concentration, concentrationRows, fundingGroups, fundingSummary, highlightsCards} from './niaAnalysis.js';
+  rowsForMethod, normalizeMatchingMethod, variantMarkLabels, unresolvedMarkKinds, candidateResolution,
+  senateGapRows, senateReconciliationRows, senateUnfundedRows, gapReasonLabels,
+  formatSenateCoordinates, formatSenateChainage, senateChainageLengthM,
+  filterSenateProjects, senateProjects} from './niaModel.js';
+import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringProjects, aiMonitoringReconciliation, concentration, concentrationRows, fundingGroups, fundingSummary, highlightsCards, phpPerMDistribution, phpPerMOutlierFenceScore, phpPerMOutlierMedianRatio, phpPerMOutlierProjects, phpPerMOutlierSeverity, phpPerMRowsByDim, phpPerMStats, phpPerMStripDomain, preferredChainageTitle} from './niaAnalysis.js';
+
+// Walk up from this file until analysis-nia/ is found so the same test works
+// from analysis/web/src and the PBC-NIA-APP fork.
+function repoRootFrom(start) {
+  let dir = start;
+  for (let i = 0; i < 8; i++) {
+    if (existsSync(join(dir, 'analysis-nia', 'build_nia_workbench.py'))) return dir;
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  throw new Error('analysis-nia/build_nia_workbench.py not found above ' + start);
+}
+const repoRoot = repoRootFrom(fileURLToPath(new URL('.', import.meta.url)));
 
 // Regenerate in memory so npm test also works in a fresh checkout.
 const data = JSON.parse(execFileSync('python3', ['-c',
   "import json,sys; sys.path.insert(0,'analysis-nia'); import build_nia_workbench as b; print(json.dumps(b.build(write_output=False)))"],
-  {cwd: fileURLToPath(new URL('../../../', import.meta.url)), maxBuffer: 8 * 1024 * 1024, encoding: 'utf8'}));
+  {cwd: repoRoot, maxBuffer: 8 * 1024 * 1024, encoding: 'utf8'}));
 const rows = comparisonRows(data);
 test('AI monitoring classification includes satellite wording and source-specific OCR variants without including generic monitoring', () => {
   const source = {source_pdf: 'dbm-other-nep-line-data/NIA.pdf'};
@@ -160,11 +179,11 @@ test('funding reconciliation and coverage retain every filtered source allocatio
   assert.equal(changed.net_delta_php, -830000000);
   assert.equal(changed.sources.nep.allocation_share, 1);
 });
-test('concentration ranks source records within filtered sub-programs and handles small or empty populations', () => {
+test('concentration ranks source records within filtered groups and handles small or empty populations', () => {
   const fixture = [
-    {id: 'b', subprogram_key: 's', amount_php: 10},
-    {id: 'a', subprogram_key: 's', amount_php: 10},
-    {id: 'c', subprogram_key: 't', amount_php: 100},
+    {id: 'b', subprogram_key: 's', category: 'Cat A', amount_php: 10},
+    {id: 'a', subprogram_key: 's', category: 'Cat A', amount_php: 10},
+    {id: 'c', subprogram_key: 't', category: 'Cat B', amount_php: 100},
   ];
   const grouped = concentrationRows(fixture, [{key: 's', label: 'S'}, {key: 't', label: 'T'}]);
   assert.equal(grouped.reduce((sum, g) => sum + g.total, 0), 120);
@@ -172,6 +191,10 @@ test('concentration ranks source records within filtered sub-programs and handle
   assert.ok(grouped.every(g => g.top_share === 1));
   assert.equal(concentration([]).top_share, null);
   assert.deepEqual(concentrationRows([], [{key: 's'}]), []);
+  const byCategory = concentrationRows(fixture, [
+    {id: 'Cat A', label: 'Cat A'}, {id: 'Cat B', label: 'Cat B'},
+  ], 'category');
+  assert.equal(byCategory.find(g => g.id === 'Cat B').total, 100);
   for (const stage of Object.values(data.stages)) {
     const filtered = filterProjects(stage.projects, {subprogram: stage.subprograms[0].key});
     const stats = concentration(filtered);
@@ -180,6 +203,101 @@ test('concentration ranks source records within filtered sub-programs and handle
     assert.equal(stats.top_amount_php, expected.reduce((sum, amount) => sum + amount, 0));
     assert.equal(stats.top_share, stats.top_amount_php / allocationStats(filtered).total);
   }
+});
+
+test('php_per_m stats describe title-chainage rates per hierarchy category', () => {
+  const fixture = [
+    {id: 'a', category: 'Roads', subprogram_key: 'nis', subprogram_label: 'NIS', amount_php: 2_000_000, php_per_m: 10_000, chainage_length_m: 200},
+    {id: 'b', category: 'Roads', subprogram_key: 'nis', subprogram_label: 'NIS', amount_php: 4_000_000, php_per_m: 20_000, chainage_length_m: 200},
+    {id: 'c', category: 'Repair', subprogram_key: 'cis', subprogram_label: 'CIS', amount_php: 3_000_000, php_per_m: 15_000, chainage_length_m: 200},
+    {id: 'd', category: 'Repair', subprogram_key: 'cis', subprogram_label: 'CIS', amount_php: 5_000_000}, // no chainage
+  ];
+  const overall = phpPerMStats(fixture);
+  assert.equal(overall.count, 3);
+  assert.equal(overall.median, 15_000);
+  assert.equal(overall.min, 10_000);
+  assert.equal(overall.max, 20_000);
+  const rows = phpPerMRowsByDim(fixture, 'category');
+  assert.equal(rows.length, 2);
+  const roads = rows.find(r => r.id === 'Roads');
+  assert.equal(roads.projects, 2);
+  assert.equal(roads.with_chainage, 2);
+  assert.equal(roads.median, 15_000);
+  assert.deepEqual(roads.rates, [10_000, 20_000]);
+  assert.equal(roads.whisker_low, 10_000);
+  assert.equal(roads.whisker_high, 20_000);
+  const repair = rows.find(r => r.id === 'Repair');
+  assert.equal(repair.projects, 2);
+  assert.equal(repair.with_chainage, 1);
+  assert.equal(repair.chainage_share, 0.5);
+  // Live workbench: every stage project that carries chainage also carries a rate.
+  for (const stage of Object.values(data.stages)) {
+    const withLength = stage.projects.filter(p => Number.isFinite(p.chainage_length_m) && p.chainage_length_m > 0);
+    assert.ok(withLength.length > 300, `${stage.key} should stamp chainage lengths`);
+    assert.ok(withLength.every(p => Number.isFinite(p.php_per_m)));
+    const byCat = phpPerMRowsByDim(stage.projects, 'category');
+    assert.ok(byCat.some(r => r.with_chainage > 0));
+    assert.equal(byCat.reduce((s, r) => s + r.projects, 0), stage.projects.length);
+    const domain = phpPerMStripDomain(byCat);
+    assert.ok(domain.min > 0 && domain.max > domain.min);
+  }
+});
+
+test('php_per_m Tukey whiskers flag far outliers for the strip chart', () => {
+  const rates = [10_000, 11_000, 12_000, 13_000, 14_000, 100_000];
+  const dist = phpPerMDistribution(rates);
+  assert.equal(dist.p25, 11_250);
+  assert.equal(dist.p75, 13_750);
+  assert.equal(dist.whisker_low, 10_000);
+  assert.equal(dist.whisker_high, 14_000);
+  assert.equal(dist.max, 100_000);
+  const domain = phpPerMStripDomain([{rates}]);
+  assert.ok(domain.min < 10_000);
+  assert.ok(domain.max > 100_000);
+});
+
+test('preferred chainage title prefers Senate column-V submission wording', () => {
+  assert.equal(preferredChainageTitle({
+    title: 'Annex print', submission_label: 'Fixed submission title Sta. 0+000 – 0+100',
+  }), 'Fixed submission title Sta. 0+000 – 0+100');
+  assert.equal(preferredChainageTitle({title: 'Annex print only'}), 'Annex print only');
+});
+
+test('php_per_m outlier projects list Tukey extremes per hierarchy group', () => {
+  const fixture = [
+    {id: 'a', title: 'A', category: 'Roads', amount_php: 1_000_000, php_per_m: 10_000, chainage_length_m: 100},
+    {id: 'b', title: 'B', category: 'Roads', amount_php: 1_100_000, php_per_m: 11_000, chainage_length_m: 100},
+    {id: 'c', title: 'C', category: 'Roads', amount_php: 1_200_000, php_per_m: 12_000, chainage_length_m: 100},
+    {id: 'd', title: 'D', category: 'Roads', amount_php: 1_300_000, php_per_m: 13_000, chainage_length_m: 100},
+    {id: 'e', title: 'E', category: 'Roads', amount_php: 1_400_000, php_per_m: 14_000, chainage_length_m: 100},
+    {id: 'f', title: 'Far annex', submission_label: 'Far fixed title with Sta. 0+000 – 1+000',
+      category: 'Roads', amount_php: 10_000_000, php_per_m: 100_000, chainage_length_m: 100},
+    {id: 'g', title: 'Solo', category: 'Repair', amount_php: 5_000_000, php_per_m: 50_000, chainage_length_m: 100},
+  ];
+  const outliers = phpPerMOutlierProjects(fixture, 'category');
+  assert.equal(outliers.length, 1);
+  assert.equal(outliers[0].id, 'f');
+  assert.equal(outliers[0].side, 'high');
+  assert.equal(outliers[0].group_label, 'Roads');
+  assert.equal(outliers[0].title, 'Far fixed title with Sta. 0+000 – 1+000');
+  assert.equal(outliers[0].ledger_title, 'Far annex');
+  // p25=11250, p75=13750, IQR=2500 → (100000-13750)/2500 = 34.5 → extreme
+  assert.equal(outliers[0].fence_score, 34.5);
+  assert.equal(outliers[0].severity, 'extreme');
+  assert.ok(outliers[0].median_ratio > 1);
+  assert.equal(phpPerMOutlierSeverity(2), 'mild');
+  assert.equal(phpPerMOutlierSeverity(3), 'moderate');
+  assert.equal(phpPerMOutlierSeverity(5), 'severe');
+  assert.equal(phpPerMOutlierSeverity(10), 'extreme');
+  assert.equal(phpPerMOutlierFenceScore(100_000, {p25: 11_250, p75: 13_750}, 'high'), 34.5);
+  assert.equal(phpPerMOutlierMedianRatio(100_000, 12_500, 'high'), 8);
+  // Live workbench: at least one hierarchy category carries a high-side outlier.
+  const live = phpPerMOutlierProjects(data.stages.nep.projects, 'category');
+  assert.ok(live.length > 0);
+  assert.ok(live.every(o => o.side === 'high' || o.side === 'low'));
+  assert.ok(live.every(o => ['mild', 'moderate', 'severe', 'extreme'].includes(o.severity)));
+  assert.ok(live.some(o => o.side === 'high'));
+  assert.ok(live[0].fence_score >= live.at(-1).fence_score);
 });
 test('candidate aggregates partition funding and count changed pairs', () => {
   const stats = candidateAggregates(rows);
@@ -314,17 +432,28 @@ test('category reconciliation crosstab conserves both ledgers and matches the fi
   const classes = new Set(['insertions','deletions','unchanged','increased','decreased']);
   for (const r of rows) assert.ok(classes.has(comparisonClass(r)), r.id);
   const groups = categoryReconciliationRows(rows);
-  assert.ok(groups.length > 1);
+  const body = groups.filter(g => g.id !== 'totals');
+  const totals = groups.find(g => g.id === 'totals');
+  assert.ok(body.length > 1);
+  assert.ok(totals);
+  assert.equal(groups.at(-1).id, 'totals');
   // Row conservation: per-class counts sum to the class populations.
   const expected = {insertions: 0, deletions: 0, unchanged: 0, increased: 0, decreased: 0};
   for (const r of rows) expected[comparisonClass(r)]++;
   for (const cls of Object.keys(expected))
-    assert.equal(groups.reduce((s, g) => s + g[`${cls}_count`], 0), expected[cls]);
+    assert.equal(body.reduce((s, g) => s + g[`${cls}_count`], 0), expected[cls]);
   // Checksum: House ledger per category equals the four House-side classes.
-  for (const g of groups)
+  for (const g of body) {
     assert.equal(g.house_php, g.insertions_php + g.unchanged_php + g.increased_php + g.decreased_php);
-  assert.equal(groups.reduce((s, g) => s + g.house_php, 0),
+    assert.equal(g.house_count, g.insertions_count + g.unchanged_count + g.increased_count + g.decreased_count);
+    assert.equal(g.net_delta_php, g.house_php - g.nep_php);
+  }
+  assert.equal(body.reduce((s, g) => s + g.house_php, 0),
     rows.reduce((s, r) => s + (r.house_php || 0), 0));
+  assert.equal(totals.house_php, body.reduce((s, g) => s + g.house_php, 0));
+  assert.equal(totals.nep_php, body.reduce((s, g) => s + g.nep_php, 0));
+  assert.equal(totals.net_delta_php, totals.house_php - totals.nep_php);
+  assert.equal(totals.house_count, body.reduce((s, g) => s + g.house_count, 0));
   // Stamped workbook hierarchy reaches every ledger row on both stages.
   for (const side of ['nep', 'house'])
     assert.equal(data.stages[side].projects.filter(p => p.category).length,
@@ -403,4 +532,102 @@ test('NIA highlight evidence supports both AI ledgers and keeps printed control 
   }
   assert.deepEqual(cards['ai-monitoring'].metrics.map(m => m.label),
     ['NEP project allocations', 'House project allocations', 'Net change']);
+});
+test('senate gap rows identify every both-funded workbook line the title matching splits in two', () => {
+  const gaps = senateGapRows(data);
+  // The committed figures: 77 both-funded workbook rows whose two joined
+  // ledger records sit on two different comparison rows.
+  assert.equal(gaps.length, 77);
+  assert.ok(new Set(gaps.map(g => g.id)).size === gaps.length);
+  for (const g of gaps) {
+    assert.ok(g.nep_id && g.house_id && g.nep_php != null && g.house_php != null);
+    assert.ok(Object.keys(gapReasonLabels).includes(g.reason));
+    // Each half really is an unmatched observation in the comparison ledger.
+    const houseRow = data.comparison.find(r => r.house_id === g.house_id);
+    const nepRow = data.comparison.find(r => r.nep_id === g.nep_id);
+    assert.equal(houseRow.status, 'house_only');
+    assert.equal(nepRow.status, 'nep_only');
+    assert.notEqual(houseRow.id, nepRow.id);
+  }
+  // Money identity: the gap's combined halves reconcile to the workbook
+  // amounts actually printed on those rows.
+  const senById = new Map(data.senate.projects.map(p => [p.id, p]));
+  for (const g of gaps) {
+    const p = senById.get(g.id);
+    assert.equal(g.nep_php, p.nep_amount);
+    assert.equal(g.house_php, p.hgab_amount);
+  }
+  // Reasons: mostly reworded printings, a minority of repeated titles.
+  const reasons = gaps.reduce((m, g) => (m[g.reason] = (m[g.reason] || 0) + 1, m), {});
+  assert.equal(reasons.reworded_printing + reasons.repeated_title, 77);
+  assert.ok(reasons.reworded_printing >= 60);
+  assert.ok(reasons.repeated_title >= 1 && reasons.repeated_title <= 15);
+  // Workbook column V (fixed/submission title), edit acknowledgements and
+  // remarks travel with every gap row.
+  assert.equal(gaps.filter(g => g.submission_label).length, 77);
+  assert.equal(gaps.filter(g => g.submission_label && g.submission_label !== g.label).length, 76);
+  assert.equal(gaps.filter(g => g.submission_edited).length, 77);
+  assert.equal(gaps.filter(g => g.submission_edited === 'OK').length, 76);
+  assert.equal(gaps.filter(g => g.submission_edited === 'CHECK').length, 1);
+  assert.equal(gaps.filter(g => g.justification).length, 14);
+  assert.ok(gaps.some(g => /spelling corrections/i.test(g.justification || '')));
+});
+test('senate row-count reconciliation bridges the comparison ledger to the workbook exactly', () => {
+  const recon = senateReconciliationRows(data);
+  const byId = Object.fromEntries(recon.map(r => [r.id, r]));
+  const counts = data.comparison_summary.counts;
+  const totals = byId.totals;
+  assert.equal(totals.comparison_rows, 1013);
+  assert.equal(totals.workbook_rows, 937);
+  // Comparison column sums to the ledger: pairs + split halves + official
+  // insertions + official zeroed = every observation once.
+  const comparisonSum = recon.filter(r => r.id !== 'totals')
+    .reduce((s, r) => s + r.comparison_rows, 0);
+  assert.equal(comparisonSum, totals.comparison_rows);
+  // Workbook column: pairs + splits + insertions + zeroed + unfunded.
+  const workbookSum = recon.filter(r => r.id !== 'totals')
+    .reduce((s, r) => s + r.workbook_rows, 0);
+  assert.equal(workbookSum, totals.workbook_rows);
+  // The split piece is exactly the gap rows, counted twice on the
+  // comparison side and once on the workbook side.
+  assert.equal(byId.gap.comparison_rows, senateGapRows(data).length * 2);
+  assert.equal(byId.gap.workbook_rows, senateGapRows(data).length);
+  // Inflation identity: unmatched observations = official + gap.
+  assert.equal(counts.house_only, byId['official-insertions'].comparison_rows + byId.gap.comparison_rows / 2);
+  assert.equal(counts.nep_only, byId['official-zeroed'].comparison_rows + byId.gap.comparison_rows / 2);
+  // Paired rows sit one-to-one on both_funded workbook lines.
+  assert.equal(byId['paired-unchanged'].comparison_rows
+    + byId['paired-changed'].comparison_rows, counts.paired);
+  // Unfunded rows exist only in the workbook.
+  const unfunded = senateUnfundedRows(data);
+  assert.equal(byId.unfunded.comparison_rows, 0);
+  assert.equal(byId.unfunded.workbook_rows, unfunded.length);
+  assert.equal(unfunded.length, 1);
+  assert.match(unfunded[0].label, /CABTRIS/);
+});
+test('senate title parses surface normalized coordinates and chainage on workbook rows', () => {
+  const projects = senateProjects(data);
+  const withCoords = projects.filter(p => (p.title_parse?.coordinates?.points || []).length);
+  const withChain = projects.filter(p => (p.title_parse?.chainage?.spans || []).length);
+  assert.ok(withCoords.length >= 400, `expected ≥400 coordinate rows, got ${withCoords.length}`);
+  assert.ok(withChain.length >= 300, `expected ≥300 chainage rows, got ${withChain.length}`);
+  const maniana = projects.find(p => /Maniana/i.test(p.submission_label || p.label || ''));
+  assert.ok(maniana);
+  assert.equal((maniana.title_parse?.coordinates?.points || []).length, 6);
+  assert.match(formatSenateCoordinates(maniana), /15\.\d+°N, 120\.\d+°E/);
+  const sample = withCoords.find(p => formatSenateCoordinates(p));
+  assert.ok(sample);
+  assert.match(formatSenateCoordinates(sample), /\d+\.\d+°[NS], \d+\.\d+°[EW]/);
+  const chainSample = withChain.find(p => formatSenateChainage(p));
+  assert.ok(chainSample);
+  assert.ok(formatSenateChainage(chainSample).length > 0);
+  // Prefer column-V fixed title when present.
+  const fixed = projects.find(p => p.submission_label && p.title_parse?.source === 'submission_label'
+    && (p.title_parse?.coordinates?.points || []).length);
+  assert.ok(fixed);
+  // Search reaches coordinate / chainage text.
+  const hit = filterSenateProjects(projects, {q: formatSenateCoordinates(sample).slice(0, 12)});
+  assert.ok(hit.some(p => p.id === sample.id));
+  assert.ok(senateChainageLengthM(chainSample) == null
+    || Number.isFinite(senateChainageLengthM(chainSample)));
 });

@@ -6,7 +6,8 @@ import AnalysisValue from './AnalysisValue.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {readRoute, routeHref} from './routes.js';
 import {siteUrl} from './data.js';
-import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringLabels, aiMonitoringProjects, aiMonitoringReconciliation, concentration, concentrationRows, fundingGroups, fundingSummary, highlightsCards, share} from './niaAnalysis.js';
+import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringLabels, aiMonitoringProjects, aiMonitoringReconciliation, allocationRowsByDim, concentration, concentrationRows, dimensionGroups, fundingGroups, fundingSummary, highlightsCards, phpPerMOutlierProjects, phpPerMRowsByDim, phpPerMStats, phpPerMStripDomain, preferredChainageTitle, share} from './niaAnalysis.js';
+import {PhpPerMScatterPlot, PhpPerMStrip, PhpPerMStripAxis, phpPerMScatterPoints} from './niaPhpPerMStrip.jsx';
 import {allocationStats, analysisCandidateRows, bandRows, candidateAggregates, candidateGroupRows, candidateResolution, comparisonFilterLabels, comparisonRows,
   csvText, filterComparisons, filterProjects, flagLabels, money, signedMoney, signedPct, pctChange, niaTabs,
   repeatedAmounts, roundingLadder, rowsForMethod, sourceArithmetic, sourceNode, sourcePath,
@@ -14,7 +15,15 @@ import {allocationStats, analysisCandidateRows, bandRows, candidateAggregates, c
   matchingMethodLabels, normalizeMatchingMethod, variantMarkLabels, REVIEW_CATEGORIES,
   senateStatusLabels, senateProjects, filterSenateProjects, senateStats, senateComparisonIndex,
   SENATE_DIMENSIONS, RECONCILIATION_CLASSES, categoryReconciliationRows,
-  groupLabel as dimensionGroupLabel} from './niaModel.js';
+  senateGapRows, senateReconciliationRows, senateUnfundedRows, gapReasonLabels,
+  formatSenateCoordinates, formatSenateChainage, senateChainageLengthM,
+  projectGroupId, groupLabel as dimensionGroupLabel} from './niaModel.js';
+import {formatLengthKm} from './chainageDisplay.js';
+import {
+  consolidatedByStageId, formatConsolidatedChainage, preferredMapFocus,
+} from './niaConsolidatedMap.js';
+import {downloadChainageExport} from './niaChainageExport.js';
+import ExportModal from './ExportModal.jsx';
 import './Fmr.css';
 import './Nia.css';
 
@@ -559,17 +568,26 @@ function FundingAnalysis({data, rows, route}) {
         {key: 'allocation_share', label: 'Allocation coverage', align: 'num', render: r => percent(r.allocation_share)},
       ]}/></section></>;
 }
-function ConcentrationAnalysis({projects, stage, route, onPdf}) {
-  const overall = concentration(projects), groups = concentrationRows(projects, stage.subprograms);
+function ConcentrationAnalysis({projects, stage, route, onPdf, dim = 'subprogram'}) {
+  const labels = useMemo(
+    () => new Map(stage.subprograms.map(s => [s.key, s.label])),
+    [stage.subprograms]);
+  const groups = useMemo(
+    () => dimensionGroups(projects, dim, labels),
+    [projects, dim, labels]);
+  const overall = concentration(projects);
+  const rows = concentrationRows(projects, groups, dim);
   const selected = route.params.get('records');
-  const group = selected === 'top10' ? overall : groups.find(g => `top10:${g.id}` === selected);
+  const group = selected === 'top10' ? overall : rows.find(g => `top10:${g.id}` === selected);
   const percent = value => value == null ? '—' : `${(value * 100).toFixed(1)}%`;
+  const dimLabel = dim === 'program' ? 'program' : dim === 'category' ? 'hierarchy category'
+    : dim === 'region' ? 'region' : dim === 'overall' ? 'all records' : 'sub-program';
   return <section className="fmr-section"><h2>Largest-project concentration</h2>
     <p>The largest {overall.top.length} filtered source rows account for {money(overall.top_amount_php)} ({percent(overall.top_share)} of the filtered allocation).
       {' '}<button className="group-open" onClick={() => navigate(route, {records: 'top10'})}>Inspect largest rows</button></p>
-    <p>Each sub-program below uses its own largest ten rows, or all rows when fewer than ten remain. Concentration describes allocation, not implementation or service area.</p>
-    <Table route={route} rows={groups} label="NIA allocation concentration" initialSort={{key: 'top_share', direction: 'desc'}} columns={[
-      {key: 'label', label: 'Sub-program', scope: 'row'},
+    <p>Each {dimLabel} below uses its own largest ten rows, or all rows when fewer than ten remain. Concentration describes allocation, not implementation or service area.</p>
+    <Table route={route} rows={rows} label="NIA allocation concentration" initialSort={{key: 'top_share', direction: 'desc'}} columns={[
+      {key: 'label', label: dim === 'category' ? 'Category' : dim === 'region' ? 'Region' : dim === 'program' ? 'Program' : 'Sub-program', scope: 'row'},
       {key: 'count', label: 'Source rows', align: 'num'},
       {key: 'total', label: 'Allocation (PHP)', align: 'num', render: g => money(g.total)},
       {key: 'top_amount_php', label: 'Largest ten allocation (PHP)', align: 'num', render: g => money(g.top_amount_php)},
@@ -582,6 +600,324 @@ function ConcentrationAnalysis({projects, stage, route, onPdf}) {
         <button onClick={() => exportProjects(group.top, stage.key)}>Export largest rows CSV</button>
         <ProjectTable tableId="statistics-group-records" projects={group.top} stage={stage.key} route={route} onPdf={onPdf}/></>
         : <p role="alert">No concentration records in the current filter scope.</p>}
+    </Dialog>}
+  </section>;
+}
+
+function ChainageCostAnalysis({projects, route, dim = 'category', stageKey = 'nep', data, onPdf}) {
+  const labels = useMemo(() => {
+    const map = new Map();
+    for (const p of projects) if (p.subprogram_key) map.set(p.subprogram_key, p.subprogram_label || p.subprogram_key);
+    return map;
+  }, [projects]);
+  const overall = phpPerMStats(projects);
+  const rows = phpPerMRowsByDim(projects, dim, labels);
+  const stripDomain = useMemo(() => phpPerMStripDomain(rows), [rows]);
+  const outliers = useMemo(
+    () => phpPerMOutlierProjects(projects, dim, labels),
+    [projects, dim, labels]);
+  const outlierHigh = outliers.filter(o => o.side === 'high').length;
+  const outlierLow = outliers.filter(o => o.side === 'low').length;
+  const percent = value => value == null ? '—' : `${(value * 100).toFixed(1)}%`;
+  const dimLabel = dim === 'program' ? 'program' : dim === 'category' ? 'hierarchy category'
+    : dim === 'region' ? 'region' : dim === 'overall' ? 'all records' : 'sub-program';
+  const groupLabel = dim === 'category' ? 'Category' : dim === 'region' ? 'Region'
+    : dim === 'program' ? 'Program' : dim === 'overall' ? 'Group' : 'Sub-program';
+  const openOutlier = outlier => navigate(route, {
+    scatter: outlier.group_id, scatterProject: outlier.id,
+    records: null, map: null, mapProject: null, page: null,
+  });
+  const selected = route.params.get('records');
+  const exploreId = selected?.startsWith('chainage:') ? selected.slice('chainage:'.length) : null;
+  const exploreGroup = exploreId ? rows.find(r => r.id === exploreId) : null;
+  const scatterId = route.params.get('scatter');
+  const scatterGroup = scatterId ? rows.find(r => r.id === scatterId) : null;
+  const scatterProjectId = route.params.get('scatterProject');
+  const mapOpen = route.params.get('map') === '1';
+
+  const [consolidated, setConsolidated] = useState(null);
+  const [consError, setConsError] = useState('');
+  useEffect(() => {
+    if (!exploreId && !mapOpen && !scatterId) return undefined;
+    if (consolidated) return undefined;
+    const controller = new AbortController();
+    fetch(siteUrl('analysis-nia/data/nia_consolidated.json'), {signal: controller.signal})
+      .then(r => {if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json();})
+      .then(payload => {setConsolidated(payload); setConsError('');})
+      .catch(err => {if (err.name !== 'AbortError') setConsError(err.message || 'Failed to load locations');});
+    return () => controller.abort();
+  }, [exploreId, mapOpen, scatterId, consolidated]);
+
+  const consByStage = useMemo(
+    () => consolidatedByStageId(consolidated?.projects, stageKey),
+    [consolidated, stageKey]);
+
+  const groupProjects = useMemo(() => {
+    const id = exploreId || scatterId;
+    if (!id) return [];
+    return projects
+      .filter(p => projectGroupId(p, dim) === id)
+      .map(p => {
+        const cons = consByStage.get(p.id);
+        const focus = cons ? preferredMapFocus(cons) : null;
+        const submission = p.submission_label
+          || cons?.submission_label
+          || null;
+        return {
+          ...p,
+          submission_label: submission,
+          ledger_title: p.title,
+          display_title: preferredChainageTitle({...p, submission_label: submission}),
+          senate_id: p.senate_id || cons?.id || null,
+          chainage_spans: cons ? formatConsolidatedChainage(cons) : '',
+          location_basis: focus?.label || null,
+          has_location: Boolean(focus),
+        };
+      })
+      .sort((a, b) => (b.php_per_m ?? -1) - (a.php_per_m ?? -1)
+        || b.amount_php - a.amount_php
+        || a.id.localeCompare(b.id));
+  }, [projects, exploreId, scatterId, dim, consByStage]);
+
+  const exploreRows = exploreId ? groupProjects : [];
+  const scatterProjects = useMemo(() => {
+    if (!scatterId) return [];
+    return groupProjects.filter(p => Number.isFinite(p.php_per_m) && p.php_per_m > 0);
+  }, [scatterId, groupProjects]);
+  const scatterPoints = useMemo(() => {
+    if (!scatterGroup) return [];
+    return phpPerMScatterPoints(scatterProjects, scatterGroup, stripDomain);
+  }, [scatterProjects, scatterGroup, stripDomain]);
+  const scatterDetail = scatterProjectId
+    ? (scatterProjects.find(p => p.id === scatterProjectId)
+      || projects.find(p => p.id === scatterProjectId))
+    : null;
+
+  const [exportKind, setExportKind] = useState(null); // 'summary' | 'projects' | null
+  const openExplore = id => navigate(route, {
+    records: `chainage:${id}`, scatter: null, scatterProject: null, map: null, mapProject: null, page: null,
+  });
+  const closeExplore = () => {setExportKind(null); navigate(route, {records: null, map: null, mapProject: null});};
+  const openScatter = id => navigate(route, {
+    scatter: id, scatterProject: null, records: null, map: null, mapProject: null, page: null,
+  });
+  const closeScatter = () => navigate(route, {scatter: null, scatterProject: null});
+  const openScatterProject = project => navigate(route, {scatterProject: project.id});
+  const closeScatterProject = () => navigate(route, {scatterProject: null});
+  const openMap = senateId => navigate(route, {map: '1', mapProject: senateId});
+  const closeMap = () => navigate(route, {map: null, mapProject: null});
+  const mapProjectId = route.params.get('mapProject');
+  const mapProjectLabel = useMemo(() => {
+    if (!mapProjectId || !consolidated) return mapProjectId;
+    return consolidated.projects?.find(p => p.id === mapProjectId)?.label || mapProjectId;
+  }, [mapProjectId, consolidated]);
+
+  const exportRows = exportKind === 'projects' ? exploreRows
+    : exportKind === 'outliers' ? outliers
+    : rows;
+  const exportMeta = {
+    kind: exportKind === 'projects' ? 'projects'
+      : exportKind === 'outliers' ? 'outliers'
+      : 'summary',
+    stage: stageKey,
+    dim,
+    group: exportKind === 'projects' ? (exploreGroup?.label || exploreId) : null,
+    note: exportKind === 'outliers'
+      ? 'Tukey outliers vs each group’s whiskers. Fence score = IQR units past P25/P75 (mild <3, moderate <5, severe <10, extreme ≥10). × median = rate÷median (high) or median÷rate (low). Screening proxy, not a unit cost.'
+      : 'Title-chainage ₱/m is printed allocation ÷ title station length — a screening proxy, not a unit cost.',
+  };
+
+  return <section className="fmr-section"><h2>Title-chainage allocation per meter</h2>
+    <p>{overall.count.toLocaleString('en-PH')} of {projects.length.toLocaleString('en-PH')} filtered
+      rows print a usable title station length. Rates are printed allocation ÷ that length
+      ({dimLabel} rollup) — a screening proxy, not a construction unit cost. Point-only stations
+      and titles without chainage are excluded from the rate columns.</p>
+    <div className="fmr-stats">
+      <Stat label="Rows with chainage" value={overall.count.toLocaleString('en-PH')}
+        detail={`${percent(projects.length ? overall.count / projects.length : null)} of filtered`}/>
+      <Stat label="Median ₱/m" value={overall.median == null ? '—' : money(Math.round(overall.median))}/>
+      <Stat label="P25 – P75" value={overall.p25 == null ? '—'
+        : `${money(Math.round(overall.p25))} – ${money(Math.round(overall.p75))}`}/>
+      <Stat label="Tukey outliers" value={outliers.length.toLocaleString('en-PH')}
+        detail={`${outlierHigh} high · ${outlierLow} low · vs ${dimLabel} whiskers`}/>
+    </div>
+    <div className="fmr-result-bar nia-chainage-toolbar">
+      <span>{rows.length.toLocaleString('en-PH')} {dimLabel} groups</span>
+      <button type="button" disabled={!rows.length} onClick={() => setExportKind('summary')}>Export…</button>
+    </div>
+    <div className="nia-ppm-legend">
+      <span className="nia-ppm-legend-item" aria-hidden="true"><i className="nia-ppm-swatch is-inlier"/>Inlier</span>
+      <span className="nia-ppm-legend-item" aria-hidden="true"><i className="nia-ppm-swatch is-outlier"/>Outlier</span>
+      <span className="nia-ppm-legend-item" aria-hidden="true"><i className="nia-ppm-swatch is-median"/>Median</span>
+      <span className="nia-ppm-legend-item" aria-hidden="true"><i className="nia-ppm-swatch is-box"/>P25–P75</span>
+      <span className="nia-ppm-legend-axis"><PhpPerMStripAxis domain={stripDomain}/></span>
+    </div>
+    <p className="fmr-muted nia-ppm-note">Each row’s ₱/m strip uses one shared log scale (tick labels ₱1k → ₱10m). Box = interquartile range; whiskers = Tukey fences;
+      brown points sit outside the whiskers. Click a strip for a larger interactive scatter — hover a dot for an overview, click a dot for full project detail.</p>
+    <Table route={route} rows={rows} label="NIA chainage cost per meter" initialSort={{key: 'with_chainage', direction: 'desc'}} columns={[
+      {key: 'label', label: groupLabel, scope: 'row'},
+      {key: 'projects', label: 'Source rows', align: 'num'},
+      {key: 'with_chainage', label: 'With chainage', align: 'num'},
+      {key: 'chainage_share', label: 'Chainage share', align: 'num', render: r => percent(r.chainage_share)},
+      {key: 'median', label: '₱/m distribution', sortable: true,
+        value: r => r.median, render: r => <PhpPerMStrip row={r} domain={stripDomain}
+          onOpen={r.with_chainage ? () => openScatter(r.id) : undefined}/>},
+      {key: 'explore', label: 'Projects', sortable: false, render: r =>
+        <button type="button" className="group-open" onClick={() => openExplore(r.id)}>Explore projects</button>},
+    ]}/>
+    <h3 className="nia-ppm-outliers-heading">Tukey outliers by {dimLabel}</h3>
+    <p className="fmr-muted nia-ppm-note">Projects whose ₱/m sits outside their own {dimLabel} whiskers (1.5 × IQR) — the same brown dots on the strips.
+      Titles prefer the Senate workbook column-V fixed / submission wording when present.
+      <strong>Fence score</strong> = IQR units past P25/P75 (triage: mild &lt;3, moderate &lt;5, severe &lt;10, extreme ≥10).
+      <strong>× median</strong> = how many times the group median. Sorted by fence score. Open scatter focuses the group and selects the project.</p>
+    <div className="fmr-result-bar nia-chainage-toolbar">
+      <span>{outliers.length.toLocaleString('en-PH')} outlier{outliers.length === 1 ? '' : 's'}
+        {outliers.length ? ` · ${outlierHigh} high · ${outlierLow} low` : ''}
+        {outliers.length ? ` · ${outliers.filter(o => o.severity === 'extreme').length} extreme` : ''}</span>
+      <button type="button" disabled={!outliers.length} onClick={() => setExportKind('outliers')}>Export…</button>
+    </div>
+    <Table tableId="chainage-outliers" route={route} rows={outliers} label="NIA chainage Tukey outliers"
+      paginate empty="No Tukey outliers in the current filter scope."
+      initialSort={{key: 'fence_score', direction: 'desc'}} columns={[
+        {key: 'title', label: 'Title (fixed)', scope: 'row',
+          title: 'Senate workbook column-V fixed / submission title when present; else annex print title',
+          render: r => <button type="button" className="group-open" onClick={() => openOutlier(r)}>{r.title}</button>},
+        {key: 'group_label', label: groupLabel},
+        {key: 'severity', label: 'Severity',
+          render: r => <span className={`nia-ppm-outlier-sev is-${r.severity}`}>{r.severity}</span>},
+        {key: 'side', label: 'Side', render: r =>
+          <span className={`nia-ppm-outlier-side is-${r.side}`}>{r.side === 'high' ? 'High' : 'Low'}</span>},
+        {key: 'fence_score', label: 'Fence score', align: 'num', title: 'IQR units past P25 (low) or P75 (high)',
+          render: r => r.fence_score == null ? '—' : `${r.fence_score.toFixed(1)}×IQR`},
+        {key: 'median_ratio', label: '× median', align: 'num', title: 'Rate ÷ group median (high) or median ÷ rate (low)',
+          render: r => r.median_ratio == null ? '—' : `${r.median_ratio.toFixed(1)}×`},
+        {key: 'php_per_m', label: '₱/m', align: 'num', render: r => money(Math.round(r.php_per_m))},
+        {key: 'whisker_high', label: 'Group whiskers', align: 'num', sortable: false,
+          render: r => `${money(Math.round(r.whisker_low))} – ${money(Math.round(r.whisker_high))}`},
+        {key: 'amount_php', label: 'Allocation (PHP)', align: 'num', render: r => money(r.amount_php)},
+        {key: 'open', label: 'Scatter', sortable: false, render: r =>
+          <button type="button" className="group-open" onClick={() => openOutlier(r)}>Open scatter</button>},
+      ]}/>
+    {scatterId && <Dialog label="NIA chainage ₱/m scatter" className="nia-ppm-scatter-dialog"
+      title={scatterGroup?.label || '₱/m distribution'} onClose={closeScatter}>
+      {!scatterGroup ? <p role="alert">Unknown group selection.</p> : <>
+        <p>{scatterPoints.length.toLocaleString('en-PH')} projects with title chainage in this {dimLabel}.
+          Shared log scale with the table strips. Hover a dot for an overview card; click a dot for full project detail.</p>
+        <div className="fmr-stats nia-ppm-scatter-stats">
+          <Stat label="Median ₱/m" value={scatterGroup.median == null ? '—' : money(Math.round(scatterGroup.median))}/>
+          <Stat label="P25 – P75" value={scatterGroup.p25 == null ? '—'
+            : `${money(Math.round(scatterGroup.p25))} – ${money(Math.round(scatterGroup.p75))}`}/>
+          <Stat label="Whiskers" value={scatterGroup.whisker_low == null ? '—'
+            : `${money(Math.round(scatterGroup.whisker_low))} – ${money(Math.round(scatterGroup.whisker_high))}`}/>
+          <Stat label="Max ₱/m" value={scatterGroup.max == null ? '—' : money(Math.round(scatterGroup.max))}/>
+        </div>
+        <div className="nia-ppm-legend" aria-hidden="true">
+          <span className="nia-ppm-legend-item"><i className="nia-ppm-swatch is-inlier"/>Inlier</span>
+          <span className="nia-ppm-legend-item"><i className="nia-ppm-swatch is-outlier"/>Outlier</span>
+          <span className="nia-ppm-legend-item"><i className="nia-ppm-swatch is-median"/>Median</span>
+          <span className="nia-ppm-legend-item"><i className="nia-ppm-swatch is-box"/>P25–P75</span>
+        </div>
+        <PhpPerMScatterPlot row={scatterGroup} domain={stripDomain} points={scatterPoints}
+          selectedId={scatterProjectId} onSelect={openScatterProject}/>
+        <div className="nia-ppm-scatter-actions">
+          <button type="button" className="group-open" onClick={() => openExplore(scatterId)}>Open project list</button>
+        </div>
+      </>}
+    </Dialog>}
+    {scatterDetail && <Dialog label="NIA chainage project detail" className="nia-ppm-project-dialog"
+      title="Project detail" onClose={closeScatterProject}>
+      <p className="nia-ppm-project-title">{scatterDetail.display_title || preferredChainageTitle(scatterDetail)}</p>
+      <dl className="nia-ppm-project-dl">
+        <div><dt>Source id</dt><dd><code>{scatterDetail.id}</code></dd></div>
+        {scatterDetail.submission_label
+          && scatterDetail.ledger_title
+          && scatterDetail.submission_label !== scatterDetail.ledger_title
+          ? <div><dt>Annex print title</dt><dd>{scatterDetail.ledger_title}</dd></div>
+          : null}
+        <div><dt>₱ per meter</dt><dd>{scatterDetail.php_per_m == null ? '—'
+          : money(Math.round(scatterDetail.php_per_m))}</dd></div>
+        <div><dt>Allocation</dt><dd>{money(scatterDetail.amount_php)}</dd></div>
+        <div><dt>Title chainage length</dt><dd>{scatterDetail.chainage_length_m == null ? '—'
+          : `${scatterDetail.chainage_length_m.toLocaleString('en-PH')} m`
+            + (formatLengthKm(scatterDetail.chainage_length_m)
+              ? ` (${formatLengthKm(scatterDetail.chainage_length_m)})` : '')}</dd></div>
+        <div><dt>Chainages</dt><dd>{scatterDetail.chainage_spans || '—'}</dd></div>
+        <div><dt>Sub-program</dt><dd>{scatterDetail.subprogram_label || scatterDetail.subprogram_key || '—'}</dd></div>
+        <div><dt>Category</dt><dd>{scatterDetail.category || '—'}</dd></div>
+        <div><dt>Region</dt><dd>{scatterDetail.region || '—'}</dd></div>
+      </dl>
+      <div className="nia-ppm-project-actions">
+        {scatterDetail.source && onPdf
+          ? <SourceButton source={scatterDetail.source} onPdf={onPdf}/> : null}
+        <a className="nia-source-record" href={href(stageKey, {node: scatterDetail.id})}>Open source record →</a>
+        {scatterDetail.has_location && scatterDetail.senate_id
+          ? <button type="button" className="group-open" onClick={() => openMap(scatterDetail.senate_id)}>View in map</button>
+          : null}
+      </div>
+      <p className="fmr-muted">₱/m is printed allocation ÷ title station length — a screening proxy, not a construction unit cost.</p>
+    </Dialog>}
+    {exploreId && <Dialog label="NIA chainage category projects" className="nia-chainage-explore-dialog"
+      title={exploreGroup?.label || 'Category projects'} onClose={closeExplore}>
+      <p>{exploreRows.length.toLocaleString('en-PH')} source rows in this {dimLabel}
+        {exploreGroup ? ` · ${exploreGroup.with_chainage.toLocaleString('en-PH')} with title chainage` : ''}.
+        View in map opens a location peek on this statistics page (title GPS when present, otherwise PSGC centroid).</p>
+      {consError && <p role="alert">Location join unavailable: {consError}</p>}
+      <div className="fmr-result-bar nia-chainage-toolbar">
+        <span>{exploreRows.length.toLocaleString('en-PH')} projects</span>
+        <button type="button" disabled={!exploreRows.length} onClick={() => setExportKind('projects')}>Export…</button>
+      </div>
+      <Table tableId="chainage-explore-projects" route={route} rows={exploreRows} label="NIA chainage explore projects"
+        paginate initialSort={{key: 'php_per_m', direction: 'desc'}} columns={[
+          {key: 'display_title', label: 'Title (fixed)', scope: 'row',
+            title: 'Senate workbook column-V fixed / submission title when present',
+            value: r => r.display_title || preferredChainageTitle(r),
+            render: r => r.display_title || preferredChainageTitle(r)},
+          {key: 'chainage_spans', label: 'Chainages', render: r => r.chainage_spans || '—'},
+          {key: 'chainage_length_m', label: 'Length', align: 'num',
+            render: r => r.chainage_length_m == null ? '—'
+              : `${r.chainage_length_m.toLocaleString('en-PH')} m${formatLengthKm(r.chainage_length_m) ? ` (${formatLengthKm(r.chainage_length_m)})` : ''}`},
+          {key: 'php_per_m', label: '₱/m', align: 'num',
+            render: r => r.php_per_m == null ? '—' : money(Math.round(r.php_per_m))},
+          {key: 'amount_php', label: 'Allocation (PHP)', align: 'num', render: r => money(r.amount_php)},
+          {key: 'map', label: 'Map', sortable: false, render: r => r.has_location && r.senate_id
+            ? <button type="button" className="group-open" onClick={() => openMap(r.senate_id)}
+              title={r.location_basis || 'View in map'}>View in map</button>
+            : <span className="muted">—</span>},
+        ]}/>
+    </Dialog>}
+    {exportKind && exportRows.length > 0 && <ExportModal
+      rows={exportRows}
+      meta={exportMeta}
+      dialogLabel={exportKind === 'projects' ? 'Export these projects'
+        : exportKind === 'outliers' ? 'Export Tukey outliers'
+        : 'Export chainage rates'}
+      intro={<p className="fmr-muted">Downloads all <strong>{exportRows.length.toLocaleString('en-PH')}</strong>
+        {exportKind === 'projects'
+          ? <> source rows in <strong>{exploreGroup?.label || 'this group'}</strong></>
+          : exportKind === 'outliers'
+            ? <> Tukey outliers vs each {dimLabel} group’s own whiskers</>
+            : <> {dimLabel} rate groups</>}.
+        Amounts are Philippine pesos; ₱/m is printed allocation ÷ title chainage length.</p>}
+      scopeOptions={exportKind === 'projects' ? [
+        ['simple', 'Simple', 'Title, chainages, length, ₱/m, allocation, and map basis.'],
+        ['full', 'Full', 'Everything Simple has plus source id, Senate id, hierarchy, location flag, and PDF page citations.'],
+      ] : exportKind === 'outliers' ? [
+        ['simple', 'Simple', 'Title, group, side, severity, fence score, × median, ₱/m, whiskers, length, allocation.'],
+        ['full', 'Full', 'Everything Simple has plus source id, P25/P75/IQR, hierarchy fields, and PDF page citations.'],
+      ] : [
+        ['simple', 'Simple', 'Group label, source-row counts, chainage share, and median / P25 / P75 / max ₱/m.'],
+        ['full', 'Full', 'Everything Simple has plus mean, min, and stable group id.'],
+      ]}
+      onDownload={downloadChainageExport}
+      onClose={() => setExportKind(null)}/>}
+    {mapOpen && <Dialog label="NIA project location" className="nia-chainage-map-dialog"
+      title={mapProjectLabel || 'Project location'} onClose={closeMap}>
+      <p className="fmr-muted">Same map markers as the NIA map tab, limited to this workbook line.
+        Title GPS is preferred; otherwise the PSGC centroid. Close to return to the project list.</p>
+      <Suspense fallback={<p role="status">Loading map…</p>}>
+        <NiaMap data={consolidated ? {...data, consolidated} : data} route={route} embedded="preview"/>
+      </Suspense>
+      <p className="nia-map-preview-link"><a href={href('map', {project: mapProjectId || undefined})}>Open full map tab →</a></p>
     </Dialog>}
   </section>;
 }
@@ -701,27 +1037,49 @@ function OverviewComparison({data, route, rows, onPdf, stage, projects}) {
 function Analysis({data, route, rows, onPdf}) {
   const p = paramsOf(route), stageKey = p.stage === 'house' ? 'house' : 'nep', stage = data.stages[stageKey];
   const projects = filterProjects(stage.projects, p), stats = allocationStats(projects), view = p.view || 'overview';
+  // Stats + chainage default to hierarchy category; overview keeps sub-program.
+  const statsDim = ['subprogram', 'category', 'region', 'program', 'overall'].includes(p.dim)
+    ? p.dim : (view === 'stats' || view === 'chainage' ? 'category' : 'subprogram');
+  const subprogramLabels = useMemo(
+    () => new Map(stage.subprograms.map(s => [s.key, s.label])),
+    [stage.subprograms]);
+  const dimAllocation = allocationRowsByDim(projects, statsDim, subprogramLabels);
+  const dimMax = Math.max(1, ...dimAllocation.map(s => s.total));
   const subprograms = subprogramAllocationRows(projects, stage.subprograms);
   const max = Math.max(1, ...subprograms.map(s => s.total));
   const views = [['overview', 'Overview'], ['insertions', 'Unsupported insertions'], ['deletions', 'Deletions'], ['adjustments', 'Adjustments'],
-    ['stats', 'Statistics'], ['ai_monitoring', 'AI monitoring'], ['senate', 'Senate workbook'], ['candidates', 'Candidates'], ['controls', 'Agency controls']];
+    ['stats', 'Statistics'], ['chainage', 'Chainage'], ['ai_monitoring', 'AI monitoring'], ['senate', 'Senate workbook'],
+    ['candidates', 'Candidates'], ['controls', 'Agency controls']];
   return <div className="headline-analysis nia-analysis"><section className="hero"><p className="eyebrow">NIA · FY2027</p><h1>NIA allocation analysis</h1>
     <p>Recorded allocations, candidate unsupported insertions and deletions, and paired amount adjustments.</p>
-    <div className="hero-actions">    {['overview', 'stats', 'ai_monitoring'].includes(view) ? <label className="hero-source">Budget source<select aria-label="Analysis budget source" value={stageKey}
+    <div className="hero-actions">    {['overview', 'stats', 'chainage', 'ai_monitoring'].includes(view) ? <label className="hero-source">Budget source<select aria-label="Analysis budget source" value={stageKey}
       onChange={e => navigate(route, {stage: e.target.value, page: null})}>{Object.entries(stageLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
       : <span className="nia-analysis-basis">{view === 'insertions' ? 'House GAB · unmatched source rows' : view === 'deletions' ? 'DBM NEP · unmatched source rows' : view === 'senate' ? 'NIA Senate workbook · October 10' : view === 'controls' ? 'House agency table' : 'House GAB ↔ DBM NEP'}</span>}<ShareLink/></div></section>
     <Tabs route={route} defaultKey="overview" items={views} ariaLabel="Analysis views"
-      reset={{status: null, direction: null, ranking: null, aiBasis: null, senateView: null, sort: null, dir: null, group: null, pair: null, dim: null, table: null, pdf: null, pdfPage: null, match: null, records: null}}/>
+      reset={{status: null, direction: null, ranking: null, aiBasis: null, senateView: null, gapReason: null, sort: null, dir: null, group: null, pair: null, dim: null, table: null, pdf: null, pdfPage: null, match: null, records: null, map: null, mapProject: null, scatter: null, scatterProject: null, project: null, full: null}}/>
     <h2 className="fmr-question">{{overview:'How are recorded NIA allocations distributed across sub-programs?',
       insertions:'Which House project records have no unique NEP counterpart?',
       deletions:'Which NEP project records have no unique House counterpart?',
       adjustments:'Which provisional pairs have different House and NEP allocations?',
       stats:'Which descriptive allocation patterns appear in this source?',
+      chainage:'How do title-chainage ₱/m rates compare across hierarchy categories?',
       ai_monitoring:'Which project records explicitly fund AI monitoring?',
       senate:'How does NIA’s own Senate workbook reconcile the NEP with the House GAB?',
       candidates:'How does provisional pairing explain the annex funding difference?',
       controls:'How does the House annex reconcile with agency controls?'}[view] || 'Source records'}</h2>
-    {['overview', 'stats'].includes(view) ? <><Filters route={route} subprograms={stage.subprograms}/>
+    {view === 'chainage' ? <><Filters route={route} subprograms={stage.subprograms}/>
+      <div className="fmr-stats"><Stat label="Filtered allocation" value={money(stats.total)} detail={`${stats.count} source rows`}/>
+        <Stat label="Median" value={money(stats.median)}/><Stat label="Mean" value={money(stats.mean == null ? null : Math.round(stats.mean))} detail="Nearest peso"/>
+        <Stat label="Largest" value={money(stats.max)}/></div>
+      <p className="fmr-notice">Title-chainage ₱/m rates use Senate workbook station lengths stamped onto each source row.
+        Rates are printed allocation ÷ that length — a screening proxy, not a construction unit cost.</p>
+      <div className="dimension-chips" role="group" aria-label="Break down by">
+        {SENATE_DIMENSIONS.map(([key, label]) =>
+          <button key={key} className={statsDim === key ? 'active' : ''} aria-pressed={statsDim === key}
+            onClick={() => navigate(route, {dim: key === 'category' ? null : key, records: null, map: null, mapProject: null, scatter: null, scatterProject: null, page: null, table: null})}>{label}</button>)}
+      </div>
+      <ChainageCostAnalysis projects={projects} route={route} dim={statsDim} stageKey={stageKey} data={data} onPdf={onPdf}/>
+    </> : ['overview', 'stats'].includes(view) ? <><Filters route={route} subprograms={stage.subprograms}/>
       <div className="fmr-stats"><Stat label="Filtered allocation" value={money(stats.total)} detail={`${stats.count} source rows`}/>
         <Stat label="Median" value={money(stats.median)}/><Stat label="Mean" value={money(stats.mean == null ? null : Math.round(stats.mean))} detail="Nearest peso"/>
         <Stat label="Largest" value={money(stats.max)}/></div>
@@ -736,6 +1094,25 @@ function Analysis({data, route, rows, onPdf}) {
           {key: 'median', label: 'Median (PHP)', align: 'num', render: s => money(s.median)},
         ]}/></section></> : <>
         <p className="fmr-notice">Allocation patterns describe the recorded budget. Repeated amounts and rounding do not establish pricing, implementation, or misconduct.</p>
+        <div className="dimension-chips" role="group" aria-label="Break down by">
+          {SENATE_DIMENSIONS.map(([key, label]) =>
+            <button key={key} className={statsDim === key ? 'active' : ''} aria-pressed={statsDim === key}
+              onClick={() => navigate(route, {dim: key === 'category' ? null : key, records: null, page: null, table: null})}>{label}</button>)}
+        </div>
+        <section className="fmr-section"><h2>Allocation by {statsDim === 'category' ? 'hierarchy category' : statsDim === 'region' ? 'region' : statsDim === 'program' ? 'program' : statsDim === 'overall' ? 'all records' : 'sub-program'}</h2>
+          {statsDim !== 'overall' && <div className="fmr-distribution">{dimAllocation.map(s =>
+            <div className="nia-distribution-row" key={s.id}>
+              <span>{s.label}</span><span className="fmr-bar-track"><span style={{width: `${s.total / dimMax * 100}%`}}/></span>
+              <strong>{money(s.total)}</strong><small>{s.count} source rows</small>
+            </div>)}</div>}
+          <Table route={route} rows={dimAllocation} label="NIA allocation by dimension" columns={[
+            {key: 'label', label: statsDim === 'category' ? 'Category' : statsDim === 'region' ? 'Region' : statsDim === 'program' ? 'Program' : 'Group', scope: 'row'},
+            {key: 'count', label: 'Projects', align: 'num'},
+            {key: 'total', label: 'Allocation (PHP)', align: 'num', render: s => money(s.total)},
+            {key: 'share', label: 'Allocation share', align: 'num', value: s => share(s.total, stats.total), render: s => `${(share(s.total, stats.total) * 100).toFixed(1)}%`},
+            {key: 'median', label: 'Median (PHP)', align: 'num', render: s => money(s.median)},
+          ]}/>
+        </section>
         <section className="fmr-section"><h2>Allocation bands</h2><Table route={route} rows={bandRows(projects)} label="NIA allocation bands" columns={[
           {key: 'label', label: 'Band'}, {key: 'projects', label: 'Projects', align: 'num'},
           {key: 'total_php', label: 'Allocation (PHP)', align: 'num', render: r => money(r.total_php)},
@@ -750,11 +1127,12 @@ function Analysis({data, route, rows, onPdf}) {
             {key: 'amount_php', label: 'Amount (PHP)', align: 'num', render: r => money(r.amount_php)},
             {key: 'projects', label: 'Projects', align: 'num'}, {key: 'total_php', label: 'Combined allocation (PHP)', align: 'num', render: r => money(r.total_php)},
           ]}/></section>
-        <ConcentrationAnalysis projects={projects} stage={stage} route={route} onPdf={onPdf}/></>}
+        <ConcentrationAnalysis projects={projects} stage={stage} route={route} onPdf={onPdf} dim={statsDim}/></>}
       {view === 'overview' && <section className="analysis-section"><h2>Explore further</h2><div className="analysis-crosslinks">
         <a href={href('analysis', {view: 'insertions', subprogram: p.subprogram || ''})}>Unsupported insertion candidates · unmatched House records →</a>
         <a href={href('analysis', {view: 'deletions', subprogram: p.subprogram || ''})}>Deletion candidates · unmatched NEP records →</a>
         <a href={href('analysis', {view: 'adjustments', subprogram: p.subprogram || ''})}>Paired allocation adjustments →</a>
+        <a href={href('analysis', {view: 'chainage', subprogram: p.subprogram || ''})}>Title-chainage ₱/m rates →</a>
       </div></section>}
       <section className="fmr-section"><h2>Supporting source records</h2><button onClick={() => exportProjects(projects, stageKey)}>Export filtered CSV</button>
         <ProjectTable projects={projects} route={route} stage={stageKey} onPdf={onPdf}/></section>
@@ -780,7 +1158,7 @@ function SenateAnalysis({data, route, rows}) {
   const projects = senateProjects(data);
   const filtered = filterSenateProjects(projects, p);
   const stats = senateStats(filtered);
-  const view = p.senateView || 'insertions';  const full = senateStats(projects);
+  const view = p.senateView || 'all';  const full = senateStats(projects);
   const comparisonIndex = useMemo(() => senateComparisonIndex(data), [data]);
   const ledger = data.stages.nep.projects.reduce((m, x) => (m.set(x.id, x), m), new Map());
   const houseLedger = data.stages.house.projects.reduce((m, x) => (m.set(x.id, x), m), new Map());
@@ -788,6 +1166,26 @@ function SenateAnalysis({data, route, rows}) {
   const insertionIds = new Set(projects.filter(x => x.status === 'house_insertion').map(x => x.house_join?.id).filter(Boolean));
   const ourHouseOnly = data.comparison.filter(r => r.status === 'house_only').map(r => r.house_id);
   const corroborated = ourHouseOnly.filter(id => insertionIds.has(id));
+  // Row-count reconciliation pieces: split both-funded rows and unfunded rows.
+  const gapRows = useMemo(() => senateGapRows(data), [data]);
+  const terms = (p.q || '').toLocaleLowerCase().trim().split(/\s+/).filter(Boolean);
+  const gapFiltered = gapRows.filter(g => (!p.gapReason || g.reason === p.gapReason)
+    && (!p.subprogram || g.subprogram_key === p.subprogram)
+    && terms.every(t => `${g.label} ${g.category || ''} ${g.region || ''} ${g.province || ''} ${g.nep_title || ''} ${g.house_title || ''} ${g.submission_label || ''} ${g.submission_edited || ''} ${g.justification || ''}`.toLocaleLowerCase().includes(t)));
+  const comparisonCounts = data.comparison_summary?.counts || {};
+  const unfundedRows = useMemo(() => senateUnfundedRows(data), [data]);
+  const gapEdited = gapRows.filter(g => g.submission_edited).length;
+  const gapJustified = gapRows.filter(g => g.justification).length;
+  const gapFixed = gapRows.filter(g => g.submission_label).length;
+  const exportGapCsv = () => download('nia-senate-gap-rows.csv', csvText(
+    ['id', 'row', 'subprogram', 'category', 'region', 'province', 'label', 'reason',
+     'nep_id', 'nep_title', 'nep_amount', 'house_id', 'house_title', 'house_amount',
+     'delta_php', 'variant_mark', 'submission_label', 'submission_edited', 'justification'],
+    gapFiltered.map(g => [g.id, g.row, g.subprogram_key, g.category || '', g.region || '',
+      g.province || '', g.label, g.reason, g.nep_id, g.nep_title || '', g.nep_php ?? '',
+      g.house_id, g.house_title || '', g.house_php ?? '', g.delta_php ?? '',
+      g.variant_mark_kind || '', g.submission_label || '', g.submission_edited || '',
+      g.justification || ''])));
   const statusSelect = <label>Workbook status<select aria-label="Senate workbook status" value={p.status || ''}
     onChange={e => filterChange(route, {status: e.target.value})}>
     <option value="">All rows</option>
@@ -796,11 +1194,14 @@ function SenateAnalysis({data, route, rows}) {
   const exportCsv = () => download('nia-senate-workbook-filtered.csv', csvText(
     ['id', 'row', 'subprogram', 'program_group', 'category', 'region', 'province', 'label', 'status',
      'nep_amount', 'hgab_amount', 'submission_label', 'submission_amount', 'edited', 'justification',
+     'title_parse_source', 'coordinates', 'chainage', 'chainage_length_m',
      'nep_join_id', 'house_join_id', 'nep_join_similarity', 'house_join_similarity'],
     filtered.map(x => [x.id, x.row, x.subprogram_key, x.program_group, x.category || '', x.region || '',
       x.province || '', x.label, x.status, x.nep_amount ?? '', x.hgab_amount ?? '',
       x.submission_label || '', x.submission_amount ?? '', x.submission_edited || '',
-      x.justification || '', x.nep_join?.id || '', x.house_join?.id || '',
+      x.justification || '', x.title_parse?.source || '', formatSenateCoordinates(x),
+      formatSenateChainage(x), senateChainageLengthM(x) ?? '',
+      x.nep_join?.id || '', x.house_join?.id || '',
       x.nep_join?.similarity ?? '', x.house_join?.similarity ?? ''])));
   const viewRows = view === 'insertions' ? filtered.filter(x => x.status === 'house_insertion')
     : view === 'zeroed' ? filtered.filter(x => x.status === 'house_zeroed')
@@ -821,10 +1222,10 @@ function SenateAnalysis({data, route, rows}) {
     <div className="analysis-controls"><Filters route={route} subprograms={data.senate.subprograms} status={false}/>
       {statusSelect}
       <label>View<select aria-label="Senate workbook view" value={view} onChange={e => filterChange(route, {senateView: e.target.value})}>
+        <option value="all">All rows</option>
         <option value="insertions">House insertions</option>
         <option value="zeroed">NEP items zeroed</option>
         <option value="edits">NIA-acknowledged edits</option>
-        <option value="all">All rows</option>
       </select></label>
       <button onClick={exportCsv}>Export filtered CSV</button></div>
     <div className="fmr-result-bar"><span>{viewRows.length} rows shown</span></div>
@@ -837,11 +1238,99 @@ function SenateAnalysis({data, route, rows}) {
       {key: 'hgab_amount', label: 'House (PHP)', align: 'num', render: x => x.hgab_amount == null ? '—' : money(x.hgab_amount)},
       {key: 'submission', label: 'NIA submission', sortable: false, render: x => x.submission_label ? <span className="nia-senate-label">{x.submission_label}
         {x.submission_amount != null && x.nep_amount != null && x.submission_amount !== x.nep_amount && <small>Submission amount {money(x.submission_amount)} differs from NEP</small>}</span> : '—'},
+      {key: 'coordinates', label: 'Coordinates', title: 'Normalized coordinates parsed from the column-V fixed title when present, else the NEP-print label',
+        sortable: false, value: x => formatSenateCoordinates(x),
+        render: x => { const text = formatSenateCoordinates(x); return text
+          ? <span className="nia-senate-parse" title={x.title_parse?.source === 'submission_label' ? 'From fixed title (col V)' : 'From NEP-print label'}>{text}</span>
+          : '—'; }},
+      {key: 'chainage', label: 'Chainage', title: 'Station/chainage spans parsed from the same preferred title',
+        sortable: false, value: x => formatSenateChainage(x),
+        render: x => { const text = formatSenateChainage(x); const lengthM = senateChainageLengthM(x);
+          return text || lengthM != null
+            ? <span className="nia-senate-parse" title={x.title_parse?.source === 'submission_label' ? 'From fixed title (col V)' : 'From NEP-print label'}>
+                {text || '—'}{lengthM != null && <small>{formatLengthKm(lengthM)}</small>}</span>
+            : '—'; }},
       {key: 'join', label: 'Ledger join', sortable: false, value: x => x.nep_join?.similarity ?? 0, render: x => <span className="nia-senate-join">
         {x.nep_join ? <a href={href('nep', {node: x.nep_join.id})}>NEP ↗</a> : 'NEP —'}
         {' '}{x.house_join ? <a href={href('house', {node: x.house_join.id})}>House ↗</a> : 'House —'}
         {x.nep_join && x.nep_join.similarity < 1 && <small title="Title similarity of the workbook label to the retained ledger title">sim {(x.nep_join.similarity * 100).toFixed(0)}%</small>}</span>},
     ]}/>
+  </section>
+  <section className="fmr-section"><h2>Row-count reconciliation · comparison ledger vs workbook</h2>
+    <p>The title-matching comparison ledger counts <em>observations</em> — one row per unmatched source line, one row per
+      title-matched pair — while the workbook counts NIA's own <em>reconciliation lines</em>, aligning one NEP line with one
+      House line even where our provisional matching cannot pair them. Both partitions cover every ledger row exactly once
+      ({houseLedger.size.toLocaleString()} House + {ledger.size.toLocaleString()} NEP), so each dataset total decomposes into the
+      same pieces below. Counts are rows, not distinct projects.</p>
+    <Table route={route} rows={senateReconciliationRows(data)} label="Comparison observations vs Senate workbook rows" tableId="senate-row-reconciliation"
+      initialSort={{key: 'comparison_rows', direction: 'desc'}} columns={[
+      {key: 'label', label: 'Piece', scope: 'row'},
+      {key: 'comparison_rows', label: `Comparison rows (${data.comparison.length.toLocaleString()} total)`, align: 'num',
+        title: 'Rows in the title-matching comparison ledger — one per unmatched source line or matched pair',
+        render: r => r.comparison_rows ? r.comparison_rows.toLocaleString() : '—'},
+      {key: 'workbook_rows', label: `Workbook rows (${projects.length.toLocaleString()} total)`, align: 'num',
+        title: 'Lines in NIA\u2019s Senate workbook sheet "DETAILS 2027"',
+        render: r => r.workbook_rows ? r.workbook_rows.toLocaleString() : '—'},
+      {key: 'note', label: 'How the two counts relate', sortable: false},
+    ]}/>
+    <p className="fmr-notice">Reading guide: the {gapRows.length.toLocaleString()} split rows are why the comparison ledger shows more unmatched
+      rows ({comparisonCounts.house_only?.toLocaleString()} House-only and {comparisonCounts.nep_only?.toLocaleString()} NEP-only) than the
+      workbook's official {full.insertions.toLocaleString()} insertions and {full.zeroed.toLocaleString()} zeroed items — each split
+      row inflates both unmatched counts by one. All figures are recomputed from the ledgers; matching stays provisional.</p>
+  </section>
+  <section className="fmr-section"><h2>The {gapRows.length} NIA-aligned rows our matching splits in two</h2>
+    <p>Each workbook line below carries NEP money <em>and</em> House money, and joins one-to-one to both ledgers — but the two
+      joined records did not pair under the matching rules, so they appear as two separate observations (House-only and NEP-only)
+      in the comparison ledger. This is the exact difference between the {comparisonCounts.house_only.toLocaleString()} unmatched
+      House candidates and the {full.insertions.toLocaleString()} official insertions. Of these {gapRows.length} rows,
+      {' '}{gapFixed.toLocaleString()} carry a fixed title in workbook column V, {gapEdited.toLocaleString()} carry an edit
+      acknowledgement, and {gapJustified.toLocaleString()} carry a written remark — typically spelling corrections, renaming,
+      or field/beneficiary notes, not explanations of the title split itself.</p>
+    <div className="analysis-controls"><label>Gap reason<select aria-label="Gap reason" value={p.gapReason || ''}
+        onChange={e => filterChange(route, {gapReason: e.target.value})}>
+        <option value="">All reasons</option>
+        {Object.entries(gapReasonLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+      </select></label>
+      <button onClick={exportGapCsv}>Export gap rows CSV</button></div>
+    <p className="fmr-notice">The search box and sub-program filter above apply here too (search also reaches edit flags and remarks).</p>
+    <div className="fmr-result-bar"><span>{gapFiltered.length} rows shown</span></div>
+    <Table route={route} rows={gapFiltered} label="NIA-aligned rows split into two comparison observations" tableId="senate-gap-rows" paginate
+      initialSort={{key: 'house_php', direction: 'desc'}} columns={[
+      {key: 'label', label: 'Workbook line (NEP print)', scope: 'row', render: g => <span className="nia-senate-label">
+        {g.label}<small>{[g.category, g.region, g.province].filter(Boolean).join(' · ')}</small>
+        {g.justification && <small className="nia-justification">“{g.justification.slice(0, 160)}{g.justification.length > 160 ? '…' : ''}”</small>}</span>},
+      {key: 'reason', label: 'Why unpaired', render: g => <span className={`fmr-badge nia-gap-${g.reason}`}>{gapReasonLabels[g.reason]}</span>},
+      {key: 'nep_php', label: 'NEP (PHP)', align: 'num', render: g => money(g.nep_php)},
+      {key: 'house_php', label: 'House (PHP)', align: 'num', render: g => money(g.house_php)},
+      {key: 'delta_php', label: 'Δ House–NEP (PHP)', align: 'num', render: g => signedMoney(g.delta_php)},
+      {key: 'submission_label', label: 'Fixed title', title: 'Workbook column V — NIA submission / corrected project wording',
+        sortable: false, value: g => g.submission_label || '',
+        render: g => g.submission_label
+          ? <span className="nia-senate-label nia-gap-fixed" title={g.submission_label}>{g.submission_label}
+            {g.submission_label !== g.label && <small>differs from NEP print</small>}</span> : '—'},
+      {key: 'submission_edited', label: 'NIA edit', title: 'Workbook edit acknowledgement (OK / CHECK)',
+        render: g => g.submission_edited
+          ? <span className={`fmr-badge nia-edit-${g.submission_edited.toLocaleLowerCase()}`}>{g.submission_edited}</span> : '—'},
+      {key: 'justification', label: 'Workbook remark', sortable: false, value: g => g.justification || '',
+        render: g => g.justification
+          ? <span className="nia-senate-label nia-gap-remark" title={g.justification}>{g.justification}</span> : '—'},
+      {key: 'mark', label: 'Variant mark', sortable: false, render: g => g.variant_mark_kind && g.variant_mark_kind !== 'no_counterpart'
+        ? <span className="fmr-badge" title="Deterministic near-miss mark on the House half — points at a possible counterpart, never certifies identity">{variantMarkLabels[g.variant_mark_kind]}</span> : '—'},
+      {key: 'titles', label: 'Ledger titles', sortable: false, value: g => g.nep_title || '', render: g => <span className="nia-senate-label">
+        {g.nep_title && <small>NEP: {g.nep_title}</small>}
+        {g.house_title && <small>House: {g.house_title}</small>}</span>},
+      {key: 'open', label: 'Open', sortable: false, render: g => <span className="nia-senate-join">
+        <a href={href('nep', {node: g.nep_id})}>NEP ↗</a>{' '}<a href={href('house', {node: g.house_id})}>House ↗</a></span>},
+    ]}/>
+    <p className="fmr-notice">Why unpaired: <strong>Titles differ</strong> — the two annex printings carry different wording or
+      punctuation for the same project NIA aligned internally. <strong>Repeated title</strong> — identical titles occur more than
+      once inside one sub-program, so one-to-one matching refuses to pair them. <strong>Fixed title</strong> is workbook
+      column V (NIA's submission / corrected wording when the edit flag is set). <strong>NIA edit</strong> is the
+      acknowledgement column (typically OK); <strong>Workbook remark</strong> is NIA's free-text justification when present.
+      Joins carry provenance, not certified identity.
+      {unfundedRows.length > 0 && <> Separately, {unfundedRows.length === 1 ? 'one workbook row prints zero in both annexes and exists only for the submission record: '
+        : `${unfundedRows.length} workbook rows print zero in both annexes: `}
+        {unfundedRows.map(u => <em key={u.id}>{u.label}</em>)}.</>}</p>
   </section>
   <section className="fmr-section"><h2>Reconciliation by hierarchy category</h2>
     <p>Each comparison class against the workbook-only category level. Amounts follow the side that carries the
@@ -856,14 +1345,19 @@ function SenateAnalysis({data, route, rows}) {
         render: r => <span className="nia-recon-cell"><small>{r[`${key}_count`].toLocaleString()}</small> · {money(r[`${key}_php`])}</span>,
         value: r => r[`${key}_php`],
       })),
-      {key: 'house_ledger', label: 'House ledger (PHP)', align: 'num', divider: true,
-        title: 'Checksum: all House-side money in this category',
-        value: r => r.house_php, render: r => money(r.house_php)},
+      {key: 'net_delta', label: 'Net change from NEP (PHP)', align: 'num', divider: true,
+        title: 'House ledger minus NEP money in this category',
+        value: r => r.net_delta_php, render: r => signedMoney(r.net_delta_php)},
+      {key: 'house_ledger', label: 'House ledger (PHP)', align: 'num',
+        title: 'Checksum: House-side record count and money in this category',
+        value: r => r.house_php,
+        render: r => <span className="nia-recon-cell"><small>{r.house_count.toLocaleString()}</small> · {money(r.house_php)}</span>},
     ]}/>
     <p className="fmr-notice">Reading guide: <strong>Unsupported insertions</strong> — House only records (no NEP line).
       <strong> Deletions</strong> — NEP only records. <strong>Unchanged</strong> — same NEP–HGAB titles, no adjustments.
       <strong> Increased</strong> — same titles, increased budget. <strong> Decreased</strong> — same titles, decreased budget.
-      The House ledger column equals insertions + unchanged + increased + decreased; deletions carry NEP money.
+      <strong>Net change from NEP</strong> is House ledger − NEP money. The House ledger column equals insertions +
+      unchanged + increased + decreased (count and pesos); deletions carry NEP money.
       Counts are ledger rows, not distinct projects; repeated titles stay per-row.</p>
   </section>
   <section className="fmr-section"><h2>Hierarchy categories (workbook-only dimension)</h2>

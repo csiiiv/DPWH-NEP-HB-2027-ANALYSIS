@@ -37,6 +37,7 @@ import difflib
 import hashlib
 import json
 import re
+import sys
 import unicodedata
 from pathlib import Path
 
@@ -45,6 +46,14 @@ import openpyxl
 ROOT = Path(__file__).resolve().parents[1]
 WORKBOOK = ROOT / 'NIA_DATA' / 'NIA%20FY%202027%20NEP%20OCTOBER%2010%201043PM.xlsx'
 OUT = Path(__file__).resolve().parent / 'data'
+
+# Reuse the shared title parsers: gps-analysis for embedded coordinates,
+# analysis/builders for station/chainage spans. Prefer the workbook's
+# column-V fixed title when present (Senate-updated wording).
+sys.path.insert(0, str(ROOT / 'gps-analysis'))
+sys.path.insert(0, str(ROOT / 'analysis/builders'))
+from scan_gps_inventory import analyze_text  # noqa: E402
+from chainage import parse_chainage, total_length_m  # noqa: E402
 
 SHEET = 'DETAILS 2027'
 FIRST_DATA_ROW = 9  # rows 2–7 are titles/headers; row 8 is a spacer
@@ -311,6 +320,57 @@ def validate(projects, subprogram_controls):
         raise ValueError('; '.join(errors))
 
 
+def enrich_title_parses(projects):
+    """Attach normalized coordinates and chainage spans parsed from titles.
+
+    Prefers the workbook's column-V fixed/submission title when present —
+    that is the Senate-updated wording — and falls back to the NEP-print
+    label. Titles and amounts are never rewritten; parsers only annotate.
+    """
+    for project in projects:
+        if project.get('submission_label'):
+            source, title = 'submission_label', project['submission_label']
+        else:
+            source, title = 'label', project['label']
+        gps = analyze_text(title)
+        points = []
+        status = None
+        if gps:
+            status = gps.get('status')
+            for point in gps.get('points') or []:
+                if point.get('latitude') is None or point.get('longitude') is None:
+                    continue
+                points.append({
+                    'latitude': point['latitude'],
+                    'longitude': point['longitude'],
+                    'role': point.get('role') if point.get('role') not in (None, 'unspecified') else None,
+                    'issues': point.get('issues') or [],
+                })
+        chain = parse_chainage(title)
+        spans = chain.get('chainages') or []
+        compact_spans = [{
+            'kind': span.get('kind'),
+            'from': span.get('from'),
+            'to': span.get('to'),
+            'length_m': span.get('length_m'),
+            'length_review': span.get('length_review'),
+            'point': bool(span.get('point')),
+        } for span in spans]
+        project['title_parse'] = {
+            'source': source,
+            'coordinates': {
+                'status': status,
+                'points': points,
+            } if points or status else None,
+            'chainage': {
+                'spans': compact_spans,
+                'length_m': total_length_m(spans),
+                'incomplete': bool(chain.get('incomplete')),
+                'title_base': chain.get('title_base') or None,
+            } if compact_spans else None,
+        }
+
+
 def build():
     projects, subprogram_controls, category_controls = parse_workbook()
     validate(projects, subprogram_controls)
@@ -321,6 +381,7 @@ def build():
     for project in projects:
         project['program_group'] = PROGRAM_GROUPS[project['subprogram_key']]
         project['status'] = classify(project)
+    enrich_title_parses(projects)
 
     nep_joined = sum(1 for p in projects if p.get('nep_join'))
     house_joined = sum(1 for p in projects if p.get('house_join'))
@@ -330,6 +391,9 @@ def build():
     zeroed = [p for p in projects if p['status'] == 'house_zeroed']
     edited = [p for p in projects if p['submission_edited']]
     justified = [p for p in projects if p['justification']]
+    with_coords = sum(1 for p in projects if (p.get('title_parse') or {}).get('coordinates', {})
+                      and (p['title_parse']['coordinates'] or {}).get('points'))
+    with_chainage = sum(1 for p in projects if (p.get('title_parse') or {}).get('chainage'))
 
     dataset = {
         'schema_version': 1,
@@ -341,7 +405,10 @@ def build():
                 'NIA Senate hearing reconciliation workbook: published NEP detail, '
                 'House GAB amounts, NIA original submission, edit acknowledgements '
                 'and justifications, with a six-level hierarchy (program, '
-                'sub-program, category, region, province, project).'),
+                'sub-program, category, region, province, project). Title-embedded '
+                'coordinates and chainage are parsed from the column-V fixed title '
+                'when present (else the NEP-print label) using the shared gps-analysis '
+                'and chainage builders; titles are never rewritten.'),
             'counts': {
                 'rows': len(projects),
                 'nep_funded': len(nep_pending),
@@ -352,6 +419,8 @@ def build():
                 'justified': len(justified),
                 'nep_joined': nep_joined,
                 'house_joined': house_joined,
+                'with_coordinates': with_coords,
+                'with_chainage': with_chainage,
             },
             'totals': {
                 'nep_php': sum(p['nep_amount'] for p in nep_pending),
@@ -389,19 +458,41 @@ def write_outputs(dataset):
             'id', 'row', 'subprogram_key', 'program_group', 'category', 'region',
             'region_canonical', 'province', 'label', 'status', 'nep_amount',
             'hgab_amount', 'submission_label', 'submission_amount',
-            'submission_edited', 'justification', 'nep_join_id', 'nep_join_method',
-            'nep_join_similarity', 'house_join_id', 'house_join_method',
-            'house_join_similarity',
+            'submission_edited', 'justification', 'title_parse_source',
+            'coordinates', 'coordinate_status', 'chainages', 'chainage_length_m',
+            'nep_join_id', 'nep_join_method', 'nep_join_similarity',
+            'house_join_id', 'house_join_method', 'house_join_similarity',
         ])
         for p in dataset['projects']:
             nep_join = p.get('nep_join') or {}
             house_join = p.get('house_join') or {}
+            parse = p.get('title_parse') or {}
+            coords = (parse.get('coordinates') or {}).get('points') or []
+            chain = parse.get('chainage') or {}
+            spans = chain.get('spans') or []
+            coord_text = '; '.join(
+                f"{pt['latitude']},{pt['longitude']}"
+                + (f" ({pt['role']})" if pt.get('role') else '')
+                for pt in coords)
+            chain_parts = []
+            for span in spans:
+                frm, to = span.get('from') or '', span.get('to') or ''
+                if span.get('point') or (frm and to and frm == to):
+                    chain_parts.append(frm or to)
+                elif frm and to:
+                    chain_parts.append(f'{frm} – {to}')
+                elif frm or to:
+                    chain_parts.append(frm or to)
+            chain_text = '; '.join(p for p in chain_parts if p)
             writer.writerow([
                 p['id'], p['row'], p['subprogram_key'], p['program_group'],
                 p['category'], p['region'], p['region_canonical'], p['province'],
                 p['label'], p['status'], p['nep_amount'], p['hgab_amount'],
                 p['submission_label'], p['submission_amount'],
                 p['submission_edited'], p['justification'],
+                parse.get('source', ''), coord_text,
+                (parse.get('coordinates') or {}).get('status') or '',
+                chain_text, chain.get('length_m') if chain else '',
                 nep_join.get('id', ''), nep_join.get('method', ''),
                 nep_join.get('similarity', ''),
                 house_join.get('id', ''), house_join.get('method', ''),
@@ -420,6 +511,7 @@ def main():
           f"house_funded={counts['house_funded']} insertions={counts['house_insertions']} "
           f"zeroed={counts['house_zeroed']} edited={counts['submission_edited']} "
           f"justified={counts['justified']} "
+          f"coords={counts['with_coordinates']} chainage={counts['with_chainage']} "
           f"nep_joined={counts['nep_joined']}/{counts['nep_funded']} "
           f"house_joined={counts['house_joined']}/{counts['house_funded']}")
     if not args.check:

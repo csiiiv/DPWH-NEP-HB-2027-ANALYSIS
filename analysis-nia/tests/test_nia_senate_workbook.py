@@ -123,6 +123,34 @@ class SenateWorkbookTests(unittest.TestCase):
         self.assertGreater(len(corroborated), 120,
                            'official insertions should overwhelmingly corroborate house_only candidates')
 
+    def test_title_parses_prefer_fixed_title_and_annotate_without_rewrite(self):
+        counts = self.dataset['meta']['counts']
+        self.assertGreaterEqual(counts['with_coordinates'], 400)
+        self.assertGreaterEqual(counts['with_chainage'], 300)
+        with_coords = [p for p in self.dataset['projects']
+                       if (p.get('title_parse') or {}).get('coordinates', {})
+                       and (p['title_parse']['coordinates'] or {}).get('points')]
+        with_chain = [p for p in self.dataset['projects']
+                      if (p.get('title_parse') or {}).get('chainage')]
+        self.assertEqual(len(with_coords), counts['with_coordinates'])
+        self.assertEqual(len(with_chain), counts['with_chainage'])
+        for p in self.dataset['projects']:
+            parse = p.get('title_parse') or {}
+            self.assertIn(parse.get('source'), ('submission_label', 'label'))
+            if p.get('submission_label'):
+                self.assertEqual(parse['source'], 'submission_label')
+            else:
+                self.assertEqual(parse['source'], 'label')
+            coords = (parse.get('coordinates') or {}).get('points') or []
+            for pt in coords:
+                self.assertIsInstance(pt['latitude'], (int, float))
+                self.assertIsInstance(pt['longitude'], (int, float))
+            chain = parse.get('chainage')
+            if chain:
+                self.assertTrue(chain['spans'])
+                self.assertTrue(isinstance(chain['length_m'], (int, float))
+                                or chain['length_m'] is None)
+
 
 if __name__ == '__main__':
     unittest.main()

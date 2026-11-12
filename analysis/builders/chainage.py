@@ -59,7 +59,10 @@ def _digitize_station_body(body: str) -> str:
 def _digitize_shadow(compact: str) -> str:
     """Letter→digit only on digit-ish runs so STA/CHAINAGE keywords stay intact."""
     return re.sub(
-        r'[0-9OlISBGZ?]{2,}',
+        # Station tokens are anchored by +/- or digits: require a digit before
+        # the run OR a digit/plus after it, so glued prefixes like "L-5STA"
+        # keep their keyword ("5S" is not an OCR run; "5S+000" would be).
+        r'(?:(?<=\d)|\b)[0-9OlISBGZ?]{2,}(?=[\d+]|$)',
         lambda m: m.group(0).translate(_STATION_OCR),
         compact,
     )
@@ -263,6 +266,18 @@ _RANGE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     )),
     ('Sta', re.compile(
         r'STA\.?\d+(?:\.\d+)?\+(?:\(-?\d+(?:\.\d+)?\)|-?\d+(?:\.\d+)?)'
+        r'-\d+(?:\.\d+)?\+(?:\(-?\d+(?:\.\d+)?\)|-?\d+(?:\.\d+)?)',
+        re.I,
+    )),
+    # Bare left endpoint (prefix only on the right side, or neither side):
+    # "0+000 - STA. 0+200" / "0+000 - 0+200".
+    ('Sta', re.compile(
+        r'\d+(?:\.\d+)?\+(?:\(-?\d+(?:\.\d+)?\)|-?\d+(?:\.\d+)?)'
+        r'-STA\.?\d+(?:\.\d+)?\+(?:\(-?\d+(?:\.\d+)?\)|-?\d+(?:\.\d+)?)',
+        re.I,
+    )),
+    ('Sta', re.compile(
+        r'\d+(?:\.\d+)?\+(?:\(-?\d+(?:\.\d+)?\)|-?\d+(?:\.\d+)?)'
         r'-\d+(?:\.\d+)?\+(?:\(-?\d+(?:\.\d+)?\)|-?\d+(?:\.\d+)?)',
         re.I,
     )),
