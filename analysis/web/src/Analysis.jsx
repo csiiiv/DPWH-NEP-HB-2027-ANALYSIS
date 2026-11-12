@@ -34,6 +34,9 @@ const questions={overview:'How are recorded DPWH allocations distributed across 
  statistics:'Which descriptive allocation patterns appear in the retained records?'};
 const dimensions=[['overall','Overall'],['region','Region'],['office','District office'],['program','Category'],['pap','PAP']];
 const pick=(params,key,allowed,fallback)=>allowed.includes(params.get(key))?params.get(key):fallback;
+// Selecting the "all" option of a URL-routed select clears its param
+// (routeHref drops null values) so default-filtered links stay canonical.
+const clearWhenAll=value=>value==='all'?null:value;
 const dimensionTitle=dim=>dim==='office'?'district office':dim==='pap'?'PAP':dim;
 const groupLabel=(dim,label)=>dim==='region'?regionName(label):dim==='office'?officeName(label):label;
 const amountCell=(value,title)=><span title={(title??(value?.toLocaleString('en-PH')??''))+' PHP'}>{amount(value)}</span>;
@@ -60,13 +63,17 @@ export default function Analysis({route}){
  const chainageStage=pick(route.params,'stage',['patterns','benchmark','records','overview'],'patterns');
  const chainageScope=pick(route.params,'scope',['all','revised'],'all');
  const deletionRanking=pick(route.params,'ranking',Object.keys(deletionModes),'no_suggestion');
+ // Groupings filters ride the URL like every other Analysis control, so
+ // filter selections survive reloads and shared links reopen them.
+ const roadKind=pick(route.params,'kind',['all','road','place_shell'],'all');
+ const roadPattern=pick(route.params,'pattern',['all','split_like','unsupplied_cluster','micro_supplied'],'all');
  // Overview defaults to region so the NEP vs House change table is immediately useful.
  const overviewDim=view==='overview'&&!route.params.get('dim')?'region':dim;
  // Modal state rides the URL so drill-downs are shareable and the back
  // button closes them: `group`+`g` for aggregate group records, `shell`+
  // `side`+`zone`+`pap`+`region` for grouping members, `drill`+`axis` for
- // the overview nested breakdown. Everything else (source, ranking, dim)
- // is already in the URL and re-derived on load.
+ // the overview nested breakdown. Everything else (source, ranking, dim,
+ // kind, pattern) is already in the URL and re-derived on load.
  const groupScope=pick(route.params,'group',['insertions','deletions','differences'],null);
  const groupLabelRaw=route.params.get('g');
  const group=useMemo(()=>groupScope&&groupLabelRaw!=null?{scope:groupScope,label:groupLabelRaw,
@@ -109,7 +116,7 @@ export default function Analysis({route}){
  function changedParams(key,value){const params=Object.fromEntries(route.params);params[key]=value;
   if(key==='view'){
    if(params.dim==='overall')delete params.dim;
-   for(const stale of ['drill','axis','table','group','g','shell','side','zone','pap','region','page','sort','dir','ranking','direction','focus','stage','scope','pdf','pdfPage','rshell','tab'])delete params[stale];
+   for(const stale of ['drill','axis','table','group','g','shell','side','zone','pap','region','page','sort','dir','ranking','direction','focus','stage','scope','pdf','pdfPage','rshell','tab','kind','pattern'])delete params[stale];
   }
   return params;
  }
@@ -145,7 +152,7 @@ export default function Analysis({route}){
   {view==='deletions'&&<Deletions headlines={data.headlines} ranking={deletionRanking} dim={dim} change={change} onOpenGroup={openGroup}/>}
   {view==='adjustments'&&detail&&<Adjustments detail={detail} revisionSets={data.headlines.revisionSets} dim={dim} direction={direction} change={change} onOpenGroup={openGroup}/>}
   {view==='chainage'&&<Chainage detail={detail} focus={chainageFocus} change={change} benchmark={benchmark} setBenchmark={setBenchmark} stage={chainageStage} scope={chainageScope}/>}
-  {view==='roadgroups'&&<RoadGroups payload={roadGroups} open={shellOpen} onOpenShell={g=>openModal({shell:g.shell,side:g.state==='nep_leftover'?'nep':'hgab',zone:g.zone||'',pap:g.pap||'',region:g.region||''})} onClose={closeModal}/>}
+  {view==='roadgroups'&&<RoadGroups payload={roadGroups} open={shellOpen} kind={roadKind} pattern={roadPattern} route={route} change={change} onOpenShell={g=>openModal({shell:g.shell,side:g.state==='nep_leftover'?'nep':'hgab',zone:g.zone||'',pap:g.pap||'',region:g.region||''})} onClose={closeModal}/>}
   {view==='relations'&&<Suspense fallback={<p role="status" className="muted">Loading relations view…</p>}><RelationsView route={route} change={change}/></Suspense>}
   {view==='statistics'&&detail&&<Statistics detail={detail} source={source} dim={dim} change={change}/>}
   {/* Heavy-modal loading states: group records need the 50 MB per-record payload
@@ -612,19 +619,21 @@ function houseMinusNep(row){const house=row.third??row.second;return house!=null
 // (work + municipality + province; barangay/street dropped — the split axis).
 // Exhausted groups (NEP supply fully attached, House leftovers) are split /
 // insertion candidates. All data — not just fuzzy rows.
-function RoadGroups({payload,open,onOpenShell,onClose}){
+function RoadGroups({payload,open,onOpenShell,onClose,kind,pattern,route,change}){
  const summary=payload?.summary;
  const groups=payload?.groups??[];
  const nepGroups=payload?.nep_leftover_groups??[];
  const regions=payload?.region_summary??[];
  const stats=roadGroupStats(groups);
- const [kind,setKind]=useState('all');
- const [pattern,setPattern]=useState('all');
+ // kind/pattern filters live in the URL (params of this view's parent), so
+ // selections are shareable and survive reloads — like every other Analysis
+ // control. Resolving happens against the full lists, never a filtered view.
  const kindFilter=v=>kind==='all'||v===kind;
  const patternFilter=v=>pattern==='all'||v===pattern;
  const shown=groups.filter(g=>kindFilter(g.kind)&&patternFilter(g.pattern));
  const nepShown=nepGroups.filter(g=>kindFilter(g.kind));
  const PATTERN_LABELS={split_like:'Split-like',unsupplied_cluster:'Unsupplied cluster',micro_supplied:'Micro-supplied'};
+ const filterCount=(kind!=='all')+(pattern!=='all');
  if(!payload)return <p role="status">Loading groupings…</p>;
  const fmtKm=m=>m==null?'—':`${(m/1000).toLocaleString('en-PH',{maximumFractionDigits:3})} km`;
  const perKm=v=>v==null?'—':`${amount(v)}/km`;
@@ -640,17 +649,18 @@ function RoadGroups({payload,open,onOpenShell,onClose}){
    <div><dt>in {summary.nep_leftover_groups.toLocaleString()} shells</dt><dd>{summary.groups_with_nep_supply.toLocaleString()} shells carry any NEP supply</dd></div>
   </dl>
   <div className="analysis-controls">
-   <label>Group kind<select aria-label="Grouping kind" value={kind} onChange={e=>setKind(e.target.value)}>
+   <label>Group kind<select aria-label="Grouping kind" value={kind} onChange={e=>change('kind',clearWhenAll(e.target.value))}>
     <option value="all">All groups</option>
     <option value="road">Road corridors</option>
     <option value="place_shell">Project shells (non-road)</option>
    </select></label>
-   <label>Insertion pattern<select aria-label="Unsupported insertion pattern" value={pattern} onChange={e=>setPattern(e.target.value)}>
+   <label>Insertion pattern<select aria-label="Unsupported insertion pattern" value={pattern} onChange={e=>change('pattern',clearWhenAll(e.target.value))}>
     <option value="all">All patterns</option>
     <option value="split_like">Split-like · NEP scale matches leftovers</option>
     <option value="unsupplied_cluster">Unsupplied cluster · paired NEP is different work</option>
     <option value="micro_supplied">Micro-supplied · tiny NEP beside large leftovers</option>
    </select></label>
+   {filterCount>0&&<button type="button" className="group-open" onClick={()=>{const params=Object.fromEntries(route.params);delete params.kind;delete params.pattern;window.location.hash=routeHref('analysis',params);}}>Clear filters</button>}
   </div>
   <h3>Unsupported insertion candidates · HGAB rows with no NEP counterpart in the shell</h3>
   <SortableTable tableId="groupings-region-rollup" ariaLabel="Unsupported insertion region rollup" initialSort={{key:'leftover_amount_php',direction:'desc'}} rows={regions} columns={[

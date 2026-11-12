@@ -289,7 +289,9 @@ direction control, followed by the HGAB2→HGAB3 reading ledger. **Chainage**
 benchmark versus revised-pair patterns and records (`scope=all|revised`,
 `stage=overview|benchmark|patterns|records`, `focus=` length/modus filters).
 **Groupings** (`#analysis?view=roadgroups`) renders same-shell insertion and
-deletion candidate groups with region rollups and member modals; **Statistics**
+deletion candidate groups with region rollups and member modals
+(`kind=all|road|place_shell`, `pattern=all|split_like|unsupplied_cluster|micro_supplied`
+filters ride the URL); **Statistics**
 covers rounding, Benford and value clustering. `table=` deep links scroll to a
 named table, and drill-downs are shareable via `drill=` + `axis=`.
 

@@ -76,13 +76,15 @@ No view-relevant state lives in component state. The full parameter set:
 | `ranking` | candidate sub-population (see §4.2) | Insertions, Deletions |
 | `dim` | aggregate breakdown dimension | Overview, Insertions, Deletions, Adjustments |
 | `direction` | `increased`/`reduced` amount-change filter | Adjustments |
+| `kind`, `pattern` | Groupings population filters (`all|road|place_shell` · `all|split_like|unsupplied_cluster|micro_supplied`) | DPWH Groupings |
 | `q`, filter params (`region`, `subprogram`, `status`, …) | population filters (FMR/NIA/HFEP `Filters` component) | all |
 | `sort`, `dir`, `page` | route-backed table sorting/pagination (annexes) | tables |
 | `group` + `g` / `pair` / `records` / `drill` + `axis` / `shell`… | **dialog keys** — a modal is open iff its key is present, so Back closes it and links are shareable | group/pair/records drill-downs |
 | `table` | deep link that scrolls a specific `tableId` into view and flashes it | Analysis tables in every workspace |
 
 Tab switches reset stale params rather than letting them ride along: DPWH
-drops a degenerate `dim=overall` plus `drill/axis/table`
+drops a degenerate `dim=overall` plus `drill/axis/table` and the Groupings
+`kind/pattern` filters
 (Analysis.jsx:107–113); NIA's `Tabs` takes a `reset` map clearing
 `status/direction/ranking/aiBasis/sort/dir/group/pair/dim/table/pdf/pdfPage`; FMR/HFEP `ViewTabs`
 blank `page/sort/dir` and view-specific filters.

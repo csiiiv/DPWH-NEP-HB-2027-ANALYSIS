@@ -292,6 +292,32 @@ with tempfile.TemporaryDirectory() as folder:
                 page.goto(base+'#analysis?view=roadgroups&table=groupings-deletions',wait_until='networkidle')
                 expect(subnav.get_by_role('link',name='Groupings',exact=True)).to_have_attribute('aria-current','page')
                 expect(page.locator('#table-groupings-deletions')).to_have_class(re.compile(r'table-target'),timeout=60000)
+                # kind/pattern filters ride the URL: selecting writes the
+                # param, reload restores it, deep links reopen filtered.
+                page.goto(base+'#analysis?view=roadgroups',wait_until='networkidle')
+                expect(page.get_by_label('Grouping kind',exact=True)).to_have_value('all')
+                page.get_by_label('Grouping kind',exact=True).select_option('road')
+                assert 'kind=road' in page.url,(page.url,)
+                page.get_by_label('Unsupported insertion pattern',exact=True).select_option('split_like')
+                assert 'pattern=split_like' in page.url,(page.url,)
+                insertions=page.get_by_role('region',name='Unsupported insertion candidate groups',exact=True)
+                expect(insertions.locator('tbody tr').first).to_be_visible(timeout=60000)
+                road_split_count=insertions.locator('tbody tr').count()
+                assert road_split_count==50,(road_split_count,)
+                filtered_url=page.url
+                page.reload(wait_until='networkidle')
+                expect(page.get_by_label('Grouping kind',exact=True)).to_have_value('road')
+                expect(page.get_by_label('Unsupported insertion pattern',exact=True)).to_have_value('split_like')
+                expect(page.get_by_role('region',name='Unsupported insertion candidate groups',exact=True).locator('tbody tr')).to_have_count(road_split_count)
+                # Clear filters returns to the unfiltered default via one
+                # history step and drops both params.
+                page.get_by_role('button',name='Clear filters',exact=True).click()
+                expect(page.get_by_label('Grouping kind',exact=True)).to_have_value('all')
+                assert 'kind=' not in page.url and 'pattern=' not in page.url,(page.url,)
+                # Leaving the view drops the roadgroups-only params.
+                page.goto(filtered_url,wait_until='networkidle')
+                subnav.get_by_role('link',name='Statistics',exact=True).click()
+                assert 'kind=' not in page.url and 'pattern=' not in page.url,(page.url,)
                 page.screenshot(path=f'/tmp/analysis-groupings-{width}.png')
                 # Statistics subtab: descriptive lenses render from the same lazy payload.
                 subnav.get_by_role('link',name='Statistics',exact=True).click()
