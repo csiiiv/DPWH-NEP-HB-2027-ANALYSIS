@@ -24,6 +24,7 @@ const SUMMARY_FULL = [
 
 const PROJECT_SIMPLE = [
   ['display_title', 'Title (fixed / submission)'],
+  ['funding_label', 'Funding'],
   ['chainage_spans', 'Chainages'],
   ['chainage_length_m', 'Length m'],
   ['php_per_m', 'PHP per m'],
@@ -37,6 +38,9 @@ const PROJECT_FULL = [
   ['display_title', 'Title (fixed / submission)'],
   ['submission_label', 'Submission label (col V)'],
   ['ledger_title', 'Annex print title'],
+  ['funding_label', 'Funding'],
+  ['funding_scope', 'Funding scope key'],
+  ['workbook_status', 'Workbook status'],
   ['category', 'Category'],
   ['region', 'Region'],
   ['province', 'Province'],
@@ -56,6 +60,7 @@ const PROJECT_FULL = [
 const OUTLIER_SIMPLE = [
   ['title', 'Title (fixed / submission)'],
   ['group_label', 'Group'],
+  ['funding_label', 'Funding'],
   ['side', 'Side'],
   ['severity', 'Severity'],
   ['fence_score', 'Fence score (IQR)'],
@@ -75,6 +80,9 @@ const OUTLIER_FULL = [
   ['ledger_title', 'Annex print title'],
   ['group_id', 'Group id'],
   ['group_label', 'Group'],
+  ['funding_label', 'Funding'],
+  ['funding_scope', 'Funding scope key'],
+  ['workbook_status', 'Workbook status'],
   ['side', 'Side'],
   ['severity', 'Severity'],
   ['fence_score', 'Fence score (IQR)'],

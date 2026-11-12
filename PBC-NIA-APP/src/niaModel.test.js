@@ -11,7 +11,7 @@ import {allocationStats, analysisCandidateRows, candidateGroupRows, bandRows, ro
   senateGapRows, senateReconciliationRows, senateUnfundedRows, gapReasonLabels,
   formatSenateCoordinates, formatSenateChainage, senateChainageLengthM,
   filterSenateProjects, senateProjects} from './niaModel.js';
-import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringProjects, aiMonitoringReconciliation, concentration, concentrationRows, fundingGroups, fundingSummary, highlightsCards, phpPerMDistribution, phpPerMOutlierFenceScore, phpPerMOutlierMedianRatio, phpPerMOutlierProjects, phpPerMOutlierSeverity, phpPerMRowsByDim, phpPerMStats, phpPerMStripDomain, preferredChainageTitle} from './niaAnalysis.js';
+import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringProjects, aiMonitoringReconciliation, chainageFundingLabels, chainageFundingScope, concentration, concentrationRows, fundingGroups, fundingSummary, highlightsCards, phpPerMDistribution, phpPerMOutlierFenceScore, phpPerMOutlierMedianRatio, phpPerMOutlierProjects, phpPerMOutlierSeverity, phpPerMRowsByDim, phpPerMStats, phpPerMStripDomain, preferredChainageTitle, senateByStageIdIndex} from './niaAnalysis.js';
 
 // Walk up from this file until analysis-nia/ is found so the same test works
 // from analysis/web/src and the PBC-NIA-APP fork.
@@ -261,6 +261,24 @@ test('preferred chainage title prefers Senate column-V submission wording', () =
     title: 'Annex print', submission_label: 'Fixed submission title Sta. 0+000 – 0+100',
   }), 'Fixed submission title Sta. 0+000 – 0+100');
   assert.equal(preferredChainageTitle({title: 'Annex print only'}), 'Annex print only');
+});
+
+test('chainage funding scope maps Senate workbook status to NEP/House labels', () => {
+  assert.equal(chainageFundingLabels.both_funded, 'NEP+House');
+  assert.equal(chainageFundingLabels.house_zeroed, 'NEP Only');
+  assert.equal(chainageFundingLabels.house_insertion, 'House Only');
+  assert.equal(chainageFundingScope({workbook_status: 'both_funded'}).label, 'NEP+House');
+  const index = senateByStageIdIndex([
+    {id: 'sen:1', status: 'house_insertion', house_join: {id: 'ib:1'}, nep_join: null},
+    {id: 'sen:2', status: 'house_zeroed', nep_join: {id: 'nep-1'}, house_join: null},
+  ]);
+  assert.equal(chainageFundingScope({id: 'ib:1'}, index).label, 'House Only');
+  assert.equal(chainageFundingScope({id: 'nep-1'}, index).label, 'NEP Only');
+  // Live workbench: every stage project with a senate_id resolves a funding label.
+  const liveIndex = senateByStageIdIndex(data.senate.projects);
+  const stamped = data.stages.nep.projects.filter(p => p.senate_id);
+  assert.ok(stamped.length > 700);
+  assert.ok(stamped.every(p => chainageFundingScope(p, liveIndex).label !== '—'));
 });
 
 test('php_per_m outlier projects list Tukey extremes per hierarchy group', () => {

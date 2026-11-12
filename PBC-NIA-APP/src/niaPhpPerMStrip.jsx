@@ -247,6 +247,9 @@ export function PhpPerMScatterPlot({
       role="status" aria-live="polite">
       <strong className="nia-ppm-hover-title">{preferredChainageTitle(hover.point.project)}</strong>
       <dl className="nia-ppm-hover-dl">
+        {hover.point.project.funding_label
+          ? <div><dt>Funding</dt><dd>{hover.point.project.funding_label}</dd></div>
+          : null}
         <div><dt>₱/m</dt><dd>{money(Math.round(hover.point.rate))}
           {hover.point.outlier ? <span className="nia-ppm-outlier-tag">outlier</span> : null}</dd></div>
         <div><dt>Allocation</dt><dd>{money(hover.point.project.amount_php)}</dd></div>

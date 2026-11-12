@@ -268,6 +268,39 @@ export function preferredChainageTitle(project) {
   return typeof title === 'string' ? title : '';
 }
 
+/** Compact funding-scope labels for chainage project tables. */
+export const chainageFundingLabels = {
+  both_funded: 'NEP+House',
+  house_zeroed: 'NEP Only',
+  house_insertion: 'House Only',
+  unfunded: 'Unfunded',
+};
+
+/**
+ * Senate workbook funding scope for a stage project. Prefers a stamped
+ * `workbook_status`, else looks up the workbook row by `senate_id` / join id.
+ */
+export function chainageFundingScope(project, senateByStageId = null) {
+  const status = project?.workbook_status
+    || project?.funding_scope
+    || (project?.senate_id && senateByStageId?.get(project.senate_id)?.status)
+    || (project?.id && senateByStageId?.get(project.id)?.status)
+    || null;
+  if (!status) return {status: null, label: '—'};
+  return {status, label: chainageFundingLabels[status] || status};
+}
+
+/** Index Senate workbook rows by NEP/House ledger id and workbook id. */
+export function senateByStageIdIndex(senateProjects = []) {
+  const map = new Map();
+  for (const p of senateProjects) {
+    map.set(p.id, p);
+    if (p.nep_join?.id) map.set(p.nep_join.id, p);
+    if (p.house_join?.id) map.set(p.house_join.id, p);
+  }
+  return map;
+}
+
 /**
  * Tukey extremity in IQR units past the near quartile.
  * Mild outliers start at 1.5; classic “extreme” Tukey cutoff is 3.0.
@@ -355,6 +388,7 @@ export function phpPerMOutlierProjects(projects, dim, subprogramLabels = new Map
         category: p.category,
         region: p.region,
         program_group: p.program_group,
+        workbook_status: p.workbook_status || null,
       });
     }
   }

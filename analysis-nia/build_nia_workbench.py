@@ -835,6 +835,9 @@ def build(write_output=True):
             # for chainage analysis; falls back to the annex print title in UI).
             project['senate_id'] = wb_row['id']
             project['submission_label'] = wb_row.get('submission_label') or None
+            # both_funded / house_insertion / house_zeroed / unfunded — used by
+            # chainage tables as NEP+House / House Only / NEP Only.
+            project['workbook_status'] = wb_row.get('status')
             # Title-chainage length + stage allocation ₱/m (screening proxy).
             chainage = (wb_row.get('title_parse') or {}).get('chainage') or {}
             length = chainage.get('length_m')

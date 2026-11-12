@@ -27,7 +27,8 @@ test('chainage project export keeps PDF citations on full scope only', () => {
   const rows = [{
     id: 'nep-1', senate_id: 'sen:r1', title: 'Road A annex',
     display_title: 'Road A fixed Sta. 0+000 – 0+100', submission_label: 'Road A fixed Sta. 0+000 – 0+100',
-    ledger_title: 'Road A annex', category: 'Roads', region: 'NCR',
+    ledger_title: 'Road A annex', funding_label: 'NEP+House', funding_scope: 'both_funded',
+    workbook_status: 'both_funded', category: 'Roads', region: 'NCR',
     province: 'Metro Manila', subprogram_key: 'nis', program_group: 'RESTORE',
     chainage_spans: '0+000 – 0+100', chainage_length_m: 100, php_per_m: 5000,
     amount_php: 500000, has_location: true, location_basis: 'Title GPS',
@@ -36,21 +37,26 @@ test('chainage project export keeps PDF citations on full scope only', () => {
   const simple = exportChainageCsv(rows, {kind: 'projects', scope: 'simple', stage: 'nep', dim: 'category', group: 'Roads'});
   assert.match(simple, /Title \(fixed \/ submission\)/);
   assert.match(simple, /Road A fixed/);
+  assert.match(simple, /Funding/);
+  assert.match(simple, /NEP\+House/);
   assert.match(simple, /Map basis/);
   assert.doesNotMatch(simple, /Source id/);
   const full = exportChainageCsv(rows, {kind: 'projects', scope: 'full', stage: 'nep', dim: 'category', group: 'Roads'});
   assert.match(full, /Source id/);
   assert.match(full, /Annex print title/);
+  assert.match(full, /Funding scope key/);
   assert.match(full, /NIA\.pdf/);
   const json = JSON.parse(exportChainageJson(rows, {kind: 'projects', scope: 'full', stage: 'nep', dim: 'category', group: 'Roads'}));
   assert.equal(json.rows[0].source.pdf_page, 3);
   assert.equal(json.rows[0].display_title, 'Road A fixed Sta. 0+000 – 0+100');
+  assert.equal(json.rows[0].funding_label, 'NEP+House');
   assert.equal(json.group, 'Roads');
 });
 
 test('chainage outlier export covers Tukey side and whisker fences', () => {
   const rows = [{
     id: 'nep-9', title: 'Far CIS', group_id: 'Roads', group_label: 'Roads', side: 'high',
+    funding_label: 'NEP Only', funding_scope: 'house_zeroed', workbook_status: 'house_zeroed',
     severity: 'extreme', fence_score: 34.5, median_ratio: 8,
     php_per_m: 100_000, median: 12_000, p25: 11_250, p75: 13_750, iqr: 2_500,
     whisker_low: 10_000, whisker_high: 14_000,
@@ -60,6 +66,8 @@ test('chainage outlier export covers Tukey side and whisker fences', () => {
   }];
   const simple = exportChainageCsv(rows, {kind: 'outliers', scope: 'simple', stage: 'nep', dim: 'category'});
   assert.match(simple, /Title \(fixed \/ submission\)/);
+  assert.match(simple, /Funding/);
+  assert.match(simple, /NEP Only/);
   assert.match(simple, /Side/);
   assert.match(simple, /Severity/);
   assert.match(simple, /Fence score/);
@@ -75,6 +83,7 @@ test('chainage outlier export covers Tukey side and whisker fences', () => {
   assert.equal(json.kind, 'outliers');
   assert.equal(json.rows[0].side, 'high');
   assert.equal(json.rows[0].severity, 'extreme');
+  assert.equal(json.rows[0].funding_label, 'NEP Only');
   assert.equal(json.rows[0].fence_score, 34.5);
   assert.equal(json.rows[0].source.pdf_page, 4);
   assert.equal(chainageExportFileName({kind: 'outliers', scope: 'simple', stage: 'nep', dim: 'category'}, 'csv'),

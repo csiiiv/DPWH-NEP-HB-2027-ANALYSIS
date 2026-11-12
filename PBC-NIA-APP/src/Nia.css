@@ -91,6 +91,25 @@
 .nia-edit-check { background:#fef3c7; color:#92400e; }
 .nia-gap-remark, .nia-gap-fixed { max-width:280px; white-space:normal; }
 .nia-method-note { font-size:14px; color:var(--muted, #6b7280); }
+/* POW document availability match badges */
+.nia-pow-strong { background:#dcfce7; color:#166534; }
+.nia-pow-weak { background:#fef3c7; color:#92400e; }
+.nia-pow-review { background:#e0e7ff; color:#3730a3; }
+.nia-pow-unmatched { background:#f3f4f6; color:#6b7280; }
+.nia-pow-support-yes { background:#dcfce7; color:#166534; }
+.nia-pow-support-no { background:#f3f4f6; color:#6b7280; }
+.nia-pow-pdf { background:#dbeafe; color:#1e40af; }
+.nia-pow-match { display:inline-flex; flex-wrap:wrap; gap:4px; align-items:center; }
+.nia-pow-scale-heading { margin:18px 0 4px; font-size:15px; }
+.nia-pow-scale-note { margin:0 0 8px; font-size:12.5px; }
+.nia-pow-scale .nia-distribution-row { grid-template-columns:minmax(160px,200px) minmax(120px,1fr) 72px; width:100%;
+  border:1px solid transparent; background:transparent; cursor:pointer; font:inherit; text-align:left; border-radius:6px; padding:8px 6px; }
+.nia-pow-scale .nia-distribution-row:hover { background:#f5f8fc; }
+.nia-pow-scale .nia-distribution-row.is-active { background:#eef5fc; border-color:#9fb6cf; }
+.nia-pow-scale .nia-distribution-row small { grid-column:1/-1; color:#516780; }
+.nia-pow-bar-pow>span { background:#2f6fad; }
+.nia-pow-bar-photos>span { background:#3f9a5a; }
+.nia-pow-bar-none>span { background:#9aa7b5; }
 
 /* Chainage ₱/m explore modal */
 .nia-chainage-explore-dialog {width:min(1100px, calc(100vw - 2rem)); max-width:none;}
@@ -142,6 +161,11 @@
 .nia-ppm-outlier-sev.is-moderate {background:#f5ecd8; color:#7a5a18;}
 .nia-ppm-outlier-sev.is-severe {background:#f5e0d4; color:#8a3f1c;}
 .nia-ppm-outlier-sev.is-extreme {background:#efd4d4; color:#8a1c1c;}
+.nia-ppm-funding {display:inline-block; padding:1px 8px; border-radius:999px; font-size:12px; font-weight:600; white-space:nowrap;}
+.nia-ppm-funding.is-both_funded {background:#e4eef8; color:#2f5f8f;}
+.nia-ppm-funding.is-house_zeroed {background:#f0e8d8; color:#7a5a18;}
+.nia-ppm-funding.is-house_insertion {background:#e8f0e4; color:#3d6b32;}
+.nia-ppm-funding.is-unfunded,.nia-ppm-funding.is-unknown {background:#eef1f4; color:#6a7f96;}
 .nia-ppm-scatter-dialog {width:min(960px, calc(100vw - 2rem)); max-width:none;}
 .nia-ppm-scatter-stats {margin:0 0 8px;}
 .nia-ppm-scatter-actions {display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;}

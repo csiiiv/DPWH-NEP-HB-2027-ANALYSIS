@@ -6,7 +6,7 @@ import AnalysisValue from './AnalysisValue.jsx';
 import {openModalDialog} from './modalLifecycle.js';
 import {readRoute, routeHref} from './routes.js';
 import {siteUrl} from './data.js';
-import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringLabels, aiMonitoringProjects, aiMonitoringReconciliation, allocationRowsByDim, concentration, concentrationRows, dimensionGroups, fundingGroups, fundingSummary, highlightsCards, phpPerMOutlierProjects, phpPerMRowsByDim, phpPerMStats, phpPerMStripDomain, preferredChainageTitle, share} from './niaAnalysis.js';
+import {aiMonitoringBasis, aiMonitoringInsertions, aiMonitoringLabels, aiMonitoringProjects, aiMonitoringReconciliation, allocationRowsByDim, chainageFundingScope, concentration, concentrationRows, dimensionGroups, fundingGroups, fundingSummary, highlightsCards, phpPerMOutlierProjects, phpPerMRowsByDim, phpPerMStats, phpPerMStripDomain, preferredChainageTitle, senateByStageIdIndex, share} from './niaAnalysis.js';
 import {PhpPerMScatterPlot, PhpPerMStrip, PhpPerMStripAxis, phpPerMScatterPoints} from './niaPhpPerMStrip.jsx';
 import {allocationStats, analysisCandidateRows, bandRows, candidateAggregates, candidateGroupRows, candidateResolution, comparisonFilterLabels, comparisonRows,
   csvText, filterComparisons, filterProjects, flagLabels, money, signedMoney, signedPct, pctChange, niaTabs,
@@ -23,6 +23,7 @@ import {
   consolidatedByStageId, formatConsolidatedChainage, preferredMapFocus,
 } from './niaConsolidatedMap.js';
 import {downloadChainageExport} from './niaChainageExport.js';
+import {filterPowCoverage, filterPowPackages, powMatchLabels, powRegionOptions, powSupportLabels, powSupportScale} from './niaPowAvailability.js';
 import ExportModal from './ExportModal.jsx';
 import './Fmr.css';
 import './Nia.css';
@@ -613,9 +614,20 @@ function ChainageCostAnalysis({projects, route, dim = 'category', stageKey = 'ne
   const overall = phpPerMStats(projects);
   const rows = phpPerMRowsByDim(projects, dim, labels);
   const stripDomain = useMemo(() => phpPerMStripDomain(rows), [rows]);
+  const senateByStage = useMemo(
+    () => senateByStageIdIndex(data?.senate?.projects || []),
+    [data]);
   const outliers = useMemo(
-    () => phpPerMOutlierProjects(projects, dim, labels),
-    [projects, dim, labels]);
+    () => phpPerMOutlierProjects(projects, dim, labels).map(o => {
+      const funding = chainageFundingScope(o, senateByStage);
+      return {
+        ...o,
+        workbook_status: funding.status,
+        funding_scope: funding.status,
+        funding_label: funding.label,
+      };
+    }),
+    [projects, dim, labels, senateByStage]);
   const outlierHigh = outliers.filter(o => o.side === 'high').length;
   const outlierLow = outliers.filter(o => o.side === 'low').length;
   const percent = value => value == null ? '—' : `${(value * 100).toFixed(1)}%`;
@@ -663,12 +675,16 @@ function ChainageCostAnalysis({projects, route, dim = 'category', stageKey = 'ne
         const submission = p.submission_label
           || cons?.submission_label
           || null;
+        const funding = chainageFundingScope(p, senateByStage);
         return {
           ...p,
           submission_label: submission,
           ledger_title: p.title,
           display_title: preferredChainageTitle({...p, submission_label: submission}),
           senate_id: p.senate_id || cons?.id || null,
+          workbook_status: funding.status || p.workbook_status || null,
+          funding_scope: funding.status,
+          funding_label: funding.label,
           chainage_spans: cons ? formatConsolidatedChainage(cons) : '',
           location_basis: focus?.label || null,
           has_location: Boolean(focus),
@@ -677,7 +693,7 @@ function ChainageCostAnalysis({projects, route, dim = 'category', stageKey = 'ne
       .sort((a, b) => (b.php_per_m ?? -1) - (a.php_per_m ?? -1)
         || b.amount_php - a.amount_php
         || a.id.localeCompare(b.id));
-  }, [projects, exploreId, scatterId, dim, consByStage]);
+  }, [projects, exploreId, scatterId, dim, consByStage, senateByStage]);
 
   const exploreRows = exploreId ? groupProjects : [];
   const scatterProjects = useMemo(() => {
@@ -688,10 +704,21 @@ function ChainageCostAnalysis({projects, route, dim = 'category', stageKey = 'ne
     if (!scatterGroup) return [];
     return phpPerMScatterPoints(scatterProjects, scatterGroup, stripDomain);
   }, [scatterProjects, scatterGroup, stripDomain]);
-  const scatterDetail = scatterProjectId
-    ? (scatterProjects.find(p => p.id === scatterProjectId)
-      || projects.find(p => p.id === scatterProjectId))
-    : null;
+  const scatterDetail = useMemo(() => {
+    if (!scatterProjectId) return null;
+    const found = scatterProjects.find(p => p.id === scatterProjectId)
+      || projects.find(p => p.id === scatterProjectId);
+    if (!found) return null;
+    if (found.funding_label) return found;
+    const funding = chainageFundingScope(found, senateByStage);
+    return {
+      ...found,
+      workbook_status: funding.status || found.workbook_status || null,
+      funding_scope: funding.status,
+      funding_label: funding.label,
+      display_title: found.display_title || preferredChainageTitle(found),
+    };
+  }, [scatterProjectId, scatterProjects, projects, senateByStage]);
 
   const [exportKind, setExportKind] = useState(null); // 'summary' | 'projects' | null
   const openExplore = id => navigate(route, {
@@ -783,6 +810,10 @@ function ChainageCostAnalysis({projects, route, dim = 'category', stageKey = 'ne
           title: 'Senate workbook column-V fixed / submission title when present; else annex print title',
           render: r => <button type="button" className="group-open" onClick={() => openOutlier(r)}>{r.title}</button>},
         {key: 'group_label', label: groupLabel},
+        {key: 'funding_label', label: 'Funding',
+          title: 'Senate workbook funding scope: NEP+House, NEP Only, or House Only',
+          value: r => r.funding_scope || '',
+          render: r => <span className={`nia-ppm-funding is-${r.funding_scope || 'unknown'}`}>{r.funding_label || '—'}</span>},
         {key: 'severity', label: 'Severity',
           render: r => <span className={`nia-ppm-outlier-sev is-${r.severity}`}>{r.severity}</span>},
         {key: 'side', label: 'Side', render: r =>
@@ -829,6 +860,9 @@ function ChainageCostAnalysis({projects, route, dim = 'category', stageKey = 'ne
       <p className="nia-ppm-project-title">{scatterDetail.display_title || preferredChainageTitle(scatterDetail)}</p>
       <dl className="nia-ppm-project-dl">
         <div><dt>Source id</dt><dd><code>{scatterDetail.id}</code></dd></div>
+        <div><dt>Funding</dt><dd>
+          <span className={`nia-ppm-funding is-${scatterDetail.funding_scope || 'unknown'}`}>
+            {scatterDetail.funding_label || '—'}</span></dd></div>
         {scatterDetail.submission_label
           && scatterDetail.ledger_title
           && scatterDetail.submission_label !== scatterDetail.ledger_title
@@ -872,6 +906,10 @@ function ChainageCostAnalysis({projects, route, dim = 'category', stageKey = 'ne
             title: 'Senate workbook column-V fixed / submission title when present',
             value: r => r.display_title || preferredChainageTitle(r),
             render: r => r.display_title || preferredChainageTitle(r)},
+          {key: 'funding_label', label: 'Funding',
+            title: 'Senate workbook funding scope: NEP+House, NEP Only, or House Only',
+            value: r => r.funding_scope || '',
+            render: r => <span className={`nia-ppm-funding is-${r.funding_scope || 'unknown'}`}>{r.funding_label || '—'}</span>},
           {key: 'chainage_spans', label: 'Chainages', render: r => r.chainage_spans || '—'},
           {key: 'chainage_length_m', label: 'Length', align: 'num',
             render: r => r.chainage_length_m == null ? '—'
@@ -899,10 +937,10 @@ function ChainageCostAnalysis({projects, route, dim = 'category', stageKey = 'ne
             : <> {dimLabel} rate groups</>}.
         Amounts are Philippine pesos; ₱/m is printed allocation ÷ title chainage length.</p>}
       scopeOptions={exportKind === 'projects' ? [
-        ['simple', 'Simple', 'Title, chainages, length, ₱/m, allocation, and map basis.'],
+        ['simple', 'Simple', 'Title, funding (NEP+House / NEP Only / House Only), chainages, length, ₱/m, allocation, and map basis.'],
         ['full', 'Full', 'Everything Simple has plus source id, Senate id, hierarchy, location flag, and PDF page citations.'],
       ] : exportKind === 'outliers' ? [
-        ['simple', 'Simple', 'Title, group, side, severity, fence score, × median, ₱/m, whiskers, length, allocation.'],
+        ['simple', 'Simple', 'Title, group, funding (NEP+House / NEP Only / House Only), side, severity, fence score, × median, ₱/m, whiskers, length, allocation.'],
         ['full', 'Full', 'Everything Simple has plus source id, P25/P75/IQR, hierarchy fields, and PDF page citations.'],
       ] : [
         ['simple', 'Simple', 'Group label, source-row counts, chainage share, and median / P25 / P75 / max ₱/m.'],
@@ -1034,6 +1072,199 @@ function OverviewComparison({data, route, rows, onPdf, stage, projects}) {
     </Dialog>}
   </>;
 }
+function DocumentAvailabilityAnalysis({route}) {
+  const p = paramsOf(route);
+  const [pow, setPow] = useState(null);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(siteUrl('analysis-nia/data/program_of_works/pow_availability.json'), {signal: controller.signal})
+      .then(r => { if (!r.ok) throw Error(`POW availability request failed (${r.status})`); return r.json(); })
+      .then(d => { if (d.schema_version !== 1) throw Error('Unsupported POW availability dataset'); setPow(d); })
+      .catch(e => { if (e.name !== 'AbortError') setError(e.message); });
+    return () => controller.abort();
+  }, []);
+  const table = p.powTable === 'packages' ? 'packages' : 'coverage';
+  const coverage = useMemo(
+    () => filterPowCoverage(pow?.coverage || pow?.projects || [], {
+      q: p.q, powRegion: p.powRegion, powMatch: p.powMatch, powSupport: p.powSupport,
+    }),
+    [pow, p.q, p.powRegion, p.powMatch, p.powSupport]);
+  const packages = useMemo(
+    () => filterPowPackages(pow?.packages || [], {q: p.q, powRegion: p.powRegion, powMatch: p.powMatch}),
+    [pow, p.q, p.powRegion, p.powMatch]);
+  if (error) return <p role="alert">Document availability could not load: {error}</p>;
+  if (!pow) return <p role="status">Loading Program of Works availability…</p>;
+  const s = pow.summary;
+  const unsupported = s.senate_projects_unsupported
+    ?? Math.max(0, (s.senate_projects || 0) - (s.senate_projects_with_docs || 0));
+  const scale = powSupportScale(s);
+  const scaleMax = Math.max(1, s.senate_projects || 0, ...scale.map(r => r.count || 0));
+  const regions = powRegionOptions(pow.by_region);
+  const exportCoverage = () => download('nia-pow-project-support.csv', csvText(
+    ['senate_id', 'support', 'title', 'region', 'category', 'status', 'amount', 'match_strength',
+     'package_count', 'pdf_count', 'image_count', 'doc_count', 'package_names'],
+    coverage.map(x => [x.senate_id, x.supported ? 'supported' : 'unsupported', x.title,
+      x.region || '', x.category || '', x.status || '', x.amount ?? '', x.match_strength || '',
+      x.package_count || 0, x.pdf_count || 0, x.image_count || 0, x.doc_count || 0,
+      (x.packages || []).map(pk => pk.package_name).join(' | ')])));
+  const exportPackages = () => download('nia-pow-packages.csv', csvText(
+    ['id', 'region_folder', 'name', 'kind', 'system_guess', 'amount_php', 'category_hint',
+     'match_strength', 'score', 'senate_id', 'senate_title', 'pdf_count', 'image_count', 'doc_count'],
+    packages.map(x => [x.id, x.region_folder, x.name, x.kind, x.system_guess || '', x.amount_php ?? '',
+      x.category_hint || '', x.match_strength, x.best_match?.score ?? '', x.best_match?.senate_id || '',
+      x.best_match?.title || '', x.pdf_count, x.image_count, x.doc_count])));
+  return <>
+    <section className="fmr-section"><h2>Supporting document availability</h2>
+      <p>Counts of Program of Works / picture files from the PBC drop, attributed to Senate workbook
+        projects by region-scoped fuzzy match on package names (<code>work-type / system / amount</code>).
+        Matches are triage candidates — not certified identity.</p>
+      <div className="fmr-stats">
+        <Stat label="Senate submitted projects" value={s.senate_projects.toLocaleString('en-PH')}
+          detail={`${s.packages} POW packages · ${s.total_docs.toLocaleString('en-PH')} files`}/>
+        <Stat label="With POW" value={(s.senate_projects_with_pow ?? s.senate_projects_with_docs ?? 0).toLocaleString('en-PH')}
+          detail={`${s.total_pdfs} PDFs in drop`}/>
+        <Stat label="With geotagged photos" value={(s.senate_projects_with_photos || 0).toLocaleString('en-PH')}
+          detail={`${s.total_images} image files · picture sheets included`}/>
+        <Stat label="No supporting docs" value={unsupported.toLocaleString('en-PH')}
+          detail={`of ${s.senate_projects.toLocaleString('en-PH')} Senate submitted projects`}/>
+      </div>
+      <h3 className="nia-pow-scale-heading">Coverage scale</h3>
+      <p className="fmr-muted nia-pow-scale-note">Bars share the full Senate submitted project count
+        ({s.senate_projects.toLocaleString('en-PH')}). With POW and With geotagged photos can overlap.</p>
+      <div className="fmr-distribution nia-pow-scale" role="list" aria-label="Supporting document coverage scale">
+        {scale.map(row => {
+          const active = (p.powSupport || '') === row.id || (row.id === 'none' && p.powSupport === 'unsupported');
+          const pct = (row.count / scaleMax) * 100;
+          return <button type="button" role="listitem" key={row.id}
+            className={`nia-distribution-row nia-pow-scale-row${active ? ' is-active' : ''}`}
+            aria-pressed={active}
+            onClick={() => filterChange(route, {powSupport: active ? null : row.id, powTable: null, page: null})}>
+            <span>{row.label}</span>
+            <span className={`fmr-bar-track nia-pow-bar nia-pow-bar-${row.id}`}>
+              <span style={{width: `${pct}%`}}/></span>
+            <strong>{row.count.toLocaleString('en-PH')}</strong>
+            <small>{((row.count / scaleMax) * 100).toFixed(1)}% · {row.detail}</small>
+          </button>;
+        })}
+      </div>
+      <p className="fmr-notice">Drop is ongoing upload. No supporting docs means no package in this PBC folder
+        mapped to the Senate row — not that a POW is absent elsewhere. Weak filename matches are re-checked
+        against POW PDF text (OCR when image-only) and may promote to strong when confirmed.</p>
+    </section>
+    <section className="fmr-section"><h2>By region folder</h2>
+      <Table tableId="pow-by-region" route={route} rows={pow.by_region} label="POW availability by region"
+        initialSort={{key: 'unsupported', direction: 'desc'}} columns={[
+          {key: 'region_folder', label: 'Region folder', scope: 'row'},
+          {key: 'senate_projects', label: 'Senate submitted projects', align: 'num',
+            render: r => (r.senate_projects || 0).toLocaleString('en-PH')},
+          {key: 'projects_with_docs', label: 'Supported', align: 'num'},
+          {key: 'unsupported', label: 'Unsupported', align: 'num',
+            render: r => (r.unsupported || 0).toLocaleString('en-PH')},
+          {key: 'packages', label: 'Packages', align: 'num'},
+          {key: 'docs', label: 'Files', align: 'num'},
+          {key: 'pdfs', label: 'PDFs', align: 'num'},
+          {key: 'images', label: 'Images', align: 'num'},
+          {key: 'strong', label: 'Strong', align: 'num'},
+          {key: 'weak', label: 'Weak', align: 'num'},
+        ]}/>
+    </section>
+    <section className="fmr-section"><h2>Supported and unsupported projects</h2>
+      <div className="analysis-controls fmr-filters">
+        <label>Search<input aria-label="Search POW availability" value={p.q || ''}
+          onChange={e => filterChange(route, {q: e.target.value})}/></label>
+        <label>Support<select aria-label="POW support status" value={p.powSupport || ''}
+          onChange={e => filterChange(route, {powSupport: e.target.value})}>
+          <option value="">All projects</option>
+          {Object.entries(powSupportLabels).map(([k, label]) => <option key={k} value={k}>{label}</option>)}
+        </select></label>
+        <label>Region folder<select aria-label="POW region folder" value={p.powRegion || ''}
+          onChange={e => filterChange(route, {powRegion: e.target.value})}>
+          <option value="">All regions</option>
+          {regions.map(r => <option key={r} value={r}>{r}</option>)}
+        </select></label>
+        <label>Match<select aria-label="POW match strength" value={p.powMatch || ''}
+          onChange={e => filterChange(route, {powMatch: e.target.value})}>
+          <option value="">All strengths</option>
+          {Object.entries(powMatchLabels).map(([k, label]) => <option key={k} value={k}>{label}</option>)}
+        </select></label>
+        <label>Table<select aria-label="POW availability table" value={table}
+          onChange={e => filterChange(route, {powTable: e.target.value === 'packages' ? 'packages' : null})}>
+          <option value="coverage">Per project</option>
+          <option value="packages">Per package</option>
+        </select></label>
+        <button onClick={table === 'packages' ? exportPackages : exportCoverage}>Export filtered CSV</button>
+      </div>
+      <div className="fmr-result-bar"><span>{table === 'packages'
+        ? `${packages.length.toLocaleString('en-PH')} packages`
+        : `${coverage.length.toLocaleString('en-PH')} projects`} shown
+        {table === 'coverage' && (() => {
+          const n = coverage.filter(x => x.supported).length;
+          return ` · ${n.toLocaleString('en-PH')} supported · ${(coverage.length - n).toLocaleString('en-PH')} unsupported`;
+        })()}</span></div>
+      {table === 'packages'
+        ? <Table tableId="pow-packages" route={route} rows={packages} label="POW packages"
+          paginate initialSort={{key: 'doc_count', direction: 'desc'}} columns={[
+            {key: 'name', label: 'Package', scope: 'row', render: x => <span className="nia-senate-label">
+              {x.name}<small>{x.region_folder} · {x.kind}</small>
+              {x.system_guess && <small>System ≈ {x.system_guess}</small>}</span>},
+            {key: 'amount_php', label: 'Named amount', align: 'num',
+              render: x => x.amount_php == null ? '—' : money(x.amount_php)},
+            {key: 'doc_count', label: 'Files', align: 'num'},
+            {key: 'pdf_count', label: 'PDFs', align: 'num'},
+            {key: 'image_count', label: 'Images', align: 'num'},
+            {key: 'match_strength', label: 'Match',
+              render: x => <span className="nia-pow-match">
+                <span className={`fmr-badge nia-pow-${x.match_strength}`}>{powMatchLabels[x.match_strength] || x.match_strength}</span>
+                {(x.best_match?.pdf_confirmed || x.pdf_evidence?.confirmed) &&
+                  <span className="fmr-badge nia-pow-pdf">PDF confirmed</span>}
+              </span>},
+            {key: 'best_match', label: 'Best Senate candidate', sortable: false,
+              value: x => x.best_match?.score ?? 0,
+              render: x => x.best_match ? <span className="nia-senate-label">
+                {x.best_match.title}<small>score {x.best_match.score.toFixed(2)}
+                  {x.best_match.amount_hit ? ' · amount hit' : ''}
+                  {x.best_match.pdf_confirmed ? ' · PDF' : ''}
+                  {x.pdf_evidence?.method ? ` · ${x.pdf_evidence.method}` : ''}
+                  {' · '}{x.best_match.senate_id}</small>
+                {x.pdf_evidence?.snippet && <small className="nia-justification">“{x.pdf_evidence.snippet.slice(0, 140)}…”</small>}
+              </span> : '—'},
+          ]}/>
+        : <Table tableId="pow-coverage" route={route} rows={coverage} label="POW project support coverage"
+          paginate initialSort={{key: 'doc_count', direction: 'desc'}} columns={[
+            {key: 'title', label: 'Senate submitted project', scope: 'row', render: x => <span className="nia-senate-label">
+              {x.title}<small>{[x.category, x.region].filter(Boolean).join(' · ')}</small>
+              <small className="nia-id">{x.senate_id}</small></span>},
+            {key: 'support', label: 'Support',
+              value: x => x.supported ? 1 : 0,
+              render: x => <span className={`fmr-badge nia-pow-support-${x.supported ? 'yes' : 'no'}`}>
+                {x.supported ? 'Supported' : 'Unsupported'}</span>},
+            {key: 'amount', label: 'Amount (PHP)', align: 'num',
+              render: x => x.amount == null ? '—' : money(x.amount)},
+            {key: 'doc_count', label: 'Files', align: 'num'},
+            {key: 'pdf_count', label: 'PDFs', align: 'num'},
+            {key: 'image_count', label: 'Images', align: 'num'},
+            {key: 'match_strength', label: 'Match',
+              render: x => x.match_strength
+                ? <span className="nia-pow-match">
+                    <span className={`fmr-badge nia-pow-${x.match_strength}`}>{powMatchLabels[x.match_strength] || x.match_strength}</span>
+                    {(x.pdf_confirmed || (x.packages || []).some(pk => pk.pdf_confirmed)) &&
+                      <span className="fmr-badge nia-pow-pdf">PDF confirmed</span>}
+                  </span>
+                : '—'},
+            {key: 'packages', label: 'POW package', sortable: false,
+              value: x => (x.packages || []).map(pk => pk.package_name).join(' '),
+              render: x => x.supported
+                ? <span className="nia-senate-label">
+                  {(x.packages || []).map(pk => <span key={pk.package_id}>{pk.package_name}
+                    <small>{pk.doc_count} file{pk.doc_count === 1 ? '' : 's'} · score {pk.score.toFixed(2)}
+                      {pk.pdf_confirmed ? ' · PDF confirmed' : ''}</small></span>)}
+                </span>
+                : <span className="fmr-muted">No package in drop</span>},
+          ]}/>}
+    </section>
+  </>;
+}
 function Analysis({data, route, rows, onPdf}) {
   const p = paramsOf(route), stageKey = p.stage === 'house' ? 'house' : 'nep', stage = data.stages[stageKey];
   const projects = filterProjects(stage.projects, p), stats = allocationStats(projects), view = p.view || 'overview';
@@ -1048,21 +1279,23 @@ function Analysis({data, route, rows, onPdf}) {
   const subprograms = subprogramAllocationRows(projects, stage.subprograms);
   const max = Math.max(1, ...subprograms.map(s => s.total));
   const views = [['overview', 'Overview'], ['insertions', 'Unsupported insertions'], ['deletions', 'Deletions'], ['adjustments', 'Adjustments'],
-    ['stats', 'Statistics'], ['chainage', 'Chainage'], ['ai_monitoring', 'AI monitoring'], ['senate', 'Senate workbook'],
+    ['stats', 'Statistics'], ['chainage', 'Chainage'], ['documents', 'Document availability'],
+    ['ai_monitoring', 'AI monitoring'], ['senate', 'Senate workbook'],
     ['candidates', 'Candidates'], ['controls', 'Agency controls']];
   return <div className="headline-analysis nia-analysis"><section className="hero"><p className="eyebrow">NIA · FY2027</p><h1>NIA allocation analysis</h1>
     <p>Recorded allocations, candidate unsupported insertions and deletions, and paired amount adjustments.</p>
     <div className="hero-actions">    {['overview', 'stats', 'chainage', 'ai_monitoring'].includes(view) ? <label className="hero-source">Budget source<select aria-label="Analysis budget source" value={stageKey}
       onChange={e => navigate(route, {stage: e.target.value, page: null})}>{Object.entries(stageLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
-      : <span className="nia-analysis-basis">{view === 'insertions' ? 'House GAB · unmatched source rows' : view === 'deletions' ? 'DBM NEP · unmatched source rows' : view === 'senate' ? 'NIA Senate workbook · October 10' : view === 'controls' ? 'House agency table' : 'House GAB ↔ DBM NEP'}</span>}<ShareLink/></div></section>
+      : <span className="nia-analysis-basis">{view === 'insertions' ? 'House GAB · unmatched source rows' : view === 'deletions' ? 'DBM NEP · unmatched source rows' : view === 'senate' ? 'NIA Senate workbook · October 10' : view === 'documents' ? 'PBC Program of Works drop' : view === 'controls' ? 'House agency table' : 'House GAB ↔ DBM NEP'}</span>}<ShareLink/></div></section>
     <Tabs route={route} defaultKey="overview" items={views} ariaLabel="Analysis views"
-      reset={{status: null, direction: null, ranking: null, aiBasis: null, senateView: null, gapReason: null, sort: null, dir: null, group: null, pair: null, dim: null, table: null, pdf: null, pdfPage: null, match: null, records: null, map: null, mapProject: null, scatter: null, scatterProject: null, project: null, full: null}}/>
+      reset={{status: null, direction: null, ranking: null, aiBasis: null, senateView: null, gapReason: null, sort: null, dir: null, group: null, pair: null, dim: null, table: null, pdf: null, pdfPage: null, match: null, records: null, map: null, mapProject: null, scatter: null, scatterProject: null, project: null, full: null, powRegion: null, powMatch: null, powTable: null, powSupport: null}}/>
     <h2 className="fmr-question">{{overview:'How are recorded NIA allocations distributed across sub-programs?',
       insertions:'Which House project records have no unique NEP counterpart?',
       deletions:'Which NEP project records have no unique House counterpart?',
       adjustments:'Which provisional pairs have different House and NEP allocations?',
       stats:'Which descriptive allocation patterns appear in this source?',
       chainage:'How do title-chainage ₱/m rates compare across hierarchy categories?',
+      documents:'Which Senate submitted projects have supporting Program of Works documents in the PBC drop?',
       ai_monitoring:'Which project records explicitly fund AI monitoring?',
       senate:'How does NIA’s own Senate workbook reconcile the NEP with the House GAB?',
       candidates:'How does provisional pairing explain the annex funding difference?',
@@ -1136,7 +1369,8 @@ function Analysis({data, route, rows, onPdf}) {
       </div></section>}
       <section className="fmr-section"><h2>Supporting source records</h2><button onClick={() => exportProjects(projects, stageKey)}>Export filtered CSV</button>
         <ProjectTable projects={projects} route={route} stage={stageKey} onPdf={onPdf}/></section>
-    </> : view === 'ai_monitoring' ? <AiMonitoringAnalysis data={data} stage={stage} rows={rows} route={route} onPdf={onPdf}/>
+    </> : view === 'documents' ? <DocumentAvailabilityAnalysis route={route}/>
+      : view === 'ai_monitoring' ? <AiMonitoringAnalysis data={data} stage={stage} rows={rows} route={route} onPdf={onPdf}/>
       : view === 'senate' ? <SenateAnalysis data={data} route={route} rows={rows}/>
       : ['insertions', 'deletions', 'adjustments'].includes(view) ? <CandidateAnalysis data={data} route={route} rows={rows} onPdf={onPdf} view={view}/>
       : view === 'candidates' ? <><Filters route={route} subprograms={stage.subprograms} comparison/>
