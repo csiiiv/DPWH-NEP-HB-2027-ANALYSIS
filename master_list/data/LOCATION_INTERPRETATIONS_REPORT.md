@@ -21,7 +21,7 @@ Qualitative assessments: `location_assessments_v2`. Quality and scope do not add
 | has_competing_candidates | 18,122 |
 | has_office_review | 2,595 |
 | has_partial_scope | 974 |
-| has_quality_review | 145 |
+| has_quality_review | 141 |
 
 Review suggestions: 19,863 observations, 49,413 candidate chains. Experimental scores retain separate contextual dimensions and explicit trial checks; no automatic application.
 

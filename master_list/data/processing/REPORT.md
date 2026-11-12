@@ -1,10 +1,10 @@
 # Readable processing dataset
 
-20,321 comparison groups cover 59,601 source observations. Another 5,044 House GAS/S2O observations are explicitly not compared. All 64,645 source observations are retained.
+20,320 comparison groups cover 59,601 source observations. Another 5,044 House GAS/S2O observations are explicitly not compared. All 64,645 source observations are retained.
 
 | Domain | Matched | House only | NEP only | API only |
 |---|---:|---:|---:|---:|
-| dpwh | 10,079 | 6,193 | 1,341 | 0 |
+| dpwh | 10,080 | 6,192 | 1,340 | 0 |
 | fmr | 609 | 355 | 95 | 0 |
 | hfep | 341 | 172 | 123 | 0 |
 | nia | 606 | 222 | 185 | 0 |

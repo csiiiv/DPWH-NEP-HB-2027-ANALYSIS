@@ -3,7 +3,7 @@
   "scope": "Retained FY2027 project and allocation observations; source/stage ledgers overlap. Never sum across datasets.",
   "identity_policy": "One row per source observation, linked to the existing upstream comparison groups; no certified physical-project identity asserted.",
   "processing_dataset": {
-    "comparison_groups": 20321,
+    "comparison_groups": 20320,
     "compared_observations": 59601,
     "not_compared_observations": 5044,
     "title_clean_method": "readable_title_v1"
@@ -174,13 +174,13 @@
       "sha256": "1979b58a497c78232a1051ff65ec99ee29f72b4f7e6b3d165f2ab5de7ff9bc15"
     },
     "gps-analysis/scan_gps_inventory.py": {
-      "sha256": "66992af5296f75dc4d21152edc883da24cffce5f0129a2bf5ecfd58055864a3f"
+      "sha256": "2c8d219a5c34e3db7bd58973967d4a590896a6d369c2f60e703c77fc85c6ca6a"
     },
     "gps-analysis/coordinate_parse.py": {
-      "sha256": "be246e399cc5537802bb44dfd6b2c3b6acac623e2a16a72b6aa0fedd6b37c46c"
+      "sha256": "e00511af2be661d19bcba6f1b8f17806fd5817984353f9dc7c9870cb31206cc8"
     },
     "master_list/data/processing/audit.json": {
-      "sha256": "c8fe7a5b5cdfdeeca368e789be1f08f3b26c3fcb5d971820c55c417005ea819c",
+      "sha256": "41fe0a873b607564bdbdcd411b1c647ad1fa0ccb924081dab30b33be32e42274",
       "scope": "Validated readable processing release and its direct provenance"
     },
     "analysis-hfep/data/hgab_hfep_tree.json": {
@@ -204,15 +204,15 @@
       "scope": "Validated readable processing release and its direct provenance"
     },
     "analysis-nia/data/nia_workbench.json": {
-      "sha256": "ed171aead2a6d70518e069785332ed5e686b69aea334c8381fa0e129423dd6eb",
+      "sha256": "ca40d8c383fe3ce6c18fd3a10b4f8129e7bc2953ab7d621bdeb0a28215ae30f0",
       "scope": "Validated readable processing release and its direct provenance"
     },
     "analysis/data/chainage_units_2027.json": {
-      "sha256": "efa347de1ef6df14e828d621345951767d99eb156c4a79c4f7cf5d8240fab387",
+      "sha256": "2a8bb0fa251259e9fa8090f6e6582c519cfda1cccd151ba890cf6eae53aaaef7",
       "scope": "Validated readable processing release and its direct provenance"
     },
     "analysis/data/comparison_projects_2027.json": {
-      "sha256": "cb964990c9d09535353d9c0ecd8dd1f89ffe9ec4e680be803670c9cdf728be0f",
+      "sha256": "2795e4b73ca5dae367394a598b5cf14ead8f6fd43b80beadd4ab442ae2245cfe",
       "scope": "Validated readable processing release and its direct provenance"
     },
     "analysis/data/hb_dpwh_native_ic_projects.json": {
@@ -224,7 +224,7 @@
       "scope": "Validated readable processing release and its direct provenance"
     },
     "analysis/data/house_reading_changes_2027.json": {
-      "sha256": "9079aa55e12e015c4b9851d99fd0b4fd4d263375830d4317f46807dc04d65b71",
+      "sha256": "bd24f936a99c992e4e4a4475e47789499c1d4bff635c66f9b38041ba1f0a1040",
       "scope": "Validated readable processing release and its direct provenance"
     },
     "analysis/data/nep_2027_source_projects.json": {
@@ -236,7 +236,7 @@
       "scope": "Validated readable processing release and its direct provenance"
     },
     "analysis/data/stage_trace_2027.json": {
-      "sha256": "7073c9dc4be2c9118fa654be6cdd4fbc2e08a9490badb6a988fee427a0cfed73",
+      "sha256": "265ea417c97348450110fff2fe0f2d9a63d53c105583ad7f3c80f539176d1964",
       "scope": "Validated readable processing release and its direct provenance"
     },
     "dpwh-transparency-nep-data/json/fy2027-combined.json": {
@@ -244,7 +244,7 @@
       "scope": "Validated readable processing release and its direct provenance"
     },
     "other-analysis/data/fmr_workbench.json": {
-      "sha256": "0c5403350cf571493fc373d0fb0e51e70aa26a8aa71ca91d163edd64990a97ed",
+      "sha256": "063c90e8d18c5dd34d0a7eb92a605996f74e56be0a82a948a8400478fb858441",
       "scope": "Validated readable processing release and its direct provenance"
     },
     "other-analysis/data/hfep_workbench.json": {
@@ -280,11 +280,11 @@
       "scope": "Validated readable processing release and its direct provenance"
     },
     "master_list/data/processing/comparison_groups.jsonl.gz": {
-      "sha256": "c0f25445497b84d12e93e5a38fa06a29aee8855df91c211794b15341baa02dcc",
+      "sha256": "d98cb87a79dacd1a05431064de8e0814e9515fe1bc0e08d663edcbead45d91e5",
       "scope": "Validated readable processing release and its direct provenance"
     },
     "master_list/data/processing/observations.jsonl.gz": {
-      "sha256": "d93edd40b998e919a8f2f50256fc76a4aaf236bc33cf7847b2d4f32f14c6b26c",
+      "sha256": "361e076f5c809fcc1349ad48fcc4ad3246c093a62b21ace48db825bab515fdfe",
       "scope": "Validated readable processing release and its direct provenance"
     },
     "master_list/data/processing/outside_comparison.jsonl.gz": {
@@ -3130,8 +3130,8 @@
     ]
   },
   "output_sha256": {
-    "projects.jsonl.gz": "fcfeb5d6eefc79b5d8bad0b834016c3aadd9f4ed227eb76d371ed61aba37d5f3",
-    "projects.csv.gz": "97d7a4d232560f39c07d34afa0263a8150b928f7ba4f60ddbe9e65bc6067221a",
-    "location_review.csv.gz": "9851fa93249535cf8e8d150329e321d5740b44fdb008c895a7d69bdb2b4e80f4"
+    "projects.jsonl.gz": "a2f08a6b111d1dceee0995dbed4cd38922f5cee3715d3f66f08c4f43c181678b",
+    "projects.csv.gz": "ef07b3228f51b5cbd706c6768f4183816803bd338f4fa7876e944677b522e834",
+    "location_review.csv.gz": "1871151672e36b13e2d9305c48eb8aec2460fed8d7398d52ab7415fe7d1e6374"
   }
 }

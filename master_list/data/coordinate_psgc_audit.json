@@ -12,14 +12,14 @@
   "description": "Derive a coordinate-based PSGC layer from the retained observations.",
   "input": {
     "path": "master_list/data/processing/observations.jsonl.gz",
-    "sha256": "d93edd40b998e919a8f2f50256fc76a4aaf236bc33cf7847b2d4f32f14c6b26c"
+    "sha256": "361e076f5c809fcc1349ad48fcc4ad3246c093a62b21ace48db825bab515fdfe"
   },
   "method": "coordinate_psgc_v1",
   "output_sha256": {
-    "coordinate_psgc.jsonl.gz": "e22f41c6d31ae992380f65262b3a95f1d0bb905f6b55617cc495867f265e6217"
+    "coordinate_psgc.jsonl.gz": "a37e401dbba1cdb8a2d69ee98493dc882cd65dd60ada3626bc64832e32c3d70c"
   },
   "points": {
-    "resolved": 9965,
+    "resolved": 9953,
     "unresolved": 95
   },
   "records_with_points": 7378

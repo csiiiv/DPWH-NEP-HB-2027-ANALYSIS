@@ -162,7 +162,7 @@ class RetainedProcessingDataset(unittest.TestCase):
                 for stage in g['stages'].values():
                     members.update(stage['observation_ids'])
                     self.assertIn('title_clean', stage)
-        self.assertEqual(groups, 20321)
+        self.assertEqual(groups, 20320)
         self.assertEqual(len(members), 59601)
         self.assertTrue(all(n == 1 for n in members.values()))
         outside = set()

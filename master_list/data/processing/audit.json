@@ -5,7 +5,7 @@
     "readable_titles.py": "745b3ed99d74ff8f742fdeb76b5d3ef48acf6f5f5ac027d1048f0205cdfcc14a"
   },
   "compared_observations": 59601,
-  "comparison_groups": 20321,
+  "comparison_groups": 20320,
   "dataset_checks": {
     "dpwh_house_second": {
       "compared_amount_php": 586941661000,
@@ -124,15 +124,15 @@
     },
     "analysis-nia/data/nia_workbench.json": {
       "role": "primary_comparison",
-      "sha256": "ed171aead2a6d70518e069785332ed5e686b69aea334c8381fa0e129423dd6eb"
+      "sha256": "ca40d8c383fe3ce6c18fd3a10b4f8129e7bc2953ab7d621bdeb0a28215ae30f0"
     },
     "analysis/data/chainage_units_2027.json": {
       "role": "dpwh_comparison_dependency",
-      "sha256": "efa347de1ef6df14e828d621345951767d99eb156c4a79c4f7cf5d8240fab387"
+      "sha256": "2a8bb0fa251259e9fa8090f6e6582c519cfda1cccd151ba890cf6eae53aaaef7"
     },
     "analysis/data/comparison_projects_2027.json": {
       "role": "primary_comparison",
-      "sha256": "cb964990c9d09535353d9c0ecd8dd1f89ffe9ec4e680be803670c9cdf728be0f"
+      "sha256": "2795e4b73ca5dae367394a598b5cf14ead8f6fd43b80beadd4ab442ae2245cfe"
     },
     "analysis/data/hb_dpwh_native_ic_projects.json": {
       "scope": "DPWH VOL I-C project details pp9–942 (native text layer)",
@@ -144,7 +144,7 @@
     },
     "analysis/data/house_reading_changes_2027.json": {
       "role": "dpwh_comparison_dependency",
-      "sha256": "9079aa55e12e015c4b9851d99fd0b4fd4d263375830d4317f46807dc04d65b71"
+      "sha256": "bd24f936a99c992e4e4a4475e47789499c1d4bff635c66f9b38041ba1f0a1040"
     },
     "analysis/data/nep_2027_source_projects.json": {
       "scope": "FY2027 DPWH operations only; GAS/S2O excluded",
@@ -156,7 +156,7 @@
     },
     "analysis/data/stage_trace_2027.json": {
       "role": "dpwh_comparison_dependency",
-      "sha256": "7073c9dc4be2c9118fa654be6cdd4fbc2e08a9490badb6a988fee427a0cfed73"
+      "sha256": "265ea417c97348450110fff2fe0f2d9a63d53c105583ad7f3c80f539176d1964"
     },
     "dpwh-transparency-nep-data/json/fy2027-combined.json": {
       "scope": "DPWH Transparency NEP listing; overlaps PDF observations",
@@ -164,7 +164,7 @@
     },
     "other-analysis/data/fmr_workbench.json": {
       "role": "primary_comparison",
-      "sha256": "0c5403350cf571493fc373d0fb0e51e70aa26a8aa71ca91d163edd64990a97ed"
+      "sha256": "063c90e8d18c5dd34d0a7eb92a605996f74e56be0a82a948a8400478fb858441"
     },
     "other-analysis/data/hfep_workbench.json": {
       "role": "primary_comparison",
@@ -197,8 +197,8 @@
   },
   "not_compared_observations": 5044,
   "output_sha256": {
-    "comparison_groups.jsonl.gz": "c0f25445497b84d12e93e5a38fa06a29aee8855df91c211794b15341baa02dcc",
-    "observations.jsonl.gz": "d93edd40b998e919a8f2f50256fc76a4aaf236bc33cf7847b2d4f32f14c6b26c",
+    "comparison_groups.jsonl.gz": "d98cb87a79dacd1a05431064de8e0814e9515fe1bc0e08d663edcbead45d91e5",
+    "observations.jsonl.gz": "361e076f5c809fcc1349ad48fcc4ad3246c093a62b21ace48db825bab515fdfe",
     "outside_comparison.jsonl.gz": "2b39a358248b675ba24c2d6bd6ac392cb64e428b0799563ee49e186946776a3f"
   },
   "outside_comparison_sections": {
@@ -208,9 +208,9 @@
   "partition_definition": "matched = NEP and at least one House side attached in an upstream comparison group, not a certified unique physical project. Suggestions alone never consume records.",
   "partitions": {
     "dpwh": {
-      "house_only": 6193,
-      "matched": 10079,
-      "nep_only": 1341
+      "house_only": 6192,
+      "matched": 10080,
+      "nep_only": 1340
     },
     "fmr": {
       "house_only": 355,
