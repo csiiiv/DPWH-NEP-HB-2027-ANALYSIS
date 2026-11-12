@@ -2,7 +2,7 @@
   "manifest": {
     "schema_version": 2,
     "fiscal_year": 2027,
-    "built_at": "2026-10-23T07:00:05+08:00",
+    "built_at": "2026-11-12T19:58:08+08:00",
     "stages": {
       "nep": "Executive NEP proposal",
       "house": "HB 10858 supplied source documents; amendment completeness not certified"
@@ -20,7 +20,7 @@
     "generator_dependencies": {
       "analysis/builders/house_native.py": "67405d3561660c7e7c75e1073fc7381e5524dabd562b1a81054004867f9b161b",
       "analysis/builders/normalize_labels.py": "b414e26ace7a8d8fade1ad4e96029040f1175cc727c3c14f9653252a07c1e4c3",
-      "analysis/builders/chainage.py": "ec3582b3fd9898fc28e372ab29946ec9efcba60354250dc46ad2c14c51de59b8",
+      "analysis/builders/chainage.py": "ae279631c0aec7bac0a578f2433bfeec370a5ea71088b92a9a71cac3fc4f786d",
       "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
     },
     "inputs": {
@@ -85,15 +85,15 @@
     },
     "match_counts": {
       "exact_candidate": 9680,
-      "house_unmatched": 5801,
+      "house_unmatched": 5800,
       "segment_scope_candidate": 37,
-      "chainage_candidate": 287,
+      "chainage_candidate": 288,
       "fuzzy_candidate": 385,
       "ambiguous": 5,
       "location_amendment_candidate": 29,
       "scope_amendment_candidate": 35,
       "soft_match_candidate": 11,
-      "nep_unmatched": 1341
+      "nep_unmatched": 1340
     },
     "reviewed_pairs": 0,
     "api": {
@@ -154131,15 +154131,15 @@
         "funding_php": {},
         "title_match_key": "villasisbypassroadsta2300sta3000sta4109sta4509pangasinan",
         "office_canonical": "Central Office",
-        "title_base": "Villasis Bypass Road ta 4+109 Pangasinan",
+        "title_base": "Villasis Bypass Road Pangasinan",
         "chainages": [
           {
             "kind": "Sta",
             "from": "2+300",
-            "to": "3+0005",
+            "to": "3+000",
             "meters_from": 2300,
-            "meters_to": 3005,
-            "length_m": 705,
+            "meters_to": 3000,
+            "length_m": 700,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -154147,20 +154147,20 @@
           },
           {
             "kind": "Sta",
-            "from": "4+509",
+            "from": "4+109",
             "to": "4+509",
-            "meters_from": 4509,
+            "meters_from": 4109,
             "meters_to": 4509,
-            "length_m": null,
+            "length_m": 400,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "villasisbypassroadta4109pangasinan"
+        "title_base_match_key": "villasisbypassroadpangasinan"
       },
       "nep": {
         "id": "p277:r23",
@@ -154183,15 +154183,15 @@
         "funding_php": {},
         "title_match_key": "villasisbypassroadsta2300sta3000sta4109sta4509pangasinan",
         "office_canonical": "Central Office",
-        "title_base": "Villasis Bypass Road ta 4 + 109 Pangasinan",
+        "title_base": "Villasis Bypass Road Pangasinan",
         "chainages": [
           {
             "kind": "Sta",
             "from": "2+300",
-            "to": "3+0005",
+            "to": "3+000",
             "meters_from": 2300,
-            "meters_to": 3005,
-            "length_m": 705,
+            "meters_to": 3000,
+            "length_m": 700,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -154199,20 +154199,20 @@
           },
           {
             "kind": "Sta",
-            "from": "4+509",
+            "from": "4+109",
             "to": "4+509",
-            "meters_from": 4509,
+            "meters_from": 4109,
             "meters_to": 4509,
-            "length_m": null,
+            "length_m": 400,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "villasisbypassroadta4109pangasinan"
+        "title_base_match_key": "villasisbypassroadpangasinan"
       },
       "delta_php": 0,
       "reason": null
@@ -158398,11 +158398,24 @@
         "funding_php": {},
         "title_match_key": "baliuagdiversionroad010801480baliuagbulacan",
         "office_canonical": "Central Office",
-        "title_base": "Baliuag Diversion Road - 01+080 - 1+480, Baliuag, Bulacan",
-        "chainages": [],
+        "title_base": "Baliuag Diversion Road Baliuag, Bulacan",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "01+080",
+            "to": "1+480",
+            "meters_from": 1080,
+            "meters_to": 1480,
+            "length_m": 400,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "baliuagdiversionroad010801480baliuagbulacan"
+        "title_base_match_key": "baliuagdiversionroadbaliuagbulacan"
       },
       "nep": {
         "id": "p279:r11",
@@ -158425,11 +158438,24 @@
         "funding_php": {},
         "title_match_key": "baliuagdiversionroad010801480baliuagbulacan",
         "office_canonical": "Central Office",
-        "title_base": "Baliuag Diversion Road - 01 + 080 - 1 + 480, Baliuag, Bulacan",
-        "chainages": [],
+        "title_base": "Baliuag Diversion Road Baliuag, Bulacan",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "01+080",
+            "to": "1+480",
+            "meters_from": 1080,
+            "meters_to": 1480,
+            "length_m": 400,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "baliuagdiversionroad010801480baliuagbulacan"
+        "title_base_match_key": "baliuagdiversionroadbaliuagbulacan"
       },
       "delta_php": 0,
       "reason": null
@@ -165568,11 +165594,36 @@
         "funding_php": {},
         "title_match_key": "camarinessuralbaydiversionroad47389547470047473447891552libonalbay",
         "office_canonical": "Central Office",
-        "title_base": "Camarines Sur - Albay Diversion Road, 473+895 - 474+700, 474+734 - 478+915.52, Libon, Albay",
-        "chainages": [],
+        "title_base": "Camarines Sur - Albay Diversion Road Libon, Albay",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "473+895",
+            "to": "474+700",
+            "meters_from": 473895,
+            "meters_to": 474700,
+            "length_m": 805,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          },
+          {
+            "kind": "Sta",
+            "from": "474+734",
+            "to": "478+915.52",
+            "meters_from": 474734,
+            "meters_to": 478916,
+            "length_m": 4182,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "camarinessuralbaydiversionroad47389547470047473447891552libonalbay"
+        "title_base_match_key": "camarinessuralbaydiversionroadlibonalbay"
       },
       "nep": {
         "id": "p281:r21",
@@ -165595,11 +165646,36 @@
         "funding_php": {},
         "title_match_key": "camarinessuralbaydiversionroad47389547470047473447891552libonalbay",
         "office_canonical": "Central Office",
-        "title_base": "Camarines Sur - Albay Diversion Road, 473 + 895 - 474 + 700, 474 + 734 - 478 + 915.52, Libon, Albay",
-        "chainages": [],
+        "title_base": "Camarines Sur - Albay Diversion Road Libon, Albay",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "473+895",
+            "to": "474+700",
+            "meters_from": 473895,
+            "meters_to": 474700,
+            "length_m": 805,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          },
+          {
+            "kind": "Sta",
+            "from": "474+734",
+            "to": "478+915.52",
+            "meters_from": 474734,
+            "meters_to": 478916,
+            "length_m": 4182,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "camarinessuralbaydiversionroad47389547470047473447891552libonalbay"
+        "title_base_match_key": "camarinessuralbaydiversionroadlibonalbay"
       },
       "delta_php": 0,
       "reason": null
@@ -166851,14 +166927,26 @@
         "funding_php": {},
         "title_match_key": "legazpistodomingotabacotramoroadsta101668sta124818albay",
         "office_canonical": "Central Office",
-        "title_base": "Legazpi-Sto. Domingo-Tabaco Tramo Road ta. 12 + 481.8, Albay",
+        "title_base": "Legazpi-Sto. Domingo-Tabaco Tramo Road Albay",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "10+166.85",
-            "to": "10+166.85",
+            "from": "10+166.8",
+            "to": "10+166.8",
             "meters_from": 10167,
             "meters_to": 10167,
+            "length_m": null,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": true
+          },
+          {
+            "kind": "Sta",
+            "from": "12+481.8",
+            "to": "12+481.8",
+            "meters_from": 12482,
+            "meters_to": 12482,
             "length_m": null,
             "length_review": null,
             "length_from": null,
@@ -166868,7 +166956,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "legazpistodomingotabacotramoroadta124818albay"
+        "title_base_match_key": "legazpistodomingotabacotramoroadalbay"
       },
       "delta_php": 0,
       "reason": null
@@ -168475,24 +168563,24 @@
         "funding_php": {},
         "title_match_key": "maasinbypassroadsta000sta3316iloilo",
         "office_canonical": "Central Office",
-        "title_base": "Maasin Bypass Road, Sta, 0 + 00 Iloilo",
+        "title_base": "Maasin Bypass Road, Sta Iloilo",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "3+316",
+            "from": "0+00",
             "to": "3+316",
-            "meters_from": 3316,
+            "meters_from": 0,
             "meters_to": 3316,
-            "length_m": null,
+            "length_m": 3316,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "maasinbypassroadsta000iloilo"
+        "title_base_match_key": "maasinbypassroadstailoilo"
       },
       "delta_php": 0,
       "reason": null
@@ -172401,12 +172489,12 @@
         "funding_php": {},
         "title_match_key": "cagayandeoropcebypassalternateroadextensionjctlumbiacdocampkibaritanroadpagatpatjctbcirsta10216sta1022067bagocbocopolmisamisoriental",
         "office_canonical": "Central Office",
-        "title_base": "Cagayan de Oro (PCE) Bypass/ Alternate Road Extension (Jct. Lumbia/ CDO-Camp Kibaritan Road-Pagatpat-Jct. BCIR) arangay Bagocboc, Opol, Misamis Oriental",
+        "title_base": "Cagayan de Oro (PCE) Bypass/ Alternate Road Extension (Jct. Lumbia/ CDO-Camp Kibaritan Road-Pagatpat-Jct. BCIR) Barangay Bagocboc, Opol, Misamis Oriental",
         "chainages": [
           {
             "kind": "Sta",
             "from": "10+216",
-            "to": "10+220.678",
+            "to": "10+220.67",
             "meters_from": 10216,
             "meters_to": 10221,
             "length_m": 5,
@@ -172418,7 +172506,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "cagayandeoropcebypassalternateroadextensionjctlumbiacdocampkibaritanroadpagatpatjctbcirarangaybagocbocopolmisamisoriental"
+        "title_base_match_key": "cagayandeoropcebypassalternateroadextensionjctlumbiacdocampkibaritanroadpagatpatjctbcirbagocbocopolmisamisoriental"
       },
       "nep": {
         "id": "p285:r6",
@@ -172441,12 +172529,12 @@
         "funding_php": {},
         "title_match_key": "cagayandeoropcebypassalternateroadextensionjctlumbiacdocampkibaritanroadpagatpatjctbcirsta10216sta1022067bagocbocopolmisamisoriental",
         "office_canonical": "Central Office",
-        "title_base": "Cagayan de Oro (PCE) Bypass / Alternate Road Extension (Jct. Lumbia / CDO-Camp Kibaritan Road-Pagatpat-Jct. BCIR ) rgy. Bagocboc, Opol, Misamis Oriental",
+        "title_base": "Cagayan de Oro (PCE) Bypass / Alternate Road Extension (Jct. Lumbia / CDO-Camp Kibaritan Road-Pagatpat-Jct. BCIR ) Brgy. Bagocboc, Opol, Misamis Oriental",
         "chainages": [
           {
             "kind": "Sta",
             "from": "10+216",
-            "to": "10+220.678",
+            "to": "10+220.67",
             "meters_from": 10216,
             "meters_to": 10221,
             "length_m": 5,
@@ -172458,7 +172546,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "cagayandeoropcebypassalternateroadextensionjctlumbiacdocampkibaritanroadpagatpatjctbcirrgybagocbocopolmisamisoriental"
+        "title_base_match_key": "cagayandeoropcebypassalternateroadextensionjctlumbiacdocampkibaritanroadpagatpatjctbcirbagocbocopolmisamisoriental"
       },
       "delta_php": 0,
       "reason": "Titles match only after abbreviation/repeat normalization; raw spellings differ."
@@ -177194,11 +177282,24 @@
         "funding_php": {},
         "title_match_key": "mapawabahilanggawisan4872500660583maragusandavaodeorobypassroad",
         "office_canonical": "Central Office",
-        "title_base": "Mapawa-Bahi-Langgawisan, (4+872.500 - 6+605.83), Maragusan, Davao de Oro Bypass Road",
-        "chainages": [],
+        "title_base": "Mapawa-Bahi-Langgawisan, , Maragusan, Davao de Oro Bypass Road",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "4+872.500",
+            "to": "6+605.83",
+            "meters_from": 4872,
+            "meters_to": 6606,
+            "length_m": 1734,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "mapawabahilanggawisan4872500660583maragusandavaodeorobypassroad"
+        "title_base_match_key": "mapawabahilanggawisanmaragusandavaodeorobypassroad"
       },
       "nep": {
         "id": "p288:r18",
@@ -177221,11 +177322,24 @@
         "funding_php": {},
         "title_match_key": "mapawabahilanggawisan4872500660583maragusandavaodeorobypassroad",
         "office_canonical": "Central Office",
-        "title_base": "Mapawa-Bahi-Langgawisan , (4 + 872.500 - 6 + 605.83 ), Maragusan, Davao de Oro Bypass Road",
-        "chainages": [],
+        "title_base": "Mapawa-Bahi-Langgawisan, , Maragusan, Davao de Oro Bypass Road",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "4+872.500",
+            "to": "6+605.83",
+            "meters_from": 4872,
+            "meters_to": 6606,
+            "length_m": 1734,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "mapawabahilanggawisan4872500660583maragusandavaodeorobypassroad"
+        "title_base_match_key": "mapawabahilanggawisanmaragusandavaodeorobypassroad"
       },
       "delta_php": 0,
       "reason": null
@@ -178722,11 +178836,24 @@
         "funding_php": {},
         "title_match_key": "lasnievesbridgealongnrjagusanmalaybalayroadambaconmalicatonrjdaangmaharlika045030051889ambaconmalicatosectionagusandelnorte",
         "office_canonical": "Central Office",
-        "title_base": "Las Nieves Bridge along NRJ Agusan-Malaybalay Road-Barangay Ambacon-Barangay Malicato-NRJ Daang Maharlika, (0 + 450.30 - 0 + 518.89), Barangay Ambacon - Barangay Malicato Section, Agusan del Norte",
-        "chainages": [],
+        "title_base": "Las Nieves Bridge along NRJ Agusan-Malaybalay Road-Barangay Ambacon-Barangay Malicato-NRJ Daang Maharlika, , Barangay Ambacon - Barangay Malicato Section, Agusan del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+450.30",
+            "to": "0+518.89",
+            "meters_from": 450,
+            "meters_to": 519,
+            "length_m": 69,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "lasnievesbridgealongnrjagusanmalaybalayroadambaconmalicatonrjdaangmaharlika045030051889ambaconmalicatosectionagusandelnorte"
+        "title_base_match_key": "lasnievesbridgealongnrjagusanmalaybalayroadambaconmalicatonrjdaangmaharlikaambaconmalicatosectionagusandelnorte"
       },
       "nep": {
         "id": "p289:r16",
@@ -178749,11 +178876,24 @@
         "funding_php": {},
         "title_match_key": "lasnievesbridgealongnrjagusanmalaybalayroadambaconmalicatonrjdaangmaharlika045030051889ambaconmalicatosectionagusandelnorte",
         "office_canonical": "Central Office",
-        "title_base": "Las Nieves Bridge along NRJ Agusan-Malaybalay Road-Brgy. Ambacon-Brgy. Malicato- NRJ Daang Maharlika , (0 + 450.30 - 0 + 518.89 ), Brgy. Ambacon - Brgy. Malicato Section, Agusan del Norte",
-        "chainages": [],
+        "title_base": "Las Nieves Bridge along NRJ Agusan-Malaybalay Road-Brgy. Ambacon-Brgy. Malicato- NRJ Daang Maharlika, , Brgy. Ambacon - Brgy. Malicato Section, Agusan del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+450.30",
+            "to": "0+518.89",
+            "meters_from": 450,
+            "meters_to": 519,
+            "length_m": 69,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "lasnievesbridgealongnrjagusanmalaybalayroadambaconmalicatonrjdaangmaharlika045030051889ambaconmalicatosectionagusandelnorte"
+        "title_base_match_key": "lasnievesbridgealongnrjagusanmalaybalayroadambaconmalicatonrjdaangmaharlikaambaconmalicatosectionagusandelnorte"
       },
       "delta_php": 0,
       "reason": "Titles match only after abbreviation/repeat normalization; raw spellings differ."
@@ -178794,12 +178934,12 @@
         "funding_php": {},
         "title_match_key": "liangacoastalbypassroadsdcralternateroutesta3143239sta421434surigaodelsur",
         "office_canonical": "Central Office",
-        "title_base": "Lianga Coastal Bypass Road (SDCR Alternate Route) urigao del Sur",
+        "title_base": "Lianga Coastal Bypass Road (SDCR Alternate Route) Surigao del Sur",
         "chainages": [
           {
             "kind": "Sta",
             "from": "3+143.239",
-            "to": "4+214.345",
+            "to": "4+214.34",
             "meters_from": 3143,
             "meters_to": 4214,
             "length_m": 1071,
@@ -178811,7 +178951,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "liangacoastalbypassroadsdcralternaterouteurigaodelsur"
+        "title_base_match_key": "liangacoastalbypassroadsdcralternateroutesurigaodelsur"
       },
       "nep": {
         "id": "p289:r17",
@@ -178834,12 +178974,12 @@
         "funding_php": {},
         "title_match_key": "liangacoastalbypassroadsdcralternateroutesta3143239sta421434surigaodelsur",
         "office_canonical": "Central Office",
-        "title_base": "Lianga Coastal Bypass Road (SDCR Alternate Route ) urigao del Sur",
+        "title_base": "Lianga Coastal Bypass Road (SDCR Alternate Route ) Surigao del Sur",
         "chainages": [
           {
             "kind": "Sta",
             "from": "3+143.239",
-            "to": "4+214.345",
+            "to": "4+214.34",
             "meters_from": 3143,
             "meters_to": 4214,
             "length_m": 1071,
@@ -178851,7 +178991,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "liangacoastalbypassroadsdcralternaterouteurigaodelsur"
+        "title_base_match_key": "liangacoastalbypassroadsdcralternateroutesurigaodelsur"
       },
       "delta_php": 0,
       "reason": null
@@ -182999,14 +183139,26 @@
         "funding_php": {},
         "title_match_key": "jctilocosnorteabraroadnuevaeratinegroadsta5636906sta5744356nuevaerailocosnorte",
         "office_canonical": "Central Office",
-        "title_base": "Jct Ilocos Norte Abra Road - Nueva Era - Tineg Road ta. 574+435.6 Nueva Era, Ilocos Norte",
+        "title_base": "Jct Ilocos Norte Abra Road - Nueva Era - Tineg Road Nueva Era, Ilocos Norte",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "563+690.65",
-            "to": "563+690.65",
+            "from": "563+690.6",
+            "to": "563+690.6",
             "meters_from": 563691,
             "meters_to": 563691,
+            "length_m": null,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": true
+          },
+          {
+            "kind": "Sta",
+            "from": "574+435.6",
+            "to": "574+435.6",
+            "meters_from": 574436,
+            "meters_to": 574436,
             "length_m": null,
             "length_review": null,
             "length_from": null,
@@ -183016,7 +183168,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "jctilocosnorteabraroadnuevaeratinegroadta5744356nuevaerailocosnorte"
+        "title_base_match_key": "jctilocosnorteabraroadnuevaeratinegroadnuevaerailocosnorte"
       },
       "nep": {
         "id": "p294:r10",
@@ -183039,14 +183191,26 @@
         "funding_php": {},
         "title_match_key": "jctilocosnorteabraroadnuevaeratinegroadsta5636906sta5744356nuevaerailocosnorte",
         "office_canonical": "Central Office",
-        "title_base": "Jct Ilocos Norte Abra Road - Nueva Era - Tineg Road ta. 574 + 435.6 Nueva Era, Ilocos Norte",
+        "title_base": "Jct Ilocos Norte Abra Road - Nueva Era - Tineg Road Nueva Era, Ilocos Norte",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "563+690.65",
-            "to": "563+690.65",
+            "from": "563+690.6",
+            "to": "563+690.6",
             "meters_from": 563691,
             "meters_to": 563691,
+            "length_m": null,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": true
+          },
+          {
+            "kind": "Sta",
+            "from": "574+435.6",
+            "to": "574+435.6",
+            "meters_from": 574436,
+            "meters_to": 574436,
             "length_m": null,
             "length_review": null,
             "length_from": null,
@@ -183056,7 +183220,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "jctilocosnorteabraroadnuevaeratinegroadta5744356nuevaerailocosnorte"
+        "title_base_match_key": "jctilocosnorteabraroadnuevaeratinegroadnuevaerailocosnorte"
       },
       "delta_php": 0,
       "reason": null
@@ -256093,11 +256257,24 @@
         "funding_php": {},
         "title_match_key": "constructionofdrainage00000400panacan2narrapalawan",
         "office_canonical": "Palawan 2nd District Engineering Office",
-        "title_base": "Construction of Drainage, 0+000 - 0+400, Barangay Panacan 2, Narra, Palawan",
-        "chainages": [],
+        "title_base": "Construction of Drainage Barangay Panacan 2, Narra, Palawan",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+400",
+            "meters_from": 0,
+            "meters_to": 400,
+            "length_m": 400,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofdrainage00000400panacan2narrapalawan"
+        "title_base_match_key": "constructionofdrainagepanacan2narrapalawan"
       },
       "nep": {
         "id": "p385:r12",
@@ -256120,11 +256297,24 @@
         "funding_php": {},
         "title_match_key": "constructionofdrainage00000400panacan2narrapalawan",
         "office_canonical": "Palawan 2nd District Engineering Office",
-        "title_base": "Construction of Drainage, 0 + 000 - 0 + 400, Barangay Panacan 2, Narra, Palawan",
-        "chainages": [],
+        "title_base": "Construction of Drainage Barangay Panacan 2, Narra, Palawan",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+400",
+            "meters_from": 0,
+            "meters_to": 400,
+            "length_m": 400,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofdrainage00000400panacan2narrapalawan"
+        "title_base_match_key": "constructionofdrainagepanacan2narrapalawan"
       },
       "delta_php": 0,
       "reason": null
@@ -286142,60 +286332,60 @@
         "funding_php": {},
         "title_match_key": "constructionofdrainagesannicolasimagalangpampangastreet1sta0000sta0250street2sta0000sta0155street3sta0000sta0333street4sta0000sta0226",
         "office_canonical": "Pampanga 3rd District Engineering Office",
-        "title_base": "Construction of Drainage, Barangay San Nicolas I, Magalang, Pampanga, Street 1 Sta. 0+000 Street 2 Sta. 0+000 Street 3 Sta. 0+000 Street 4 Sta. 0+000",
+        "title_base": "Construction of Drainage, Barangay San Nicolas I, Magalang, Pampanga, Street 1 Street 2 Street 3 Street 4",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+250",
+            "from": "0+000",
             "to": "0+250",
-            "meters_from": 250,
+            "meters_from": 0,
             "meters_to": 250,
-            "length_m": null,
+            "length_m": 250,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           },
           {
             "kind": "Sta",
-            "from": "0+155",
+            "from": "0+000",
             "to": "0+155",
-            "meters_from": 155,
+            "meters_from": 0,
             "meters_to": 155,
-            "length_m": null,
+            "length_m": 155,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           },
           {
             "kind": "Sta",
-            "from": "0+333",
+            "from": "0+000",
             "to": "0+333",
-            "meters_from": 333,
+            "meters_from": 0,
             "meters_to": 333,
-            "length_m": null,
+            "length_m": 333,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           },
           {
             "kind": "Sta",
-            "from": "0+226",
+            "from": "0+000",
             "to": "0+226",
-            "meters_from": 226,
+            "meters_from": 0,
             "meters_to": 226,
-            "length_m": null,
+            "length_m": 226,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofdrainagesannicolasimagalangpampangastreet1sta0000street2sta0000street3sta0000street4sta0000"
+        "title_base_match_key": "constructionofdrainagesannicolasimagalangpampangastreet1street2street3street4"
       },
       "nep": {
         "id": "p379:r2",
@@ -286218,60 +286408,60 @@
         "funding_php": {},
         "title_match_key": "constructionofdrainagesannicolasimagalangpampangastreet1sta0000sta0250street2sta0000sta0155street3sta0000sta0333street4sta0000sta0226",
         "office_canonical": "Pampanga 3rd District Engineering Office",
-        "title_base": "Construction of Drainage, Barangay San Nicolas I, Magalang, Pampanga, Street 1 Sta. 0 + 000 Street 2 Sta. 0 + 000 Street 3 Sta. 0 + 000 Street 4 Sta. 0 + 000",
+        "title_base": "Construction of Drainage, Barangay San Nicolas I, Magalang, Pampanga, Street 1 Street 2 Street 3 Street 4",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+250",
+            "from": "0+000",
             "to": "0+250",
-            "meters_from": 250,
+            "meters_from": 0,
             "meters_to": 250,
-            "length_m": null,
+            "length_m": 250,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           },
           {
             "kind": "Sta",
-            "from": "0+155",
+            "from": "0+000",
             "to": "0+155",
-            "meters_from": 155,
+            "meters_from": 0,
             "meters_to": 155,
-            "length_m": null,
+            "length_m": 155,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           },
           {
             "kind": "Sta",
-            "from": "0+333",
+            "from": "0+000",
             "to": "0+333",
-            "meters_from": 333,
+            "meters_from": 0,
             "meters_to": 333,
-            "length_m": null,
+            "length_m": 333,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           },
           {
             "kind": "Sta",
-            "from": "0+226",
+            "from": "0+000",
             "to": "0+226",
-            "meters_from": 226,
+            "meters_from": 0,
             "meters_to": 226,
-            "length_m": null,
+            "length_m": 226,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofdrainagesannicolasimagalangpampangastreet1sta0000street2sta0000street3sta0000street4sta0000"
+        "title_base_match_key": "constructionofdrainagesannicolasimagalangpampangastreet1street2street3street4"
       },
       "delta_php": 0,
       "reason": null
@@ -295041,24 +295231,24 @@
         "funding_php": {},
         "title_match_key": "constructionoffloodcontrolstructureatbulicreekgoingtodiversionchannelsta0000sta03994caintarizal",
         "office_canonical": "Rizal 1st District Engineering Office",
-        "title_base": "Construction of Flood Control Structure at Buli Creek going - Diversion Channel Sta. 0+000 Cainta, Rizal",
+        "title_base": "Construction of Flood Control Structure at Buli Creek going - Diversion Channel Cainta, Rizal",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+399.4",
+            "from": "0+000",
             "to": "0+399.4",
-            "meters_from": 399,
+            "meters_from": 0,
             "meters_to": 399,
-            "length_m": null,
+            "length_m": 399,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionoffloodcontrolstructureatbulicreekgoingdiversionchannelsta0000caintarizal"
+        "title_base_match_key": "constructionoffloodcontrolstructureatbulicreekgoingdiversionchannelcaintarizal"
       },
       "nep": {
         "id": "p383:r20",
@@ -295081,24 +295271,24 @@
         "funding_php": {},
         "title_match_key": "constructionoffloodcontrolstructureatbulicreekgoingtodiversionchannelsta0000sta03994caintarizal",
         "office_canonical": "Rizal 1st District Engineering Office",
-        "title_base": "Construction of Flood Control Structure at Buli Creek going - Diversion Channel Sta. 0 + 000 Cainta, Rizal",
+        "title_base": "Construction of Flood Control Structure at Buli Creek going - Diversion Channel Cainta, Rizal",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+399.4",
+            "from": "0+000",
             "to": "0+399.4",
-            "meters_from": 399,
+            "meters_from": 0,
             "meters_to": 399,
-            "length_m": null,
+            "length_m": 399,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionoffloodcontrolstructureatbulicreekgoingdiversionchannelsta0000caintarizal"
+        "title_base_match_key": "constructionoffloodcontrolstructureatbulicreekgoingdiversionchannelcaintarizal"
       },
       "delta_php": 0,
       "reason": null
@@ -316306,15 +316496,15 @@
         "funding_php": {},
         "title_match_key": "constructionofseawallsta0600sta0770southormoccity",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Seawall arangay South, Ormoc City",
+        "title_base": "Construction of Seawall Barangay South, Ormoc City",
         "chainages": [
           {
             "kind": "Sta",
             "from": "0+600",
-            "to": "0+7708",
+            "to": "0+770",
             "meters_from": 600,
-            "meters_to": 7708,
-            "length_m": 7108,
+            "meters_to": 770,
+            "length_m": 170,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -316323,7 +316513,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofseawallarangaysouthormoccity"
+        "title_base_match_key": "constructionofseawallsouthormoccity"
       },
       "nep": {
         "id": "p360:r16",
@@ -316346,15 +316536,15 @@
         "funding_php": {},
         "title_match_key": "constructionofseawallsta0600sta0770southormoccity",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Seawall arangay South, Ormoc City",
+        "title_base": "Construction of Seawall Barangay South, Ormoc City",
         "chainages": [
           {
             "kind": "Sta",
             "from": "0+600",
-            "to": "0+7708",
+            "to": "0+770",
             "meters_from": 600,
-            "meters_to": 7708,
-            "length_m": 7108,
+            "meters_to": 770,
+            "length_m": 170,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -316363,7 +316553,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofseawallarangaysouthormoccity"
+        "title_base_match_key": "constructionofseawallsouthormoccity"
       },
       "delta_php": 0,
       "reason": null
@@ -320562,11 +320752,24 @@
         "funding_php": {},
         "title_match_key": "constructionofearthdikewithconcreteslopeprotectionalonglibuganonriveresperanzastotomasdavaodelnorte00001247",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Earthdike with Concrete Slope Protection along Libuganon River, Barangay Esperanza, Sto. Tomas, Davao del Norte - 0+000 - 1+247",
-        "chainages": [],
+        "title_base": "Construction of Earthdike with Concrete Slope Protection along Libuganon River, Barangay Esperanza, Sto. Tomas, Davao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "1+247",
+            "meters_from": 0,
+            "meters_to": 1247,
+            "length_m": 1247,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofearthdikewithconcreteslopeprotectionalonglibuganonriveresperanzastotomasdavaodelnorte00001247"
+        "title_base_match_key": "constructionofearthdikewithconcreteslopeprotectionalonglibuganonriveresperanzastotomasdavaodelnorte"
       },
       "nep": {
         "id": "p363:r10",
@@ -320589,11 +320792,24 @@
         "funding_php": {},
         "title_match_key": "constructionofearthdikewithconcreteslopeprotectionalonglibuganonriveresperanzastotomasdavaodelnorte00001247",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Earthdike with Concrete Slope Protection along Libuganon River, Barangay Esperanza, Sto. Tomas, Davao del Norte - 0 + 000 - 1 + 247",
-        "chainages": [],
+        "title_base": "Construction of Earthdike with Concrete Slope Protection along Libuganon River, Barangay Esperanza, Sto. Tomas, Davao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "1+247",
+            "meters_from": 0,
+            "meters_to": 1247,
+            "length_m": 1247,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofearthdikewithconcreteslopeprotectionalonglibuganonriveresperanzastotomasdavaodelnorte00001247"
+        "title_base_match_key": "constructionofearthdikewithconcreteslopeprotectionalonglibuganonriveresperanzastotomasdavaodelnorte"
       },
       "delta_php": 0,
       "reason": null
@@ -320634,11 +320850,24 @@
         "funding_php": {},
         "title_match_key": "constructionofearthdikewithconcreteslopeprotectionalonglibuganonriversalvacionstotomasdavaodelnorte00001247",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Earthdike with Concrete Slope Protection along Libuganon River, Barangay Salvacion, Sto. Tomas, Davao del Norte - 0+000 - 1+247",
-        "chainages": [],
+        "title_base": "Construction of Earthdike with Concrete Slope Protection along Libuganon River, Barangay Salvacion, Sto. Tomas, Davao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "1+247",
+            "meters_from": 0,
+            "meters_to": 1247,
+            "length_m": 1247,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofearthdikewithconcreteslopeprotectionalonglibuganonriversalvacionstotomasdavaodelnorte00001247"
+        "title_base_match_key": "constructionofearthdikewithconcreteslopeprotectionalonglibuganonriversalvacionstotomasdavaodelnorte"
       },
       "nep": {
         "id": "p363:r11",
@@ -320661,11 +320890,24 @@
         "funding_php": {},
         "title_match_key": "constructionofearthdikewithconcreteslopeprotectionalonglibuganonriversalvacionstotomasdavaodelnorte00001247",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Earthdike with Concrete Slope Protection along Libuganon River, Barangay Salvacion, Sto. Tomas, Davao del Norte - 0 + 000 - 1 + 247",
-        "chainages": [],
+        "title_base": "Construction of Earthdike with Concrete Slope Protection along Libuganon River, Barangay Salvacion, Sto. Tomas, Davao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "1+247",
+            "meters_from": 0,
+            "meters_to": 1247,
+            "length_m": 1247,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofearthdikewithconcreteslopeprotectionalonglibuganonriversalvacionstotomasdavaodelnorte00001247"
+        "title_base_match_key": "constructionofearthdikewithconcreteslopeprotectionalonglibuganonriversalvacionstotomasdavaodelnorte"
       },
       "delta_php": 0,
       "reason": null
@@ -320809,11 +321051,24 @@
         "funding_php": {},
         "title_match_key": "constructionofspurdikesalonglibuganonrivertalomostotomasdavaodelnorte000002265",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Spur Dikes along Libuganon River, Barangay Talomo, Sto Tomas, Davao del Norte - 0+000 - 0+226.5",
-        "chainages": [],
+        "title_base": "Construction of Spur Dikes along Libuganon River, Barangay Talomo, Sto Tomas, Davao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+226.5",
+            "meters_from": 0,
+            "meters_to": 226,
+            "length_m": 226,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofspurdikesalonglibuganonrivertalomostotomasdavaodelnorte000002265"
+        "title_base_match_key": "constructionofspurdikesalonglibuganonrivertalomostotomasdavaodelnorte"
       },
       "nep": {
         "id": "p363:r15",
@@ -320836,11 +321091,24 @@
         "funding_php": {},
         "title_match_key": "constructionofspurdikesalonglibuganonrivertalomostotomasdavaodelnorte000002265",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Spur Dikes along Libuganon River, Barangay Talomo, Sto Tomas, Davao del Norte - 0 + 000 - 0 + 226.5",
-        "chainages": [],
+        "title_base": "Construction of Spur Dikes along Libuganon River, Barangay Talomo, Sto Tomas, Davao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+226.5",
+            "meters_from": 0,
+            "meters_to": 226,
+            "length_m": 226,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofspurdikesalonglibuganonrivertalomostotomasdavaodelnorte000002265"
+        "title_base_match_key": "constructionofspurdikesalonglibuganonrivertalomostotomasdavaodelnorte"
       },
       "delta_php": 0,
       "reason": null
@@ -421561,11 +421829,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadcangasaganleadingtocangasaganelementaryschoolsanjuansiquijor00000600",
         "office_canonical": "Siquijor District Engineering Office",
-        "title_base": "Construction of Road Barangay Cang-asagan leading to Cang-asagan Elementary School, San Juan, Siquijor (0 + 000 - 0 + 600)",
-        "chainages": [],
+        "title_base": "Construction of Road Barangay Cang-asagan leading - Cang-asagan Elementary School, San Juan, Siquijor",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+600",
+            "meters_from": 0,
+            "meters_to": 600,
+            "length_m": 600,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadcangasaganleadingtocangasaganelementaryschoolsanjuansiquijor00000600"
+        "title_base_match_key": "constructionofroadcangasaganleadingcangasaganelementaryschoolsanjuansiquijor"
       },
       "nep": {
         "id": "p533:r14",
@@ -421588,11 +421869,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadcangasaganleadingtocangasaganelementaryschoolsanjuansiquijor00000600",
         "office_canonical": "Siquijor District Engineering Office",
-        "title_base": "Construction of Road Barangay Cang-asagan leading to Cang-asagan Elementary School, San Juan, Siquijor (0 + 000 - 0 + 600)",
-        "chainages": [],
+        "title_base": "Construction of Road Barangay Cang-asagan leading - Cang-asagan Elementary School, San Juan, Siquijor",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+600",
+            "meters_from": 0,
+            "meters_to": 600,
+            "length_m": 600,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadcangasaganleadingtocangasaganelementaryschoolsanjuansiquijor00000600"
+        "title_base_match_key": "constructionofroadcangasaganleadingcangasaganelementaryschoolsanjuansiquijor"
       },
       "delta_php": 0,
       "reason": null
@@ -466050,11 +466344,24 @@
         "funding_php": {},
         "title_match_key": "constructionofbalerbypassroadbaleraurora000013250",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Baler Bypass Road, Baler, Aurora, 0 + 000 - 13 + 250",
-        "chainages": [],
+        "title_base": "Construction of Baler Bypass Road, Baler, Aurora",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "13+250",
+            "meters_from": 0,
+            "meters_to": 13250,
+            "length_m": 13250,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofbalerbypassroadbaleraurora000013250"
+        "title_base_match_key": "constructionofbalerbypassroadbaleraurora"
       },
       "nep": {
         "id": "p437:r9",
@@ -466077,11 +466384,24 @@
         "funding_php": {},
         "title_match_key": "constructionofbalerbypassroadbaleraurora000013250",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Baler Bypass Road, Baler, Aurora, 0 + 000 - 13 + 250",
-        "chainages": [],
+        "title_base": "Construction of Baler Bypass Road, Baler, Aurora",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "13+250",
+            "meters_from": 0,
+            "meters_to": 13250,
+            "length_m": 13250,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofbalerbypassroadbaleraurora000013250"
+        "title_base_match_key": "constructionofbalerbypassroadbaleraurora"
       },
       "delta_php": 0,
       "reason": null
@@ -468857,24 +469177,24 @@
         "funding_php": {},
         "title_match_key": "constructionofmanilanorthroadtosctexluisitasctexluisitaaccessroadbaletecentralsta299200sta345200",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Manila North Road - SCTEX Luisita (SCTEX Luisita Access Road ), Balete/Central Sta. 2 + 992.00",
+        "title_base": "Construction of Manila North Road - SCTEX Luisita (SCTEX Luisita Access Road ), Balete/Central",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "3+452.00",
+            "from": "2+992.00",
             "to": "3+452.00",
-            "meters_from": 3452,
+            "meters_from": 2992,
             "meters_to": 3452,
-            "length_m": null,
+            "length_m": 460,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofmanilanorthroadsctexluisitasctexluisitaaccessroadbaletecentralsta299200"
+        "title_base_match_key": "constructionofmanilanorthroadsctexluisitasctexluisitaaccessroadbaletecentral"
       },
       "nep": {
         "id": "p437:r23",
@@ -468897,24 +469217,24 @@
         "funding_php": {},
         "title_match_key": "constructionofmanilanorthroadtosctexluisitasctexluisitaaccessroadbaletecentralsta299200sta345200",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Manila North Road - SCTEX Luisita (SCTEX Luisita Access Road ), Balete / Central Sta. 2 + 992.00",
+        "title_base": "Construction of Manila North Road - SCTEX Luisita (SCTEX Luisita Access Road ), Balete / Central",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "3+452.00",
+            "from": "2+992.00",
             "to": "3+452.00",
-            "meters_from": 3452,
+            "meters_from": 2992,
             "meters_to": 3452,
-            "length_m": null,
+            "length_m": 460,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofmanilanorthroadsctexluisitasctexluisitaaccessroadbaletecentralsta299200"
+        "title_base_match_key": "constructionofmanilanorthroadsctexluisitasctexluisitaaccessroadbaletecentral"
       },
       "delta_php": 0,
       "reason": null
@@ -469053,24 +469373,24 @@
         "funding_php": {},
         "title_match_key": "constructionofmanilanorthroadtosctexluisitasctexluisitaaccessroadlourdesbaletecentralsta253160sta299200",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Manila North Road - SCTEX Luisita (SCTEX Luisita Access Road ), Lourdes - Balete/Central Sta. 2 + 531.60",
+        "title_base": "Construction of Manila North Road - SCTEX Luisita (SCTEX Luisita Access Road ), Lourdes - Balete/Central",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "2+992.00",
+            "from": "2+531.60",
             "to": "2+992.00",
-            "meters_from": 2992,
+            "meters_from": 2532,
             "meters_to": 2992,
-            "length_m": null,
+            "length_m": 460,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofmanilanorthroadsctexluisitasctexluisitaaccessroadlourdesbaletecentralsta253160"
+        "title_base_match_key": "constructionofmanilanorthroadsctexluisitasctexluisitaaccessroadlourdesbaletecentral"
       },
       "nep": {
         "id": "p438:r1",
@@ -469093,24 +469413,24 @@
         "funding_php": {},
         "title_match_key": "constructionofmanilanorthroadtosctexluisitasctexluisitaaccessroadlourdesbaletecentralsta253160sta299200",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Manila North Road - SCTEX Luisita (SCTEX Luisita Access Road ), Lourdes - Balete / Central Sta. 2 + 531.60",
+        "title_base": "Construction of Manila North Road - SCTEX Luisita (SCTEX Luisita Access Road ), Lourdes - Balete / Central",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "2+992.00",
+            "from": "2+531.60",
             "to": "2+992.00",
-            "meters_from": 2992,
+            "meters_from": 2532,
             "meters_to": 2992,
-            "length_m": null,
+            "length_m": 460,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofmanilanorthroadsctexluisitasctexluisitaaccessroadlourdesbaletecentralsta253160"
+        "title_base_match_key": "constructionofmanilanorthroadsctexluisitasctexluisitaaccessroadlourdesbaletecentral"
       },
       "delta_php": 0,
       "reason": null
@@ -469883,7 +470203,7 @@
         "funding_php": {},
         "title_match_key": "constructionofroadalalaygrandelupaonuevaecijaroadasta0000sta0600roadbsta0000sta0283",
         "office_canonical": "Nueva Ecija 1st District Engineering Office",
-        "title_base": "Construction of Road, Barangay Alalay Grande, Lupao, Nueva Ecija Road A Road B Sta. 0+000",
+        "title_base": "Construction of Road, Barangay Alalay Grande, Lupao, Nueva Ecija Road A Road B",
         "chainages": [
           {
             "kind": "Sta",
@@ -469899,20 +470219,20 @@
           },
           {
             "kind": "Sta",
-            "from": "0+283",
+            "from": "0+000",
             "to": "0+283",
-            "meters_from": 283,
+            "meters_from": 0,
             "meters_to": 283,
-            "length_m": null,
+            "length_m": 283,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadalalaygrandelupaonuevaecijaroadaroadbsta0000"
+        "title_base_match_key": "constructionofroadalalaygrandelupaonuevaecijaroadaroadb"
       },
       "nep": {
         "id": "p494:r18",
@@ -469935,7 +470255,7 @@
         "funding_php": {},
         "title_match_key": "constructionofroadalalaygrandelupaonuevaecijaroadasta0000sta0600roadbsta0000sta0283",
         "office_canonical": "Nueva Ecija 1st District Engineering Office",
-        "title_base": "Construction of Road, Barangay Alalay Grande, Lupao, Nueva Ecija Road A Road B Sta. 0 + 000",
+        "title_base": "Construction of Road, Barangay Alalay Grande, Lupao, Nueva Ecija Road A Road B",
         "chainages": [
           {
             "kind": "Sta",
@@ -469951,20 +470271,20 @@
           },
           {
             "kind": "Sta",
-            "from": "0+283",
+            "from": "0+000",
             "to": "0+283",
-            "meters_from": 283,
+            "meters_from": 0,
             "meters_to": 283,
-            "length_m": null,
+            "length_m": 283,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadalalaygrandelupaonuevaecijaroadaroadbsta0000"
+        "title_base_match_key": "constructionofroadalalaygrandelupaonuevaecijaroadaroadb"
       },
       "delta_php": 3000000,
       "reason": null
@@ -472193,36 +472513,36 @@
         "funding_php": {},
         "title_match_key": "constructionofroadanddrainagesanjosemagalangpampangastreet1sta0000sta0400street2sta0000sta0305",
         "office_canonical": "Pampanga 3rd District Engineering Office",
-        "title_base": "Construction of Road and Drainage, Barangay San Jose, Magalang, Pampanga, Street 1 Sta. 0+000 Street 2 Sta. 0+000",
+        "title_base": "Construction of Road and Drainage, Barangay San Jose, Magalang, Pampanga, Street 1 Street 2",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+400",
+            "from": "0+000",
             "to": "0+400",
-            "meters_from": 400,
+            "meters_from": 0,
             "meters_to": 400,
-            "length_m": null,
+            "length_m": 400,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           },
           {
             "kind": "Sta",
-            "from": "0+305",
+            "from": "0+000",
             "to": "0+305",
-            "meters_from": 305,
+            "meters_from": 0,
             "meters_to": 305,
-            "length_m": null,
+            "length_m": 305,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadanddrainagesanjosemagalangpampangastreet1sta0000street2sta0000"
+        "title_base_match_key": "constructionofroadanddrainagesanjosemagalangpampangastreet1street2"
       },
       "nep": {
         "id": "p501:r9",
@@ -472245,36 +472565,36 @@
         "funding_php": {},
         "title_match_key": "constructionofroadanddrainagesanjosemagalangpampangastreet1sta0000sta0400street2sta0000sta0305",
         "office_canonical": "Pampanga 3rd District Engineering Office",
-        "title_base": "Construction of Road and Drainage, Barangay San Jose, Magalang, Pampanga, Street 1 Sta. 0 + 000 Street 2 Sta. 0 + 000",
+        "title_base": "Construction of Road and Drainage, Barangay San Jose, Magalang, Pampanga, Street 1 Street 2",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+400",
+            "from": "0+000",
             "to": "0+400",
-            "meters_from": 400,
+            "meters_from": 0,
             "meters_to": 400,
-            "length_m": null,
+            "length_m": 400,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           },
           {
             "kind": "Sta",
-            "from": "0+305",
+            "from": "0+000",
             "to": "0+305",
-            "meters_from": 305,
+            "meters_from": 0,
             "meters_to": 305,
-            "length_m": null,
+            "length_m": 305,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadanddrainagesanjosemagalangpampangastreet1sta0000street2sta0000"
+        "title_base_match_key": "constructionofroadanddrainagesanjosemagalangpampangastreet1street2"
       },
       "delta_php": 0,
       "reason": null
@@ -472413,15 +472733,15 @@
         "funding_php": {},
         "title_match_key": "constructionofroadanddrainagesannicolasiimagalangpampangasta0000sta0400sta0000sta0294",
         "office_canonical": "Pampanga 3rd District Engineering Office",
-        "title_base": "Construction of Road and Drainage Barangay San Nicolas II, Magalang, Pampanga ta. 0+000",
+        "title_base": "Construction of Road and Drainage Barangay San Nicolas II, Magalang, Pampanga",
         "chainages": [
           {
             "kind": "Sta",
             "from": "0+000",
-            "to": "0+4005",
+            "to": "0+400",
             "meters_from": 0,
-            "meters_to": 4005,
-            "length_m": 4005,
+            "meters_to": 400,
+            "length_m": 400,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -472429,20 +472749,20 @@
           },
           {
             "kind": "Sta",
-            "from": "0+294",
+            "from": "0+000",
             "to": "0+294",
-            "meters_from": 294,
+            "meters_from": 0,
             "meters_to": 294,
-            "length_m": null,
+            "length_m": 294,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadanddrainagesannicolasiimagalangpampangata0000"
+        "title_base_match_key": "constructionofroadanddrainagesannicolasiimagalangpampanga"
       },
       "nep": {
         "id": "p500:r26",
@@ -472465,15 +472785,15 @@
         "funding_php": {},
         "title_match_key": "constructionofroadanddrainagesannicolasiimagalangpampangasta0000sta0400sta0000sta0294",
         "office_canonical": "Pampanga 3rd District Engineering Office",
-        "title_base": "Construction of Road and Drainage Barangay San Nicolas II, Magalang, Pampanga ta. 0 + 000",
+        "title_base": "Construction of Road and Drainage Barangay San Nicolas II, Magalang, Pampanga",
         "chainages": [
           {
             "kind": "Sta",
             "from": "0+000",
-            "to": "0+4005",
+            "to": "0+400",
             "meters_from": 0,
-            "meters_to": 4005,
-            "length_m": 4005,
+            "meters_to": 400,
+            "length_m": 400,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -472481,20 +472801,20 @@
           },
           {
             "kind": "Sta",
-            "from": "0+294",
+            "from": "0+000",
             "to": "0+294",
-            "meters_from": 294,
+            "meters_from": 0,
             "meters_to": 294,
-            "length_m": null,
+            "length_m": 294,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadanddrainagesannicolasiimagalangpampangata0000"
+        "title_base_match_key": "constructionofroadanddrainagesannicolasiimagalangpampanga"
       },
       "delta_php": 0,
       "reason": null
@@ -472760,14 +473080,26 @@
         "funding_php": {},
         "title_match_key": "constructionofroadanddrainagesantorosariomagalangpampangastreet1sta0000sta0384street2sta0000sta0265street3sta0000sta0416",
         "office_canonical": "Pampanga 3rd District Engineering Office",
-        "title_base": "Construction of Road and Drainage, Barangay Santo Rosario, Magalang, Pampanga, Street 1 Sta. 0+000 Street 2 Sta. 0+000- Sta. ; 0+265, Street 3 Sta. 0+000",
+        "title_base": "Construction of Road and Drainage, Barangay Santo Rosario, Magalang, Pampanga, Street 1 Street 2 Sta. ; 0+265, Street 3",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+384",
+            "from": "0+000",
             "to": "0+384",
-            "meters_from": 384,
+            "meters_from": 0,
             "meters_to": 384,
+            "length_m": 384,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          },
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+000",
+            "meters_from": 0,
+            "meters_to": 0,
             "length_m": null,
             "length_review": null,
             "length_from": null,
@@ -472776,20 +473108,20 @@
           },
           {
             "kind": "Sta",
-            "from": "0+416",
+            "from": "0+000",
             "to": "0+416",
-            "meters_from": 416,
+            "meters_from": 0,
             "meters_to": 416,
-            "length_m": null,
+            "length_m": 416,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadanddrainagesantorosariomagalangpampangastreet1sta0000street2sta0000sta0265street3sta0000"
+        "title_base_match_key": "constructionofroadanddrainagesantorosariomagalangpampangastreet1street2sta0265street3"
       },
       "nep": {
         "id": "p501:r14",
@@ -472812,14 +473144,26 @@
         "funding_php": {},
         "title_match_key": "constructionofroadanddrainagesantorosariomagalangpampangastreet1sta0000sta0384street2sta0000sta0265street3sta0000sta0416",
         "office_canonical": "Pampanga 3rd District Engineering Office",
-        "title_base": "Construction of Road and Drainage, Barangay Santo Rosario, Magalang, Pampanga, Street 1 Sta. 0 + 000 Street 2 Sta. 0 + 000- Sta . ; 0 + 265, Street 3 Sta. 0 + 000",
+        "title_base": "Construction of Road and Drainage, Barangay Santo Rosario, Magalang, Pampanga, Street 1 Street 2 Sta . ; 0 + 265, Street 3",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+384",
+            "from": "0+000",
             "to": "0+384",
-            "meters_from": 384,
+            "meters_from": 0,
             "meters_to": 384,
+            "length_m": 384,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          },
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+000",
+            "meters_from": 0,
+            "meters_to": 0,
             "length_m": null,
             "length_review": null,
             "length_from": null,
@@ -472828,20 +473172,20 @@
           },
           {
             "kind": "Sta",
-            "from": "0+416",
+            "from": "0+000",
             "to": "0+416",
-            "meters_from": 416,
+            "meters_from": 0,
             "meters_to": 416,
-            "length_m": null,
+            "length_m": 416,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadanddrainagesantorosariomagalangpampangastreet1sta0000street2sta0000sta0265street3sta0000"
+        "title_base_match_key": "constructionofroadanddrainagesantorosariomagalangpampangastreet1street2sta0265street3"
       },
       "delta_php": 0,
       "reason": null
@@ -476976,15 +477320,15 @@
         "funding_php": {},
         "title_match_key": "constructionofroadcamiasmagalangpampangasta0000sta0677sta0000sta0360",
         "office_canonical": "Pampanga 3rd District Engineering Office",
-        "title_base": "Construction of Road Barangay Camias, Magalang, Pampanga ta. 0+000",
+        "title_base": "Construction of Road Barangay Camias, Magalang, Pampanga",
         "chainages": [
           {
             "kind": "Sta",
             "from": "0+000",
-            "to": "0+6775",
+            "to": "0+677",
             "meters_from": 0,
-            "meters_to": 6775,
-            "length_m": 6775,
+            "meters_to": 677,
+            "length_m": 677,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -476992,20 +477336,20 @@
           },
           {
             "kind": "Sta",
-            "from": "0+360",
+            "from": "0+000",
             "to": "0+360",
-            "meters_from": 360,
+            "meters_from": 0,
             "meters_to": 360,
-            "length_m": null,
+            "length_m": 360,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadcamiasmagalangpampangata0000"
+        "title_base_match_key": "constructionofroadcamiasmagalangpampanga"
       },
       "nep": {
         "id": "p502:r0",
@@ -477028,15 +477372,15 @@
         "funding_php": {},
         "title_match_key": "constructionofroadcamiasmagalangpampangasta0000sta0677sta0000sta0360",
         "office_canonical": "Pampanga 3rd District Engineering Office",
-        "title_base": "Construction of Road Barangay Camias, Magalang, Pampanga ta.0 + 000",
+        "title_base": "Construction of Road Barangay Camias, Magalang, Pampanga",
         "chainages": [
           {
             "kind": "Sta",
             "from": "0+000",
-            "to": "0+6775",
+            "to": "0+677",
             "meters_from": 0,
-            "meters_to": 6775,
-            "length_m": 6775,
+            "meters_to": 677,
+            "length_m": 677,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -477044,20 +477388,20 @@
           },
           {
             "kind": "Sta",
-            "from": "0+360",
+            "from": "0+000",
             "to": "0+360",
-            "meters_from": 360,
+            "meters_from": 0,
             "meters_to": 360,
-            "length_m": null,
+            "length_m": 360,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadcamiasmagalangpampangata0000"
+        "title_base_match_key": "constructionofroadcamiasmagalangpampanga"
       },
       "delta_php": 0,
       "reason": null
@@ -480474,11 +480818,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadkitangilimaybataan0000170",
         "office_canonical": "Bataan 2nd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Kitang I, Limay, Bataan (0+00-0+170)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Kitang I, Limay, Bataan",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+00",
+            "to": "0+170",
+            "meters_from": 0,
+            "meters_to": 170,
+            "length_m": 170,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadkitangilimaybataan0000170"
+        "title_base_match_key": "constructionofroadkitangilimaybataan"
       },
       "nep": {
         "id": "p485:r8",
@@ -480501,11 +480858,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadkitangilimaybataan0000170",
         "office_canonical": "Bataan 2nd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Kitang I, Limay, Bataan (0 + 00-0 + 170)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Kitang I, Limay, Bataan",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+00",
+            "to": "0+170",
+            "meters_from": 0,
+            "meters_to": 170,
+            "length_m": 170,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadkitangilimaybataan0000170"
+        "title_base_match_key": "constructionofroadkitangilimaybataan"
       },
       "delta_php": 0,
       "reason": null
@@ -485336,7 +485706,7 @@
         "funding_php": {},
         "title_match_key": "constructionofroadsampaloctalugtugnuevaecijaroadasta0000sta0200roadbsta0000sta0300",
         "office_canonical": "Nueva Ecija 1st District Engineering Office",
-        "title_base": "Construction of Road, Barangay Sampaloc, Talugtug, Nueva Ecija Road A Road B Sta. 0+000",
+        "title_base": "Construction of Road, Barangay Sampaloc, Talugtug, Nueva Ecija Road A Road B",
         "chainages": [
           {
             "kind": "Sta",
@@ -485352,20 +485722,20 @@
           },
           {
             "kind": "Sta",
-            "from": "0+300",
+            "from": "0+000",
             "to": "0+300",
-            "meters_from": 300,
+            "meters_from": 0,
             "meters_to": 300,
-            "length_m": null,
+            "length_m": 300,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadsampaloctalugtugnuevaecijaroadaroadbsta0000"
+        "title_base_match_key": "constructionofroadsampaloctalugtugnuevaecijaroadaroadb"
       },
       "nep": {
         "id": "p496:r27",
@@ -485388,7 +485758,7 @@
         "funding_php": {},
         "title_match_key": "constructionofroadsampaloctalugtugnuevaecijaroadasta0000sta0200roadbsta0000sta0300",
         "office_canonical": "Nueva Ecija 1st District Engineering Office",
-        "title_base": "Construction of Road, Barangay Sampaloc, Talugtug, Nueva Ecija Road A Road B Sta. 0 + 000",
+        "title_base": "Construction of Road, Barangay Sampaloc, Talugtug, Nueva Ecija Road A Road B",
         "chainages": [
           {
             "kind": "Sta",
@@ -485404,20 +485774,20 @@
           },
           {
             "kind": "Sta",
-            "from": "0+300",
+            "from": "0+000",
             "to": "0+300",
-            "meters_from": 300,
+            "meters_from": 0,
             "meters_to": 300,
-            "length_m": null,
+            "length_m": 300,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadsampaloctalugtugnuevaecijaroadaroadbsta0000"
+        "title_base_match_key": "constructionofroadsampaloctalugtugnuevaecijaroadaroadb"
       },
       "delta_php": 0,
       "reason": null
@@ -506854,11 +507224,24 @@
         "funding_php": {},
         "title_match_key": "rehabilitationofwawabridgepilarbataan0000004514672155120563000",
         "office_canonical": "Central Office",
-        "title_base": "Rehabilitation of Wawa Bridge, Pilar, Bataan, 0+000 - 0+045, (14.672155, 120.563000)",
-        "chainages": [],
+        "title_base": "Rehabilitation of Wawa Bridge, Pilar, Bataan (14.672155, 120.563000)",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+045",
+            "meters_from": 0,
+            "meters_to": 45,
+            "length_m": 45,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "rehabilitationofwawabridgepilarbataan0000004514672155120563000"
+        "title_base_match_key": "rehabilitationofwawabridgepilarbataan14672155120563000"
       },
       "nep": {
         "id": "p440:r3",
@@ -506881,11 +507264,24 @@
         "funding_php": {},
         "title_match_key": "rehabilitationofwawabridgepilarbataan0000004514672155120563000",
         "office_canonical": "Central Office",
-        "title_base": "Rehabilitation of Wawa Bridge, Pilar, Bataan, 0 + 000 - 0 + 045 , (14.672155, 120.563000)",
-        "chainages": [],
+        "title_base": "Rehabilitation of Wawa Bridge, Pilar, Bataan (14.672155, 120.563000)",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+045",
+            "meters_from": 0,
+            "meters_to": 45,
+            "length_m": 45,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "rehabilitationofwawabridgepilarbataan0000004514672155120563000"
+        "title_base_match_key": "rehabilitationofwawabridgepilarbataan14672155120563000"
       },
       "delta_php": 0,
       "reason": null
@@ -523327,24 +523723,24 @@
         "funding_php": {},
         "title_match_key": "improvementofroadwithdrainagesystemspalmera5delapazantipolocitysta0000sta0526",
         "office_canonical": "Central Office",
-        "title_base": "Improvement of Road with Drainage Systems, Palmera 5, Barangay Dela Paz, Antipolo City, Sta.(0+000 )",
+        "title_base": "Improvement of Road with Drainage Systems, Palmera 5, Barangay Dela Paz, Antipolo City, Sta.",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+526",
+            "from": "0+000",
             "to": "0+526",
-            "meters_from": 526,
+            "meters_from": 0,
             "meters_to": 526,
-            "length_m": null,
+            "length_m": 526,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "improvementofroadwithdrainagesystemspalmera5delapazantipolocitysta0000"
+        "title_base_match_key": "improvementofroadwithdrainagesystemspalmera5delapazantipolocitysta"
       },
       "nep": {
         "id": "p442:r10",
@@ -523367,24 +523763,24 @@
         "funding_php": {},
         "title_match_key": "improvementofroadwithdrainagesystemspalmera5delapazantipolocitysta0000sta0526",
         "office_canonical": "Central Office",
-        "title_base": "Improvement of Road with Drainage Systems, Palmera 5, Barangay Dela Paz, Antipolo City, Sta .(0 + 000 )",
+        "title_base": "Improvement of Road with Drainage Systems, Palmera 5, Barangay Dela Paz, Antipolo City, Sta .",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+526",
+            "from": "0+000",
             "to": "0+526",
-            "meters_from": 526,
+            "meters_from": 0,
             "meters_to": 526,
-            "length_m": null,
+            "length_m": 526,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "improvementofroadwithdrainagesystemspalmera5delapazantipolocitysta0000"
+        "title_base_match_key": "improvementofroadwithdrainagesystemspalmera5delapazantipolocitysta"
       },
       "delta_php": 0,
       "reason": null
@@ -523425,24 +523821,24 @@
         "funding_php": {},
         "title_match_key": "improvementofroadwithdrainagesystemspurokangeladelapazantipolocitysta0000sta0220",
         "office_canonical": "Rizal 1st District Engineering Office",
-        "title_base": "Improvement of Road with Drainage Systems, Purok Angela, Barangay Dela Paz, Antipolo City, Sta.(0+000 )",
+        "title_base": "Improvement of Road with Drainage Systems, Purok Angela, Barangay Dela Paz, Antipolo City, Sta.",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+220",
+            "from": "0+000",
             "to": "0+220",
-            "meters_from": 220,
+            "meters_from": 0,
             "meters_to": 220,
-            "length_m": null,
+            "length_m": 220,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "improvementofroadwithdrainagesystemspurokangeladelapazantipolocitysta0000"
+        "title_base_match_key": "improvementofroadwithdrainagesystemspurokangeladelapazantipolocitysta"
       },
       "nep": {
         "id": "p513:r22",
@@ -523465,24 +523861,24 @@
         "funding_php": {},
         "title_match_key": "improvementofroadwithdrainagesystemspurokangeladelapazantipolocitysta0000sta0220",
         "office_canonical": "Rizal 1st District Engineering Office",
-        "title_base": "Improvement of Road with Drainage Systems, Purok Angela, Barangay Dela Paz, Antipolo City, Sta .(0 + 000 )",
+        "title_base": "Improvement of Road with Drainage Systems, Purok Angela, Barangay Dela Paz, Antipolo City, Sta .",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+220",
+            "from": "0+000",
             "to": "0+220",
-            "meters_from": 220,
+            "meters_from": 0,
             "meters_to": 220,
-            "length_m": null,
+            "length_m": 220,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "improvementofroadwithdrainagesystemspurokangeladelapazantipolocitysta0000"
+        "title_base_match_key": "improvementofroadwithdrainagesystemspurokangeladelapazantipolocitysta"
       },
       "delta_php": 0,
       "reason": null
@@ -555981,14 +556377,26 @@
         "funding_php": {},
         "title_match_key": "constructionofroadsitiotibwasonpahosta1350sta2450ayangansibunagguimaras",
         "office_canonical": "Guimaras District Engineering Office",
-        "title_base": "Construction of Road, Sitio Tibwason - Paho ta. 2 + 450, Barangay Ayangan, Sibunag, Guimaras",
+        "title_base": "Construction of Road, Sitio Tibwason - Paho Barangay Ayangan, Sibunag, Guimaras",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "1+3505",
-            "to": "1+3505",
-            "meters_from": 4505,
-            "meters_to": 4505,
+            "from": "1+350",
+            "to": "1+350",
+            "meters_from": 1350,
+            "meters_to": 1350,
+            "length_m": null,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": true
+          },
+          {
+            "kind": "Sta",
+            "from": "2+450",
+            "to": "2+450",
+            "meters_from": 2450,
+            "meters_to": 2450,
             "length_m": null,
             "length_review": null,
             "length_from": null,
@@ -555998,7 +556406,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadsitiotibwasonpahota2450ayangansibunagguimaras"
+        "title_base_match_key": "constructionofroadsitiotibwasonpahoayangansibunagguimaras"
       },
       "delta_php": 0,
       "reason": null
@@ -569291,11 +569699,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadbacoleytestation00000200",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Baco, Leyte Leyte (Station 0+000 - 0+200)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Baco, Leyte Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+200",
+            "meters_from": 0,
+            "meters_to": 200,
+            "length_m": 200,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadbacoleytestation00000200"
+        "title_base_match_key": "constructionofroadbacoleytestation"
       },
       "nep": {
         "id": "p540:r11",
@@ -569318,11 +569739,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadbacoleytestation00000200",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Baco, Leyte Leyte (Station 0 + 000 - 0 + 200)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Baco, Leyte Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+200",
+            "meters_from": 0,
+            "meters_to": 200,
+            "length_m": 200,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadbacoleytestation00000200"
+        "title_base_match_key": "constructionofroadbacoleytestation"
       },
       "delta_php": 0,
       "reason": null
@@ -570410,11 +570844,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadcatagbacantojalasvillabaleytestation00001000",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Catagbacan to Barangay Jalas, Villaba, Leyte (Station 0+000 - 1+000)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Catagbacan - Barangay Jalas, Villaba, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "1+000",
+            "meters_from": 0,
+            "meters_to": 1000,
+            "length_m": 1000,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadcatagbacantojalasvillabaleytestation00001000"
+        "title_base_match_key": "constructionofroadcatagbacanjalasvillabaleytestation"
       },
       "nep": {
         "id": "p540:r12",
@@ -570437,11 +570884,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadcatagbacantojalasvillabaleytestation00001000",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Catagbacan to Barangay Jalas, Villaba, Leyte (Station 0 + 000 - 1 + 000)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Catagbacan - Barangay Jalas, Villaba, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "1+000",
+            "meters_from": 0,
+            "meters_to": 1000,
+            "length_m": 1000,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadcatagbacantojalasvillabaleytestation00001000"
+        "title_base_match_key": "constructionofroadcatagbacanjalasvillabaleytestation"
       },
       "delta_php": 0,
       "reason": null
@@ -570931,11 +571391,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadhinabuyanvillabaleytestation03400690",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Hinabuyan, Villaba, Leyte (Station 0+340 - 0+690)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Hinabuyan, Villaba, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+340",
+            "to": "0+690",
+            "meters_from": 340,
+            "meters_to": 690,
+            "length_m": 350,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadhinabuyanvillabaleytestation03400690"
+        "title_base_match_key": "constructionofroadhinabuyanvillabaleytestation"
       },
       "nep": {
         "id": "p540:r13",
@@ -570958,11 +571431,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadhinabuyanvillabaleytestation03400690",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Hinabuyan, Villaba, Leyte (Station 0 + 340 - 0 + 690)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Hinabuyan, Villaba, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+340",
+            "to": "0+690",
+            "meters_from": 340,
+            "meters_to": 690,
+            "length_m": 350,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadhinabuyanvillabaleytestation03400690"
+        "title_base_match_key": "constructionofroadhinabuyanvillabaleytestation"
       },
       "delta_php": 0,
       "reason": null
@@ -571184,11 +571670,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadjubaycalubianleytestation213493221693",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Jubay, Calubian, Leyte (Station 21+349.3 - 22+169.3)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Jubay, Calubian, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "21+349.3",
+            "to": "22+169.3",
+            "meters_from": 21349,
+            "meters_to": 22169,
+            "length_m": 820,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadjubaycalubianleytestation213493221693"
+        "title_base_match_key": "constructionofroadjubaycalubianleytestation"
       },
       "nep": {
         "id": "p540:r14",
@@ -571211,11 +571710,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadjubaycalubianleytestation213493221693",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Jubay, Calubian, Leyte (Station 21 + 349.3 - 22 + 169.3)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Jubay, Calubian, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "21+349.3",
+            "to": "22+169.3",
+            "meters_from": 21349,
+            "meters_to": 22169,
+            "length_m": 820,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadjubaycalubianleytestation213493221693"
+        "title_base_match_key": "constructionofroadjubaycalubianleytestation"
       },
       "delta_php": 0,
       "reason": null
@@ -571256,11 +571768,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadkawayanantotuburancalubianleytestation00000600",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Kawayanan to Barangay Tuburan, Calubian, Leyte (Station 0+000 - 0+600)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Kawayanan - Barangay Tuburan, Calubian, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+600",
+            "meters_from": 0,
+            "meters_to": 600,
+            "length_m": 600,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadkawayanantotuburancalubianleytestation00000600"
+        "title_base_match_key": "constructionofroadkawayanantuburancalubianleytestation"
       },
       "nep": {
         "id": "p540:r15",
@@ -571283,11 +571808,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadkawayanantotuburancalubianleytestation00000600",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Kawayanan to Barangay Tuburan, Calubian, Leyte (Station 0 + 000 - 0 + 600)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Kawayanan - Barangay Tuburan, Calubian, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+600",
+            "meters_from": 0,
+            "meters_to": 600,
+            "length_m": 600,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadkawayanantotuburancalubianleytestation00000600"
+        "title_base_match_key": "constructionofroadkawayanantuburancalubianleytestation"
       },
       "delta_php": 0,
       "reason": null
@@ -571328,11 +571866,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadlabtictobunacansanisidroleytestation33263926",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Labtic to Barangay Bunacan, San Isidro, Leyte (Station 3+326 - 3+926)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Labtic - Barangay Bunacan, San Isidro, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "3+326",
+            "to": "3+926",
+            "meters_from": 3326,
+            "meters_to": 3926,
+            "length_m": 600,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadlabtictobunacansanisidroleytestation33263926"
+        "title_base_match_key": "constructionofroadlabticbunacansanisidroleytestation"
       },
       "nep": {
         "id": "p540:r16",
@@ -571355,11 +571906,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadlabtictobunacansanisidroleytestation33263926",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Labtic to Barangay Bunacan, San Isidro, Leyte (Station 3 + 326- 3 + 926)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Labtic - Barangay Bunacan, San Isidro, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "3+326",
+            "to": "3+926",
+            "meters_from": 3326,
+            "meters_to": 3926,
+            "length_m": 600,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadlabtictobunacansanisidroleytestation33263926"
+        "title_base_match_key": "constructionofroadlabticbunacansanisidroleytestation"
       },
       "delta_php": 0,
       "reason": null
@@ -573330,11 +573894,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadsitiosanvicentedajadakusanisidroleytestation00000200",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Sitio San Vicente, Barangay Daja Daku, San Isidro, Leyte (Station 0+000 - 0+200)",
-        "chainages": [],
+        "title_base": "Construction of Road, Sitio San Vicente, Barangay Daja Daku, San Isidro, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+200",
+            "meters_from": 0,
+            "meters_to": 200,
+            "length_m": 200,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadsitiosanvicentedajadakusanisidroleytestation00000200"
+        "title_base_match_key": "constructionofroadsitiosanvicentedajadakusanisidroleytestation"
       },
       "nep": {
         "id": "p540:r17",
@@ -573357,11 +573934,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadsitiosanvicentedajadakusanisidroleytestation00000200",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Construction of Road, Sitio San Vicente, Barangay Daja Daku, San Isidro, Leyte (Station 0 + 000-0 + 200)",
-        "chainages": [],
+        "title_base": "Construction of Road, Sitio San Vicente, Barangay Daja Daku, San Isidro, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+200",
+            "meters_from": 0,
+            "meters_to": 200,
+            "length_m": 200,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadsitiosanvicentedajadakusanisidroleytestation00000200"
+        "title_base_match_key": "constructionofroadsitiosanvicentedajadakusanisidroleytestation"
       },
       "delta_php": 0,
       "reason": null
@@ -578435,11 +579025,24 @@
         "funding_php": {},
         "title_match_key": "roadconcretingpupaccessroadcalaguiseleytestation02800750",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Road Concreting, PUP Access Road, Barangay Calaguise, Leyte, Leyte (Station 0+280 - 0+750)",
-        "chainages": [],
+        "title_base": "Road Concreting, PUP Access Road, Barangay Calaguise, Leyte, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+280",
+            "to": "0+750",
+            "meters_from": 280,
+            "meters_to": 750,
+            "length_m": 470,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "roadconcretingpupaccessroadcalaguiseleytestation02800750"
+        "title_base_match_key": "roadconcretingpupaccessroadcalaguiseleytestation"
       },
       "nep": {
         "id": "p540:r19",
@@ -578462,11 +579065,24 @@
         "funding_php": {},
         "title_match_key": "roadconcretingpupaccessroadcalaguiseleytestation02800750",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Road Concreting, PUP Access Road, Barangay Calaguise, Leyte, Leyte (Station 0 + 280 - 0 + 750)",
-        "chainages": [],
+        "title_base": "Road Concreting, PUP Access Road, Barangay Calaguise, Leyte, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+280",
+            "to": "0+750",
+            "meters_from": 280,
+            "meters_to": 750,
+            "length_m": 470,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "roadconcretingpupaccessroadcalaguiseleytestation02800750"
+        "title_base_match_key": "roadconcretingpupaccessroadcalaguiseleytestation"
       },
       "delta_php": 0,
       "reason": null
@@ -578507,11 +579123,24 @@
         "funding_php": {},
         "title_match_key": "roadconcretingsitiosimboriofatimavillabaleytestation01700670",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Road Concreting, Sitio Simborio Barangay Fatima, Villaba, Leyte (Station 0+170 - 0+670)",
-        "chainages": [],
+        "title_base": "Road Concreting, Sitio Simborio Barangay Fatima, Villaba, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+170",
+            "to": "0+670",
+            "meters_from": 170,
+            "meters_to": 670,
+            "length_m": 500,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "roadconcretingsitiosimboriofatimavillabaleytestation01700670"
+        "title_base_match_key": "roadconcretingsitiosimboriofatimavillabaleytestation"
       },
       "nep": {
         "id": "p540:r20",
@@ -578534,11 +579163,24 @@
         "funding_php": {},
         "title_match_key": "roadconcretingsitiosimboriofatimavillabaleytestation01700670",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Road Concreting, Sitio Simborio Barangay Fatima, Villaba, Leyte (Station 0 + 170 - 0 + 670)",
-        "chainages": [],
+        "title_base": "Road Concreting, Sitio Simborio Barangay Fatima, Villaba, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+170",
+            "to": "0+670",
+            "meters_from": 170,
+            "meters_to": 670,
+            "length_m": 500,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "roadconcretingsitiosimboriofatimavillabaleytestation01700670"
+        "title_base_match_key": "roadconcretingsitiosimboriofatimavillabaleytestation"
       },
       "delta_php": 0,
       "reason": null
@@ -578579,11 +579221,24 @@
         "funding_php": {},
         "title_match_key": "roadconcretingtagbubungatoabijaovillabaleytestation00001000",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Road Concreting, Barangay Tagbubunga to Barangay Abijao, Villaba, Leyte (Station 0+000 - 1+000)",
-        "chainages": [],
+        "title_base": "Road Concreting, Barangay Tagbubunga - Barangay Abijao, Villaba, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "1+000",
+            "meters_from": 0,
+            "meters_to": 1000,
+            "length_m": 1000,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "roadconcretingtagbubungatoabijaovillabaleytestation00001000"
+        "title_base_match_key": "roadconcretingtagbubungaabijaovillabaleytestation"
       },
       "nep": {
         "id": "p540:r18",
@@ -578606,11 +579261,24 @@
         "funding_php": {},
         "title_match_key": "roadconcretingtagbubungatoabijaovillabaleytestation00001000",
         "office_canonical": "Leyte 3rd District Engineering Office",
-        "title_base": "Road Concreting, Barangay Tagbubunga to Barangay Abijao, Villaba, Leyte (Station 0 + 000 - 1 + 000)",
-        "chainages": [],
+        "title_base": "Road Concreting, Barangay Tagbubunga - Barangay Abijao, Villaba, Leyte (Station )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "1+000",
+            "meters_from": 0,
+            "meters_to": 1000,
+            "length_m": 1000,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "roadconcretingtagbubungatoabijaovillabaleytestation00001000"
+        "title_base_match_key": "roadconcretingtagbubungaabijaovillabaleytestation"
       },
       "delta_php": 0,
       "reason": null
@@ -579681,24 +580349,24 @@
         "funding_php": {},
         "title_match_key": "constructionofbaylanansanmiguelbridgealongjctcagayandeorocitydominorogcampkibaritanroadtojctshaglayanalanibticlaanroadaglayanbasakbgycosinasta21750sta21800talakagbukldnon",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Baylanan - San Miguel Bridge along Jct. Cagayan de Oro City - Dominorog - Camp Kibaritan Road - Jct SH-Aglayan-Alanib-Ticlaan Road (Aglayan - Basak), Bgy. Cosina, Sta, 21+750 Talakag, Bukldnon",
+        "title_base": "Construction of Baylanan - San Miguel Bridge along Jct. Cagayan de Oro City - Dominorog - Camp Kibaritan Road - Jct SH-Aglayan-Alanib-Ticlaan Road (Aglayan - Basak), Bgy. Cosina, Sta Talakag, Bukldnon",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "21+800",
+            "from": "21+750",
             "to": "21+800",
-            "meters_from": 21800,
+            "meters_from": 21750,
             "meters_to": 21800,
-            "length_m": null,
+            "length_m": 50,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofbaylanansanmiguelbridgealongjctcagayandeorocitydominorogcampkibaritanroadjctshaglayanalanibticlaanroadaglayanbasakbgycosinasta21750talakagbukldnon"
+        "title_base_match_key": "constructionofbaylanansanmiguelbridgealongjctcagayandeorocitydominorogcampkibaritanroadjctshaglayanalanibticlaanroadaglayanbasakbgycosinastatalakagbukldnon"
       },
       "nep": {
         "id": "p449:r15",
@@ -579721,24 +580389,24 @@
         "funding_php": {},
         "title_match_key": "constructionofbaylanansanmiguelbridgealongjctcagayandeorocitydominorogcampkibaritanroadtojctshaglayanalanibticlaanroadaglayanbasakbgycosinasta21750sta21800talakagbukldnon",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Baylanan - San Miguel Bridge along Jct. Cagayan de Oro City - Dominorog - Camp Kibaritan Road - Jct SH-Aglayan-Alanib-Ticlaan Road (Aglayan - Basak ), Bgy. Cosina, Sta, 21 + 750 Talakag, Bukldnon",
+        "title_base": "Construction of Baylanan - San Miguel Bridge along Jct. Cagayan de Oro City - Dominorog - Camp Kibaritan Road - Jct SH-Aglayan-Alanib-Ticlaan Road (Aglayan - Basak ), Bgy. Cosina, Sta Talakag, Bukldnon",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "21+800",
+            "from": "21+750",
             "to": "21+800",
-            "meters_from": 21800,
+            "meters_from": 21750,
             "meters_to": 21800,
-            "length_m": null,
+            "length_m": 50,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofbaylanansanmiguelbridgealongjctcagayandeorocitydominorogcampkibaritanroadjctshaglayanalanibticlaanroadaglayanbasakbgycosinasta21750talakagbukldnon"
+        "title_base_match_key": "constructionofbaylanansanmiguelbridgealongjctcagayandeorocitydominorogcampkibaritanroadjctshaglayanalanibticlaanroadaglayanbasakbgycosinastatalakagbukldnon"
       },
       "delta_php": 0,
       "reason": null
@@ -586739,7 +587407,7 @@
         "funding_php": {},
         "title_match_key": "constructionofroaduppercalawagcalawagsectionasta6300sta6470sectionbsta7700sta8700balingasagmisamisoriental",
         "office_canonical": "Misamis Oriental 1st District Engineering Office",
-        "title_base": "Construction of Road, Upper Calawag, Barangay Calawag, Section A Section B Sta. 7+700 Balingasag, Misamis Oriental",
+        "title_base": "Construction of Road, Upper Calawag, Barangay Calawag, Section A Section B Balingasag, Misamis Oriental",
         "chainages": [
           {
             "kind": "Sta",
@@ -586755,20 +587423,20 @@
           },
           {
             "kind": "Sta",
-            "from": "8+700",
+            "from": "7+700",
             "to": "8+700",
-            "meters_from": 8700,
+            "meters_from": 7700,
             "meters_to": 8700,
-            "length_m": null,
+            "length_m": 1000,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroaduppercalawagcalawagsectionasectionbsta7700balingasagmisamisoriental"
+        "title_base_match_key": "constructionofroaduppercalawagcalawagsectionasectionbbalingasagmisamisoriental"
       },
       "nep": {
         "id": "p552:r14",
@@ -586791,7 +587459,7 @@
         "funding_php": {},
         "title_match_key": "constructionofroaduppercalawagcalawagsectionasta6300sta6470sectionbsta7700sta8700balingasagmisamisoriental",
         "office_canonical": "Misamis Oriental 1st District Engineering Office",
-        "title_base": "Construction of Road, Upper Calawag, Barangay Calawag, Section A Section B Sta. 7 + 700 Balingasag, Misamis Oriental",
+        "title_base": "Construction of Road, Upper Calawag, Barangay Calawag, Section A Section B Balingasag, Misamis Oriental",
         "chainages": [
           {
             "kind": "Sta",
@@ -586807,20 +587475,20 @@
           },
           {
             "kind": "Sta",
-            "from": "8+700",
+            "from": "7+700",
             "to": "8+700",
-            "meters_from": 8700,
+            "meters_from": 7700,
             "meters_to": 8700,
-            "length_m": null,
+            "length_m": 1000,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroaduppercalawagcalawagsectionasectionbsta7700balingasagmisamisoriental"
+        "title_base_match_key": "constructionofroaduppercalawagcalawagsectionasectionbbalingasagmisamisoriental"
       },
       "delta_php": 0,
       "reason": null
@@ -596724,11 +597392,24 @@
         "funding_php": {},
         "title_match_key": "constructionofjctdagatantositioinayaranroadsudlonsocorrosurigaodelnorte00003260",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Jct Dagatan to Sitio Inayaran Road, Sudlon, Socorro, Surigao del Norte (0+000-3+260)",
-        "chainages": [],
+        "title_base": "Construction of Jct Dagatan - Sitio Inayaran Road, Sudlon, Socorro, Surigao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "3+260",
+            "meters_from": 0,
+            "meters_to": 3260,
+            "length_m": 3260,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofjctdagatantositioinayaranroadsudlonsocorrosurigaodelnorte00003260"
+        "title_base_match_key": "constructionofjctdagatansitioinayaranroadsudlonsocorrosurigaodelnorte"
       },
       "nep": {
         "id": "p454:r11",
@@ -596751,11 +597432,24 @@
         "funding_php": {},
         "title_match_key": "constructionofjctdagatantositioinayaranroadsudlonsocorrosurigaodelnorte00003260",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Jct Dagatan to Sitio Inayaran Road, Brgy Sudlon, Socorro, Surigao del Norte (0 + 000-3 + 260)",
-        "chainages": [],
+        "title_base": "Construction of Jct Dagatan - Sitio Inayaran Road, Brgy Sudlon, Socorro, Surigao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "3+260",
+            "meters_from": 0,
+            "meters_to": 3260,
+            "length_m": 3260,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofjctdagatantositioinayaranroadsudlonsocorrosurigaodelnorte00003260"
+        "title_base_match_key": "constructionofjctdagatansitioinayaranroadsudlonsocorrosurigaodelnorte"
       },
       "delta_php": 0,
       "reason": "Titles match only after abbreviation/repeat normalization; raw spellings differ."
@@ -596791,11 +597485,24 @@
         "funding_php": {},
         "title_match_key": "constructionofjctseringcalanguganroadsocorrosurigaodelnorte00003000",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Jct Sering-Calangugan Road, Socorro, Surigao del Norte 0+000 - 3+000",
-        "chainages": [],
+        "title_base": "Construction of Jct Sering-Calangugan Road, Socorro, Surigao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "3+000",
+            "meters_from": 0,
+            "meters_to": 3000,
+            "length_m": 3000,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofjctseringcalanguganroadsocorrosurigaodelnorte00003000"
+        "title_base_match_key": "constructionofjctseringcalanguganroadsocorrosurigaodelnorte"
       },
       "nep": {
         "id": "p454:r12",
@@ -596818,11 +597525,24 @@
         "funding_php": {},
         "title_match_key": "constructionofjctseringcalanguganroadsocorrosurigaodelnorte00003000",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Jct Sering-Calangugan Road, Socorro, Surigao del Norte 0 + 000 - 3 + 000",
-        "chainages": [],
+        "title_base": "Construction of Jct Sering-Calangugan Road, Socorro, Surigao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "3+000",
+            "meters_from": 0,
+            "meters_to": 3000,
+            "length_m": 3000,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofjctseringcalanguganroadsocorrosurigaodelnorte00003000"
+        "title_base_match_key": "constructionofjctseringcalanguganroadsocorrosurigaodelnorte"
       },
       "delta_php": 0,
       "reason": null
@@ -596863,11 +597583,24 @@
         "funding_php": {},
         "title_match_key": "constructionofjctstacruztositiobuajahanroadstacruzsocorrosurigaodelnorte00003260",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Jct Sta Cruz to Sitio Buajahan Road, Sta Cruz, Socorro, Surigao del Norte (0+000-3+260)",
-        "chainages": [],
+        "title_base": "Construction of Jct Sta Cruz - Sitio Buajahan Road, Sta Cruz, Socorro, Surigao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "3+260",
+            "meters_from": 0,
+            "meters_to": 3260,
+            "length_m": 3260,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofjctstacruztositiobuajahanroadstacruzsocorrosurigaodelnorte00003260"
+        "title_base_match_key": "constructionofjctstacruzsitiobuajahanroadstacruzsocorrosurigaodelnorte"
       },
       "nep": {
         "id": "p454:r10",
@@ -596890,11 +597623,24 @@
         "funding_php": {},
         "title_match_key": "constructionofjctstacruztositiobuajahanroadstacruzsocorrosurigaodelnorte00003260",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Jct Brgy Sta Cruz to Sitio Buajahan Road, Brgy Sta Cruz, Socorro, Surigao del Norte (0 + 000-3 + 260)",
-        "chainages": [],
+        "title_base": "Construction of Jct Brgy Sta Cruz - Sitio Buajahan Road, Brgy Sta Cruz, Socorro, Surigao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "3+260",
+            "meters_from": 0,
+            "meters_to": 3260,
+            "length_m": 3260,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofjctstacruztositiobuajahanroadstacruzsocorrosurigaodelnorte00003260"
+        "title_base_match_key": "constructionofjctstacruzsitiobuajahanroadstacruzsocorrosurigaodelnorte"
       },
       "delta_php": 0,
       "reason": "Titles match only after abbreviation/repeat normalization; raw spellings differ."
@@ -598408,11 +599154,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadsanroquetugbungansocorrosurigaodelnorte00002800",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Road, Barangay San Roque-Tugbungan, Socorro, Surigao del Norte (0+000 - 2+800)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay San Roque-Tugbungan, Socorro, Surigao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "2+800",
+            "meters_from": 0,
+            "meters_to": 2800,
+            "length_m": 2800,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadsanroquetugbungansocorrosurigaodelnorte00002800"
+        "title_base_match_key": "constructionofroadsanroquetugbungansocorrosurigaodelnorte"
       },
       "nep": {
         "id": "p454:r21",
@@ -598435,11 +599194,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadsanroquetugbungansocorrosurigaodelnorte00002800",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Road, Barangay San Roque-Tugbungan, Socorro, Surigao del Norte (0 + 000 - 2 + 800)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay San Roque-Tugbungan, Socorro, Surigao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "2+800",
+            "meters_from": 0,
+            "meters_to": 2800,
+            "length_m": 2800,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadsanroquetugbungansocorrosurigaodelnorte00002800"
+        "title_base_match_key": "constructionofroadsanroquetugbungansocorrosurigaodelnorte"
       },
       "delta_php": 0,
       "reason": null
@@ -786203,15 +786975,15 @@
         "funding_php": {},
         "title_match_key": "starosatarlacrdk0120296k0121510start1544694741208193798end1544822861208081534",
         "office_canonical": "Nueva Ecija 1st District Engineering Office",
-        "title_base": "Sta. Rosa - Tarlac Rd tart: 15.4469474, 120.8193798 End: 15.4482286, 120.8081534",
+        "title_base": "Sta. Rosa - Tarlac Rd Start: 15.4469474, 120.8193798 End: 15.4482286, 120.8081534",
         "chainages": [
           {
             "kind": "K",
             "from": "K0120+296",
-            "to": "K0121+5105",
+            "to": "K0121+510",
             "meters_from": 120296,
-            "meters_to": 126105,
-            "length_m": 5809,
+            "meters_to": 121510,
+            "length_m": 1214,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -786220,7 +786992,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "starosatarlacrdtart1544694741208193798end1544822861208081534"
+        "title_base_match_key": "starosatarlacrdstart1544694741208193798end1544822861208081534"
       }
     },
     {
@@ -792843,7 +793615,7 @@
         "funding_php": {},
         "title_match_key": "olongapobugallonroadk0178797k0179007k0181544182005",
         "office_canonical": "Zambales 1st District Engineering Office",
-        "title_base": "Olongapo-Bugallon Road 182 + 005",
+        "title_base": "Olongapo-Bugallon Road K",
         "chainages": [
           {
             "kind": "K",
@@ -792858,21 +793630,21 @@
             "point": false
           },
           {
-            "kind": "K",
-            "from": "K0181+544",
-            "to": "K0181+544",
+            "kind": "Sta",
+            "from": "0181+544",
+            "to": "182+005",
             "meters_from": 181544,
-            "meters_to": 181544,
-            "length_m": null,
+            "meters_to": 182005,
+            "length_m": 461,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "olongapobugallonroad182005"
+        "title_base_match_key": "olongapobugallonroadk"
       }
     },
     {
@@ -797192,24 +797964,24 @@
         "funding_php": {},
         "title_match_key": "mountainprovinceisabelaroadk0468125k0472552",
         "office_canonical": "Central Office",
-        "title_base": "Mountain Province - Isabela Road",
+        "title_base": "Mountain Province - Isabela Road KO472 + 552",
         "chainages": [
           {
             "kind": "K",
             "from": "K0468+125",
-            "to": "K0472+552",
+            "to": "K0468+125",
             "meters_from": 468125,
-            "meters_to": 472552,
-            "length_m": 4427,
+            "meters_to": 468125,
+            "length_m": null,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": false
+            "point": true
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "mountainprovinceisabelaroad"
+        "title_base_match_key": "mountainprovinceisabelaroadk0472552"
       }
     },
     {
@@ -802384,24 +803156,11 @@
         "funding_php": {},
         "title_match_key": "calambastacruzfamyjctrdk0103100k0103500",
         "office_canonical": "Central Office",
-        "title_base": "Calamba-Sta. Cruz, Famy Jct Rd",
-        "chainages": [
-          {
-            "kind": "K",
-            "from": "K0103+100",
-            "to": "K0103+500",
-            "meters_from": 103100,
-            "meters_to": 103500,
-            "length_m": 400,
-            "length_review": null,
-            "length_from": null,
-            "length_to": null,
-            "point": false
-          }
-        ],
+        "title_base": "Calamba-Sta. Cruz, Famy Jct Rd, KO103+100 - KO103+500",
+        "chainages": [],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "calambastacruzfamyjctrd"
+        "title_base_match_key": "calambastacruzfamyjctrdk0103100k0103500"
       }
     },
     {
@@ -827433,16 +828192,16 @@
         "funding_php": {},
         "title_match_key": "nuevaecijapangasinanrdk0139000k0139300bsk0139300k0139700ls",
         "office_canonical": "Nueva Ecija 1st District Engineering Office",
-        "title_base": "Nueva Ecija - Pangasinan Rd LS",
+        "title_base": "Nueva Ecija - Pangasinan Rd BS LS",
         "chainages": [
           {
             "kind": "K",
             "from": "K0139+000",
-            "to": "K0139+30085",
+            "to": "K0139+300",
             "meters_from": 139000,
-            "meters_to": 169085,
-            "length_m": null,
-            "length_review": "absurd_unresolved",
+            "meters_to": 139300,
+            "length_m": 300,
+            "length_review": null,
             "length_from": null,
             "length_to": null,
             "point": false
@@ -827460,9 +828219,9 @@
             "point": false
           }
         ],
-        "chainage_incomplete": true,
-        "chainage_length_review": "absurd_unresolved",
-        "title_base_match_key": "nuevaecijapangasinanrdls"
+        "chainage_incomplete": false,
+        "chainage_length_review": null,
+        "title_base_match_key": "nuevaecijapangasinanrdbsls"
       }
     },
     {
@@ -838779,24 +839538,24 @@
         "funding_php": {},
         "title_match_key": "calauagsanfelipebypassroadkm00001200nagacitycamarinessur",
         "office_canonical": "Central Office",
-        "title_base": "Calauag - San Felipe By-pass Road 1+200, Naga City, Camarines Sur",
+        "title_base": "Calauag - San Felipe By-pass Road, km Naga City, Camarines Sur",
         "chainages": [
           {
-            "kind": "KM",
-            "from": "KM0+000",
-            "to": "KM0+000",
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "1+200",
             "meters_from": 0,
-            "meters_to": 0,
-            "length_m": null,
+            "meters_to": 1200,
+            "length_m": 1200,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "calauagsanfelipebypassroad1200nagacitycamarinessur"
+        "title_base_match_key": "calauagsanfelipebypassroadkmnagacitycamarinessur"
       }
     },
     {
@@ -848449,15 +849208,15 @@
         "funding_php": {},
         "title_match_key": "butuancitycagayandeorocityiligancityrdk1460000k1461885lroadsafetyroadwaylighting",
         "office_canonical": "Misamis Oriental 2nd District Engineering Office",
-        "title_base": "Butuan City-Cagayan de Oro City-Iligan City Rd. (Road Safety: Roadway Lighting)",
+        "title_base": "Butuan City-Cagayan de Oro City-Iligan City Rd. l (Road Safety: Roadway Lighting)",
         "chainages": [
           {
             "kind": "K",
             "from": "K1460+000",
-            "to": "K1461+8851",
+            "to": "K1461+885",
             "meters_from": 1460000,
-            "meters_to": 1469851,
-            "length_m": 9851,
+            "meters_to": 1461885,
+            "length_m": 1885,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -848466,7 +849225,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "butuancitycagayandeorocityiligancityrdroadsafetyroadwaylighting"
+        "title_base_match_key": "butuancitycagayandeorocityiligancityrdlroadsafetyroadwaylighting"
       }
     },
     {
@@ -855586,7 +856345,7 @@
         "funding_php": {},
         "title_match_key": "constructionofinterceptoralongtoctocanroadsmanresasta000400psta013000pmasambongsta000530sta001600sta021000sta26160sta041000sta048410asta045000sta046000bandapoloniosamsonsta046000bsta048410bquezoncity",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Interceptor along Toctocan Road, s. Manresa ( P P), Masambong ( Sta. 261.60 A ), and Apolonio Samson , Quezon City",
+        "title_base": "Construction of Interceptor along Toctocan Road, s. Manresa ( P P), Masambong ( Sta. 261.60 A B), and Apolonio Samson ( B B), Quezon City",
         "chainages": [
           {
             "kind": "Sta",
@@ -855651,7 +856410,7 @@
           {
             "kind": "Sta",
             "from": "0+450.00",
-            "to": "0+460.008",
+            "to": "0+460.00",
             "meters_from": 450,
             "meters_to": 460,
             "length_m": 10,
@@ -855662,20 +856421,32 @@
           },
           {
             "kind": "Sta",
-            "from": "0+460.008",
-            "to": "0+484.108",
+            "from": "0+460.00",
+            "to": "0+460.00",
             "meters_from": 460,
-            "meters_to": 484,
-            "length_m": 24,
+            "meters_to": 460,
+            "length_m": null,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": false
+            "point": true
+          },
+          {
+            "kind": "Sta",
+            "from": "0+484.10",
+            "to": "0+484.10",
+            "meters_from": 484,
+            "meters_to": 484,
+            "length_m": null,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": true
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofinterceptoralongtoctocanroadsmanresapmasambongsta26160aandapoloniosamsonquezoncity"
+        "title_base_match_key": "constructionofinterceptoralongtoctocanroadsmanresapmasambongsta26160abandapoloniosamsonbquezoncity"
       }
     },
     {
@@ -875490,7 +876261,7 @@
         "funding_php": {},
         "title_match_key": "constructionofurbandrainagesystemguinobatanalbaysection1sta0000sta0374section20000sta0167section30000sta0398section40000sta0810",
         "office_canonical": "Albay 3rd District Engineering Office",
-        "title_base": "Construction of Urban Drainage System, Guinobatan, Albay, Section 1: Section 2: 0 + 000 Section 3: 0 + 000 Section 4: 0 + 000",
+        "title_base": "Construction of Urban Drainage System, Guinobatan, Albay, Section 1: Section 2: Section 3: Section 4:",
         "chainages": [
           {
             "kind": "Sta",
@@ -875506,44 +876277,44 @@
           },
           {
             "kind": "Sta",
-            "from": "0+167",
+            "from": "0+000",
             "to": "0+167",
-            "meters_from": 167,
+            "meters_from": 0,
             "meters_to": 167,
-            "length_m": null,
+            "length_m": 167,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           },
           {
             "kind": "Sta",
-            "from": "0+398",
+            "from": "0+000",
             "to": "0+398",
-            "meters_from": 398,
+            "meters_from": 0,
             "meters_to": 398,
-            "length_m": null,
+            "length_m": 398,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           },
           {
             "kind": "Sta",
-            "from": "0+810",
+            "from": "0+000",
             "to": "0+810",
-            "meters_from": 810,
+            "meters_from": 0,
             "meters_to": 810,
-            "length_m": null,
+            "length_m": 810,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofurbandrainagesystemguinobatanalbaysection1section20000section30000section40000"
+        "title_base_match_key": "constructionofurbandrainagesystemguinobatanalbaysection1section2section3section4"
       }
     },
     {
@@ -880802,11 +881573,24 @@
         "funding_php": {},
         "title_match_key": "constructionoffloodcontrolstructurealongsibugueyriversiayzamboangasibugay0000to0245",
         "office_canonical": "Zamboanga Sibugay 2nd District Engineering Office",
-        "title_base": "Construction of Flood Control Structure along Sibuguey River, Siay, Zamboanga Sibugay 0 + 000 to 0 + 245",
-        "chainages": [],
+        "title_base": "Construction of Flood Control Structure along Sibuguey River, Siay, Zamboanga Sibugay",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+245",
+            "meters_from": 0,
+            "meters_to": 245,
+            "length_m": 245,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionoffloodcontrolstructurealongsibugueyriversiayzamboangasibugay0000to0245"
+        "title_base_match_key": "constructionoffloodcontrolstructurealongsibugueyriversiayzamboangasibugay"
       }
     },
     {
@@ -880849,11 +881633,24 @@
         "funding_php": {},
         "title_match_key": "constructionofriverwallalongthesibugueyriverminsulaotoparuksiayzamboangasibugay0000to0228",
         "office_canonical": "Zamboanga Sibugay 2nd District Engineering Office",
-        "title_base": "Construction of River Wall along the Sibuguey River, Barangay Minsulao to Barangay Paruk, Siay, Zamboanga Sibugay 0 + 000 to 0 + 228",
-        "chainages": [],
+        "title_base": "Construction of River Wall along the Sibuguey River, Barangay Minsulao - Barangay Paruk, Siay, Zamboanga Sibugay",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+228",
+            "meters_from": 0,
+            "meters_to": 228,
+            "length_m": 228,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofriverwallalongthesibugueyriverminsulaotoparuksiayzamboangasibugay0000to0228"
+        "title_base_match_key": "constructionofriverwallalongthesibugueyriverminsulaoparuksiayzamboangasibugay"
       }
     },
     {
@@ -886596,12 +887393,12 @@
         "funding_php": {},
         "title_match_key": "rehabilitationofcalungbuyanbralongsantaranchoroadsta38873315sta38879000ilocossur",
         "office_canonical": "Central Office",
-        "title_base": "Rehabilitation of Calungbuyan Br. along Santa-Rancho Road ocos Sur",
+        "title_base": "Rehabilitation of Calungbuyan Br. along Santa-Rancho Road Ilocos Sur",
         "chainages": [
           {
             "kind": "Sta",
             "from": "388+733.15",
-            "to": "388+790.0011",
+            "to": "388+790.00",
             "meters_from": 388733,
             "meters_to": 388790,
             "length_m": 57,
@@ -886613,7 +887410,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "rehabilitationofcalungbuyanbralongsantaranchoroadocossur"
+        "title_base_match_key": "rehabilitationofcalungbuyanbralongsantaranchoroadilocossur"
       }
     },
     {
@@ -894170,7 +894967,8 @@
       }
     },
     {
-      "status": "house_unmatched",
+      "status": "chainage_candidate",
+      "confidence": 1.0,
       "house": {
         "id": "hb:ic:c7912",
         "native_node_id": "c7912",
@@ -894204,12 +895002,91 @@
         "funding_php": {},
         "title_match_key": "constructionofroadnageronglazisiquijorsegment14203148segment219372947",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Road Barangay Nagerong, Lazi, Siquijor (Segment 1: 1 + 420 - 3 + 148 Segment 2: 1 + 937 - 2 + 947)",
-        "chainages": [],
+        "title_base": "Construction of Road Barangay Nagerong, Lazi, Siquijor (Segment 1: Segment 2: )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "1+420",
+            "to": "3+148",
+            "meters_from": 1420,
+            "meters_to": 3148,
+            "length_m": 1728,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          },
+          {
+            "kind": "Sta",
+            "from": "1+937",
+            "to": "2+947",
+            "meters_from": 1937,
+            "meters_to": 2947,
+            "length_m": 1010,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadnageronglazisiquijorsegment14203148segment219372947"
-      }
+        "title_base_match_key": "constructionofroadnageronglazisiquijorsegment1segment2"
+      },
+      "nep": {
+        "id": "p447:r2",
+        "title": "Construction of Road Barangay Nagerong, Lazi, Siguijor (Segment 1: 0 + 000 - 1 + 700 Segment 2: 1 + 280 - 3 + 080)",
+        "amount_php": 114000000,
+        "program": "Convergence and Special Support Program",
+        "pap": "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities",
+        "pap_id": "p433:r1",
+        "zone": "local",
+        "region": "NIR",
+        "office": "Central Office",
+        "pdf_page": 447,
+        "bbox": [
+          0.0,
+          172.068,
+          720.0,
+          202.362
+        ],
+        "evidence": "within_bbox_agreement",
+        "funding_php": {},
+        "title_match_key": "constructionofroadnageronglazisiquijorsegment100001700segment212803080",
+        "office_canonical": "Central Office",
+        "title_base": "Construction of Road Barangay Nagerong, Lazi, Siguijor (Segment 1: Segment 2: )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "1+700",
+            "meters_from": 0,
+            "meters_to": 1700,
+            "length_m": 1700,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          },
+          {
+            "kind": "Sta",
+            "from": "1+280",
+            "to": "3+080",
+            "meters_from": 1280,
+            "meters_to": 3080,
+            "length_m": 1800,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
+        "chainage_incomplete": false,
+        "chainage_length_review": null,
+        "title_base_match_key": "constructionofroadnageronglazisiquijorsegment1segment2"
+      },
+      "delta_php": -29000000,
+      "reason": "Same road title_base with differing chainage (decreased project length). Possible coverage amendment, not a new insertion."
     },
     {
       "status": "fuzzy_candidate",
@@ -894399,24 +895276,24 @@
         "funding_php": {},
         "title_match_key": "constructionofzone7namocoastalroadta0345sta0528bulansorsogon",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Zone 7 - Namo Coastal Road, Ta. 0 +345 Bulan, Sorsogon",
+        "title_base": "Construction of Zone 7 - Namo Coastal Road, Ta. Bulan, Sorsogon",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+528",
+            "from": "0+345",
             "to": "0+528",
-            "meters_from": 528,
+            "meters_from": 345,
             "meters_to": 528,
-            "length_m": null,
+            "length_m": 183,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofzone7namocoastalroadta0345bulansorsogon"
+        "title_base_match_key": "constructionofzone7namocoastalroadtabulansorsogon"
       }
     },
     {
@@ -894743,12 +895620,12 @@
         "funding_php": {},
         "title_match_key": "constructionofroadpackage3sta152000272000stapardotoongcebucity",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Road, Package 3 ta. Barangay Pardo - Toong, Cebu City",
+        "title_base": "Construction of Road, Package 3 Sta. Barangay Pardo - Toong, Cebu City",
         "chainages": [
           {
             "kind": "Sta",
             "from": "1+520.00",
-            "to": "2+720.005",
+            "to": "2+720.00",
             "meters_from": 1520,
             "meters_to": 2720,
             "length_m": 1200,
@@ -894760,7 +895637,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadpackage3tapardotoongcebucity"
+        "title_base_match_key": "constructionofroadpackage3stapardotoongcebucity"
       }
     },
     {
@@ -898692,15 +899569,15 @@
         "funding_php": {},
         "title_match_key": "constructionofroadpoblacionpamintaranmaragusandavaodeorosection1sta0000sta0151section2sta0294sta2408section3sta0000sta0400",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Road Barangay Poblacion - Barangay Pamintaran, Maragusan, Davao de Oro Section 1: ection 2: ection 3:",
+        "title_base": "Construction of Road Barangay Poblacion - Barangay Pamintaran, Maragusan, Davao de Oro Section 1: Section 2: Section 3:",
         "chainages": [
           {
             "kind": "Sta",
             "from": "0+000",
-            "to": "0+1515",
+            "to": "0+151",
             "meters_from": 0,
-            "meters_to": 1515,
-            "length_m": 1515,
+            "meters_to": 151,
+            "length_m": 151,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -898709,10 +899586,10 @@
           {
             "kind": "Sta",
             "from": "0+294",
-            "to": "2+4085",
+            "to": "2+408",
             "meters_from": 294,
-            "meters_to": 6085,
-            "length_m": 5791,
+            "meters_to": 2408,
+            "length_m": 2114,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -898733,7 +899610,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadpoblacionpamintaranmaragusandavaodeorosection1ection2ection3"
+        "title_base_match_key": "constructionofroadpoblacionpamintaranmaragusandavaodeorosection1section2section3"
       }
     },
     {
@@ -914519,15 +915396,15 @@
         "funding_php": {},
         "title_match_key": "constructionofababaanaccessroadsta15006sta16256ababaanbalbalankalinga",
         "office_canonical": "Upper Kalinga District Engineering Office",
-        "title_base": "Construction of Ab-abaan Access Road arangay Ab- abaan, Balbalan, Kalinga",
+        "title_base": "Construction of Ab-abaan Access Road Barangay Ab- abaan, Balbalan, Kalinga",
         "chainages": [
           {
             "kind": "Sta",
             "from": "15+006",
-            "to": "16+2568",
+            "to": "16+256",
             "meters_from": 15006,
-            "meters_to": 18568,
-            "length_m": 3562,
+            "meters_to": 16256,
+            "length_m": 1250,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -914536,7 +915413,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofababaanaccessroadarangayababaanbalbalankalinga"
+        "title_base_match_key": "constructionofababaanaccessroadababaanbalbalankalinga"
       }
     },
     {
@@ -914996,11 +915873,24 @@
         "funding_php": {},
         "title_match_key": "rehabilitationofroadatsitiomaasiniragasolanacagayan00001250",
         "office_canonical": "Cagayan 3rd District Engineering Office",
-        "title_base": "Rehabilitation of Road at Sitio Maasin, Barangay Iraga, Solana, Cagayan (0+000 - 1+250)",
-        "chainages": [],
+        "title_base": "Rehabilitation of Road at Sitio Maasin, Barangay Iraga, Solana, Cagayan",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "1+250",
+            "meters_from": 0,
+            "meters_to": 1250,
+            "length_m": 1250,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "rehabilitationofroadatsitiomaasiniragasolanacagayan00001250"
+        "title_base_match_key": "rehabilitationofroadatsitiomaasiniragasolanacagayan"
       }
     },
     {
@@ -920016,11 +920906,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadgeneralaguinaldoramonisabela000000184300",
         "office_canonical": "Isabela 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay General Aguinaldo, Ramon, Isabela (0+000.00- 1+843.00)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay General Aguinaldo, Ramon, Isabela",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000.00",
+            "to": "1+843.00",
+            "meters_from": 0,
+            "meters_to": 1843,
+            "length_m": 1843,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadgeneralaguinaldoramonisabela000000184300"
+        "title_base_match_key": "constructionofroadgeneralaguinaldoramonisabela"
       }
     },
     {
@@ -920053,11 +920956,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadplanasramonisabela000000024900",
         "office_canonical": "Isabela 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Planas, Ramon, Isabela (0+000.00 - 0+249.00)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Planas, Ramon, Isabela",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000.00",
+            "to": "0+249.00",
+            "meters_from": 0,
+            "meters_to": 249,
+            "length_m": 249,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadplanasramonisabela000000024900"
+        "title_base_match_key": "constructionofroadplanasramonisabela"
       }
     },
     {
@@ -920095,11 +921011,24 @@
         "funding_php": {},
         "title_match_key": "rehabilitationofconcreteroadbellaluzsanmateoisabelasta0000032500",
         "office_canonical": "Isabela 3rd District Engineering Office",
-        "title_base": "Rehabilitation of Concrete Road, Barangay Bella Luz, San Mateo, Isabela Sta. (0+000 - 0+325.00)",
-        "chainages": [],
+        "title_base": "Rehabilitation of Concrete Road, Barangay Bella Luz, San Mateo, Isabela Sta.",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+325.00",
+            "meters_from": 0,
+            "meters_to": 325,
+            "length_m": 325,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "rehabilitationofconcreteroadbellaluzsanmateoisabelasta0000032500"
+        "title_base_match_key": "rehabilitationofconcreteroadbellaluzsanmateoisabelasta"
       }
     },
     {
@@ -920137,11 +921066,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadbacarreamapurocroadbacarreaandmapurocsanmateoisabela000000068700",
         "office_canonical": "Isabela 3rd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Bacarreña - Mapuroc Road, Barangay Bacarreña and Mapuroc, San Mateo, Isabela (0+000.00-0+687.00)",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Bacarreña - Mapuroc Road, Barangay Bacarreña and Mapuroc, San Mateo, Isabela",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000.00",
+            "to": "0+687.00",
+            "meters_from": 0,
+            "meters_to": 687,
+            "length_m": 687,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadbacarreamapurocroadbacarreaandmapurocsanmateoisabela000000068700"
+        "title_base_match_key": "constructionofroadbacarreamapurocroadbacarreaandmapurocsanmateoisabela"
       }
     },
     {
@@ -920384,11 +921326,24 @@
         "funding_php": {},
         "title_match_key": "concretingofaccessroadfrombgystodomingotobgydumawigjonesisabela00001500",
         "office_canonical": "Isabela 4th District Engineering Office",
-        "title_base": "Concreting of Access road from Bgy. Sto. Domingo to Bgy Dumawig, Jones, Isabela (0+000 -1+500)",
-        "chainages": [],
+        "title_base": "Concreting of Access road from Bgy. Sto. Domingo - Bgy Dumawig, Jones, Isabela",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "1+500",
+            "meters_from": 0,
+            "meters_to": 1500,
+            "length_m": 1500,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "concretingofaccessroadfrombgystodomingotobgydumawigjonesisabela00001500"
+        "title_base_match_key": "concretingofaccessroadfrombgystodomingobgydumawigjonesisabela"
       }
     },
     {
@@ -920431,14 +921386,26 @@
         "funding_php": {},
         "title_match_key": "concretingofaccessroadatbgysinaoangansurtobgysalaysanagustinisabelasta0000sta1220",
         "office_canonical": "Isabela 4th District Engineering Office",
-        "title_base": "Concreting of access road at Bgy Sinaoangan Sur - Bgy. Salay, San Agustin, Isabela ta. 1+220",
+        "title_base": "Concreting of access road at Bgy Sinaoangan Sur - Bgy. Salay, San Agustin, Isabela",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+0005",
-            "to": "0+0005",
-            "meters_from": 5,
-            "meters_to": 5,
+            "from": "0+000",
+            "to": "0+000",
+            "meters_from": 0,
+            "meters_to": 0,
+            "length_m": null,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": true
+          },
+          {
+            "kind": "Sta",
+            "from": "1+220",
+            "to": "1+220",
+            "meters_from": 1220,
+            "meters_to": 1220,
             "length_m": null,
             "length_review": null,
             "length_from": null,
@@ -920448,7 +921415,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "concretingofaccessroadatbgysinaoangansurbgysalaysanagustinisabelata1220"
+        "title_base_match_key": "concretingofaccessroadatbgysinaoangansurbgysalaysanagustinisabela"
       }
     },
     {
@@ -921956,15 +922923,15 @@
         "funding_php": {},
         "title_match_key": "constructionofroadsta0000sta2200salaysanagustinisabela",
         "office_canonical": "Isabela 4th District Engineering Office",
-        "title_base": "Construction of Road arangay Salay, San Agustin, Isabela",
+        "title_base": "Construction of Road Barangay Salay, San Agustin, Isabela",
         "chainages": [
           {
             "kind": "Sta",
             "from": "0+000",
-            "to": "2+2008",
+            "to": "2+200",
             "meters_from": 0,
-            "meters_to": 4008,
-            "length_m": 4008,
+            "meters_to": 2200,
+            "length_m": 2200,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -921973,7 +922940,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadarangaysalaysanagustinisabela"
+        "title_base_match_key": "constructionofroadsalaysanagustinisabela"
       }
     },
     {
@@ -925013,11 +925980,36 @@
         "funding_php": {},
         "title_match_key": "constructionofroadtuyocityofbalangabataan0000061000000222",
         "office_canonical": "Bataan 2nd District Engineering Office",
-        "title_base": "Construction of Road, Barangay Tuyo, City of Balanga, Bataan, 0+000-0+610, 0+000- 0+222",
-        "chainages": [],
+        "title_base": "Construction of Road, Barangay Tuyo, City of Balanga, Bataan",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+610",
+            "meters_from": 0,
+            "meters_to": 610,
+            "length_m": 610,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          },
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+222",
+            "meters_from": 0,
+            "meters_to": 222,
+            "length_m": 222,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadtuyocityofbalangabataan0000061000000222"
+        "title_base_match_key": "constructionofroadtuyocityofbalangabataan"
       }
     },
     {
@@ -929825,24 +930817,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadwithdrainagecanalatsannicolasminalinpampanga0000sta0304",
         "office_canonical": "Pampanga 1st District Engineering Office",
-        "title_base": "Construction of Road with Drainage Canal at Barangay San Nicolas, Minalin, Pampanga 0+000",
+        "title_base": "Construction of Road with Drainage Canal at Barangay San Nicolas, Minalin, Pampanga",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+304",
+            "from": "0+000",
             "to": "0+304",
-            "meters_from": 304,
+            "meters_from": 0,
             "meters_to": 304,
-            "length_m": null,
+            "length_m": 304,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadwithdrainagecanalatsannicolasminalinpampanga0000"
+        "title_base_match_key": "constructionofroadwithdrainagecanalatsannicolasminalinpampanga"
       }
     },
     {
@@ -929935,24 +930927,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadwithdrainagecanalatstamariaminalinpampanga0000sta0303",
         "office_canonical": "Pampanga 1st District Engineering Office",
-        "title_base": "Construction of Road with Drainage Canal at Barangay Sta Maria, Minalin, Pampanga 0+000",
+        "title_base": "Construction of Road with Drainage Canal at Barangay Sta Maria, Minalin, Pampanga",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+303",
+            "from": "0+000",
             "to": "0+303",
-            "meters_from": 303,
+            "meters_from": 0,
             "meters_to": 303,
-            "length_m": null,
+            "length_m": 303,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadwithdrainagecanalatstamariaminalinpampanga0000"
+        "title_base_match_key": "constructionofroadwithdrainagecanalatstamariaminalinpampanga"
       }
     },
     {
@@ -930045,24 +931037,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadwithdrainagecanalatsanisidrosansimonpampanga0000sta0305",
         "office_canonical": "Pampanga 1st District Engineering Office",
-        "title_base": "Construction of Road with Drainage Canal at Barangay San Isidro, San Simon, Pampanga 0+000",
+        "title_base": "Construction of Road with Drainage Canal at Barangay San Isidro, San Simon, Pampanga",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+305",
+            "from": "0+000",
             "to": "0+305",
-            "meters_from": 305,
+            "meters_from": 0,
             "meters_to": 305,
-            "length_m": null,
+            "length_m": 305,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadwithdrainagecanalatsanisidrosansimonpampanga0000"
+        "title_base_match_key": "constructionofroadwithdrainagecanalatsanisidrosansimonpampanga"
       }
     },
     {
@@ -930100,24 +931092,24 @@
         "funding_php": {},
         "title_match_key": "improvementofsanrafaelroadwithslopeprotectionworksatsanrafaelmacabebepampanga0000sta0410",
         "office_canonical": "Pampanga 1st District Engineering Office",
-        "title_base": "Improvement of San Rafael Road with Slope Protection works at Barangay San Rafael, Macabebe, Pampanga, 0+000",
+        "title_base": "Improvement of San Rafael Road with Slope Protection works at Barangay San Rafael, Macabebe, Pampanga",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "0+410",
+            "from": "0+000",
             "to": "0+410",
-            "meters_from": 410,
+            "meters_from": 0,
             "meters_to": 410,
-            "length_m": null,
+            "length_m": 410,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "improvementofsanrafaelroadwithslopeprotectionworksatsanrafaelmacabebepampanga0000"
+        "title_base_match_key": "improvementofsanrafaelroadwithslopeprotectionworksatsanrafaelmacabebepampanga"
       }
     },
     {
@@ -945054,15 +946046,15 @@
         "funding_php": {},
         "title_match_key": "constructionofroadtambangantomanzanasanjosepartidocamarinessursection1sta1400sta1540section2sta0000sta0024section3sta0000sta0028section4sta0000sta0050",
         "office_canonical": "Camarines Sur 4th District Engineering Office",
-        "title_base": "Construction of Road, Barangay Tambangan - Barangay Manzana, San Jose-Partido, Camarines Sur Section 1: ection 2 : Section 3: Section 4:",
+        "title_base": "Construction of Road, Barangay Tambangan - Barangay Manzana, San Jose-Partido, Camarines Sur Section 1: Section 2 : Section 3: Section 4:",
         "chainages": [
           {
             "kind": "Sta",
             "from": "1+400",
-            "to": "1+5405",
+            "to": "1+540",
             "meters_from": 1400,
-            "meters_to": 6405,
-            "length_m": 5005,
+            "meters_to": 1540,
+            "length_m": 140,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -945107,7 +946099,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadtambanganmanzanasanjosepartidocamarinessursection1ection2section3section4"
+        "title_base_match_key": "constructionofroadtambanganmanzanasanjosepartidocamarinessursection1section2section3section4"
       }
     },
     {
@@ -947314,11 +948306,24 @@
         "funding_php": {},
         "title_match_key": "constructionoftubunganigtublesanremegioroadiloilo1941620198",
         "office_canonical": "Iloilo 1st District Engineering Office",
-        "title_base": "Construction of Tubungan - Igtuble - San Remegio Road, Iloilo, 19+416 - 20+198",
-        "chainages": [],
+        "title_base": "Construction of Tubungan - Igtuble - San Remegio Road, Iloilo",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "19+416",
+            "to": "20+198",
+            "meters_from": 19416,
+            "meters_to": 20198,
+            "length_m": 782,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionoftubunganigtublesanremegioroadiloilo1941620198"
+        "title_base_match_key": "constructionoftubunganigtublesanremegioroadiloilo"
       }
     },
     {
@@ -950031,11 +951036,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadpootocapalasananlazisiquijorsegment100000965",
         "office_canonical": "Siquijor District Engineering Office",
-        "title_base": "Construction of Road Barangay Poo to Barangay Capalasanan, Lazi, Siquijor (Segment 1: 0 + 000 - 0 + 965)",
-        "chainages": [],
+        "title_base": "Construction of Road Barangay Poo - Barangay Capalasanan, Lazi, Siquijor (Segment 1: )",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+965",
+            "meters_from": 0,
+            "meters_to": 965,
+            "length_m": 965,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadpootocapalasananlazisiquijorsegment100000965"
+        "title_base_match_key": "constructionofroadpoocapalasananlazisiquijorsegment1"
       }
     },
     {
@@ -950816,24 +951834,24 @@
         "funding_php": {},
         "title_match_key": "constructionofcamiassohotonroadconnectingtagbilarannorthroadandubujancamiasprovincialroadcalapeboholsta000sta001300",
         "office_canonical": "Bohol 1st District Engineering Office",
-        "title_base": "Construction of Camias-Sohoton Road connecting Tagbilaran North Road and Ubujan- Camias Provincial Road, Calape, Bohol Sta. 000+000",
+        "title_base": "Construction of Camias-Sohoton Road connecting Tagbilaran North Road and Ubujan- Camias Provincial Road, Calape, Bohol",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "001+300",
+            "from": "000+000",
             "to": "001+300",
-            "meters_from": 1300,
+            "meters_from": 0,
             "meters_to": 1300,
-            "length_m": null,
+            "length_m": 1300,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofcamiassohotonroadconnectingtagbilarannorthroadandubujancamiasprovincialroadcalapeboholsta000"
+        "title_base_match_key": "constructionofcamiassohotonroadconnectingtagbilarannorthroadandubujancamiasprovincialroadcalapebohol"
       }
     },
     {
@@ -950871,24 +951889,24 @@
         "funding_php": {},
         "title_match_key": "constructionofbayacabactinibganmaribojocobujantagubaasantequeraprovincialroadmaribojocandantequeraboholsta000sta001300",
         "office_canonical": "Bohol 1st District Engineering Office",
-        "title_base": "Construction of Bayacabac-Tinibgan (Maribojoc)-Obujan-Tagubaas (Antequera) Provincial Road, Maribojoc and Antequera, Bohol Sta. 000+000",
+        "title_base": "Construction of Bayacabac-Tinibgan (Maribojoc)-Obujan-Tagubaas (Antequera) Provincial Road, Maribojoc and Antequera, Bohol",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "001+300",
+            "from": "000+000",
             "to": "001+300",
-            "meters_from": 1300,
+            "meters_from": 0,
             "meters_to": 1300,
-            "length_m": null,
+            "length_m": 1300,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofbayacabactinibganmaribojocobujantagubaasantequeraprovincialroadmaribojocandantequeraboholsta000"
+        "title_base_match_key": "constructionofbayacabactinibganmaribojocobujantagubaasantequeraprovincialroadmaribojocandantequerabohol"
       }
     },
     {
@@ -963543,15 +964561,15 @@
         "funding_php": {},
         "title_match_key": "concretingofroadpurok3cogonsta0000sta0350ozamizcitymisamisoccidental",
         "office_canonical": "Misamis Occidental 2nd District Engineering Office",
-        "title_base": "Concreting of Road (Purok 3), Cogon zamiz City, Misamis Occidental",
+        "title_base": "Concreting of Road (Purok 3), Cogon Ozamiz City, Misamis Occidental",
         "chainages": [
           {
             "kind": "Sta",
             "from": "0+000",
-            "to": "0+3500",
+            "to": "0+350",
             "meters_from": 0,
-            "meters_to": 3500,
-            "length_m": 3500,
+            "meters_to": 350,
+            "length_m": 350,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -963560,7 +964578,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "concretingofroadpurok3cogonzamizcitymisamisoccidental"
+        "title_base_match_key": "concretingofroadpurok3cogonozamizcitymisamisoccidental"
       }
     },
     {
@@ -967391,15 +968409,15 @@
         "funding_php": {},
         "title_match_key": "constructionofconcreteroadjctbypassroadsanroquetocarpenterhillconnectingmarbelmakarroadsta0000sta1140southcotabato",
         "office_canonical": "South Cotabato 2nd District Engineering Office",
-        "title_base": "Construction of Concrete Road, Jct. By-pass Road, Barangay San Roque - Barangay Carpenter Hill connecting Marbel-Makar Road outh Cotabato",
+        "title_base": "Construction of Concrete Road, Jct. By-pass Road, Barangay San Roque - Barangay Carpenter Hill connecting Marbel-Makar Road South Cotabato",
         "chainages": [
           {
             "kind": "Sta",
             "from": "0+000",
-            "to": "1+1405",
+            "to": "1+140",
             "meters_from": 0,
-            "meters_to": 2405,
-            "length_m": 2405,
+            "meters_to": 1140,
+            "length_m": 1140,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -967408,7 +968426,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofconcreteroadjctbypassroadsanroquecarpenterhillconnectingmarbelmakarroadouthcotabato"
+        "title_base_match_key": "constructionofconcreteroadjctbypassroadsanroquecarpenterhillconnectingmarbelmakarroadsouthcotabato"
       }
     },
     {
@@ -967446,15 +968464,15 @@
         "funding_php": {},
         "title_match_key": "constructionofconcreteroadjctnationalhighwaytantangannoralabypassroadsta1818sta4018southcotabato",
         "office_canonical": "South Cotabato 2nd District Engineering Office",
-        "title_base": "Construction of Concrete Road-Jct. National Highway Tantangan-Norala By-pass Road outh Cotabato",
+        "title_base": "Construction of Concrete Road-Jct. National Highway Tantangan-Norala By-pass Road South Cotabato",
         "chainages": [
           {
             "kind": "Sta",
             "from": "1+818",
-            "to": "4+0185",
+            "to": "4+018",
             "meters_from": 1818,
-            "meters_to": 4185,
-            "length_m": 2367,
+            "meters_to": 4018,
+            "length_m": 2200,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -967463,7 +968481,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofconcreteroadjctnationalhighwaytantangannoralabypassroadouthcotabato"
+        "title_base_match_key": "constructionofconcreteroadjctnationalhighwaytantangannoralabypassroadsouthcotabato"
       }
     },
     {
@@ -967501,15 +968519,15 @@
         "funding_php": {},
         "title_match_key": "constructionofhighwayjctcotabatomarbelroadpoblacioncrossingkipotsurralahbypassroadsta0000sta2200bangasouthcotabato",
         "office_canonical": "South Cotabato 2nd District Engineering Office",
-        "title_base": "Construction of Highway Jct. Cotabato - Marbel Road, Barangay Poblacion - Crossing Kipot - Surralah By-pass Road anga, South Cotabato",
+        "title_base": "Construction of Highway Jct. Cotabato - Marbel Road, Barangay Poblacion - Crossing Kipot - Surralah By-pass Road Banga, South Cotabato",
         "chainages": [
           {
             "kind": "Sta",
             "from": "0+000",
-            "to": "2+2008",
+            "to": "2+200",
             "meters_from": 0,
-            "meters_to": 4008,
-            "length_m": 4008,
+            "meters_to": 2200,
+            "length_m": 2200,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -967518,7 +968536,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofhighwayjctcotabatomarbelroadpoblacioncrossingkipotsurralahbypassroadangasouthcotabato"
+        "title_base_match_key": "constructionofhighwayjctcotabatomarbelroadpoblacioncrossingkipotsurralahbypassroadbangasouthcotabato"
       }
     },
     {
@@ -971121,11 +972139,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroad00000300purok5togbongonsurigaocitysurigaodelnorte",
         "office_canonical": "Surigao del Norte 2nd District Engineering Office",
-        "title_base": "Construction of Road, (0+000 - 0+300), Purok 5, Barangay Togbongon, Surigao City, Surigao del Norte",
-        "chainages": [],
+        "title_base": "Construction of Road, , Purok 5, Barangay Togbongon, Surigao City, Surigao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+300",
+            "meters_from": 0,
+            "meters_to": 300,
+            "length_m": 300,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroad00000300purok5togbongonsurigaocitysurigaodelnorte"
+        "title_base_match_key": "constructionofroadpurok5togbongonsurigaocitysurigaodelnorte"
       }
     },
     {
@@ -971163,11 +972194,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadfromsanitolakandulatolakandulatoellaperal00000600placersurigaodelnorte",
         "office_canonical": "Surigao del Norte 2nd District Engineering Office",
-        "title_base": "Construction of Road from Barangay Sani-Sani to Barangay Lakandula to Barangay Lakandula to Barangay Ellaperal, (0+000 - 0+600), Placer, Surigao del Norte",
-        "chainages": [],
+        "title_base": "Construction of Road from Barangay Sani-Sani - Barangay Lakandula - Barangay Lakandula - Barangay Ellaperal, , Placer, Surigao del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000",
+            "to": "0+600",
+            "meters_from": 0,
+            "meters_to": 600,
+            "length_m": 600,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadfromsanitolakandulatolakandulatoellaperal00000600placersurigaodelnorte"
+        "title_base_match_key": "constructionofroadfromsanilakandulalakandulaellaperalplacersurigaodelnorte"
       }
     },
     {
@@ -1140512,11 +1141556,24 @@
         "funding_php": {},
         "title_match_key": "butuancityagusandelnortelogisticalhighway88482289001guiasansectionmagallanesagusandelnorte",
         "office_canonical": "Central Office",
-        "title_base": "Butuan City-Agusan Del Norte Logistical Highway , (8 + 848.22 - 8 + 900.1 ), Guiasan Section, Magallanes, Agusan Del Norte",
-        "chainages": [],
+        "title_base": "Butuan City-Agusan Del Norte Logistical Highway, , Guiasan Section, Magallanes, Agusan Del Norte",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "8+848.22",
+            "to": "8+900.1",
+            "meters_from": 8848,
+            "meters_to": 8900,
+            "length_m": 52,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "butuancityagusandelnortelogisticalhighway88482289001guiasansectionmagallanesagusandelnorte"
+        "title_base_match_key": "butuancityagusandelnortelogisticalhighwayguiasansectionmagallanesagusandelnorte"
       }
     },
     {
@@ -1151338,7 +1152395,7 @@
         "funding_php": {},
         "title_match_key": "constructionofdrainagemabigamabalacatcitypampangasta0000sta0318sta0000sta0380sta0000sta0412",
         "office_canonical": "Pampanga 3rd District Engineering Office",
-        "title_base": "Construction of Drainage, Barangay Mabiga, Mabalacat City, Pampanga ta. 0 + 000",
+        "title_base": "Construction of Drainage, Barangay Mabiga, Mabalacat City, Pampanga",
         "chainages": [
           {
             "kind": "Sta",
@@ -1151355,10 +1152412,10 @@
           {
             "kind": "Sta",
             "from": "0+000",
-            "to": "0+3805",
+            "to": "0+380",
             "meters_from": 0,
-            "meters_to": 3805,
-            "length_m": 3805,
+            "meters_to": 380,
+            "length_m": 380,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -1151366,20 +1152423,20 @@
           },
           {
             "kind": "Sta",
-            "from": "0+412",
+            "from": "0+000",
             "to": "0+412",
-            "meters_from": 412,
+            "meters_from": 0,
             "meters_to": 412,
-            "length_m": null,
+            "length_m": 412,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofdrainagemabigamabalacatcitypampangata0000"
+        "title_base_match_key": "constructionofdrainagemabigamabalacatcitypampanga"
       }
     },
     {
@@ -1152463,7 +1153520,7 @@
         "funding_php": {},
         "title_match_key": "constructionofdrainagestatrinidadangelescitypampangasta0000sta0692sta0000sta0147sta0000sta0080sta0000sta0135sta0000sta0111",
         "office_canonical": "Pampanga 3rd District Engineering Office",
-        "title_base": "Construction of Drainage, Barangay Sta. Trinidad, Angeles City Pampanga ta. 0 + 000",
+        "title_base": "Construction of Drainage, Barangay Sta. Trinidad, Angeles City Pampanga",
         "chainages": [
           {
             "kind": "Sta",
@@ -1152492,10 +1153549,10 @@
           {
             "kind": "Sta",
             "from": "0+000",
-            "to": "0+0805",
+            "to": "0+080",
             "meters_from": 0,
-            "meters_to": 805,
-            "length_m": 805,
+            "meters_to": 80,
+            "length_m": 80,
             "length_review": null,
             "length_from": null,
             "length_to": null,
@@ -1152503,15 +1153560,15 @@
           },
           {
             "kind": "Sta",
-            "from": "0+135",
+            "from": "0+000",
             "to": "0+135",
-            "meters_from": 135,
+            "meters_from": 0,
             "meters_to": 135,
-            "length_m": null,
+            "length_m": 135,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           },
           {
             "kind": "Sta",
@@ -1152528,7 +1153585,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofdrainagestatrinidadangelescitypampangata0000"
+        "title_base_match_key": "constructionofdrainagestatrinidadangelescitypampanga"
       }
     },
     {
@@ -1154545,12 +1155602,12 @@
         "funding_php": {},
         "title_match_key": "constructionofroadslopeprotectionstructuresta0190sta021000tabunancebucitycebu",
         "office_canonical": "Cebu City District Engineering Office",
-        "title_base": "Construction of Road Slope Protection Structure arangay Tabunan, Cebu City, Cebu",
+        "title_base": "Construction of Road Slope Protection Structure Barangay Tabunan, Cebu City, Cebu",
         "chainages": [
           {
             "kind": "Sta",
             "from": "0+190",
-            "to": "0+210.008",
+            "to": "0+210.00",
             "meters_from": 190,
             "meters_to": 210,
             "length_m": 20,
@@ -1154562,7 +1155619,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadslopeprotectionstructurearangaytabunancebucitycebu"
+        "title_base_match_key": "constructionofroadslopeprotectionstructuretabunancebucitycebu"
       }
     },
     {
@@ -1154588,12 +1155645,12 @@
         "funding_php": {},
         "title_match_key": "constructionofroadslopeprotectionstructuresta2800sta285000bonboncebucitycebu",
         "office_canonical": "Cebu City District Engineering Office",
-        "title_base": "Construction of Road Slope Protection Structure arangay Bonbon, Cebu City, Cebu",
+        "title_base": "Construction of Road Slope Protection Structure Barangay Bonbon, Cebu City, Cebu",
         "chainages": [
           {
             "kind": "Sta",
             "from": "2+800",
-            "to": "2+850.008",
+            "to": "2+850.00",
             "meters_from": 2800,
             "meters_to": 2850,
             "length_m": 50,
@@ -1154605,7 +1155662,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadslopeprotectionstructurearangaybonboncebucitycebu"
+        "title_base_match_key": "constructionofroadslopeprotectionstructurebonboncebucitycebu"
       }
     },
     {
@@ -1159360,11 +1160417,24 @@
         "funding_php": {},
         "title_match_key": "constructionofcaranancoastalroad427230432275",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Caranan Coastal Road - 427 + 230 - 432 + 275",
-        "chainages": [],
+        "title_base": "Construction of Caranan Coastal Road",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "427+230",
+            "to": "432+275",
+            "meters_from": 427230,
+            "meters_to": 432275,
+            "length_m": 5045,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofcaranancoastalroad427230432275"
+        "title_base_match_key": "constructionofcaranancoastalroad"
       }
     },
     {
@@ -1159789,41 +1160859,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadcangomantonglazisiquijor47526262",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Road Barangay Cangomantong, Lazi, Siquijor (4 + 752 - 6 + 262)",
-        "chainages": [],
-        "chainage_incomplete": false,
-        "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadcangomantonglazisiquijor47526262"
-      }
-    },
-    {
-      "status": "nep_unmatched",
-      "nep": {
-        "id": "p447:r2",
-        "title": "Construction of Road Barangay Nagerong, Lazi, Siguijor (Segment 1: 0 + 000 - 1 + 700 Segment 2: 1 + 280 - 3 + 080)",
-        "amount_php": 114000000,
-        "program": "Convergence and Special Support Program",
-        "pap": "BIP - Access Roads and/or Bridges from the National Roads leading to Major/ Strategic Public Buildings/ Facilities",
-        "pap_id": "p433:r1",
-        "zone": "local",
-        "region": "NIR",
-        "office": "Central Office",
-        "pdf_page": 447,
-        "bbox": [
-          0.0,
-          172.068,
-          720.0,
-          202.362
+        "title_base": "Construction of Road Barangay Cangomantong, Lazi, Siquijor",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "4+752",
+            "to": "6+262",
+            "meters_from": 4752,
+            "meters_to": 6262,
+            "length_m": 1510,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
         ],
-        "evidence": "within_bbox_agreement",
-        "funding_php": {},
-        "title_match_key": "constructionofroadnageronglazisiquijorsegment100001700segment212803080",
-        "office_canonical": "Central Office",
-        "title_base": "Construction of Road Barangay Nagerong, Lazi, Siguijor (Segment 1: 0 + 000 - 1 + 700 Segment 2: 1 + 280 - 3 + 080)",
-        "chainages": [],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadnageronglazisiquijorsegment100001700segment212803080"
+        "title_base_match_key": "constructionofroadcangomantonglazisiquijor"
       }
     },
     {
@@ -1160480,24 +1161533,24 @@
         "funding_php": {},
         "title_match_key": "constructionofjctcagayandeorociydominorogcampkibaritanroadtojctshaglayanalanibticalaanroadaglayanbasakcosinabaylanansectionsta11700sta14700talakagbukidnon",
         "office_canonical": "Central Office",
-        "title_base": "Construction of Jct Cagayan de Oro Ciy - Dominorog - Camp Kibaritan Road - Jct SH- Aglayan - Alanib - Ticalaan Road (Aglayan - Basak ), Cosina - Baylanan Section, Sta, 11 + 700 Talakag, Bukidnon",
+        "title_base": "Construction of Jct Cagayan de Oro Ciy - Dominorog - Camp Kibaritan Road - Jct SH- Aglayan - Alanib - Ticalaan Road (Aglayan - Basak ), Cosina - Baylanan Section, Sta Talakag, Bukidnon",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "14+700",
+            "from": "11+700",
             "to": "14+700",
-            "meters_from": 14700,
+            "meters_from": 11700,
             "meters_to": 14700,
-            "length_m": null,
+            "length_m": 3000,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofjctcagayandeorociydominorogcampkibaritanroadjctshaglayanalanibticalaanroadaglayanbasakcosinabaylanansectionsta11700talakagbukidnon"
+        "title_base_match_key": "constructionofjctcagayandeorociydominorogcampkibaritanroadjctshaglayanalanibticalaanroadaglayanbasakcosinabaylanansectionstatalakagbukidnon"
       }
     },
     {
@@ -1160785,12 +1161838,12 @@
         "funding_php": {},
         "title_match_key": "constructionofnewbataanbagangaroadbinondosectionsta8000sta12500000bagangadavaooriental",
         "office_canonical": "Central Office",
-        "title_base": "Construction of New Bataan - Baganga Road, Barangay Binondo Section aganga, Davao Oriental",
+        "title_base": "Construction of New Bataan - Baganga Road, Barangay Binondo Section Baganga, Davao Oriental",
         "chainages": [
           {
             "kind": "Sta",
             "from": "8+000.000",
-            "to": "12+500.0008",
+            "to": "12+500.000",
             "meters_from": 8000,
             "meters_to": 12500,
             "length_m": 4500,
@@ -1160802,7 +1161855,7 @@
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofnewbataanbagangaroadbinondosectionagangadavaooriental"
+        "title_base_match_key": "constructionofnewbataanbagangaroadbinondosectionbagangadavaooriental"
       }
     },
     {
@@ -1163719,24 +1164772,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadsantamarialicabnuevaecijasta0000sta1500",
         "office_canonical": "Nueva Ecija 1st District Engineering Office",
-        "title_base": "Construction of Road, Barangay Santa Maria, Licab, Nueva Ecija Sta . + 0 + 000",
+        "title_base": "Construction of Road, Barangay Santa Maria, Licab, Nueva Ecija Sta . +",
         "chainages": [
           {
             "kind": "Sta",
-            "from": "1+500",
+            "from": "0+000",
             "to": "1+500",
-            "meters_from": 1500,
+            "meters_from": 0,
             "meters_to": 1500,
-            "length_m": null,
+            "length_m": 1500,
             "length_review": null,
             "length_from": null,
             "length_to": null,
-            "point": true
+            "point": false
           }
         ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadsantamarialicabnuevaecijasta0000"
+        "title_base_match_key": "constructionofroadsantamarialicabnuevaecijasta"
       }
     },
     {
@@ -1164116,11 +1165169,24 @@
         "funding_php": {},
         "title_match_key": "constructionofbungatumutugolroadstaritamasinloczambales000000069000",
         "office_canonical": "Zambales 1st District Engineering Office",
-        "title_base": "Construction of Bunga-Tumutugol Road, Barangay Sta. Rita, Masinloc, Zambales, 0 + 000.00-0 + 690.00",
-        "chainages": [],
+        "title_base": "Construction of Bunga-Tumutugol Road, Barangay Sta. Rita, Masinloc, Zambales",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "0+000.00",
+            "to": "0+690.00",
+            "meters_from": 0,
+            "meters_to": 690,
+            "length_m": 690,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofbungatumutugolroadstaritamasinloczambales000000069000"
+        "title_base_match_key": "constructionofbungatumutugolroadstaritamasinloczambales"
       }
     },
     {
@@ -1167730,11 +1168796,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadcangomantonglazisiquijor38844752",
         "office_canonical": "Siquijor District Engineering Office",
-        "title_base": "Construction of Road Barangay Cangomantong, Lazi, Siquijor (3 + 884 - 4 + 752)",
-        "chainages": [],
+        "title_base": "Construction of Road Barangay Cangomantong, Lazi, Siquijor",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "3+884",
+            "to": "4+752",
+            "meters_from": 3884,
+            "meters_to": 4752,
+            "length_m": 868,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadcangomantonglazisiquijor38844752"
+        "title_base_match_key": "constructionofroadcangomantonglazisiquijor"
       }
     },
     {
@@ -1167760,11 +1168839,24 @@
         "funding_php": {},
         "title_match_key": "constructionofroadpootocapalasananlazisiquijor14652215",
         "office_canonical": "Siquijor District Engineering Office",
-        "title_base": "Construction of Road Barangay Poo to Barangay Capalasanan, Lazi, Siquijor (1 + 465 - 2 + 215)",
-        "chainages": [],
+        "title_base": "Construction of Road Barangay Poo - Barangay Capalasanan, Lazi, Siquijor",
+        "chainages": [
+          {
+            "kind": "Sta",
+            "from": "1+465",
+            "to": "2+215",
+            "meters_from": 1465,
+            "meters_to": 2215,
+            "length_m": 750,
+            "length_review": null,
+            "length_from": null,
+            "length_to": null,
+            "point": false
+          }
+        ],
         "chainage_incomplete": false,
         "chainage_length_review": null,
-        "title_base_match_key": "constructionofroadpootocapalasananlazisiquijor14652215"
+        "title_base_match_key": "constructionofroadpoocapalasananlazisiquijor"
       }
     },
     {

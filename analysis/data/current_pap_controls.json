@@ -2,7 +2,7 @@
   "manifest": {
     "schema_version": 2,
     "fiscal_year": 2027,
-    "built_at": "2026-10-23T07:00:05+08:00",
+    "built_at": "2026-11-12T19:58:08+08:00",
     "stages": {
       "nep": "Executive NEP proposal",
       "house": "HB 10858 supplied source documents; amendment completeness not certified"
@@ -20,7 +20,7 @@
     "generator_dependencies": {
       "analysis/builders/house_native.py": "67405d3561660c7e7c75e1073fc7381e5524dabd562b1a81054004867f9b161b",
       "analysis/builders/normalize_labels.py": "b414e26ace7a8d8fade1ad4e96029040f1175cc727c3c14f9653252a07c1e4c3",
-      "analysis/builders/chainage.py": "ec3582b3fd9898fc28e372ab29946ec9efcba60354250dc46ad2c14c51de59b8",
+      "analysis/builders/chainage.py": "ae279631c0aec7bac0a578f2433bfeec370a5ea71088b92a9a71cac3fc4f786d",
       "scripts/hb_native_labels.py": "bcbdc6563c296bd5e5c19781b98e675f5f6fbc83306fabd9501edb2ae32d8317"
     },
     "inputs": {
@@ -85,15 +85,15 @@
     },
     "match_counts": {
       "exact_candidate": 9680,
-      "house_unmatched": 5801,
+      "house_unmatched": 5800,
       "segment_scope_candidate": 37,
-      "chainage_candidate": 287,
+      "chainage_candidate": 288,
       "fuzzy_candidate": 385,
       "ambiguous": 5,
       "location_amendment_candidate": 29,
       "scope_amendment_candidate": 35,
       "soft_match_candidate": 11,
-      "nep_unmatched": 1341
+      "nep_unmatched": 1340
     },
     "reviewed_pairs": 0,
     "api": {
