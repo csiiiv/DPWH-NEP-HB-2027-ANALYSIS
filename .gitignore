@@ -56,8 +56,10 @@ DA_FMR_DATA/geoagri_patched_*
 DA_FMR_DATA/geoagri_nep_sample_map.*
 DA_FMR_DATA/geoagri_nep_sample_matches.json
 DA_FMR_DATA/geoagri_geometry_validity_samples.json
-# NIA source workbook (LibreOffice lock file + live xlsx referenced by path)
-NIA_DATA/
+# NIA source workbook: retain the Senate hearing xlsx (referenced by path by
+# extract_nia_senate_workbook.py and its live CI tests); ignore only locks.
+NIA_DATA/.~lock.*
+NIA_DATA/*.tmp
 
 # Raw API downloads; retain the combined FY2027 snapshot
 /dpwh-transparency-nep-data/json/fy2027-details/
