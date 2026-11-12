@@ -28,11 +28,18 @@ ANALYSIS = HERE.parent.parent
 SENATE_PATH = ANALYSIS / 'data' / 'senate_nia_dataset.json'
 OUT_PATH = HERE / 'pow_availability.json'
 
-POW_ROOT = Path(
+# Local mirror of the PBC Drive drop (not discovered automatically). Rebuilds
+# read this path; override with env NIA_POW_ROOT when the mirror moves.
+# Upstream folder: PEOPLE'S BUDGET COALITION REQUIREMENTS on Google Drive.
+PBC_DRIVE_URL = (
+    'https://drive.google.com/drive/u/0/folders/1orH0hcmtfTuYRz4qdOBXwcYhIKk1Yt-m'
+)
+POW_ROOT = Path(os.environ.get(
+    'NIA_POW_ROOT',
     '/media/temp/3dbc81e7-b4e7-4209-a85b-3f0afb0a5253/Downloads/'
     'NIA- PBC_Data/PEOPLE_S BUDGET COALITION REQUIREMENTS/'
-    'PROGRAM OF WORKS AND PICTURES (ONGOING UPLOADING)'
-)
+    'PROGRAM OF WORKS AND PICTURES (ONGOING UPLOADING)',
+))
 
 REGION_MAP = {
     'CAR': ['Cordillera Administrative Region', 'CAR'],
@@ -782,13 +789,18 @@ def build():
     payload = {
         'schema_version': 1,
         'source': str(POW_ROOT),
+        'source_drive_url': PBC_DRIVE_URL,
+        'source_drive_folder': "PEOPLE'S BUDGET COALITION REQUIREMENTS",
+        'source_subfolder': 'PROGRAM OF WORKS AND PICTURES (ONGOING UPLOADING)',
         'note': (
             'Supporting-document availability from the PBC Program of Works drop. '
             'Package names are parsed as work-type / system / amount and fuzzy-matched '
             'to Senate workbook submission titles within the same region folder. '
             'Matches are triage candidates, not certified identity. '
             'Unsupported means no package in this drop mapped to the Senate row. '
-            'With POW / With geotagged photos can overlap on the same project.'
+            'With POW / With geotagged photos can overlap on the same project. '
+            'Local path is configured in extract_pow_availability.py (or NIA_POW_ROOT); '
+            'canonical upstream is the PBC Google Drive folder.'
         ),
         'summary': {
             'region_folders': len({p['region_folder'] for p in matched_packages}),

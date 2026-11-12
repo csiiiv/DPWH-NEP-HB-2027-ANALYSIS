@@ -1118,7 +1118,10 @@ function DocumentAvailabilityAnalysis({route}) {
     <section className="fmr-section"><h2>Supporting document availability</h2>
       <p>Counts of Program of Works / picture files from the PBC drop, attributed to Senate workbook
         projects by region-scoped fuzzy match on package names (<code>work-type / system / amount</code>).
-        Matches are triage candidates — not certified identity.</p>
+        Matches are triage candidates — not certified identity.
+        Source: <a href={pow.source_drive_url || 'https://drive.google.com/drive/u/0/folders/1orH0hcmtfTuYRz4qdOBXwcYhIKk1Yt-m'}
+          target="_blank" rel="noopener noreferrer">PEOPLE'S BUDGET COALITION REQUIREMENTS (Google Drive)</a>
+        {pow.source_subfolder ? <> → <code>{pow.source_subfolder}</code></> : null}.</p>
       <div className="fmr-stats">
         <Stat label="Senate submitted projects" value={s.senate_projects.toLocaleString('en-PH')}
           detail={`${s.packages} POW packages · ${s.total_docs.toLocaleString('en-PH')} files`}/>

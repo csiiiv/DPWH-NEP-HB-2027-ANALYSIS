@@ -2,15 +2,18 @@
 
 Inventory of the PBC drop folder **PROGRAM OF WORKS AND PICTURES (ONGOING UPLOADING)** and per-project supporting-document counts against the Senate workbook.
 
-**Method note:** [POW_AVAILABILITY_FINDINGS.md](../../POW_AVAILABILITY_FINDINGS.md) — how folders/files were mapped and validated to Senate submitted projects.
+**Upstream (Drive):** [PEOPLE'S BUDGET COALITION REQUIREMENTS](https://drive.google.com/drive/u/0/folders/1orH0hcmtfTuYRz4qdOBXwcYhIKk1Yt-m)  
+**Method note:** [POW_AVAILABILITY_FINDINGS.md](../../POW_AVAILABILITY_FINDINGS.md) — how the local directory is chosen, and how folders/files were mapped and validated to Senate submitted projects.
 
 ## Rebuild
 
 ```bash
+# Local mirror path defaults in extract_pow_availability.py; override if needed:
+# export NIA_POW_ROOT="/path/to/PROGRAM OF WORKS AND PICTURES (ONGOING UPLOADING)"
 python3 analysis-nia/data/program_of_works/extract_pow_availability.py
 ```
 
-Requires the external PBC drop mounted at the path in `extract_pow_availability.py`.
+Requires a local copy of the Drive POW subfolder (see `POW_ROOT` / `NIA_POW_ROOT`).
 
 ## Artifact
 

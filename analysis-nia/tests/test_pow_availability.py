@@ -16,6 +16,8 @@ class TestPowAvailability(unittest.TestCase):
 
     def test_schema_and_counts(self):
         self.assertEqual(self.ds['schema_version'], 1)
+        self.assertTrue(self.ds['source_drive_url'].startswith('https://drive.google.com/'))
+        self.assertIn('PROGRAM OF WORKS', self.ds['source_subfolder'])
         s = self.ds['summary']
         self.assertGreater(s['packages'], 0)
         self.assertGreater(s['total_docs'], 0)

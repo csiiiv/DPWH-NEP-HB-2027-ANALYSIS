@@ -1,7 +1,8 @@
 # NIA PBC Drop — RDC Endorsement & Proposal Findings
 
 **Built:** 12 November 2026  
-**Source:** `/media/.../NIA- PBC_Data/PEOPLE_S BUDGET COALITION REQUIREMENTS/` (RDC ENDORSEMENT 335 MB + POWERPOINT PRESENTATION 11 MB)  
+**Source (Drive):** [PEOPLE'S BUDGET COALITION REQUIREMENTS](https://drive.google.com/drive/u/0/folders/1orH0hcmtfTuYRz4qdOBXwcYhIKk1Yt-m)  
+**Source (local mirror):** `/media/.../NIA- PBC_Data/PEOPLE_S BUDGET COALITION REQUIREMENTS/` (RDC ENDORSEMENT 335 MB + POWERPOINT PRESENTATION 11 MB)  
 **Artifacts:** [`data/rdc_endorsement/`](data/rdc_endorsement/README.md) · [`data/pbc_presentation/`](data/pbc_presentation/README.md)  
 **Tests:** `analysis-nia/tests/test_pbc_drop_layers.py` (11 cases; full suite 69 OK)
 

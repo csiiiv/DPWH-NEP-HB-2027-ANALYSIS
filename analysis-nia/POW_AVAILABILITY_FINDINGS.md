@@ -1,12 +1,26 @@
 # NIA PBC Drop — Program of Works Mapping
 
 **Built:** 12 November 2026  
-**Source:** `…/PEOPLE_S BUDGET COALITION REQUIREMENTS/PROGRAM OF WORKS AND PICTURES (ONGOING UPLOADING)/`  
+**Source (Drive):** [PEOPLE'S BUDGET COALITION REQUIREMENTS](https://drive.google.com/drive/u/0/folders/1orH0hcmtfTuYRz4qdOBXwcYhIKk1Yt-m) → `PROGRAM OF WORKS AND PICTURES (ONGOING UPLOADING)/`  
+**Source (local mirror used to build):** path in `extract_pow_availability.py` (`POW_ROOT`, overridable with env `NIA_POW_ROOT`)  
 **Target records:** NIA Senate hearing workbook project rows (`senate_nia_dataset.json`, submission / fixed titles)  
 **Artifact:** [`data/program_of_works/pow_availability.json`](data/program_of_works/pow_availability.json)  
 **UI:** Analysis → Document availability (`#nia/analysis?view=documents`)
 
 Brief note on how folders and files in the POW drop were inventoried, linked to Senate submitted projects, and validated.
+
+---
+
+## How the directory is chosen
+
+The extractor does **not** search the machine for NIA files. It reads a configured local mirror of the PBC Drive drop:
+
+1. **Canonical upstream** — the shared Drive folder [PEOPLE'S BUDGET COALITION REQUIREMENTS](https://drive.google.com/drive/u/0/folders/1orH0hcmtfTuYRz4qdOBXwcYhIKk1Yt-m) (FGIS, NIMP, RIMP, RDC ENDORSEMENT, PROGRAM OF WORKS AND PICTURES, etc.).
+2. **POW slice** — subfolder `PROGRAM OF WORKS AND PICTURES (ONGOING UPLOADING)/`, with one directory per region / unit (`CAR`, `REGION 9`, `UPRIIS`, …).
+3. **Local build path** — hardcoded default under the analyst’s Downloads mirror in `extract_pow_availability.py`, or override with `NIA_POW_ROOT=/path/to/…/PROGRAM OF WORKS AND PICTURES (ONGOING UPLOADING)`.
+4. **Retained output** — `pow_availability.json` stores relative package paths plus `source` / `source_drive_url` so the UI and audits can cite Drive even when the local mirror moves.
+
+If `POW_ROOT` is missing, the build invents zero packages (no silent fallback to another tree).
 
 ---
 
@@ -67,6 +81,7 @@ Confirmed examples from the current drop: LARPIS / Aupagan ₱300M, BBRIS / BACO
 ## 5. Rebuild
 
 ```bash
+# optional: export NIA_POW_ROOT=/path/to/PROGRAM OF WORKS AND PICTURES (ONGOING UPLOADING)
 python3 analysis-nia/data/program_of_works/extract_pow_availability.py
 python3 -m unittest analysis-nia.tests.test_pow_availability -v
 ```
