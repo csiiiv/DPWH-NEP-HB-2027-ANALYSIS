@@ -106,7 +106,7 @@ def main():
                     expect(overview_records).to_have_count(0)
                     goto('analysis')
                     assert page.get_by_role('navigation', name='Analysis views').locator('a').all_text_contents() == [
-                        'Overview', 'Unsupported insertions', 'Deletions', 'Adjustments', 'Statistics', 'AI monitoring', 'Senate workbook', 'Candidates', 'Agency controls']
+                        'Overview', 'Unsupported insertions', 'Deletions', 'Adjustments', 'Statistics', 'Chainage', 'Document availability', 'AI monitoring', 'Senate workbook', 'Candidates', 'Agency controls']
                     expect(page.get_by_label('Analysis budget source', exact=True)).to_have_value('nep')
                     expect(page.get_by_role('region', name='NIA allocation overview', exact=True)).to_contain_text('Allocation share')
                     page.get_by_label('Analysis budget source', exact=True).select_option('house')
@@ -117,6 +117,32 @@ def main():
                         expect(page.get_by_role('dialog',name='NIA candidate evidence')).to_have_count(0)
                         expect(page.get_by_role('navigation',name='NIA project candidates pages')).to_contain_text(f'{expected_count:,} rows')
                         assert 'pair=null' not in page.url and 'status=null' not in page.url
+
+                    goto('analysis?view=documents')
+                    expect(page.get_by_role('link', name='Document availability', exact=True)).to_have_attribute('aria-current', 'page')
+                    doc_stats = page.locator('.fmr-stats').first
+                    expect(doc_stats).to_contain_text('62 POW packages')
+                    expect(doc_stats).to_contain_text('131 files')
+                    expect(doc_stats).to_contain_text('With POW')
+                    expect(doc_stats).to_contain_text('61')
+                    expect(doc_stats).to_contain_text('With geotagged photos')
+                    expect(doc_stats).to_contain_text('34')
+                    expect(doc_stats).to_contain_text('No supporting docs')
+                    expect(doc_stats).to_contain_text('876')
+                    scale = page.get_by_role('list', name='Supporting document coverage scale')
+                    expect(scale).to_contain_text('With POW')
+                    expect(scale).to_contain_text('With geotagged photos')
+                    expect(scale).to_contain_text('No supporting docs')
+                    expect(page.locator('main')).to_contain_text('PBC Program of Works drop')
+                    coverage_pages = page.get_by_role('navigation', name='POW project support coverage pages')
+                    expect(coverage_pages).to_contain_text('937 rows')
+                    with page.expect_download() as result:
+                        page.get_by_role('button', name='Export filtered CSV', exact=True).click()
+                    exported = list(csv.DictReader(StringIO(Path(result.value.path()).read_text(encoding='utf-8-sig'))))
+                    assert len(exported) == 937
+                    assert sum(1 for x in exported if x['support'] == 'supported') == 61
+                    assert sum(int(x['pdf_count'] or 0) for x in exported) == 91
+                    assert sum(int(x['image_count'] or 0) for x in exported) == 40
 
                     goto('analysis?view=ai_monitoring')
                     expect(page.get_by_role('link', name='AI monitoring', exact=True)).to_have_attribute('aria-current', 'page')
@@ -281,7 +307,7 @@ def main():
                     # Reconciliation crosstab: five comparison classes against the
                     # workbook-only category level, with the House ledger checksum.
                     recon = page.get_by_role('region', name='NIA reconciliation by hierarchy category', exact=True)
-                    expect(recon.locator('tbody tr')).to_have_count(15)
+                    expect(recon.locator('tbody tr')).to_have_count(16)
                     expect(recon).to_contain_text('Establishment of Pump Irrigation Projects')
                     # Per-category cells: count · peso for each class.
                     expect(recon).to_contain_text('78 · ₱2,181,000,000')
@@ -305,7 +331,10 @@ def main():
                     }""")
                     for row in rows_data:
                         assert row['house'] == row['insertions'] + row['unchanged'] + row['increased'] + row['decreased'], row
-                    assert sum(r['house'] for r in rows_data) == 17999305000
+                    # 15 category rows + the Total row (added with the chainage/
+                    # fixed-titles feature); the Total repeats the ledger sum once.
+                    assert sum(r['house'] for r in rows_data) == 2 * 17999305000
+                    assert rows_data[-1]['house'] == 17999305000
                     # Row-count reconciliation: comparison ledger (1,013) vs workbook (937).
                     bridge = page.get_by_role('region', name='Comparison observations vs Senate workbook rows', exact=True)
                     expect(bridge).to_contain_text('Dataset totals')
@@ -408,7 +437,7 @@ def main():
                     first_cat = first_row.locator('th').first.inner_text().strip()
                     cat_n = sum(1 for p in data['stages']['nep']['projects'] if p.get('category') == first_cat)
                     assert cat_n > 0, first_cat
-                    page.locator('.nia-chainage-toolbar').get_by_role('button', name='Export…', exact=True).click()
+                    page.locator('.nia-chainage-toolbar', has_text=re.compile(r'groups')).get_by_role('button', name='Export…', exact=True).click()
                     export_dlg = page.get_by_role('dialog', name='Export chainage rates')
                     expect(export_dlg).to_be_visible()
                     with page.expect_download() as export_result:

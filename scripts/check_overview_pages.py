@@ -230,7 +230,7 @@ def main():
                     csv_response = page.request.get(overview_csv_url)
                     assert csv_response.status == 200,(overview_csv_url,csv_response.status)
                     csv_lines = csv_response.text().splitlines()
-                    assert len(csv_lines) == 17614,(len(csv_lines),)  # header + 17,613 rows
+                    assert len(csv_lines) == 17613,(len(csv_lines),)  # header + 17,612 data rows
                     assert csv_lines[0].startswith('"ID","Title","Program","Region"'),csv_lines[0][:80]
                     for name in ('hgab_hfep_facilities.csv','nep_hfep_facilities.csv','hgab_hfep_controls.csv'):
                         link = csv_group.locator(f'a[download="{name}"]')
