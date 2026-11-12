@@ -21,8 +21,18 @@ def package_nia(output):
         path = document['path']
         target = output / path
         target.parent.mkdir(parents=True, exist_ok=True)
-        if not target.is_file():
-            shutil.copy2(ROOT / path, target)
+        if target.is_file():
+            continue
+        source = ROOT / path
+        if source.is_file():
+            shutil.copy2(source, target)
+        elif document.get('page_count') is None:
+            # Metadata-only registry entry: the NIA_DATA Senate workbook is
+            # gitignored source material; its retained evidence is the
+            # committed analysis-nia/data/senate_nia_dataset.json.
+            print(f'Skipped untracked document source: {path}')
+        else:
+            raise FileNotFoundError(f'Servable document missing from repo: {path}')
     landing = output / 'nia'
     landing.mkdir(exist_ok=True)
     # Preserve full prefixed hashes and accept the short /nia/#nep alias.
