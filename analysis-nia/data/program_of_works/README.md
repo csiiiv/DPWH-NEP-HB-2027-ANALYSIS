@@ -2,6 +2,8 @@
 
 Inventory of the PBC drop folder **PROGRAM OF WORKS AND PICTURES (ONGOING UPLOADING)** and per-project supporting-document counts against the Senate workbook.
 
+**Method note:** [POW_AVAILABILITY_FINDINGS.md](../../POW_AVAILABILITY_FINDINGS.md) — how folders/files were mapped and validated to Senate submitted projects.
+
 ## Rebuild
 
 ```bash
