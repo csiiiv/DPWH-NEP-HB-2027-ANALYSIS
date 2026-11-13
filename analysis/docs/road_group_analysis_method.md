@@ -185,6 +185,110 @@ length, ₱/km and spans, and links into Compare stages with
 `deletion_candidate_group_house_paired` (NEP side), so the review context
 follows the row everywhere it appears.
 
+## Reusing the data
+
+Everything below is downloadable without cloning the repo. Two URL styles
+serve the same committed bytes: the **Pages site** (rendered dashboards, fast
+CDN) and **raw GitHub** (stable for programmatic `fetch`/`curl`). Sizes are
+for the current build.
+
+### Datasets to pull
+
+| Dataset | Size | Pages URL | Raw GitHub URL |
+| --- | --- | --- | --- |
+| This analysis (groups, region rollup, summary, manifest) | 2.1 MB | `…/analysis/road_group_candidates_2027.json` | [analysis/data/road_group_candidates_2027.json](https://raw.githubusercontent.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/main/analysis/data/road_group_candidates_2027.json) |
+| Matcher input — one record per comparison pair with statuses | 45 MB | `…/analysis/source_comparison_2027.json` | [analysis/data/source_comparison_2027.json](https://raw.githubusercontent.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/main/analysis/data/source_comparison_2027.json) |
+| Stage trace — per-row match status + `road_group` flags (57 MB) | 57 MB | `…/analysis/stage_trace_2027.json` | [analysis/data/stage_trace_2027.json](https://raw.githubusercontent.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/main/analysis/data/stage_trace_2027.json) |
+| Full comparison, one CSV row per record (spreadsheet-friendly) | 8.6 MB | `…/analysis/dpwh_comparison_all_2027.csv` | [analysis/data/dpwh_comparison_all_2027.csv](https://raw.githubusercontent.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/main/analysis/data/dpwh_comparison_all_2027.csv) |
+| Comparison manifest — scope, versions, matching method | small | `…/analysis/comparison_manifest.json` | [analysis/data/comparison_manifest.json](https://raw.githubusercontent.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/main/analysis/data/comparison_manifest.json) |
+| Chainage units — every chainage-bearing row for ₱/km work | — | `…/analysis/chainage_units_2027.json` | [analysis/data/chainage_units_2027.json](https://raw.githubusercontent.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/main/analysis/data/chainage_units_2027.json) |
+
+Pages URLs are prefixed
+`https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS` (e.g.
+<https://csiiiv.github.io/DPWH-NEP-HB-2027-ANALYSIS/analysis/road_group_candidates_2027.json>);
+raw URLs are prefixed
+`https://raw.githubusercontent.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/main`.
+The in-app equivalent is the **Sources workspace** (`#sources` → *DPWH ·
+budget stages*), which lists the same files with per-item coverage notes.
+
+### Sidecar field map
+
+`road_group_candidates_2027.json` top level: `manifest` (schema version,
+build timestamp, generator + input SHA-256 digests), `summary` (the counts
+tabled above), `groups` (insertion direction, `state: hgab_leftover`),
+`nep_leftover_groups` (deletion direction, `state: nep_leftover`) and
+`region_summary` (rollup conserving both directions).
+
+Group rows carry the key (`zone`, `pap`, `region`, `kind`, `shell`), counts
+(`house_rows`, `nep_rows`, `paired_rows`, `leftover_house_rows`,
+`leftover_nep_rows`), money (`leftover_amount_php`, `house_amount_php`,
+`nep_amount_php`, `leftover_nep_amount_php`), the classification `pattern`,
+and `members` — the final-sheet rows. Each member has `id`, `title`,
+`amount_php`, `attached` (bool), `status` (the matcher's status), `chainages`
+(`from`/`to`/`length_m`), `length_m`, `amount_per_km_php`, `pdf_page`, and —
+on collapsed pairs — `nep_id`, `nep_amount_php`, `delta_php`. The insertion
+direction also exposes `leftover_ids`; the deletion direction
+`leftover_nep_ids`.
+
+### Join recipes
+
+The sidecar's leftover ids are the join keys back into the stage trace and
+the comparison records. House ids look like `hb:ic:c12297` (Volume I-C
+continuation row); NEP ids like `p561:r16` (NEP tree page:row).
+
+**All 1,244 insertion-candidate rows with their stage-trace context:**
+
+```python
+import json, urllib.request
+
+base = "https://raw.githubusercontent.com/csiiiv/DPWH-NEP-HB-2027-ANALYSIS/main/analysis/data/"
+groups = json.load(urllib.request.urlopen(base + "road_group_candidates_2027.json"))
+trace = json.load(urllib.request.urlopen(base + "stage_trace_2027.json"))
+
+by_house_id = {r["house"]["id"]: r for r in trace["projects"] if r.get("house")}
+candidates = [
+    {"shell": g["shell"], "kind": g["kind"], "pattern": g["pattern"],
+     "region": g["region"], "pap": g["pap"],
+     "house_id": hid, "amount_php": by_house_id[hid]["house"]["amount_php"],
+     "title": by_house_id[hid]["house"]["title"],
+     "pdf_page": by_house_id[hid]["house"].get("pdf_page")}
+    for g in groups["groups"] for hid in g["leftover_ids"]
+]
+print(len(candidates), "rows ·", sum(c["amount_php"] for c in candidates), "PHP")
+```
+
+**Deletion candidates (242 NEP rows)** — same pattern with
+`nep_leftover_groups`, `leftover_nep_ids`, and `r["nep"]` on the trace.
+
+**Pull one shell's members with provenance** (works for either direction):
+
+```python
+shell = next(g for g in groups["groups"] if g["shell"] == "metrocebuexpresswaycebu")
+for m in shell["members"]:
+    print(m["attached"], m["amount_php"], m["title"][:60],
+          m.get("nep_amount_php"), m.get("delta_php"))
+```
+
+**Spreadsheet route:** `dpwh_comparison_all_2027.csv` opens directly in
+Excel/Sheets; filter its flag/trace column for the grouping flags. For
+re-grouping experiments (different shell keys, other thresholds), clone the
+repo and edit `analysis/builders/build_road_groups.py` — the pattern
+thresholds (`_SCALE_LO`, `_SCALE_HI`) and the slot-drop list are the tuning
+knobs. Rebuild with `python3 analysis/builders/build_road_groups.py`; the
+unit tests in `analysis/web/src/roadGroups.test.js` reconcile the sidecar
+against the summary and the stage-trace flags.
+
+### Reproducing the numbers in this doc
+
+Every figure above derives from the sidecar's own `summary` block and
+region_summary — after pulling the JSON, `summary["exhausted_groups"]` is
+487, `summary["leftover_house_rows"]` is 1,244, `summary["leftover_amount_php"]`
+is 23,381,722,000, and so on. The manifest's `built_at` timestamp and input
+digest tell you whether the build you pulled matches the one described here
+(current: 2026-10-22). If a rebuild upstream moves rows between groups, the
+URLs keep serving the new build — pin a commit SHA in the raw URL (replace
+`/main/` with `/<sha>/`) for a citable snapshot.
+
 ## Limitations and vocabulary
 
 - **Candidates, never verdicts.** "Unsupported insertion candidate" and
