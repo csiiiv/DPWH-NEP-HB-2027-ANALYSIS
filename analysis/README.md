@@ -207,6 +207,7 @@ separately; see [archive commands](archive/README.md).
 - [Source-verification workflow](docs/source_hierarchy_verification.md)
 - [Dataset structure and comparison gate](docs/data_structure_and_crosscheck_design.md)
 - [Analysis tab framework (Overview, Insertions, Deletions, Adjustments) across workspaces](docs/analysis_tabs_framework.md)
+- [Road and shell groupings — how same-project allocations are analyzed](docs/road_group_analysis_method.md)
 - [Analysis tab rules and guidelines (normative standard across datasets)](docs/analysis_tabs_rules.md)
 - [Analysis tab consistency todo list](docs/analysis_tabs_todo.md)
 - [Native I-B processing](docs/hb_native_full_processing.md) and [rollup checks](docs/hb_native_ib_rollup_checks.md)
